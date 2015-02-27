@@ -77,25 +77,25 @@ public class Module extends BaseModule {
                 .path("javax/swing/plaf")
                 .path("javax/swing/plaf/basic")
                 .path("javax/swing/plaf/metal")
-                .path("javax/swing/plaf/multi" / >
-                .path("javax/swing/plaf/nimbus" / >
-                .path("javax/swing/plaf/synth" / >
-                .path("javax/swing/table" / >
-                .path("javax/swing/text" / >
-                .path("javax/swing/text/html" / >
-                .path("javax/swing/text/html/parser" / >
-                .path("javax/swing/text/rtf" / >
-                .path("javax/swing/tree" / >
-                .path("javax/swing/undo" / >
-                .path("javax/tools" / >
-                .path("javax/xml" / >
-                .path("javax/xml/crypto" / >
-                .path("javax/xml/crypto/dom" / >
-                .path("javax/xml/crypto/dsig" / >
-                .path("javax/xml/crypto/dsig/dom" / >
-                .path("javax/xml/crypto/dsig/keyinfo" / >
-                .path("javax/xml/crypto/dsig/spec" / >
-                .path("javax/xml/datatype" / >
+                .path("javax/swing/plaf/multi")
+                .path("javax/swing/plaf/nimbus")
+                .path("javax/swing/plaf/synth")
+                .path("javax/swing/table")
+                .path("javax/swing/text")
+                .path("javax/swing/text/html")
+                .path("javax/swing/text/html/parser")
+                .path("javax/swing/text/rtf")
+                .path("javax/swing/tree")
+                .path("javax/swing/undo")
+                .path("javax/tools")
+                .path("javax/xml")
+                .path("javax/xml/crypto")
+                .path("javax/xml/crypto/dom")
+                .path("javax/xml/crypto/dsig")
+                .path("javax/xml/crypto/dsig/dom")
+                .path("javax/xml/crypto/dsig/keyinfo")
+                .path("javax/xml/crypto/dsig/spec")
+                .path("javax/xml/datatype")
                 .path("javax/xml/namespace")
                 .path("javax/xml/parsers")
                 .path("javax/xml/stream")
@@ -122,6 +122,6 @@ public class Module extends BaseModule {
                 .path("org/w3c/dom/xpath")
                 .path("org/xml/sax")
                 .path("org/xml/sax/ext")
-                .path("org/xml/sax/helpers")
+                .path("org/xml/sax/helpers");
     }
 }
