@@ -41,6 +41,7 @@
       </unpackOptions>
       <includes>
         <include>org.wildfly.core:wildfly-core-feature-pack</include>
+        <include>org.wildfly:wildfly-web-feature-pack</include>
       </includes>
     </dependencySet>
   </dependencySets>

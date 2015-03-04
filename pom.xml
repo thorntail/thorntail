@@ -154,6 +154,8 @@
             <artifactId>wildfly-server</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Core feature pack -->
         <dependency>
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-core-feature-pack</artifactId>
@@ -165,6 +167,26 @@
             <artifactId>wildfly-core-feature-pack</artifactId>
             <type>zip</type>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Web feature pack -->
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-web-feature-pack</artifactId>
+            <type>pom</type>
+            <version>9.0.0.Alpha1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-web-feature-pack</artifactId>
+            <type>zip</type>
+            <version>9.0.0.Alpha1</version>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
