@@ -20,14 +20,27 @@
       <unpack>true</unpack>
       <useProjectArtifact>true</useProjectArtifact>
       <includes>
-        <include>org.wildfly.embedded:*</include>
+        <include>org.wildfly.self-contained:*</include>
       </includes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <unpack>true</unpack>
+      <useProjectArtifact>true</useProjectArtifact>
       <includes>
         <include>org.jboss.modules:*</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <includes>
+          <include>modules/**</include>
+        </includes>
+      </unpackOptions>
+      <includes>
+        <include>org.wildfly.core:wildfly-core-feature-pack</include>
       </includes>
     </dependencySet>
   </dependencySets>

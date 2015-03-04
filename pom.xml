@@ -30,12 +30,12 @@
         <version>16</version>
     </parent>
 
-    <groupId>org.wildfly.embedded</groupId>
-    <artifactId>wildfly-embedded</artifactId>
+    <groupId>org.wildfly.self-contained</groupId>
+    <artifactId>wildfly-self-contained</artifactId>
     <version>1.0.0.Beta1-SNAPSHOT</version>
 
-    <name>WildFly: Embedded</name>
-    <description>WildFly: Embedded</description>
+    <name>WildFly: Self Contained</name>
+    <description>WildFly: Self Contained</description>
 
     <packaging>jar</packaging>
 
@@ -133,7 +133,7 @@
                     </descriptors>
                     <archive>
                       <manifest>
-                        <mainClass>org.wildfly.embedded.Main</mainClass>
+                        <mainClass>org.wildfly.selfcontained.Main</mainClass>
                       </manifest>
                     </archive>
                   </configuration>
@@ -153,6 +153,24 @@
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-server</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-core-feature-pack</artifactId>
+            <type>pom</type>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-core-feature-pack</artifactId>
+            <type>zip</type>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

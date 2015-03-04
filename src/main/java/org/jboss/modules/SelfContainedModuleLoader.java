@@ -1,14 +1,13 @@
-package org.wildfly.embedded;
+package org.jboss.modules;
 
-import org.jboss.modules.ModuleFinder;
-import org.jboss.modules.ModuleLoader;
+import java.io.IOException;
 
 /**
  * @author Bob McWhirter
  */
 public class SelfContainedModuleLoader extends ModuleLoader {
 
-    public SelfContainedModuleLoader() {
+    public SelfContainedModuleLoader() throws IOException {
         super( new ModuleFinder[] { new SelfContainedModuleFinder() } );
     }
 }

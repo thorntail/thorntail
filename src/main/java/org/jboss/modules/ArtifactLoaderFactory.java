@@ -1,7 +1,4 @@
-package org.wildfly.embedded;
-
-import org.jboss.modules.ResourceLoader;
-import org.jboss.modules.ResourceLoaders;
+package org.jboss.modules;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,12 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.SynchronousQueue;
+import java.util.jar.JarFile;
 
 /**
  * @author Bob McWhirter
  */
 public class ArtifactLoaderFactory {
+
+    public static final ArtifactLoaderFactory INSTANCE = new ArtifactLoaderFactory();
 
     private Map<String, ResourceLoader> loaders = new HashMap<>();
 
@@ -31,8 +30,8 @@ public class ArtifactLoaderFactory {
         if ( jarFile == null ) {
             return null;
         }
-        loader = ResourceLoaders.createFileResourceLoader( gav, jarFile );
-        System.err.println( "using loader: " + loader );
+//        loader = ResourceLoaders.createFileResourceLoader( gav, jarFile );
+        loader = ResourceLoaders.createJarResourceLoader( gav, new JarFile(jarFile));
         this.loaders.put( gav, loader );
         return loader;
     }
