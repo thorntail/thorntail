@@ -19,7 +19,7 @@ public class SelfContainedModuleFinder implements ModuleFinder {
 
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        System.err.println( "findModule: " + identifier );
+//        System.err.println( "findModule: " + identifier );
         String namePath = identifier.getName().replace('.', '/');
         String basePath = "modules/system/layers/base/" + namePath + "/" + identifier.getSlot();
         JarEntry moduleXmlEntry = jarFile.getJarEntry(basePath + "/module.xml");

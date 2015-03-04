@@ -30,14 +30,13 @@ public class ArtifactLoaderFactory {
         if ( jarFile == null ) {
             return null;
         }
-//        loader = ResourceLoaders.createFileResourceLoader( gav, jarFile );
         loader = ResourceLoaders.createJarResourceLoader( gav, new JarFile(jarFile));
         this.loaders.put( gav, loader );
         return loader;
     }
 
     private File getFile(String gav) throws IOException {
-        System.err.println( "gavToPath: " + gavToPath(gav));
+//        System.err.println( "gavToPath: " + gavToPath(gav));
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(gavToPath(gav));
         if ( in == null ) {
             return null;
