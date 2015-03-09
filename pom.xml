@@ -55,7 +55,7 @@
 
     <properties>
         <!-- Release Info -->
-        <wildfly.core.release.version>${project.version}</wildfly.core.release.version>
+        <wildfly.core.release.version>1.0.0.Alpha19</wildfly.core.release.version>
         <wildfly.core.release.codename>Kenny</wildfly.core.release.codename>
         <wildfly.core.scm.url>https://github.com/wildfly/wildfly-embedded</wildfly.core.scm.url>
         <wildfly.core.scm.connection>git@github.com:wildfly/wildfly-embedded.git</wildfly.core.scm.connection>
@@ -118,6 +118,7 @@
                 </execution>
               </executions>
             </plugin>
+<!--
             <plugin>
               <artifactId>maven-assembly-plugin</artifactId>
               <version>2.5.3</version>
@@ -140,6 +141,7 @@
                 </execution>
               </executions>
             </plugin>
+-->
         </plugins>
     </build>
 
@@ -152,7 +154,7 @@
         <dependency>
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-server</artifactId>
-            <version>${project.version}</version>
+            <version>${wildfly.core.release.version}</version>
         </dependency>
 
         <!-- Core feature pack -->
@@ -160,13 +162,13 @@
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-core-feature-pack</artifactId>
             <type>pom</type>
-            <version>${project.version}</version>
+            <version>${wildfly.core.release.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-core-feature-pack</artifactId>
             <type>zip</type>
-            <version>${project.version}</version>
+            <version>${wildfly.core.release.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
@@ -180,13 +182,13 @@
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-web-feature-pack</artifactId>
             <type>pom</type>
-            <version>9.0.0.Alpha1</version>
+            <version>9.0.0.Alpha2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-web-feature-pack</artifactId>
             <type>zip</type>
-            <version>9.0.0.Alpha1</version>
+            <version>9.0.0.Alpha2-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
