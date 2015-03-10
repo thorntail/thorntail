@@ -74,6 +74,7 @@ public class SelfContainedModuleFinder implements ModuleFinder {
 
         ResourceLoader jar = ArtifactLoaderFactory.INSTANCE.getLoader("org.wildfly.self-contained:wildfly-self-contained:1.0.0.Beta1-SNAPSHOT");
         builder.addResourceRoot( ResourceLoaderSpec.createResourceLoaderSpec( jar ) );
+
         builder.addDependency(DependencySpec.createLocalDependencySpec());
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.self-contained"), false));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.server"), false));

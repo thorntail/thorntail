@@ -2,13 +2,13 @@ package org.wildfly.selfcontained;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.SelfContainedModuleLoader;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -35,8 +35,17 @@ public class Main {
             throw new NoSuchMethodException("Main method is not static for " + mainClass);
         }
 
-        System.err.println( "running main" );
+        setupContent();
+
+        System.err.println("running main");
         mainMethod.invoke(null, new Object[]{args});
         System.err.println( "completed main" );
+    }
+
+    private static void setupContent() throws ModuleLoadException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Module selfContained = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.self-contained"));
+        Class<?> contentClass = selfContained.getClassLoader().loadClass( "org.wildfly.selfcontained.Content" );
+        Method setup = contentClass.getMethod("setup", ClassLoader.class);
+        setup.invoke(null, Main.class.getClassLoader() );
     }
 }

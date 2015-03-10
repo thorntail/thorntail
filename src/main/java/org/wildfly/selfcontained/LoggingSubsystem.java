@@ -60,11 +60,12 @@ public class LoggingSubsystem implements Subsystem {
         return this;
     }
 
-    public LoggingSubsystem rootLogger(String handler) {
+    public LoggingSubsystem rootLogger(String handler, String level) {
         ModelNode node = new ModelNode();
         node.get( OP_ADDR ).set( loggingAddress.append( "root-logger", "ROOT" ).toModelNode() );
         node.get( OP ).set(ADD );
         node.get( "handlers" ).add( handler );
+        node.get( "level" ).set( level );
         this.list.add( node );
         return this;
     }

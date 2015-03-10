@@ -46,6 +46,12 @@ public class UndertowSubsystem implements Subsystem {
         this.list.add(node);
 
         node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("configuration", "handler").toModelNode());
+        node.get(OP).set(ADD);
+        this.list.add(node);
+
+
+        node = new ModelNode();
         node.get(OP_ADDR).set(address.append("server", "default-server").append("http-listener", "default").toModelNode());
         node.get(OP).set(ADD);
         node.get(SOCKET_BINDING).set("http");
