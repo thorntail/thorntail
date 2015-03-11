@@ -40,7 +40,7 @@ public class EeSubsystem implements Subsystem {
         node.get(OP_ADDR).set(address.append("context-service", "default").toModelNode());
         node.get(OP).set(ADD);
         node.get( "jndi-name" ).set( "java:jboss/ee/concurrency/context/default" );
-        node.get( "use-transaction-setup-provider" ).set( true );
+        node.get( "use-transaction-setup-provider" ).set( false );
         this.list.add(node);
 
         node = new ModelNode();
