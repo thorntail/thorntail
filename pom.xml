@@ -31,50 +31,25 @@
     </parent>
 
     <groupId>org.wildfly.self-contained</groupId>
-    <artifactId>wildfly-self-contained</artifactId>
-    <version>1.0.0.Beta1-SNAPSHOT</version>
+    <artifactId>wildfly-self-contained-parent</artifactId>
+    <version>1.0.0.Alpha1-SNAPSHOT</version>
 
-    <name>WildFly: Self Contained</name>
-    <description>WildFly: Self Contained</description>
+    <name>WildFly: Self-Contained Parent</name>
+    <description>WildFly: Self-Contained Parent</description>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <licenses>
         <license>
-            <name>lgpl</name>
-            <url>http://repository.jboss.org/licenses/lgpl-2.1.txt</url>
-            <distribution>repo</distribution>
+            <name>AL2</name>
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:git:${wildfly.core.scm.connection}</connection>
-        <developerConnection>scm:git:${wildfly.core.scm.connection}</developerConnection>
-        <url>${wildfly.core.scm.url}</url>
-    </scm>
-
     <properties>
-        <!-- Release Info -->
-        <wildfly.core.release.version>1.0.0.Alpha19</wildfly.core.release.version>
-        <wildfly.core.release.codename>Kenny</wildfly.core.release.codename>
-        <wildfly.core.scm.url>https://github.com/wildfly/wildfly-embedded</wildfly.core.scm.url>
-        <wildfly.core.scm.connection>git@github.com:wildfly/wildfly-embedded.git</wildfly.core.scm.connection>
-
-        <!--
-            Build configuration.  Override JBoss Parent settings as necessary.
-            For example: <version.surefire.plugin>2.11</version.surefire.plugin>
-          -->
+        <version.wildfly-core>1.0.0.Alpha19</version.wildfly-core>
+        <version.wildfly>9.0.0.Alpha2-SNAPSHOT</version.wildfly>
+        <version.jboss-modules>1.4.1.Final</version.jboss-modules>
         <maven.min.version>3.2.1</maven.min.version>
-        <!--
-            Dependency versions. Please keep alphabetical.
-
-            Each version property should be of the form "version.<groupId>".
-            For example: <version.org.jboss.as>
-
-            In cases where multiple artifacts use the same groupId but have different
-            versions, add the artifactId or other qualifier to the property name.
-            For example: <version.org.jboss.hal.release-stream>
-         -->
 
         <!-- Surefire args -->
         <surefire.jpda.args/>
@@ -82,20 +57,6 @@
 
         <!-- Checkstyle configuration -->
         <linkXRef>false</linkXRef>
-
-        <server.output.dir.prefix>wildfly</server.output.dir.prefix>
-        <wildfly.build.output.dir>dist/target/${server.output.dir.prefix}-${wildfly.core.release.version}
-        </wildfly.build.output.dir>
-
-        <!--
-            See ChildFirstClassLoaderBuilder in model-test for the explanation of the org.jboss.model.test.cache.root and org.jboss.model.test.classpath.cache properties.
-            If used in conjunction with org.jboss.model.test.classpath.cache -Dorg.jboss.model.test.cache.strict on the command line, transformers tests must
-            propagate these to the test when run
-         -->
-        <!-- The name of the root checkout folder to create org.jboss.model.test.classpath.cache under for subsystem-test and core-model-test -->
-        <org.jboss.model.test.cache.root>[pom.xml,testsuite]</org.jboss.model.test.cache.root>
-        <!-- Location relative to root that will be used for the cached legacy classpaths used by subsystem-test and core-model-test-->
-        <org.jboss.model.test.classpath.cache>target/model-test-classpath-cache</org.jboss.model.test.classpath.cache>
     </properties>
 
     <build>
@@ -104,99 +65,23 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
-            <plugin>
-              <artifactId>maven-dependency-plugin</artifactId>
-              <executions>
-                <execution>
-                  <phase>prepare-package</phase>
-                  <goals>
-                    <goal>copy-dependencies</goal>
-                  </goals>
-                  <configuration>
-                    <useRepositoryLayout>true</useRepositoryLayout>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-<!--
-            <plugin>
-              <artifactId>maven-assembly-plugin</artifactId>
-              <version>2.5.3</version>
-              <executions>
-                <execution>
-                  <phase>package</phase>
-                  <goals>
-                    <goal>single</goal>
-                  </goals>
-                  <configuration>
-                    <descriptors>
-                      <descriptor>src/main/assembly/fatjar.xml</descriptor>
-                    </descriptors>
-                    <archive>
-                      <manifest>
-                        <mainClass>org.wildfly.selfcontained.Main</mainClass>
-                      </manifest>
-                    </archive>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
--->
         </plugins>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jboss.modules</groupId>
-            <artifactId>jboss-modules</artifactId>
-            <version>1.4.1.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-server</artifactId>
-            <version>${wildfly.core.release.version}</version>
-        </dependency>
-
-        <!-- Core feature pack -->
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-core-feature-pack</artifactId>
-            <type>pom</type>
-            <version>${wildfly.core.release.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-core-feature-pack</artifactId>
-            <type>zip</type>
-            <version>${wildfly.core.release.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Web feature pack -->
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-web-feature-pack</artifactId>
-            <type>pom</type>
-            <version>9.0.0.Alpha2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-web-feature-pack</artifactId>
-            <type>zip</type>
-            <version>9.0.0.Alpha2-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.modules</groupId>
+                <artifactId>jboss-modules</artifactId>
+                <version>${version.jboss-modules}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-server</artifactId>
+                <version>${version.wildfly-core}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>
@@ -228,4 +113,9 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+    <modules>
+      <module>bootstrap</module>
+      <module>container</module>
+    </modules>
 </project>
