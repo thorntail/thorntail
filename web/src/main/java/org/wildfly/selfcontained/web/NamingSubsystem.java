@@ -1,8 +1,9 @@
-package org.wildfly.selfcontained.container;
+package org.wildfly.selfcontained.web;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.selfcontained.container.Subsystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +17,16 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 /**
  * @author Bob McWhirter
  */
-public class RemotingSubsystem implements Subsystem {
+public class NamingSubsystem implements Subsystem {
 
     private List<ModelNode> list = new ArrayList<>();
 
-    public RemotingSubsystem() {
+    public NamingSubsystem() {
 
-        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "remoting"));
+        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "naming"));
 
         ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.remoting" );
+        node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.naming");
         node.get(OP).set(ADD);
         this.list.add(node);
 
@@ -34,11 +35,12 @@ public class RemotingSubsystem implements Subsystem {
         node.get(OP).set(ADD);
         this.list.add(node);
 
+        /*
         node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("configuration", "endpoint").toModelNode());
+        node.get(OP_ADDR).set(address.append("service", "remote-naming").toModelNode());
         node.get(OP).set(ADD);
-        node.get( "worker" ).set( "default" );
         this.list.add(node);
+        */
     }
 
     public List<ModelNode> getList() {

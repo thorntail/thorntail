@@ -71,6 +71,21 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.wildfly.self-contained</groupId>
+                <artifactId>bootstrap</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.self-contained</groupId>
+                <artifactId>container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.self-contained</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.jboss.modules</groupId>
                 <artifactId>jboss-modules</artifactId>
                 <version>${version.jboss-modules}</version>
@@ -115,7 +130,10 @@
     </pluginRepositories>
 
     <modules>
+      <module>plugin</module>
       <module>bootstrap</module>
       <module>container</module>
+      <module>core</module>
+      <module>web</module>
     </modules>
 </project>

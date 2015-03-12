@@ -32,7 +32,7 @@
     </parent>
 
     <groupId>org.wildfly.self-contained</groupId>
-    <artifactId>wildfly-self-contained-bootstrap</artifactId>
+    <artifactId>bootstrap</artifactId>
 
     <name>WildFly: Self Contained Bootstrap</name>
     <description>WildFly: Self Contained Bootstrap</description>

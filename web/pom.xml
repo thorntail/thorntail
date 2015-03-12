@@ -32,10 +32,10 @@
     </parent>
 
     <groupId>org.wildfly.self-contained</groupId>
-    <artifactId>container</artifactId>
+    <artifactId>web</artifactId>
 
-    <name>WildFly: Self-Contained Container</name>
-    <description>WildFly: Self-Contained Container</description>
+    <name>WildFly: Self Contained Web</name>
+    <description>WildFly: Self Contained Web</description>
 
     <packaging>jar</packaging>
 
@@ -51,15 +51,17 @@
     <dependencies>
         <dependency>
           <groupId>org.wildfly.self-contained</groupId>
-          <artifactId>bootstrap</artifactId>
+          <artifactId>container</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.jboss.modules</groupId>
-          <artifactId>jboss-modules</artifactId>
+          <groupId>org.wildfly.self-contained</groupId>
+          <artifactId>core</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-server</artifactId>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-web-feature-pack</artifactId>
+            <type>zip</type>
+            <version>${version.wildfly}</version>
         </dependency>
     </dependencies>
 

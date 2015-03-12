@@ -1,7 +1,6 @@
 package org.wildfly.selfcontained.container;
 
 import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.operations.common.Util;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
@@ -31,12 +30,11 @@ public class Container {
     private SelfContainedContainer container;
 
     public Container() {
-        subsystem( new NamingSubsystem() );
-        subsystem( new RequestControllerSubsystem() );
-        subsystem( new EeSubsystem() );
-        subsystem( new SecuritySubsystem() );
-        //subsystem( new TransactionsSubsystem() );
-        //subsystem( new RemotingSubsystem() );
+        //subsystem( new NamingSubsystem() );
+        //subsystem( new EeSubsystem() );
+        //subsystem( new SecuritySubsystem() );
+        //subsystem( new RequestControllerSubsystem() );
+
     }
 
     public Container subsystem(Subsystem subsystem) {
@@ -56,18 +54,9 @@ public class Container {
         return this;
     }
 
-    public SocketBindingGroup socketBindingGroup(String name, String iface, String portOffsetExpression) {
-        ModelNode node = new ModelNode();
-
-        PathAddress address = PathAddress.pathAddress("socket-binding-group", name);
-        node.get(OP).set(ADD);
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(DEFAULT_INTERFACE).set(iface);
-        node.get(PORT_OFFSET).set(new ValueExpression(portOffsetExpression));
-
-        list.add(node);
-
-        return new SocketBindingGroup(this, address);
+    public Container socketBindingGroup(SocketBindingGroup group) {
+        this.list.addAll( group.getList() );
+        return this;
     }
 
     public void start() {

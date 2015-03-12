@@ -1,8 +1,9 @@
-package org.wildfly.selfcontained.container;
+package org.wildfly.selfcontained.web;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.selfcontained.container.Subsystem;
 
 import java.util.ArrayList;
 import java.util.List;
