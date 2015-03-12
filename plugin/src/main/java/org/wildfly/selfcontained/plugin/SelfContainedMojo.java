@@ -2,6 +2,8 @@ package org.wildfly.selfcontained.plugin;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -65,6 +67,7 @@ public class SelfContainedMojo extends AbstractMojo {
 
         Artifact primaryArtifact = this.project.getArtifact();
 
+        ArtifactHandler handler = new DefaultArtifactHandler("jar");
         Artifact artifact = new DefaultArtifact(
                 primaryArtifact.getGroupId(),
                 primaryArtifact.getArtifactId(),
@@ -72,8 +75,9 @@ public class SelfContainedMojo extends AbstractMojo {
                 primaryArtifact.getScope(),
                 "jar",
                 "self-contained",
-                primaryArtifact.getArtifactHandler()
+                handler
         );
+
 
         String name = artifact.getArtifactId() + "-" + artifact.getVersion() + "-self-contained.jar";
 
@@ -89,10 +93,13 @@ public class SelfContainedMojo extends AbstractMojo {
             } finally {
                 out.close();
             }
-
         } catch (IOException e) {
             throw new MojoFailureException("Unable to create jar", e);
         }
+
+        artifact.setFile( file );
+
+        this.project.addAttachedArtifact( artifact );
     }
 
     private void writeToJar(JarOutputStream out, File entry) throws IOException {
