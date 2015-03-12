@@ -1,4 +1,4 @@
-package org.wildfly.selfcontained.plugin;
+package org.wildfly.boot.plugin;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
@@ -19,7 +19,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +28,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 /**
@@ -74,12 +72,12 @@ public class SelfContainedMojo extends AbstractMojo {
                 primaryArtifact.getVersion(),
                 primaryArtifact.getScope(),
                 "jar",
-                "self-contained",
+                "boot",
                 handler
         );
 
 
-        String name = artifact.getArtifactId() + "-" + artifact.getVersion() + "-self-contained.jar";
+        String name = artifact.getArtifactId() + "-" + artifact.getVersion() + "-boot.jar";
 
         File file = new File(this.projectBuildDir, name);
 
@@ -147,7 +145,7 @@ public class SelfContainedMojo extends AbstractMojo {
     }
 
     private void addBootstrap() throws MojoFailureException {
-        Artifact artifact = findArtifact("org.wildfly.self-contained", "bootstrap", "jar");
+        Artifact artifact = findArtifact("org.wildfly.boot", "wildfly-boot-bootstrap", "jar");
         try {
             addArtifact(artifact, "", true);
         } catch (IOException e) {
@@ -291,7 +289,7 @@ public class SelfContainedMojo extends AbstractMojo {
 
         Attributes attrs = manifest.getMainAttributes();
         attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-        attrs.put(Attributes.Name.MAIN_CLASS, "org.wildfly.selfcontained.bootstrap.Main");
+        attrs.put(Attributes.Name.MAIN_CLASS, "org.wildfly.boot.bootstrap.Main");
         attrs.putValue("Application-Artifact", this.project.getArtifact().getFile().getName());
 
         return manifest;
@@ -365,7 +363,7 @@ public class SelfContainedMojo extends AbstractMojo {
 
 
     private void setupDirectory() {
-        this.dir = new File(this.projectBuildDir, "self-contained");
+        this.dir = new File(this.projectBuildDir, "wildfly-boot-archive");
         if (!dir.exists()) {
             dir.mkdirs();
         } else {

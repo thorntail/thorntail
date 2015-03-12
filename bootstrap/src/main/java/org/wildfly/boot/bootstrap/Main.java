@@ -1,9 +1,9 @@
-package org.wildfly.selfcontained.bootstrap;
+package org.wildfly.boot.bootstrap;
 
+import org.jboss.modules.BootModuleLoader;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.modules.SelfContainedModuleLoader;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -18,11 +18,13 @@ import java.util.jar.Manifest;
 public class Main {
 
     public static void main(String[] args) throws Throwable {
-        System.setProperty("boot.module.loader", SelfContainedModuleLoader.class.getName());
+        System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
 
         Module app = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("APP"));
         System.err.println("APP MODULE: " + app);
         InputStream in = app.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
+
+        System.err.println( "MANIFEST: " + in );
 
         Manifest manifest = new Manifest(in);
         String mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Main-Class"));
@@ -44,7 +46,7 @@ public class Main {
 
     private static void setupContent() throws ModuleLoadException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Module selfContained = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.self-contained"));
-        Class<?> contentClass = selfContained.getClassLoader().loadClass( "org.wildfly.selfcontained.Content" );
+        Class<?> contentClass = selfContained.getClassLoader().loadClass( "org.wildfly.boot.Content" );
         Method setup = contentClass.getMethod("setup", ClassLoader.class);
         setup.invoke(null, Main.class.getClassLoader());
     }

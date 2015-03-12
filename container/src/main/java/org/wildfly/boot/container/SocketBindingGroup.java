@@ -1,4 +1,4 @@
-package org.wildfly.selfcontained.container;
+package org.wildfly.boot.container;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.dmr.ModelNode;

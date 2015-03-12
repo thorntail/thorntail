@@ -30,12 +30,12 @@
         <version>16</version>
     </parent>
 
-    <groupId>org.wildfly.self-contained</groupId>
-    <artifactId>wildfly-self-contained-parent</artifactId>
+    <groupId>org.wildfly.boot</groupId>
+    <artifactId>wildfly-boot-parent</artifactId>
     <version>1.0.0.Alpha1-SNAPSHOT</version>
 
-    <name>WildFly: Self-Contained Parent</name>
-    <description>WildFly: Self-Contained Parent</description>
+    <name>WildFly Boot: Parent</name>
+    <description>WildFly Boot: Parent</description>
 
     <packaging>pom</packaging>
 
@@ -71,18 +71,23 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.wildfly.self-contained</groupId>
-                <artifactId>bootstrap</artifactId>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-bootstrap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.self-contained</groupId>
-                <artifactId>container</artifactId>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-container</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.self-contained</groupId>
-                <artifactId>core</artifactId>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

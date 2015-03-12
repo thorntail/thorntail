@@ -6,16 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
-public class SelfContainedModuleFinder implements ModuleFinder {
+public class BootModuleFinder implements ModuleFinder {
 
     JarFile jarFile;
 
-    public SelfContainedModuleFinder() throws IOException {
+    public BootModuleFinder() throws IOException {
         this.jarFile = Util.rootJar();
     }
 
@@ -30,9 +31,9 @@ public class SelfContainedModuleFinder implements ModuleFinder {
             }
         }
 
-        if (identifier.getName().equals("org.wildfly.self-contained")) {
+        if (identifier.getName().equals("org.wildfly.boot.container")) {
             try {
-                return findSelfContainedModule();
+                return findBootContainerModule();
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new ModuleLoadException(e);
@@ -63,11 +64,11 @@ public class SelfContainedModuleFinder implements ModuleFinder {
         return moduleSpec;
     }
 
-    private ModuleSpec findSelfContainedModule() throws IOException {
-        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("org.wildfly.self-contained"));
+    private ModuleSpec findBootContainerModule() throws IOException {
+        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("org.wildfly.boot.container"));
 
-        ResourceLoader jar = ArtifactLoaderFactory.INSTANCE.getLoader("org.wildfly.self-contained:wildfly-self-contained:1.0.0.Beta1-SNAPSHOT");
-        builder.addResourceRoot( ResourceLoaderSpec.createResourceLoaderSpec( jar ) );
+        ResourceLoader jar = ArtifactLoaderFactory.INSTANCE.getLoader("org.wildfly.boot:wildfly-boot-container:1.0.0.Alpha1-SNAPSHOT");
+        builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jar));
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.self-contained"), false));
@@ -78,14 +79,17 @@ public class SelfContainedModuleFinder implements ModuleFinder {
     }
 
     private ModuleSpec findAppModule() throws IOException {
-        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("APP"));
 
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("app/app.jar");
+        Manifest manifest = Util.rootJar().getManifest();
+        String artifactName = manifest.getMainAttributes().getValue("Application-Artifact");
+
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("app/" + artifactName);
+
+        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("APP"));
 
         if (in == null) {
             return null;
         }
-
 
         try {
             File tmp = File.createTempFile("app", ".jar");
@@ -103,12 +107,14 @@ public class SelfContainedModuleFinder implements ModuleFinder {
                 out.close();
             }
 
-            ResourceLoader resourceLoader = new JarFileResourceLoader("app.jar", new JarFile(tmp), "WEB-INF/classes");
-            ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
-            builder.addResourceRoot(resourceLoaderSpec);
+            if (artifactName.endsWith(".war")) {
+                ResourceLoader resourceLoader = new JarFileResourceLoader("app.jar", new JarFile(tmp), "WEB-INF/classes");
+                ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
+                builder.addResourceRoot(resourceLoaderSpec);
+            }
 
-            resourceLoader = new JarFileResourceLoader("app.jar", new JarFile(tmp));
-            resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
+            ResourceLoader resourceLoader = new JarFileResourceLoader("app.jar", new JarFile(tmp));
+            ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
             builder.addResourceRoot(resourceLoaderSpec);
 
         } finally {
@@ -117,9 +123,7 @@ public class SelfContainedModuleFinder implements ModuleFinder {
 
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
-        //builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.self-contained"), false));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.self-contained"), true));
-        //builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.server"), true));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.container"), true));
 
         ModuleSpec moduleSpec = builder.create();
 

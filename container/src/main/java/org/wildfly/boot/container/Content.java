@@ -1,8 +1,4 @@
-package org.wildfly.selfcontained.container;
-
-import org.jboss.modules.ModuleClassLoader;
-import org.jboss.vfs.VFS;
-import org.jboss.vfs.VirtualFile;
+package org.wildfly.boot.container;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -25,17 +25,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.self-contained</groupId>
-        <artifactId>wildfly-self-contained-parent</artifactId>
+        <groupId>org.wildfly.boot</groupId>
+        <artifactId>wildfly-boot-parent</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.wildfly.self-contained</groupId>
-    <artifactId>wildfly-self-contained-plugin</artifactId>
+    <groupId>org.wildfly.boot</groupId>
+    <artifactId>wildfly-boot-plugin</artifactId>
 
-    <name>WildFly: Self Contained Plugin</name>
-    <description>WildFly: Self Contained Plugin</description>
+    <name>WildFly Boot: Plugin</name>
+    <description>WildFly Boot: Plugin</description>
 
     <packaging>maven-plugin</packaging>
 

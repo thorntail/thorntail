@@ -25,17 +25,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.self-contained</groupId>
-        <artifactId>wildfly-self-contained-parent</artifactId>
+        <groupId>org.wildfly.boot</groupId>
+        <artifactId>wildfly-boot-parent</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.wildfly.self-contained</groupId>
-    <artifactId>core</artifactId>
+    <groupId>org.wildfly.boot</groupId>
+    <artifactId>wildfly-boot-core</artifactId>
 
-    <name>WildFly: Self Contained Core</name>
-    <description>WildFly: Self Contained Core</description>
+    <name>WildFly Boot: Core</name>
+    <description>WildFly Boot: Core</description>
 
     <packaging>jar</packaging>
 
@@ -50,8 +50,8 @@
 
     <dependencies>
         <dependency>
-          <groupId>org.wildfly.self-contained</groupId>
-          <artifactId>container</artifactId>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-container</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.core</groupId>

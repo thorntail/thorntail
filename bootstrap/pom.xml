@@ -25,17 +25,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.self-contained</groupId>
-        <artifactId>wildfly-self-contained-parent</artifactId>
+        <groupId>org.wildfly.boot</groupId>
+        <artifactId>wildfly-boot-parent</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.wildfly.self-contained</groupId>
-    <artifactId>bootstrap</artifactId>
+    <groupId>org.wildfly.boot</groupId>
+    <artifactId>wildfly-boot-bootstrap</artifactId>
 
-    <name>WildFly: Self Contained Bootstrap</name>
-    <description>WildFly: Self Contained Bootstrap</description>
+    <name>WildFly Boot: Bootstrap</name>
+    <description>WildFly Boot: Bootstrap</description>
 
     <packaging>jar</packaging>
 
