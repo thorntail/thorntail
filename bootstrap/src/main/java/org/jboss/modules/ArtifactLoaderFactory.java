@@ -76,8 +76,17 @@ public class ArtifactLoaderFactory {
     }
 
     private String gavToPath(String gav) {
-        String[] parts = gav.split(":");
-        return "m2repo/" + parts[0].replaceAll( "\\.", "/" ) + "/" + parts[1] + "/" + parts[2] + "/" + parts[1]  + "-" + parts[2] + ".jar";
+        try {
+            String[] parts = gav.split(":");
+            return "m2repo/" + parts[0].replaceAll("\\.", "/") + "/" + parts[1] + "/" + parts[2] + "/" + parts[1] + "-" + parts[2] + ".jar";
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println( "-----------------" );
+            System.err.println( "-----------------" );
+            System.err.println( gav );
+            System.err.println( "-----------------" );
+            System.err.println( "-----------------" );
+            throw e;
+        }
     }
 
 }

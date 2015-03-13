@@ -8,6 +8,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.wildfly.boot.bootstrap.Main;
+
 /**
  * @author Bob McWhirter
  * @author Ken Finnigan
@@ -34,6 +36,24 @@ public class BootModuleFinder implements ModuleFinder {
         if (identifier.getName().equals("org.wildfly.boot.container")) {
             try {
                 return findBootContainerModule();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ModuleLoadException(e);
+            }
+        }
+
+        if (identifier.getName().equals("org.wildfly.boot.core")) {
+            try {
+                return findBootCoreModule();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ModuleLoadException(e);
+            }
+        }
+
+        if (identifier.getName().equals("org.wildfly.boot.web")) {
+            try {
+                return findBootWebModule();
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new ModuleLoadException(e);
@@ -67,13 +87,45 @@ public class BootModuleFinder implements ModuleFinder {
     private ModuleSpec findBootContainerModule() throws IOException {
         ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("org.wildfly.boot.container"));
 
-        ResourceLoader jar = ArtifactLoaderFactory.INSTANCE.getLoader("org.wildfly.boot:wildfly-boot-container:1.0.0.Alpha1-SNAPSHOT");
+        ResourceLoader jar = ArtifactLoaderFactory.INSTANCE.getLoader("org.wildfly.boot:wildfly-boot-container:" + Main.VERSION );
         builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jar));
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.self-contained"), false));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.server"), false));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.controller"), false));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.as.controller"), true));
+
+        return builder.create();
+    }
+
+    private ModuleSpec findBootCoreModule() throws IOException {
+        ResourceLoader jar = ArtifactLoaderFactory.INSTANCE.getLoader("org.wildfly.boot:wildfly-boot-core:" + Main.VERSION );
+
+        if ( jar == null ) {
+            return null;
+        }
+
+        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("org.wildfly.boot.core"));
+        builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jar));
+
+        builder.addDependency(DependencySpec.createLocalDependencySpec());
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.container"), false));
+
+        return builder.create();
+    }
+
+    private ModuleSpec findBootWebModule() throws IOException {
+        ResourceLoader jar = ArtifactLoaderFactory.INSTANCE.getLoader("org.wildfly.boot:wildfly-boot-web:" + Main.VERSION );
+
+        if ( jar == null ) {
+            return null;
+        }
+
+        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("org.wildfly.boot.web"));
+        builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jar));
+
+        builder.addDependency(DependencySpec.createLocalDependencySpec());
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.container"), false));
 
         return builder.create();
     }
@@ -117,13 +169,17 @@ public class BootModuleFinder implements ModuleFinder {
             ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
             builder.addResourceRoot(resourceLoaderSpec);
 
+            System.setProperty( "wildfly.boot.app", tmp.getAbsolutePath() );
+
         } finally {
             in.close();
         }
 
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.container"), true));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.container"), false));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.core"), false, true ));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.web"), false, true ));
 
         ModuleSpec moduleSpec = builder.create();
 

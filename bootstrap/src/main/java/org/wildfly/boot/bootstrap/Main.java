@@ -5,10 +5,12 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -17,14 +19,25 @@ import java.util.jar.Manifest;
  */
 public class Main {
 
+    public static final String VERSION;
+
+    static {
+        InputStream in = Main.class.getClassLoader().getResourceAsStream("wildfly-boot.properties");
+        Properties props = new Properties();
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty( "version", "unknown" );
+    }
+
     public static void main(String[] args) throws Throwable {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
 
         Module app = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("APP"));
-        System.err.println("APP MODULE: " + app);
         InputStream in = app.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
-
-        System.err.println( "MANIFEST: " + in );
 
         Manifest manifest = new Manifest(in);
         String mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Main-Class"));
@@ -39,14 +52,12 @@ public class Main {
 
         setupContent();
 
-        System.err.println("running main");
         mainMethod.invoke(null, new Object[]{args});
-        System.err.println( "completed main" );
     }
 
     private static void setupContent() throws ModuleLoadException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Module selfContained = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.self-contained"));
-        Class<?> contentClass = selfContained.getClassLoader().loadClass( "org.wildfly.boot.Content" );
+        Module selfContained = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.boot.container"));
+        Class<?> contentClass = selfContained.getClassLoader().loadClass( "org.wildfly.boot.container.Content" );
         Method setup = contentClass.getMethod("setup", ClassLoader.class);
         setup.invoke(null, Main.class.getClassLoader());
     }

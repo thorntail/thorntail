@@ -34,13 +34,6 @@ public class NamingSubsystem implements Subsystem {
         node.get(OP_ADDR).set(address.toModelNode());
         node.get(OP).set(ADD);
         this.list.add(node);
-
-        /*
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("service", "remote-naming").toModelNode());
-        node.get(OP).set(ADD);
-        this.list.add(node);
-        */
     }
 
     public List<ModelNode> getList() {

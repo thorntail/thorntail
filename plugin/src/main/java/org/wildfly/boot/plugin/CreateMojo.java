@@ -14,13 +14,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -39,7 +40,7 @@ import java.util.zip.ZipFile;
         requiresDependencyCollection = ResolutionScope.COMPILE,
         requiresDependencyResolution = ResolutionScope.COMPILE
 )
-public class SelfContainedMojo extends AbstractMojo {
+public class CreateMojo extends AbstractMojo {
 
     @Component
     private MavenProject project;
@@ -48,15 +49,14 @@ public class SelfContainedMojo extends AbstractMojo {
     private String projectBuildDir;
 
     private File dir;
-    private Set<Artifact> excludedArtifacts = new HashSet<>();
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         setupDirectory();
         addJBossModules();
         addBootstrap();
-        addMavenRepository();
         addModules();
+        addMavenRepository();
         addProjectArtifact();
         createJar();
     }
@@ -95,9 +95,9 @@ public class SelfContainedMojo extends AbstractMojo {
             throw new MojoFailureException("Unable to create jar", e);
         }
 
-        artifact.setFile( file );
+        artifact.setFile(file);
 
-        this.project.addAttachedArtifact( artifact );
+        this.project.addAttachedArtifact(artifact);
     }
 
     private void writeToJar(JarOutputStream out, File entry) throws IOException {
@@ -140,8 +140,6 @@ public class SelfContainedMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoFailureException("Unable to add jboss-modules");
         }
-
-        this.excludedArtifacts.add(artifact);
     }
 
     private void addBootstrap() throws MojoFailureException {
@@ -151,8 +149,6 @@ public class SelfContainedMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoFailureException("Unable to add bootstrap");
         }
-
-        this.excludedArtifacts.add(artifact);
     }
 
     private void addMavenRepository() throws MojoFailureException {
@@ -160,20 +156,28 @@ public class SelfContainedMojo extends AbstractMojo {
         Set<Artifact> artifacts = this.project.getArtifacts();
 
         for (Artifact each : artifacts) {
-            if (each.getScope() == "provided") {
-                if (this.excludedArtifacts.contains(each)) {
-                    continue;
-                }
-                try {
-                    addMavenRepository(each);
-                } catch (IOException e) {
-                    throw new MojoFailureException("error copying " + each);
-                }
+            try {
+                addMavenRepository(each);
+            } catch (IOException e) {
+                throw new MojoFailureException("error copying " + each);
             }
         }
     }
 
     private void addMavenRepository(Artifact artifact) throws IOException {
+
+        if (!artifact.getType().equals("jar")) {
+            return;
+        }
+
+        if (!artifact.getScope().equals("provided")) {
+            return;
+        }
+
+        if (! Artifacts.includeArtifact(artifact)) {
+            return;
+        }
+
         File m2Repo = new File(this.dir, "m2repo");
 
         String path = createPath(artifact);
@@ -214,6 +218,9 @@ public class SelfContainedMojo extends AbstractMojo {
         }
     }
 
+    private static String MODULE_PREFIX = "modules/system/layers/base/";
+    private static String MODULE_SUFFIX = "/main/module.xml";
+
     private void addModules(Artifact artifact) throws IOException {
 
         ZipFile zipFile = new ZipFile(artifact.getFile());
@@ -222,33 +229,75 @@ public class SelfContainedMojo extends AbstractMojo {
         while (entries.hasMoreElements()) {
             ZipEntry each = entries.nextElement();
 
-            if (!each.getName().startsWith("modules/")) {
+            if (!each.getName().startsWith(MODULE_PREFIX)) {
+                continue;
+            }
+
+            String simpleName = each.getName().substring(MODULE_PREFIX.length());
+
+            if (!simpleName.endsWith(MODULE_SUFFIX)) {
+                continue;
+            }
+
+            simpleName = simpleName.substring(0, simpleName.length() - MODULE_SUFFIX.length());
+
+            if (Modules.excludeModule(simpleName)) {
                 continue;
             }
 
             File fsEach = new File(this.dir, each.getName());
+            fsEach.getParentFile().mkdirs();
 
-            if (each.isDirectory()) {
-                fsEach.mkdir();
-            } else {
-                FileOutputStream out = new FileOutputStream(fsEach);
+            FileOutputStream out = new FileOutputStream(fsEach);
+            try {
+                InputStream in = zipFile.getInputStream(each);
                 try {
-                    InputStream in = zipFile.getInputStream(each);
-                    try {
 
-                        byte[] buf = new byte[1024];
-                        int len = -1;
+                    byte[] buf = new byte[1024];
+                    int len = -1;
 
-                        while ((len = in.read(buf)) >= 0) {
-                            out.write(buf, 0, len);
-                        }
-                    } finally {
-                        in.close();
+                    while ((len = in.read(buf)) >= 0) {
+                        out.write(buf, 0, len);
                     }
                 } finally {
-                    out.close();
+                    in.close();
                 }
+            } finally {
+                out.close();
             }
+
+            analyzeModuleXml(fsEach);
+        }
+    }
+
+    private void analyzeModuleXml(File moduleXml) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(moduleXml)));
+
+            try {
+
+                String line = null;
+
+                while ( ( line = reader.readLine() ) != null ) {
+                    if ( line.contains( "<artifact name=")) {
+                        int start = line.indexOf( "${" );
+                        if ( start > 0 ) {
+                            int end = line.indexOf( '}', start );
+                            if ( end > 0 ) {
+                                String artifact = line.substring( start + 2, end );
+                                //System.err.println( artifact );
+                                Artifacts.addInclusion( artifact );
+                            }
+                        }
+                    }
+                }
+            } finally {
+                reader.close();
+            }
+
+
+        } catch (IOException e) {
+
         }
     }
 
