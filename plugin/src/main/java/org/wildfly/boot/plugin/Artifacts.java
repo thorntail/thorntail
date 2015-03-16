@@ -46,12 +46,13 @@ public class Artifacts {
         addInclusion( "org.wildfly.boot:wildfly-boot-container" );
         addInclusion( "org.wildfly.boot:wildfly-boot-core" );
         addInclusion( "org.wildfly.boot:wildfly-boot-web" );
-        
+
         excludedArtifacts.add( new ArtifactSpec( "org.jboss.modules:jboss-modules" ) );
         excludedArtifacts.add( new ArtifactSpec( "org.wildfly.boot:wildfly-boot-bootstrap" ) );
     }
 
     public static void addInclusion(String spec) {
+        System.err.println( "INCLUDE: " + spec );
         includedArtifacts.add( new ArtifactSpec(spec) );
     }
 

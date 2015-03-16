@@ -170,9 +170,11 @@ public class CreateMojo extends AbstractMojo {
             return;
         }
 
+        /*
         if (!artifact.getScope().equals("provided")) {
             return;
         }
+        */
 
         if (! Artifacts.includeArtifact(artifact)) {
             return;
