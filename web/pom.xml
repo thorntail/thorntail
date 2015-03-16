@@ -45,6 +45,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-feature-pack-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>assemble</goal>
+                    </goals>
+                  </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -56,12 +68,6 @@
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-web-feature-pack</artifactId>
-            <type>zip</type>
-            <version>${version.wildfly}</version>
         </dependency>
     </dependencies>
 
