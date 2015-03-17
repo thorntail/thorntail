@@ -64,10 +64,21 @@
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-container</artifactId>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
         </dependency>
     </dependencies>
 

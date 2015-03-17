@@ -4,6 +4,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -13,7 +14,14 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.impl.ArtifactResolver;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 
+import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +29,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -48,6 +59,18 @@ public class CreateMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}")
     private String projectBuildDir;
 
+
+    @Parameter(defaultValue = "${repositorySystemSession}")
+    private DefaultRepositorySystemSession session;
+
+    @Parameter(defaultValue="${project.remoteArtifactRepositories}")
+    private List<ArtifactRepository> remoteRepositories;
+
+    @Inject
+    private ArtifactResolver resolver;
+
+    private Set<String> featurePackModules = new HashSet<>();
+
     private File dir;
 
     @Override
@@ -55,8 +78,9 @@ public class CreateMojo extends AbstractMojo {
         setupDirectory();
         addJBossModules();
         addBootstrap();
-        addModules();
-        addMavenRepository();
+        addFeaturePacks();
+        //addModules();
+        //addMavenRepository();
         addProjectArtifact();
         createJar();
     }
@@ -151,79 +175,45 @@ public class CreateMojo extends AbstractMojo {
         }
     }
 
-    private void addMavenRepository() throws MojoFailureException {
+    private List<RemoteRepository> remoteRepositories() {
+        List<RemoteRepository> repos = new ArrayList<>();
 
+        for ( ArtifactRepository each : this.remoteRepositories ) {
+            RemoteRepository.Builder builder = new RemoteRepository.Builder( each.getId(), "default", each.getUrl() );
+            repos.add( builder.build() );
+        }
+
+        return repos;
+    }
+
+    private void addFeaturePacks() throws MojoFailureException {
         Set<Artifact> artifacts = this.project.getArtifacts();
 
-        for (Artifact each : artifacts) {
+        List<org.eclipse.aether.artifact.Artifact> packs = new ArrayList<>();
+
+        for ( Artifact each : artifacts ) {
+            ArtifactRequest request = new ArtifactRequest();
+            org.eclipse.aether.artifact.DefaultArtifact artifact = new org.eclipse.aether.artifact.DefaultArtifact(each.getGroupId(), each.getArtifactId(), "feature-pack", "zip", each.getVersion());
+            request.setArtifact(artifact);
+            request.setRepositories( remoteRepositories() );
             try {
-                addMavenRepository(each);
+                ArtifactResult result = resolver.resolveArtifact(this.session, request);
+                packs.add(result.getArtifact());
+            } catch (ArtifactResolutionException e) {
+                // skip
+            }
+        }
+
+        for ( org.eclipse.aether.artifact.Artifact each : packs ) {
+            try {
+                expandFeaturePack(each);
             } catch (IOException e) {
-                throw new MojoFailureException("error copying " + each);
+                throw new MojoFailureException("error expanding feature-pack", e );
             }
         }
     }
 
-    private void addMavenRepository(Artifact artifact) throws IOException {
-
-        if (!artifact.getType().equals("jar")) {
-            return;
-        }
-
-        /*
-        if (!artifact.getScope().equals("provided")) {
-            return;
-        }
-        */
-
-        if (! Artifacts.includeArtifact(artifact)) {
-            return;
-        }
-
-        File m2Repo = new File(this.dir, "m2repo");
-
-        String path = createPath(artifact);
-        File dest = new File(m2Repo, path);
-        dest.getParentFile().mkdirs();
-
-        FileInputStream in = new FileInputStream(artifact.getFile());
-        try {
-            FileOutputStream out = new FileOutputStream(dest);
-
-            try {
-                byte[] buf = new byte[1024];
-                int len = -1;
-
-                while ((len = in.read(buf)) >= 0) {
-                    out.write(buf, 0, len);
-                }
-            } finally {
-                out.close();
-            }
-        } finally {
-            in.close();
-        }
-    }
-
-    private void addModules() throws MojoFailureException {
-
-        Set<Artifact> artifacts = this.project.getArtifacts();
-
-        for (Artifact each : artifacts) {
-            if (each.getType().equals("zip") && each.getScope().equals("provided")) {
-                try {
-                    addModules(each);
-                } catch (IOException e) {
-                    throw new MojoFailureException("unable to extract modules from " + each, e);
-                }
-            }
-        }
-    }
-
-    private static String MODULE_PREFIX = "modules/system/layers/base/";
-    private static String MODULE_SUFFIX = "/main/module.xml";
-
-    private void addModules(Artifact artifact) throws IOException {
+    private void expandFeaturePack(org.eclipse.aether.artifact.Artifact artifact) throws IOException {
 
         ZipFile zipFile = new ZipFile(artifact.getFile());
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
@@ -231,24 +221,17 @@ public class CreateMojo extends AbstractMojo {
         while (entries.hasMoreElements()) {
             ZipEntry each = entries.nextElement();
 
-            if (!each.getName().startsWith(MODULE_PREFIX)) {
-                continue;
-            }
-
-            String simpleName = each.getName().substring(MODULE_PREFIX.length());
-
-            if (!simpleName.endsWith(MODULE_SUFFIX)) {
-                continue;
-            }
-
-            simpleName = simpleName.substring(0, simpleName.length() - MODULE_SUFFIX.length());
-
-            if (Modules.excludeModule(simpleName)) {
-                continue;
-            }
-
             File fsEach = new File(this.dir, each.getName());
-            fsEach.getParentFile().mkdirs();
+
+            if ( each.getName().equals("feature-pack.txt") ) {
+                recordFeaturePackModuleName(zipFile, each);
+                continue;
+            }
+
+            if ( each.isDirectory() ) {
+                fsEach.mkdirs();
+                continue;
+            }
 
             FileOutputStream out = new FileOutputStream(fsEach);
             try {
@@ -267,40 +250,27 @@ public class CreateMojo extends AbstractMojo {
             } finally {
                 out.close();
             }
-
-            analyzeModuleXml(fsEach);
         }
     }
 
-    private void analyzeModuleXml(File moduleXml) {
+    private void recordFeaturePackModuleName(ZipFile zipFile, ZipEntry entry) throws IOException {
+        BufferedReader in = new BufferedReader( new InputStreamReader( zipFile.getInputStream(entry) ) );
+
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(moduleXml)));
 
-            try {
+            String line = null;
 
-                String line = null;
-
-                while ( ( line = reader.readLine() ) != null ) {
-                    if ( line.contains( "<artifact name=")) {
-                        int start = line.indexOf( "${" );
-                        if ( start > 0 ) {
-                            int end = line.indexOf( '}', start );
-                            if ( end > 0 ) {
-                                String artifact = line.substring( start + 2, end );
-                                //System.err.println( artifact );
-                                Artifacts.addInclusion( artifact );
-                            }
-                        }
-                    }
+            while ( ( line = in.readLine() ) != null ) {
+                line = line.trim();
+                if ( line.equals( "" ) || line.startsWith( "//" ) ) {
+                    continue;
                 }
-            } finally {
-                reader.close();
+                this.featurePackModules.add(line);
             }
-
-
-        } catch (IOException e) {
-
+        } finally {
+            in.close();
         }
+
     }
 
     private void addProjectArtifact() throws MojoFailureException {
@@ -342,6 +312,19 @@ public class CreateMojo extends AbstractMojo {
         attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
         attrs.put(Attributes.Name.MAIN_CLASS, "org.wildfly.boot.bootstrap.Main");
         attrs.putValue("Application-Artifact", this.project.getArtifact().getFile().getName());
+
+        StringBuilder modules = new StringBuilder();
+        boolean first = true;
+
+        for ( String each : this.featurePackModules ) {
+            if ( ! first ) {
+                modules.append( "," );
+            }
+
+            modules.append( each );
+            first = false;
+        }
+        attrs.putValue("Feature-Pack-Modules", modules.toString() );
 
         return manifest;
     }

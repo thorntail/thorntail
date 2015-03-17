@@ -64,6 +64,20 @@
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-container</artifactId>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-bootstrap</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.modules</groupId>
+          <artifactId>jboss-modules</artifactId>
         </dependency>
     </dependencies>
 

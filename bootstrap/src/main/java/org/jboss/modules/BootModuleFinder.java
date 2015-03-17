@@ -178,8 +178,13 @@ public class BootModuleFinder implements ModuleFinder {
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.container"), false));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.core"), false, true ));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.web"), false, true ));
+        
+        String modulesStr = manifest.getMainAttributes().getValue("Feature-Pack-Modules");
+        String[] modules = modulesStr.split(",");
+        for ( int i = 0 ; i < modules.length ; ++i ) {
+            String[] parts = modules[i].trim().split( ":" );
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create(parts[0], parts[1]), false));
+        }
 
         ModuleSpec moduleSpec = builder.create();
 
