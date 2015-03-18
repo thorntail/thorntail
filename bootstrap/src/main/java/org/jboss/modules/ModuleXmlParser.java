@@ -158,18 +158,42 @@ final class ModuleXmlParser {
     protected static XmlPullParserException unexpectedContent(final XmlPullParser reader) {
         final String kind;
         switch (reader.getEventType()) {
-            case CDSECT: kind = "cdata"; break;
-            case COMMENT: kind = "comment"; break;
-            case DOCDECL: kind = "document decl"; break;
-            case END_DOCUMENT: kind = "document end"; break;
-            case END_TAG: kind = "element end"; break;
-            case ENTITY_REF: kind = "entity ref"; break;
-            case PROCESSING_INSTRUCTION: kind = "processing instruction"; break;
-            case IGNORABLE_WHITESPACE: kind = "whitespace"; break;
-            case START_DOCUMENT: kind = "document start"; break;
-            case START_TAG: kind = "element start"; break;
-            case TEXT: kind = "text"; break;
-            default: kind = "unknown"; break;
+            case CDSECT:
+                kind = "cdata";
+                break;
+            case COMMENT:
+                kind = "comment";
+                break;
+            case DOCDECL:
+                kind = "document decl";
+                break;
+            case END_DOCUMENT:
+                kind = "document end";
+                break;
+            case END_TAG:
+                kind = "element end";
+                break;
+            case ENTITY_REF:
+                kind = "entity ref";
+                break;
+            case PROCESSING_INSTRUCTION:
+                kind = "processing instruction";
+                break;
+            case IGNORABLE_WHITESPACE:
+                kind = "whitespace";
+                break;
+            case START_DOCUMENT:
+                kind = "document start";
+                break;
+            case START_TAG:
+                kind = "element start";
+                break;
+            case TEXT:
+                kind = "text";
+                break;
+            default:
+                kind = "unknown";
+                break;
         }
         final StringBuilder b = new StringBuilder("Unexpected content of type '").append(kind).append('\'');
         if (reader.getName() != null) {
@@ -216,9 +240,9 @@ final class ModuleXmlParser {
         final StringBuilder eb = new StringBuilder("Unknown value \"");
         eb.append(parser.getAttributeValue(index));
         eb.append("\" for attribute \"");
-        if (prefix != null && ! prefix.isEmpty()) eb.append(prefix).append(':');
+        if (prefix != null && !prefix.isEmpty()) eb.append(prefix).append(':');
         eb.append(name);
-        if (namespace != null && ! namespace.isEmpty()) eb.append("\" from namespace \"").append(namespace);
+        if (namespace != null && !namespace.isEmpty()) eb.append("\" from namespace \"").append(namespace);
         eb.append('"');
         return new XmlPullParserException(eb.toString(), parser, null);
     }
@@ -230,7 +254,8 @@ final class ModuleXmlParser {
             case MODULE_1_2:
             case MODULE_1_3:
                 break;
-            default: throw unexpectedContent(reader);
+            default:
+                throw unexpectedContent(reader);
         }
     }
 
@@ -242,7 +267,7 @@ final class ModuleXmlParser {
     }
 
     private static void validateAttributeNamespace(final XmlPullParser reader, final int index) throws XmlPullParserException {
-        if (! reader.getAttributeNamespace(index).isEmpty()) {
+        if (!reader.getAttributeNamespace(index).isEmpty()) {
             throw unknownAttribute(reader, index);
         }
     }
@@ -329,22 +354,31 @@ final class ModuleXmlParser {
         String targetName = null;
         String targetSlot = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME, A_TARGET_NAME));
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME:    name = reader.getAttributeValue(i); break;
-                case A_SLOT:    slot = reader.getAttributeValue(i); break;
-                case A_TARGET_NAME: targetName = reader.getAttributeValue(i); break;
-                case A_TARGET_SLOT: targetSlot = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                case A_SLOT:
+                    slot = reader.getAttributeValue(i);
+                    break;
+                case A_TARGET_NAME:
+                    targetName = reader.getAttributeValue(i);
+                    break;
+                case A_TARGET_SLOT:
+                    targetSlot = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
-        if (! moduleIdentifier.equals(ModuleIdentifier.create(name, slot))) {
+        if (!moduleIdentifier.equals(ModuleIdentifier.create(name, slot))) {
             throw invalidModuleName(reader, moduleIdentifier);
         }
         int eventType;
@@ -366,20 +400,25 @@ final class ModuleXmlParser {
         String name = null;
         String slot = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME, A_TARGET_NAME));
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME:    name = reader.getAttributeValue(i); break;
-                case A_SLOT:    slot = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                case A_SLOT:
+                    slot = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
-        if (! moduleIdentifier.equals(ModuleIdentifier.create(name, slot))) {
+        if (!moduleIdentifier.equals(ModuleIdentifier.create(name, slot))) {
             throw invalidModuleName(reader, moduleIdentifier);
         }
         int eventType;
@@ -401,20 +440,25 @@ final class ModuleXmlParser {
         String name = null;
         String slot = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME));
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME:    name = reader.getAttributeValue(i); break;
-                case A_SLOT:    slot = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                case A_SLOT:
+                    slot = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
-        if (! specBuilder.getIdentifier().equals(ModuleIdentifier.create(name, slot))) {
+        if (!specBuilder.getIdentifier().equals(ModuleIdentifier.create(name, slot))) {
             throw invalidModuleName(reader, specBuilder.getIdentifier());
         }
         // xsd:all
@@ -426,7 +470,7 @@ final class ModuleXmlParser {
         while ((eventType = reader.nextTag()) != END_DOCUMENT) {
             switch (eventType) {
                 case END_TAG: {
-                    if (! gotPerms) specBuilder.setPermissionCollection(ModulesPolicy.DEFAULT_PERMISSION_COLLECTION);
+                    if (!gotPerms) specBuilder.setPermissionCollection(ModulesPolicy.DEFAULT_PERMISSION_COLLECTION);
                     return;
                 }
                 case START_TAG: {
@@ -437,13 +481,27 @@ final class ModuleXmlParser {
                     }
                     visited.add(element);
                     switch (element) {
-                        case E_EXPORTS:      parseFilterList(reader, exportsBuilder); break;
-                        case E_DEPENDENCIES: parseDependencies(reader, specBuilder); break;
-                        case E_MAIN_CLASS:   parseMainClass(reader, specBuilder); break;
-                        case E_RESOURCES:    parseResources(factory, rootPath, reader, specBuilder); break;
-                        case E_PROPERTIES:   parseProperties(reader, specBuilder); break;
-                        case E_PERMISSIONS:  parsePermissions(reader, moduleLoader, moduleIdentifier, specBuilder); gotPerms = true; break;
-                        default: throw unexpectedContent(reader);
+                        case E_EXPORTS:
+                            parseFilterList(reader, exportsBuilder);
+                            break;
+                        case E_DEPENDENCIES:
+                            parseDependencies(reader, specBuilder);
+                            break;
+                        case E_MAIN_CLASS:
+                            parseMainClass(reader, specBuilder);
+                            break;
+                        case E_RESOURCES:
+                            parseResources(factory, rootPath, reader, specBuilder);
+                            break;
+                        case E_PROPERTIES:
+                            parseProperties(reader, specBuilder);
+                            break;
+                        case E_PERMISSIONS:
+                            parsePermissions(reader, moduleLoader, moduleIdentifier, specBuilder);
+                            gotPerms = true;
+                            break;
+                        default:
+                            throw unexpectedContent(reader);
                     }
                     break;
                 }
@@ -467,9 +525,14 @@ final class ModuleXmlParser {
                 case START_TAG: {
                     validateNamespace(reader);
                     switch (reader.getName()) {
-                        case E_MODULE: parseModuleDependency(reader, specBuilder); break;
-                        case E_SYSTEM: parseSystemDependency(reader, specBuilder); break;
-                        default: throw unexpectedContent(reader);
+                        case E_MODULE:
+                            parseModuleDependency(reader, specBuilder);
+                            break;
+                        case E_SYSTEM:
+                            parseSystemDependency(reader, specBuilder);
+                            break;
+                        default:
+                            throw unexpectedContent(reader);
                     }
                     break;
                 }
@@ -489,15 +552,23 @@ final class ModuleXmlParser {
         String services = D_NONE;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME:     name = reader.getAttributeValue(i); break;
-                case A_SLOT:     slot = reader.getAttributeValue(i); break;
-                case A_EXPORT:   export = Boolean.parseBoolean(reader.getAttributeValue(i)); break;
-                case A_OPTIONAL: optional = Boolean.parseBoolean(reader.getAttributeValue(i)); break;
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                case A_SLOT:
+                    slot = reader.getAttributeValue(i);
+                    break;
+                case A_EXPORT:
+                    export = Boolean.parseBoolean(reader.getAttributeValue(i));
+                    break;
+                case A_OPTIONAL:
+                    optional = Boolean.parseBoolean(reader.getAttributeValue(i));
+                    break;
                 case A_SERVICES: {
                     services = reader.getAttributeValue(i);
                     switch (services) {
@@ -505,14 +576,16 @@ final class ModuleXmlParser {
                         case D_IMPORT:
                         case D_EXPORT:
                             break;
-                        default: throw unknownAttributeValue(reader, i);
+                        default:
+                            throw unknownAttributeValue(reader, i);
                     }
                     break;
                 }
-                default: throw unknownAttribute(reader, i);
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
         final MultiplePathFilterBuilder importBuilder = PathFilters.multiplePathFilterBuilder(true);
@@ -536,7 +609,7 @@ final class ModuleXmlParser {
                     if (importBuilder.isEmpty()) {
                         importFilter = services.equals(D_NONE) ? PathFilters.getDefaultImportFilter() : PathFilters.getDefaultImportFilterWithServices();
                     } else {
-                        if (! services.equals(D_NONE)) {
+                        if (!services.equals(D_NONE)) {
                             importBuilder.addFilter(PathFilters.getMetaInfServicesFilter(), true);
                         }
                         importBuilder.addFilter(PathFilters.getMetaInfSubdirectoriesFilter(), false);
@@ -549,9 +622,14 @@ final class ModuleXmlParser {
                 case START_TAG: {
                     validateNamespace(reader);
                     switch (reader.getName()) {
-                        case E_EXPORTS: parseFilterList(reader, exportBuilder); break;
-                        case E_IMPORTS: parseFilterList(reader, importBuilder); break;
-                        default: throw unexpectedContent(reader);
+                        case E_EXPORTS:
+                            parseFilterList(reader, exportBuilder);
+                            break;
+                        case E_IMPORTS:
+                            parseFilterList(reader, importBuilder);
+                            break;
+                        default:
+                            throw unexpectedContent(reader);
                     }
                     break;
                 }
@@ -565,12 +643,15 @@ final class ModuleXmlParser {
     private static void parseSystemDependency(final XmlPullParser reader, final ModuleSpec.Builder specBuilder) throws XmlPullParserException, IOException {
         boolean export = false;
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             switch (attribute) {
-                case A_EXPORT:  export = Boolean.parseBoolean(reader.getAttributeValue(i)); break;
-                default: throw unexpectedContent(reader);
+                case A_EXPORT:
+                    export = Boolean.parseBoolean(reader.getAttributeValue(i));
+                    break;
+                default:
+                    throw unexpectedContent(reader);
             }
         }
         Set<String> paths = Collections.emptySet();
@@ -607,16 +688,19 @@ final class ModuleXmlParser {
         String name = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME: name = reader.getAttributeValue(i); break;
-                default: throw unexpectedContent(reader);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unexpectedContent(reader);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
         specBuilder.setMainClass(name);
@@ -649,7 +733,8 @@ final class ModuleXmlParser {
                             parseNativeArtifact(reader, specBuilder);
                             break;
                         }
-                        default: throw unexpectedContent(reader);
+                        default:
+                            throw unexpectedContent(reader);
                     }
                     break;
                 }
@@ -661,38 +746,62 @@ final class ModuleXmlParser {
         throw endOfDocument(reader);
     }
 
-    static ResourceLoader createMavenArtifactLoader(final String name) throws IOException
-    {
+    static ResourceLoader createMavenArtifactLoader(final String name) throws IOException {
 // SELF CONTAINED - START
         String path = name;
         if (name.startsWith("${")) {
             // Convert to gav
             path = name.substring(2, name.length() - 1);
             String[] parts = path.split(":");
-            String repoPath = "m2repo/" + parts[0].replaceAll( "\\.", "/" ) + "/" + parts[1];
-            Enumeration<JarEntry> entries = Util.rootJar().entries();
 
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                String entryName = entry.getName();
-                if (entryName.startsWith(repoPath) && entryName.length() > repoPath.length() + 1) {
-                    // Found it!
-                    path += ":" + entryName.substring(repoPath.length() + 1, entryName.length() - 1);
-                    break;
+            String group = parts[0];
+            String artifact = parts[1];
+            String version = null;
+            String classifier = null;
+            if (parts.length >= 3) {
+                version = parts[2];
+                if ( version.equals("")) {
+                    version = null;
                 }
             }
+            if (parts.length >= 4) {
+                classifier = parts[3];
+
+            }
+            String repoPath = "m2repo/" + parts[0].replaceAll("\\.", "/") + "/" + parts[1];
+            Enumeration<JarEntry> entries = Util.rootJar().entries();
+
+            if (version == null) {
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String entryName = entry.getName();
+                    if ( entryName.startsWith(repoPath) ) {
+                        int slashLoc = entryName.indexOf('/', repoPath.length());
+                        if (slashLoc > 0) {
+                            int nextSlash = entryName.indexOf('/', slashLoc + 1);
+                            if (nextSlash > 0) {
+                                version = entryName.substring(slashLoc + 1, nextSlash);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            path = group + ":" + artifact + ":" + version + ( classifier == null ? "" : ":" + classifier);
         }
         return ArtifactLoaderFactory.INSTANCE.getLoader(path);
 // SELF CONTAINED - END
     }
 
-    static void createMavenNativeArtifactLoader(final String name, final XmlPullParser reader, final ModuleSpec.Builder specBuilder) throws IOException, XmlPullParserException
-    {
+    static void createMavenNativeArtifactLoader(final String name, final XmlPullParser reader, final ModuleSpec.Builder specBuilder) throws IOException, XmlPullParserException {
         File fp = MavenArtifactUtil.resolveJarArtifact(name);
-        if (fp == null) throw new XmlPullParserException(String.format("Failed to resolve native artifact '%s'", name), reader, null);
+        if (fp == null)
+            throw new XmlPullParserException(String.format("Failed to resolve native artifact '%s'", name), reader, null);
         File lib = new File(fp.getParentFile(), "lib");
         if (!lib.exists()) {
-            if (!fp.getParentFile().canWrite()) throw new XmlPullParserException(String.format("Native artifact '%s' cannot be unpacked", name), reader, null);
+            if (!fp.getParentFile().canWrite())
+                throw new XmlPullParserException(String.format("Native artifact '%s' cannot be unpacked", name), reader, null);
             StreamUtil.unzip(fp, fp.getParentFile());
         }
         specBuilder.addResourceRoot(new ResourceLoaderSpec(new NativeLibraryResourceLoader(lib), PathFilters.rejectAll()));
@@ -703,16 +812,19 @@ final class ModuleXmlParser {
         String name = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME: name = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
 
@@ -741,16 +853,19 @@ final class ModuleXmlParser {
         String name = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME: name = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
 
@@ -764,7 +879,8 @@ final class ModuleXmlParser {
                     } catch (IOException e) {
                         throw new XmlPullParserException(String.format("Failed to add artifact '%s'", name), reader, e);
                     }
-                    if (resourceLoader == null) throw new XmlPullParserException(String.format("Failed to resolve artifact '%s'", name), reader, null);
+                    if (resourceLoader == null)
+                        throw new XmlPullParserException(String.format("Failed to resolve artifact '%s'", name), reader, null);
                     specBuilder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader));
                     return;
                 }
@@ -783,17 +899,22 @@ final class ModuleXmlParser {
         String path = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_PATH));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME: name = reader.getAttributeValue(i); break;
-                case A_PATH: path = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                case A_PATH:
+                    path = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
         if (name == null) name = path;
@@ -817,10 +938,13 @@ final class ModuleXmlParser {
                 case START_TAG: {
                     validateNamespace(reader);
                     final String element = reader.getName();
-                    if (! encountered.add(element)) throw unexpectedContent(reader);
+                    if (!encountered.add(element)) throw unexpectedContent(reader);
                     switch (element) {
-                        case E_FILTER: parseFilterList(reader, filterBuilder); break;
-                        default: throw unexpectedContent(reader);
+                        case E_FILTER:
+                            parseFilterList(reader, filterBuilder);
+                            break;
+                        default:
+                            throw unexpectedContent(reader);
                     }
                     break;
                 }
@@ -843,11 +967,20 @@ final class ModuleXmlParser {
                 case START_TAG: {
                     validateNamespace(reader);
                     switch (reader.getName()) {
-                        case E_INCLUDE: parsePath(reader, true, builder); break;
-                        case E_EXCLUDE: parsePath(reader, false, builder); break;
-                        case E_INCLUDE_SET: parseSet(reader, true, builder); break;
-                        case E_EXCLUDE_SET: parseSet(reader, false, builder); break;
-                        default: throw unexpectedContent(reader);
+                        case E_INCLUDE:
+                            parsePath(reader, true, builder);
+                            break;
+                        case E_EXCLUDE:
+                            parsePath(reader, false, builder);
+                            break;
+                        case E_INCLUDE_SET:
+                            parseSet(reader, true, builder);
+                            break;
+                        case E_EXCLUDE_SET:
+                            parseSet(reader, false, builder);
+                            break;
+                        default:
+                            throw unexpectedContent(reader);
                     }
                     break;
                 }
@@ -863,16 +996,19 @@ final class ModuleXmlParser {
         String path = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_PATH));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_PATH: path = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_PATH:
+                    path = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
 
@@ -904,8 +1040,11 @@ final class ModuleXmlParser {
                 case START_TAG: {
                     validateNamespace(reader);
                     switch (reader.getName()) {
-                        case E_PATH: parsePathName(reader, set); break;
-                        default: throw unexpectedContent(reader);
+                        case E_PATH:
+                            parsePathName(reader, set);
+                            break;
+                        default:
+                            throw unexpectedContent(reader);
                     }
                 }
             }
@@ -921,16 +1060,19 @@ final class ModuleXmlParser {
         String name = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME: name = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
         set.add(name);
@@ -955,7 +1097,8 @@ final class ModuleXmlParser {
                             parseProperty(reader, specBuilder);
                             break;
                         }
-                        default: throw unexpectedContent(reader);
+                        default:
+                            throw unexpectedContent(reader);
                     }
                     break;
                 }
@@ -972,23 +1115,29 @@ final class ModuleXmlParser {
         String value = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_NAME));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_NAME: name = reader.getAttributeValue(i); break;
-                case A_VALUE: value = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                case A_VALUE:
+                    value = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
         specBuilder.addProperty(name, value == null ? "true" : value);
         if ("jboss.assertions".equals(name)) try {
             specBuilder.setAssertionSetting(AssertionSetting.valueOf(value.toUpperCase(Locale.US)));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException ignored) {
+        }
 
         // consume remainder of element
         parseNoContent(reader);
@@ -1012,7 +1161,8 @@ final class ModuleXmlParser {
                             parseGrant(reader, moduleLoader, moduleIdentifier, list);
                             break;
                         }
-                        default: throw unexpectedContent(reader);
+                        default:
+                            throw unexpectedContent(reader);
                     }
                     break;
                 }
@@ -1030,18 +1180,25 @@ final class ModuleXmlParser {
         String actions = null;
         final Set<String> required = new HashSet<>(Arrays.asList(A_PERMISSION, A_NAME));
         final int count = reader.getAttributeCount();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             validateAttributeNamespace(reader, i);
             final String attribute = reader.getAttributeName(i);
             required.remove(attribute);
             switch (attribute) {
-                case A_PERMISSION: permission = reader.getAttributeValue(i); break;
-                case A_NAME: name = reader.getAttributeValue(i); break;
-                case A_ACTIONS: actions = reader.getAttributeValue(i); break;
-                default: throw unknownAttribute(reader, i);
+                case A_PERMISSION:
+                    permission = reader.getAttributeValue(i);
+                    break;
+                case A_NAME:
+                    name = reader.getAttributeValue(i);
+                    break;
+                case A_ACTIONS:
+                    actions = reader.getAttributeValue(i);
+                    break;
+                default:
+                    throw unknownAttribute(reader, i);
             }
         }
-        if (! required.isEmpty()) {
+        if (!required.isEmpty()) {
             throw missingAttributes(reader, required);
         }
         list.add(new ModularPermissionFactory(moduleLoader, moduleIdentifier, permission, name, actions));
@@ -1074,7 +1231,7 @@ final class ModuleXmlParser {
                 }
                 case TEXT:
                 case CDSECT: {
-                    if (! reader.isWhitespace()) {
+                    if (!reader.isWhitespace()) {
                         throw unexpectedContent(reader);
                     }
                     // ignore

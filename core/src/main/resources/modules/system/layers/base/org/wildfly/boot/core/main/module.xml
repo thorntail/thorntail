@@ -28,4 +28,8 @@
         <artifact name="${org.wildfly.boot:wildfly-boot-core}"/>
     </resources>
 
+    <dependencies>
+        <module name="org.wildfly.boot.container"/>
+    </dependencies>
+
 </module>

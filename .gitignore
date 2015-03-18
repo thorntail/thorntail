@@ -50,3 +50,4 @@ local-repo-eap
 .DS_Store
 testsuite-core/standalone/cli_output
 tmp
+log

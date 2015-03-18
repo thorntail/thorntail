@@ -1,0 +1,5 @@
+org.wildfly.boot.web.EeSubsystemDefaulter
+org.wildfly.boot.web.IoSubsystemDefaulter
+org.wildfly.boot.web.NamingSubsystemDefaulter
+org.wildfly.boot.web.SecuritySubsystemDefaulter
+org.wildfly.boot.web.UndertowSubsystemDefaulter

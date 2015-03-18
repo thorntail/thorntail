@@ -2,16 +2,18 @@ package org.wildfly.boot.container;
 
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.dmr.ModelNode;
-import org.jboss.dmr.ValueExpression;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CONTENT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ENABLED;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HASH;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INET_ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUNTIME_NAME;
@@ -21,16 +23,13 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
  */
 public class Container {
 
-    List<ModelNode> list = new ArrayList<>();
     private List<Subsystem> subsystems = new ArrayList<>();
+    private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
+    private List<Interface> interfaces = new ArrayList<>();
 
     private SelfContainedContainer container;
 
     public Container() {
-        //subsystem( new NamingSubsystem() );
-        //subsystem( new EeSubsystem() );
-        //subsystem( new SecuritySubsystem() );
-        //subsystem( new RequestControllerSubsystem() );
 
     }
 
@@ -40,24 +39,20 @@ public class Container {
     }
 
     public Container iface(String name, String expression) {
-        ModelNode node = new ModelNode();
-
-        node.get(OP).set(ADD);
-        node.get(OP_ADDR).set("interface", name);
-        node.get(INET_ADDRESS).set(new ValueExpression(expression));
-
-        list.add(node);
-
+        this.interfaces.add(new Interface(name, expression));
         return this;
     }
 
     public Container socketBindingGroup(SocketBindingGroup group) {
-        this.list.addAll( group.getList() );
+        this.socketBindingGroups.add(group);
         return this;
     }
 
-    public void start() {
+    public void start() throws Exception {
         this.container = new SelfContainedContainer();
+
+        applyDefaults();
+
         List<ModelNode> list = new ArrayList<>();
         list.addAll(getList());
 
@@ -69,23 +64,71 @@ public class Container {
         deploymentAdd.get(ENABLED).set(true);
 
         ModelNode content = deploymentAdd.get(CONTENT).add();
-        byte[] bytes = new byte[] { 0 };
-        content.get(HASH).set( bytes );
+        byte[] bytes = new byte[]{0};
+        content.get(HASH).set(bytes);
 
         list.add(deploymentAdd);
 
         this.container.start(list, Content.CONTENT);
     }
 
-    List<ModelNode> getList() {
-        List<ModelNode> fullList = new ArrayList<>();
+    private void applyDefaults() throws Exception {
+        applyInterfaceDefaults();
+        applySocketBindingGroupDefaults();
+        applySubsystemDefaults();
+    }
 
-        fullList.addAll(this.list);
+    private void applySubsystemDefaults() throws Exception {
+        Map<Class<Subsystem>, SubsystemDefaulter> defaulters = new HashMap<>();
 
-        for (Subsystem each : this.subsystems) {
-            fullList.addAll(each.getList());
+        ServiceLoader<SubsystemDefaulter> loader = ServiceLoader.load(SubsystemDefaulter.class);
+        Iterator<SubsystemDefaulter> iter = loader.iterator();
+
+        while (iter.hasNext()) {
+            SubsystemDefaulter each = iter.next();
+            defaulters.put(each.getSubsystemType(), each);
         }
 
-        return fullList;
+        for (Subsystem each : this.subsystems) {
+            defaulters.remove(each.getClass());
+        }
+
+        for (SubsystemDefaulter each : defaulters.values()) {
+            System.err.println( "Applying default: " + each.getSubsystemType().getSimpleName() );
+            this.subsystem(each.getDefaultSubsystem());
+        }
+    }
+
+    private void applyInterfaceDefaults() {
+        if (this.interfaces.isEmpty()) {
+            iface("public", "${jboss.bind.address:127.0.0.1}");
+        }
+    }
+
+    private void applySocketBindingGroupDefaults() {
+        if (this.socketBindingGroups.isEmpty()) {
+            socketBindingGroup(
+                    new SocketBindingGroup("default-sockets", "public", "0")
+                            .socketBinding("http", 8080)
+            );
+        }
+    }
+
+    List<ModelNode> getList() {
+        List<ModelNode> list = new ArrayList<>();
+
+        for (Interface each : this.interfaces) {
+            list.add(each.getNode());
+        }
+
+        for (SocketBindingGroup each : this.socketBindingGroups) {
+            list.addAll(each.getList());
+        }
+
+        for (Subsystem each : this.subsystems) {
+            list.addAll(each.getList());
+        }
+
+        return list;
     }
 }

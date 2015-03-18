@@ -44,6 +44,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                  <forkCount>0</forkCount>
+                  <forkMode>never</forkMode>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.wildfly.boot</groupId>
@@ -74,6 +78,16 @@
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-core</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss</groupId>
+          <artifactId>jboss-dmr</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.core</groupId>
+          <artifactId>wildfly-controller</artifactId>
+          <scope>provided</scope>
         </dependency>
 
         <dependency>

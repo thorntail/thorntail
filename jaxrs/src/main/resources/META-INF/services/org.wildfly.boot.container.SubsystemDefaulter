@@ -1,0 +1,4 @@
+org.wildfly.boot.jaxrs.JaxRsSubsystemDefaulter
+org.wildfly.boot.jaxrs.WeldSubsystemDefaulter
+org.wildfly.boot.jaxrs.TransactionsSubsystemDefaulter
+org.wildfly.boot.jaxrs.BeanValidationSubsystemDefaulter

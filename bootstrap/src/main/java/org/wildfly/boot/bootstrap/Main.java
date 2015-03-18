@@ -42,6 +42,10 @@ public class Main {
         Manifest manifest = new Manifest(in);
         String mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Main-Class"));
 
+        if ( mainClassName == null ) {
+            mainClassName = "org.wildfly.boot.container.DefaultMain";
+        }
+
         Class<?> mainClass = app.getClassLoader().loadClass(mainClassName);
         final Method mainMethod = mainClass.getMethod("main", String[].class);
 
@@ -52,6 +56,7 @@ public class Main {
 
         setupContent();
 
+        Thread.currentThread().setContextClassLoader( app.getClassLoader() );
         mainMethod.invoke(null, new Object[]{args});
     }
 

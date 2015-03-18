@@ -8,6 +8,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.jboss.modules.filter.PathFilter;
+import org.jboss.modules.filter.PathFilters;
 import org.wildfly.boot.bootstrap.Main;
 
 /**
@@ -33,6 +35,7 @@ public class BootModuleFinder implements ModuleFinder {
             }
         }
 
+        /*
         if (identifier.getName().equals("org.wildfly.boot.container")) {
             try {
                 return findBootContainerModule();
@@ -59,11 +62,15 @@ public class BootModuleFinder implements ModuleFinder {
                 throw new ModuleLoadException(e);
             }
         }
+        */
+
+        System.err.println( "find module: " + identifier );
 
         String namePath = identifier.getName().replace('.', '/');
         String basePath = "modules/system/layers/base/" + namePath + "/" + identifier.getSlot();
         JarEntry moduleXmlEntry = jarFile.getJarEntry(basePath + "/module.xml");
         if (moduleXmlEntry == null) {
+            System.err.println( "unable to find " + identifier );
             return null;
         }
         ModuleSpec moduleSpec;
@@ -178,12 +185,17 @@ public class BootModuleFinder implements ModuleFinder {
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.container"), false));
-        
+
         String modulesStr = manifest.getMainAttributes().getValue("Feature-Pack-Modules");
         String[] modules = modulesStr.split(",");
         for ( int i = 0 ; i < modules.length ; ++i ) {
             String[] parts = modules[i].trim().split( ":" );
-            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create(parts[0], parts[1]), false));
+            builder.addDependency(DependencySpec.createModuleDependencySpec(
+                    PathFilters.acceptAll(),
+                    PathFilters.getMetaInfServicesFilter(),
+                    null,
+                    ModuleIdentifier.create( parts[0], parts[1] ),
+                    false));
         }
 
         ModuleSpec moduleSpec = builder.create();

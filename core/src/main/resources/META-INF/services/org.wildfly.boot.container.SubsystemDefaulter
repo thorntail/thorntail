@@ -1,0 +1,2 @@
+org.wildfly.boot.core.LoggingSubsystemDefaulter
+org.wildfly.boot.core.RequestControllerSubsystemDefaulter

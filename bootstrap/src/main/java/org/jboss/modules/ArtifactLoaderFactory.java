@@ -48,9 +48,9 @@ public class ArtifactLoaderFactory {
     }
 
     private File getFile(String gav) throws IOException {
-//        System.err.println( "gavToPath: " + gavToPath(gav));
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(gavToPath(gav));
         if ( in == null ) {
+            System.err.println( "NOT FOUND: " + gav );
             return null;
         }
 
@@ -78,12 +78,17 @@ public class ArtifactLoaderFactory {
     private String gavToPath(String gav) {
         try {
             String[] parts = gav.split(":");
-            return "m2repo/" + parts[0].replaceAll("\\.", "/") + "/" + parts[1] + "/" + parts[2] + "/" + parts[1] + "-" + parts[2] + ".jar";
+            String group = parts[0];
+            String artifact = parts[1];
+            String version = parts[2];
+            String classifier = null;
+            if ( parts.length >= 4 ) {
+                classifier = parts[3];
+            }
+            return "m2repo/" + group.replaceAll("\\.", "/") + "/" + artifact + "/" + version + "/" + artifact + "-" + version + ( classifier == null ? "" : "-" + classifier) + ".jar";
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println( "-----------------" );
-            System.err.println( "-----------------" );
             System.err.println( gav );
-            System.err.println( "-----------------" );
             System.err.println( "-----------------" );
             throw e;
         }

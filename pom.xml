@@ -91,6 +91,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-jaxrs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wildfly</groupId>
                 <artifactId>wildfly-parent</artifactId>
                 <version>${version.wildfly}</version>
@@ -137,5 +142,6 @@
       <module>container</module>
       <module>core</module>
       <module>web</module>
+      <module>jaxrs</module>
     </modules>
 </project>
