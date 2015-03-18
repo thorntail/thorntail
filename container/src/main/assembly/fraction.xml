@@ -1,0 +1,13 @@
+<assembly>
+  <id>fraction</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+
+  <files>
+    <file>
+      <source>./src/main/module/module.xml</source>
+      <outputDirectory>modules/system/layers/base/org/wildfly/boot/container</outputDirectory>
+    </file>
+  </files>
+</assembly>

@@ -40,6 +40,10 @@ function analyzeModule(moduleXml) {
 console.log( "search", module_paths );
 console.log( "root", root );
 
-analyzeModule( findModule(root) );
+var found = findModule(root);
+
+console.log( "found", found );
+
+analyzeModule( found );
 
 console.log( modules );

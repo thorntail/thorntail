@@ -26,51 +26,52 @@
 
     <parent>
         <groupId>org.wildfly.boot</groupId>
-        <artifactId>wildfly-boot-parent</artifactId>
+        <artifactId>wildfly-boot-fractions</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
     <groupId>org.wildfly.boot</groupId>
-    <artifactId>wildfly-boot-bootstrap</artifactId>
+    <artifactId>wildfly-boot-io</artifactId>
 
-    <name>WildFly Boot: Bootstrap</name>
-    <description>WildFly Boot: Bootstrap</description>
+    <name>WildFly Boot: IO</name>
+    <description>WildFly Boot: IO</description>
 
     <packaging>jar</packaging>
 
+    <properties>
+      <root-module>org.wildfly.extension.io</root-module>
+    </properties>
+
     <build>
-        <resources>
-            <resource>
-              <directory>${project.basedir}/src/main/resources</directory>
-              <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                          <goal>single</goal>
-                        </goals>
-                        <configuration>
-                          <descriptors>
-                            <descriptor>src/main/assembly/fraction.xml</descriptor>
-                          </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-feature-pack-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
-            <groupId>org.jboss.modules</groupId>
-            <artifactId>jboss-modules</artifactId>
-            <scope>provided</scope>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-container</artifactId>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss</groupId>
+          <artifactId>jboss-dmr</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.core</groupId>
+          <artifactId>wildfly-controller</artifactId>
+          <scope>provided</scope>
         </dependency>
     </dependencies>
 

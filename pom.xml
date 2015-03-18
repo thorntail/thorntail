@@ -138,10 +138,11 @@
 
     <modules>
       <module>plugin</module>
+
       <module>bootstrap</module>
       <module>container</module>
-      <module>core</module>
-      <module>web</module>
-      <module>jaxrs</module>
+
+      <module>fractions</module>
+
     </modules>
 </project>
