@@ -30,5 +30,6 @@
     <dependencies>
       <module name="org.jboss.as.server"/>
       <module name="org.jboss.as.controller" export="true"/>
+      <module name="org.jboss.as.self-contained"/>
     </dependencies>
 </module>

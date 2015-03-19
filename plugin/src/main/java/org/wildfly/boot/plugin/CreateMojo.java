@@ -308,15 +308,17 @@ public class CreateMojo extends AbstractMojo {
                             }
                         }
                     }
-                    //\"urn:jboss:module:1.3\" name=\"org.apache.commons.logging\" target-name=\"org.slf4j.jcl-over-slf4j\"/>"))
 
                     if (line.startsWith("<module name=")) {
+
                         int start = line.indexOf("\"");
                         if (start > 0) {
                             int end = line.indexOf("\"", start + 1);
                             if (end > 0) {
                                 String moduleName = line.substring(start + 1, end);
-                                addTransitiveModule(moduleName);
+                                if ( ! line.contains( "optional=\"true\"" ) ) {
+                                    addTransitiveModule(moduleName);
+                                }
                             }
                         }
                     }

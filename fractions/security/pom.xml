@@ -41,6 +41,9 @@
 
     <properties>
       <root-module>org.jboss.as.security</root-module>
+      <extra-modules>
+          org.jboss.security.negotiation
+      </extra-modules>
     </properties>
 
     <build>
