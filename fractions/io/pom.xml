@@ -47,7 +47,7 @@
         <plugins>
             <plugin>
                 <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-feature-pack-plugin</artifactId>
+                <artifactId>wildfly-boot-fraction-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

@@ -41,18 +41,70 @@
 
     <properties>
       <root-module>org.jboss.as.jaxrs</root-module>
+      <extra-modules>
+        javax.json.api
+        org.jboss.resteasy.resteasy-jackson2-provider
+        org.jboss.resteasy.resteasy-json-p-provider
+      </extra-modules>
     </properties>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-feature-pack-plugin</artifactId>
+                <artifactId>wildfly-boot-fraction-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-bean-validation</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-ee</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-io</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-logging</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-naming</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-request-controller</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-security</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-transactions</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-undertow</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-weld</artifactId>
+        </dependency>
+
+
+        <dependency>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>jaxrs-api</artifactId>
+        </dependency>
+
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-container</artifactId>
@@ -72,6 +124,15 @@
           <groupId>org.wildfly.core</groupId>
           <artifactId>wildfly-controller</artifactId>
           <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.jboss.modules</groupId>
+          <artifactId>jboss-modules</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.boot</groupId>
+          <artifactId>wildfly-boot-bootstrap</artifactId>
         </dependency>
     </dependencies>
 

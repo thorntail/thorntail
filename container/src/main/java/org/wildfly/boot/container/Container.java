@@ -94,7 +94,6 @@ public class Container {
         }
 
         for (SubsystemDefaulter each : defaulters.values()) {
-            System.err.println( "Applying default: " + each.getSubsystemType().getSimpleName() );
             this.subsystem(each.getDefaultSubsystem());
         }
     }

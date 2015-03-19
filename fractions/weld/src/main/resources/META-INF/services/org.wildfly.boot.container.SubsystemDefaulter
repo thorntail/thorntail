@@ -1,4 +1,0 @@
-org.wildfly.boot.weld.JaxRsSubsystemDefaulter
-org.wildfly.boot.weld.WeldSubsystemDefaulter
-org.wildfly.boot.weld.TransactionsSubsystemDefaulter
-org.wildfly.boot.weld.BeanValidationSubsystemDefaulter

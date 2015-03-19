@@ -59,10 +59,11 @@
             <plugins>
                 <plugin>
                     <groupId>org.wildfly.boot</groupId>
-                    <artifactId>wildfly-boot-feature-pack-plugin</artifactId>
+                    <artifactId>wildfly-boot-fraction-plugin</artifactId>
+                    <version>1.0.0.Alpha1-SNAPSHOT</version>
                     <executions>
                       <execution>
-                        <phase>package</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                           <goal>generate</goal>
                         </goals>

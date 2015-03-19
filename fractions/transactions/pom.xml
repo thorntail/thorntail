@@ -40,14 +40,14 @@
     <packaging>jar</packaging>
 
     <properties>
-      <root-module>org.jboss.as.tractions</root-module>
+      <root-module>org.jboss.as.transactions</root-module>
     </properties>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-feature-pack-plugin</artifactId>
+                <artifactId>wildfly-boot-fraction-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

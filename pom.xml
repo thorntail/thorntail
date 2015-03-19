@@ -82,17 +82,57 @@
             </dependency>
             <dependency>
                 <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-core</artifactId>
+                <artifactId>wildfly-boot-bean-validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-web</artifactId>
+                <artifactId>wildfly-boot-ee</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-io</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.boot</groupId>
                 <artifactId>wildfly-boot-jaxrs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-logging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-naming</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-request-controller</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-transactions</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-undertow</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.boot</groupId>
+                <artifactId>wildfly-boot-weld</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

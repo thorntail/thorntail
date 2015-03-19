@@ -1,23 +1,11 @@
 package org.jboss.modules;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.AccessControlContext;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
@@ -50,7 +38,6 @@ public class ArtifactLoaderFactory {
     private File getFile(String gav) throws IOException {
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(gavToPath(gav));
         if ( in == null ) {
-            System.err.println( "NOT FOUND: " + gav );
             return null;
         }
 
@@ -75,6 +62,8 @@ public class ArtifactLoaderFactory {
         }
     }
 
+    private static final String JANDEX_SUFFIX = "?jandex";
+
     private String gavToPath(String gav) {
         try {
             String[] parts = gav.split(":");
@@ -85,7 +74,13 @@ public class ArtifactLoaderFactory {
             if ( parts.length >= 4 ) {
                 classifier = parts[3];
             }
-            return "m2repo/" + group.replaceAll("\\.", "/") + "/" + artifact + "/" + version + "/" + artifact + "-" + version + ( classifier == null ? "" : "-" + classifier) + ".jar";
+
+            if ( artifact.endsWith( JANDEX_SUFFIX ) ) {
+                artifact = artifact.substring( 0, artifact.length() - JANDEX_SUFFIX.length() );
+            }
+
+            String path = "m2repo/" + group.replaceAll("\\.", "/") + "/" + artifact + "/" + version + "/" + artifact + "-" + version + ( classifier == null || classifier.equals( "" ) ? "" : "-" + classifier) + ".jar";
+            return path;
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println( "-----------------" );
             System.err.println( gav );

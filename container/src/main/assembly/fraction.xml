@@ -3,11 +3,12 @@
   <formats>
     <format>zip</format>
   </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
 
   <files>
     <file>
       <source>./src/main/module/module.xml</source>
-      <outputDirectory>modules/system/layers/base/org/wildfly/boot/container</outputDirectory>
+      <outputDirectory>modules/system/layers/base/org/wildfly/boot/container/main</outputDirectory>
     </file>
   </files>
 </assembly>

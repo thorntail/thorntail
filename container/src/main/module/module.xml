@@ -26,4 +26,9 @@
     <resources>
         <artifact name="${org.wildfly.boot:wildfly-boot-container}"/>
     </resources>
+
+    <dependencies>
+      <module name="org.jboss.as.server"/>
+      <module name="org.jboss.as.controller" export="true"/>
+    </dependencies>
 </module>

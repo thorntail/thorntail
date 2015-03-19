@@ -766,9 +766,16 @@ final class ModuleXmlParser {
             }
             if (parts.length >= 4) {
                 classifier = parts[3];
-
+                if ( classifier.equals("" ) ) {
+                    classifier = null;
+                }
             }
-            String repoPath = "m2repo/" + parts[0].replaceAll("\\.", "/") + "/" + parts[1];
+
+            if ( artifact.endsWith( "?jandex" ) ) {
+                artifact = artifact.substring( 0, artifact.length() - 7 );
+            }
+
+            String repoPath = "m2repo/" + parts[0].replaceAll("\\.", "/") + "/" + artifact;
             Enumeration<JarEntry> entries = Util.rootJar().entries();
 
             if (version == null) {
