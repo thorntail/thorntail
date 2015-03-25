@@ -11,7 +11,7 @@ public class ArtifactSpec {
 
     private String groupId;
     private String artifactId;
-    private String classififer;
+    private String classifier;
     private boolean jandex;
 
     public ArtifactSpec(String gav) {
@@ -26,9 +26,9 @@ public class ArtifactSpec {
         }
 
         if ( parts.length >= 4) {
-            this.classififer = parts[3];
+            this.classifier = parts[3];
         } else {
-            this.classififer = null;
+            this.classifier = null;
         }
     }
 
@@ -41,14 +41,14 @@ public class ArtifactSpec {
             return false;
         }
 
-        if ( this.classififer == null ) {
+        if ( this.classifier == null ) {
             return artifact.getClassifier() == null || artifact.getClassifier().equals( "" );
         }
 
-        return this.classififer.equals( artifact.getClassifier() );
+        return this.classifier.equals( artifact.getClassifier() );
     }
 
     public String toString() {
-        return this.groupId + ":" + this.artifactId + ( this.classififer == null ? "" : "::" + this.classififer );
+        return this.groupId + ":" + this.artifactId + ( this.classifier == null ? "" : "::" + this.classifier);
     }
 }
