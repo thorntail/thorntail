@@ -5,6 +5,7 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -13,8 +14,22 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DefaultDependencyResolutionRequest;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.DependencyResolutionRequest;
+import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.project.ProjectBuildingResult;
+import org.apache.maven.project.ProjectDependenciesResolver;
+import org.apache.maven.repository.RepositorySystem;
 import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyFilter;
+import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
@@ -56,15 +71,29 @@ public class CreateMojo extends AbstractMojo {
     @Component
     private MavenProject project;
 
+    @Component
+    private ProjectBuilder projectBuilder;
+
+    @Component
+    private ProjectDependenciesResolver projectDependenciesResolver;
+
+    @Component
+    private RepositorySystem repositorySystem;
+
+    @Parameter(defaultValue = "${session}")
+    private MavenSession session;
+
     @Parameter(defaultValue = "${project.build.directory}")
     private String projectBuildDir;
 
-
     @Parameter(defaultValue = "${repositorySystemSession}")
-    private DefaultRepositorySystemSession session;
+    private DefaultRepositorySystemSession repositorySystemSession;
 
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
     private List<ArtifactRepository> remoteRepositories;
+
+    @Parameter(defaultValue = "${localRepository}")
+    private ArtifactRepository localRepository;
 
     @Inject
     private ArtifactResolver resolver;
@@ -73,7 +102,8 @@ public class CreateMojo extends AbstractMojo {
     private List<Artifact> pluginArtifacts;
 
 
-    private List<Artifact> featurePacks = new ArrayList<>();
+    private Set<Artifact> featurePacks = new HashSet<>();
+    private Set<Artifact> featurePackArtifacts = new HashSet<>();
     private Set<String> modules = new HashSet<>();
 
     private Set<ArtifactSpec> gavs = new HashSet<>();
@@ -84,6 +114,7 @@ public class CreateMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         setupFeaturePacks();
+        setupFeaturePackArtifacts();
         setupDirectory();
         addJBossModules();
         addBootstrap();
@@ -95,10 +126,90 @@ public class CreateMojo extends AbstractMojo {
         createJar();
     }
 
-    private void setupFeaturePacks() {
-        for (Artifact each : this.pluginArtifacts) {
-            if (each.getArtifactId().contains("feature-pack") && each.getType().equals("zip")) {
-                this.featurePacks.add(each);
+    private void setupFeaturePackArtifacts() throws MojoFailureException {
+        for (Artifact pack : this.featurePacks) {
+            Artifact packPom = new DefaultArtifact(pack.getGroupId(),
+                    pack.getArtifactId(),
+                    pack.getVersion(),
+                    "",
+                    "pom",
+                    pack.getClassifier(),
+                    new DefaultArtifactHandler("pom"));
+
+            try {
+                ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
+                buildingRequest.setLocalRepository(localRepository);
+                buildingRequest.setRemoteRepositories(remoteRepositories);
+                buildingRequest.setRepositorySession(repositorySystemSession);
+                ProjectBuildingResult buildingResult = this.projectBuilder.build(packPom, buildingRequest);
+
+                DependencyResolutionRequest resolutionRequest = new DefaultDependencyResolutionRequest();
+                resolutionRequest.setRepositorySession(session.getRepositorySession());
+                resolutionRequest.setMavenProject(buildingResult.getProject());
+                DependencyResolutionResult resolutionResult = this.projectDependenciesResolver.resolve(resolutionRequest);
+
+                if (resolutionResult.getDependencies() != null && resolutionResult.getDependencies().size() > 0) {
+                    for (Dependency dep : resolutionResult.getDependencies()) {
+                        org.eclipse.aether.artifact.Artifact depArtifact = dep.getArtifact();
+                        Artifact artifact = new DefaultArtifact(depArtifact.getGroupId(),
+                                depArtifact.getArtifactId(),
+                                depArtifact.getVersion(),
+                                "compile",
+                                depArtifact.getExtension(),
+                                depArtifact.getClassifier(),
+                                new DefaultArtifactHandler("jar"));
+                        artifact.setFile(depArtifact.getFile());
+                        this.featurePackArtifacts.add(artifact);
+                    }
+                }
+            } catch (ProjectBuildingException e) {
+                throw new MojoFailureException("Unable to build project for: " + packPom, e);
+            } catch (DependencyResolutionException e) {
+                throw new MojoFailureException("Unable to resolve dependencies", e);
+            }
+        }
+    }
+
+    private void setupFeaturePacks() throws MojoFailureException {
+        for (Artifact each : this.project.getArtifacts()) {
+            if (each.getArtifactId().contains("wildfly-boot")) {
+                try {
+                    ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
+                    buildingRequest.setLocalRepository(localRepository);
+                    buildingRequest.setRemoteRepositories(remoteRepositories);
+                    ProjectBuildingResult buildingResult = this.projectBuilder.build(each, buildingRequest);
+
+                    DependencyResolutionRequest resolutionRequest = new DefaultDependencyResolutionRequest();
+                    resolutionRequest.setRepositorySession(session.getRepositorySession());
+                    resolutionRequest.setMavenProject(buildingResult.getProject());
+                    resolutionRequest.setResolutionFilter(new DependencyFilter() {
+                        @Override
+                        public boolean accept(DependencyNode node, List<DependencyNode> parents) {
+                            return node.getArtifact().getArtifactId().contains("feature-pack") && node.getArtifact().getExtension().equals("zip");
+                        }
+                    });
+                    DependencyResolutionResult resolutionResult = this.projectDependenciesResolver.resolve(resolutionRequest);
+
+                    if (resolutionResult.getDependencies() != null && resolutionResult.getDependencies().size() > 0) {
+                        for (Dependency dep : resolutionResult.getDependencies()) {
+                            org.eclipse.aether.artifact.Artifact depArtifact = dep.getArtifact();
+
+                            Artifact artifact = new DefaultArtifact(depArtifact.getGroupId(),
+                                    depArtifact.getArtifactId(),
+                                    depArtifact.getVersion(),
+                                    "provided",
+                                    depArtifact.getExtension(),
+                                    depArtifact.getClassifier(),
+                                    new DefaultArtifactHandler("zip"));
+                            artifact.setFile(depArtifact.getFile());
+                            this.featurePacks.add(artifact);
+                        }
+                    }
+                } catch (ProjectBuildingException e) {
+                    throw new MojoFailureException("Unable to build project for: " + each, e);
+                } catch (DependencyResolutionException e) {
+                    throw new MojoFailureException("Unable to resolve dependencies", e);
+                }
             }
         }
     }
@@ -159,6 +270,12 @@ public class CreateMojo extends AbstractMojo {
     }
 
     private Artifact locateArtifact(ArtifactSpec spec) {
+        for (Artifact each : this.featurePackArtifacts) {
+            if (spec.matches(each)) {
+                return each;
+            }
+        }
+
         for (Artifact each : this.pluginArtifacts) {
             if (spec.matches(each)) {
                 return each;
@@ -220,7 +337,7 @@ public class CreateMojo extends AbstractMojo {
             request.setArtifact(artifact);
             request.setRepositories(remoteRepositories());
             try {
-                ArtifactResult result = resolver.resolveArtifact(this.session, request);
+                ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
                 fractions.add(result.getArtifact());
             } catch (ArtifactResolutionException e) {
                 // skip
@@ -628,7 +745,7 @@ public class CreateMojo extends AbstractMojo {
             request.setArtifact(artifact);
             request.setRepositories( remoteRepositories() );
             try {
-                ArtifactResult result = resolver.resolveArtifact(this.session, request);
+                ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
                 packs.add(result.getArtifact());
             } catch (ArtifactResolutionException e) {
                 // skip
