@@ -1,48 +1,10 @@
 package org.wildfly.boot.plugin;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.handler.ArtifactHandler;
-import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.DefaultDependencyResolutionRequest;
-import org.apache.maven.project.DefaultProjectBuildingRequest;
-import org.apache.maven.project.DependencyResolutionException;
-import org.apache.maven.project.DependencyResolutionRequest;
-import org.apache.maven.project.DependencyResolutionResult;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.project.ProjectBuildingResult;
-import org.apache.maven.project.ProjectDependenciesResolver;
-import org.apache.maven.repository.RepositorySystem;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.graph.Dependency;
-import org.eclipse.aether.graph.DependencyFilter;
-import org.eclipse.aether.graph.DependencyNode;
-import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
-
-import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -57,8 +19,25 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.inject.Inject;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DependencyResolutionResult;
+import org.apache.maven.project.ProjectBuildingResult;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.impl.ArtifactResolver;
+
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 @Mojo(
         name = "create",
@@ -66,47 +45,13 @@ import java.util.zip.ZipFile;
         requiresDependencyCollection = ResolutionScope.COMPILE,
         requiresDependencyResolution = ResolutionScope.COMPILE
 )
-public class CreateMojo extends AbstractMojo {
-
-    @Component
-    private MavenProject project;
-
-    @Component
-    private ProjectBuilder projectBuilder;
-
-    @Component
-    private ProjectDependenciesResolver projectDependenciesResolver;
-
-    @Component
-    private RepositorySystem repositorySystem;
-
-    @Parameter(defaultValue = "${session}")
-    private MavenSession session;
-
-    @Parameter(defaultValue = "${project.build.directory}")
-    private String projectBuildDir;
-
-    @Parameter(defaultValue = "${repositorySystemSession}")
-    private DefaultRepositorySystemSession repositorySystemSession;
-
-    @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
-    private List<ArtifactRepository> remoteRepositories;
-
-    @Parameter(defaultValue = "${localRepository}")
-    private ArtifactRepository localRepository;
+public class CreateMojo extends AbstractSwarmMojo {
 
     @Inject
     private ArtifactResolver resolver;
 
-    @Parameter(defaultValue = "${plugin.artifacts}")
-    private List<Artifact> pluginArtifacts;
-
-
-    private Set<Artifact> featurePacks = new HashSet<>();
-    private Set<Artifact> featurePackArtifacts = new HashSet<>();
     private Set<String> modules = new HashSet<>();
 
-    private Set<ArtifactSpec> gavs = new HashSet<>();
     private List<String> fractionModules = new ArrayList();
 
     private File dir;
@@ -119,7 +64,7 @@ public class CreateMojo extends AbstractMojo {
         addJBossModules();
         addBootstrap();
 
-        addFractions();
+        processFractions(this.resolver, new FractionExpander());
         addMavenRepository();
 
         addProjectArtifact();
@@ -137,79 +82,16 @@ public class CreateMojo extends AbstractMojo {
                     new DefaultArtifactHandler("pom"));
 
             try {
-                ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
-                buildingRequest.setLocalRepository(localRepository);
-                buildingRequest.setRemoteRepositories(remoteRepositories);
-                buildingRequest.setRepositorySession(repositorySystemSession);
-                ProjectBuildingResult buildingResult = this.projectBuilder.build(packPom, buildingRequest);
-
-                DependencyResolutionRequest resolutionRequest = new DefaultDependencyResolutionRequest();
-                resolutionRequest.setRepositorySession(session.getRepositorySession());
-                resolutionRequest.setMavenProject(buildingResult.getProject());
-                DependencyResolutionResult resolutionResult = this.projectDependenciesResolver.resolve(resolutionRequest);
+                ProjectBuildingResult buildingResult = buildProject(packPom);
+                DependencyResolutionResult resolutionResult = resolveProjectDependencies(buildingResult.getProject(), null);
 
                 if (resolutionResult.getDependencies() != null && resolutionResult.getDependencies().size() > 0) {
                     for (Dependency dep : resolutionResult.getDependencies()) {
-                        org.eclipse.aether.artifact.Artifact depArtifact = dep.getArtifact();
-                        Artifact artifact = new DefaultArtifact(depArtifact.getGroupId(),
-                                depArtifact.getArtifactId(),
-                                depArtifact.getVersion(),
-                                "compile",
-                                depArtifact.getExtension(),
-                                depArtifact.getClassifier(),
-                                new DefaultArtifactHandler("jar"));
-                        artifact.setFile(depArtifact.getFile());
-                        this.featurePackArtifacts.add(artifact);
+                        this.featurePackArtifacts.add(convertAetherToMavenArtifact(dep.getArtifact(), "compile", "jar"));
                     }
                 }
-            } catch (ProjectBuildingException e) {
-                throw new MojoFailureException("Unable to build project for: " + packPom, e);
-            } catch (DependencyResolutionException e) {
-                throw new MojoFailureException("Unable to resolve dependencies", e);
-            }
-        }
-    }
-
-    private void setupFeaturePacks() throws MojoFailureException {
-        for (Artifact each : this.project.getArtifacts()) {
-            if (each.getArtifactId().contains("wildfly-boot")) {
-                try {
-                    ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
-                    buildingRequest.setLocalRepository(localRepository);
-                    buildingRequest.setRemoteRepositories(remoteRepositories);
-                    ProjectBuildingResult buildingResult = this.projectBuilder.build(each, buildingRequest);
-
-                    DependencyResolutionRequest resolutionRequest = new DefaultDependencyResolutionRequest();
-                    resolutionRequest.setRepositorySession(session.getRepositorySession());
-                    resolutionRequest.setMavenProject(buildingResult.getProject());
-                    resolutionRequest.setResolutionFilter(new DependencyFilter() {
-                        @Override
-                        public boolean accept(DependencyNode node, List<DependencyNode> parents) {
-                            return node.getArtifact().getArtifactId().contains("feature-pack") && node.getArtifact().getExtension().equals("zip");
-                        }
-                    });
-                    DependencyResolutionResult resolutionResult = this.projectDependenciesResolver.resolve(resolutionRequest);
-
-                    if (resolutionResult.getDependencies() != null && resolutionResult.getDependencies().size() > 0) {
-                        for (Dependency dep : resolutionResult.getDependencies()) {
-                            org.eclipse.aether.artifact.Artifact depArtifact = dep.getArtifact();
-
-                            Artifact artifact = new DefaultArtifact(depArtifact.getGroupId(),
-                                    depArtifact.getArtifactId(),
-                                    depArtifact.getVersion(),
-                                    "provided",
-                                    depArtifact.getExtension(),
-                                    depArtifact.getClassifier(),
-                                    new DefaultArtifactHandler("zip"));
-                            artifact.setFile(depArtifact.getFile());
-                            this.featurePacks.add(artifact);
-                        }
-                    }
-                } catch (ProjectBuildingException e) {
-                    throw new MojoFailureException("Unable to build project for: " + each, e);
-                } catch (DependencyResolutionException e) {
-                    throw new MojoFailureException("Unable to resolve dependencies", e);
-                }
+            } catch (Exception e) {
+                // skip
             }
         }
     }
@@ -248,16 +130,10 @@ public class CreateMojo extends AbstractMojo {
         try {
             FileInputStream in = new FileInputStream(artifact.getFile());
             try {
-
                 FileOutputStream out = new FileOutputStream(dest);
 
                 try {
-                    byte[] buf = new byte[1024];
-                    int len = -1;
-
-                    while ((len = in.read(buf)) >= 0) {
-                        out.write(buf, 0, len);
-                    }
+                    copyContent(in, out);
                 } finally {
                     out.close();
                 }
@@ -326,84 +202,6 @@ public class CreateMojo extends AbstractMojo {
         }
     }
 
-    private void addFractions() throws MojoFailureException {
-        Set<Artifact> artifacts = this.project.getArtifacts();
-
-        List<org.eclipse.aether.artifact.Artifact> fractions = new ArrayList<>();
-
-        for (Artifact each : artifacts) {
-            ArtifactRequest request = new ArtifactRequest();
-            org.eclipse.aether.artifact.DefaultArtifact artifact = new org.eclipse.aether.artifact.DefaultArtifact(each.getGroupId(), each.getArtifactId(), "fraction", "zip", each.getVersion());
-            request.setArtifact(artifact);
-            request.setRepositories(remoteRepositories());
-            try {
-                ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
-                fractions.add(result.getArtifact());
-            } catch (ArtifactResolutionException e) {
-                // skip
-            }
-        }
-
-        for (org.eclipse.aether.artifact.Artifact each : fractions) {
-            try {
-                expandFraction(each);
-            } catch (IOException e) {
-                throw new MojoFailureException("error expanding feature-pack", e);
-            }
-        }
-    }
-
-    private static final String MODULE_PREFIX = "modules/system/layers/base/";
-    private static final String MODULE_SUFFIX = "/main/module.xml";
-
-    private void expandFraction(org.eclipse.aether.artifact.Artifact artifact) throws IOException {
-
-        ZipFile zipFile = new ZipFile(artifact.getFile());
-        Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-        while (entries.hasMoreElements()) {
-            ZipEntry each = entries.nextElement();
-
-            File fsEach = new File(this.dir, each.getName());
-
-            if (each.isDirectory()) {
-                fsEach.mkdirs();
-                continue;
-            }
-
-            if (each.getName().startsWith(MODULE_PREFIX) && each.getName().endsWith(MODULE_SUFFIX)) {
-                String moduleName = each.getName().substring(MODULE_PREFIX.length(), each.getName().length() - MODULE_SUFFIX.length());
-
-                moduleName = moduleName.replaceAll("/", ".") + ":main";
-                this.fractionModules.add( moduleName );
-            }
-
-            FileOutputStream out = new FileOutputStream(fsEach);
-            try {
-                InputStream in = zipFile.getInputStream(each);
-                try {
-
-                    byte[] buf = new byte[1024];
-                    int len = -1;
-
-                    while ((len = in.read(buf)) >= 0) {
-                        out.write(buf, 0, len);
-                    }
-                } finally {
-                    in.close();
-                }
-            } finally {
-                out.close();
-            }
-
-            if (fsEach.getName().equals("module.xml")) {
-                addTransitiveModules(fsEach);
-            }
-        }
-    }
-
-    private final String TARGET_NAME_PREFIX = "target-name=\"";
-
     private void addTransitiveModules(File moduleXml) {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(moduleXml)));
@@ -414,12 +212,12 @@ public class CreateMojo extends AbstractMojo {
                 while ((line = in.readLine()) != null) {
                     line = line.trim();
 
-                    if ( line.startsWith( "<module-alias" ) ) {
-                        int start = line.indexOf( TARGET_NAME_PREFIX );
-                        if ( start > 0 ) {
-                            int end = line.indexOf( "\"", start + TARGET_NAME_PREFIX.length() );
-                            if ( end >= 0 ) {
-                                String moduleName = line.substring( start + TARGET_NAME_PREFIX.length(), end );
+                    if (line.startsWith("<module-alias")) {
+                        int start = line.indexOf(TARGET_NAME_PREFIX);
+                        if (start > 0) {
+                            int end = line.indexOf("\"", start + TARGET_NAME_PREFIX.length());
+                            if (end >= 0) {
+                                String moduleName = line.substring(start + TARGET_NAME_PREFIX.length(), end);
                                 addTransitiveModule(moduleName);
                                 break;
                             }
@@ -433,7 +231,7 @@ public class CreateMojo extends AbstractMojo {
                             int end = line.indexOf("\"", start + 1);
                             if (end > 0) {
                                 String moduleName = line.substring(start + 1, end);
-                                if ( ! line.contains( "optional=\"true\"" ) ) {
+                                if (!line.contains("optional=\"true\"")) {
                                     addTransitiveModule(moduleName);
                                 }
                             }
@@ -467,22 +265,7 @@ public class CreateMojo extends AbstractMojo {
                     if (each.getName().equals(search)) {
                         File outFile = new File(this.dir, search);
                         outFile.getParentFile().mkdirs();
-                        InputStream in = zip.getInputStream(each);
-                        try {
-                            FileOutputStream out = new FileOutputStream(outFile);
-                            try {
-                                byte[] buf = new byte[1024];
-                                int len = -1;
-
-                                while ((len = in.read(buf)) >= 0) {
-                                    out.write(buf, 0, len);
-                                }
-                            } finally {
-                                out.close();
-                            }
-                        } finally {
-                            in.close();
-                        }
+                        copyFileFromZip(zip, each, outFile);
                         this.modules.add(moduleName);
                         addTransitiveModules(outFile);
                         return;
@@ -549,23 +332,7 @@ public class CreateMojo extends AbstractMojo {
                 if (each.isDirectory()) {
                     fsEach.mkdir();
                 } else {
-                    FileOutputStream out = new FileOutputStream(fsEach);
-                    try {
-                        InputStream in = jarFile.getInputStream(each);
-                        try {
-
-                            byte[] buf = new byte[1024];
-                            int len = -1;
-
-                            while ((len = in.read(buf)) >= 0) {
-                                out.write(buf, 0, len);
-                            }
-                        } finally {
-                            in.close();
-                        }
-                    } finally {
-                        out.close();
-                    }
+                    copyFileFromZip(jarFile, each, fsEach);
                 }
             }
         }
@@ -606,12 +373,7 @@ public class CreateMojo extends AbstractMojo {
             try {
                 FileOutputStream out = new FileOutputStream(appFile);
                 try {
-                    byte[] buf = new byte[1024];
-                    int len = -1;
-
-                    while ((len = in.read(buf)) >= 0) {
-                        out.write(buf, 0, len);
-                    }
+                    copyContent(in, out);
                 } finally {
                     out.close();
                 }
@@ -620,7 +382,6 @@ public class CreateMojo extends AbstractMojo {
             }
         } catch (IOException e) {
             throw new MojoFailureException("Error copying project artifact", e);
-
         }
     }
 
@@ -667,7 +428,6 @@ public class CreateMojo extends AbstractMojo {
         String rootPath = this.dir.getAbsolutePath();
         String entryPath = entry.getAbsolutePath();
 
-
         if (!rootPath.equals(entryPath)) {
             String jarPath = entryPath.substring(rootPath.length() + 1);
             if (entry.isDirectory()) {
@@ -684,12 +444,7 @@ public class CreateMojo extends AbstractMojo {
         } else {
             FileInputStream in = new FileInputStream(entry);
             try {
-                byte[] buf = new byte[1024];
-                int len = -1;
-
-                while ((len = in.read(buf)) >= 0) {
-                    out.write(buf, 0, len);
-                }
+                copyContent(in, out);
             } finally {
                 in.close();
             }
@@ -708,120 +463,49 @@ public class CreateMojo extends AbstractMojo {
         StringBuilder modules = new StringBuilder();
         boolean first = true;
 
-        for ( String each : this.fractionModules ) {
-            if ( ! first ) {
-                modules.append( "," );
+        for (String each : this.fractionModules) {
+            if (!first) {
+                modules.append(",");
             }
 
-            modules.append( each );
+            modules.append(each);
             first = false;
         }
-        attrs.putValue("Feature-Pack-Modules", modules.toString() );
+        attrs.putValue("Feature-Pack-Modules", modules.toString());
 
         return manifest;
     }
 
+    final class FractionExpander implements ExceptionConsumer<org.eclipse.aether.artifact.Artifact> {
+        @Override
+        public void accept(org.eclipse.aether.artifact.Artifact artifact) throws Exception {
+            ZipFile zipFile = new ZipFile(artifact.getFile());
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-    private List<RemoteRepository> remoteRepositories() {
-        List<RemoteRepository> repos = new ArrayList<>();
+            while (entries.hasMoreElements()) {
+                ZipEntry each = entries.nextElement();
 
-        for (ArtifactRepository each : this.remoteRepositories) {
-            RemoteRepository.Builder builder = new RemoteRepository.Builder(each.getId(), "default", each.getUrl());
-            repos.add(builder.build());
-        }
+                File fsEach = new File(dir, each.getName());
 
-        return repos;
-    }
-
-    /*
-    private void addFeaturePacks() throws MojoFailureException {
-        Set<Artifact> artifacts = this.project.getArtifacts();
-
-        List<org.eclipse.aether.artifact.Artifact> packs = new ArrayList<>();
-
-        for ( Artifact each : artifacts ) {
-            ArtifactRequest request = new ArtifactRequest();
-            org.eclipse.aether.artifact.DefaultArtifact artifact = new org.eclipse.aether.artifact.DefaultArtifact(each.getGroupId(), each.getArtifactId(), "feature-pack", "zip", each.getVersion());
-            request.setArtifact(artifact);
-            request.setRepositories( remoteRepositories() );
-            try {
-                ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
-                packs.add(result.getArtifact());
-            } catch (ArtifactResolutionException e) {
-                // skip
-            }
-        }
-
-        for ( org.eclipse.aether.artifact.Artifact each : packs ) {
-            try {
-                expandFeaturePack(each);
-            } catch (IOException e) {
-                throw new MojoFailureException("error expanding feature-pack", e );
-            }
-        }
-    }
-
-
-
-    private void recordFeaturePackModuleNam(ZipFile zipFile, ZipEntry entry) throws IOException {
-        BufferedReader in = new BufferedReader( new InputStreamReader( zipFile.getInputStream(entry) ) );
-
-        try {
-
-            String line = null;
-
-            while ( ( line = in.readLine() ) != null ) {
-                line = line.trim();
-                if ( line.equals( "" ) || line.startsWith( "//" ) ) {
+                if (each.isDirectory()) {
+                    fsEach.mkdirs();
                     continue;
                 }
-                this.featurePackModules.add(line);
+
+                if (each.getName().startsWith(MODULE_PREFIX) && each.getName().endsWith(MODULE_SUFFIX)) {
+                    String moduleName = each.getName().substring(MODULE_PREFIX.length(), each.getName().length() - MODULE_SUFFIX.length());
+
+                    moduleName = moduleName.replaceAll("/", ".") + ":main";
+                    fractionModules.add(moduleName);
+                }
+
+                copyFileFromZip(zipFile, each, fsEach);
+
+                if (fsEach.getName().equals("module.xml")) {
+                    addTransitiveModules(fsEach);
+                }
             }
-        } finally {
-            in.close();
-        }
-
-    }
-
-
-
-
-    private String createPath(Artifact artifact) {
-
-        String path = artifact.getGroupId().replaceAll("\\.", File.separator);
-
-        path = path + File.separator + artifact.getArtifactId();
-        path = path + File.separator + artifact.getVersion();
-        path = path + File.separator + artifact.getFile().getName();
-
-        return path;
-    }
-
-
-
-    private void setupDirectory() {
-        this.dir = new File(this.projectBuildDir, "wildfly-boot-archive");
-        if (!dir.exists()) {
-            dir.mkdirs();
-        } else {
-            emptyDir(dir);
         }
     }
 
-    private void emptyDir(File dir) {
-        File[] children = dir.listFiles();
-
-        for (int i = 0; i < children.length; ++i) {
-            deleteFile(children[i]);
-        }
-    }
-
-    private void deleteFile(File file) {
-        if (file.isDirectory()) {
-            emptyDir(file);
-        }
-
-        file.delete();
-    }
-    */
 }
