@@ -37,7 +37,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        setupFeaturePacks();
+        setupFeaturePacks(this.resolver);
         processFractions(this.resolver, new FractionAnalyzer());
         display();
     }

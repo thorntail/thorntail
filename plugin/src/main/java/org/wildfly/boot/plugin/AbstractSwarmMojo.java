@@ -78,9 +78,11 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     protected Set<Artifact> featurePackArtifacts = new HashSet<>();
     protected Set<ArtifactSpec> gavs = new HashSet<>();
 
-    protected void setupFeaturePacks() throws MojoFailureException {
+    protected void setupFeaturePacks(ArtifactResolver resolver) throws MojoFailureException {
         for (Artifact each : this.project.getArtifacts()) {
-            if (each.getArtifactId().contains("wildfly-boot")) {
+            org.eclipse.aether.artifact.Artifact resultArtifact = resolveFraction(resolver, each);
+
+            if (resultArtifact != null) {
                 try {
                     ProjectBuildingResult buildingResult = buildProject(each);
 
@@ -110,15 +112,9 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         List<org.eclipse.aether.artifact.Artifact> fractions = new ArrayList<>();
 
         for (Artifact each : artifacts) {
-            ArtifactRequest request = new ArtifactRequest();
-            org.eclipse.aether.artifact.DefaultArtifact artifact = new org.eclipse.aether.artifact.DefaultArtifact(each.getGroupId(), each.getArtifactId(), "fraction", "zip", each.getVersion());
-            request.setArtifact(artifact);
-            request.setRepositories(remoteRepositories());
-            try {
-                ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
-                fractions.add(result.getArtifact());
-            } catch (ArtifactResolutionException e) {
-                // skip
+            org.eclipse.aether.artifact.Artifact resultArtifact = resolveFraction(resolver, each);
+            if (resultArtifact != null) {
+                fractions.add(resultArtifact);
             }
         }
 
@@ -129,6 +125,23 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         } catch (Exception e) {
             throw new MojoFailureException("Unable to process fractions", e);
         }
+    }
+
+    protected org.eclipse.aether.artifact.Artifact resolveFraction(ArtifactResolver resolver, Artifact artifact) {
+        ArtifactRequest request = new ArtifactRequest();
+        org.eclipse.aether.artifact.DefaultArtifact aetherArtifact
+                = new org.eclipse.aether.artifact.DefaultArtifact(artifact.getGroupId(), artifact.getArtifactId(), "fraction", "zip", artifact.getVersion());
+        request.setArtifact(aetherArtifact);
+        request.setRepositories(remoteRepositories());
+
+        try {
+            ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
+            return result.getArtifact();
+        } catch (ArtifactResolutionException e) {
+            // skip
+        }
+
+        return null;
     }
 
     protected ProjectBuildingResult buildProject(Artifact artifact) throws Exception {

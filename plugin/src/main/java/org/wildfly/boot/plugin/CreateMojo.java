@@ -58,7 +58,7 @@ public class CreateMojo extends AbstractSwarmMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        setupFeaturePacks();
+        setupFeaturePacks(this.resolver);
         setupFeaturePackArtifacts();
         setupDirectory();
         addJBossModules();
