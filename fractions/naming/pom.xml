@@ -75,8 +75,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-core-feature-pack</artifactId>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-web-feature-pack</artifactId>
             <type>zip</type>
             <scope>provided</scope>
             <exclusions>
