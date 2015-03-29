@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -47,10 +48,12 @@ import org.eclipse.aether.impl.ArtifactResolver;
 )
 public class CreateMojo extends AbstractSwarmMojo {
 
+    private static final String MAIN_SLOT = "main";
+
     @Inject
     private ArtifactResolver resolver;
 
-    private Set<String> modules = new HashSet<>();
+    private Map<String, List<String>> modules = new HashMap<>();
 
     private List<String> fractionModules = new ArrayList();
 
@@ -232,7 +235,15 @@ public class CreateMojo extends AbstractSwarmMojo {
                             if (end > 0) {
                                 String moduleName = line.substring(start + 1, end);
                                 if (!line.contains("optional=\"true\"")) {
-                                    addTransitiveModule(moduleName);
+                                    int slotStart = line.indexOf("slot=\"");
+                                    if (slotStart > 0) {
+                                        slotStart += 6;
+                                        int slotEnd = line.indexOf("\"", slotStart + 1);
+                                        String slotName = line.substring(slotStart, slotEnd);
+                                        addTransitiveModule(moduleName, slotName);
+                                    } else {
+                                        addTransitiveModule(moduleName);
+                                    }
                                 }
                             }
                         }
@@ -248,11 +259,15 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addTransitiveModule(String moduleName) {
-        if (this.modules.contains(moduleName)) {
+        addTransitiveModule(moduleName, MAIN_SLOT);
+    }
+
+    private void addTransitiveModule(String moduleName, String slot) {
+        if (this.modules.containsKey(moduleName) && this.modules.get(moduleName).contains(slot)) {
             return;
         }
 
-        String search = "modules/system/layers/base/" + moduleName.replaceAll("\\.", "/") + "/main/module.xml";
+        String search = "modules/system/layers/base/" + moduleName.replaceAll("\\.", "/") + "/" + slot + "/module.xml";
 
         for (Artifact pack : this.featurePacks) {
             try {
@@ -266,7 +281,9 @@ public class CreateMojo extends AbstractSwarmMojo {
                         File outFile = new File(this.dir, search);
                         outFile.getParentFile().mkdirs();
                         copyFileFromZip(zip, each, outFile);
-                        this.modules.add(moduleName);
+                        List<String> slots = new ArrayList<>();
+                        slots.add(slot);
+                        this.modules.put(moduleName, slots);
                         addTransitiveModules(outFile);
                         return;
                     }
