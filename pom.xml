@@ -46,9 +46,10 @@
     </licenses>
 
     <properties>
-        <version.wildfly-core>1.0.0.Alpha19</version.wildfly-core>
-        <version.wildfly>9.0.0.Alpha2-SNAPSHOT</version.wildfly>
+        <version.wildfly>9.0.0.CR1-SNAPSHOT</version.wildfly>
+<!--
         <version.jboss-modules>1.4.1.Final</version.jboss-modules>
+-->
         <maven.min.version>3.2.1</maven.min.version>
 
         <!-- Surefire args -->
@@ -181,6 +182,7 @@
 
       <module>bootstrap</module>
       <module>container</module>
+      <module>shrinkwrap</module>
 
       <module>fractions</module>
 

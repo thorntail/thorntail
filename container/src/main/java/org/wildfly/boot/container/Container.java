@@ -49,6 +49,10 @@ public class Container {
     }
 
     public void start() throws Exception {
+        start( new DefaultDeployment() );
+    }
+
+    public void start(Deployment deployment) throws Exception {
         this.container = new SelfContainedContainer();
 
         applyDefaults();
@@ -69,7 +73,7 @@ public class Container {
 
         list.add(deploymentAdd);
 
-        this.container.start(list, Content.CONTENT);
+        this.container.start(list, deployment.getContent() );
     }
 
     private void applyDefaults() throws Exception {

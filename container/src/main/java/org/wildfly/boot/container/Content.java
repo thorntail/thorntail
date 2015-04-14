@@ -10,7 +10,7 @@ public class Content {
 
     public static File CONTENT;
 
-    public static void setup(ClassLoader cl) throws IOException {
+    public static void setup() throws IOException {
         CONTENT = new File( System.getProperty( "wildfly.boot.app" ) );
     }
 }

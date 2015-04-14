@@ -46,6 +46,9 @@
         org.jboss.resteasy.resteasy-jackson2-provider
         org.jboss.resteasy.resteasy-json-p-provider
       </extra-modules>
+      <export-modules>
+        javax.ws.rs.api
+      </export-modules>
     </properties>
 
     <build>
@@ -58,10 +61,12 @@
     </build>
 
     <dependencies>
+<!--
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-bean-validation</artifactId>
         </dependency>
+-->
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-ee</artifactId>
@@ -86,18 +91,22 @@
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-security</artifactId>
         </dependency>
+<!--
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-transactions</artifactId>
         </dependency>
+-->
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-undertow</artifactId>
         </dependency>
+<!--
         <dependency>
           <groupId>org.wildfly.boot</groupId>
           <artifactId>wildfly-boot-weld</artifactId>
         </dependency>
+-->
 
 
         <dependency>
