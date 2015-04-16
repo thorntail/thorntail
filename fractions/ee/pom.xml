@@ -25,17 +25,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.boot</groupId>
-        <artifactId>wildfly-boot-fractions</artifactId>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fractions</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.wildfly.boot</groupId>
-    <artifactId>wildfly-boot-ee</artifactId>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm-ee</artifactId>
 
-    <name>WildFly Boot: EE</name>
-    <description>WildFly Boot: EE</description>
+    <name>WildFly Swarm: EE</name>
+    <description>WildFly Swarm: EE</description>
 
     <packaging>jar</packaging>
 
@@ -46,16 +46,16 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-fraction-plugin</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-fraction-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-container</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-container</artifactId>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>

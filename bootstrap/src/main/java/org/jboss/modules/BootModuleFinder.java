@@ -1,12 +1,15 @@
 package org.jboss.modules;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 import org.jboss.modules.filter.PathFilter;
 import org.jboss.modules.filter.PathFilters;
@@ -118,6 +121,21 @@ public class BootModuleFinder implements ModuleFinder {
                     null,
                     ModuleIdentifier.create( parts[0], parts[1] ),
                     false));
+        }
+
+        JarFile rootJar = Util.rootJar();
+        ZipEntry depsTxt = rootJar.getEntry("dependencies.txt");
+
+        if ( depsTxt != null ) {
+            BufferedReader depsIn = new BufferedReader( new InputStreamReader( rootJar.getInputStream( depsTxt ) ) );
+
+            String line = null;
+
+            while ( ( line = depsIn.readLine() ) != null ) {
+                ResourceLoader loader = ArtifactLoaderFactory.INSTANCE.getLoader(line.trim());
+                System.err.println( "ADD: " + line.trim() + " -> " + loader );
+                builder.addResourceRoot( ResourceLoaderSpec.createResourceLoaderSpec( loader ) );
+            }
         }
 
         ModuleSpec moduleSpec = builder.create();

@@ -25,17 +25,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.boot</groupId>
-        <artifactId>wildfly-boot-parent</artifactId>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-parent</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.wildfly.boot</groupId>
-    <artifactId>wildfly-boot-fractions</artifactId>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm-fractions</artifactId>
 
-    <name>WildFly Boot: Fractions</name>
-    <description>WildFly Boot: Fractions</description>
+    <name>WildFly Swarm: Fractions</name>
+    <description>WildFly Swarm: Fractions</description>
 
     <packaging>pom</packaging>
 
@@ -58,8 +58,8 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.wildfly.boot</groupId>
-                    <artifactId>wildfly-boot-fraction-plugin</artifactId>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>wildfly-swarm-fraction-plugin</artifactId>
                     <version>1.0.0.Alpha1-SNAPSHOT</version>
                     <executions>
                       <execution>

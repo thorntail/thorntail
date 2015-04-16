@@ -1,7 +1,7 @@
 
-# Wildfly-Boot
+# Wildfly-Swarm
 
-Wildfly-Boot aims to provide a mechanism for building
+Wildfly-Swarm aims to provide a mechanism for building
 applications as *fat jars*, with just enough of the
 Wildfly application server wrapped around it to support
 each application's use-case.
@@ -11,9 +11,9 @@ each application's use-case.
 In a normal WAR-based maven `pom.xml`, simply add the following
 
     <plugin>
-      <groupId>org.wildfly.boot</groupId>
-      <artifactId>wildfly-boot-plugin</artifactId>
-      <version>${version.wildfly-boot}</version>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-plugin</artifactId>
+      <version>${version.wildfly-swarm}</version>
       <executions>
         <execution>
           <phase>package</phase>
@@ -25,14 +25,14 @@ In a normal WAR-based maven `pom.xml`, simply add the following
     </plugin>
 
 This will take the `.war` file normally created by your build, and wrap
-it in the wildfly-boot mechanisms.
+it in the wildfly-swarm mechanisms.
 
 If you normally produce `myapp-1.0.war`, in your `target/` directory will
-then also be present a `myapp-1.0-boot.jar`.
+then also be present a `myapp-1.0-swarm.jar`.
 
 In order to specify the portions of the Wildfly AS your application needs,
 your `pom.xml` should specify some of the following dependencies within
-the `org.wildfly.boot` Maven group-id:
+the `org.wildfly.swarm` Maven group-id:
 
 * bean-validation
 * ee
@@ -64,10 +64,10 @@ specified through your `MANIFEST.MF` inside your `.war`.
 
     package org.mycompany.myapp;
 
-    import org.wildfly.boot.container.Container;
-    import org.wildfly.boot.container.SocketBindingGroup;
-    import org.wildfly.boot.logging.LoggingSubsystem;
-    import org.wildfly.boot.undertow.UndertowSubsystem;
+    import org.wildfly.swarm.container.Container;
+    import org.wildfly.swarm.container.SocketBindingGroup;
+    import org.wildfly.swarm.logging.LoggingSubsystem;
+    import org.wildfly.swarm.undertow.UndertowSubsystem;
     
     public class MyMain {
     
@@ -92,8 +92,8 @@ default logging configuration:
 
     package org.mycompany.myapp;
 
-    import org.wildfly.boot.container.Container;
-    import org.wildfly.boot.logging.LoggingSubsystem;
+    import org.wildfly.swarm.container.Container;
+    import org.wildfly.swarm.logging.LoggingSubsystem;
 
     public class MyMain {
     
@@ -125,11 +125,11 @@ the desired `Main-Class` inside your `.war.
         </configuration>
       </plugin>
 
-# Running the `-boot.jar`
+# Running the `-swarm.jar`
 
-The resulting `-boot.jar` is fully self-contained and can be executed using a
+The resulting `-swarm.jar` is fully self-contained and can be executed using a
 `java -jar ...` commandline such as:
 
-    java -jar myapp-1.0-boot.jar
+    java -jar myapp-1.0-swarm.jar
 
 

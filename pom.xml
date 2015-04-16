@@ -30,8 +30,8 @@
         <version>16</version>
     </parent>
 
-    <groupId>org.wildfly.boot</groupId>
-    <artifactId>wildfly-boot-parent</artifactId>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm-parent</artifactId>
     <version>1.0.0.Alpha1-SNAPSHOT</version>
 
     <name>WildFly Boot: Parent</name>
@@ -72,68 +72,68 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-bootstrap</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-bootstrap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-container</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-container</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-bean-validation</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-bean-validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-ee</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-ee</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-io</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-io</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-jaxrs</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-jaxrs</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-logging</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-logging</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-naming</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-naming</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-request-controller</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-request-controller</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-security</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-security</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-transactions</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-transactions</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-undertow</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-undertow</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-weld</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-weld</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

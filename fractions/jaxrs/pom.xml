@@ -25,17 +25,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.boot</groupId>
-        <artifactId>wildfly-boot-fractions</artifactId>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fractions</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.wildfly.boot</groupId>
-    <artifactId>wildfly-boot-jaxrs</artifactId>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm-jaxrs</artifactId>
 
-    <name>WildFly Boot: JAX-RS</name>
-    <description>WildFly Boot: JAX-RS</description>
+    <name>WildFly Swarm: JAX-RS</name>
+    <description>WildFly Swarm: JAX-RS</description>
 
     <packaging>jar</packaging>
 
@@ -54,60 +54,41 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-fraction-plugin</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-fraction-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
-<!--
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-bean-validation</artifactId>
-        </dependency>
--->
-        <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-ee</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-ee</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-io</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-io</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-logging</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-logging</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-naming</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-naming</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-request-controller</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-request-controller</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-security</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-security</artifactId>
         </dependency>
-<!--
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-transactions</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-undertow</artifactId>
         </dependency>
--->
-        <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-undertow</artifactId>
-        </dependency>
-<!--
-        <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-weld</artifactId>
-        </dependency>
--->
-
 
         <dependency>
           <groupId>org.jboss.resteasy</groupId>
@@ -115,8 +96,8 @@
         </dependency>
 
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-container</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-container</artifactId>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>
@@ -140,8 +121,8 @@
           <artifactId>jboss-modules</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-bootstrap</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-bootstrap</artifactId>
         </dependency>
     </dependencies>
 

@@ -25,17 +25,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.boot</groupId>
-        <artifactId>wildfly-boot-fractions</artifactId>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fractions</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.wildfly.boot</groupId>
-    <artifactId>wildfly-boot-request-controller</artifactId>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm-request-controller</artifactId>
 
-    <name>WildFly Boot: Request Controller</name>
-    <description>WildFly Boot: Request Controller</description>
+    <name>WildFly Swarm: Request Controller</name>
+    <description>WildFly Swarm: Request Controller</description>
 
     <packaging>jar</packaging>
 
@@ -46,16 +46,16 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.wildfly.boot</groupId>
-                <artifactId>wildfly-boot-fraction-plugin</artifactId>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-fraction-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-container</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-container</artifactId>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>

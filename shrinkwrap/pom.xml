@@ -25,17 +25,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.boot</groupId>
-        <artifactId>wildfly-boot-parent</artifactId>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-parent</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>org.wildfly.boot</groupId>
-    <artifactId>wildfly-boot-shrinkwrap</artifactId>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm-shrinkwrap</artifactId>
 
-    <name>WildFly Boot: Shrinkwrap</name>
-    <description>WildFly Boot: Shrinkwrap</description>
+    <name>WildFly Swarm: Shrinkwrap</name>
+    <description>WildFly Swarm: Shrinkwrap</description>
 
     <packaging>jar</packaging>
 
@@ -62,8 +62,8 @@
 
     <dependencies>
         <dependency>
-          <groupId>org.wildfly.boot</groupId>
-          <artifactId>wildfly-boot-container</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-container</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>

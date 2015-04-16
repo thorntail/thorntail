@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -43,8 +44,8 @@ import org.eclipse.aether.impl.ArtifactResolver;
 @Mojo(
         name = "create",
         defaultPhase = LifecyclePhase.PACKAGE,
-        requiresDependencyCollection = ResolutionScope.COMPILE,
-        requiresDependencyResolution = ResolutionScope.COMPILE
+        requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME,
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME
 )
 public class CreateMojo extends AbstractSwarmMojo {
 
@@ -71,6 +72,7 @@ public class CreateMojo extends AbstractSwarmMojo {
         addMavenRepository();
 
         addProjectArtifact();
+        addProjectDependenciesToRepository();
         createJar();
     }
 
@@ -400,6 +402,30 @@ public class CreateMojo extends AbstractSwarmMojo {
         } catch (IOException e) {
             throw new MojoFailureException("Error copying project artifact", e);
         }
+    }
+
+    private void addProjectDependenciesToRepository() throws MojoFailureException {
+
+        File depsTxt = new File(this.dir, "dependencies.txt");
+        try {
+            FileWriter out = new FileWriter(depsTxt);
+            try {
+                Set<Artifact> dependencies = this.project.getArtifacts();
+
+                for (Artifact each : dependencies) {
+                    String scope = each.getScope();
+                    if (scope.equals("compile") || scope.equals("runtime")) {
+                        addArtifact(each);
+                        out.write( each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n" );
+                    }
+                }
+            } finally {
+                out.close();
+            }
+        } catch (IOException e) {
+            throw new MojoFailureException("Unable to create dependencies.txt", e);
+        }
+
     }
 
     private void createJar() throws MojoFailureException {
