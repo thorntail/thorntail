@@ -405,6 +405,9 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addProjectDependenciesToRepository() throws MojoFailureException {
+        if ( ! this.project.getPackaging().equals( "jar" ) ) {
+            return;
+        }
 
         File depsTxt = new File(this.dir, "dependencies.txt");
         try {
