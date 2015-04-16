@@ -22,13 +22,14 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.3" name="org.wildfly.boot.container">
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.container">
     <resources>
-        <artifact name="${org.wildfly.boot:wildfly-boot-container}"/>
+        <artifact name="${org.wildfly.swarm:wildfly-swarm-container}"/>
     </resources>
 
     <dependencies>
       <module name="org.jboss.modules"/>
+      <module name="org.jboss.vfs"/>
       <module name="org.jboss.logmanager" export="true"/>
       <module name="org.jboss.as.server"/>
       <module name="org.jboss.as.controller" export="true"/>

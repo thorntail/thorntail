@@ -11,9 +11,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
-import org.jboss.modules.filter.PathFilter;
 import org.jboss.modules.filter.PathFilters;
-import org.wildfly.boot.bootstrap.Main;
 
 /**
  * @author Bob McWhirter
@@ -101,7 +99,8 @@ public class BootModuleFinder implements ModuleFinder {
             ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
             builder.addResourceRoot(resourceLoaderSpec);
 
-            System.setProperty( "wildfly.boot.app", tmp.getAbsolutePath() );
+            System.setProperty( "wildfly.swarm.app.path", tmp.getAbsolutePath() );
+            System.setProperty( "wildfly.swarm.app.name", artifactName );
 
         } finally {
             in.close();
@@ -109,7 +108,7 @@ public class BootModuleFinder implements ModuleFinder {
 
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.boot.container"), false));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.swarm.container"), false));
 
         String modulesStr = manifest.getMainAttributes().getValue("Feature-Pack-Modules");
         String[] modules = modulesStr.split(",");
@@ -133,7 +132,6 @@ public class BootModuleFinder implements ModuleFinder {
 
             while ( ( line = depsIn.readLine() ) != null ) {
                 ResourceLoader loader = ArtifactLoaderFactory.INSTANCE.getLoader(line.trim());
-                System.err.println( "ADD: " + line.trim() + " -> " + loader );
                 builder.addResourceRoot( ResourceLoaderSpec.createResourceLoaderSpec( loader ) );
             }
         }

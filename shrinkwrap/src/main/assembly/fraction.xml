@@ -8,7 +8,7 @@
   <files>
     <file>
       <source>./src/main/module/module.xml</source>
-      <outputDirectory>modules/system/layers/base/org/wildfly/boot/shrinkwrap/main</outputDirectory>
+      <outputDirectory>modules/system/layers/base/org/wildfly/swarm/shrinkwrap/main</outputDirectory>
     </file>
   </files>
 </assembly>

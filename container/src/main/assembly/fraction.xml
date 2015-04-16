@@ -8,7 +8,7 @@
   <files>
     <file>
       <source>./src/main/module/module.xml</source>
-      <outputDirectory>modules/system/layers/base/org/wildfly/boot/container/main</outputDirectory>
+      <outputDirectory>modules/system/layers/base/org/wildfly/swarm/container/main</outputDirectory>
     </file>
   </files>
 </assembly>
