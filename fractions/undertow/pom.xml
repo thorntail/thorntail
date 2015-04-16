@@ -55,15 +55,12 @@
     <dependencies>
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-container</artifactId>
-          <exclusions>
-            <exclusion>
-              <groupId>*</groupId>
-              <artifactId>*</artifactId>
-            </exclusion>
-          </exclusions>
+          <artifactId>wildfly-swarm-bootstrap</artifactId>
         </dependency>
-
+        <dependency>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-container</artifactId>
+        </dependency>
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-logging</artifactId>
@@ -86,29 +83,38 @@
         </dependency>
 
         <dependency>
-          <groupId>org.jboss</groupId>
-          <artifactId>jboss-dmr</artifactId>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
           <groupId>org.wildfly.core</groupId>
           <artifactId>wildfly-controller</artifactId>
           <scope>provided</scope>
         </dependency>
 
+<!--
         <dependency>
           <groupId>io.undertow</groupId>
           <artifactId>undertow-servlet</artifactId>
+        </dependency>
+-->
+        <dependency>
+          <groupId>org.jboss.spec.javax.servlet</groupId>
+          <artifactId>jboss-servlet-api_3.1_spec</artifactId>
         </dependency>
 
         <dependency>
           <groupId>org.jboss.modules</groupId>
           <artifactId>jboss-modules</artifactId>
         </dependency>
+
+<!--
         <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-bootstrap</artifactId>
+          <groupId>org.jboss</groupId>
+          <artifactId>jboss-dmr</artifactId>
+          <scope>provided</scope>
         </dependency>
+
+
+
+-->
+
 
         <dependency>
             <groupId>org.wildfly</groupId>
