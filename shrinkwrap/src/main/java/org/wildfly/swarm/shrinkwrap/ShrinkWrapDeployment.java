@@ -1,31 +1,33 @@
 package org.wildfly.swarm.shrinkwrap;
 
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
+import org.wildfly.swarm.container.DefaultDeployment;
 import org.wildfly.swarm.container.Deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author Bob McWhirter
  */
-public class ShrinkWrapDeployment implements Deployment {
+public class ShrinkWrapDeployment<T extends Archive> implements Deployment {
 
-    private final WebArchive archive;
+    final protected T archive;
 
-    public ShrinkWrapDeployment(String name) {
-        //this.archive = ShrinkWrap.create(JavaArchive.class, name);
-        this.archive = ShrinkWrap.create(WebArchive.class, name);
+    public ShrinkWrapDeployment(String name, Class<T> archiveType) {
+        this.archive = ShrinkWrap.create(archiveType, name);
     }
 
-    public WebArchive getArchive() {
+    public T getArchive() {
         return this.archive;
     }
 
@@ -35,13 +37,20 @@ public class ShrinkWrapDeployment implements Deployment {
 
     @Override
     public VirtualFile getContent() throws IOException {
-        System.err.println("classload: " + Thread.currentThread().getContextClassLoader());
         InputStream in = this.archive.as(ZipExporter.class).exportAsInputStream();
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild( this.archive.getName() );
         try {
             ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-            TempFileProvider tempFileProvider = TempFileProvider.create( "wildfly-swarm", executor );
+            TempFileProvider tempFileProvider = TempFileProvider.create("wildfly-swarm", executor);
             VFS.mountZip(in, this.archive.getName(), mountPoint, tempFileProvider);
+
+
+            DefaultDeployment.ensureJBossWebXml( mountPoint );
+
+            List<VirtualFile> children = mountPoint.getChildrenRecursively();
+            for (VirtualFile each : children ) {
+                System.err.println( "--" + each );
+            }
             return mountPoint;
         } finally {
             in.close();

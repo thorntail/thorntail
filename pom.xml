@@ -137,6 +137,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-shrinkwrap</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wildfly</groupId>
                 <artifactId>wildfly-parent</artifactId>
                 <version>${version.wildfly}</version>

@@ -29,7 +29,7 @@ public class BootModuleFinder implements ModuleFinder {
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
         if (identifier.getName().equals("APP")) {
             try {
-                return findAppModule();
+                return findAppModule(identifier.getSlot());
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new ModuleLoadException(e);
@@ -60,7 +60,17 @@ public class BootModuleFinder implements ModuleFinder {
         return moduleSpec;
     }
 
-    private ModuleSpec findAppModule() throws IOException {
+    private ModuleSpec findAppModule(String slot) throws IOException {
+        System.err.println( "find app module: " + slot );
+        if ( slot.equals( "main" ) ) {
+            return findAppModule_main();
+        } else if ( slot.equals( "dependencies" ) ) {
+            return findAppModule_dependencies();
+        }
+        return null;
+    }
+
+    private ModuleSpec findAppModule_main() throws IOException {
 
         Manifest manifest = Util.rootJar().getManifest();
         String artifactName = manifest.getMainAttributes().getValue("Application-Artifact");
@@ -99,8 +109,8 @@ public class BootModuleFinder implements ModuleFinder {
             ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
             builder.addResourceRoot(resourceLoaderSpec);
 
-            System.setProperty( "wildfly.swarm.app.path", tmp.getAbsolutePath() );
-            System.setProperty( "wildfly.swarm.app.name", artifactName );
+            System.setProperty("wildfly.swarm.app.path", tmp.getAbsolutePath());
+            System.setProperty("wildfly.swarm.app.name", artifactName);
 
         } finally {
             in.close();
@@ -109,18 +119,26 @@ public class BootModuleFinder implements ModuleFinder {
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.swarm.container"), false));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("APP", "dependencies"), false));
 
         String modulesStr = manifest.getMainAttributes().getValue("Feature-Pack-Modules");
         String[] modules = modulesStr.split(",");
-        for ( int i = 0 ; i < modules.length ; ++i ) {
-            String[] parts = modules[i].trim().split( ":" );
+        for (int i = 0; i < modules.length; ++i) {
+            String[] parts = modules[i].trim().split(":");
             builder.addDependency(DependencySpec.createModuleDependencySpec(
                     PathFilters.acceptAll(),
                     PathFilters.getMetaInfServicesFilter(),
                     null,
-                    ModuleIdentifier.create( parts[0], parts[1] ),
+                    ModuleIdentifier.create(parts[0], parts[1]),
                     false));
         }
+
+        ModuleSpec moduleSpec = builder.create();
+        return moduleSpec;
+    }
+
+    private ModuleSpec findAppModule_dependencies() throws IOException {
+        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("APP", "dependencies"));
 
         JarFile rootJar = Util.rootJar();
         ZipEntry depsTxt = rootJar.getEntry("dependencies.txt");
@@ -135,9 +153,9 @@ public class BootModuleFinder implements ModuleFinder {
                 builder.addResourceRoot( ResourceLoaderSpec.createResourceLoaderSpec( loader ) );
             }
         }
+        builder.addDependency(DependencySpec.createLocalDependencySpec());
 
         ModuleSpec moduleSpec = builder.create();
-
         return moduleSpec;
     }
 }
