@@ -56,7 +56,7 @@ public class CreateMojo extends AbstractSwarmMojo {
 
     private Map<String, List<String>> modules = new HashMap<>();
 
-    private List<String> fractionModules = new ArrayList();
+    private List<String> fractionModules = new ArrayList<>();
 
     private File dir;
 
@@ -111,7 +111,7 @@ public class CreateMojo extends AbstractSwarmMojo {
     private void collectArtifacts() throws MojoFailureException {
         for (ArtifactSpec each : this.gavs) {
             if (!collectArtifact(each)) {
-                System.err.println("unable to locate artifact: " + each);
+                getLog().error("unable to locate artifact: " + each);
             }
         }
     }
@@ -256,7 +256,7 @@ public class CreateMojo extends AbstractSwarmMojo {
                 in.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            getLog().error(e);
         }
     }
 
@@ -291,7 +291,7 @@ public class CreateMojo extends AbstractSwarmMojo {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                getLog().error(e);
             }
         }
     }

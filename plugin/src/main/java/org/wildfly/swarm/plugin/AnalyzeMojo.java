@@ -99,7 +99,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
                 in.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            getLog().error(e);
         }
     }
 
@@ -120,7 +120,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                getLog().error(e);
             }
         }
     }
@@ -135,7 +135,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
                 ZipEntry each = entries.nextElement();
 
                 if (each.getName().startsWith(MODULE_PREFIX) && each.getName().endsWith(MODULE_SUFFIX)) {
-                    System.err.println("Analyze: " + each);
+                    getLog().error("Analyze: " + each);
                     addTransitiveModules(root, zipFile, each);
                 }
             }
