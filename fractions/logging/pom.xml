@@ -40,6 +40,7 @@
     <packaging>jar</packaging>
 
     <properties>
+      <feature-pack>org.wildfly.core:wildfly-core-feature-pack</feature-pack>
       <root-module>org.jboss.as.logging</root-module>
     </properties>
 
@@ -74,6 +75,7 @@
           <scope>provided</scope>
         </dependency>
 
+<!--
         <dependency>
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-core-feature-pack</artifactId>
@@ -86,6 +88,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+-->
     </dependencies>
 
 </project>

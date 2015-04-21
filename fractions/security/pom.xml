@@ -40,6 +40,7 @@
     <packaging>jar</packaging>
 
     <properties>
+      <feature-pack>org.wildfly:wildfly-web-feature-pack</feature-pack>
       <root-module>org.jboss.as.security</root-module>
       <extra-modules>
           org.jboss.security.negotiation
@@ -77,6 +78,7 @@
           <scope>provided</scope>
         </dependency>
 
+<!--
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-web-feature-pack</artifactId>
@@ -89,6 +91,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+-->
     </dependencies>
 
 </project>

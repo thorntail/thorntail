@@ -1,9 +1,11 @@
 package org.wildfly.swarm.plugin;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -79,31 +81,68 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     protected Set<ArtifactSpec> gavs = new HashSet<>();
 
     protected void setupFeaturePacks(ArtifactResolver resolver) throws MojoFailureException {
-        for (Artifact each : this.project.getArtifacts()) {
-            org.eclipse.aether.artifact.Artifact resultArtifact = resolveFraction(resolver, each);
+        Set<Artifact> artifacts = this.project.getArtifacts();
 
-            if (resultArtifact != null) {
-                try {
-                    ProjectBuildingResult buildingResult = buildProject(each);
-
-                    DependencyResolutionResult resolutionResult = resolveProjectDependencies(buildingResult.getProject(),
-                            new DependencyFilter() {
-                                @Override
-                                public boolean accept(DependencyNode node, List<DependencyNode> parents) {
-                                    return node.getArtifact().getArtifactId().contains("feature-pack") && node.getArtifact().getExtension().equals("zip");
-                                }
-                            });
-
-                    if (resolutionResult.getDependencies() != null && resolutionResult.getDependencies().size() > 0) {
-                        for (Dependency dep : resolutionResult.getDependencies()) {
-                            this.featurePacks.add(convertAetherToMavenArtifact(dep.getArtifact(), "provided", "zip"));
-                        }
-                    }
-                } catch (Exception e) {
-                    // skip
+        for (Artifact each : artifacts) {
+            String featurePackReference = getFeaturePackReference(each);
+            if (featurePackReference != null) {
+                Artifact resultArtifact = resolveFeaturePack(resolver, featurePackReference);
+                if (resultArtifact != null) {
+                    this.featurePacks.add(resultArtifact);
+                } else {
+                    throw new MojoFailureException("Unable to resolve referenced fraction: " + featurePackReference);
                 }
             }
         }
+    }
+
+    protected Artifact resolveFeaturePack(ArtifactResolver resolver, String fractionGav) throws MojoFailureException {
+        String[] parts = fractionGav.split(":");
+        if ( parts.length != 4 ) {
+            throw new MojoFailureException( "wildfly-swarm-feature-pack.gav must contain 4 segments" );
+        }
+        ArtifactRequest request = new ArtifactRequest();
+        org.eclipse.aether.artifact.DefaultArtifact aetherArtifact
+                = new org.eclipse.aether.artifact.DefaultArtifact(parts[0], parts[1], parts[2], parts[3]);
+        request.setArtifact(aetherArtifact);
+        request.setRepositories(remoteRepositories());
+
+        try {
+            ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
+            return convertAetherToMavenArtifact( result.getArtifact(), "compile", "zip" );
+        } catch (ArtifactResolutionException e) {
+            throw new MojoFailureException( "Unable to resolve fraction: " + fractionGav, e );
+        }
+    }
+
+    protected String getFeaturePackReference(Artifact artifact) throws MojoFailureException {
+        if (artifact.getType().equals("jar")) {
+            try {
+                ZipFile zip = new ZipFile(artifact.getFile());
+                ZipEntry entry = zip.getEntry("wildfly-swarm-feature-pack.gav");
+                if (entry == null) {
+                    return null;
+                }
+                InputStream in = zip.getInputStream(entry);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                try {
+                    String line = null;
+
+                    while ((line = reader.readLine()) != null) {
+                        line = line.trim();
+                        if (line.equals("") || line.startsWith("//")) {
+                            continue;
+                        }
+                        return line;
+                    }
+                } finally {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                throw new MojoFailureException("Unable to inspect dependency: " + artifact, e);
+            }
+        }
+        return null;
     }
 
     protected void processFractions(ArtifactResolver resolver, ExceptionConsumer<org.eclipse.aether.artifact.Artifact> fractionHandler) throws MojoFailureException {
@@ -112,9 +151,14 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         List<org.eclipse.aether.artifact.Artifact> fractions = new ArrayList<>();
 
         for (Artifact each : artifacts) {
-            org.eclipse.aether.artifact.Artifact resultArtifact = resolveFraction(resolver, each);
-            if (resultArtifact != null) {
-                fractions.add(resultArtifact);
+            String fractionReference = getFractionReference(each);
+            if (fractionReference != null) {
+                org.eclipse.aether.artifact.Artifact resultArtifact = resolveFraction(resolver, fractionReference);
+                if (resultArtifact != null) {
+                    fractions.add(resultArtifact);
+                } else {
+                    throw new MojoFailureException("Unable to resolve referenced fraction: " + fractionReference);
+                }
             }
         }
 
@@ -127,10 +171,44 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
     }
 
-    protected org.eclipse.aether.artifact.Artifact resolveFraction(ArtifactResolver resolver, Artifact artifact) {
+    protected String getFractionReference(Artifact artifact) throws MojoFailureException {
+        if (artifact.getType().equals("jar")) {
+            try {
+                ZipFile zip = new ZipFile(artifact.getFile());
+                ZipEntry entry = zip.getEntry("wildfly-swarm-fraction.gav");
+                if (entry == null) {
+                    return null;
+                }
+                InputStream in = zip.getInputStream(entry);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                try {
+                    String line = null;
+
+                    while ((line = reader.readLine()) != null) {
+                        line = line.trim();
+                        if (line.equals("") || line.startsWith("//")) {
+                            continue;
+                        }
+                        return line;
+                    }
+                } finally {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                throw new MojoFailureException("Unable to inspect dependency: " + artifact, e);
+            }
+        }
+        return null;
+    }
+
+    protected org.eclipse.aether.artifact.Artifact resolveFraction(ArtifactResolver resolver, String fractionGav) throws MojoFailureException {
+        String[] parts = fractionGav.split(":");
+        if ( parts.length != 5 ) {
+            throw new MojoFailureException( "wildfly-swarm-fraction.gav must contain 5 segments" );
+        }
         ArtifactRequest request = new ArtifactRequest();
         org.eclipse.aether.artifact.DefaultArtifact aetherArtifact
-                = new org.eclipse.aether.artifact.DefaultArtifact(artifact.getGroupId(), artifact.getArtifactId(), "fraction", "zip", artifact.getVersion());
+                = new org.eclipse.aether.artifact.DefaultArtifact(parts[0], parts[1], parts[3], parts[2], parts[4]);
         request.setArtifact(aetherArtifact);
         request.setRepositories(remoteRepositories());
 
@@ -138,10 +216,8 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
             ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
             return result.getArtifact();
         } catch (ArtifactResolutionException e) {
-            // skip
+            throw new MojoFailureException( "Unable to resolve fraction: " + fractionGav, e );
         }
-
-        return null;
     }
 
     protected ProjectBuildingResult buildProject(Artifact artifact) throws Exception {

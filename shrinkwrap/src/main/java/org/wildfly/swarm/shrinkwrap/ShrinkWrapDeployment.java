@@ -3,7 +3,6 @@ package org.wildfly.swarm.shrinkwrap;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
@@ -12,7 +11,6 @@ import org.wildfly.swarm.container.Deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -44,13 +42,8 @@ public class ShrinkWrapDeployment<T extends Archive> implements Deployment {
             TempFileProvider tempFileProvider = TempFileProvider.create("wildfly-swarm", executor);
             VFS.mountZip(in, this.archive.getName(), mountPoint, tempFileProvider);
 
-
             DefaultDeployment.ensureJBossWebXml( mountPoint );
 
-            List<VirtualFile> children = mountPoint.getChildrenRecursively();
-            for (VirtualFile each : children ) {
-                System.err.println( "--" + each );
-            }
             return mountPoint;
         } finally {
             in.close();

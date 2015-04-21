@@ -61,7 +61,6 @@ public class BootModuleFinder implements ModuleFinder {
     }
 
     private ModuleSpec findAppModule(String slot) throws IOException {
-        System.err.println( "find app module: " + slot );
         if ( slot.equals( "main" ) ) {
             return findAppModule_main();
         } else if ( slot.equals( "dependencies" ) ) {

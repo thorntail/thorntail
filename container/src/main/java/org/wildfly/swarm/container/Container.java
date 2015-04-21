@@ -1,7 +1,15 @@
 package org.wildfly.swarm.container;
 
+import org.jboss.as.controller.ModelController;
+import org.jboss.as.controller.client.MessageSeverity;
+import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.controller.client.OperationMessageHandler;
+import org.jboss.as.selfcontained.ContentProvider;
 import org.jboss.as.server.SelfContainedContainer;
+import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.service.ServiceContainer;
+import org.jboss.msc.service.ServiceController;
 import org.jboss.vfs.VirtualFile;
 
 import java.util.ArrayList;
@@ -10,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CONTENT;
@@ -24,11 +34,21 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
  */
 public class Container {
 
+    private enum State {
+        NOT_STARTED,
+        STARTING,
+        STARTED,
+    }
+
     private List<Subsystem> subsystems = new ArrayList<>();
     private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
     private List<Interface> interfaces = new ArrayList<>();
 
+    private SimpleContentProvider contentProvider = new SimpleContentProvider();
+
     private SelfContainedContainer container;
+    private ModelControllerClient client;
+    private State state = State.NOT_STARTED;
 
     public Container() {
 
@@ -49,35 +69,55 @@ public class Container {
         return this;
     }
 
-    public void start() throws Exception {
-        start(new DefaultDeployment());
+    public synchronized void start() throws Exception {
+        this.state = State.STARTING;
+        try {
+            this.container = new SelfContainedContainer();
+
+            applyDefaults();
+
+            List<ModelNode> list = new ArrayList<>();
+            list.addAll(getList());
+
+            ServiceContainer serviceContainer = this.container.start(list, this.contentProvider);
+            ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
+            Executor executor = Executors.newSingleThreadExecutor();
+            this.client = controller.createClient(executor);
+            this.state = State.STARTED;
+        } catch (Exception e) {
+            this.state = State.NOT_STARTED;
+            throw e;
+        }
     }
 
-    public void start(Deployment deployment) throws Exception {
-        this.container = new SelfContainedContainer();
+    public synchronized void start(Deployment deployment) throws Exception {
+        start();
+        deploy(deployment);
+    }
 
-        applyDefaults();
+    public synchronized void deploy() throws Exception {
+        deploy( new DefaultDeployment() );
+    }
 
-        List<ModelNode> list = new ArrayList<>();
-        list.addAll(getList());
+    public synchronized void deploy(Deployment deployment) throws Exception {
+        if ( this.state != State.STARTED ) {
+            start();
+        }
+
+        VirtualFile contentFile = deployment.getContent();
+        byte[] hash = this.contentProvider.addContent(contentFile);
 
         final ModelNode deploymentAdd = new ModelNode();
 
         deploymentAdd.get(OP).set(ADD);
         deploymentAdd.get(OP_ADDR).set("deployment", deployment.getName());
-        //deploymentAdd.get(RUNTIME_NAME).set("ROOT.war");
         deploymentAdd.get(RUNTIME_NAME).set(deployment.getName());
         deploymentAdd.get(ENABLED).set(true);
 
         ModelNode content = deploymentAdd.get(CONTENT).add();
-        byte[] bytes = new byte[]{0};
-        content.get(HASH).set(bytes);
+        content.get(HASH).set(hash);
 
-        list.add(deploymentAdd);
-
-        VirtualFile contentFile = deployment.getContent();
-
-        this.container.start(list, contentFile);
+        ModelNode result = client.execute(deploymentAdd);
     }
 
     private void applyDefaults() throws Exception {

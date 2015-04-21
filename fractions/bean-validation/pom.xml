@@ -41,6 +41,7 @@
 
     <properties>
       <root-module>org.wildfly.extension.bean-validation</root-module>
+      <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
     </properties>
 
     <build>

@@ -40,6 +40,7 @@
     <packaging>jar</packaging>
 
     <properties>
+      <feature-pack>org.wildfly:wildfly-web-feature-pack</feature-pack>
       <root-module>org.wildfly.extension.undertow</root-module>
     </properties>
 
@@ -116,6 +117,7 @@
 -->
 
 
+<!--
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-web-feature-pack</artifactId>
@@ -128,6 +130,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+-->
     </dependencies>
 
 </project>
