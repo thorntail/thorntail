@@ -48,7 +48,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
 
     private void addTransitiveModules(ModuleNode parent, ZipFile zipFile, ZipEntry moduleXml) {
         String currentName = moduleXml.getName().substring(MODULE_PREFIX.length(), moduleXml.getName().length() - MODULE_SUFFIX.length());
-        currentName = currentName.replaceAll("/", ".");
+        currentName = currentName.replace('/', '.');
 
         if (this.modules.containsKey(currentName)) {
             parent.addChild(this.modules.get(currentName));
@@ -60,8 +60,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
         parent.addChild(current);
 
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(zipFile.getInputStream(moduleXml)));
-            try {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(zipFile.getInputStream(moduleXml)))) {
 
                 String line = null;
 
@@ -95,8 +94,6 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
                     }
                 }
 
-            } finally {
-                in.close();
             }
         } catch (IOException e) {
             getLog().error(e);
