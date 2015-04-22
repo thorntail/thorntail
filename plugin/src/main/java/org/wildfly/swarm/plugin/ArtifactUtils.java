@@ -10,7 +10,7 @@ public class ArtifactUtils {
     public static String toPath(Artifact artifact) {
 
         StringBuilder path = new StringBuilder();
-        path.append(artifact.getGroupId().replaceAll("\\.", "/"));
+        path.append(artifact.getGroupId().replace('.', '/'));
         path.append("/");
         path.append(artifact.getArtifactId());
         path.append("/");

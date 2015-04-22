@@ -48,7 +48,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
 
     private void addTransitiveModules(ModuleNode parent, ZipFile zipFile, ZipEntry moduleXml) {
         String currentName = moduleXml.getName().substring(MODULE_PREFIX.length(), moduleXml.getName().length() - MODULE_SUFFIX.length());
-        currentName = currentName.replaceAll("/", ".");
+        currentName = currentName.replace('/', '.');
 
         if (this.modules.containsKey(currentName)) {
             parent.addChild(this.modules.get(currentName));
@@ -60,8 +60,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
         parent.addChild(current);
 
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(zipFile.getInputStream(moduleXml)));
-            try {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(zipFile.getInputStream(moduleXml)))) {
 
                 String line = null;
 
@@ -95,11 +94,9 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
                     }
                 }
 
-            } finally {
-                in.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            getLog().error(e);
         }
     }
 
@@ -120,7 +117,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                getLog().error(e);
             }
         }
     }
@@ -135,7 +132,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
                 ZipEntry each = entries.nextElement();
 
                 if (each.getName().startsWith(MODULE_PREFIX) && each.getName().endsWith(MODULE_SUFFIX)) {
-                    System.err.println("Analyze: " + each);
+                    getLog().error("Analyze: " + each);
                     addTransitiveModules(root, zipFile, each);
                 }
             }

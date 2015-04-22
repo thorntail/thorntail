@@ -1,12 +1,18 @@
 package org.wildfly.swarm.plugin;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -21,7 +27,6 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import javax.inject.Inject;
 
 import org.apache.maven.artifact.Artifact;
@@ -58,12 +63,12 @@ public class CreateMojo extends AbstractSwarmMojo {
 
     private Map<String, List<String>> modules = new HashMap<>();
 
-    private List<String> fractionModules = new ArrayList();
+    private List<String> fractionModules = new ArrayList<>();
 
     @Parameter(alias="modules")
     private String[] additionalModules;
 
-    private File dir;
+    private Path dir;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -109,7 +114,7 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addMavenRepository() throws MojoFailureException {
-        File modulesDir = new File(this.dir, "modules");
+        Path modulesDir = this.dir.resolve("modules");
 
         analyzeModuleXmls(modulesDir);
         collectArtifacts();
@@ -118,7 +123,7 @@ public class CreateMojo extends AbstractSwarmMojo {
     private void collectArtifacts() throws MojoFailureException {
         for (ArtifactSpec each : this.gavs) {
             if (!collectArtifact(each)) {
-                System.err.println("unable to locate artifact: " + each);
+                getLog().error("unable to locate artifact: " + each);
             }
         }
     }
@@ -134,24 +139,12 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addArtifact(Artifact artifact) throws MojoFailureException {
-        File m2repo = new File(this.dir, "m2repo");
-        File dest = new File(m2repo, ArtifactUtils.toPath(artifact));
-
-        dest.getParentFile().mkdirs();
+        Path m2repo = this.dir.resolve("m2repo");
+        Path dest = m2repo.resolve(ArtifactUtils.toPath(artifact));
 
         try {
-            FileInputStream in = new FileInputStream(artifact.getFile());
-            try {
-                FileOutputStream out = new FileOutputStream(dest);
-
-                try {
-                    copyContent(in, out);
-                } finally {
-                    out.close();
-                }
-            } finally {
-                in.close();
-            }
+            Files.createDirectories(dest.getParent());
+            Files.copy(artifact.getFile().toPath(), dest, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new MojoFailureException("unable to add artifact: " + dest, e);
         }
@@ -179,91 +172,90 @@ public class CreateMojo extends AbstractSwarmMojo {
         return null;
     }
 
-    private void analyzeModuleXmls(File path) throws MojoFailureException {
-        if (path.isDirectory()) {
-            File[] children = path.listFiles();
-            for (int i = 0; i < children.length; ++i) {
-                analyzeModuleXmls(children[i]);
+    private void analyzeModuleXmls(final Path path) throws MojoFailureException {
+        if (Files.isDirectory(path)) {
+            try {
+                Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
+                    @Override
+                    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                        try {
+                            analyzeModuleXmls(file);
+                        } catch (MojoFailureException e) {
+                            throw new IOException(e);
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+            } catch (IOException e) {
+                throw new MojoFailureException("Failed to analyze module XML for " + path, e);
             }
-        } else if (path.getName().equals("module.xml")) {
+        } else if ("module.xml".equals(path.getFileName().toString())) {
             analyzeModuleXml(path);
         }
     }
 
-    private void analyzeModuleXml(File path) throws MojoFailureException {
+    private void analyzeModuleXml(Path path) throws MojoFailureException {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
-            try {
-                String line = null;
-
-                while ((line = in.readLine()) != null) {
-                    int start = line.indexOf("${");
-                    if (start >= 0) {
-                        int end = line.indexOf("}");
-                        if (end > 0) {
-                            String gav = line.substring(start + 2, end);
-                            this.gavs.add(new ArtifactSpec(gav));
-                        }
+            final List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+            for (String line : lines) {
+                int start = line.indexOf("${");
+                if (start >= 0) {
+                    int end = line.indexOf("}");
+                    if (end > 0) {
+                        String gav = line.substring(start + 2, end);
+                        this.gavs.add(new ArtifactSpec(gav));
                     }
                 }
-            } finally {
-                in.close();
             }
         } catch (IOException e) {
             throw new MojoFailureException("Unable to analyze: " + path, e);
         }
     }
 
-    private void addTransitiveModules(File moduleXml) {
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(moduleXml)));
-            try {
+    private void addTransitiveModules(Path moduleXml) {
+        try (BufferedReader in = Files.newBufferedReader(moduleXml, StandardCharsets.UTF_8)) {
 
-                String line = null;
+            String line = null;
 
-                while ((line = in.readLine()) != null) {
-                    line = line.trim();
+            while ((line = in.readLine()) != null) {
+                line = line.trim();
 
-                    if (line.startsWith("<module-alias")) {
-                        int start = line.indexOf(TARGET_NAME_PREFIX);
-                        if (start > 0) {
-                            int end = line.indexOf("\"", start + TARGET_NAME_PREFIX.length());
-                            if (end >= 0) {
-                                String moduleName = line.substring(start + TARGET_NAME_PREFIX.length(), end);
-                                addTransitiveModule(moduleName);
-                                break;
-                            }
+                if (line.startsWith("<module-alias")) {
+                    int start = line.indexOf(TARGET_NAME_PREFIX);
+                    if (start > 0) {
+                        int end = line.indexOf("\"", start + TARGET_NAME_PREFIX.length());
+                        if (end >= 0) {
+                            String moduleName = line.substring(start + TARGET_NAME_PREFIX.length(), end);
+                            addTransitiveModule(moduleName);
+                            break;
                         }
                     }
+                }
 
-                    if (line.startsWith("<module name=")) {
+                if (line.startsWith("<module name=")) {
 
-                        int start = line.indexOf("\"");
-                        if (start > 0) {
-                            int end = line.indexOf("\"", start + 1);
-                            if (end > 0) {
-                                String moduleName = line.substring(start + 1, end);
-                                if (!line.contains("optional=\"true\"")) {
-                                    int slotStart = line.indexOf("slot=\"");
-                                    if (slotStart > 0) {
-                                        slotStart += 6;
-                                        int slotEnd = line.indexOf("\"", slotStart + 1);
-                                        String slotName = line.substring(slotStart, slotEnd);
-                                        addTransitiveModule(moduleName, slotName);
-                                    } else {
-                                        addTransitiveModule(moduleName);
-                                    }
+                    int start = line.indexOf("\"");
+                    if (start > 0) {
+                        int end = line.indexOf("\"", start + 1);
+                        if (end > 0) {
+                            String moduleName = line.substring(start + 1, end);
+                            if (!line.contains("optional=\"true\"")) {
+                                int slotStart = line.indexOf("slot=\"");
+                                if (slotStart > 0) {
+                                    slotStart += 6;
+                                    int slotEnd = line.indexOf("\"", slotStart + 1);
+                                    String slotName = line.substring(slotStart, slotEnd);
+                                    addTransitiveModule(moduleName, slotName);
+                                } else {
+                                    addTransitiveModule(moduleName);
                                 }
                             }
                         }
                     }
                 }
-
-            } finally {
-                in.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            getLog().error(e);
         }
     }
 
@@ -276,7 +268,7 @@ public class CreateMojo extends AbstractSwarmMojo {
             return;
         }
 
-        String search = "modules/system/layers/base/" + moduleName.replaceAll("\\.", "/") + "/" + slot + "/module.xml";
+        String search = "modules/system/layers/base/" + moduleName.replace('.', '/') + "/" + slot + "/module.xml";
 
         for (Artifact pack : this.featurePacks) {
             try {
@@ -287,8 +279,8 @@ public class CreateMojo extends AbstractSwarmMojo {
                     ZipEntry each = entries.nextElement();
 
                     if (each.getName().equals(search)) {
-                        File outFile = new File(this.dir, search);
-                        outFile.getParentFile().mkdirs();
+                        Path outFile = this.dir.resolve(search);
+                        Files.createDirectories(outFile);
                         copyFileFromZip(zip, each, outFile);
                         List<String> slots = new ArrayList<>();
                         slots.add(slot);
@@ -298,7 +290,7 @@ public class CreateMojo extends AbstractSwarmMojo {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                getLog().error(e);
             }
         }
     }
@@ -315,29 +307,33 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
 
-    private void setupDirectory() {
-        this.dir = new File(this.projectBuildDir, "wildfly-swarm-archive");
-        if (!dir.exists()) {
-            dir.mkdirs();
-        } else {
-            emptyDir(dir);
+    private void setupDirectory() throws MojoFailureException {
+        this.dir = Paths.get(this.projectBuildDir, "wildfly-swarm-archive");
+        try {
+            if (Files.notExists(dir)) {
+                Files.createDirectories(dir);
+            } else {
+                emptyDir(dir);
+            }
+        } catch (IOException e) {
+            throw new MojoFailureException("Failed to setup wildfly-swarm-archive directory", e);
         }
     }
 
-    private void emptyDir(File dir) {
-        File[] children = dir.listFiles();
+    private void emptyDir(Path dir) throws IOException {
+        Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
 
-        for (int i = 0; i < children.length; ++i) {
-            deleteFile(children[i]);
-        }
-    }
-
-    private void deleteFile(File file) {
-        if (file.isDirectory()) {
-            emptyDir(file);
-        }
-
-        file.delete();
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     private void addJBossModules() throws MojoFailureException {
@@ -352,7 +348,7 @@ public class CreateMojo extends AbstractSwarmMojo {
 
     private void expandArtifact(Artifact artifact) throws IOException {
 
-        File destination = this.dir;
+        Path destination = this.dir;
 
         File artifactFile = artifact.getFile();
 
@@ -365,9 +361,9 @@ public class CreateMojo extends AbstractSwarmMojo {
                 if (each.getName().startsWith("META-INF")) {
                     continue;
                 }
-                File fsEach = new File(destination, each.getName());
+                Path fsEach = destination.resolve(each.getName());
                 if (each.isDirectory()) {
-                    fsEach.mkdir();
+                    Files.createDirectories(fsEach);
                 } else {
                     copyFileFromZip(jarFile, each, fsEach);
                 }
@@ -392,31 +388,19 @@ public class CreateMojo extends AbstractSwarmMojo {
         try {
             expandArtifact(artifact);
         } catch (IOException e) {
-            throw new MojoFailureException("Unable to add bootstrap");
+            throw new MojoFailureException("Unable to add bootstrap", e);
         }
     }
 
     private void addProjectArtifact() throws MojoFailureException {
         Artifact artifact = this.project.getArtifact();
 
-        File appDir = new File(this.dir, "app");
-        File appFile = new File(appDir, artifact.getFile().getName());
-
-        appDir.mkdirs();
+        Path appDir = this.dir.resolve("app");
+        Path appFile = appDir.resolve(artifact.getFile().getName());
 
         try {
-            FileInputStream in = new FileInputStream(artifact.getFile());
-
-            try {
-                FileOutputStream out = new FileOutputStream(appFile);
-                try {
-                    copyContent(in, out);
-                } finally {
-                    out.close();
-                }
-            } finally {
-                in.close();
-            }
+            Files.createDirectories(appDir);
+            Files.copy(artifact.getFile().toPath(), appFile, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new MojoFailureException("Error copying project artifact", e);
         }
@@ -427,21 +411,16 @@ public class CreateMojo extends AbstractSwarmMojo {
             return;
         }
 
-        File depsTxt = new File(this.dir, "dependencies.txt");
-        try {
-            FileWriter out = new FileWriter(depsTxt);
-            try {
-                Set<Artifact> dependencies = this.project.getArtifacts();
+        Path depsTxt = this.dir.resolve("dependencies.txt");
+        try (final BufferedWriter out = Files.newBufferedWriter(depsTxt, StandardCharsets.UTF_8)){
+            Set<Artifact> dependencies = this.project.getArtifacts();
 
-                for (Artifact each : dependencies) {
-                    String scope = each.getScope();
-                    if (scope.equals("compile") || scope.equals("runtime")) {
-                        addArtifact(each);
-                        out.write( each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n" );
-                    }
+            for (Artifact each : dependencies) {
+                String scope = each.getScope();
+                if (scope.equals("compile") || scope.equals("runtime")) {
+                    addArtifact(each);
+                    out.write( each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n" );
                 }
-            } finally {
-                out.close();
             }
         } catch (IOException e) {
             throw new MojoFailureException("Unable to create dependencies.txt", e);
@@ -469,16 +448,12 @@ public class CreateMojo extends AbstractSwarmMojo {
 
         File file = new File(this.projectBuildDir, name);
 
-        try {
-            FileOutputStream fileOut = new FileOutputStream(file);
-            Manifest manifest = createManifest();
-            JarOutputStream out = new JarOutputStream(fileOut, manifest);
-
-            try {
-                writeToJar(out, this.dir);
-            } finally {
-                out.close();
-            }
+        Manifest manifest = createManifest();
+        try (
+                FileOutputStream fileOut = new FileOutputStream(file);
+                JarOutputStream out = new JarOutputStream(fileOut, manifest)
+        ) {
+            writeToJar(out, this.dir);
         } catch (IOException e) {
             throw new MojoFailureException("Unable to create jar", e);
         }
@@ -488,30 +463,28 @@ public class CreateMojo extends AbstractSwarmMojo {
         this.project.addAttachedArtifact(artifact);
     }
 
-    private void writeToJar(JarOutputStream out, File entry) throws IOException {
-        String rootPath = this.dir.getAbsolutePath();
-        String entryPath = entry.getAbsolutePath();
+    private void writeToJar(final JarOutputStream out, final Path entry) throws IOException {
+        String rootPath = this.dir.toAbsolutePath().toString();
+        String entryPath = entry.toAbsolutePath().toString();
 
         if (!rootPath.equals(entryPath)) {
             String jarPath = entryPath.substring(rootPath.length() + 1);
-            if (entry.isDirectory()) {
+            if (Files.isDirectory(entry)) {
                 jarPath = jarPath + "/";
             }
             out.putNextEntry(new ZipEntry(jarPath));
         }
 
-        if (entry.isDirectory()) {
-            File[] children = entry.listFiles();
-            for (int i = 0; i < children.length; ++i) {
-                writeToJar(out, children[i]);
-            }
+        if (Files.isDirectory(entry)) {
+            Files.walkFileTree(entry, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    writeToJar(out, file);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
         } else {
-            FileInputStream in = new FileInputStream(entry);
-            try {
-                copyContent(in, out);
-            } finally {
-                in.close();
-            }
+            Files.copy(entry, out);
         }
     }
 
@@ -549,23 +522,23 @@ public class CreateMojo extends AbstractSwarmMojo {
             while (entries.hasMoreElements()) {
                 ZipEntry each = entries.nextElement();
 
-                File fsEach = new File(dir, each.getName());
+                Path fsEach = dir.resolve(each.getName());
 
                 if (each.isDirectory()) {
-                    fsEach.mkdirs();
+                    Files.createDirectories(fsEach);
                     continue;
                 }
 
                 if (each.getName().startsWith(MODULE_PREFIX) && each.getName().endsWith(MODULE_SUFFIX)) {
                     String moduleName = each.getName().substring(MODULE_PREFIX.length(), each.getName().length() - MODULE_SUFFIX.length());
 
-                    moduleName = moduleName.replaceAll("/", ".") + ":main";
+                    moduleName = moduleName.replace('/', '.') + ":main";
                     fractionModules.add(moduleName);
                 }
 
                 copyFileFromZip(zipFile, each, fsEach);
 
-                if (fsEach.getName().equals("module.xml")) {
+                if ("module.xml".equals(fsEach.getFileName().toString())) {
                     addTransitiveModules(fsEach);
                 }
             }

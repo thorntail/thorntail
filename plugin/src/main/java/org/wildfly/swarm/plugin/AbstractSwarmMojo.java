@@ -1,12 +1,12 @@
 package org.wildfly.swarm.plugin;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,9 +31,7 @@ import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingResult;
 import org.apache.maven.project.ProjectDependenciesResolver;
 import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
-import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
@@ -123,9 +121,10 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
                 if (entry == null) {
                     return null;
                 }
-                InputStream in = zip.getInputStream(entry);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                try {
+                try (
+                        InputStream in = zip.getInputStream(entry);
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in))
+                ) {
                     String line = null;
 
                     while ((line = reader.readLine()) != null) {
@@ -135,8 +134,6 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
                         }
                         return line;
                     }
-                } finally {
-                    reader.close();
                 }
             } catch (IOException e) {
                 throw new MojoFailureException("Unable to inspect dependency: " + artifact, e);
@@ -179,9 +176,11 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
                 if (entry == null) {
                     return null;
                 }
-                InputStream in = zip.getInputStream(entry);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                try {
+
+                try (
+                        InputStream in = zip.getInputStream(entry);
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in))
+                ) {
                     String line = null;
 
                     while ((line = reader.readLine()) != null) {
@@ -191,8 +190,6 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
                         }
                         return line;
                     }
-                } finally {
-                    reader.close();
                 }
             } catch (IOException e) {
                 throw new MojoFailureException("Unable to inspect dependency: " + artifact, e);
@@ -261,26 +258,9 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         return repos;
     }
 
-    protected void copyFileFromZip(ZipFile resource, ZipEntry entry, File outFile) throws IOException {
-        InputStream in = resource.getInputStream(entry);
-        try {
-            FileOutputStream out = new FileOutputStream(outFile);
-            try {
-                copyContent(in, out);
-            } finally {
-                out.close();
-            }
-        } finally {
-            in.close();
-        }
-    }
-
-    protected void copyContent(InputStream in, OutputStream out) throws IOException {
-        byte[] buf = new byte[1024];
-        int len = -1;
-
-        while ((len = in.read(buf)) >= 0) {
-            out.write(buf, 0, len);
+    protected void copyFileFromZip(ZipFile resource, ZipEntry entry, Path outFile) throws IOException {
+        try (InputStream in = resource.getInputStream(entry)) {
+            Files.copy(in, outFile, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
