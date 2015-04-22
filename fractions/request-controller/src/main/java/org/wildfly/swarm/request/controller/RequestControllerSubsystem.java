@@ -3,6 +3,7 @@ package org.wildfly.swarm.request.controller;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.container.AbstractSubsystem;
 import org.wildfly.swarm.container.Subsystem;
 
 import java.util.ArrayList;
@@ -17,11 +18,12 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 /**
  * @author Bob McWhirter
  */
-public class RequestControllerSubsystem implements Subsystem {
+public class RequestControllerSubsystem extends AbstractSubsystem {
 
     private List<ModelNode> list = new ArrayList<>();
 
     public RequestControllerSubsystem() {
+        super( -10 );
 
         PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "request-controller"));
 

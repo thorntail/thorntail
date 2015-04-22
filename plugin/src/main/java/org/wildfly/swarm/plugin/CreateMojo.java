@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.ProjectBuildingResult;
@@ -58,6 +60,9 @@ public class CreateMojo extends AbstractSwarmMojo {
 
     private List<String> fractionModules = new ArrayList();
 
+    @Parameter(alias="modules")
+    private String[] additionalModules;
+
     private File dir;
 
     @Override
@@ -70,6 +75,8 @@ public class CreateMojo extends AbstractSwarmMojo {
 
         processFractions(this.resolver, new FractionExpander());
         addMavenRepository();
+
+        addAdditionalModules();
 
         addProjectArtifact();
         addProjectDependenciesToRepository();
@@ -294,6 +301,17 @@ public class CreateMojo extends AbstractSwarmMojo {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void addAdditionalModules() {
+        System.err.println( "adding additional modules: " + Arrays.asList( this.additionalModules ) );
+        if ( this.additionalModules == null ) {
+            return;
+        }
+        for ( int i = 0 ; i < this.additionalModules.length ; ++i ) {
+            addTransitiveModule( this.additionalModules[i] );
+        }
+
     }
 
 

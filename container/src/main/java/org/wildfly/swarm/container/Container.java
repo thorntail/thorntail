@@ -13,6 +13,7 @@ import org.jboss.msc.service.ServiceController;
 import org.jboss.vfs.VirtualFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -171,6 +172,8 @@ public class Container {
         for (SocketBindingGroup each : this.socketBindingGroups) {
             list.addAll(each.getList());
         }
+
+        Collections.sort( this.subsystems, new PriorityComparator() );
 
         for (Subsystem each : this.subsystems) {
             list.addAll(each.getList());

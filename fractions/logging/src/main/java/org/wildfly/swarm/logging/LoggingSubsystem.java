@@ -3,6 +3,7 @@ package org.wildfly.swarm.logging;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.container.AbstractSubsystem;
 import org.wildfly.swarm.container.Subsystem;
 
 import java.util.ArrayList;
@@ -17,13 +18,14 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 /**
  * @author Bob McWhirter
  */
-public class LoggingSubsystem implements Subsystem {
+public class LoggingSubsystem extends AbstractSubsystem {
 
     private final ModelNode address = new ModelNode();
     private final PathAddress loggingAddress = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "logging"));
     private List<ModelNode> list = new ArrayList<>();
 
     public LoggingSubsystem() {
+        super( -1000 );
 
         this.address.setEmptyList();
 

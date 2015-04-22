@@ -3,6 +3,7 @@ package org.wildfly.swarm.ee;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.container.AbstractSubsystem;
 import org.wildfly.swarm.container.Subsystem;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 /**
  * @author Bob McWhirter
  */
-public class EeSubsystem implements Subsystem {
+public class EeSubsystem extends AbstractSubsystem {
 
     private List<ModelNode> list = new ArrayList<>();
 

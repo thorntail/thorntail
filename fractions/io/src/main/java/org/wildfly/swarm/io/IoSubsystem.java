@@ -3,6 +3,7 @@ package org.wildfly.swarm.io;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.container.AbstractSubsystem;
 import org.wildfly.swarm.container.Subsystem;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 /**
  * @author Bob McWhirter
  */
-public class IoSubsystem implements Subsystem {
+public class IoSubsystem extends AbstractSubsystem {
     private List<ModelNode> list = new ArrayList<>();
 
     public IoSubsystem() {

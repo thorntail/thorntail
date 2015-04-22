@@ -6,6 +6,7 @@ import org.jboss.modules.ModuleIdentifier;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
@@ -25,12 +26,12 @@ public class Main {
             e.printStackTrace();
         }
 
-        VERSION = props.getProperty( "version", "unknown" );
+        VERSION = props.getProperty("version", "unknown");
     }
 
     public static void main(String[] args) throws Throwable {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
-        Module container = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "org.wildfly.swarm.container" ) );
+        Module container = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container"));
         Class<?> mainClass = container.getClassLoader().loadClass("org.wildfly.swarm.container.Main");
         final Method mainMethod = mainClass.getMethod("main", String[].class);
         mainMethod.invoke(null, new Object[]{args});
