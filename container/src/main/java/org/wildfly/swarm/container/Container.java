@@ -1,15 +1,11 @@
 package org.wildfly.swarm.container;
 
 import org.jboss.as.controller.ModelController;
-import org.jboss.as.controller.client.MessageSeverity;
 import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.as.controller.client.OperationMessageHandler;
-import org.jboss.as.selfcontained.ContentProvider;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceContainer;
-import org.jboss.msc.service.ServiceController;
 import org.jboss.vfs.VirtualFile;
 
 import java.util.ArrayList;
@@ -41,7 +37,7 @@ public class Container {
         STARTED,
     }
 
-    private List<Subsystem> subsystems = new ArrayList<>();
+    private List<Fraction> fractions = new ArrayList<>();
     private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
     private List<Interface> interfaces = new ArrayList<>();
 
@@ -55,8 +51,8 @@ public class Container {
 
     }
 
-    public Container subsystem(Subsystem subsystem) {
-        this.subsystems.add(subsystem);
+    public Container subsystem(Fraction fraction) {
+        this.fractions.add(fraction);
         return this;
     }
 
@@ -128,21 +124,21 @@ public class Container {
     }
 
     private void applySubsystemDefaults() throws Exception {
-        Map<Class<Subsystem>, SubsystemDefaulter> defaulters = new HashMap<>();
+        Map<Class<Fraction>, FractionDefaulter> defaulters = new HashMap<>();
 
-        ServiceLoader<SubsystemDefaulter> loader = ServiceLoader.load(SubsystemDefaulter.class);
-        Iterator<SubsystemDefaulter> iter = loader.iterator();
+        ServiceLoader<FractionDefaulter> loader = ServiceLoader.load(FractionDefaulter.class);
+        Iterator<FractionDefaulter> iter = loader.iterator();
 
         while (iter.hasNext()) {
-            SubsystemDefaulter each = iter.next();
+            FractionDefaulter each = iter.next();
             defaulters.put(each.getSubsystemType(), each);
         }
 
-        for (Subsystem each : this.subsystems) {
+        for (Fraction each : this.fractions) {
             defaulters.remove(each.getClass());
         }
 
-        for (SubsystemDefaulter each : defaulters.values()) {
+        for (FractionDefaulter each : defaulters.values()) {
             this.subsystem(each.getDefaultSubsystem());
         }
     }
@@ -173,9 +169,9 @@ public class Container {
             list.addAll(each.getList());
         }
 
-        Collections.sort( this.subsystems, new PriorityComparator() );
+        Collections.sort( this.fractions, new PriorityComparator() );
 
-        for (Subsystem each : this.subsystems) {
+        for (Fraction each : this.fractions) {
             List<ModelNode> sublist = each.getList();
             list.addAll(sublist);
         }

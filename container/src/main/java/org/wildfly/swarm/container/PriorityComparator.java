@@ -5,11 +5,11 @@ import java.util.Comparator;
 /**
  * @author Bob McWhirter
  */
-public class PriorityComparator implements Comparator<Subsystem> {
+public class PriorityComparator implements Comparator<Fraction> {
 
     @Override
-    public int compare(Subsystem o1, Subsystem o2) {
-        if ( o1 instanceof Subsystem && o2 instanceof Subsystem ) {
+    public int compare(Fraction o1, Fraction o2) {
+        if ( o1 instanceof Fraction && o2 instanceof Fraction) {
             return Integer.compare( o1.getPriority(), o2.getPriority() );
         }
         return 0;

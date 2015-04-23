@@ -26,12 +26,11 @@ public class BootModuleFinder implements ModuleFinder {
     }
 
     @Override
-    public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
+    public ModuleSpec findModule(final ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
         if (identifier.getName().equals("APP")) {
             try {
                 return findAppModule(identifier.getSlot());
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new ModuleLoadException(e);
             }
         }
@@ -39,6 +38,7 @@ public class BootModuleFinder implements ModuleFinder {
         String namePath = identifier.getName().replace('.', '/');
         String basePath = "modules/system/layers/base/" + namePath + "/" + identifier.getSlot();
         JarEntry moduleXmlEntry = jarFile.getJarEntry(basePath + "/module.xml");
+
         if (moduleXmlEntry == null) {
             return null;
         }
@@ -61,9 +61,9 @@ public class BootModuleFinder implements ModuleFinder {
     }
 
     private ModuleSpec findAppModule(String slot) throws IOException {
-        if ( slot.equals( "main" ) ) {
+        if (slot.equals("main")) {
             return findAppModule_main();
-        } else if ( slot.equals( "dependencies" ) ) {
+        } else if (slot.equals("dependencies")) {
             return findAppModule_dependencies();
         }
         return null;
@@ -142,14 +142,14 @@ public class BootModuleFinder implements ModuleFinder {
         JarFile rootJar = Util.rootJar();
         ZipEntry depsTxt = rootJar.getEntry("dependencies.txt");
 
-        if ( depsTxt != null ) {
-            BufferedReader depsIn = new BufferedReader( new InputStreamReader( rootJar.getInputStream( depsTxt ) ) );
+        if (depsTxt != null) {
+            BufferedReader depsIn = new BufferedReader(new InputStreamReader(rootJar.getInputStream(depsTxt)));
 
             String line = null;
 
-            while ( ( line = depsIn.readLine() ) != null ) {
+            while ((line = depsIn.readLine()) != null) {
                 ResourceLoader loader = ArtifactLoaderFactory.INSTANCE.getLoader(line.trim());
-                builder.addResourceRoot( ResourceLoaderSpec.createResourceLoaderSpec( loader ) );
+                builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(loader));
             }
         }
         builder.addDependency(DependencySpec.createLocalDependencySpec());

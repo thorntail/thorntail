@@ -79,9 +79,9 @@ public class CreateMojo extends AbstractSwarmMojo {
         addBootstrap();
 
         processFractions(this.resolver, new FractionExpander());
-        addMavenRepository();
-
         addAdditionalModules();
+
+        addMavenRepository();
 
         addProjectArtifact();
         addProjectDependenciesToRepository();
