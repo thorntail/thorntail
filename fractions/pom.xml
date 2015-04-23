@@ -41,9 +41,11 @@
 
     <modules>
       <module>bean-validation</module>
+      <module>connector</module>
       <module>datasources</module>
       <module>ee</module>
       <module>io</module>
+      <module>jca</module>
       <module>jaxrs</module>
       <module>logging</module>
       <module>naming</module>

@@ -10,6 +10,7 @@ import java.util.List;
 public interface Subsystem {
 
     int getPriority();
+    String getName();
 
     List<ModelNode> getList();
 }

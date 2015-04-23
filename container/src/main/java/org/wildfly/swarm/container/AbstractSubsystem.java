@@ -19,6 +19,10 @@ public abstract class AbstractSubsystem implements Subsystem {
         this.priority = priority;
     }
 
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+
     @Override
     public int getPriority() {
         return this.priority;

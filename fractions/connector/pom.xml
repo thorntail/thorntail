@@ -32,10 +32,10 @@
     </parent>
 
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-datasources</artifactId>
+    <artifactId>wildfly-swarm-connector</artifactId>
 
-    <name>WildFly Swarm: Datasources</name>
-    <description>WildFly Swarm: Datasources</description>
+    <name>WildFly Swarm: Connector</name>
+    <description>WildFly Swarm: Connector</description>
 
     <packaging>jar</packaging>
 
@@ -63,16 +63,6 @@
               <artifactId>*</artifactId>
             </exclusion>
           </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-connector</artifactId>
-          <scope>compile</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-jca</artifactId>
-          <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>org.jboss</groupId>

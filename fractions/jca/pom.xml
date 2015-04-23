@@ -32,10 +32,10 @@
     </parent>
 
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-datasources</artifactId>
+    <artifactId>wildfly-swarm-jca</artifactId>
 
-    <name>WildFly Swarm: Datasources</name>
-    <description>WildFly Swarm: Datasources</description>
+    <name>WildFly Swarm: JCA</name>
+    <description>WildFly Swarm: JCA</description>
 
     <packaging>jar</packaging>
 
@@ -67,11 +67,11 @@
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-connector</artifactId>
-          <scope>compile</scope>
+          <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-jca</artifactId>
+          <artifactId>wildfly-swarm-transactions</artifactId>
           <scope>compile</scope>
         </dependency>
         <dependency>

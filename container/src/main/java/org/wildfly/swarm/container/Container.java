@@ -176,7 +176,8 @@ public class Container {
         Collections.sort( this.subsystems, new PriorityComparator() );
 
         for (Subsystem each : this.subsystems) {
-            list.addAll(each.getList());
+            List<ModelNode> sublist = each.getList();
+            list.addAll(sublist);
         }
 
         return list;
