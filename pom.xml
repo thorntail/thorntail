@@ -47,9 +47,6 @@
 
     <properties>
         <version.wildfly>9.0.0.CR1-SNAPSHOT</version.wildfly>
-<!--
-        <version.jboss-modules>1.4.1.Final</version.jboss-modules>
--->
         <maven.min.version>3.2.1</maven.min.version>
 
         <!-- Surefire args -->

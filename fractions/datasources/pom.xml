@@ -42,6 +42,10 @@
     <properties>
       <root-module>org.jboss.as.connector</root-module>
       <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
+<!--
+      <extra-modules>
+      </extra-modules>
+-->
     </properties>
 
     <build>

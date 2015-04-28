@@ -296,7 +296,6 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addAdditionalModules() {
-        System.err.println( "adding additional modules: " + Arrays.asList( this.additionalModules ) );
         if ( this.additionalModules == null ) {
             return;
         }

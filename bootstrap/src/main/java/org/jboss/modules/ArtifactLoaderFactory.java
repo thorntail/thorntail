@@ -35,7 +35,7 @@ public class ArtifactLoaderFactory {
         return loader;
     }
 
-    private File getFile(String gav) throws IOException {
+    public File getFile(String gav) throws IOException {
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(gavToPath(gav));
         if ( in == null ) {
             return null;
@@ -64,7 +64,7 @@ public class ArtifactLoaderFactory {
 
     private static final String JANDEX_SUFFIX = "?jandex";
 
-    private String gavToPath(String gav) {
+    public String gavToPath(String gav) {
         try {
             String[] parts = gav.split(":");
             String group = parts[0];
