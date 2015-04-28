@@ -39,16 +39,17 @@
 
     <packaging>jar</packaging>
 
-    <properties>
-      <root-module>org.jboss.as.ee</root-module>
-      <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+                <configuration>
+                  <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
+                  <modules>
+                    <module>org.jboss.as.ee</module>
+                  </modules>
+                </configuration>
             </plugin>
         </plugins>
     </build>

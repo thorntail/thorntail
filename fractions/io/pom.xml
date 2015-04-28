@@ -40,8 +40,6 @@
     <packaging>jar</packaging>
 
     <properties>
-      <root-module>org.wildfly.extension.io</root-module>
-      <feature-pack>org.wildfly.core:wildfly-core-feature-pack</feature-pack>
     </properties>
 
     <build>
@@ -49,6 +47,12 @@
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+                <configuration>
+                  <feature-pack>org.wildfly.core:wildfly-core-feature-pack</feature-pack>
+                  <modules>
+                    <module>org.wildfly.extension.io</module>
+                  </modules>
+                </configuration>
             </plugin>
         </plugins>
     </build>

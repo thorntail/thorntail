@@ -39,25 +39,24 @@
 
     <packaging>jar</packaging>
 
-    <properties>
-      <feature-pack>org.wildfly:wildfly-web-feature-pack</feature-pack>
-      <root-module>org.jboss.as.jaxrs</root-module>
-      <extra-modules>
-        javax.json.api
-        org.jboss.resteasy.resteasy-jackson2-provider
-        org.jboss.resteasy.resteasy-json-p-provider
-        org.wildfly.swarm.shrinkwrap
-      </extra-modules>
-      <export-modules>
-        javax.ws.rs.api
-      </export-modules>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+                <configuration>
+                  <feature-pack>org.wildfly:wildfly-web-feature-pack</feature-pack>
+                  <modules>
+                    <module>org.jboss.as.jaxrs</module>
+                    <module>javax.json.api</module>
+                    <module>org.jboss.resteasy.resteasy-jackson2-provider</module>
+                    <module>org.jboss.resteasy.resteasy-json-p-provider</module>
+                    <module>org.wildfly.swarm.shrinkwrap</module>
+                  </modules>
+                  <exports>
+                    <export>javax.ws.rs.api</export>
+                  </exports>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -101,8 +100,8 @@
         </dependency>
 
         <dependency>
-          <groupId>org.jboss.resteasy</groupId>
-          <artifactId>jaxrs-api</artifactId>
+          <groupId>org.jboss.spec.javax.ws.rs</groupId>
+          <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
         </dependency>
 
         <dependency>

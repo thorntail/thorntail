@@ -39,16 +39,17 @@
 
     <packaging>jar</packaging>
 
-    <properties>
-      <feature-pack>org.wildfly.core:wildfly-core-feature-pack</feature-pack>
-      <root-module>org.wildfly.extension.request-controller</root-module>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+                <configuration>
+                  <feature-pack>org.wildfly.core:wildfly-core-feature-pack</feature-pack>
+                  <modules>
+                    <module>org.wildfly.extension.request-controller</module>
+                  </modules>
+                </configuration>
             </plugin>
         </plugins>
     </build>
