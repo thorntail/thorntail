@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -143,12 +144,11 @@ public class BootModuleFinder implements ModuleFinder {
         ZipEntry depsTxt = rootJar.getEntry("dependencies.txt");
 
         if (depsTxt != null) {
-            BufferedReader depsIn = new BufferedReader(new InputStreamReader(rootJar.getInputStream(depsTxt)));
+            ProjectDependencies deps = ProjectDependencies.initialize(rootJar.getInputStream(depsTxt));
 
-            String line = null;
-
-            while ((line = depsIn.readLine()) != null) {
-                ResourceLoader loader = ArtifactLoaderFactory.INSTANCE.getLoader(line.trim());
+            Set<String> gavs = deps.getGAVs();
+            for ( String each : gavs ) {
+                ResourceLoader loader = ArtifactLoaderFactory.INSTANCE.getLoader(each);
                 builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(loader));
             }
         }

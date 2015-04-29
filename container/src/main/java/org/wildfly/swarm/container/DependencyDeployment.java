@@ -1,6 +1,7 @@
 package org.wildfly.swarm.container;
 
 import org.jboss.modules.ArtifactLoaderFactory;
+import org.jboss.modules.ProjectDependencies;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 
@@ -16,8 +17,9 @@ public class DependencyDeployment implements Deployment {
     private final String name;
 
     public DependencyDeployment(String gav) throws IOException {
-        this.file = ArtifactLoaderFactory.INSTANCE.getFile(gav);
-        this.name = new File(ArtifactLoaderFactory.INSTANCE.gavToPath(gav)).getName();
+        String versionedGav = ProjectDependencies.getProjectDependencies().getVersionedGAV(gav);
+        this.file = ArtifactLoaderFactory.INSTANCE.getFile(versionedGav);
+        this.name = new File(ArtifactLoaderFactory.INSTANCE.gavToPath(versionedGav)).getName();
     }
 
     @Override
