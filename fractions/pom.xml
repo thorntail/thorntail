@@ -62,7 +62,6 @@
                 <plugin>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-                    <version>1.0.0.Alpha1-SNAPSHOT</version>
                     <executions>
                       <execution>
                         <phase>prepare-package</phase>

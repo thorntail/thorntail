@@ -47,6 +47,7 @@
 
     <properties>
         <version.wildfly>9.0.0.CR1-SNAPSHOT</version.wildfly>
+        <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha2</version.wildfly.swarm.fraction.plugin>
         <maven.min.version>3.2.1</maven.min.version>
 
         <!-- Surefire args -->
@@ -64,6 +65,15 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+                    <version>${version.wildfly.swarm.fraction.plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <dependencyManagement>
