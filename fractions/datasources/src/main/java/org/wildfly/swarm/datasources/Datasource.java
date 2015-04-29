@@ -26,14 +26,26 @@ public class Datasource {
         this.name = name;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public Datasource connectionURL(String connectionUrl) {
         this.connectionUrl = connectionUrl;
         return this;
     }
 
+    public String getConnectionURL() {
+        return this.connectionUrl;
+    }
+
     public Datasource driver(String driverName) {
         this.driverName = driverName;
         return this;
+    }
+
+    public String getDriver() {
+        return this.driverName;
     }
 
     public Datasource authentication(String userName, String password) {
@@ -42,13 +54,25 @@ public class Datasource {
         return this;
     }
 
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public String getJNDIName() {
+        return "java:jboss/datasources/" + this.name;
+    }
+
     ModelNode get(PathAddress address) {
         ModelNode node = new ModelNode();
         node.get( OP_ADDR ).set( address.append( "data-source", this.name ).toModelNode() );
         node.get( OP ).set( ADD );
 
         node.get( "enabled" ).set( true );
-        node.get( "jndi-name" ).set( "java:jboss/datasources/" + this.name );
+        node.get( "jndi-name" ).set( getJNDIName() );
         node.get( "use-java-context" ).set( true );
         node.get( "connection-url" ).set( this.connectionUrl );
         node.get( "driver-name" ).set( this.driverName );

@@ -48,6 +48,7 @@
                   <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
                   <modules>
                     <module>org.jboss.as.connector</module>
+                    <module>org.jboss.vfs</module>
                   </modules>
                 </configuration>
             </plugin>
@@ -84,6 +85,10 @@
           <groupId>org.wildfly.core</groupId>
           <artifactId>wildfly-controller</artifactId>
           <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-vfs</artifactId>
         </dependency>
     </dependencies>
 

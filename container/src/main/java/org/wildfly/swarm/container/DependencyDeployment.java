@@ -16,10 +16,23 @@ public class DependencyDeployment implements Deployment {
     private final File file;
     private final String name;
 
+    protected static String name(String gav) {
+        String[] parts = gav.split( ":" );
+        if ( parts.length >= 2 ) {
+            return parts[1] + ".jar";
+        }
+
+        return gav;
+    }
+
     public DependencyDeployment(String gav) throws IOException {
+        this( gav, name(gav) );
+    }
+
+    public DependencyDeployment(String gav, String name) throws IOException {
         String versionedGav = ProjectDependencies.getProjectDependencies().getVersionedGAV(gav);
         this.file = ArtifactLoaderFactory.INSTANCE.getFile(versionedGav);
-        this.name = new File(ArtifactLoaderFactory.INSTANCE.gavToPath(versionedGav)).getName();
+        this.name = name;
     }
 
     @Override
