@@ -62,6 +62,24 @@ public class MessagingServer {
         return this;
     }
 
+    public MessagingServer topic(String name) {
+        ModelNode node = new ModelNode();
+        node.get(OP_ADDR).set(this.address.append("jms-topic", name).toModelNode());
+        node.get(OP).set(ADD);
+        node.get( "entries" ).setEmptyList().add("java:/jms/topic/" + name);
+        this.list.add( node );
+        return this;
+    }
+
+    public MessagingServer queue(String name) {
+        ModelNode node = new ModelNode();
+        node.get(OP_ADDR).set(this.address.append("jms-queue", name).toModelNode());
+        node.get(OP).set(ADD);
+        node.get( "entries" ).setEmptyList().add( "java:/jms/queue/" + name );
+        this.list.add( node );
+        return this;
+    }
+
     public MessagingServer enableHttpConnector(String jndiName) {
         return this;
     }

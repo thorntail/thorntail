@@ -78,8 +78,6 @@ public class JaxRsDeployment implements Deployment {
                 "</jboss-deployment-structure>\n");
 
         this.delegate.getArchive().addAsWebInfResource(structureXml, "jboss-deployment-structure.xml" );
-
-
     }
 
     private static String archiveName() {

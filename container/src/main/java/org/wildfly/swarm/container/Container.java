@@ -93,11 +93,11 @@ public class Container {
     }
 
     public synchronized void deploy() throws Exception {
-        deploy( new DefaultDeployment() );
+        deploy(new DefaultDeployment());
     }
 
     public synchronized void deploy(Deployment deployment) throws Exception {
-        if ( this.state != State.STARTED ) {
+        if (this.state != State.STARTED) {
             start();
         }
 
@@ -114,6 +114,7 @@ public class Container {
         ModelNode content = deploymentAdd.get(CONTENT).add();
         content.get(HASH).set(hash);
 
+        System.setProperty("wildfly.swarm.current.deployment", deployment.getName());
         ModelNode result = client.execute(deploymentAdd);
     }
 
@@ -169,7 +170,7 @@ public class Container {
             list.addAll(each.getList());
         }
 
-        Collections.sort( this.fractions, new PriorityComparator() );
+        Collections.sort(this.fractions, new PriorityComparator());
 
         for (Fraction each : this.fractions) {
             List<ModelNode> sublist = each.getList();
