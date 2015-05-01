@@ -49,6 +49,9 @@
                   <modules>
                     <module>org.jboss.as.messaging</module>
                   </modules>
+                  <exports>
+                    <export>javax.jms.api</export>
+                  </exports>
                 </configuration>
             </plugin>
         </plugins>

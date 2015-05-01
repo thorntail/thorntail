@@ -49,6 +49,9 @@
                   <modules>
                     <module>org.jboss.as.naming</module>
                   </modules>
+                  <exports>
+                    <export>javax.api</export>
+                  </exports>
                 </configuration>
             </plugin>
         </plugins>
