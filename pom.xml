@@ -39,6 +39,13 @@
 
     <packaging>pom</packaging>
 
+    <scm>
+        <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
+        <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
+        <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <licenses>
         <license>
             <name>AL2</name>
