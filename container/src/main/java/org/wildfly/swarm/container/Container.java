@@ -66,7 +66,7 @@ public class Container {
         return this;
     }
 
-    public synchronized void start() throws Exception {
+    public synchronized Container start() throws Exception {
         this.state = State.STARTING;
         try {
             this.container = new SelfContainedContainer();
@@ -81,6 +81,7 @@ public class Container {
             Executor executor = Executors.newSingleThreadExecutor();
             this.client = controller.createClient(executor);
             this.state = State.STARTED;
+            return this;
         } catch (Exception e) {
             this.state = State.NOT_STARTED;
             throw e;

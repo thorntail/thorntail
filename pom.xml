@@ -46,7 +46,7 @@
     </licenses>
 
     <properties>
-        <version.wildfly>9.0.0.CR1-SNAPSHOT</version.wildfly>
+        <version.wildfly>9.0.0.CR1</version.wildfly>
         <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha2</version.wildfly.swarm.fraction.plugin>
         <maven.min.version>3.2.1</maven.min.version>
 
@@ -172,37 +172,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <modules>
       <module>plugin</module>

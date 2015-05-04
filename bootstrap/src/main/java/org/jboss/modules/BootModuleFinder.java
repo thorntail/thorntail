@@ -1,11 +1,9 @@
 package org.jboss.modules;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -83,8 +81,16 @@ public class BootModuleFinder implements ModuleFinder {
             return null;
         }
 
+        String rootName = artifactName;
+        String extension = ".jar";
+        int dotLoc = artifactName.lastIndexOf( "." );
+        if (dotLoc >= 0 ) {
+            rootName = artifactName.substring( 0, dotLoc );
+            extension = artifactName.substring(dotLoc);
+        }
+
         try {
-            File tmp = File.createTempFile("app", ".jar");
+            File tmp = File.createTempFile(rootName, extension);
 
             FileOutputStream out = new FileOutputStream(tmp);
 
@@ -100,12 +106,12 @@ public class BootModuleFinder implements ModuleFinder {
             }
 
             if (artifactName.endsWith(".war")) {
-                ResourceLoader resourceLoader = new JarFileResourceLoader("app.jar", new JarFile(tmp), "WEB-INF/classes");
+                ResourceLoader resourceLoader = new JarFileResourceLoader(artifactName, new JarFile(tmp), "WEB-INF/classes");
                 ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
                 builder.addResourceRoot(resourceLoaderSpec);
             }
 
-            ResourceLoader resourceLoader = new JarFileResourceLoader("app.jar", new JarFile(tmp));
+            ResourceLoader resourceLoader = new JarFileResourceLoader(artifactName, new JarFile(tmp));
             ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
             builder.addResourceRoot(resourceLoaderSpec);
 

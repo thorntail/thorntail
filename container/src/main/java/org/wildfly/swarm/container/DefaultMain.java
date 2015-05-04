@@ -6,6 +6,6 @@ package org.wildfly.swarm.container;
 public class DefaultMain {
 
     public static void main(String[] args) throws Exception {
-        new Container().start();
+        new Container().start().deploy();
     }
 }
