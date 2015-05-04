@@ -20,8 +20,7 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -32,7 +31,7 @@
 
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-parent</artifactId>
-    <version>1.0.0.Alpha1-SNAPSHOT</version>
+    <version>1.0.0.Alpha1</version>
 
     <name>WildFly Boot: Parent</name>
     <description>WildFly Boot: Parent</description>
@@ -43,7 +42,7 @@
         <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
         <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
         <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
-        <tag>HEAD</tag>
+        <tag>1.0.0.Alpha1</tag>
     </scm>
 
     <licenses>
@@ -58,7 +57,7 @@
         <maven.min.version>3.2.1</maven.min.version>
 
         <!-- Surefire args -->
-        <surefire.jpda.args/>
+        <surefire.jpda.args />
         <surefire.system.args>-da ${surefire.jpda.args}</surefire.system.args>
 
         <!-- Checkstyle configuration -->
