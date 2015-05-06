@@ -14,7 +14,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +26,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import javax.inject.Inject;
 
 import org.apache.maven.artifact.Artifact;
@@ -337,6 +337,12 @@ public class CreateMojo extends AbstractSwarmMojo {
 
     private void addJBossModules() throws MojoFailureException {
         Artifact artifact = findArtifact("org.jboss.modules", "jboss-modules", "jar");
+
+        if (artifact == null) {
+            throw new MojoFailureException("Unable to find org.jboss.modules:jboss-modules:jar in the project artifacts."
+                    + " Is a WildFly Swarm fraction present as a project dependency?");
+        }
+
         try {
             expandArtifact(artifact);
         } catch (IOException e) {
