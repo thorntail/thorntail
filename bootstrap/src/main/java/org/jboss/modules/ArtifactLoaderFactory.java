@@ -43,6 +43,7 @@ public class ArtifactLoaderFactory {
 
         try {
             File tmp = File.createTempFile(gav, ".jar");
+            tmp.deleteOnExit();
 
             FileOutputStream out = new FileOutputStream(tmp);
 

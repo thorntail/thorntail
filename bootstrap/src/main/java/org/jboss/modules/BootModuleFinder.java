@@ -91,6 +91,7 @@ public class BootModuleFinder implements ModuleFinder {
 
         try {
             File tmp = File.createTempFile(rootName, extension);
+            tmp.deleteOnExit();
 
             FileOutputStream out = new FileOutputStream(tmp);
 

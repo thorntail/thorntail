@@ -29,19 +29,7 @@ public class DatasourceDeployment implements Deployment {
     public VirtualFile getContent() throws IOException {
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(getName());
         File dsXml = File.createTempFile(getName(), "-ds.xml");
-
-        /*
-        try (FileWriter out = new FileWriter(dsXml)) {
-            out.write("<datasources xmlns=\"http://www.jboss.org/ironjacamar/schema\"\n" +
-                    "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                    "   xsi:schemaLocation=\"http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd\">\n");
-
-            out.write( "  <datasource jndi-name=\"" + this.ds.getJNDIName() + "\" enabled=\"true\"")
-            out.write("</datasources>\n");
-
-        }
-        */
-
+        dsXml.delete();
 
         try (XmlWriter out = new XmlWriter(new FileWriter(dsXml))) {
 

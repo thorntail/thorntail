@@ -44,6 +44,7 @@ public class DefaultDeployment implements Deployment {
         VirtualFile jbossWeb = archiveRoot.getChild("WEB-INF/jboss-web.xml");
         if (!jbossWeb.exists()) {
             File jbossWebTmp = File.createTempFile("jboss-web", "xml");
+            jbossWebTmp.deleteOnExit();
             FileWriter out = new FileWriter(jbossWebTmp);
             try {
                 out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
