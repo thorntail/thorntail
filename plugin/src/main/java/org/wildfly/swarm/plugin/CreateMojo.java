@@ -477,7 +477,7 @@ public class CreateMojo extends AbstractSwarmMojo {
             if (Files.isDirectory(entry)) {
                 jarPath = jarPath + "/";
             }
-            out.putNextEntry(new ZipEntry(jarPath));
+            out.putNextEntry(new ZipEntry(jarPath.replace(File.separatorChar, '/')));
         }
 
         if (Files.isDirectory(entry)) {
@@ -534,8 +534,9 @@ public class CreateMojo extends AbstractSwarmMojo {
                     continue;
                 }
 
-                if (each.getName().startsWith(MODULE_PREFIX) && each.getName().endsWith(MODULE_SUFFIX)) {
-                    String moduleName = each.getName().substring(MODULE_PREFIX.length(), each.getName().length() - MODULE_SUFFIX.length());
+                String normalizedName = normalizeZipEntryName(each);
+                if (normalizedName.startsWith(MODULE_PREFIX) && normalizedName.endsWith(MODULE_SUFFIX)) {
+                    String moduleName = normalizedName.substring(MODULE_PREFIX.length(), normalizedName.length() - MODULE_SUFFIX.length());
 
                     moduleName = moduleName.replace('/', '.') + ":main";
                     fractionModules.add(moduleName);
@@ -548,6 +549,10 @@ public class CreateMojo extends AbstractSwarmMojo {
                 }
             }
         }
+    }
+
+    private String normalizeZipEntryName(ZipEntry entry) {
+        return entry.getName().replace(File.separatorChar, '/');
     }
 
 }

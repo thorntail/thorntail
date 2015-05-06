@@ -42,7 +42,7 @@ public class ArtifactLoaderFactory {
         }
 
         try {
-            File tmp = File.createTempFile(gav, ".jar");
+            File tmp = File.createTempFile(gav.replace(':', '~'), ".jar");
             tmp.deleteOnExit();
 
             FileOutputStream out = new FileOutputStream(tmp);
