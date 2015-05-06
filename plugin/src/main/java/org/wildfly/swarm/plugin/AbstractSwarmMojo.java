@@ -4,9 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -256,12 +253,6 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
 
         return repos;
-    }
-
-    protected void copyFileFromZip(ZipFile resource, ZipEntry entry, Path outFile) throws IOException {
-        try (InputStream in = resource.getInputStream(entry)) {
-            Files.copy(in, outFile, StandardCopyOption.REPLACE_EXISTING);
-        }
     }
 
     protected interface ExceptionConsumer<T> {

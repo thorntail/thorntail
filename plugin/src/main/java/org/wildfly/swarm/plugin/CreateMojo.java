@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -24,9 +26,10 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import javax.inject.Inject;
 
 import org.apache.maven.artifact.Artifact;
@@ -58,12 +61,26 @@ public class CreateMojo extends AbstractSwarmMojo {
 
     private static final String MAIN_SLOT = "main";
 
+    private static final Pattern MODULE_ARTIFACT_PATTERN = Pattern.compile(
+            // artifact tag
+            "(<artifact\\s+?name=\"\\$\\{)" +
+                    // possible GAV
+                    "+([A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+)(?:(?::)([A-Za-z0-9_\\-.]+))?" +
+                    // end tag
+                    "+(}\"/>)"
+    );
+
     @Inject
     private ArtifactResolver resolver;
 
     private Map<String, List<String>> modules = new HashMap<>();
 
     private List<String> fractionModules = new ArrayList<>();
+
+    /**
+     * Keyed on {@code groupId:artifactId}
+     */
+    private final Map<String, String> featurePackDepVersions = new HashMap<>();
 
     @Parameter(alias="modules")
     private String[] additionalModules;
@@ -104,6 +121,8 @@ public class CreateMojo extends AbstractSwarmMojo {
 
                 if (resolutionResult.getDependencies() != null && resolutionResult.getDependencies().size() > 0) {
                     for (Dependency dep : resolutionResult.getDependencies()) {
+                        // Add the dependency version
+                        featurePackDepVersions.put(dep.getArtifact().getGroupId() + ":" + dep.getArtifact().getArtifactId(), dep.getArtifact().getVersion());
                         this.featurePackArtifacts.add(convertAetherToMavenArtifact(dep.getArtifact(), "compile", "jar"));
                     }
                 }
@@ -173,42 +192,32 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void analyzeModuleXmls(final Path path) throws MojoFailureException {
-        if (Files.isDirectory(path)) {
-            try {
-                Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
-                    @Override
-                    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                        try {
-                            analyzeModuleXmls(file);
-                        } catch (MojoFailureException e) {
-                            throw new IOException(e);
-                        }
-                        return FileVisitResult.CONTINUE;
+        try {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    if ("module.xml".equals(file.getFileName().toString())) {
+                        analyzeModuleXml(file);
                     }
-                });
-            } catch (IOException e) {
-                throw new MojoFailureException("Failed to analyze module XML for " + path, e);
-            }
-        } else if ("module.xml".equals(path.getFileName().toString())) {
-            analyzeModuleXml(path);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new MojoFailureException("Failed to analyze module XML for " + path, e);
         }
     }
 
-    private void analyzeModuleXml(Path path) throws MojoFailureException {
-        try {
-            final List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-            for (String line : lines) {
-                int start = line.indexOf("${");
-                if (start >= 0) {
-                    int end = line.indexOf("}");
-                    if (end > 0) {
-                        String gav = line.substring(start + 2, end);
-                        this.gavs.add(new ArtifactSpec(gav));
-                    }
+    private void analyzeModuleXml(final Path path) throws IOException {
+        final List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+        for (String line : lines) {
+            int start = line.indexOf("${");
+            if (start >= 0) {
+                int end = line.indexOf("}");
+                if (end > 0) {
+                    String ga = line.substring(start + 2, end);
+                    this.gavs.add(new ArtifactSpec(ga));
                 }
             }
-        } catch (IOException e) {
-            throw new MojoFailureException("Unable to analyze: " + path, e);
         }
     }
 
@@ -280,7 +289,7 @@ public class CreateMojo extends AbstractSwarmMojo {
 
                     if (each.getName().equals(search)) {
                         Path outFile = this.dir.resolve(search);
-                        Files.createDirectories(outFile);
+                        Files.createDirectories(outFile.getParent());
                         copyFileFromZip(zip, each, outFile);
                         List<String> slots = new ArrayList<>();
                         slots.add(slot);
@@ -516,6 +525,57 @@ public class CreateMojo extends AbstractSwarmMojo {
         attrs.putValue("Feature-Pack-Modules", modules.toString());
 
         return manifest;
+    }
+
+    private void copyFileFromZip(final ZipFile resource, final ZipEntry entry, final Path outFile) throws IOException {
+        if (entry.getName().endsWith("module.xml")) {
+            try (
+                    final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(entry), StandardCharsets.UTF_8));
+                    final BufferedWriter writer = Files.newBufferedWriter(outFile, StandardCharsets.UTF_8)
+            ) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    // Attempt to find a version if required
+                    final Matcher matcher = MODULE_ARTIFACT_PATTERN.matcher(line);
+                    while (matcher.find()) {
+                        String version = matcher.group(3);
+                        if (version == null) {
+                            // No version found attempt to resolve it
+                            version = findVersion(matcher.group(2));
+                            if (version != null) {
+                                line = matcher.replaceAll("$1$2:" + version + "$4");
+                            } else {
+                                getLog().debug("No version found for " + line);
+                            }
+                        }
+                    }
+                    writer.write(line);
+                    writer.write(System.lineSeparator());
+                }
+            }
+        } else {
+            try (InputStream in = resource.getInputStream(entry)) {
+                Files.copy(in, outFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
+    }
+
+    private String findVersion(final String ga) {
+        String version = featurePackDepVersions.get(ga);
+        // Check the project dependencies if not found in the feature pack
+        if (version == null) {
+            final String[] gaParts = ga.split(":");
+            if (gaParts.length == 2) {
+                final Set<Artifact> artifacts = project.getArtifacts();
+                for (Artifact artifact : artifacts) {
+                    if (artifact.getGroupId().endsWith(gaParts[0]) && artifact.getArtifactId().equals(gaParts[1])) {
+                        version = artifact.getVersion();
+                        break;
+                    }
+                }
+            }
+        }
+        return version;
     }
 
     final class FractionExpander implements ExceptionConsumer<org.eclipse.aether.artifact.Artifact> {
