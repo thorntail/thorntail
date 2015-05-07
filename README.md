@@ -6,6 +6,8 @@ applications as *fat jars*, with just enough of the
 Wildfly application server wrapped around it to support
 each application's use-case.
 
+> Note: WildFly Swarm requires Maven 3.2.x or higher for building your application.
+
 # Project Configuration
 
 In a normal WAR-based maven `pom.xml`, simply add the following
