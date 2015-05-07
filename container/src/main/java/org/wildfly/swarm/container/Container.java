@@ -147,7 +147,7 @@ public class Container {
 
     private void applyInterfaceDefaults() {
         if (this.interfaces.isEmpty()) {
-            iface("public", "${jboss.bind.address:127.0.0.1}");
+            iface("public", "${jboss.bind.address:0.0.0.0}");
         }
     }
 
