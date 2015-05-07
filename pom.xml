@@ -64,6 +64,10 @@
         <linkXRef>false</linkXRef>
     </properties>
 
+    <prerequisites>
+      <maven>3.1.0</maven>
+    </prerequisites>
+
     <build>
         <plugins>
             <plugin>
