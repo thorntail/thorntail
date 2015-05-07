@@ -154,8 +154,8 @@ public class Container {
     private void applySocketBindingGroupDefaults() {
         if (this.socketBindingGroups.isEmpty()) {
             socketBindingGroup(
-                    new SocketBindingGroup("default-sockets", "public", "0")
-                            .socketBinding("http", 8080)
+                    new SocketBindingGroup("default-sockets", "public", "${jboss.socket.binding.port-offset:0}")
+                            .socketBinding("http", "${jboss.http.port:8080}")
             );
         }
     }
