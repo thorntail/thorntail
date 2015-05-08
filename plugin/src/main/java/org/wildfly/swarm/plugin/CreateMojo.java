@@ -82,8 +82,11 @@ public class CreateMojo extends AbstractSwarmMojo {
      */
     private final Map<String, String> featurePackDepVersions = new HashMap<>();
 
-    @Parameter(alias="modules")
+    @Parameter(alias = "modules")
     private String[] additionalModules;
+
+    @Parameter(alias = "bundle-dependencies", defaultValue = "true")
+    private boolean bundleDependencies;
 
     private Path dir;
 
@@ -133,6 +136,9 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addMavenRepository() throws MojoFailureException {
+        if ( ! this.bundleDependencies ) {
+            return;
+        }
         Path modulesDir = this.dir.resolve("modules");
 
         analyzeModuleXmls(modulesDir);
@@ -305,11 +311,11 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addAdditionalModules() {
-        if ( this.additionalModules == null ) {
+        if (this.additionalModules == null) {
             return;
         }
-        for ( int i = 0 ; i < this.additionalModules.length ; ++i ) {
-            addTransitiveModule( this.additionalModules[i] );
+        for (int i = 0; i < this.additionalModules.length; ++i) {
+            addTransitiveModule(this.additionalModules[i]);
         }
 
     }
@@ -421,19 +427,23 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addProjectDependenciesToRepository() throws MojoFailureException {
-        if ( ! this.project.getPackaging().equals( "jar" ) ) {
+        if ( ! this.bundleDependencies ) {
+            return;
+        }
+
+        if (!this.project.getPackaging().equals("jar")) {
             return;
         }
 
         Path depsTxt = this.dir.resolve("dependencies.txt");
-        try (final BufferedWriter out = Files.newBufferedWriter(depsTxt, StandardCharsets.UTF_8)){
+        try (final BufferedWriter out = Files.newBufferedWriter(depsTxt, StandardCharsets.UTF_8)) {
             Set<Artifact> dependencies = this.project.getArtifacts();
 
             for (Artifact each : dependencies) {
                 String scope = each.getScope();
                 if (scope.equals("compile") || scope.equals("runtime")) {
                     addArtifact(each);
-                    out.write( each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n" );
+                    out.write(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n");
                 }
             }
         } catch (IOException e) {

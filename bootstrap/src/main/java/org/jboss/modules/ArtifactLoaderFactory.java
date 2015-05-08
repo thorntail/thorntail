@@ -1,9 +1,14 @@
 package org.jboss.modules;
 
+import org.wildfly.swarm.bootstrap.m2.JarRepositoryResolver;
+import org.wildfly.swarm.bootstrap.m2.LocalRepositoryResolver;
+import org.wildfly.swarm.bootstrap.m2.RepositoryResolver;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarFile;
@@ -17,77 +22,39 @@ public class ArtifactLoaderFactory {
 
     private Map<String, ResourceLoader> loaders = new HashMap<>();
 
+    private RepositoryResolver[] resolvers = new RepositoryResolver[]{
+            new JarRepositoryResolver(),
+            new LocalRepositoryResolver(),
+    };
+
     public ArtifactLoaderFactory() {
     }
 
     public synchronized ResourceLoader getLoader(String gav) throws IOException {
         ResourceLoader loader = this.loaders.get(gav);
-        if ( loader != null ) {
+        if (loader != null) {
             return loader;
         }
 
-        File jarFile = getFile( gav );
-        if ( jarFile == null ) {
+        File jarFile = getFile(gav);
+        if (jarFile == null) {
             return null;
         }
-        loader = ResourceLoaders.createJarResourceLoader( gav, new JarFile(jarFile));
-        this.loaders.put( gav, loader );
+        loader = ResourceLoaders.createJarResourceLoader(gav, new JarFile(jarFile));
+        this.loaders.put(gav, loader);
         return loader;
     }
 
     public File getFile(String gav) throws IOException {
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream(gavToPath(gav));
-        if ( in == null ) {
-            return null;
+        File file = null;
+        for ( int i = 0 ; i < this.resolvers.length ; ++i ) {
+            file = this.resolvers[i].resolve(gav);
+            if ( file != null ) {
+                return file;
+            }
         }
 
-        try {
-            File tmp = File.createTempFile(gav.replace(':', '~'), ".jar");
-            tmp.deleteOnExit();
-
-            FileOutputStream out = new FileOutputStream(tmp);
-
-            try {
-                byte[] buf = new byte[1024];
-                int len = -1;
-
-                while ((len = in.read(buf)) >= 0) {
-                    out.write(buf, 0, len);
-                }
-            } finally {
-                out.close();
-            }
-            return tmp;
-        } finally {
-            in.close();
-        }
-    }
-
-    private static final String JANDEX_SUFFIX = "?jandex";
-
-    public String gavToPath(String gav) {
-        try {
-            String[] parts = gav.split(":");
-            String group = parts[0];
-            String artifact = parts[1];
-            String version = parts[2];
-            String classifier = null;
-            if ( parts.length >= 4 ) {
-                classifier = parts[3];
-            }
-
-            if ( artifact.endsWith( JANDEX_SUFFIX ) ) {
-                artifact = artifact.substring( 0, artifact.length() - JANDEX_SUFFIX.length() );
-            }
-
-            String path = "m2repo/" + group.replaceAll("\\.", "/") + "/" + artifact + "/" + version + "/" + artifact + "-" + version + ( classifier == null || classifier.equals( "" ) ? "" : "-" + classifier) + ".jar";
-            return path;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println( "-----------------" );
-            System.err.println( gav );
-            System.err.println( "-----------------" );
-            throw e;
-        }
+        return null;
     }
 
 }

@@ -48,7 +48,7 @@ public class RunMojo extends AbstractMojo {
 
             new Thread( new IOBridge( process.getInputStream(), System.out ) ).start();
             new Thread( new IOBridge( process.getErrorStream(), System.err ) ).start();
-            
+
             process.waitFor();
         } catch (IOException e) {
             throw new MojoFailureException("Error executing", e);
