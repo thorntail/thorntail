@@ -61,13 +61,22 @@ public class CreateMojo extends AbstractSwarmMojo {
 
     private static final String MAIN_SLOT = "main";
 
-    private static final Pattern MODULE_ARTIFACT_PATTERN = Pattern.compile(
+    private static final Pattern MODULE_ARTIFACT_EXPRESSION_PATTERN = Pattern.compile(
             // artifact tag
-            "(<artifact\\s+?name=\"\\$\\{)" +
+            "(<artifact\\s+?name=\")(?:\\$\\{)" +
                     // possible GAV
                     "+([A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+)(?:(?::)([A-Za-z0-9_\\-.]+))?" +
                     // end tag
-                    "+(}\"/>)"
+                    "+(?:})(\"/>)"
+    );
+
+    private static final Pattern MODULE_ARTIFACT_GAV_PATTERN = Pattern.compile(
+            // artifact tag
+            "(<artifact\\s+?name=\")" +
+                    // possible GAV
+                    "+([A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+)" +
+                    // end tag
+                    "+(\"/>)"
     );
 
     @Inject
@@ -216,13 +225,9 @@ public class CreateMojo extends AbstractSwarmMojo {
     private void analyzeModuleXml(final Path path) throws IOException {
         final List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
         for (String line : lines) {
-            int start = line.indexOf("${");
-            if (start >= 0) {
-                int end = line.indexOf("}");
-                if (end > 0) {
-                    String ga = line.substring(start + 2, end);
-                    this.gavs.add(new ArtifactSpec(ga));
-                }
+            final Matcher matcher = MODULE_ARTIFACT_GAV_PATTERN.matcher(line);
+            if (matcher.find()) {
+                this.gavs.add(new ArtifactSpec(matcher.group(2)));
             }
         }
     }
@@ -546,7 +551,7 @@ public class CreateMojo extends AbstractSwarmMojo {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     // Attempt to find a version if required
-                    final Matcher matcher = MODULE_ARTIFACT_PATTERN.matcher(line);
+                    final Matcher matcher = MODULE_ARTIFACT_EXPRESSION_PATTERN.matcher(line);
                     while (matcher.find()) {
                         String version = matcher.group(3);
                         if (version == null) {
