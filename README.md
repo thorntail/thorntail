@@ -68,16 +68,16 @@ specified through your `MANIFEST.MF` inside your `.war`.
 
     import org.wildfly.swarm.container.Container;
     import org.wildfly.swarm.container.SocketBindingGroup;
-    import org.wildfly.swarm.logging.LoggingSubsystem;
-    import org.wildfly.swarm.undertow.UndertowSubsystem;
+    import org.wildfly.swarm.logging.LoggingFraction;
+    import org.wildfly.swarm.undertow.UndertowFraction;
     
     public class MyMain {
     
         public static void main(String[] args) {
             new Container()
-                .subsystem( new LoggingSubsystem()... 
+                .subsystem( new LoggingFraction()...
                 )
-                .subsystem( new UndertowSubsystem()... 
+                .subsystem( new UndertowFraction()...
                 )
                 .socketBindingGroup( new SocketBindingGroup()... 
                 )
@@ -95,13 +95,13 @@ default logging configuration:
     package org.mycompany.myapp;
 
     import org.wildfly.swarm.container.Container;
-    import org.wildfly.swarm.logging.LoggingSubsystem;
+    import org.wildfly.swarm.logging.LoggingFraction;
 
     public class MyMain {
     
         public static void main(String[] args) {
             new Container()
-                .subsystem( new LoggingSubsystem()...
+                .subsystem( new LoggingFraction()...
                 )
                 .start();
         }
