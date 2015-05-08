@@ -41,11 +41,9 @@ import java.security.AccessControlContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.modules.filter.MultiplePathFilterBuilder;
@@ -748,47 +746,28 @@ final class ModuleXmlParser {
 
     static ResourceLoader createMavenArtifactLoader(final String name) throws IOException {
 // SELF CONTAINED - START
-        String[] parts = name.split(":");
+        final String[] parts = name.split(":");
+
+        // Must have at least a groupId, artiactId and version
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Maven groupId, artifactId and/or version could not be found in " + name);
+        }
 
         String group = parts[0];
         String artifact = parts[1];
-        String version = null;
+        String version = parts[2];
+
         String classifier = null;
-        if (parts.length >= 3) {
-            version = parts[2];
-            if (version.equals("")) {
-                version = null;
-            }
-        }
+        // Check for a classifier
         if (parts.length >= 4) {
             classifier = parts[3];
-            if (classifier.equals("")) {
+            if (classifier.isEmpty()) {
                 classifier = null;
             }
         }
 
         if (artifact.endsWith("?jandex")) {
             artifact = artifact.substring(0, artifact.length() - 7);
-        }
-
-        String repoPath = "m2repo/" + parts[0].replaceAll("\\.", "/") + "/" + artifact;
-        Enumeration<JarEntry> entries = Util.rootJar().entries();
-
-        if (version == null) {
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                String entryName = entry.getName();
-                if (entryName.startsWith(repoPath)) {
-                    int slashLoc = entryName.indexOf('/', repoPath.length());
-                    if (slashLoc > 0) {
-                        int nextSlash = entryName.indexOf('/', slashLoc + 1);
-                        if (nextSlash > 0) {
-                            version = entryName.substring(slashLoc + 1, nextSlash);
-                            break;
-                        }
-                    }
-                }
-            }
         }
 
         final String path = group + ":" + artifact + ":" + version + (classifier == null ? "" : ":" + classifier);

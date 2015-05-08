@@ -1,14 +1,15 @@
 package org.jboss.modules;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Locale;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 
 import org.jboss.modules.filter.PathFilters;
 
@@ -18,10 +19,10 @@ import org.jboss.modules.filter.PathFilters;
  */
 public class BootModuleFinder implements ModuleFinder {
 
-    JarFile jarFile;
+    private final FileSystem fileSystem;
 
     public BootModuleFinder() throws IOException {
-        this.jarFile = Util.rootJar();
+        fileSystem = Environment.getFileSystem();
     }
 
     @Override
@@ -34,25 +35,21 @@ public class BootModuleFinder implements ModuleFinder {
             }
         }
 
-        String namePath = identifier.getName().replace('.', '/');
-        String basePath = "modules/system/layers/base/" + namePath + "/" + identifier.getSlot();
-        JarEntry moduleXmlEntry = jarFile.getJarEntry(basePath + "/module.xml");
+        final String namePath = identifier.getName().replace(".", fileSystem.getSeparator());
+        final Path basePath = fileSystem.getPath("modules", "system", "layers", "base", namePath, identifier.getSlot());
+        final Path moduleXml = basePath.resolve("module.xml");
 
-        if (moduleXmlEntry == null) {
+        if (Files.notExists(moduleXml)) {
             return null;
         }
-        ModuleSpec moduleSpec;
-        try {
-            InputStream inputStream = jarFile.getInputStream(moduleXmlEntry);
-            try {
-                moduleSpec = ModuleXmlParser.parseModuleXml(new ModuleXmlParser.ResourceRootFactory() {
-                    public ResourceLoader createResourceLoader(final String rootPath, final String loaderPath, final String loaderName) throws IOException {
-                        return new JarFileResourceLoader(loaderName, jarFile, rootPath + "/" + loaderPath);
-                    }
-                }, basePath, inputStream, moduleXmlEntry.getName(), delegateLoader, identifier);
-            } finally {
-                StreamUtil.safeClose(inputStream);
-            }
+        final ModuleSpec moduleSpec;
+        try (InputStream inputStream = Files.newInputStream(moduleXml)) {
+            moduleSpec = ModuleXmlParser.parseModuleXml(new ModuleXmlParser.ResourceRootFactory() {
+                @Override
+                public ResourceLoader createResourceLoader(final String rootPath, final String loaderPath, final String loaderName) throws IOException {
+                    return Environment.getModuleResourceLoader(rootPath, loaderPath, loaderName);
+                }
+            }, basePath.toString(), inputStream, moduleXml.toString(), delegateLoader, identifier);
         } catch (IOException e) {
             throw new ModuleLoadException("Failed to read module.xml file", e);
         }
@@ -69,17 +66,22 @@ public class BootModuleFinder implements ModuleFinder {
     }
 
     private ModuleSpec findAppModule_main() throws IOException {
-
-        Manifest manifest = Util.rootJar().getManifest();
-        String artifactName = manifest.getMainAttributes().getValue("Application-Artifact");
-
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("app/" + artifactName);
-
-        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("APP"));
-
-        if (in == null) {
+        final Path manifestPath = fileSystem.getPath("META-INF", "MANIFEST.MF");
+        if (Files.notExists(manifestPath)) {
             return null;
         }
+
+        final Manifest manifest = new Manifest();
+        try (final InputStream in = Files.newInputStream(manifestPath)) {
+            manifest.read(in);
+        }
+        final String artifactName = manifest.getMainAttributes().getValue("Application-Artifact");
+        final Path appArtifact = fileSystem.getPath("app", artifactName);
+
+        if (Files.notExists(appArtifact)) {
+            return null;
+        }
+        ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("APP"));
 
         String rootName = artifactName;
         String extension = ".jar";
@@ -89,39 +91,24 @@ public class BootModuleFinder implements ModuleFinder {
             extension = artifactName.substring(dotLoc);
         }
 
-        try {
-            File tmp = File.createTempFile(rootName, extension);
-            tmp.deleteOnExit();
+        final Path tmp = Files.createTempFile(rootName, extension);
+        tmp.toFile().deleteOnExit();
+        Files.copy(appArtifact, tmp, StandardCopyOption.REPLACE_EXISTING);
 
-            FileOutputStream out = new FileOutputStream(tmp);
-
-            try {
-                byte[] buf = new byte[1024];
-                int len = -1;
-
-                while ((len = in.read(buf)) >= 0) {
-                    out.write(buf, 0, len);
-                }
-            } finally {
-                out.close();
-            }
-
-            if (artifactName.endsWith(".war")) {
-                ResourceLoader resourceLoader = new JarFileResourceLoader(artifactName, new JarFile(tmp), "WEB-INF/classes");
-                ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
-                builder.addResourceRoot(resourceLoaderSpec);
-            }
-
-            ResourceLoader resourceLoader = new JarFileResourceLoader(artifactName, new JarFile(tmp));
+        if (artifactName.toLowerCase(Locale.ROOT).endsWith(".war")) {
+            // Load the WAR's classes from the deployment archive
+            ResourceLoader resourceLoader = new JarFileResourceLoader(artifactName, new JarFile(tmp.toFile()), "WEB-INF/classes");
             ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
             builder.addResourceRoot(resourceLoaderSpec);
-
-            System.setProperty("wildfly.swarm.app.path", tmp.getAbsolutePath());
-            System.setProperty("wildfly.swarm.app.name", artifactName);
-
-        } finally {
-            in.close();
         }
+
+        // Load the deployment archive itself
+        ResourceLoader resourceLoader = new JarFileResourceLoader(artifactName, new JarFile(tmp.toFile()));
+        ResourceLoaderSpec resourceLoaderSpec = ResourceLoaderSpec.createResourceLoaderSpec(resourceLoader);
+        builder.addResourceRoot(resourceLoaderSpec);
+
+        System.setProperty("wildfly.swarm.app.path", tmp.toAbsolutePath().toString());
+        System.setProperty("wildfly.swarm.app.name", artifactName);
 
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
@@ -130,8 +117,8 @@ public class BootModuleFinder implements ModuleFinder {
 
         String modulesStr = manifest.getMainAttributes().getValue("Feature-Pack-Modules");
         String[] modules = modulesStr.split(",");
-        for (int i = 0; i < modules.length; ++i) {
-            String[] parts = modules[i].trim().split(":");
+        for (final String module : modules) {
+            String[] parts = module.trim().split(":");
             builder.addDependency(DependencySpec.createModuleDependencySpec(
                     PathFilters.acceptAll(),
                     PathFilters.getMetaInfServicesFilter(),
@@ -140,18 +127,16 @@ public class BootModuleFinder implements ModuleFinder {
                     false));
         }
 
-        ModuleSpec moduleSpec = builder.create();
-        return moduleSpec;
+        return builder.create();
     }
 
     private ModuleSpec findAppModule_dependencies() throws IOException {
         ModuleSpec.Builder builder = ModuleSpec.build(ModuleIdentifier.create("APP", "dependencies"));
 
-        JarFile rootJar = Util.rootJar();
-        ZipEntry depsTxt = rootJar.getEntry("dependencies.txt");
+        final Path depsTxt = fileSystem.getPath("dependencies.txt");
 
-        if (depsTxt != null) {
-            ProjectDependencies deps = ProjectDependencies.initialize(rootJar.getInputStream(depsTxt));
+        if (Files.exists(depsTxt)) {
+            ProjectDependencies deps = ProjectDependencies.initialize(Files.newInputStream(depsTxt));
 
             Set<String> gavs = deps.getGAVs();
             for ( String each : gavs ) {
@@ -161,7 +146,6 @@ public class BootModuleFinder implements ModuleFinder {
         }
         builder.addDependency(DependencySpec.createLocalDependencySpec());
 
-        ModuleSpec moduleSpec = builder.create();
-        return moduleSpec;
+        return builder.create();
     }
 }

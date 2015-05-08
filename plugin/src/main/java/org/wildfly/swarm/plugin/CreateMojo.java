@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -114,6 +116,7 @@ public class CreateMojo extends AbstractSwarmMojo {
 
         addProjectArtifact();
         addProjectDependenciesToRepository();
+        createManifest();
         createJar();
     }
 
@@ -476,11 +479,9 @@ public class CreateMojo extends AbstractSwarmMojo {
         String name = artifact.getArtifactId() + "-" + artifact.getVersion() + "-swarm.jar";
 
         File file = new File(this.projectBuildDir, name);
-
-        Manifest manifest = createManifest();
         try (
                 FileOutputStream fileOut = new FileOutputStream(file);
-                JarOutputStream out = new JarOutputStream(fileOut, manifest)
+                JarOutputStream out = new JarOutputStream(fileOut)
         ) {
             writeToJar(out, this.dir);
         } catch (IOException e) {
@@ -518,7 +519,7 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
 
-    private Manifest createManifest() throws MojoFailureException {
+    private void createManifest() throws MojoFailureException {
         Manifest manifest = new Manifest();
 
         Attributes attrs = manifest.getMainAttributes();
@@ -538,8 +539,17 @@ public class CreateMojo extends AbstractSwarmMojo {
             first = false;
         }
         attrs.putValue("Feature-Pack-Modules", modules.toString());
-
-        return manifest;
+        // Write the manifest to the dir
+        final Path manifestPath = dir.resolve("META-INF").resolve("MANIFEST.MF");
+        // Ensure the directories have been created
+        try {
+            Files.createDirectories(manifestPath.getParent());
+            try (final OutputStream out = Files.newOutputStream(manifestPath, StandardOpenOption.CREATE)) {
+                manifest.write(out);
+            }
+        } catch (IOException e) {
+            throw new MojoFailureException("Could not create manifest file: " + manifestPath.toString(), e);
+        }
     }
 
     private void copyFileFromZip(final ZipFile resource, final ZipEntry entry, final Path outFile) throws IOException {
