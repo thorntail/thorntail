@@ -18,6 +18,19 @@
 
 package org.jboss.modules;
 
+import static org.jboss.modules.xml.XmlPullParser.CDSECT;
+import static org.jboss.modules.xml.XmlPullParser.COMMENT;
+import static org.jboss.modules.xml.XmlPullParser.DOCDECL;
+import static org.jboss.modules.xml.XmlPullParser.END_DOCUMENT;
+import static org.jboss.modules.xml.XmlPullParser.END_TAG;
+import static org.jboss.modules.xml.XmlPullParser.ENTITY_REF;
+import static org.jboss.modules.xml.XmlPullParser.FEATURE_PROCESS_NAMESPACES;
+import static org.jboss.modules.xml.XmlPullParser.IGNORABLE_WHITESPACE;
+import static org.jboss.modules.xml.XmlPullParser.PROCESSING_INSTRUCTION;
+import static org.jboss.modules.xml.XmlPullParser.START_DOCUMENT;
+import static org.jboss.modules.xml.XmlPullParser.START_TAG;
+import static org.jboss.modules.xml.XmlPullParser.TEXT;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,19 +57,6 @@ import org.jboss.modules.security.PermissionFactory;
 import org.jboss.modules.xml.MXParser;
 import org.jboss.modules.xml.XmlPullParser;
 import org.jboss.modules.xml.XmlPullParserException;
-
-import static org.jboss.modules.xml.XmlPullParser.CDSECT;
-import static org.jboss.modules.xml.XmlPullParser.COMMENT;
-import static org.jboss.modules.xml.XmlPullParser.DOCDECL;
-import static org.jboss.modules.xml.XmlPullParser.END_DOCUMENT;
-import static org.jboss.modules.xml.XmlPullParser.END_TAG;
-import static org.jboss.modules.xml.XmlPullParser.ENTITY_REF;
-import static org.jboss.modules.xml.XmlPullParser.FEATURE_PROCESS_NAMESPACES;
-import static org.jboss.modules.xml.XmlPullParser.IGNORABLE_WHITESPACE;
-import static org.jboss.modules.xml.XmlPullParser.PROCESSING_INSTRUCTION;
-import static org.jboss.modules.xml.XmlPullParser.START_DOCUMENT;
-import static org.jboss.modules.xml.XmlPullParser.START_TAG;
-import static org.jboss.modules.xml.XmlPullParser.TEXT;
 
 /**
  * A fast, validating module.xml parser.
@@ -748,55 +748,50 @@ final class ModuleXmlParser {
 
     static ResourceLoader createMavenArtifactLoader(final String name) throws IOException {
 // SELF CONTAINED - START
-        String path = name;
-        if (name.startsWith("${")) {
-            // Convert to gav
-            path = name.substring(2, name.length() - 1);
-            String[] parts = path.split(":");
+        String[] parts = name.split(":");
 
-            String group = parts[0];
-            String artifact = parts[1];
-            String version = null;
-            String classifier = null;
-            if (parts.length >= 3) {
-                version = parts[2];
-                if ( version.equals("")) {
-                    version = null;
-                }
+        String group = parts[0];
+        String artifact = parts[1];
+        String version = null;
+        String classifier = null;
+        if (parts.length >= 3) {
+            version = parts[2];
+            if (version.equals("")) {
+                version = null;
             }
-            if (parts.length >= 4) {
-                classifier = parts[3];
-                if ( classifier.equals("" ) ) {
-                    classifier = null;
-                }
+        }
+        if (parts.length >= 4) {
+            classifier = parts[3];
+            if (classifier.equals("")) {
+                classifier = null;
             }
+        }
 
-            if ( artifact.endsWith( "?jandex" ) ) {
-                artifact = artifact.substring( 0, artifact.length() - 7 );
-            }
+        if (artifact.endsWith("?jandex")) {
+            artifact = artifact.substring(0, artifact.length() - 7);
+        }
 
-            String repoPath = "m2repo/" + parts[0].replaceAll("\\.", "/") + "/" + artifact;
-            Enumeration<JarEntry> entries = Util.rootJar().entries();
+        String repoPath = "m2repo/" + parts[0].replaceAll("\\.", "/") + "/" + artifact;
+        Enumeration<JarEntry> entries = Util.rootJar().entries();
 
-            if (version == null) {
-                while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
-                    String entryName = entry.getName();
-                    if ( entryName.startsWith(repoPath) ) {
-                        int slashLoc = entryName.indexOf('/', repoPath.length());
-                        if (slashLoc > 0) {
-                            int nextSlash = entryName.indexOf('/', slashLoc + 1);
-                            if (nextSlash > 0) {
-                                version = entryName.substring(slashLoc + 1, nextSlash);
-                                break;
-                            }
+        if (version == null) {
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+                if (entryName.startsWith(repoPath)) {
+                    int slashLoc = entryName.indexOf('/', repoPath.length());
+                    if (slashLoc > 0) {
+                        int nextSlash = entryName.indexOf('/', slashLoc + 1);
+                        if (nextSlash > 0) {
+                            version = entryName.substring(slashLoc + 1, nextSlash);
+                            break;
                         }
                     }
                 }
             }
-
-            path = group + ":" + artifact + ":" + version + ( classifier == null ? "" : ":" + classifier);
         }
+
+        final String path = group + ":" + artifact + ":" + version + (classifier == null ? "" : ":" + classifier);
         return ArtifactLoaderFactory.INSTANCE.getLoader(path);
 // SELF CONTAINED - END
     }
