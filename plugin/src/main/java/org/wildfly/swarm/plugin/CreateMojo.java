@@ -106,7 +106,6 @@ public class CreateMojo extends AbstractSwarmMojo {
         setupFeaturePacks(this.resolver);
         setupFeaturePackArtifacts();
         setupDirectory();
-        addJBossModules();
         addBootstrap();
 
         processFractions(this.resolver, new FractionExpander());
@@ -357,22 +356,6 @@ public class CreateMojo extends AbstractSwarmMojo {
             }
         });
     }
-
-    private void addJBossModules() throws MojoFailureException {
-        Artifact artifact = findArtifact("org.jboss.modules", "jboss-modules", "jar");
-
-        if (artifact == null) {
-            throw new MojoFailureException("Unable to find org.jboss.modules:jboss-modules:jar in the project artifacts."
-                    + " Is a WildFly Swarm fraction present as a project dependency?");
-        }
-
-        try {
-            expandArtifact(artifact);
-        } catch (IOException e) {
-            throw new MojoFailureException("Unable to add jboss-modules");
-        }
-    }
-
 
     private void expandArtifact(Artifact artifact) throws IOException {
 
