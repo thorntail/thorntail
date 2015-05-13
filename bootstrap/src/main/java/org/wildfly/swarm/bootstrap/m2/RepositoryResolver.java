@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public abstract class RepositoryResolver {
 
@@ -16,7 +17,9 @@ public abstract class RepositoryResolver {
 
     private static final String JANDEX_SUFFIX = "?jandex";
 
-    protected Path gavToPath(String gav, String separator) {
+    protected static final String SEPARATOR = "/";
+
+    protected Path gavToPath(String gav) {
         String[] parts = gav.split(":");
         String group = parts[0];
         String artifact = parts[1];
@@ -33,12 +36,12 @@ public abstract class RepositoryResolver {
         StringBuilder path = new StringBuilder();
 
 
-        path.append( group.replaceAll( "\\.", separator ) );
-        path.append( separator );
+        path.append( group.replaceAll( "\\.", SEPARATOR ) );
+        path.append( SEPARATOR );
         path.append( artifact );
-        path.append( separator );
+        path.append( SEPARATOR );
         path.append( version );
-        path.append( separator );
+        path.append( SEPARATOR );
         path.append( artifact );
         path.append( "-" );
         path.append( version );

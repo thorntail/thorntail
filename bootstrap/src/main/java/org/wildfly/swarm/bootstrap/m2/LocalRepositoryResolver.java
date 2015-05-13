@@ -16,7 +16,7 @@ public class LocalRepositoryResolver extends RepositoryResolver {
     public File resolve(String gav) throws IOException {
 
         Path m2repo = findM2Repo();
-        Path artifactPath = m2repo.resolve(gavToPath(gav, File.separator));
+        Path artifactPath = m2repo.resolve(gavToPath(gav));
 
         if ( Files.notExists( artifactPath ) ) {
             return null;

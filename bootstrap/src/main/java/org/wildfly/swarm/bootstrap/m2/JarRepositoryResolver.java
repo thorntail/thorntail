@@ -17,8 +17,8 @@ public class JarRepositoryResolver extends RepositoryResolver {
 
         StringBuilder path = new StringBuilder();
         path.append( "m2repo" );
-        path.append( "/" );
-        path.append( gavToPath( gav, "/" ) );
+        path.append( SEPARATOR );
+        path.append( gavToPath( gav ) );
 
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(path.toString());
         if ( in == null ) {
