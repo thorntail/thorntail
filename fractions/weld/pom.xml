@@ -55,6 +55,15 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-bean-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-transactions</artifactId>
+        </dependency>
+
+        <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-container</artifactId>
           <exclusions>
