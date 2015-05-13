@@ -67,7 +67,7 @@ public class CreateMojo extends AbstractSwarmMojo {
             // artifact tag
             "(<artifact\\s+?name=\")(?:\\$\\{)" +
                     // possible GAV
-                    "+([A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+)(?:(?::)([A-Za-z0-9_\\-.]+))?" +
+                    "+([A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+)(?:(?::)([A-Za-z0-9_\\-.]*))?+(?:(?::)([A-Za-z0-9_\\-.]+))?+(\\?jandex)?" +
                     // end tag
                     "+(?:})(\"/>)"
     );
@@ -76,7 +76,7 @@ public class CreateMojo extends AbstractSwarmMojo {
             // artifact tag
             "(<artifact\\s+?name=\")" +
                     // possible GAV
-                    "+([A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+)" +
+                    "+([A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+:[A-Za-z0-9_\\-.]+(:[A-Za-z0-9_\\-.]+)?)" +
                     // end tag
                     "+(\"/>)"
     );
@@ -547,11 +547,16 @@ public class CreateMojo extends AbstractSwarmMojo {
                     final Matcher matcher = MODULE_ARTIFACT_EXPRESSION_PATTERN.matcher(line);
                     while (matcher.find()) {
                         String version = matcher.group(3);
-                        if (version == null) {
+                        String classifier = matcher.group(4);
+                        if (version == null || version.isEmpty()) {
                             // No version found attempt to resolve it
                             version = findVersion(matcher.group(2));
                             if (version != null) {
-                                line = matcher.replaceAll("$1$2:" + version + "$4");
+                                if (classifier != null) {
+                                    line = matcher.replaceAll("$1$2:" + version + ":$4$6");
+                                } else {
+                                    line = matcher.replaceAll("$1$2:" + version + "$6");
+                                }
                             } else {
                                 getLog().debug("No version found for " + line);
                             }
