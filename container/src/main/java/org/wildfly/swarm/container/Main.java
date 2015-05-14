@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.LogManager;
@@ -21,11 +22,18 @@ public class Main {
     public static void main(String[] args) throws Exception {
         System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
 
+        String mainClassName = null;
+        if ( args.length > 0 ) {
+            mainClassName = args[0];
+        }
+
         Module app = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("APP"));
         InputStream in = app.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
 
-        Manifest manifest = new Manifest(in);
-        String mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Main-Class"));
+        if( mainClassName == null ) {
+            Manifest manifest = new Manifest(in);
+            mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Main-Class"));
+        }
 
         if (mainClassName == null) {
             mainClassName = DefaultMain.class.getName();
@@ -39,7 +47,7 @@ public class Main {
             throw new NoSuchMethodException("Main method is not static for " + mainClass);
         }
 
-        Thread.currentThread().setContextClassLoader(app.getClassLoader());
+        //Thread.currentThread().setContextClassLoader(app.getClassLoader());
 
         mainMethod.invoke(null, new Object[]{args});
     }

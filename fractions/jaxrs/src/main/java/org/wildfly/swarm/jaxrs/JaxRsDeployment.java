@@ -81,7 +81,11 @@ public class JaxRsDeployment implements Deployment {
     }
 
     private static String archiveName() {
-        return System.getProperty( "wildfly.swarm.app.name" ).replace(".jar", ".war");
+        String name = System.getProperty( "wildfly.swarm.app.name" );
+        if ( name == null ) {
+            return "wildfly-swarm-app.war";
+        }
+        return name.replace(".jar", ".war");
     }
 
 }

@@ -1,5 +1,7 @@
 package org.wildfly.swarm.plugin;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -8,8 +10,11 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
+import javax.print.DocFlavor;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,14 +22,20 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
-@Mojo(name = "run")
-@Execute(phase = LifecyclePhase.PACKAGE)
+@Mojo(name = "run",
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
+        requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Execute(phase = LifecyclePhase.COMPILE)
 public class RunMojo extends AbstractMojo {
 
     @Component
@@ -33,21 +44,33 @@ public class RunMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}")
     protected String projectBuildDir;
 
+    @Parameter(alias="mainClass")
+    protected String mainClass;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Path java = findJava();
-        Path jar = findJar();
+        //Path jar = findJar();
+
 
         try {
-            Process process = Runtime.getRuntime().exec(new String[]{
-                    java.toString(),
-                    "-jar",
-                    jar.toString()
+            List<String> cli = new ArrayList<>();
+            cli.add( java.toString() );
+            cli.add( "-Dwildfly.swarm.layout=dir:" + this.project.getBuild().getOutputDirectory() );
+            cli.add( "-Dwildfly.swarm.app.dependencies=" + dependencies() );
+            cli.add( "-jar" );
+            cli.add( findBootstrap().toString() );
 
-            });
+            if ( this.mainClass != null ) {
+                cli.add( this.mainClass );
+            }
 
-            new Thread( new IOBridge( process.getInputStream(), System.out ) ).start();
-            new Thread( new IOBridge( process.getErrorStream(), System.err ) ).start();
+            System.err.println( "EXEC: " + cli );
+
+            Process process = Runtime.getRuntime().exec(cli.toArray(new String[ cli.size() ] ));
+
+            new Thread(new IOBridge(process.getInputStream(), System.out)).start();
+            new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
 
             process.waitFor();
         } catch (IOException e) {
@@ -57,14 +80,38 @@ public class RunMojo extends AbstractMojo {
         }
     }
 
-    Path findJar() throws MojoFailureException {
-        Path jar = FileSystems.getDefault().getPath(this.projectBuildDir, this.project.getArtifactId() + "-" + this.project.getVersion() + "-swarm.jar");
+    String dependencies() {
+        List<String> elements = new ArrayList<>();
+        Set<Artifact> artifacts = this.project.getArtifacts();
+        for (Artifact each : artifacts ) {
+            elements.add( each.getFile().toString() );
+        }
+        StringBuilder cp = new StringBuilder();
 
-        if (jar.toFile().exists()) {
-            return jar;
+        Iterator<String> iter = elements.iterator();
+
+        while ( iter.hasNext() ) {
+            String element = iter.next();
+            cp.append( element );
+            if ( iter.hasNext() ) {
+                cp.append(File.pathSeparatorChar);
+            }
         }
 
-        throw new MojoFailureException("WildFly Swarm artifact does not exist");
+        return cp.toString();
+    }
+
+    Path findBootstrap() throws MojoFailureException {
+
+        Set<Artifact> artifacts = this.project.getArtifacts();
+
+        for ( Artifact each : artifacts ) {
+            if ( each.getGroupId().equals( "org.wildfly.swarm" ) && each.getArtifactId().equals( "wildfly-swarm-bootstrap" ) && each.getType().equals( "jar" ) ) {
+                return each.getFile().toPath();
+            }
+        }
+
+        return null;
     }
 
     Path findJava() throws MojoFailureException {
@@ -106,8 +153,8 @@ public class RunMojo extends AbstractMojo {
             int len = -1;
 
             try {
-                while ( ( len = this.in.read(buf) )>=0) {
-                    out.write( buf, 0, len );
+                while ((len = this.in.read(buf)) >= 0) {
+                    out.write(buf, 0, len);
                 }
             } catch (IOException e) {
 

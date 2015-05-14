@@ -27,6 +27,7 @@ public class BootModuleFinder implements ModuleFinder {
 
     @Override
     public ModuleSpec findModule(final ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
+        System.err.println( "findModule: " + identifier );
         if (identifier.getName().equals("APP")) {
             try {
                 return findAppModule(identifier.getSlot());

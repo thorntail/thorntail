@@ -24,15 +24,24 @@
 
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.container">
     <resources>
-        <artifact name="${org.wildfly.swarm:wildfly-swarm-container}"/>
+        <artifact name="org.wildfly.swarm:wildfly-swarm-container:${project.version}"/>
     </resources>
 
     <dependencies>
+      <system export="true">
+        <paths>
+          <path name="org/wildfly/swarm/container"/>
+          <path name="org/wildfly/swarm/container/util"/>
+          <path name="org/jboss/modules"/>
+        </paths>
+      </system>
+<!--
       <module name="org.jboss.modules"/>
       <module name="org.jboss.vfs"/>
       <module name="org.jboss.logmanager" export="true"/>
       <module name="org.jboss.as.server"/>
       <module name="org.jboss.as.controller" export="true"/>
       <module name="org.jboss.as.self-contained"/>
+-->
     </dependencies>
 </module>

@@ -15,8 +15,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
 /**
-
-/**
  * @author Bob McWhirter
  */
 public class IoFraction extends AbstractFraction {

@@ -1,5 +1,7 @@
 package org.jboss.modules;
 
+import org.wildfly.swarm.bootstrap.modules.DirLayoutAppModuleFinder;
+
 import java.io.IOException;
 
 /**
@@ -8,6 +10,10 @@ import java.io.IOException;
 public class BootModuleLoader extends ModuleLoader {
 
     public BootModuleLoader() throws IOException {
-        super( new ModuleFinder[] { new BootModuleFinder() } );
+        super( new ModuleFinder[] {
+                new DirLayoutAppModuleFinder(),
+                new ClasspathModuleFinder(),
+                new BootModuleFinder(),
+        } );
     }
 }
