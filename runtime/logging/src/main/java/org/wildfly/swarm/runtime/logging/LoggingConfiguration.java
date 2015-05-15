@@ -66,6 +66,8 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         addConsoleHandler( fraction, list );
         addRootLogger(fraction, list );
 
+        System.err.println( "CONFIG: " + list);
+
         return list;
     }
 

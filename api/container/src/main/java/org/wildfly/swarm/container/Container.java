@@ -1,17 +1,11 @@
 package org.wildfly.swarm.container;
 
-import org.jboss.dmr.ModelNode;
 import org.jboss.modules.BootModuleLoader;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
 
 /**
  * @author Bob McWhirter
@@ -26,6 +20,7 @@ public class Container {
     private Deployer deployer;
 
     public Container() throws Exception {
+        System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
         System.err.println( "container::ServerClass: " + Server.class + " // "  + Server.class.getClassLoader() );
         createServer();
     }
@@ -34,7 +29,6 @@ public class Container {
         if ( System.getProperty( "boot.module.loader" ) == null ) {
             System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
         }
-        System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.container"));
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.runtime.container.RuntimeServer");
         this.server = (Server) serverClass.newInstance();

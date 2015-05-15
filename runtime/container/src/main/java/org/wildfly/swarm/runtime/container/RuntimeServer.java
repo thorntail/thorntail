@@ -50,13 +50,23 @@ public class RuntimeServer implements Server {
     @Override
     public Deployer start(Container config) throws Exception {
 
-        applyDefaults(config);
+        System.err.println( "----A" );
+        System.err.println("----B");
 
-        ServiceContainer serviceContainer = this.container.start( getList(config), this.contentProvider );
+        applyDefaults(config);
+        System.err.println("----C");
+
+        List<ModelNode> list = getList(config);
+        Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
+        ServiceContainer serviceContainer = this.container.start( list, this.contentProvider );
+        System.err.println( "----D" );
         ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
+        System.err.println( "----E" );
         Executor executor = Executors.newSingleThreadExecutor();
+        System.err.println( "----F" );
 
         ModelControllerClient client = controller.createClient(executor);
+        System.err.println( "----G" );
 
         return new RuntimeDeployer( client, this.contentProvider );
     }
@@ -180,6 +190,7 @@ public class RuntimeServer implements Server {
         OUTER:
         while ( providerIter.hasNext() ) {
             RuntimeModuleProvider provider = providerIter.next();
+            System.err.println( "PROVIDER: " + provider.getModuleName() );
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
             ServiceLoader<ServerConfiguration> configLoader = module.loadService(ServerConfiguration.class);
 
