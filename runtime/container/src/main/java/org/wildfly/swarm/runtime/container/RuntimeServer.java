@@ -44,29 +44,19 @@ public class RuntimeServer implements Server {
     private SimpleContentProvider contentProvider = new SimpleContentProvider();
 
     public RuntimeServer() {
-        System.err.println( "runtime::ServerClass: " + Server.class + " // "  + Server.class.getClassLoader() );
     }
 
     @Override
     public Deployer start(Container config) throws Exception {
-
-        System.err.println( "----A" );
-        System.err.println("----B");
-
         applyDefaults(config);
-        System.err.println("----C");
 
         List<ModelNode> list = getList(config);
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
         ServiceContainer serviceContainer = this.container.start( list, this.contentProvider );
-        System.err.println( "----D" );
         ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
-        System.err.println( "----E" );
         Executor executor = Executors.newSingleThreadExecutor();
-        System.err.println( "----F" );
 
         ModelControllerClient client = controller.createClient(executor);
-        System.err.println( "----G" );
 
         return new RuntimeDeployer( client, this.contentProvider );
     }
@@ -182,7 +172,6 @@ public class RuntimeServer implements Server {
     }
 
     private void configureFractions(Container config, List<ModelNode> list) throws ModuleLoadException {
-        System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>");
         ServiceLoader<RuntimeModuleProvider> providerLoader = ServiceLoader.load(RuntimeModuleProvider.class);
 
         Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
@@ -190,7 +179,6 @@ public class RuntimeServer implements Server {
         OUTER:
         while ( providerIter.hasNext() ) {
             RuntimeModuleProvider provider = providerIter.next();
-            System.err.println( "PROVIDER: " + provider.getModuleName() );
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
             ServiceLoader<ServerConfiguration> configLoader = module.loadService(ServerConfiguration.class);
 
@@ -199,11 +187,9 @@ public class RuntimeServer implements Server {
             MIDDLE:
             while (configIter.hasNext()) {
                 ServerConfiguration each = configIter.next();
-                System.err.println("** configuration: " + each);
 
                 INNER:
                 for (Fraction fraction : config.fractions()) {
-                    System.err.println("** fraction: " + fraction);
                     if (fraction.getClass().equals(each.getType())) {
                         list.addAll(each.getList(fraction));
                         break INNER;

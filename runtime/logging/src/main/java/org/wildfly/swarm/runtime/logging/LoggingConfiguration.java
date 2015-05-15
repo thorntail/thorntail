@@ -41,7 +41,6 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
 
     @Override
     public List<ModelNode> getList(LoggingFraction fraction) {
-        System.err.println( "GET LOGGING CONFIG: " + fraction );
         if ( fraction == null ) {
             fraction = defaultFraction();
         }
@@ -65,8 +64,6 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         addFormatters( fraction, list );
         addConsoleHandler( fraction, list );
         addRootLogger(fraction, list );
-
-        System.err.println( "CONFIG: " + list);
 
         return list;
     }

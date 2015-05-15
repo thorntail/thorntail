@@ -21,7 +21,6 @@ public class Container {
 
     public Container() throws Exception {
         System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
-        System.err.println( "container::ServerClass: " + Server.class + " // "  + Server.class.getClassLoader() );
         createServer();
     }
 
