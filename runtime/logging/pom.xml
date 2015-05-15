@@ -25,63 +25,37 @@
 
     <parent>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-parent</artifactId>
+        <artifactId>wildfly-swarm-runtime</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-bootstrap</artifactId>
+    <artifactId>wildfly-swarm-runtime-logging</artifactId>
 
-    <name>WildFly Swarm: Bootstrap</name>
-    <description>WildFly Swarm: Bootstrap</description>
+    <name>WildFly Swarm: Runtime Logging</name>
+    <description>WildFly Swarm: Runtime Logging</description>
 
     <packaging>jar</packaging>
 
-    <build>
-        <resources>
-            <resource>
-              <directory>${project.basedir}/src/main/resources</directory>
-              <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-jar-plugin</artifactId>
-              <configuration>
-                  <archive>
-                      <manifest>
-                          <mainClass>org.wildfly.swarm.bootstrap.Main</mainClass>
-                      </manifest>
-                  </archive>
-              </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-shade-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>shade</goal>
-                </goals>
-                <configuration>
-                  <artifactSet>
-                    <includes>
-                      <include>org.jboss.modules:jboss-modules:*:*</include>
-                    </includes>
-                  </artifactSet>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
-            <groupId>org.jboss.modules</groupId>
-            <artifactId>jboss-modules</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-runtime-container</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-logging</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss</groupId>
+          <artifactId>jboss-dmr</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.core</groupId>
+          <artifactId>wildfly-controller</artifactId>
+          <scope>provided</scope>
         </dependency>
     </dependencies>
 

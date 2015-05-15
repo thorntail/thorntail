@@ -100,6 +100,11 @@
             </dependency>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-runtime-container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-bean-validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -136,6 +141,11 @@
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-logging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-runtime-logging</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -187,10 +197,10 @@
       <module>plugin</module>
 
       <module>bootstrap</module>
-      <module>container</module>
       <module>shrinkwrap</module>
 
-      <module>fractions</module>
+      <module>api</module>
+      <module>runtime</module>
 
     </modules>
 </project>

@@ -13,7 +13,6 @@ public class ClasspathModuleFinder implements ModuleFinder {
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
         final String path = "modules/" + identifier.getName().replace('.', '/' ) + "/" + identifier.getSlot() + "/module.xml";
-        System.err.println( "classpath-module-finder: " + path );
 
         InputStream in = ClasspathModuleFinder.class.getClassLoader().getResourceAsStream(path);
 

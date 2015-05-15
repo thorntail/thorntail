@@ -31,58 +31,57 @@
     </parent>
 
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-bootstrap</artifactId>
+    <artifactId>wildfly-swarm-api</artifactId>
 
-    <name>WildFly Swarm: Bootstrap</name>
-    <description>WildFly Swarm: Bootstrap</description>
+    <name>WildFly Swarm: API</name>
+    <description>WildFly Swarm: API</description>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+
+    <modules>
+<!--
+      <module>bean-validation</module>
+      <module>connector</module>
+-->
+      <module>container</module>
+<!--
+      <module>datasources</module>
+      <module>ee</module>
+      <module>io</module>
+      <module>jca</module>
+      <module>jaxrs</module>
+-->
+      <module>logging</module>
+<!--
+      <module>messaging</module>
+      <module>msc</module>
+      <module>naming</module>
+      <module>request-controller</module>
+      <module>security</module>
+      <module>transactions</module>
+      <module>undertow</module>
+      <module>weld</module>
+      <module>weld-jaxrs</module>
+-->
+    </modules>
 
     <build>
-        <resources>
-            <resource>
-              <directory>${project.basedir}/src/main/resources</directory>
-              <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-jar-plugin</artifactId>
-              <configuration>
-                  <archive>
-                      <manifest>
-                          <mainClass>org.wildfly.swarm.bootstrap.Main</mainClass>
-                      </manifest>
-                  </archive>
-              </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-shade-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>shade</goal>
-                </goals>
-                <configuration>
-                  <artifactSet>
-                    <includes>
-                      <include>org.jboss.modules:jboss-modules:*:*</include>
-                    </includes>
-                  </artifactSet>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+                    <executions>
+                      <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                          <goal>generate</goal>
+                        </goals>
+                      </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jboss.modules</groupId>
-            <artifactId>jboss-modules</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>
