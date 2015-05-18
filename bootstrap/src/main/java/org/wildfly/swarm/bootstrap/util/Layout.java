@@ -65,28 +65,15 @@ public class Layout {
     }
 
     public synchronized static ClassLoader getBootstrapClassLoader() throws ModuleLoadException {
-        System.err.println( Thread.currentThread() + " get BOOTSTRAP " + System.identityHashCode( Layout.class.getClassLoader() ) );
         if ( BOOTSTRAP_CLASSLOADER == null ) {
-            System.err.println( "SOLVE BOOTSTRAP" );
             try {
-                System.err.println( "PRE GET SOLVE BOOTSTRAP" );
                 BOOTSTRAP_CLASSLOADER = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap")).getClassLoader();
-                System.err.println( "POST GET SOLVE BOOTSTRAP" );
             } catch (ModuleLoadException e) {
-                System.err.println( "FALLBACK" );
-                System.err.println( "FALLBACK" );
-                System.err.println( "FALLBACK" );
-                System.err.println( "FALLBACK" );
-                System.err.println( "FALLBACK" );
-                System.err.println( "FALLBACK" );
                 BOOTSTRAP_CLASSLOADER = Layout.class.getClassLoader();
             } catch (Throwable t) {
-                System.err.println( "SHIT" );
                 t.printStackTrace();
             }
         }
-        System.err.println( "BOOTSTRAP IS " + BOOTSTRAP_CLASSLOADER );
-
         return BOOTSTRAP_CLASSLOADER;
     }
 }

@@ -34,8 +34,6 @@ public class JBossModulesBootstrapModuleFinder implements ModuleFinder {
         builder.addDependency(DependencySpec.createSystemDependencySpec(paths, true));
         builder.addDependency(DependencySpec.createLocalDependencySpec());
 
-        System.err.println( "return bootstrapped jboss-modules" );
-
         return builder.create();
     }
 }

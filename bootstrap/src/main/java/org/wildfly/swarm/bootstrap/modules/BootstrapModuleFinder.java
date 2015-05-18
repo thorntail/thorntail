@@ -62,13 +62,11 @@ public class BootstrapModuleFinder implements ModuleFinder {
             if (!each.isDirectory()) {
                 if (each.getName().startsWith("_bootstrap")) {
                     Path member = Extractor.extract(jar, each.getName());
-                    System.err.println("extracted: " + member);
                     builder.addResourceRoot(
                             ResourceLoaderSpec.createResourceLoaderSpec(
                                     ResourceLoaders.createJarResourceLoader(each.getName(), new JarFile(member.toFile()))
                             )
                     );
-                    System.err.println("ADD: " + each.getName());
                 }
             }
         }
