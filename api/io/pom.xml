@@ -25,7 +25,7 @@
 
     <parent>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fractions</artifactId>
+        <artifactId>wildfly-swarm-api</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
@@ -33,8 +33,8 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-io</artifactId>
 
-    <name>WildFly Swarm: IO</name>
-    <description>WildFly Swarm: IO</description>
+    <name>WildFly Swarm: IO API</name>
+    <description>WildFly Swarm: IO API</description>
 
     <packaging>jar</packaging>
 
@@ -46,12 +46,14 @@
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+<!--
                 <configuration>
                   <feature-pack>org.wildfly.core:wildfly-core-feature-pack</feature-pack>
                   <modules>
                     <module>org.wildfly.extension.io</module>
                   </modules>
                 </configuration>
+-->
             </plugin>
         </plugins>
     </build>
@@ -60,25 +62,7 @@
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-container</artifactId>
-          <exclusions>
-            <exclusion>
-              <groupId>*</groupId>
-              <artifactId>*</artifactId>
-            </exclusion>
-          </exclusions>
         </dependency>
-        <dependency>
-          <groupId>org.jboss</groupId>
-          <artifactId>jboss-dmr</artifactId>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-controller</artifactId>
-          <scope>provided</scope>
-        </dependency>
-
-<!--
         <dependency>
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-core-feature-pack</artifactId>
@@ -91,7 +75,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
--->
     </dependencies>
 
 </project>

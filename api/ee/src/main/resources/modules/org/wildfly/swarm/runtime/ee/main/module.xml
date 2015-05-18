@@ -1,0 +1,12 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.runtime.ee">
+    <resources>
+        <artifact name="org.wildfly.swarm:wildfly-swarm-runtime-ee:${project.version}"/>
+    </resources>
+
+    <dependencies>
+      <module name="org.wildfly.swarm.ee"/>
+      <module name="org.wildfly.swarm.runtime.container"/>
+
+      <module name="org.jboss.as.ee"/>
+    </dependencies>
+</module>

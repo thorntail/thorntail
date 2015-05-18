@@ -44,6 +44,10 @@ public class Main {
             mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Wildfly-Swarm-Main-Class"));
         }
 
+        if ( mainClassName == null ) {
+            mainClassName = "org.wildfly.swarm.Swarm";
+        }
+
         Class<?> mainClass = bootstrap.getClassLoader().loadClass(mainClassName);
         final Method mainMethod = mainClass.getMethod("main", String[].class);
 
