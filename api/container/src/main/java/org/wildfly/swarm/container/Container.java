@@ -1,6 +1,6 @@
 package org.wildfly.swarm.container;
 
-import org.jboss.modules.BootModuleLoader;
+import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 
