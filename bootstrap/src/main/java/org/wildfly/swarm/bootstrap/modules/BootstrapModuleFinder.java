@@ -12,14 +12,8 @@ import org.wildfly.swarm.bootstrap.util.Extractor;
 import org.wildfly.swarm.bootstrap.util.Layout;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Enumeration;
-import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 

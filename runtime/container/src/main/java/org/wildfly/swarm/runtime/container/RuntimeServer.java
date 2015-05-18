@@ -11,6 +11,8 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceContainer;
+import org.jboss.util.collection.Iterators;
+import org.wildfly.swarm.bootstrap.util.Layout;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -51,6 +53,7 @@ public class RuntimeServer implements Server {
         applyDefaults(config);
 
         List<ModelNode> list = getList(config);
+        System.err.println( "LIST: " + list );
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
         ServiceContainer serviceContainer = this.container.start( list, this.contentProvider );
         ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
@@ -83,6 +86,45 @@ public class RuntimeServer implements Server {
     }
 
     private void applyFractionDefaults(Container config) throws Exception {
+        Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
+        ServiceLoader<RuntimeModuleProvider> providerLoader = m1.loadService(RuntimeModuleProvider.class);
+
+        Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
+
+        if ( ! providerIter.hasNext() ) {
+            providerLoader = ServiceLoader.load( RuntimeModuleProvider.class);
+            providerIter = providerLoader.iterator();
+        }
+
+        OUTER:
+        while ( providerIter.hasNext() ) {
+            RuntimeModuleProvider provider = providerIter.next();
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
+            ServiceLoader<ServerConfiguration> configLoader = module.loadService(ServerConfiguration.class);
+
+            Iterator<ServerConfiguration> configIter = configLoader.iterator();
+
+            MIDDLE:
+            while (configIter.hasNext()) {
+                ServerConfiguration each = configIter.next();
+
+                boolean found = false;
+                INNER:
+                for (Fraction fraction : config.fractions()) {
+                    if (fraction.getClass().equals(each.getType())) {
+                        found = true;
+                        break INNER;
+                    }
+                }
+
+                if ( ! found ) {
+                    System.err.println( "add default: " + each );
+                    config.fraction( each.defaultFraction() );
+
+                }
+            }
+        }
+        /*
         ServiceLoader<ServerConfiguration> loader = ServiceLoader.load(ServerConfiguration.class);
         Iterator<ServerConfiguration> iter = loader.iterator();
 
@@ -91,14 +133,22 @@ public class RuntimeServer implements Server {
         while (iter.hasNext()) {
             ServerConfiguration each = iter.next();
 
+            boolean found = false;
+
             for (Fraction eachFraction : userInstalledFractions) {
                 if (each.getType().equals(eachFraction.getClass())) {
+                    found = true;
                     break;
                 }
             }
 
-            config.fraction(each.defaultFraction());
+            if ( ! found ) {
+                System.err.println( "ADD DEFAULT: " + each );
+                config.fraction(each.defaultFraction());
+            }
+
         }
+        */
     }
 
     private List<ModelNode> getList(Container config) throws ModuleLoadException {
@@ -172,13 +222,20 @@ public class RuntimeServer implements Server {
     }
 
     private void configureFractions(Container config, List<ModelNode> list) throws ModuleLoadException {
-        ServiceLoader<RuntimeModuleProvider> providerLoader = ServiceLoader.load(RuntimeModuleProvider.class);
+        Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
+        ServiceLoader<RuntimeModuleProvider> providerLoader = m1.loadService(RuntimeModuleProvider.class);
 
         Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
+
+        if ( ! providerIter.hasNext() ) {
+            providerLoader = ServiceLoader.load( RuntimeModuleProvider.class);
+            providerIter = providerLoader.iterator();
+        }
 
         OUTER:
         while ( providerIter.hasNext() ) {
             RuntimeModuleProvider provider = providerIter.next();
+            System.err.println( "ADD RUNTIME MODULE: " + provider.getModuleName() );
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
             ServiceLoader<ServerConfiguration> configLoader = module.loadService(ServerConfiguration.class);
 
@@ -187,6 +244,7 @@ public class RuntimeServer implements Server {
             MIDDLE:
             while (configIter.hasNext()) {
                 ServerConfiguration each = configIter.next();
+                System.err.println( "CONFIG: " + each );
 
                 INNER:
                 for (Fraction fraction : config.fractions()) {
@@ -198,4 +256,5 @@ public class RuntimeServer implements Server {
             }
         }
     }
+
 }

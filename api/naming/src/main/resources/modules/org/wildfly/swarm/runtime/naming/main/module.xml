@@ -5,6 +5,7 @@
 
     <dependencies>
       <module name="org.wildfly.swarm.naming"/>
+      <module name="org.wildfly.swarm.container"/>
       <module name="org.wildfly.swarm.runtime.container"/>
 
       <module name="org.jboss.as.naming"/>

@@ -5,6 +5,7 @@
 
     <dependencies>
       <module name="org.wildfly.swarm.io"/>
+      <module name="org.wildfly.swarm.container"/>
       <module name="org.wildfly.swarm.runtime.container"/>
 
       <module name="org.wildfly.extension.io"/>
