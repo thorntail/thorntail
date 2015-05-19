@@ -69,6 +69,15 @@ public class Container {
         return this;
     }
 
+    public Container deploy() throws Exception {
+        return deploy( new DefaultDeployment() );
+    }
+
+    public Container deploy(Deployment deployment) throws Exception {
+        this.deployer.deploy(deployment);
+        return this;
+    }
+
 
 
 }

@@ -35,7 +35,7 @@ import java.util.Set;
 @Mojo(name = "run",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-@Execute(phase = LifecyclePhase.COMPILE)
+@Execute(phase = LifecyclePhase.PACKAGE)
 public class RunMojo extends AbstractMojo {
 
     @Component
@@ -49,6 +49,10 @@ public class RunMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if ( this.project.getPackaging().equals( "war" ) ) {
+            executeWar();
+        }
+        /*
         Path java = findJava();
         //Path jar = findJar();
 
@@ -78,6 +82,42 @@ public class RunMojo extends AbstractMojo {
         } catch (InterruptedException e) {
             // ignore;
         }
+        */
+    }
+
+    protected void executeWar() throws MojoFailureException {
+        Path java = findJava();
+        //Path jar = findJar();
+
+        try {
+            List<String> cli = new ArrayList<>();
+            cli.add( java.toString() );
+            //cli.add( "-Dwildfly.swarm.layout=dir:" + this.project.getBuild().getOutputDirectory() );
+            //cli.add( "-Dwildfly.swarm.app.dependencies=" + dependencies() );
+            //cli.add( "-jar" );
+            cli.add( "-classpath" );
+            cli.add( dependencies() );
+            cli.add( "-Dwildfly.swarm.app.path=" + this.project.getArtifact().getFile() );
+            cli.add( "org.wildfly.swarm.Swarm" );
+
+            if ( this.mainClass != null ) {
+                cli.add( this.mainClass );
+            }
+
+            System.err.println( "EXEC: " + cli );
+
+            Process process = Runtime.getRuntime().exec(cli.toArray(new String[ cli.size() ] ));
+
+            new Thread(new IOBridge(process.getInputStream(), System.out)).start();
+            new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
+
+            process.waitFor();
+        } catch (IOException e) {
+            throw new MojoFailureException("Error executing", e);
+        } catch (InterruptedException e) {
+            // ignore;
+        }
+
     }
 
     String dependencies() {
