@@ -100,7 +100,6 @@ public class PackageMojo extends AbstractSwarmMojo {
             Set<Artifact> artifacts = this.project.getArtifacts();
 
             for (Artifact each : artifacts) {
-                System.err.println( "test: " + each );
                 if (includeAsBootstrapJar(each)) {
                     Path fs = bootstrapJars.resolve( each.getArtifactId() + "-" + each.getVersion() + "." + each.getType() );
                     Files.copy( each.getFile().toPath(), fs );
@@ -165,6 +164,7 @@ public class PackageMojo extends AbstractSwarmMojo {
         Path propsPath = dir.resolve("META-INF").resolve("wildfly-swarm.properties");
 
         Properties props = new Properties();
+        props.setProperty( "wildfly.swarm.app.artifact", this.project.getBuild().getFinalName() + "." + this.project.getPackaging() );
 
         try {
             try ( FileOutputStream out = new FileOutputStream( propsPath.toFile() ) ) {

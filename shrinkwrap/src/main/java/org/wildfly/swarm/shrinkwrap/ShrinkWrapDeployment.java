@@ -7,7 +7,6 @@ import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.container.DefaultDeployment;
-import org.wildfly.swarm.container.Deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +16,7 @@ import java.util.concurrent.ScheduledExecutorService;
 /**
  * @author Bob McWhirter
  */
-public class ShrinkWrapDeployment<T extends Archive> implements Deployment {
+public class ShrinkWrapDeployment<T extends Archive> { //implements Deployment {
 
     final protected T archive;
 
@@ -33,7 +32,6 @@ public class ShrinkWrapDeployment<T extends Archive> implements Deployment {
         return this.archive.getName();
     }
 
-    @Override
     public VirtualFile getContent() throws IOException {
         InputStream in = this.archive.as(ZipExporter.class).exportAsInputStream();
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild( this.archive.getName() );

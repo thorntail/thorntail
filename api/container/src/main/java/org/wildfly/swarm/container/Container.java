@@ -1,5 +1,11 @@
 package org.wildfly.swarm.container;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.base.MemoryMapArchiveImpl;
+import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
+import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
@@ -69,13 +75,26 @@ public class Container {
         return this;
     }
 
+    public <T extends Archive> T create(String name, Class<T> type) {
+        if ( type.equals(WebArchive.class) ) {
+            return (T) new WebArchiveImpl( new MemoryMapArchiveImpl( name, ShrinkWrap.getDefaultDomain().getConfiguration()) );
+        }
+
+        return null;
+    }
+
     public Container deploy() throws Exception {
-        return deploy( new DefaultDeployment() );
+        return deploy( new DefaultWarDeployment(create("app.war", WebArchive.class)) );
+    }
+
+    public Container deploy(Archive deployment) throws Exception {
+        this.deployer.deploy(deployment);
+        return this;
     }
 
     public Container deploy(Deployment deployment) throws Exception {
-        this.deployer.deploy(deployment);
-        return this;
+        return deploy( deployment.getArchive() );
+
     }
 
 

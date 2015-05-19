@@ -13,6 +13,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -29,8 +30,15 @@ public class Layout {
 
         if ( Files.isRegularFile( root ) ) {
             try ( JarFile jar = new JarFile( root.toFile() ) ) {
-                ZipEntry props = jar.getEntry("META-INF/wildfly-swarm.properties");
-                if ( props != null ) {
+                ZipEntry propsEntry = jar.getEntry("META-INF/wildfly-swarm.properties");
+                if ( propsEntry != null ) {
+                    try ( InputStream in = jar.getInputStream( propsEntry ) ) {
+                        Properties props = new Properties();
+                        props.load(in);
+                        if ( props.containsKey( "wildfly.swarm.app.artifact" ) ) {
+                            System.setProperty( "wildfly.swarm.app.artifact", props.getProperty( "wildfly.swarm.app.artifact" ) );
+                        }
+                    }
                     return true;
                 }
             }

@@ -22,6 +22,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -52,59 +53,24 @@ public class RunMojo extends AbstractMojo {
         if ( this.project.getPackaging().equals( "war" ) ) {
             executeWar();
         }
-        /*
-        Path java = findJava();
-        //Path jar = findJar();
-
-
-        try {
-            List<String> cli = new ArrayList<>();
-            cli.add( java.toString() );
-            cli.add( "-Dwildfly.swarm.layout=dir:" + this.project.getBuild().getOutputDirectory() );
-            cli.add( "-Dwildfly.swarm.app.dependencies=" + dependencies() );
-            cli.add( "-jar" );
-            cli.add( findBootstrap().toString() );
-
-            if ( this.mainClass != null ) {
-                cli.add( this.mainClass );
-            }
-
-            System.err.println( "EXEC: " + cli );
-
-            Process process = Runtime.getRuntime().exec(cli.toArray(new String[ cli.size() ] ));
-
-            new Thread(new IOBridge(process.getInputStream(), System.out)).start();
-            new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
-
-            process.waitFor();
-        } catch (IOException e) {
-            throw new MojoFailureException("Error executing", e);
-        } catch (InterruptedException e) {
-            // ignore;
-        }
-        */
     }
 
     protected void executeWar() throws MojoFailureException {
         Path java = findJava();
-        //Path jar = findJar();
 
         try {
             List<String> cli = new ArrayList<>();
             cli.add( java.toString() );
-            //cli.add( "-Dwildfly.swarm.layout=dir:" + this.project.getBuild().getOutputDirectory() );
-            //cli.add( "-Dwildfly.swarm.app.dependencies=" + dependencies() );
-            //cli.add( "-jar" );
             cli.add( "-classpath" );
             cli.add( dependencies() );
-            cli.add( "-Dwildfly.swarm.app.path=" + this.project.getArtifact().getFile() );
+            cli.add( "-Dwildfly.swarm.app.path=" + Paths.get( this.projectBuildDir, this.project.getBuild().getFinalName() ).toString() );
             cli.add( "org.wildfly.swarm.Swarm" );
 
+            /*
             if ( this.mainClass != null ) {
                 cli.add( this.mainClass );
             }
-
-            System.err.println( "EXEC: " + cli );
+            */
 
             Process process = Runtime.getRuntime().exec(cli.toArray(new String[ cli.size() ] ));
 
