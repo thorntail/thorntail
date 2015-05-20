@@ -54,13 +54,13 @@ public class RuntimeServer implements Server {
 
         List<ModelNode> list = getList(config);
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
-        ServiceContainer serviceContainer = this.container.start( list, this.contentProvider );
+        ServiceContainer serviceContainer = this.container.start(list, this.contentProvider);
         ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
         ModelControllerClient client = controller.createClient(executor);
 
-        return new RuntimeDeployer( client, this.contentProvider );
+        return new RuntimeDeployer(client, this.contentProvider);
     }
 
     private void applyDefaults(Container config) throws Exception {
@@ -90,13 +90,13 @@ public class RuntimeServer implements Server {
 
         Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
 
-        if ( ! providerIter.hasNext() ) {
-            providerLoader = ServiceLoader.load( RuntimeModuleProvider.class);
+        if (!providerIter.hasNext()) {
+            providerLoader = ServiceLoader.load(RuntimeModuleProvider.class);
             providerIter = providerLoader.iterator();
         }
 
         OUTER:
-        while ( providerIter.hasNext() ) {
+        while (providerIter.hasNext()) {
             RuntimeModuleProvider provider = providerIter.next();
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
             ServiceLoader<ServerConfiguration> configLoader = module.loadService(ServerConfiguration.class);
@@ -116,8 +116,8 @@ public class RuntimeServer implements Server {
                     }
                 }
 
-                if ( ! found ) {
-                    config.fraction( each.defaultFraction() );
+                if (!found) {
+                    config.fraction(each.defaultFraction());
                 }
             }
         }
@@ -177,8 +177,8 @@ public class RuntimeServer implements Server {
     private void configureSocketBindings(PathAddress address, SocketBindingGroup group, List<ModelNode> list) {
         List<SocketBinding> bindings = group.socketBindings();
 
-        for ( SocketBinding each : bindings ) {
-            configureSocketBinding( address, each, list );
+        for (SocketBinding each : bindings) {
+            configureSocketBinding(address, each, list);
         }
     }
 
@@ -186,9 +186,9 @@ public class RuntimeServer implements Server {
 
         ModelNode node = new ModelNode();
 
-        node.get( OP_ADDR ).set( address.append( "socket-binding", binding.name() ).toModelNode() );
-        node.get( OP ).set( ADD );
-        node.get( PORT ).set( new ValueExpression( binding.portExpression() ) );
+        node.get(OP_ADDR).set(address.append("socket-binding", binding.name()).toModelNode());
+        node.get(OP).set(ADD);
+        node.get(PORT).set(new ValueExpression(binding.portExpression()));
 
         list.add(node);
     }
@@ -199,13 +199,13 @@ public class RuntimeServer implements Server {
 
         Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
 
-        if ( ! providerIter.hasNext() ) {
-            providerLoader = ServiceLoader.load( RuntimeModuleProvider.class);
+        if (!providerIter.hasNext()) {
+            providerLoader = ServiceLoader.load(RuntimeModuleProvider.class);
             providerIter = providerLoader.iterator();
         }
 
         OUTER:
-        while ( providerIter.hasNext() ) {
+        while (providerIter.hasNext()) {
             RuntimeModuleProvider provider = providerIter.next();
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
             ServiceLoader<ServerConfiguration> configLoader = module.loadService(ServerConfiguration.class);

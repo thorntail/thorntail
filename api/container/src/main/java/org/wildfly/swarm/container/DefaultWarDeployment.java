@@ -140,7 +140,7 @@ public class DefaultWarDeployment implements Deployment {
         return success;
     }
 
-    public Archive getArchive() {
+    public WebArchive getArchive() {
         return this.archive;
     }
 }

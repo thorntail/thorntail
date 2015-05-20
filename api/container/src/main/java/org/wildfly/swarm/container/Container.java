@@ -1,6 +1,10 @@
 package org.wildfly.swarm.container;
 
+import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.Configuration;
+import org.jboss.shrinkwrap.api.ConfigurationBuilder;
+import org.jboss.shrinkwrap.api.Domain;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.MemoryMapArchiveImpl;
@@ -11,7 +15,10 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * @author Bob McWhirter
@@ -24,10 +31,30 @@ public class Container {
 
     private Server server;
     private Deployer deployer;
+    private Domain domain;
 
     public Container() throws Exception {
-        System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
         createServer();
+        createShrinkWrapDomain();
+    }
+
+    public Domain getShrinkWrapDomain() {
+        return this.domain;
+    }
+
+    private void createShrinkWrapDomain() throws ModuleLoadException {
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        builder.extensionLoader( new ShrinkWrapExtensionLoader() );
+        System.err.println("LOADER SET UP " + builder.getExtensionLoader());
+
+        Set<ClassLoader> classLoaders = new HashSet<>();
+
+        classLoaders.add( Module.getBootModuleLoader().loadModule( ModuleIdentifier.create("org.wildfly.swarm.bootstrap" ) ).getClassLoader() );
+        classLoaders.add( ClassLoader.getSystemClassLoader() );
+
+        builder.classLoaders(classLoaders);
+        Configuration config = builder.build();
+        this.domain = ShrinkWrap.createDomain( config );
     }
 
     private void createServer() throws Exception {
@@ -37,6 +64,18 @@ public class Container {
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.container"));
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.runtime.container.RuntimeServer");
         this.server = (Server) serverClass.newInstance();
+
+        Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.jboss.logmanager"));
+
+        ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
+            System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
+            //force logging init
+            Logger.getGlobal();
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalCl);
+        }
     }
 
     public Container subsystem(Fraction fraction) {
@@ -75,12 +114,21 @@ public class Container {
         return this;
     }
 
+    public Container start(Deployment deployment) throws Exception {
+        return start().deploy( deployment );
+    }
+
     public <T extends Archive> T create(String name, Class<T> type) {
+        /*
         if ( type.equals(WebArchive.class) ) {
             return (T) new WebArchiveImpl( new MemoryMapArchiveImpl( name, ShrinkWrap.getDefaultDomain().getConfiguration()) );
         }
+        */
+        T archive = this.domain.getArchiveFactory().create(type, name);
+        System.err.println( "CREATED: " + archive );
+        return archive;
 
-        return null;
+        //return null;
     }
 
     public Container deploy() throws Exception {

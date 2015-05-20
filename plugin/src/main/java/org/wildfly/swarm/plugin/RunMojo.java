@@ -52,6 +52,8 @@ public class RunMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         if ( this.project.getPackaging().equals( "war" ) ) {
             executeWar();
+        } else if ( this.project.getPackaging().equals("jar" ) ) {
+            executeJar();
         }
     }
 
@@ -62,15 +64,9 @@ public class RunMojo extends AbstractMojo {
             List<String> cli = new ArrayList<>();
             cli.add( java.toString() );
             cli.add( "-classpath" );
-            cli.add( dependencies() );
+            cli.add( dependencies(false) );
             cli.add( "-Dwildfly.swarm.app.path=" + Paths.get( this.projectBuildDir, this.project.getBuild().getFinalName() ).toString() );
             cli.add( "org.wildfly.swarm.Swarm" );
-
-            /*
-            if ( this.mainClass != null ) {
-                cli.add( this.mainClass );
-            }
-            */
 
             Process process = Runtime.getRuntime().exec(cli.toArray(new String[ cli.size() ] ));
 
@@ -86,12 +82,45 @@ public class RunMojo extends AbstractMojo {
 
     }
 
-    String dependencies() {
+    protected void executeJar() throws MojoFailureException {
+        Path java = findJava();
+
+        try {
+            List<String> cli = new ArrayList<>();
+            cli.add( java.toString() );
+            cli.add( "-classpath" );
+            cli.add( dependencies(true) );
+            if ( this.mainClass != null ) {
+                cli.add( this.mainClass );
+            } else {
+                cli.add("org.wildfly.swarm.Swarm");
+            }
+
+            Process process = Runtime.getRuntime().exec(cli.toArray(new String[ cli.size() ] ));
+
+            new Thread(new IOBridge(process.getInputStream(), System.out)).start();
+            new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
+
+            process.waitFor();
+        } catch (IOException e) {
+            throw new MojoFailureException("Error executing", e);
+        } catch (InterruptedException e) {
+            // ignore;
+        }
+
+    }
+
+    String dependencies(boolean includeProjectArtifact) {
         List<String> elements = new ArrayList<>();
         Set<Artifact> artifacts = this.project.getArtifacts();
         for (Artifact each : artifacts ) {
             elements.add( each.getFile().toString() );
         }
+
+        if ( includeProjectArtifact ) {
+            elements.add( this.project.getBuild().getOutputDirectory() );
+        }
+
         StringBuilder cp = new StringBuilder();
 
         Iterator<String> iter = elements.iterator();
