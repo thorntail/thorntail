@@ -39,10 +39,17 @@
     <packaging>jar</packaging>
 
     <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+<!--
                 <configuration>
                   <feature-pack>org.wildfly:wildfly-web-feature-pack</feature-pack>
                   <modules>
@@ -56,6 +63,7 @@
                     <export>javax.ws.rs.api</export>
                   </exports>
                 </configuration>
+-->
             </plugin>
         </plugins>
     </build>
@@ -90,14 +98,9 @@
           <artifactId>wildfly-swarm-undertow</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-shrinkwrap</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>
         </dependency>
-
         <dependency>
           <groupId>org.jboss.spec.javax.ws.rs</groupId>
           <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
@@ -106,6 +109,12 @@
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-container</artifactId>
+        </dependency>
+
+        <dependency>
+          <groupId>org.wildfly.core</groupId>
+          <artifactId>wildfly-core-feature-pack</artifactId>
+          <type>zip</type>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>
@@ -113,25 +122,31 @@
             </exclusion>
           </exclusions>
         </dependency>
+
         <dependency>
-          <groupId>org.jboss</groupId>
-          <artifactId>jboss-dmr</artifactId>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-controller</artifactId>
-          <scope>provided</scope>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-web-feature-pack</artifactId>
+          <type>zip</type>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
 
         <dependency>
-          <groupId>org.jboss.modules</groupId>
-          <artifactId>jboss-modules</artifactId>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-feature-pack</artifactId>
+          <type>zip</type>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-bootstrap</artifactId>
-        </dependency>
+
     </dependencies>
 
 </project>

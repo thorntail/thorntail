@@ -1,9 +1,10 @@
-package org.wildfly.swarm.jaxrs;
+package org.wildfly.swarm.runtime.jaxrs;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.container.AbstractFraction;
+import org.wildfly.swarm.jaxrs.JAXRSFraction;
+import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,27 +18,34 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 /**
  * @author Bob McWhirter
  */
-public class JaxRsFraction extends AbstractFraction {
+public class JAXRSConfiguration extends AbstractServerConfiguration<JAXRSFraction> {
 
-    private List<ModelNode> list = new ArrayList<>();
+    public JAXRSConfiguration() {
+        super(JAXRSFraction.class);
+    }
 
-    public JaxRsFraction() {
+    @Override
+    public JAXRSFraction defaultFraction() {
+        return new JAXRSFraction();
+    }
+
+    @Override
+    public List<ModelNode> getList(JAXRSFraction fraction) {
+        List<ModelNode> list = new ArrayList<>();
 
         PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "jaxrs"));
 
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.jaxrs");
         node.get(OP).set(ADD);
-        this.list.add(node);
+        list.add(node);
 
         node = new ModelNode();
         node.get(OP_ADDR).set(address.toModelNode());
         node.get(OP).set(ADD);
-        this.list.add(node);
-    }
+        list.add(node);
 
-    public List<ModelNode> getList() {
-        return this.list;
-    }
+        return list;
 
+    }
 }

@@ -1,0 +1,13 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.runtime.jaxrs">
+    <resources>
+        <artifact name="org.wildfly.swarm:wildfly-swarm-runtime-jaxrs:${project.version}"/>
+    </resources>
+
+    <dependencies>
+      <module name="org.wildfly.swarm.jaxrs"/>
+      <module name="org.wildfly.swarm.container"/>
+      <module name="org.wildfly.swarm.runtime.container"/>
+
+      <module name="org.jboss.as.jaxrs"/>
+    </dependencies>
+</module>
