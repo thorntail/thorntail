@@ -16,8 +16,31 @@ public class JAXRSDeployment extends WarDeployment {
     private boolean hasApplication;
 
     public JAXRSDeployment(Container container) throws IOException, ModuleLoadException {
-        super( container.getShrinkWrapDomain().getArchiveFactory().create( WebArchive.class ) );
+        super(container.getShrinkWrapDomain().getArchiveFactory().create(WebArchive.class));
+        setup();
     }
+
+    protected void setup() {
+        boolean result = setupUsingAppPath() || setupUsingAppArtifact() || setupUsingMaven();
+    }
+
+    protected boolean setupUsingAppPath() {
+        if (System.getProperty("wildfly.swarm.app.path") != null) {
+            addJavaClassPathToWebInfLib();
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean setupUsingAppArtifact() {
+        return false;
+    }
+
+    protected boolean setupUsingMaven() {
+        addJavaClassPathToWebInfLib();
+        return true;
+    }
+
 
     public void setApplication(Class<? extends Application> application) {
         this.hasApplication = true;
@@ -29,8 +52,8 @@ public class JAXRSDeployment extends WarDeployment {
     }
 
     protected void ensureApplication() {
-        if ( ! this.hasApplication ) {
-            setApplication( DefaultApplication.class );
+        if (!this.hasApplication) {
+            setApplication(DefaultApplication.class);
         }
     }
 

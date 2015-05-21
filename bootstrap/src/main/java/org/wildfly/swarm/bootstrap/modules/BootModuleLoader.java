@@ -18,6 +18,7 @@ public class BootModuleLoader extends ModuleLoader {
                 new BootstrapModuleFinder(),
                 //new DirLayoutAppModuleFinder(),
                 new ClasspathModuleFinder(),
+                new AppDependenciesModuleFinder(),
                 //new BootModuleFinder(),
         } );
     }

@@ -1,9 +1,7 @@
 package org.wildfly.swarm.container;
 
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 
@@ -16,8 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Enumeration;
-import java.util.Properties;
 
 /**
  * @author Bob McWhirter
@@ -104,20 +100,7 @@ public class DefaultWarDeployment extends WarDeployment {
             });
         }
 
-        String classpath = System.getProperty("java.class.path");
-        String javaHome = System.getProperty("java.home");
-        if (classpath != null) {
-            String[] elements = classpath.split(File.pathSeparator);
-
-            for (int i = 0; i < elements.length; ++i) {
-                if (!elements[i].startsWith(javaHome) ) {
-                    File file = new File(elements[i]);
-                    if ( file.isFile() ) {
-                        this.archive.add(new FileAsset(file), "WEB-INF/lib/" + file.getName());
-                    }
-                }
-            }
-        }
+        addJavaClassPathToWebInfLib();
 
         return success;
     }

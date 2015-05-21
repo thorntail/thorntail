@@ -4,17 +4,9 @@ import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * @author Bob McWhirter
@@ -26,6 +18,16 @@ public class WarDeployment implements Deployment {
                     "<jboss-web>\n" +
                     "    <context-root>/</context-root>\n" +
                     "</jboss-web>";
+
+    private final static String JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>  \n" +
+                    "<jboss-deployment-structure>  \n" +
+                    "    <deployment>  \n" +
+                    "         <dependencies>  \n" +
+                    "              <module name=\"APP\" slot=\"dependencies\" />  \n" +
+                    "        </dependencies>  \n" +
+                    "    </deployment>  \n" +
+                    "</jboss-deployment-structure>\n";
 
     protected final WebArchive archive;
 
@@ -41,8 +43,34 @@ public class WarDeployment implements Deployment {
         this.archive.add(new StringAsset(JBOSS_WEB_CONTENTS), "WEB-INF/jboss-web.xml");
     }
 
+    protected void ensureJBossDeploymentStructureXml() {
+        if ( this.archive.contains( "WEB-INF/jboss-deployment-structure.xml" ) ) {
+            return;
+        }
+
+        this.archive.add( new StringAsset(JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS), "WEB-INF/jboss-deployment-structure.xml" );
+    }
+
+    protected void addJavaClassPathToWebInfLib() {
+        String classpath = System.getProperty("java.class.path");
+        String javaHome = System.getProperty("java.home");
+        if (classpath != null) {
+            String[] elements = classpath.split(File.pathSeparator);
+
+            for (int i = 0; i < elements.length; ++i) {
+                if (!elements[i].startsWith(javaHome)) {
+                    File file = new File(elements[i]);
+                    if (file.isFile()) {
+                        this.archive.add(new FileAsset(file), "WEB-INF/lib/" + file.getName());
+                    }
+                }
+            }
+        }
+    }
+
     public WebArchive getArchive() {
         ensureJBossWebXml();
+        ensureJBossDeploymentStructureXml();
         return this.archive;
     }
 }
