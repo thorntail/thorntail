@@ -22,33 +22,15 @@ import java.util.Properties;
 /**
  * @author Bob McWhirter
  */
-public class DefaultWarDeployment implements Deployment {
-
-    private final static String JBOSS_WEB_CONTENTS =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<jboss-web>\n" +
-                    "    <context-root>/</context-root>\n" +
-                    "</jboss-web>";
-
-    private final WebArchive archive;
+public class DefaultWarDeployment extends WarDeployment {
 
     public DefaultWarDeployment(WebArchive archive) throws IOException, ModuleLoadException {
-        this.archive = archive;
+        super( archive );
         setup();
     }
 
     protected void setup() throws IOException, ModuleLoadException {
-        if (setupUsingAppPath() || setupUsingAppArtifact() || setupUsingMaven()) {
-            ensureJBossWebXml();
-        }
-    }
-
-    protected void ensureJBossWebXml() {
-        if (this.archive.contains("WEB-INF/jboss-web.xml")) {
-            return;
-        }
-
-        this.archive.add(new StringAsset(JBOSS_WEB_CONTENTS), "WEB-INF/jboss-web.xml");
+        boolean result = setupUsingAppPath() || setupUsingAppArtifact() || setupUsingMaven();
     }
 
     protected boolean setupUsingAppPath() throws IOException {
@@ -138,9 +120,5 @@ public class DefaultWarDeployment implements Deployment {
         }
 
         return success;
-    }
-
-    public WebArchive getArchive() {
-        return this.archive;
     }
 }
