@@ -1,6 +1,5 @@
 package org.wildfly.swarm.bootstrap.modules;
 
-import org.jboss.modules.BootModuleFinder;
 import org.jboss.modules.ClasspathModuleFinder;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoader;
@@ -16,10 +15,8 @@ public class BootModuleLoader extends ModuleLoader {
         super( new ModuleFinder[] {
                 new JBossModulesBootstrapModuleFinder(),
                 new BootstrapModuleFinder(),
-                //new DirLayoutAppModuleFinder(),
                 new ClasspathModuleFinder(),
                 new AppDependenciesModuleFinder(),
-                //new BootModuleFinder(),
         } );
     }
 }
