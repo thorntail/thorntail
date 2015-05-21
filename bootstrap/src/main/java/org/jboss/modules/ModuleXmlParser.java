@@ -62,7 +62,7 @@ import org.jboss.modules.xml.XmlPullParserException;
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  * @author thomas.diesler@jboss.com
  */
-final class ModuleXmlParser {
+public final class ModuleXmlParser {
 
     interface ResourceRootFactory {
         ResourceLoader createResourceLoader(final String rootPath, final String loaderPath, final String loaderName) throws IOException;
@@ -744,7 +744,7 @@ final class ModuleXmlParser {
         throw endOfDocument(reader);
     }
 
-    static ResourceLoader createMavenArtifactLoader(final String name) throws IOException {
+    public static ResourceLoader createMavenArtifactLoader(final String name) throws IOException {
 // SELF CONTAINED - START
         final String[] parts = name.split(":");
 
