@@ -71,7 +71,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     @Parameter(alias = "modules")
     private String[] additionalModules;
 
-    @Parameter(alias = "bundle-dependencies", defaultValue = "true")
+    @Parameter(alias = "bundleDependencies", defaultValue = "true")
     private boolean bundleDependencies;
 
     @Parameter(alias = "mainClass")
@@ -250,6 +250,9 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     }
 
     protected void collectDependencies() throws MojoFailureException {
+        if ( ! this.bundleDependencies ) {
+            return;
+        }
         try {
             analyzeModuleDependencies();
         } catch (IOException e) {

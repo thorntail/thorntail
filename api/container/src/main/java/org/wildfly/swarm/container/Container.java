@@ -45,7 +45,6 @@ public class Container {
     private void createShrinkWrapDomain() throws ModuleLoadException {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.extensionLoader( new ShrinkWrapExtensionLoader() );
-        System.err.println("LOADER SET UP " + builder.getExtensionLoader());
 
         Set<ClassLoader> classLoaders = new HashSet<>();
 
@@ -119,16 +118,8 @@ public class Container {
     }
 
     public <T extends Archive> T create(String name, Class<T> type) {
-        /*
-        if ( type.equals(WebArchive.class) ) {
-            return (T) new WebArchiveImpl( new MemoryMapArchiveImpl( name, ShrinkWrap.getDefaultDomain().getConfiguration()) );
-        }
-        */
         T archive = this.domain.getArchiveFactory().create(type, name);
-        System.err.println( "CREATED: " + archive );
         return archive;
-
-        //return null;
     }
 
     public Container deploy() throws Exception {
