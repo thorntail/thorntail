@@ -1,5 +1,6 @@
 package org.jboss.modules;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -16,7 +17,7 @@ import java.util.jar.JarFile;
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-class Environment {
+public class Environment {
 
     /**
      * Lazy holder

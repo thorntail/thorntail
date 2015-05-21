@@ -6,9 +6,8 @@ import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
-import org.jboss.modules.ModuleXmlParser;
+import org.jboss.modules.ModuleXmlParserBridge;
 import org.jboss.modules.ResourceLoaderSpec;
-import org.jboss.modules.ResourceLoaders;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +40,7 @@ public class AppDependenciesModuleFinder implements ModuleFinder {
                     while ((line = reader.readLine()) != null) {
                         line = line.trim();
                         if ( line.length()>0) {
-                            builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(ModuleXmlParser.createMavenArtifactLoader(line)));
+                            builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(ModuleXmlParserBridge.createMavenArtifactLoader(line)));
                         }
                     }
                     depsTxt.close();

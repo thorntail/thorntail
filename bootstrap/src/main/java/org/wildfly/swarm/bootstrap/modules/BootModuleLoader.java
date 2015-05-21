@@ -1,6 +1,5 @@
 package org.wildfly.swarm.bootstrap.modules;
 
-import org.jboss.modules.ClasspathModuleFinder;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoader;
 
