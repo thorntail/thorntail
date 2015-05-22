@@ -71,6 +71,8 @@ public class DatasourcesConfiguration extends AbstractServerConfiguration<Dataso
         if ( driver.moduleSlot() != null ) {
             node.get( "module-slot").set( driver.moduleSlot() );
         }
+
+        list.add( node );
     }
 
     protected void addDatasources(DatasourcesFraction fraction, List<ModelNode> list) {
@@ -98,6 +100,8 @@ public class DatasourcesConfiguration extends AbstractServerConfiguration<Dataso
         if ( datasource.password() != null ) {
             node.get( "password" ).set( datasource.password() );
         }
+
+        list.add( node );
 
     }
 }
