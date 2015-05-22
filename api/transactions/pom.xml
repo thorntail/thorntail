@@ -25,7 +25,7 @@
 
     <parent>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fractions</artifactId>
+        <artifactId>wildfly-swarm-api</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
@@ -33,8 +33,8 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-transactions</artifactId>
 
-    <name>WildFly Swarm: Transactions</name>
-    <description>WildFly Swarm: Transactions</description>
+    <name>WildFly Swarm: Transactions API</name>
+    <description>WildFly Swarm: Transactions API</description>
 
     <packaging>jar</packaging>
 
@@ -43,12 +43,14 @@
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+<!--
                 <configuration>
                   <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
                   <modules>
                     <module>org.jboss.as.transactions</module>
                   </modules>
                 </configuration>
+-->
             </plugin>
         </plugins>
     </build>
@@ -57,6 +59,16 @@
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-container</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.core</groupId>
+          <artifactId>wildfly-core-feature-pack</artifactId>
+          <type>zip</type>
+          <scope>provided</scope>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>
@@ -65,18 +77,28 @@
           </exclusions>
         </dependency>
         <dependency>
-          <groupId>org.jboss</groupId>
-          <artifactId>jboss-dmr</artifactId>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-web-feature-pack</artifactId>
+          <type>zip</type>
           <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-controller</artifactId>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-feature-pack</artifactId>
+          <type>zip</type>
           <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.spec.javax.transaction</groupId>
-          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
     </dependencies>
 

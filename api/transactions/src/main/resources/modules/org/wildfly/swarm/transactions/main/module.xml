@@ -1,0 +1,21 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.io">
+
+    <dependencies>
+      <!-- For when run with bonafide IDE classpath -->
+      <system export="true">
+        <paths>
+          <path name="org/wildfly/swarm/transactions"/>
+        </paths>
+      </system>
+
+      <!-- For when bootstrapped through a fat-jar -->
+      <module name="org.wildfly.swarm.bootstrap" optional="true" export="true">
+        <exports>
+          <include path="org/wildfly/swarm/transactions"/>
+        </exports>
+      </module>
+
+      <module name="org.wildfly.swarm.runtime.transactions"/>
+
+    </dependencies>
+</module>

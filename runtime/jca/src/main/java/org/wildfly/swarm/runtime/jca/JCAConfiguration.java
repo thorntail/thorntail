@@ -1,9 +1,10 @@
-package org.wildfly.swarm.jca;
+package org.wildfly.swarm.runtime.jca;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.container.AbstractFraction;
+import org.wildfly.swarm.jca.JCAFraction;
+import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,17 +17,27 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 /**
  * @author Bob McWhirter
  */
-public class JcaFraction extends AbstractFraction {
+public class JCAConfiguration extends AbstractServerConfiguration<JCAFraction> {
 
-    private List<ModelNode> list = new ArrayList<>();
+    public JCAConfiguration() {
+        super(JCAFraction.class);
+    }
 
-    private PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "jca"));
+    @Override
+    public JCAFraction defaultFraction() {
+        return new JCAFraction();
+    }
 
-    public JcaFraction() {
+    @Override
+    public List<ModelNode> getList(JCAFraction fraction) {
+        List<ModelNode> list = new ArrayList<>();
+
+        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "jca"));
+
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(address.toModelNode());
         node.get(OP).set(ADD);
-        this.list.add(node);
+        list.add(node);
 
         node = new ModelNode();
         node.get(OP_ADDR).set(address.append("archive-validation", "archive-validation").toModelNode());
@@ -80,10 +91,8 @@ public class JcaFraction extends AbstractFraction {
         node.get( OP ).set( ADD );
         node.get( "install" ).set( true );
         list.add( node );
-    }
 
-    @Override
-    public List<ModelNode> getList() {
-        return this.list;
+        return list;
+
     }
 }

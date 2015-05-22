@@ -33,8 +33,8 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-runtime-container</artifactId>
 
-    <name>WildFly Swarm: Runtime Container</name>
-    <description>WildFly Swarm: Runtime Container</description>
+    <name>WildFly Swarm: Container Runtime</name>
+    <description>WildFly Swarm: Container Runtime</description>
 
     <packaging>jar</packaging>
 

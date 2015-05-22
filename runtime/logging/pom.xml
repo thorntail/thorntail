@@ -33,8 +33,8 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-runtime-logging</artifactId>
 
-    <name>WildFly Swarm: Runtime Logging</name>
-    <description>WildFly Swarm: Runtime Logging</description>
+    <name>WildFly Swarm: Logging Runtime</name>
+    <description>WildFly Swarm: Logging Runtime</description>
 
     <packaging>jar</packaging>
 
