@@ -44,9 +44,7 @@
 -->
       <module>connector</module>
       <module>container</module>
-<!--
       <module>datasources</module>
--->
       <module>ee</module>
       <module>io</module>
       <module>jca</module>

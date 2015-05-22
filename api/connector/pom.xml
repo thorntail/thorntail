@@ -70,6 +70,7 @@
           <groupId>org.wildfly.core</groupId>
           <artifactId>wildfly-core-feature-pack</artifactId>
           <type>zip</type>
+          <scope>provided</scope>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>
@@ -81,6 +82,7 @@
           <groupId>org.wildfly</groupId>
           <artifactId>wildfly-web-feature-pack</artifactId>
           <type>zip</type>
+          <scope>provided</scope>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>
@@ -92,6 +94,7 @@
           <groupId>org.wildfly</groupId>
           <artifactId>wildfly-feature-pack</artifactId>
           <type>zip</type>
+          <scope>provided</scope>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>

@@ -315,29 +315,33 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     }
 
     protected void gatherDependency(String gav) throws ArtifactResolutionException, MojoFailureException {
+        //System.err.println( "gather: " + gav );
         String[] parts = gav.split(":");
 
         if (parts.length < 3) {
-            throw new MojoFailureException("GAV must be at least 3 parts");
+            throw new MojoFailureException("GAV must be at least 3 parts: " + gav);
         }
 
         String groupId = parts[0];
         String artifactId = parts[1];
-        String packaging = null;
+        String packaging = "jar";
         String version = null;
         String classifier = null;
 
         if (parts.length > 3) {
-            version = parts[3];
-            packaging = parts[2];
+            version = parts[2];
+            classifier = parts[3];
         } else {
-            packaging = "jar";
             version = parts[2];
         }
 
-        if (parts.length > 4) {
-            classifier = parts[4];
-        }
+        /*
+        System.err.println( "groupId: " + groupId );
+        System.err.println( "artifactId: " + artifactId );
+        System.err.println( "version: " + version );
+        System.err.println( "packaging: " + packaging );
+        System.err.println( "classifier: " + classifier );
+        */
 
         ArtifactRequest request = new ArtifactRequest();
 

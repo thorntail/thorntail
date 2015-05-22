@@ -39,6 +39,12 @@
     <packaging>jar</packaging>
 
     <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
@@ -69,6 +75,7 @@
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-jca</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-vfs</artifactId>

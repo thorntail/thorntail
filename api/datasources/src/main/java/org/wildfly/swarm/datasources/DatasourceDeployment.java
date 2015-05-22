@@ -1,19 +1,11 @@
 package org.wildfly.swarm.datasources;
 
-import org.jboss.vfs.VFS;
-import org.jboss.vfs.VirtualFile;
-import org.wildfly.swarm.container.Deployment;
-import org.wildfly.swarm.container.util.XmlWriter;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
 /**
  * @author Bob McWhirter
  */
-public class DatasourceDeployment implements Deployment {
+public class DatasourceDeployment { //implements Deployment {
 
+    /*
     private final Datasource ds;
 
     public DatasourceDeployment(Datasource ds) {
@@ -72,4 +64,5 @@ public class DatasourceDeployment implements Deployment {
         VFS.mountReal(dsXml, mountPoint);
         return mountPoint;
     }
+    */
 }

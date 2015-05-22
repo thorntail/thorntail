@@ -1,15 +1,5 @@
 package org.wildfly.swarm.datasources;
 
-import org.jboss.as.controller.PathAddress;
-import org.jboss.dmr.ModelNode;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Bob McWhirter
  */
@@ -26,7 +16,7 @@ public class Datasource {
         this.name = name;
     }
 
-    public String getName() {
+    public String name() {
         return this.name;
     }
 
@@ -35,7 +25,7 @@ public class Datasource {
         return this;
     }
 
-    public String getConnectionURL() {
+    public String connectionURL() {
         return this.connectionUrl;
     }
 
@@ -44,7 +34,7 @@ public class Datasource {
         return this;
     }
 
-    public String getDriver() {
+    public String driver() {
         return this.driverName;
     }
 
@@ -54,38 +44,16 @@ public class Datasource {
         return this;
     }
 
-    public String getUserName() {
+    public String userName() {
         return this.userName;
     }
 
-    public String getPassword() {
+    public String password() {
         return this.password;
     }
 
-    public String getJNDIName() {
+    public String jndiName() {
         return "java:jboss/datasources/" + this.name;
-    }
-
-    ModelNode get(PathAddress address) {
-        ModelNode node = new ModelNode();
-        node.get( OP_ADDR ).set( address.append( "data-source", this.name ).toModelNode() );
-        node.get( OP ).set( ADD );
-
-        node.get( "enabled" ).set( true );
-        node.get( "jndi-name" ).set( getJNDIName() );
-        node.get( "use-java-context" ).set( true );
-        node.get( "connection-url" ).set( this.connectionUrl );
-        node.get( "driver-name" ).set( this.driverName );
-
-        if ( this.userName != null ) {
-            node.get( "user-name" ).set( this.userName );
-        }
-
-        if ( this.password != null ) {
-            node.get( "password" ).set( this.password );
-        }
-
-        return node;
     }
 
 }

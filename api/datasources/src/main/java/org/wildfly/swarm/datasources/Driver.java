@@ -1,12 +1,5 @@
 package org.wildfly.swarm.datasources;
 
-import org.jboss.as.controller.PathAddress;
-import org.jboss.dmr.ModelNode;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-
 /**
  * @author Bob McWhirter
  */
@@ -22,6 +15,10 @@ public class Driver {
         this.name = name;
     }
 
+    public String name() {
+        return this.name;
+    }
+
     public Driver module(String moduleName) {
         this.moduleName = moduleName;
         return this;
@@ -33,9 +30,21 @@ public class Driver {
         return this;
     }
 
+    public String moduleName() {
+        return this.moduleName;
+    }
+
+    public String moduleSlot() {
+        return this.moduleSlot;
+    }
+
     public Driver datasourceClassName(String className) {
         this.datasourceClassName = className;
         return this;
+    }
+
+    public String datasourceClassName() {
+        return this.datasourceClassName;
     }
 
     public Driver xaDatasourceClassName(String className) {
@@ -43,25 +52,8 @@ public class Driver {
         return this;
     }
 
-    ModelNode get(PathAddress address) {
-
-        ModelNode node = new ModelNode();
-        node.get( OP_ADDR).set( address.append( "jdbc-driver", this.name ).toModelNode() );
-        node.get( OP ).set( ADD );
-        node.get( "driver-name" ).set( this.name );
-        if ( this.datasourceClassName != null ) {
-            node.get( "driver-datasource-class-name" ).set( this.datasourceClassName );
-        }
-
-        if ( this.xaDatasourceClassName != null ) {
-            node.get( "driver-xa-datasource-class-name" ).set( this.xaDatasourceClassName );
-        }
-
-        node.get( "driver-module-name" ).set( this.moduleName );
-        if ( this.moduleSlot != null ) {
-            node.get( "module-slot").set( this.moduleSlot );
-        }
-
-        return node;
+    public String xaDatasourceClassName() {
+        return this.xaDatasourceClassName;
     }
+
 }
