@@ -1,12 +1,20 @@
 package org.wildfly.swarm.jaxrs;
 
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.ClassAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.WarDeployment;
 
 import javax.ws.rs.core.Application;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.SecureClassLoader;
+import java.util.Map;
 
 /**
  * @author Bob McWhirter
@@ -53,7 +61,9 @@ public class JAXRSDeployment extends WarDeployment {
 
     protected void ensureApplication() {
         if (!this.hasApplication) {
-            setApplication(DefaultApplication.class);
+            //setApplication(DefaultApplication.class);
+            String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
+            this.archive.add( new ByteArrayAsset( ApplicationFactory.create( name, "/" )), "WEB-INF/classes/" + name.replace('.', '/' ) + ".class");
         }
     }
 
@@ -62,6 +72,7 @@ public class JAXRSDeployment extends WarDeployment {
         ensureApplication();
         return super.getArchive();
     }
+
 
 
 }

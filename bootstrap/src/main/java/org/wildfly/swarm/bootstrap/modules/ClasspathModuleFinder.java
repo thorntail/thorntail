@@ -35,7 +35,6 @@ public class ClasspathModuleFinder implements ModuleFinder {
 
         ModuleSpec moduleSpec = null;
         try {
-
             moduleSpec = ModuleXmlParserBridge.parseModuleXml(new ModuleXmlParserBridge.ResourceRootFactoryBridge() {
                 @Override
                 public ResourceLoader createResourceLoader(final String rootPath, final String loaderPath, final String loaderName) throws IOException {
