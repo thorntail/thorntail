@@ -53,7 +53,7 @@
 
     <properties>
         <version.wildfly>9.0.0.CR1</version.wildfly>
-        <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha3-SNAPSHOT</version.wildfly.swarm.fraction.plugin>
+        <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha3</version.wildfly.swarm.fraction.plugin>
         <maven.min.version>3.2.1</maven.min.version>
 
         <!-- Surefire args -->
@@ -180,6 +180,11 @@
             </dependency>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-weld-jaxrs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-shrinkwrap</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -192,6 +197,20 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
     <modules>
       <module>plugin</module>

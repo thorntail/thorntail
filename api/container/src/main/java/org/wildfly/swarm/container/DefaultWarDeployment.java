@@ -58,6 +58,7 @@ public class DefaultWarDeployment extends WarDeployment {
 
         if (appArtifact != null) {
             try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
+                System.err.println( "loading app artifact" );
                 ZipImporterImpl importer = new ZipImporterImpl(this.archive);
                 importer.importFrom(in);
             }

@@ -39,9 +39,7 @@
     <packaging>pom</packaging>
 
     <modules>
-<!--
       <module>bean-validation</module>
--->
       <module>connector</module>
       <module>container</module>
       <module>datasources</module>
@@ -61,10 +59,8 @@
       <module>security</module>
       <module>transactions</module>
       <module>undertow</module>
-<!--
       <module>weld</module>
       <module>weld-jaxrs</module>
--->
     </modules>
 
 </project>

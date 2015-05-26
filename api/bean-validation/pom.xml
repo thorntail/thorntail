@@ -25,7 +25,7 @@
 
     <parent>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fractions</artifactId>
+        <artifactId>wildfly-swarm-api</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
@@ -33,24 +33,22 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-bean-validation</artifactId>
 
-    <name>WildFly Swarm: Bean Validation</name>
-    <description>WildFly Swarm: Bean Validation</description>
+    <name>WildFly Swarm: Bean Validation API</name>
+    <description>WildFly Swarm: Bean Validation API</description>
 
     <packaging>jar</packaging>
 
     <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-<!--
-                <configuration>
-                  <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
-                  <modules>
-                    <module>org.wildfly.extension.bean-validation</module>
-                  </modules>
-                </configuration>
--->
             </plugin>
         </plugins>
     </build>
@@ -59,6 +57,12 @@
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-container</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.core</groupId>
+          <artifactId>wildfly-core-feature-pack</artifactId>
+          <type>zip</type>
+          <scope>provided</scope>
           <exclusions>
             <exclusion>
               <groupId>*</groupId>
@@ -67,14 +71,28 @@
           </exclusions>
         </dependency>
         <dependency>
-          <groupId>org.jboss</groupId>
-          <artifactId>jboss-dmr</artifactId>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-web-feature-pack</artifactId>
+          <type>zip</type>
           <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-controller</artifactId>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-feature-pack</artifactId>
+          <type>zip</type>
           <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
     </dependencies>
 

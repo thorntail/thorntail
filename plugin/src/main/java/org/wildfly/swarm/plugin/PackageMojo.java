@@ -266,7 +266,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 }
                 if (each.getScope().equals("compile")) {
                     this.dependencies.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
-                    out.write(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
+                    out.write(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n" );
                 }
 
             }

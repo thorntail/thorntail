@@ -25,7 +25,7 @@
 
     <parent>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fractions</artifactId>
+        <artifactId>wildfly-swarm-api</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
@@ -33,22 +33,30 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-weld-jaxrs</artifactId>
 
-    <name>WildFly Swarm: Weld and JAX-RS</name>
-    <description>WildFly Swarm: Weld and JAX-RS</description>
+    <name>WildFly Swarm: Weld/JAX-RS API</name>
+    <description>WildFly Swarm: Weld/JAX-RS API</description>
 
     <packaging>jar</packaging>
 
     <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+<!--
                 <configuration>
                   <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
                   <modules>
                     <module>org.jboss.resteasy.resteasy-validator-provider-11</module>
                   </modules>
                 </configuration>
+-->
             </plugin>
         </plugins>
     </build>
@@ -67,16 +75,20 @@
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-container</artifactId>
         </dependency>
+
         <dependency>
-          <groupId>org.jboss</groupId>
-          <artifactId>jboss-dmr</artifactId>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-feature-pack</artifactId>
+          <type>zip</type>
           <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
-        <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-controller</artifactId>
-          <scope>provided</scope>
-        </dependency>
+
     </dependencies>
 
 </project>

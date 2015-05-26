@@ -29,28 +29,23 @@ public class AppDependenciesModuleFinder implements ModuleFinder {
         InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-dependencies.txt");
 
         if (depsTxt != null) {
-            try {
+            try ( BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt)) ) {
 
-            } finally {
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt));
+                String line = null;
 
-                    String line = null;
-
-                    while ((line = reader.readLine()) != null) {
-                        line = line.trim();
-                        if ( line.length()>0) {
-                            builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(ModuleXmlParserBridge.createMavenArtifactLoader(line)));
-                        }
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.length() > 0) {
+                        builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(ModuleXmlParserBridge.createMavenArtifactLoader(line)));
                     }
-                    depsTxt.close();
-                } catch (IOException e) {
-                    throw new ModuleLoadException("Error loading wildfly-swarm-dependencies.txt", e);
                 }
+                depsTxt.close();
+            } catch (IOException e) {
+                throw new ModuleLoadException("Error loading wildfly-swarm-dependencies.txt", e);
             }
+            builder.addDependency(DependencySpec.createLocalDependencySpec());
         }
 
-        builder.addDependency(DependencySpec.createLocalDependencySpec() );
 
         return builder.create();
     }

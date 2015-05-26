@@ -1,0 +1,13 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.runtime.weld">
+    <resources>
+        <artifact name="org.wildfly.swarm:wildfly-swarm-runtime-weld:${project.version}"/>
+    </resources>
+
+    <dependencies>
+      <module name="org.wildfly.swarm.weld"/>
+      <module name="org.wildfly.swarm.container"/>
+      <module name="org.wildfly.swarm.runtime.container"/>
+
+      <module name="org.jboss.as.weld"/>
+    </dependencies>
+</module>
