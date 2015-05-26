@@ -155,6 +155,14 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
             return false;
         }
 
+        if (artifact.getGroupId().equals("org.wildfly.swarm")) {
+            return true;
+        }
+
+        if (artifact.getGroupId().equals("org.jboss.shrinkwrap")) {
+            return true;
+        }
+
         return !artifact.getScope().equals("provided");
     }
 
@@ -234,9 +242,9 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         }
 
         List<Resource> resources = this.project.getResources();
-        for ( Resource each : resources ) {
-            Path providedDependencies = Paths.get( each.getDirectory(), "provided-dependencies.txt" );
-            if ( Files.exists( providedDependencies ) ) {
+        for (Resource each : resources) {
+            Path providedDependencies = Paths.get(each.getDirectory(), "provided-dependencies.txt");
+            if (Files.exists(providedDependencies)) {
 
                 try {
                     try (InputStream in = new FileInputStream(providedDependencies.toFile())) {
@@ -252,7 +260,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                         }
                     }
                 } catch (IOException e) {
-                    throw new MojoFailureException( "Error reading project's provided-dependencies.txt" );
+                    throw new MojoFailureException("Error reading project's provided-dependencies.txt");
                 }
             }
         }
@@ -266,7 +274,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 }
                 if (each.getScope().equals("compile")) {
                     this.dependencies.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
-                    out.write(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n" );
+                    out.write(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n");
                 }
 
             }
@@ -276,7 +284,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     }
 
     protected void collectDependencies() throws MojoFailureException {
-        if ( ! this.bundleDependencies ) {
+        if (!this.bundleDependencies) {
             return;
         }
         try {
@@ -402,7 +410,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         artifactPath = artifactPath.resolve(artifact.getFile().getName());
 
         Files.createDirectories(artifactPath.getParent());
-        Files.copy( artifact.getFile().toPath(), artifactPath );
+        Files.copy(artifact.getFile().toPath(), artifactPath);
     }
 
     private void createJar() throws MojoFailureException {
