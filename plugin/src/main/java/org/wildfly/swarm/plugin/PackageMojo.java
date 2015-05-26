@@ -5,6 +5,7 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -24,6 +25,7 @@ import org.eclipse.aether.resolution.ArtifactResult;
 import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -227,6 +229,30 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                     }
                 } catch (IOException e) {
                     throw new MojoFailureException("Unable to inspect jar", e);
+                }
+            }
+        }
+
+        List<Resource> resources = this.project.getResources();
+        for ( Resource each : resources ) {
+            Path providedDependencies = Paths.get( each.getDirectory(), "provided-dependencies.txt" );
+            if ( Files.exists( providedDependencies ) ) {
+
+                try {
+                    try (InputStream in = new FileInputStream(providedDependencies.toFile())) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        String line = null;
+
+                        // add everything mentioned in the file
+                        while ((line = reader.readLine()) != null) {
+                            line = line.trim();
+                            if (line.length() > 0) {
+                                provided.add(line);
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new MojoFailureException( "Error reading project's provided-dependencies.txt" );
                 }
             }
         }

@@ -292,7 +292,7 @@ class MavenArtifactUtil {
 
             InputStream stream = MavenArtifactUtil.class.getClassLoader().getResourceAsStream(jarPath);
             if ( stream != null ) {
-                return copyTempJar(artifactId, stream);
+                return copyTempJar(artifactId + "-" + version, stream);
             }
 
             artifactRelativePath = relativeArtifactPath(groupId, artifactId, version);
@@ -346,9 +346,9 @@ class MavenArtifactUtil {
 
     public static File copyTempJar(String artifact, InputStream in) throws IOException {
         try {
-            File temp = File.createTempFile(artifact, ".jar" );
+            File temp = File.createTempFile(artifact, ".jar");
             temp.deleteOnExit();
-            try ( FileOutputStream out = new FileOutputStream(temp) ) {
+            try (FileOutputStream out = new FileOutputStream(temp)) {
                 byte[] buf = new byte[1024];
                 int len = -1;
 
