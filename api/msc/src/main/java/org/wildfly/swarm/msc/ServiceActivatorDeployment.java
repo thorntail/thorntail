@@ -3,7 +3,6 @@ package org.wildfly.swarm.msc;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.base.asset.ServiceProviderAsset;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployment;
 
