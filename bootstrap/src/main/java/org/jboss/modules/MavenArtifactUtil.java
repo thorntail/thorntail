@@ -48,7 +48,7 @@ import org.jboss.modules.xml.XmlPullParserException;
  * @author <a href="mailto:tcerar@redhat.com">Tomaz Cerar</a>
  * @version $Revision: 2 $
  */
-class MavenArtifactUtil {
+public class MavenArtifactUtil {
 
     private static MavenSettings mavenSettings;
     private static final Object settingLoaderMutex = new Object();

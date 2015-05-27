@@ -64,7 +64,6 @@ public class Container {
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.runtime.container.RuntimeServer");
         this.server = (Server) serverClass.newInstance();
 
-        //Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.jboss.logmanager"));
         Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.logging"));
 
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();

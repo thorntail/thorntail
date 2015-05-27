@@ -37,6 +37,16 @@ public class AppDependenciesModuleFinder implements ModuleFinder {
                     line = line.trim();
                     if (line.length() > 0) {
                         builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(ModuleXmlParserBridge.createMavenArtifactLoader(line)));
+
+                        String[] parts = line.split(":");
+                        String groupId = parts[0];
+                        String artifactId = parts[1];
+                        String version = parts[2];
+                        String classifier = "";
+                        if ( parts.length > 3 ) {
+                            classifier = parts[3];
+                        }
+                        builder.addProperty( "version." + groupId + ":" + artifactId + "::" + classifier, version );
                     }
                 }
                 depsTxt.close();
@@ -45,7 +55,6 @@ public class AppDependenciesModuleFinder implements ModuleFinder {
             }
             builder.addDependency(DependencySpec.createLocalDependencySpec());
         }
-
 
         return builder.create();
     }
