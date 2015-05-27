@@ -48,9 +48,7 @@
       <module>jca</module>
       <module>jaxrs</module>
       <module>logging</module>
-<!--
       <module>messaging</module>
--->
       <module>msc</module>
       <module>naming</module>
 <!--

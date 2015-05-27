@@ -1,0 +1,1 @@
+org.jboss.spec.javax.jms:jboss-jms-api_2.0_spec

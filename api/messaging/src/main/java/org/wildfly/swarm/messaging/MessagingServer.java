@@ -1,91 +1,71 @@
 package org.wildfly.swarm.messaging;
 
-import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.PathElement;
-import org.jboss.dmr.ModelNode;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.UNDEFINE_ATTRIBUTE_OPERATION;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Bob McWhirter
  */
 public class MessagingServer {
 
-    private final List<ModelNode> list = new ArrayList<>();
-    private final PathAddress address;
+    private static int SERVER_ID_COUNTER = 0;
+    private static int NAME_COUNTER = 0;
+
+
+    private String name;
+    private final int serverId;
+
+    private Set<String> topics = new HashSet<>();
+    private Set<String> queues = new HashSet<>();
+
+    private String inVmConnectorName;
 
     public MessagingServer() {
-        this("default");
+        this("server-" + (++NAME_COUNTER));
     }
 
     public MessagingServer(String name) {
-        this.address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "messaging")).append("hornetq-server", "default");
-
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(this.address.toModelNode());
-        node.get(OP).set(ADD);
-        node.get("journal-file-size").set(102400L);
-        this.list.add(node);
+        this.name = name;
+        this.serverId = (++SERVER_ID_COUNTER);
     }
 
-    public MessagingServer enableInVmConnector() {
-        return enableInVmConnector("java:/ConnectionFactory");
+    public String name() {
+        return this.name;
     }
 
-    public MessagingServer enableInVmConnector(String jndiName) {
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(this.address.append("in-vm-connector", "in-vm").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("server-id").set(0);
-        this.list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(this.address.append("in-vm-acceptor", "in-vm").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("server-id").set(0);
-        this.list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(this.address.append("connection-factory", "InVmConnectionFactory").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("connector").set("in-vm", new ModelNode());
-        node.get("entries").setEmptyList().add(jndiName);
-        this.list.add(node);
-
-        return this;
+    public int serverID() {
+        return this.serverId;
     }
 
     public MessagingServer topic(String name) {
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(this.address.append("jms-topic", name).toModelNode());
-        node.get(OP).set(ADD);
-        node.get( "entries" ).setEmptyList().add("java:/jms/topic/" + name);
-        this.list.add( node );
+        this.topics.add(name);
         return this;
+    }
+
+    public Set<String> topics() {
+        return this.topics;
     }
 
     public MessagingServer queue(String name) {
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(this.address.append("jms-queue", name).toModelNode());
-        node.get(OP).set(ADD);
-        node.get( "entries" ).setEmptyList().add( "java:/jms/queue/" + name );
-        this.list.add( node );
+        this.queues.add(name);
         return this;
     }
 
-    public MessagingServer enableHttpConnector(String jndiName) {
+    public Set<String> queues() {
+        return this.queues;
+    }
+
+    public MessagingServer enableInVMConnector() {
+        return enableInVMConnector("java:/ConnectionFactory");
+    }
+
+    public MessagingServer enableInVMConnector(String jndiName) {
+        this.inVmConnectorName = jndiName;
         return this;
     }
 
-
-    List<ModelNode> getList() {
-        return this.list;
+    public String inVMConnectorJNDIName() {
+        return this.inVmConnectorName;
     }
+
 }

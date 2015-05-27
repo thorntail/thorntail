@@ -25,40 +25,38 @@
 
     <parent>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-parent</artifactId>
+        <artifactId>wildfly-swarm-runtime</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-runtime</artifactId>
+    <artifactId>wildfly-swarm-runtime-messaging</artifactId>
 
-    <name>WildFly Swarm: Runtime Parent</name>
-    <description>WildFly Swarm: Runtime Parent</description>
+    <name>WildFly Swarm: Messaging Runtime</name>
+    <description>WildFly Swarm: Messaging Runtime</description>
 
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
-      <module>bean-validation</module>
-      <module>connector</module>
-      <module>container</module>
-      <module>datasources</module>
-      <module>ee</module>
-      <module>io</module>
-      <module>jca</module>
-      <module>jaxrs</module>
-      <module>logging</module>
-      <module>messaging</module>
-      <module>msc</module>
-      <module>naming</module>
-<!--
-      <module>request-controller</module>
--->
-      <module>security</module>
-      <module>transactions</module>
-      <module>undertow</module>
-      <module>weld</module>
-      <module>weld-jaxrs</module>
-    </modules>
+    <dependencies>
+        <dependency>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-runtime-container</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-messaging</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss</groupId>
+          <artifactId>jboss-dmr</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly.core</groupId>
+          <artifactId>wildfly-controller</artifactId>
+          <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>
