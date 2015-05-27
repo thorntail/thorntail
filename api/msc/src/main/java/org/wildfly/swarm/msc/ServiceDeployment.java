@@ -2,16 +2,10 @@ package org.wildfly.swarm.msc;
 
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceActivator;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.asset.ClassAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.vfs.VirtualFile;
+import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployment;
-import org.wildfly.swarm.shrinkwrap.ShrinkWrapDeployment;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Bob McWhirter
@@ -19,35 +13,22 @@ import java.util.List;
 public class ServiceDeployment implements Deployment {
 
     private static int COUNTER = 0;
-    private final ShrinkWrapDeployment<JavaArchive> delegate;
-
+    private final JavaArchive archive;
     private boolean instanceServiceProviderAdded = false;
 
-    public ServiceDeployment() {
-        this.delegate = new ShrinkWrapDeployment( archiveName(), JavaArchive.class);
-    }
-
-    @Override
-    public String getName() {
-        return this.delegate.getName();
+    public ServiceDeployment(Container container) {
+        this.archive = container.create( "msc-" + (++COUNTER) + ".jar", JavaArchive.class );
     }
 
     public ServiceDeployment addService(Service service) {
-        ServiceDeploymentRegistry registry = ServiceDeploymentRegistry.get(getName());
+        ServiceDeploymentRegistry registry = ServiceDeploymentRegistry.get(this.archive.getName() );
         registry.addService(service);
         if ( ! this.instanceServiceProviderAdded ) {
-            this.delegate.getArchive().addAsServiceProvider(ServiceActivator.class, ServiceInstanceActivator.class);
+            this.archive.addAsServiceProvider(ServiceActivator.class.getName(), "org.wildfly.swarm.runtime.msc.ServiceInstanceActivator" );
             this.instanceServiceProviderAdded = true;
         }
 
         return this;
-    }
-
-    @Override
-    public VirtualFile getContent() throws IOException {
-        addJBossDeploymentStructure();
-
-        return this.delegate.getContent();
     }
 
     private void addJBossDeploymentStructure() {
@@ -57,14 +38,17 @@ public class ServiceDeployment implements Deployment {
                 "         <dependencies>  \n" +
                 "              <module name=\"APP\" slot=\"dependencies\"/>  \n" +
                 "              <module name=\"org.wildfly.swarm.msc\"/>  \n" +
+                "              <module name=\"org.wildfly.swarm.runtime.msc\"/>  \n" +
                 "        </dependencies>  \n" +
                 "    </deployment>  \n" +
                 "</jboss-deployment-structure>\n");
 
-        this.delegate.getArchive().addAsManifestResource(structureXml, "jboss-deployment-structure.xml");
+        this.archive.addAsManifestResource(structureXml, "jboss-deployment-structure.xml");
     }
 
-    private static String archiveName() {
-        return System.getProperty( "wildfly.swarm.app.name" ).replace( ".jar", "-service-" ) + ( ++COUNTER ) + ".jar";
+    @Override
+    public JavaArchive getArchive() {
+        addJBossDeploymentStructure();
+        return this.archive;
     }
 }

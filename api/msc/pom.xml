@@ -25,7 +25,7 @@
 
     <parent>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fractions</artifactId>
+        <artifactId>wildfly-swarm-api</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
@@ -33,16 +33,23 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-msc</artifactId>
 
-    <name>WildFly Swarm: MSC</name>
-    <description>WildFly Swarm: MSC</description>
+    <name>WildFly Swarm: MSC API</name>
+    <description>WildFly Swarm: MSC API</description>
 
     <packaging>jar</packaging>
 
     <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+<!--
                 <configuration>
                   <feature-pack>org.wildfly.core:wildfly-core-feature-pack</feature-pack>
                   <modules>
@@ -54,6 +61,7 @@
                     <export>org.jboss.msc</export>
                   </exports>
                 </configuration>
+-->
             </plugin>
         </plugins>
     </build>
@@ -62,42 +70,18 @@
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-container</artifactId>
-          <exclusions>
-            <exclusion>
-              <groupId>*</groupId>
-              <artifactId>*</artifactId>
-            </exclusion>
-          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-bootstrap</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.jboss</groupId>
-          <artifactId>jboss-dmr</artifactId>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-controller</artifactId>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.modules</groupId>
-          <artifactId>jboss-modules</artifactId>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-logging</artifactId>
         </dependency>
         <dependency>
           <groupId>org.jboss.msc</groupId>
           <artifactId>jboss-msc</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-shrinkwrap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-api</artifactId>
         </dependency>
     </dependencies>
 

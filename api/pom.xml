@@ -50,8 +50,8 @@
       <module>logging</module>
 <!--
       <module>messaging</module>
-      <module>msc</module>
 -->
+      <module>msc</module>
       <module>naming</module>
 <!--
       <module>request-controller</module>
