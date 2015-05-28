@@ -61,9 +61,9 @@ public class JAXRSDeployment extends WarDeployment {
 
     protected void ensureApplication() {
         if (!this.hasApplication) {
-            //setApplication(DefaultApplication.class);
             String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
             this.archive.add( new ByteArrayAsset( ApplicationFactory.create( name, "/" )), "WEB-INF/classes/" + name.replace('.', '/' ) + ".class");
+            this.hasApplication = true;
         }
     }
 
