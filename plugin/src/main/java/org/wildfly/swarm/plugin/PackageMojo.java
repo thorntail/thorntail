@@ -110,9 +110,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     private void setupDirectory() throws MojoFailureException {
         this.dir = Paths.get(this.projectBuildDir, "wildfly-swarm-archive");
         try {
-            if (Files.notExists(dir)) {
-                Files.createDirectories(dir);
-            } else {
+            if (Files.exists(dir)) {
                 emptyDir(dir);
             }
         } catch (IOException e) {
@@ -446,7 +444,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         this.project.addAttachedArtifact(artifact);
     }
 
-    private void emptyDir(Path dir) throws IOException {
+    private void emptyDir(final Path dir) throws IOException {
         Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -482,6 +480,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                     Files.createDirectories(fsEach);
                 } else {
                     try (InputStream in = jarFile.getInputStream(each)) {
+                        Files.createDirectories(fsEach.getParent());
                         Files.copy(in, fsEach, StandardCopyOption.REPLACE_EXISTING);
                     }
                 }
@@ -539,10 +538,5 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
         return repos;
     }
-
-
-    /*
-
-    */
 
 }
