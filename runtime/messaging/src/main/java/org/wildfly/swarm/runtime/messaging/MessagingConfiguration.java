@@ -48,6 +48,8 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
 
         addServers( fraction, list );
 
+        System.err.println( "LIST: " + list );
+
         return list;
     }
 
@@ -73,7 +75,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
             node = new ModelNode();
             node.get(OP_ADDR).set(serverAddress.append("in-vm-connector", "in-vm").toModelNode());
             node.get(OP).set(ADD);
-            node.get("server-id").set(0);
+            node.get("server-id").set(server.serverID());
             list.add(node);
 
             node = new ModelNode();
