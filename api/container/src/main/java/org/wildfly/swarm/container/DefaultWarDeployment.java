@@ -17,8 +17,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class DefaultWarDeployment extends WarDeployment {
+
+    public DefaultWarDeployment(Container container) throws IOException, ModuleLoadException {
+        this(container.getShrinkWrapDomain().getArchiveFactory().create(WebArchive.class));
+    }
 
     public DefaultWarDeployment(WebArchive archive) throws IOException, ModuleLoadException {
         super( archive );

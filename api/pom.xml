@@ -47,6 +47,7 @@
       <module>io</module>
       <module>jca</module>
       <module>jaxrs</module>
+      <module>jpa</module>
       <module>logging</module>
       <module>messaging</module>
       <module>msc</module>
