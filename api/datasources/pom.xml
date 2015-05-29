@@ -49,15 +49,6 @@
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-<!--
-                <configuration>
-                  <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
-                  <modules>
-                    <module>org.jboss.as.connector</module>
-                    <module>org.jboss.vfs</module>
-                  </modules>
-                </configuration>
--->
             </plugin>
         </plugins>
     </build>
@@ -75,12 +66,14 @@
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-jca</artifactId>
         </dependency>
-<!--
         <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-vfs</artifactId>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-logging</artifactId>
         </dependency>
--->
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-naming</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
