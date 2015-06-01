@@ -161,6 +161,10 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
             return true;
         }
 
+        if ( artifact.getGroupId().equals( "org.jboss.msc" ) && artifact.getArtifactId().equals( "jboss-msc" ) ) {
+            return false;
+        }
+
         return !artifact.getScope().equals("provided");
     }
 

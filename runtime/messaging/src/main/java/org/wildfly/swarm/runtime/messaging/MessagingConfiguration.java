@@ -48,8 +48,6 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
 
         addServers( fraction, list );
 
-        System.err.println( "LIST: " + list );
-
         return list;
     }
 
