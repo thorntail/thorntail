@@ -42,6 +42,7 @@ public class BootstrapModuleFinder implements ModuleFinder {
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
 
         return builder.create();
     }
