@@ -44,7 +44,7 @@ public class DefaultWarDeployment extends WarDeployment {
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                         Path simple = path.relativize(file);
-                        archive.add(new FileAsset(file.toFile()), simple.toString());
+                        archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
                         return super.visitFile(file, attrs);
                     }
                 });
@@ -86,7 +86,7 @@ public class DefaultWarDeployment extends WarDeployment {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     Path simple = classes.relativize(file);
-                    archive.add(new FileAsset(file.toFile()), "WEB-INF/classes/" + simple.toString());
+                    archive.add(new FileAsset(file.toFile()), "WEB-INF/classes/" + convertSeparators(simple));
                     return super.visitFile(file, attrs);
                 }
             });
@@ -100,7 +100,7 @@ public class DefaultWarDeployment extends WarDeployment {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     Path simple = webapp.relativize(file);
-                    archive.add(new FileAsset(file.toFile()), simple.toString());
+                    archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
                     return super.visitFile(file, attrs);
                 }
             });
@@ -109,5 +109,15 @@ public class DefaultWarDeployment extends WarDeployment {
         addJavaClassPathToWebInfLib();
 
         return success;
+    }
+
+    protected String convertSeparators(Path path) {
+        String convertedPath = path.toString();
+
+        if (convertedPath.contains(File.separator)) {
+            convertedPath = convertedPath.replace(File.separator, "/");
+        }
+
+        return convertedPath;
     }
 }
