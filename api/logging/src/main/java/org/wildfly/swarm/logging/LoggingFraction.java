@@ -1,14 +1,10 @@
 package org.wildfly.swarm.logging;
 
-import org.wildfly.swarm.con
-ainer. raction;
-
-import j
-va.uti .Collection;
-i
-
-ort ja a.util.HashMap;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+
+import org.wildfly.swarm.container.Fraction;
 
 /**
  * @author Bob McWhirter

@@ -1,17 +1,12 @@
 package org.wildfly.swarm.container;
 
-import org.jboss.mod
-les.Mo uleLoadException;
-im
-
-rt org jboss.shrinkwrap.api.asset.FileAsset;
-
-mport  rg.jboss.shrinkwrap.api.asset.StringAsset
-
-impor  org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import java.io.File;
 import java.io.IOException;
+
+import org.jboss.modules.ModuleLoadException;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
  * @author Bob McWhirter

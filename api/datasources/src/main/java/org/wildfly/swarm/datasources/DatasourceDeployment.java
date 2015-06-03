@@ -1,22 +1,14 @@
 package org.wildfly.swarm.datasources;
 
-import org.jboss.shrinkwrap
-api.Ar hive;
-import org.jbos
-
-shrink rap.api.asset.StringAsset;
-import
-org.jb ss.shrinkwrap.api.spec.JavaArchive;
-import
-rg.wil fly.swarm.container.Container;
-import org.
-ildfly swarm.container.Deployment;
-import org
-wildfl .swarm.container.util.XmlWriter;
-
-impor
- java. o.IOException;
+import java.io.IOException;
 import java.io.StringWriter;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.Deployment;
+import org.wildfly.swarm.container.util.XmlWriter;
 
 /**
  */

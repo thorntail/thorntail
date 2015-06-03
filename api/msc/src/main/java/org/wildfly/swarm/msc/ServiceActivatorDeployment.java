@@ -1,20 +1,13 @@
 package org.wildfly.swarm.msc;
 
-import org.jboss.msc.servic
-.Servi eActivator;
-imp
-
-t org. boss.shrinkwrap.api.asset.StringAsset;
-
-mport  rg.jboss.shrinkwrap.api.spec.JavaArchive;
-i
-port o g.wildfly.swarm.container.Container;
-impor
- org.w ldfly.swarm.container.Deployment;
-
-imp
-rt jav .util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.msc.service.ServiceActivator;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.Deployment;
 
 /**
  * @author Bob McWhirter

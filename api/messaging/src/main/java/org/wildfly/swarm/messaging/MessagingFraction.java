@@ -1,12 +1,9 @@
 package org.wildfly.swarm.messaging;
 
-import org.wildfly.swarm.co
-tainer Fraction;
-
-impo
-
- java. til.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.wildfly.swarm.container.Fraction;
 
 /**
  * @author Bob McWhirter

@@ -1,31 +1,19 @@
 package org.wildfly.swarm.container;
 
-import org.jboss.mod
-les.Mo uleLoadException;
-im
-ort or .jboss.shrinkwrap.ap
-.asset FileAsset;
-import org.jboss.sh
-inkwra .api.spec.WebArchive
-
-impor  org.jboss.shrinkwr
-p.impl base.importer.zip.Zi
-Import rImpl;
-
 import java.io.File;
-imp
-rt jav .io.IOException;
+import java.io.IOException;
 import java.io.InputStream;
-
-mport  ava.nio.file.FileVisitResult;
-import j
-va.nio file.Files;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
-im
-ort ja a.nio.file.Paths;
-import java.nio.file.Si
-pleFil Visitor;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import org.jboss.modules.ModuleLoadException;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 
 /**
  * @author Bob McWhirter
