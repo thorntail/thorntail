@@ -21,7 +21,7 @@ public class Main {
     public static final String VERSION;
 
     static {
-        InputStream in = Main.class.getClassLoader().getResourceAsStream("wildfly-boot.properties");
+        InputStream in = Main.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
         Properties props = new Properties();
         try {
             props.load(in);
