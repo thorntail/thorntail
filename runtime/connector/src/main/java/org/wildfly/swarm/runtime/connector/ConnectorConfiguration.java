@@ -1,11 +1,11 @@
 package org.wildfly.swarm.runtime.connector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.connector.ConnectorFraction;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;

@@ -24,87 +24,87 @@
 
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.container">
 
-    <dependencies>
-      <!-- For when run with bonafide IDE classpath -->
-      <system export="true">
-        <paths>
-          <path name="org/wildfly/swarm/container"/>
-          <path name="org/wildfly/swarm/container/util"/>
+  <dependencies>
+    <!-- For when run with bonafide IDE classpath -->
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/container"/>
+        <path name="org/wildfly/swarm/container/util"/>
 
-          <path name="org/jboss/shrinkwrap/api"/>
-          <path name="org/jboss/shrinkwrap/api/container"/>
-          <path name="org/jboss/shrinkwrap/api/formatter"/>
-          <path name="org/jboss/shrinkwrap/api/asset"/>
-          <path name="org/jboss/shrinkwrap/api/exporter"/>
-          <path name="org/jboss/shrinkwrap/api/serialization"/>
-          <path name="org/jboss/shrinkwrap/api/importer"/>
-          <path name="org/jboss/shrinkwrap/api/classloader"/>
-          <path name="org/jboss/shrinkwrap/api/spec"/>
+        <path name="org/jboss/shrinkwrap/api"/>
+        <path name="org/jboss/shrinkwrap/api/container"/>
+        <path name="org/jboss/shrinkwrap/api/formatter"/>
+        <path name="org/jboss/shrinkwrap/api/asset"/>
+        <path name="org/jboss/shrinkwrap/api/exporter"/>
+        <path name="org/jboss/shrinkwrap/api/serialization"/>
+        <path name="org/jboss/shrinkwrap/api/importer"/>
+        <path name="org/jboss/shrinkwrap/api/classloader"/>
+        <path name="org/jboss/shrinkwrap/api/spec"/>
 
-          <path name="org/jboss/shrinkwrap/impl"/>
-          <path name="org/jboss/shrinkwrap/impl/base"/>
-          <path name="org/jboss/shrinkwrap/impl/base/container"/>
-          <path name="org/jboss/shrinkwrap/impl/base/asset"/>
-          <path name="org/jboss/shrinkwrap/impl/base/io"/>
-          <path name="org/jboss/shrinkwrap/impl/base/io/tar"/>
-          <path name="org/jboss/shrinkwrap/impl/base/exporter"/>
-          <path name="org/jboss/shrinkwrap/impl/base/exporter/tar"/>
-          <path name="org/jboss/shrinkwrap/impl/base/exporter/zip"/>
-          <path name="org/jboss/shrinkwrap/impl/base/filter"/>
-          <path name="org/jboss/shrinkwrap/impl/base/path"/>
-          <path name="org/jboss/shrinkwrap/impl/base/serialization"/>
-          <path name="org/jboss/shrinkwrap/impl/base/importer"/>
-          <path name="org/jboss/shrinkwrap/impl/base/importer/tar"/>
-          <path name="org/jboss/shrinkwrap/impl/base/importer/zip"/>
-          <path name="org/jboss/shrinkwrap/impl/base/spec"/>
-          <path name="org/jboss/shrinkwrap/api"/>
-          <path name="org/jboss/shrinkwrap/api/asset"/>
+        <path name="org/jboss/shrinkwrap/impl"/>
+        <path name="org/jboss/shrinkwrap/impl/base"/>
+        <path name="org/jboss/shrinkwrap/impl/base/container"/>
+        <path name="org/jboss/shrinkwrap/impl/base/asset"/>
+        <path name="org/jboss/shrinkwrap/impl/base/io"/>
+        <path name="org/jboss/shrinkwrap/impl/base/io/tar"/>
+        <path name="org/jboss/shrinkwrap/impl/base/exporter"/>
+        <path name="org/jboss/shrinkwrap/impl/base/exporter/tar"/>
+        <path name="org/jboss/shrinkwrap/impl/base/exporter/zip"/>
+        <path name="org/jboss/shrinkwrap/impl/base/filter"/>
+        <path name="org/jboss/shrinkwrap/impl/base/path"/>
+        <path name="org/jboss/shrinkwrap/impl/base/serialization"/>
+        <path name="org/jboss/shrinkwrap/impl/base/importer"/>
+        <path name="org/jboss/shrinkwrap/impl/base/importer/tar"/>
+        <path name="org/jboss/shrinkwrap/impl/base/importer/zip"/>
+        <path name="org/jboss/shrinkwrap/impl/base/spec"/>
+        <path name="org/jboss/shrinkwrap/api"/>
+        <path name="org/jboss/shrinkwrap/api/asset"/>
 
-          <path name="org/jboss/shrinkwrap/spi"/>
-          <path name="META-INF/services"/>
-        </paths>
-      </system>
+        <path name="org/jboss/shrinkwrap/spi"/>
+        <path name="META-INF/services"/>
+      </paths>
+    </system>
 
-      <!-- For when bootstrapped through a fat-jar -->
-      <module name="org.wildfly.swarm.bootstrap" optional="true" services="import" export="true">
-        <exports>
-          <include path="org/wildfly/swarm/container"/>
-          <include path="org/wildfly/swarm/container/util"/>
-          <include path="org/jboss/shrinkwrap/api"/>
-          <include path="org/jboss/shrinkwrap/api/container"/>
-          <include path="org/jboss/shrinkwrap/api/formatter"/>
-          <include path="org/jboss/shrinkwrap/api/asset"/>
-          <include path="org/jboss/shrinkwrap/api/exporter"/>
-          <include path="org/jboss/shrinkwrap/api/serialization"/>
-          <include path="org/jboss/shrinkwrap/api/importer"/>
-          <include path="org/jboss/shrinkwrap/api/classloader"/>
-          <include path="org/jboss/shrinkwrap/api/spec"/>
+    <!-- For when bootstrapped through a fat-jar -->
+    <module name="org.wildfly.swarm.bootstrap" optional="true" services="import" export="true">
+      <exports>
+        <include path="org/wildfly/swarm/container"/>
+        <include path="org/wildfly/swarm/container/util"/>
+        <include path="org/jboss/shrinkwrap/api"/>
+        <include path="org/jboss/shrinkwrap/api/container"/>
+        <include path="org/jboss/shrinkwrap/api/formatter"/>
+        <include path="org/jboss/shrinkwrap/api/asset"/>
+        <include path="org/jboss/shrinkwrap/api/exporter"/>
+        <include path="org/jboss/shrinkwrap/api/serialization"/>
+        <include path="org/jboss/shrinkwrap/api/importer"/>
+        <include path="org/jboss/shrinkwrap/api/classloader"/>
+        <include path="org/jboss/shrinkwrap/api/spec"/>
 
-          <include path="org/jboss/shrinkwrap/impl"/>
-          <include path="org/jboss/shrinkwrap/impl/base"/>
-          <include path="org/jboss/shrinkwrap/impl/base/container"/>
-          <include path="org/jboss/shrinkwrap/impl/base/asset"/>
-          <include path="org/jboss/shrinkwrap/impl/base/io"/>
-          <include path="org/jboss/shrinkwrap/impl/base/io/tar"/>
-          <include path="org/jboss/shrinkwrap/impl/base/exporter"/>
-          <include path="org/jboss/shrinkwrap/impl/base/exporter/tar"/>
-          <include path="org/jboss/shrinkwrap/impl/base/exporter/zip"/>
-          <include path="org/jboss/shrinkwrap/impl/base/filter"/>
-          <include path="org/jboss/shrinkwrap/impl/base/path"/>
-          <include path="org/jboss/shrinkwrap/impl/base/serialization"/>
-          <include path="org/jboss/shrinkwrap/impl/base/importer"/>
-          <include path="org/jboss/shrinkwrap/impl/base/importer/tar"/>
-          <include path="org/jboss/shrinkwrap/impl/base/importer/zip"/>
-          <include path="org/jboss/shrinkwrap/impl/base/spec"/>
-          <include path="org/jboss/shrinkwrap/api"/>
-          <include path="org/jboss/shrinkwrap/api/asset"/>
+        <include path="org/jboss/shrinkwrap/impl"/>
+        <include path="org/jboss/shrinkwrap/impl/base"/>
+        <include path="org/jboss/shrinkwrap/impl/base/container"/>
+        <include path="org/jboss/shrinkwrap/impl/base/asset"/>
+        <include path="org/jboss/shrinkwrap/impl/base/io"/>
+        <include path="org/jboss/shrinkwrap/impl/base/io/tar"/>
+        <include path="org/jboss/shrinkwrap/impl/base/exporter"/>
+        <include path="org/jboss/shrinkwrap/impl/base/exporter/tar"/>
+        <include path="org/jboss/shrinkwrap/impl/base/exporter/zip"/>
+        <include path="org/jboss/shrinkwrap/impl/base/filter"/>
+        <include path="org/jboss/shrinkwrap/impl/base/path"/>
+        <include path="org/jboss/shrinkwrap/impl/base/serialization"/>
+        <include path="org/jboss/shrinkwrap/impl/base/importer"/>
+        <include path="org/jboss/shrinkwrap/impl/base/importer/tar"/>
+        <include path="org/jboss/shrinkwrap/impl/base/importer/zip"/>
+        <include path="org/jboss/shrinkwrap/impl/base/spec"/>
+        <include path="org/jboss/shrinkwrap/api"/>
+        <include path="org/jboss/shrinkwrap/api/asset"/>
 
-          <include path="org/jboss/shrinkwrap/spi"/>
-          <include path="META-INF/services"/>
-        </exports>
-      </module>
+        <include path="org/jboss/shrinkwrap/spi"/>
+        <include path="META-INF/services"/>
+      </exports>
+    </module>
 
-      <module name="org.wildfly.swarm.runtime.container"/>
+    <module name="org.wildfly.swarm.runtime.container"/>
 
-    </dependencies>
+  </dependencies>
 </module>

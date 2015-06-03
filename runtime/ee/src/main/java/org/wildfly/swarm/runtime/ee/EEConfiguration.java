@@ -1,13 +1,13 @@
 package org.wildfly.swarm.runtime.ee;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.ee.EEFraction;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
@@ -49,21 +49,21 @@ public class EEConfiguration extends AbstractServerConfiguration<EEFraction> {
         node = new ModelNode();
         node.get(OP_ADDR).set(address.append("context-service", "default").toModelNode());
         node.get(OP).set(ADD);
-        node.get( "jndi-name" ).set( "java:jboss/ee/concurrency/context/default" );
-        node.get( "use-transaction-setup-provider" ).set( false );
+        node.get("jndi-name").set("java:jboss/ee/concurrency/context/default");
+        node.get("use-transaction-setup-provider").set(false);
         list.add(node);
 
         node = new ModelNode();
         node.get(OP_ADDR).set(address.append("managed-thread-factory", "default").toModelNode());
         node.get(OP).set(ADD);
-        node.get( "jndi-name" ).set( "java:jboss/ee/concurrency/factory/default" );
-        node.get( "content-service" ).set( "default" );
+        node.get("jndi-name").set("java:jboss/ee/concurrency/factory/default");
+        node.get("content-service").set("default");
         list.add(node);
 
         node = new ModelNode();
         node.get(OP_ADDR).set(address.append("managed-executor-service", "default").toModelNode());
         node.get(OP).set(ADD);
-        node.get( "jndi-name" ).set( "java:jboss/ee/concurrency/executor/default" );
+        node.get("jndi-name").set("java:jboss/ee/concurrency/executor/default");
         node.get("context-service").set("default");
         node.get("hung-task-threshold").set(60000L);
         node.get("core-threads").set(5);
@@ -74,7 +74,7 @@ public class EEConfiguration extends AbstractServerConfiguration<EEFraction> {
         node = new ModelNode();
         node.get(OP_ADDR).set(address.append("managed-scheduled-executor-service", "default").toModelNode());
         node.get(OP).set(ADD);
-        node.get( "jndi-name" ).set( "java:jboss/ee/concurrency/scheduler/default" );
+        node.get("jndi-name").set("java:jboss/ee/concurrency/scheduler/default");
         node.get("context-service").set("default");
         node.get("hung-task-threshold").set(60000L);
         node.get("core-threads").set(5);

@@ -1,9 +1,6 @@
 package org.wildfly.swarm.runtime.container;
 
-import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.Fraction;
-
-import java.util.List;
 
 /**
  * @author Bob McWhirter

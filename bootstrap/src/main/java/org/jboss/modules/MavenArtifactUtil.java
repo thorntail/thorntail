@@ -18,13 +18,6 @@
 
 package org.jboss.modules;
 
-import static org.jboss.modules.ModuleXmlParser.endOfDocument;
-import static org.jboss.modules.ModuleXmlParser.unexpectedContent;
-import static org.jboss.modules.xml.XmlPullParser.END_DOCUMENT;
-import static org.jboss.modules.xml.XmlPullParser.END_TAG;
-import static org.jboss.modules.xml.XmlPullParser.FEATURE_PROCESS_NAMESPACES;
-import static org.jboss.modules.xml.XmlPullParser.START_TAG;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,6 +34,13 @@ import org.jboss.modules.xml.MXParser;
 import org.jboss.modules.xml.XmlPullParser;
 import org.jboss.modules.xml.XmlPullParserException;
 
+import static org.jboss.modules.ModuleXmlParser.endOfDocument;
+import static org.jboss.modules.ModuleXmlParser.unexpectedContent;
+import static org.jboss.modules.xml.XmlPullParser.END_DOCUMENT;
+import static org.jboss.modules.xml.XmlPullParser.END_TAG;
+import static org.jboss.modules.xml.XmlPullParser.FEATURE_PROCESS_NAMESPACES;
+import static org.jboss.modules.xml.XmlPullParser.START_TAG;
+
 /**
  * Helper class to resolve a maven artifact
  *
@@ -50,8 +50,11 @@ import org.jboss.modules.xml.XmlPullParserException;
  */
 public class MavenArtifactUtil {
 
-    private static MavenSettings mavenSettings;
     private static final Object settingLoaderMutex = new Object();
+
+    private static final Object artifactLock = new Object();
+
+    private static MavenSettings mavenSettings;
 
     public static MavenSettings getSettings() throws IOException {
         if (mavenSettings != null) {
@@ -246,9 +249,6 @@ public class MavenArtifactUtil {
         }
     }
 
-
-    private static final Object artifactLock = new Object();
-
     /**
      * First checks this class's ClassLoader for an embedded maven repository under {@code m2repo} and extracts
      * the artifact if found.
@@ -269,8 +269,8 @@ public class MavenArtifactUtil {
      * @throws IOException
      */
     public static File resolveJarArtifact(String qualifier) throws IOException {
-        if ( qualifier.startsWith( "${" ) && qualifier.endsWith("}") ) {
-            qualifier = qualifier.substring( 2, qualifier.length() - 1 );
+        if (qualifier.startsWith("${") && qualifier.endsWith("}")) {
+            qualifier = qualifier.substring(2, qualifier.length() - 1);
         }
         String[] split = qualifier.split(":");
         if (split.length < 3) {
@@ -280,7 +280,9 @@ public class MavenArtifactUtil {
         String artifactId = split[1];
         String version = split[2];
         String classifier = "";
-        if (split.length >= 4) { classifier = "-" + split[3]; }
+        if (split.length >= 4) {
+            classifier = "-" + split[3];
+        }
 
         final MavenSettings settings = getSettings();
         final Path localRepository = settings.getLocalRepository();
@@ -291,7 +293,7 @@ public class MavenArtifactUtil {
             String jarPath = artifactRelativePath + classifier + ".jar";
 
             InputStream stream = MavenArtifactUtil.class.getClassLoader().getResourceAsStream(jarPath);
-            if ( stream != null ) {
+            if (stream != null) {
                 return copyTempJar(artifactId + "-" + version, stream);
             }
 
@@ -372,8 +374,10 @@ public class MavenArtifactUtil {
             dest.getParentFile().mkdirs();
             FileOutputStream fos = new FileOutputStream(dest);
             try {
-                if (message) { System.out.println("Downloading " + artifact); }
-                Files.copy(bis,dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (message) {
+                    System.out.println("Downloading " + artifact);
+                }
+                Files.copy(bis, dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } finally {
                 StreamUtil.safeClose(fos);
             }

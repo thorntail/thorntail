@@ -8,6 +8,7 @@ import org.wildfly.swarm.container.Fraction;
 public class TransactionsFraction implements Fraction {
 
     private int port;
+
     private int statusPort;
 
     public TransactionsFraction() {

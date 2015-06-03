@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Bob McWhirter
@@ -16,12 +14,12 @@ public class JarRepositoryResolver extends RepositoryResolver {
     public File resolve(String gav) throws IOException {
 
         StringBuilder path = new StringBuilder();
-        path.append( "m2repo" );
-        path.append( SEPARATOR );
-        path.append( gavToPath( gav ) );
+        path.append("m2repo");
+        path.append(SEPARATOR);
+        path.append(gavToPath(gav));
 
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(path.toString());
-        if ( in == null ) {
+        if (in == null) {
             return null;
         }
 

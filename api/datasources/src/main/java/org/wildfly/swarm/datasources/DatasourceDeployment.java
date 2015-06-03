@@ -1,13 +1,21 @@
 package org.wildfly.swarm.datasources;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Deployment;
-import org.wildfly.swarm.container.util.XmlWriter;
+import org.jboss.shrinkwrap
+api.Ar hive;
+import org.jbos
 
-import java.io.IOException;
+shrink rap.api.asset.StringAsset;
+import
+org.jb ss.shrinkwrap.api.spec.JavaArchive;
+import
+rg.wil fly.swarm.container.Container;
+import org.
+ildfly swarm.container.Deployment;
+import org
+wildfl .swarm.container.util.XmlWriter;
+
+impor
+ java. o.IOException;
 import java.io.StringWriter;
 
 /**
@@ -15,6 +23,7 @@ import java.io.StringWriter;
 public class DatasourceDeployment implements Deployment {
 
     private final Datasource ds;
+
     private final JavaArchive archive;
 
     public DatasourceDeployment(Container container, Datasource ds) {
@@ -58,7 +67,7 @@ public class DatasourceDeployment implements Deployment {
                         .end();
             }
 
-            if ( this.ds.password() != null ) {
+            if (this.ds.password() != null) {
                 security.element("password")
                         .content(this.ds.password())
                         .end();
@@ -73,7 +82,7 @@ public class DatasourceDeployment implements Deployment {
             throw new RuntimeException(e);
         }
 
-        this.archive.add( new StringAsset( str.toString() ), "META-INF/" + this.ds.name() + "-ds.xml" );
+        this.archive.add(new StringAsset(str.toString()), "META-INF/" + this.ds.name() + "-ds.xml");
 
         return this.archive;
 

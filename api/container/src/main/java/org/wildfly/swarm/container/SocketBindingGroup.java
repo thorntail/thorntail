@@ -11,7 +11,9 @@ public class SocketBindingGroup {
 
 
     private final String name;
+
     private final String defaultInterace;
+
     private final String portOffsetExpression;
 
     private List<SocketBinding> socketBindings = new ArrayList<>();
@@ -40,7 +42,7 @@ public class SocketBindingGroup {
     }
 
     public SocketBindingGroup socketBinding(String name, int port) {
-        this.socketBindings.add(new SocketBinding(name, "" + port ));
+        this.socketBindings.add(new SocketBinding(name, "" + port));
         return this;
     }
 

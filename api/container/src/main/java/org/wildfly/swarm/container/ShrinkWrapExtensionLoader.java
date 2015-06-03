@@ -16,9 +16,9 @@ public class ShrinkWrapExtensionLoader implements ExtensionLoader {
 
     @Override
     public <T extends Assignable> T load(Class<T> extensionClass, Archive<?> baseArchive) {
-        if ( extensionClass.equals( WebArchive.class) ) {
+        if (extensionClass.equals(WebArchive.class)) {
             return (T) new WebArchiveImpl(baseArchive);
-        } else if ( extensionClass.equals( JavaArchive.class ) ) {
+        } else if (extensionClass.equals(JavaArchive.class)) {
             return (T) new JavaArchiveImpl(baseArchive);
         }
         return null;
@@ -31,9 +31,9 @@ public class ShrinkWrapExtensionLoader implements ExtensionLoader {
 
     @Override
     public <T extends Assignable> String getExtensionFromExtensionMapping(Class<T> extensionClass) {
-        if ( extensionClass.equals(WebArchive.class) ) {
+        if (extensionClass.equals(WebArchive.class)) {
             return ".war";
-        } else if ( extensionClass.equals(JavaArchive.class) ) {
+        } else if (extensionClass.equals(JavaArchive.class)) {
             return ".jar";
         }
         return null;

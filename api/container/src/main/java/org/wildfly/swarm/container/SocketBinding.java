@@ -6,6 +6,7 @@ package org.wildfly.swarm.container;
 public class SocketBinding {
 
     private final String name;
+
     private final String portExpression;
 
     public SocketBinding(String name, String portExpression) {

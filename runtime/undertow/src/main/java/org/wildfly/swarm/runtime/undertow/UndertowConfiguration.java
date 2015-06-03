@@ -1,17 +1,13 @@
 package org.wildfly.swarm.runtime.undertow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.logging.ConsoleHandler;
-import org.wildfly.swarm.logging.Formatter;
-import org.wildfly.swarm.logging.LoggingFraction;
-import org.wildfly.swarm.logging.RootLogger;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 import org.wildfly.swarm.undertow.UndertowFraction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
@@ -75,13 +71,13 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
         node = new ModelNode();
         node.get(OP_ADDR).set(address.append("server", "default-server").append("host", "default-host").toModelNode());
         node.get(OP).set(ADD);
-        node.get("alias").setEmptyList().add( "localhost" );
+        node.get("alias").setEmptyList().add("localhost");
         list.add(node);
 
         node = new ModelNode();
-        node.get(OP_ADDR).set(address.append( "servlet-container", "default" ).toModelNode() );
+        node.get(OP_ADDR).set(address.append("servlet-container", "default").toModelNode());
         node.get(OP).set(ADD);
-        list.add( node );
+        list.add(node);
 
 
         return list;

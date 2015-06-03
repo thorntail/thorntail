@@ -23,18 +23,18 @@
   -->
 
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.runtime.container">
-    <resources>
-        <artifact name="org.wildfly.swarm:wildfly-swarm-runtime-container:${project.version}"/>
-    </resources>
+  <resources>
+    <artifact name="org.wildfly.swarm:wildfly-swarm-runtime-container:${project.version}"/>
+  </resources>
 
-    <dependencies>
-      <module name="org.wildfly.swarm.container"/>
+  <dependencies>
+    <module name="org.wildfly.swarm.container"/>
 
-      <module name="org.jboss.modules"/>
-      <module name="org.jboss.vfs"/>
-      <module name="org.jboss.logmanager" export="true"/>
-      <module name="org.jboss.as.server"/>
-      <module name="org.jboss.as.controller" export="true"/>
-      <module name="org.jboss.as.self-contained"/>
-    </dependencies>
+    <module name="org.jboss.modules"/>
+    <module name="org.jboss.vfs"/>
+    <module name="org.jboss.logmanager" export="true"/>
+    <module name="org.jboss.as.server"/>
+    <module name="org.jboss.as.controller" export="true"/>
+    <module name="org.jboss.as.self-contained"/>
+  </dependencies>
 </module>

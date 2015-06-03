@@ -20,43 +20,44 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-runtime</artifactId>
-        <version>1.0.0.Alpha2-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
-
+  <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-runtime-jaxrs</artifactId>
+    <artifactId>wildfly-swarm-runtime</artifactId>
+    <version>1.0.0.Alpha2-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
 
-    <name>WildFly Swarm: JAX-RS Runtime</name>
-    <description>WildFly Swarm: JAX-RS Runtime</description>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-runtime-jaxrs</artifactId>
 
-    <packaging>jar</packaging>
+  <name>WildFly Swarm: JAX-RS Runtime</name>
+  <description>WildFly Swarm: JAX-RS Runtime</description>
 
-    <dependencies>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-runtime-container</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-jaxrs</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss</groupId>
-          <artifactId>jboss-dmr</artifactId>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-controller</artifactId>
-          <scope>provided</scope>
-        </dependency>
-    </dependencies>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-runtime-container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-dmr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-controller</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>

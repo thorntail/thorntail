@@ -1,18 +1,30 @@
 package org.wildfly.swarm.container;
 
-import org.jboss.modules.ModuleLoadException;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
+import org.jboss.mod
+les.Mo uleLoadException;
+im
+ort or .jboss.shrinkwrap.ap
+.asset FileAsset;
+import org.jboss.sh
+inkwra .api.spec.WebArchive
+
+impor  org.jboss.shrinkwr
+p.impl base.importer.zip.Zi
+Import rImpl;
 
 import java.io.File;
-import java.io.IOException;
+imp
+rt jav .io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
+
+mport  ava.nio.file.FileVisitResult;
+import j
+va.nio file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+im
+ort ja a.nio.file.Paths;
+import java.nio.file.Si
+pleFil Visitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
@@ -26,7 +38,7 @@ public class DefaultWarDeployment extends WarDeployment {
     }
 
     public DefaultWarDeployment(WebArchive archive) throws IOException, ModuleLoadException {
-        super( archive );
+        super(archive);
         setup();
     }
 
@@ -63,7 +75,7 @@ public class DefaultWarDeployment extends WarDeployment {
 
         if (appArtifact != null) {
             try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
-                System.err.println( "loading app artifact" );
+                System.err.println("loading app artifact");
                 ZipImporterImpl importer = new ZipImporterImpl(this.archive);
                 importer.importFrom(in);
             }

@@ -1,13 +1,13 @@
 package org.wildfly.swarm.runtime.weld;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 import org.wildfly.swarm.weld.WeldFraction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;

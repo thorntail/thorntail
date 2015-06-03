@@ -6,6 +6,7 @@ package org.wildfly.swarm.logging;
 public class Formatter {
 
     private final String name;
+
     private final String pattern;
 
     public Formatter(String name, String pattern) {

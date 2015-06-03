@@ -6,10 +6,13 @@ package org.wildfly.swarm.datasources;
 public class Datasource {
 
     private final String name;
+
     private String connectionUrl;
+
     private String driverName;
 
     private String userName;
+
     private String password;
 
     public Datasource(String name) {

@@ -11,6 +11,7 @@ import java.util.Set;
 public class ModuleNode {
 
     private final String name;
+
     private List<ModuleNode> children = new ArrayList<>();
 
     public ModuleNode(String name) {
@@ -33,10 +34,10 @@ public class ModuleNode {
     private void dump(String prefix, Set<String> seen, boolean selfIsLast) {
 
         StringBuffer buf = new StringBuffer();
-        boolean isRoot = this.name.equals( "" );
+        boolean isRoot = this.name.equals("");
 
-        if ( isRoot ) {
-            System.err.print( "application" );
+        if (isRoot) {
+            System.err.print("application");
         } else {
             String selfPrefix = "+-";
             if (selfIsLast) {
@@ -46,30 +47,30 @@ public class ModuleNode {
             System.err.print(prefix + selfPrefix + this.name);
         }
 
-        if ( seen.contains( this.name ) ) {
-            System.err.println( " [abridged]" );
+        if (seen.contains(this.name)) {
+            System.err.println(" [abridged]");
             return;
         } else {
-            System.err.println( "" );
+            System.err.println("");
         }
 
         String additionalPrefix;
 
-        if ( isRoot ) {
+        if (isRoot) {
             additionalPrefix = "";
         } else {
-            if ( selfIsLast ) {
+            if (selfIsLast) {
                 additionalPrefix = "  ";
             } else {
                 additionalPrefix = "| ";
             }
         }
 
-        seen.add( this.name );
+        seen.add(this.name);
         int numChildren = this.children.size();
-        for ( int i = 0 ; i < numChildren ; ++i ) {
+        for (int i = 0; i < numChildren; ++i) {
             boolean lastChild = (i + 1 == numChildren);
-            this.children.get(i).dump( prefix + additionalPrefix, seen, lastChild);
+            this.children.get(i).dump(prefix + additionalPrefix, seen, lastChild);
         }
     }
 

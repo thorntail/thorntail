@@ -20,75 +20,76 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-api</artifactId>
-        <version>1.0.0.Alpha2-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
-
+  <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-weld-jaxrs</artifactId>
+    <artifactId>wildfly-swarm-api</artifactId>
+    <version>1.0.0.Alpha2-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
 
-    <name>WildFly Swarm: Weld/JAX-RS API</name>
-    <description>WildFly Swarm: Weld/JAX-RS API</description>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-weld-jaxrs</artifactId>
 
-    <packaging>jar</packaging>
+  <name>WildFly Swarm: Weld/JAX-RS API</name>
+  <description>WildFly Swarm: Weld/JAX-RS API</description>
 
-    <build>
-        <resources>
-          <resource>
-            <directory>src/main/resources</directory>
-            <filtering>true</filtering>
-          </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-<!--
-                <configuration>
-                  <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
-                  <modules>
-                    <module>org.jboss.resteasy.resteasy-validator-provider-11</module>
-                  </modules>
-                </configuration>
--->
-            </plugin>
-        </plugins>
-    </build>
+  <packaging>jar</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>wildfly-swarm-weld</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>wildfly-swarm-jaxrs</artifactId>
-        </dependency>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+        <!--
+                        <configuration>
+                          <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
+                          <modules>
+                            <module>org.jboss.resteasy.resteasy-validator-provider-11</module>
+                          </modules>
+                        </configuration>
+        -->
+      </plugin>
+    </plugins>
+  </build>
 
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-container</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-weld</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-jaxrs</artifactId>
+    </dependency>
 
-        <dependency>
-          <groupId>org.wildfly</groupId>
-          <artifactId>wildfly-feature-pack</artifactId>
-          <type>zip</type>
-          <scope>provided</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>*</groupId>
-              <artifactId>*</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-container</artifactId>
+    </dependency>
 
-    </dependencies>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+  </dependencies>
 
 </project>

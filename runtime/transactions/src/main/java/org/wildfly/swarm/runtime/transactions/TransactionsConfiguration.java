@@ -1,13 +1,13 @@
 package org.wildfly.swarm.runtime.transactions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 import org.wildfly.swarm.transactions.TransactionsFraction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
@@ -44,22 +44,22 @@ public class TransactionsConfiguration extends AbstractServerConfiguration<Trans
         node = new ModelNode();
         node.get(OP_ADDR).set(address.toModelNode());
         node.get(OP).set(ADD);
-        node.get("socket-binding").set( "txn-recovery-environment");
-        node.get("status-socket-binding").set( "txn-status-manager");
-        node.get("process-id-uuid").set( true );
+        node.get("socket-binding").set("txn-recovery-environment");
+        node.get("status-socket-binding").set("txn-status-manager");
+        node.get("process-id-uuid").set(true);
         list.add(node);
 
         node = new ModelNode();
-        node.get(OP_ADDR).set( PathAddress.pathAddress( PathElement.pathElement("socket-binding-group", "default-sockets" ) ).append( "socket-binding", "txn-recovery-environment" ).toModelNode() );
-        node.get( OP ).set( ADD );
-        node.get( PORT ).set( fraction.getPort() );
-        list.add( node );
+        node.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement("socket-binding-group", "default-sockets")).append("socket-binding", "txn-recovery-environment").toModelNode());
+        node.get(OP).set(ADD);
+        node.get(PORT).set(fraction.getPort());
+        list.add(node);
 
         node = new ModelNode();
-        node.get(OP_ADDR).set( PathAddress.pathAddress( PathElement.pathElement("socket-binding-group", "default-sockets" ) ).append( "socket-binding", "txn-status-manager" ).toModelNode() );
-        node.get( OP ).set( ADD );
-        node.get( PORT ).set( fraction.getStatusPort() );
-        list.add( node );
+        node.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement("socket-binding-group", "default-sockets")).append("socket-binding", "txn-status-manager").toModelNode());
+        node.get(OP).set(ADD);
+        node.get(PORT).set(fraction.getStatusPort());
+        list.add(node);
 
 
         return list;

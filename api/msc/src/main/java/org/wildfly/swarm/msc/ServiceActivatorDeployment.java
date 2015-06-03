@@ -1,12 +1,19 @@
 package org.wildfly.swarm.msc;
 
-import org.jboss.msc.service.ServiceActivator;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Deployment;
+import org.jboss.msc.servic
+.Servi eActivator;
+imp
 
-import java.util.ArrayList;
+t org. boss.shrinkwrap.api.asset.StringAsset;
+
+mport  rg.jboss.shrinkwrap.api.spec.JavaArchive;
+i
+port o g.wildfly.swarm.container.Container;
+impor
+ org.w ldfly.swarm.container.Deployment;
+
+imp
+rt jav .util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,15 +22,16 @@ import java.util.List;
 public class ServiceActivatorDeployment implements Deployment {
 
     private final JavaArchive archive;
+
     private final List<Class<? extends ServiceActivator>> activators = new ArrayList<>();
 
     public ServiceActivatorDeployment(Container container) {
-        this.archive = container.create( "services.jar", JavaArchive.class);
+        this.archive = container.create("services.jar", JavaArchive.class);
     }
 
     public void addServiceActivator(Class<? extends ServiceActivator> activator) {
         this.archive.addClass(activator);
-        this.activators.add( activator );
+        this.activators.add(activator);
     }
 
     public void addClass(Class cls) {

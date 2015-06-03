@@ -1,8 +1,11 @@
 package org.wildfly.swarm.messaging;
 
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.co
+tainer Fraction;
 
-import java.util.ArrayList;
+impo
+
+ java. til.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +20,7 @@ public class MessagingFraction implements Fraction {
     }
 
     public MessagingFraction server(MessagingServer server) {
-        this.servers.add( server );
+        this.servers.add(server);
         return this;
     }
 

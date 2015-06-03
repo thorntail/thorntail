@@ -23,21 +23,21 @@
   -->
 
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.logging">
-<!--
-    <resources>
-        <artifact name="org.wildfly.swarm:wildfly-swarm-logging:${project.version}"/>
-    </resources>
--->
+  <!--
+      <resources>
+          <artifact name="org.wildfly.swarm:wildfly-swarm-logging:${project.version}"/>
+      </resources>
+  -->
 
-    <dependencies>
-      <system export="true">
-        <paths>
-          <path name="org/wildfly/swarm/logging"/>
-        </paths>
-      </system>
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/logging"/>
+      </paths>
+    </system>
 
-      <module name="org.wildfly.swarm.container"/>
-      <module name="org.wildfly.swarm.runtime.logging"/>
+    <module name="org.wildfly.swarm.container"/>
+    <module name="org.wildfly.swarm.runtime.logging"/>
 
-    </dependencies>
+  </dependencies>
 </module>

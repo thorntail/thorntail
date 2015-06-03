@@ -20,10 +20,44 @@ import java.util.jar.JarFile;
 public class Environment {
 
     /**
+     * Retrieves the file system to use for the environment.
+     *
+     * <p>
+     * If running in an archive a zip file system is returned. Otherwise the {@linkplain FileSystems#getDefault()
+     * default} is returned.
+     * </p>
+     *
+     * @return the file system to use for the environment
+     */
+    public static FileSystem getFileSystem() {
+        return Holder.FILE_SYSTEM;
+    }
+
+    /**
+     * Creates a new resource loader for the environment.
+     *
+     * <p>
+     * In an archive a {@link JarFileResourceLoader} is returned. Otherwise a file system based loader is returned.
+     * </p>
+     *
+     * @param rootPath   the root path to the module
+     * @param loaderPath the path to the module
+     * @param loaderName the module name
+     * @return a resource loader for the environment
+     */
+    public static ResourceLoader getModuleResourceLoader(final String rootPath, final String loaderPath, final String loaderName) {
+        if (Holder.JAR_FILE != null) {
+            return new JarFileResourceLoader(loaderName, Holder.JAR_FILE, Holder.FILE_SYSTEM.getPath(rootPath, loaderPath).toString());
+        }
+        return ResourceLoaders.createFileResourceLoader(loaderPath, new File(rootPath));
+    }
+
+    /**
      * Lazy holder
      */
     private static final class Holder {
         static final FileSystem FILE_SYSTEM;
+
         static final JarFile JAR_FILE;
 
         static {
@@ -67,39 +101,5 @@ public class Environment {
                 FILE_SYSTEM = FileSystems.getDefault();
             }
         }
-    }
-
-    /**
-     * Retrieves the file system to use for the environment.
-     *
-     * <p>
-     * If running in an archive a zip file system is returned. Otherwise the {@linkplain FileSystems#getDefault()
-     * default} is returned.
-     * </p>
-     *
-     * @return the file system to use for the environment
-     */
-    public static FileSystem getFileSystem() {
-        return Holder.FILE_SYSTEM;
-    }
-
-    /**
-     * Creates a new resource loader for the environment.
-     *
-     * <p>
-     * In an archive a {@link JarFileResourceLoader} is returned. Otherwise a file system based loader is returned.
-     * </p>
-     *
-     * @param rootPath   the root path to the module
-     * @param loaderPath the path to the module
-     * @param loaderName the module name
-     *
-     * @return a resource loader for the environment
-     */
-    public static ResourceLoader getModuleResourceLoader(final String rootPath, final String loaderPath, final String loaderName) {
-        if (Holder.JAR_FILE != null) {
-            return new JarFileResourceLoader(loaderName, Holder.JAR_FILE, Holder.FILE_SYSTEM.getPath(rootPath, loaderPath).toString());
-        }
-        return ResourceLoaders.createFileResourceLoader(loaderPath, new File(rootPath));
     }
 }

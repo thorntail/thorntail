@@ -1,11 +1,11 @@
 package org.wildfly.swarm.runtime.msc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.msc.MSCFraction;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Bob McWhirter

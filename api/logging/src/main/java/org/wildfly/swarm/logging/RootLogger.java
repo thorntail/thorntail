@@ -5,6 +5,7 @@ package org.wildfly.swarm.logging;
  */
 public class RootLogger {
     private final String handler;
+
     private final String level;
 
     public RootLogger(String handler, String level) {

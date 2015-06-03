@@ -6,9 +6,13 @@ package org.wildfly.swarm.datasources;
 public class Driver {
 
     private final String name;
+
     private String moduleName;
+
     private String moduleSlot;
+
     private String datasourceClassName;
+
     private String xaDatasourceClassName;
 
     public Driver(String name) {

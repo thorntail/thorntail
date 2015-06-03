@@ -1,6 +1,5 @@
 package org.wildfly.swarm;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.wildfly.swarm.container.Container;
 
 /**

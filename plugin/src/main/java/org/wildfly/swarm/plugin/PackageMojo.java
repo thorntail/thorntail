@@ -1,28 +1,5 @@
 package org.wildfly.swarm.plugin;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.handler.ArtifactHandler;
-import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.model.Resource;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
-
-import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,6 +32,30 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
+import javax.inject.Inject;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.impl.ArtifactResolver;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
+
 /**
  * @author Bob McWhirter
  * @author Ken Finnigan
@@ -67,8 +68,19 @@ import java.util.zip.ZipEntry;
 )
 public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
+    private static final Pattern ARTIFACT_PATTERN = Pattern.compile("<artifact name=\"([^\"]+)\".*");
+
     @Component
     protected MavenProject project;
+
+    @Parameter(defaultValue = "${project.build.directory}")
+    protected String projectBuildDir;
+
+    @Parameter(defaultValue = "${repositorySystemSession}")
+    protected DefaultRepositorySystemSession repositorySystemSession;
+
+    @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
+    protected List<ArtifactRepository> remoteRepositories;
 
     @Parameter(alias = "modules")
     private String[] additionalModules;
@@ -81,15 +93,6 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
     @Inject
     private ArtifactResolver resolver;
-
-    @Parameter(defaultValue = "${project.build.directory}")
-    protected String projectBuildDir;
-
-    @Parameter(defaultValue = "${repositorySystemSession}")
-    protected DefaultRepositorySystemSession repositorySystemSession;
-
-    @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
-    protected List<ArtifactRepository> remoteRepositories;
 
     private Path dir;
 
@@ -161,13 +164,12 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
             return true;
         }
 
-        if ( artifact.getGroupId().equals( "org.jboss.msc" ) && artifact.getArtifactId().equals( "jboss-msc" ) ) {
+        if (artifact.getGroupId().equals("org.jboss.msc") && artifact.getArtifactId().equals("jboss-msc")) {
             return false;
         }
 
         return !artifact.getScope().equals("provided");
     }
-
 
     private void createManifest() throws MojoFailureException {
         Manifest manifest = new Manifest();
@@ -323,8 +325,6 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
             }
         }
     }
-
-    private static final Pattern ARTIFACT_PATTERN = Pattern.compile("<artifact name=\"([^\"]+)\".*");
 
     protected void analyzeModuleDependencies(InputStream moduleXml) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(moduleXml));

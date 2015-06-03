@@ -1,5 +1,10 @@
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleIdentifier;
@@ -8,11 +13,6 @@ import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ModuleXmlParserBridge;
 import org.jboss.modules.ResourceLoaderSpec;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * @author Bob McWhirter
@@ -29,7 +29,7 @@ public class AppDependenciesModuleFinder implements ModuleFinder {
         InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-dependencies.txt");
 
         if (depsTxt != null) {
-            try ( BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt)) ) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt))) {
 
                 String line = null;
 
@@ -43,10 +43,10 @@ public class AppDependenciesModuleFinder implements ModuleFinder {
                         String artifactId = parts[1];
                         String version = parts[2];
                         String classifier = "";
-                        if ( parts.length > 3 ) {
+                        if (parts.length > 3) {
                             classifier = parts[3];
                         }
-                        builder.addProperty( "version." + groupId + ":" + artifactId + "::" + classifier, version );
+                        builder.addProperty("version." + groupId + ":" + artifactId + "::" + classifier, version);
                     }
                 }
                 depsTxt.close();

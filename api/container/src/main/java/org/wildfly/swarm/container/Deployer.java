@@ -1,6 +1,8 @@
 package org.wildfly.swarm.container;
 
-import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap
+
+pi.Arc ive;
 
 import java.io.IOException;
 

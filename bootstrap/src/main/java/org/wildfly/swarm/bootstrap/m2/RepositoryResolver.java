@@ -2,10 +2,8 @@ package org.wildfly.swarm.bootstrap.m2;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * @author Bob McWhirter
@@ -13,11 +11,11 @@ import java.util.List;
  */
 public abstract class RepositoryResolver {
 
-    public abstract File resolve(String gav) throws IOException;
+    protected static final String SEPARATOR = "/";
 
     private static final String JANDEX_SUFFIX = "?jandex";
 
-    protected static final String SEPARATOR = "/";
+    public abstract File resolve(String gav) throws IOException;
 
     protected Path gavToPath(String gav) {
         String[] parts = gav.split(":");
@@ -36,18 +34,18 @@ public abstract class RepositoryResolver {
         StringBuilder path = new StringBuilder();
 
 
-        path.append( group.replaceAll( "\\.", SEPARATOR ) );
-        path.append( SEPARATOR );
-        path.append( artifact );
-        path.append( SEPARATOR );
-        path.append( version );
-        path.append( SEPARATOR );
-        path.append( artifact );
-        path.append( "-" );
-        path.append( version );
+        path.append(group.replaceAll("\\.", SEPARATOR));
+        path.append(SEPARATOR);
+        path.append(artifact);
+        path.append(SEPARATOR);
+        path.append(version);
+        path.append(SEPARATOR);
+        path.append(artifact);
+        path.append("-");
+        path.append(version);
 
-        if ( classifier != null && ! classifier.equals( "" ) ) {
-            path.append( "-" ).append( classifier );
+        if (classifier != null && !classifier.equals("")) {
+            path.append("-").append(classifier);
         }
 
         path.append(".jar");

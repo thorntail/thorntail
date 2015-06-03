@@ -1,9 +1,5 @@
 package org.wildfly.swarm.bootstrap.util;
 
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -16,6 +12,10 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
+
 /**
  * @author Bob McWhirter
  */
@@ -26,15 +26,15 @@ public class Layout {
     public static boolean isFatJar() throws IOException {
         Path root = getRoot();
 
-        if ( Files.isRegularFile( root ) ) {
-            try ( JarFile jar = new JarFile( root.toFile() ) ) {
+        if (Files.isRegularFile(root)) {
+            try (JarFile jar = new JarFile(root.toFile())) {
                 ZipEntry propsEntry = jar.getEntry("META-INF/wildfly-swarm.properties");
-                if ( propsEntry != null ) {
-                    try ( InputStream in = jar.getInputStream( propsEntry ) ) {
+                if (propsEntry != null) {
+                    try (InputStream in = jar.getInputStream(propsEntry)) {
                         Properties props = new Properties();
                         props.load(in);
-                        if ( props.containsKey( "wildfly.swarm.app.artifact" ) ) {
-                            System.setProperty( "wildfly.swarm.app.artifact", props.getProperty( "wildfly.swarm.app.artifact" ) );
+                        if (props.containsKey("wildfly.swarm.app.artifact")) {
+                            System.setProperty("wildfly.swarm.app.artifact", props.getProperty("wildfly.swarm.app.artifact"));
                         }
                     }
                     return true;
@@ -47,7 +47,7 @@ public class Layout {
 
     public static Path getRoot() throws IOException {
         URL location = Layout.class.getProtectionDomain().getCodeSource().getLocation();
-        if ( location.getProtocol().equals( "file" ) ) {
+        if (location.getProtocol().equals("file")) {
             try {
                 return Paths.get(location.toURI());
             } catch (URISyntaxException e) {
@@ -55,15 +55,15 @@ public class Layout {
             }
         }
 
-        throw new IOException("Unable to determine root" );
+        throw new IOException("Unable to determine root");
     }
 
     public static Manifest getManifest() throws IOException {
         Path root = getRoot();
-        if ( isFatJar() ) {
-            try ( JarFile jar = new JarFile( root.toFile()) ) {
+        if (isFatJar()) {
+            try (JarFile jar = new JarFile(root.toFile())) {
                 ZipEntry entry = jar.getEntry("META-INF/MANIFEST.MF");
-                if ( entry != null ) {
+                if (entry != null) {
                     InputStream in = jar.getInputStream(entry);
                     return new Manifest(in);
                 }
@@ -74,7 +74,7 @@ public class Layout {
     }
 
     public synchronized static ClassLoader getBootstrapClassLoader() throws ModuleLoadException {
-        if ( BOOTSTRAP_CLASSLOADER == null ) {
+        if (BOOTSTRAP_CLASSLOADER == null) {
             try {
                 BOOTSTRAP_CLASSLOADER = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap")).getClassLoader();
             } catch (ModuleLoadException e) {

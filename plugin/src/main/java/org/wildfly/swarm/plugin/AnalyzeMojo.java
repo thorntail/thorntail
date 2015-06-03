@@ -33,6 +33,7 @@ public class AnalyzeMojo extends AbstractSwarmMojo {
     private ArtifactResolver resolver;
 
     private ModuleNode root = new ModuleNode("");
+
     private Map<String, ModuleNode> modules = new HashMap<>();
 
     @Override

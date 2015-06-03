@@ -1,5 +1,8 @@
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.jboss.modules.Environment;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleIdentifier;
@@ -9,9 +12,6 @@ import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ModuleXmlParserBridge;
 import org.jboss.modules.ResourceLoader;
 import org.wildfly.swarm.bootstrap.util.Layout;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @author Bob McWhirter

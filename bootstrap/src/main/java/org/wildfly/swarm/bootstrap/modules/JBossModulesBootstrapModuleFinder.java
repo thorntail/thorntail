@@ -1,14 +1,14 @@
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Bob McWhirter

@@ -24,41 +24,42 @@ public class XmlWriter implements AutoCloseable {
 
     public class Element {
         private String name;
+
         private boolean hasContent = false;
 
         Element(String name) throws IOException {
             this.name = name;
-            out.write( "<" + name );
+            out.write("<" + name);
         }
 
         public Element attr(String name, String value) throws IOException {
-            out.write( " " + name + "=\"" + value + "\"" );
+            out.write(" " + name + "=\"" + value + "\"");
             return this;
         }
 
         public Element element(String name) throws IOException {
-            if ( ! this.hasContent ) {
+            if (!this.hasContent) {
                 this.hasContent = true;
-                out.write( ">" );
+                out.write(">");
             }
             return new Element(name);
         }
 
         public Element content(String content) throws IOException {
-            if ( ! this.hasContent ) {
+            if (!this.hasContent) {
                 this.hasContent = true;
-                out.write( ">" );
+                out.write(">");
             }
 
-            out.write( content );
+            out.write(content);
             return this;
         }
 
         public void end() throws IOException {
-            if ( hasContent ) {
-                out.write( "</" + name  + ">" );
+            if (hasContent) {
+                out.write("</" + name + ">");
             } else {
-                out.write( "/>" );
+                out.write("/>");
             }
         }
     }

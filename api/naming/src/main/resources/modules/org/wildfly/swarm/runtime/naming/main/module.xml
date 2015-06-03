@@ -1,13 +1,13 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.runtime.naming">
-    <resources>
-        <artifact name="org.wildfly.swarm:wildfly-swarm-runtime-naming:${project.version}"/>
-    </resources>
+  <resources>
+    <artifact name="org.wildfly.swarm:wildfly-swarm-runtime-naming:${project.version}"/>
+  </resources>
 
-    <dependencies>
-      <module name="org.wildfly.swarm.naming"/>
-      <module name="org.wildfly.swarm.container"/>
-      <module name="org.wildfly.swarm.runtime.container"/>
+  <dependencies>
+    <module name="org.wildfly.swarm.naming"/>
+    <module name="org.wildfly.swarm.container"/>
+    <module name="org.wildfly.swarm.runtime.container"/>
 
-      <module name="org.jboss.as.naming"/>
-    </dependencies>
+    <module name="org.jboss.as.naming"/>
+  </dependencies>
 </module>

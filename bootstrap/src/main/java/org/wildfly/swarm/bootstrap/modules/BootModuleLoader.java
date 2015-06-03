@@ -1,9 +1,9 @@
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.io.IOException;
+
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoader;
-
-import java.io.IOException;
 
 /**
  * @author Bob McWhirter
@@ -11,12 +11,12 @@ import java.io.IOException;
 public class BootModuleLoader extends ModuleLoader {
 
     public BootModuleLoader() throws IOException {
-        super( new ModuleFinder[] {
+        super(new ModuleFinder[]{
                 new JBossModulesBootstrapModuleFinder(),
                 new JBossMSCBootstrapModuleFinder(),
                 new BootstrapModuleFinder(),
                 new ClasspathModuleFinder(),
                 new AppDependenciesModuleFinder(),
-        } );
+        });
     }
 }

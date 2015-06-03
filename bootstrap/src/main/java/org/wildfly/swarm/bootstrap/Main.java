@@ -1,10 +1,5 @@
 package org.wildfly.swarm.bootstrap;
 
-import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.wildfly.swarm.bootstrap.util.Layout;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -12,6 +7,11 @@ import java.lang.reflect.Modifier;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
+import org.wildfly.swarm.bootstrap.util.Layout;
 
 /**
  * @author Bob McWhirter
@@ -44,7 +44,7 @@ public class Main {
             mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Wildfly-Swarm-Main-Class"));
         }
 
-        if ( mainClassName == null ) {
+        if (mainClassName == null) {
             mainClassName = "org.wildfly.swarm.Swarm";
         }
 

@@ -8,16 +8,12 @@ import java.io.InputStream;
  */
 public class ModuleXmlParserBridge {
 
-    public interface ResourceRootFactoryBridge extends ModuleXmlParser.ResourceRootFactory {
-
-    }
-
     public static ModuleSpec parseModuleXml(final ResourceRootFactoryBridge factory,
-                                     final String rootPath,
-                                     InputStream source,
-                                     final String moduleInfoFile,
-                                     final ModuleLoader moduleLoader,
-                                     final ModuleIdentifier moduleIdentifier) throws ModuleLoadException, IOException {
+                                            final String rootPath,
+                                            InputStream source,
+                                            final String moduleInfoFile,
+                                            final ModuleLoader moduleLoader,
+                                            final ModuleIdentifier moduleIdentifier) throws ModuleLoadException, IOException {
         return ModuleXmlParser.parseModuleXml(
                 factory,
                 rootPath,
@@ -30,5 +26,9 @@ public class ModuleXmlParserBridge {
 
     public static ResourceLoader createMavenArtifactLoader(final String name) throws IOException {
         return ModuleXmlParser.createMavenArtifactLoader(name);
+    }
+
+    public interface ResourceRootFactoryBridge extends ModuleXmlParser.ResourceRootFactory {
+
     }
 }

@@ -6,6 +6,7 @@ package org.wildfly.swarm.logging;
 public class ConsoleHandler {
 
     private final String level;
+
     private final String formatter;
 
     public ConsoleHandler(String level, String formatter) {

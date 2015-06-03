@@ -1,9 +1,14 @@
 package org.wildfly.swarm.container;
 
-import org.jboss.modules.ModuleLoadException;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.mod
+les.Mo uleLoadException;
+im
+
+rt org jboss.shrinkwrap.api.asset.FileAsset;
+
+mport  rg.jboss.shrinkwrap.api.asset.StringAsset
+
+impor  org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,11 +49,11 @@ public class WarDeployment implements Deployment {
     }
 
     protected void ensureJBossDeploymentStructureXml() {
-        if ( this.archive.contains( "WEB-INF/jboss-deployment-structure.xml" ) ) {
+        if (this.archive.contains("WEB-INF/jboss-deployment-structure.xml")) {
             return;
         }
 
-        this.archive.add( new StringAsset(JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS), "WEB-INF/jboss-deployment-structure.xml" );
+        this.archive.add(new StringAsset(JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS), "WEB-INF/jboss-deployment-structure.xml");
     }
 
     protected void addJavaClassPathToWebInfLib() {

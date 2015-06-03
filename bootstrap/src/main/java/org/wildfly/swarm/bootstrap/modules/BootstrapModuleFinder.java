@@ -1,5 +1,11 @@
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleIdentifier;
@@ -10,12 +16,6 @@ import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
 import org.wildfly.swarm.bootstrap.util.Extractor;
 import org.wildfly.swarm.bootstrap.util.Layout;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
  * Module-finder used only for loading the first set of jars when run in an fat-jar scenario.

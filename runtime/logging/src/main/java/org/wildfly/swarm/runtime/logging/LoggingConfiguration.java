@@ -1,5 +1,8 @@
 package org.wildfly.swarm.runtime.logging;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
@@ -14,9 +17,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXT
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Bob McWhirter
@@ -41,7 +41,7 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
 
     @Override
     public List<ModelNode> getList(LoggingFraction fraction) {
-        if ( fraction == null ) {
+        if (fraction == null) {
             fraction = defaultFraction();
         }
 
@@ -61,51 +61,51 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         subsys.get(OP).set(ADD);
         list.add(subsys);
 
-        addFormatters( fraction, list );
-        addConsoleHandler( fraction, list );
-        addRootLogger(fraction, list );
+        addFormatters(fraction, list);
+        addConsoleHandler(fraction, list);
+        addRootLogger(fraction, list);
 
         return list;
     }
 
     private void addFormatters(LoggingFraction fraction, List<ModelNode> list) {
-        for ( Formatter each : fraction.formatters() ) {
-            addFormatter( each, list );
+        for (Formatter each : fraction.formatters()) {
+            addFormatter(each, list);
         }
     }
 
     private void addFormatter(Formatter formatter, List<ModelNode> list) {
         ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(loggingAddress.append("pattern-formatter", formatter.getName() ).toModelNode());
+        node.get(OP_ADDR).set(loggingAddress.append("pattern-formatter", formatter.getName()).toModelNode());
         node.get(OP).set(ADD);
         node.get("pattern").set(formatter.getPattern());
-        list.add( node );
+        list.add(node);
     }
 
     private void addConsoleHandler(LoggingFraction fraction, List<ModelNode> list) {
         ConsoleHandler handler = fraction.consoleHandler();
-        if ( handler == null ) {
+        if (handler == null) {
             return;
         }
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(loggingAddress.append("console-handler", "CONSOLE").toModelNode());
         node.get(OP).set(ADD);
-        node.get("level").set( handler.getLevel() );
-        node.get("named-formatter").set( handler.getFormatter() );
+        node.get("level").set(handler.getLevel());
+        node.get("named-formatter").set(handler.getFormatter());
         list.add(node);
     }
 
     private void addRootLogger(LoggingFraction fraction, List<ModelNode> list) {
         RootLogger logger = fraction.rootLogger();
-        if ( logger == null ) {
+        if (logger == null) {
             return;
         }
         ModelNode node = new ModelNode();
-        node.get( OP_ADDR ).set( loggingAddress.append( "root-logger", "ROOT" ).toModelNode() );
-        node.get( OP ).set(ADD );
-        node.get( "handlers" ).add( logger.getHandler() );
-        node.get( "level" ).set( logger.getLevel() );
-        list.add( node );
+        node.get(OP_ADDR).set(loggingAddress.append("root-logger", "ROOT").toModelNode());
+        node.get(OP).set(ADD);
+        node.get("handlers").add(logger.getHandler());
+        node.get("level").set(logger.getLevel());
+        list.add(node);
     }
 
 }

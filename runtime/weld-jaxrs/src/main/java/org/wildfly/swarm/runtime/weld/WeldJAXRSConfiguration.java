@@ -1,11 +1,11 @@
 package org.wildfly.swarm.runtime.weld;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 import org.wildfly.swarm.weld.WeldJAXRSFraction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Bob McWhirter

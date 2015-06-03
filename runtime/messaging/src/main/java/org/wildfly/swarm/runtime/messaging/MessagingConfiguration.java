@@ -1,14 +1,14 @@
 package org.wildfly.swarm.runtime.messaging;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.messaging.MessagingFraction;
 import org.wildfly.swarm.messaging.MessagingServer;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
@@ -46,7 +46,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
         node.get(OP).set(ADD);
         list.add(node);
 
-        addServers( fraction, list );
+        addServers(fraction, list);
 
         return list;
     }
@@ -54,8 +54,8 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     protected void addServers(MessagingFraction fraction, List<ModelNode> list) {
         List<MessagingServer> servers = fraction.servers();
 
-        for ( MessagingServer each : servers ) {
-            addServer( each, list );
+        for (MessagingServer each : servers) {
+            addServer(each, list);
         }
     }
 
@@ -69,7 +69,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
         node.get("journal-file-size").set(102400L);
         list.add(node);
 
-        if ( server.inVMConnectorJNDIName() != null ) {
+        if (server.inVMConnectorJNDIName() != null) {
             node = new ModelNode();
             node.get(OP_ADDR).set(serverAddress.append("in-vm-connector", "in-vm").toModelNode());
             node.get(OP).set(ADD);
@@ -97,24 +97,24 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     protected void addTopics(MessagingServer server, List<ModelNode> list) {
         PathAddress serverAddress = this.address.append("hornetq-server", server.name());
 
-        for ( String each : server.topics() ) {
+        for (String each : server.topics()) {
             ModelNode node = new ModelNode();
             node.get(OP_ADDR).set(serverAddress.append("jms-topic", each).toModelNode());
             node.get(OP).set(ADD);
-            node.get( "entries" ).setEmptyList().add("java:/jms/topic/" + each);
-            list.add( node );
+            node.get("entries").setEmptyList().add("java:/jms/topic/" + each);
+            list.add(node);
         }
     }
 
     protected void addQueues(MessagingServer server, List<ModelNode> list) {
         PathAddress serverAddress = this.address.append("hornetq-server", server.name());
 
-        for ( String each : server.topics() ) {
+        for (String each : server.topics()) {
             ModelNode node = new ModelNode();
             node.get(OP_ADDR).set(serverAddress.append("jms-queue", each).toModelNode());
             node.get(OP).set(ADD);
-            node.get( "entries" ).setEmptyList().add("java:/jms/queue/" + each);
-            list.add( node );
+            node.get("entries").setEmptyList().add("java:/jms/queue/" + each);
+            list.add(node);
         }
     }
 }

@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import javax.inject.Inject;
 
 import org.apache.maven.artifact.Artifact;
@@ -81,17 +82,17 @@ public class CreateMojo extends AbstractSwarmMojo {
                     "+(\"/>)"
     );
 
+    /**
+     * Keyed on {@code groupId:artifactId}
+     */
+    private final Map<String, String> featurePackDepVersions = new HashMap<>();
+
     @Inject
     private ArtifactResolver resolver;
 
     private Map<String, List<String>> modules = new HashMap<>();
 
     private List<String> fractionModules = new ArrayList<>();
-
-    /**
-     * Keyed on {@code groupId:artifactId}
-     */
-    private final Map<String, String> featurePackDepVersions = new HashMap<>();
 
     @Parameter(alias = "modules")
     private String[] additionalModules;
@@ -147,7 +148,7 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addMavenRepository() throws MojoFailureException {
-        if ( ! this.bundleDependencies ) {
+        if (!this.bundleDependencies) {
             return;
         }
         Path modulesDir = this.dir.resolve("modules");
@@ -418,7 +419,7 @@ public class CreateMojo extends AbstractSwarmMojo {
     }
 
     private void addProjectDependenciesToRepository() throws MojoFailureException {
-        if ( ! this.bundleDependencies ) {
+        if (!this.bundleDependencies) {
             return;
         }
 
@@ -591,6 +592,10 @@ public class CreateMojo extends AbstractSwarmMojo {
         return version;
     }
 
+    private String normalizeZipEntryName(ZipEntry entry) {
+        return entry.getName().replace(File.separatorChar, '/');
+    }
+
     final class FractionExpander implements ExceptionConsumer<org.eclipse.aether.artifact.Artifact> {
         @Override
         public void accept(org.eclipse.aether.artifact.Artifact artifact) throws Exception {
@@ -622,10 +627,6 @@ public class CreateMojo extends AbstractSwarmMojo {
                 }
             }
         }
-    }
-
-    private String normalizeZipEntryName(ZipEntry entry) {
-        return entry.getName().replace(File.separatorChar, '/');
     }
 
 }

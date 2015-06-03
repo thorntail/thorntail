@@ -14,19 +14,19 @@ public class ArtifactUtils {
         path.append("/");
         path.append(artifact.getArtifactId());
         path.append("/");
-        path.append( artifact.getVersion() );
+        path.append(artifact.getVersion());
         path.append("/");
         path.append(artifact.getArtifactId());
         path.append("-");
         path.append(artifact.getVersion());
 
         if (artifact.getClassifier() != null && !artifact.getClassifier().equals("")) {
-            path.append( "-" );
-            path.append( artifact.getClassifier());
+            path.append("-");
+            path.append(artifact.getClassifier());
         }
 
-        path.append( "." );
-        path.append( artifact.getType() );
+        path.append(".");
+        path.append(artifact.getType());
 
         return path.toString();
     }

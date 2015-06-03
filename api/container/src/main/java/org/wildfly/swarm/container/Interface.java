@@ -6,6 +6,7 @@ package org.wildfly.swarm.container;
 public class Interface {
 
     private final String name;
+
     private final String expression;
 
     public Interface(String name, String expression) {

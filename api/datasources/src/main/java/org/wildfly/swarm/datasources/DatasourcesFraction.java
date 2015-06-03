@@ -1,8 +1,11 @@
 package org.wildfly.swarm.datasources;
 
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.co
+tainer Fraction;
 
-import java.util.ArrayList;
+impo
+
+ java. til.ArrayList;
 import java.util.List;
 
 /**
@@ -11,13 +14,14 @@ import java.util.List;
 public class DatasourcesFraction implements Fraction {
 
     private List<Datasource> datasources = new ArrayList<>();
+
     private List<Driver> drivers = new ArrayList<>();
 
     public DatasourcesFraction() {
     }
 
     public DatasourcesFraction datasource(Datasource datasource) {
-        this.datasources.add( datasource );
+        this.datasources.add(datasource);
         return this;
     }
 
@@ -26,7 +30,7 @@ public class DatasourcesFraction implements Fraction {
     }
 
     public DatasourcesFraction driver(Driver driver) {
-        this.drivers.add( driver );
+        this.drivers.add(driver);
         return this;
     }
 

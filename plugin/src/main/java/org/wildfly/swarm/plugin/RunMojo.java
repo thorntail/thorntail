@@ -1,7 +1,18 @@
 package org.wildfly.swarm.plugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -12,22 +23,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-
-import javax.print.DocFlavor;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Bob McWhirter
@@ -45,14 +40,14 @@ public class RunMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}")
     protected String projectBuildDir;
 
-    @Parameter(alias="mainClass")
+    @Parameter(alias = "mainClass")
     protected String mainClass;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if ( this.project.getPackaging().equals( "war" ) ) {
+        if (this.project.getPackaging().equals("war")) {
             executeWar();
-        } else if ( this.project.getPackaging().equals("jar" ) ) {
+        } else if (this.project.getPackaging().equals("jar")) {
             executeJar();
         }
     }
@@ -62,13 +57,13 @@ public class RunMojo extends AbstractMojo {
 
         try {
             List<String> cli = new ArrayList<>();
-            cli.add( java.toString() );
-            cli.add( "-classpath" );
-            cli.add( dependencies(false) );
-            cli.add( "-Dwildfly.swarm.app.path=" + Paths.get( this.projectBuildDir, this.project.getBuild().getFinalName() ).toString() );
-            cli.add( "org.wildfly.swarm.Swarm" );
+            cli.add(java.toString());
+            cli.add("-classpath");
+            cli.add(dependencies(false));
+            cli.add("-Dwildfly.swarm.app.path=" + Paths.get(this.projectBuildDir, this.project.getBuild().getFinalName()).toString());
+            cli.add("org.wildfly.swarm.Swarm");
 
-            Process process = Runtime.getRuntime().exec(cli.toArray(new String[ cli.size() ] ));
+            Process process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]));
 
             new Thread(new IOBridge(process.getInputStream(), System.out)).start();
             new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
@@ -87,16 +82,16 @@ public class RunMojo extends AbstractMojo {
 
         try {
             List<String> cli = new ArrayList<>();
-            cli.add( java.toString() );
-            cli.add( "-classpath" );
-            cli.add( dependencies(true) );
-            if ( this.mainClass != null ) {
-                cli.add( this.mainClass );
+            cli.add(java.toString());
+            cli.add("-classpath");
+            cli.add(dependencies(true));
+            if (this.mainClass != null) {
+                cli.add(this.mainClass);
             } else {
                 cli.add("org.wildfly.swarm.Swarm");
             }
 
-            Process process = Runtime.getRuntime().exec(cli.toArray(new String[ cli.size() ] ));
+            Process process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]));
 
             new Thread(new IOBridge(process.getInputStream(), System.out)).start();
             new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
@@ -113,22 +108,22 @@ public class RunMojo extends AbstractMojo {
     String dependencies(boolean includeProjectArtifact) {
         List<String> elements = new ArrayList<>();
         Set<Artifact> artifacts = this.project.getArtifacts();
-        for (Artifact each : artifacts ) {
-            elements.add( each.getFile().toString() );
+        for (Artifact each : artifacts) {
+            elements.add(each.getFile().toString());
         }
 
-        if ( includeProjectArtifact ) {
-            elements.add( this.project.getBuild().getOutputDirectory() );
+        if (includeProjectArtifact) {
+            elements.add(this.project.getBuild().getOutputDirectory());
         }
 
         StringBuilder cp = new StringBuilder();
 
         Iterator<String> iter = elements.iterator();
 
-        while ( iter.hasNext() ) {
+        while (iter.hasNext()) {
             String element = iter.next();
-            cp.append( element );
-            if ( iter.hasNext() ) {
+            cp.append(element);
+            if (iter.hasNext()) {
                 cp.append(File.pathSeparatorChar);
             }
         }
@@ -140,8 +135,8 @@ public class RunMojo extends AbstractMojo {
 
         Set<Artifact> artifacts = this.project.getArtifacts();
 
-        for ( Artifact each : artifacts ) {
-            if ( each.getGroupId().equals( "org.wildfly.swarm" ) && each.getArtifactId().equals( "wildfly-swarm-bootstrap" ) && each.getType().equals( "jar" ) ) {
+        for (Artifact each : artifacts) {
+            if (each.getGroupId().equals("org.wildfly.swarm") && each.getArtifactId().equals("wildfly-swarm-bootstrap") && each.getType().equals("jar")) {
                 return each.getFile().toPath();
             }
         }
@@ -174,6 +169,7 @@ public class RunMojo extends AbstractMojo {
     private static class IOBridge implements Runnable {
 
         private final InputStream in;
+
         private final OutputStream out;
 
         public IOBridge(InputStream in, OutputStream out) {

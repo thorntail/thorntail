@@ -1,13 +1,13 @@
 package org.wildfly.swarm.runtime.jca;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.jca.JCAFraction;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
@@ -56,7 +56,7 @@ public class JCAConfiguration extends AbstractServerConfiguration<JCAFraction> {
         node = new ModelNode();
         node.get(OP_ADDR).set(address.append("workmanager", "default").toModelNode());
         node.get(OP).set(ADD);
-        node.get( "name" ).set( "default" );
+        node.get("name").set("default");
         list.add(node);
 
         node = new ModelNode();
@@ -80,17 +80,17 @@ public class JCAConfiguration extends AbstractServerConfiguration<JCAFraction> {
         list.add(node);
 
         node = new ModelNode();
-        node.get( OP_ADDR).set( address.append( "bootstrap-context", "default" ).toModelNode() );
-        node.get( OP ).set( ADD );
-        node.get( "workmanager" ).set( "default" );
-        node.get( "name" ).set( "default" );
+        node.get(OP_ADDR).set(address.append("bootstrap-context", "default").toModelNode());
+        node.get(OP).set(ADD);
+        node.get("workmanager").set("default");
+        node.get("name").set("default");
         list.add(node);
 
         node = new ModelNode();
-        node.get( OP_ADDR ).set( address.append( "cached-connection-manager", "cached-connection-manager" ).toModelNode() );
-        node.get( OP ).set( ADD );
-        node.get( "install" ).set( true );
-        list.add( node );
+        node.get(OP_ADDR).set(address.append("cached-connection-manager", "cached-connection-manager").toModelNode());
+        node.get(OP).set(ADD);
+        node.get("install").set(true);
+        list.add(node);
 
         return list;
 
