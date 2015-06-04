@@ -45,7 +45,8 @@ PutObjectStoreDirHere
 /.m2
 # ignore eap repo
 local-repo-eap
-
+# Dependency reduced pom
+*/dependency-reduced-pom.xml
 #OS X index files
 .DS_Store
 testsuite-core/standalone/cli_output
