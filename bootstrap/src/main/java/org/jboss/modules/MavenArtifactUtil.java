@@ -252,21 +252,21 @@ public class MavenArtifactUtil {
     /**
      * First checks this class's ClassLoader for an embedded maven repository under {@code m2repo} and extracts
      * the artifact if found.
-     * <p/>
+     * <p></p>
      * Then tries to find a maven jar artifact from the system property "local.maven.repo.path" This property is a list of
      * platform separated directory names.  If not specified, then it looks in ${user.home}/.m2/repository by default.
-     * <p/>
+     * <p></p>
      * If it can't find it in local paths, then will try to download from a remote repository from the system property
      * "remote.maven.repo".  There is no default remote repository.  It will download both the pom and jar and put it
      * into the first directory listed in "local.maven.repo.path" (or the default dir).  This directory will be created
      * if it doesn't exist.
-     * <p/>
+     * <p></p>
      * Finally, if you do not want a message to console, then set the system property "maven.download.message" to
      * "false"
      *
      * @param qualifier group:artifact:version[:classifier]
      * @return absolute path to artifact, null if none exists
-     * @throws IOException
+     * @throws IOException Unable to download artifact
      */
     public static File resolveJarArtifact(String qualifier) throws IOException {
         if (qualifier.startsWith("${") && qualifier.endsWith("}")) {
