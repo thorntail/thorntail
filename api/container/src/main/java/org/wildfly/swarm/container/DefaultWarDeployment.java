@@ -22,11 +22,11 @@ import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 public class DefaultWarDeployment extends WarDeployment {
 
     public DefaultWarDeployment(Container container) throws IOException, ModuleLoadException {
-        this(container.getShrinkWrapDomain().getArchiveFactory().create(WebArchive.class));
+        this( container, null );
     }
 
-    public DefaultWarDeployment(WebArchive archive) throws IOException, ModuleLoadException {
-        super(archive);
+    public DefaultWarDeployment(Container container, String contextPath) throws IOException, ModuleLoadException {
+        super(container, contextPath);
         setup();
     }
 

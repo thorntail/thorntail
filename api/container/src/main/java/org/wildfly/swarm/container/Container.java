@@ -123,7 +123,7 @@ public class Container {
     }
 
     public Container deploy() throws Exception {
-        return deploy( new DefaultWarDeployment(create("app.war", WebArchive.class)) );
+        return deploy( new DefaultWarDeployment(this));
     }
 
     public Container deploy(Archive deployment) throws Exception {

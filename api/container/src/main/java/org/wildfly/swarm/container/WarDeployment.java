@@ -29,12 +29,12 @@ public class WarDeployment implements Deployment {
     protected boolean webInfLibAdded;
     protected String contextPath;
 
-    public WarDeployment(WebArchive archive) throws IOException, ModuleLoadException {
-        this( archive, null );
+    public WarDeployment(Container container) throws IOException, ModuleLoadException {
+        this( container, null );
     }
 
-    public WarDeployment(WebArchive archive, String contextPath) throws IOException, ModuleLoadException {
-        this.archive = archive;
+    public WarDeployment(Container container, String contextPath) throws IOException, ModuleLoadException {
+        this.archive = container.getShrinkWrapDomain().getArchiveFactory().create(WebArchive.class);
         this.contextPath = contextPath;
         if ( this.contextPath == null ) {
             this.contextPath = System.getProperty( "wildfly.swarm.context.path" );

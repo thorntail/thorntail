@@ -28,7 +28,7 @@ public class JAXRSDeployment extends WarDeployment {
     }
 
     public JAXRSDeployment(Container container, String contextPath) throws IOException, ModuleLoadException {
-        super(container.getShrinkWrapDomain().getArchiveFactory().create(WebArchive.class), contextPath);
+        super(container, contextPath);
         setup();
     }
 
