@@ -6,9 +6,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -42,8 +45,6 @@ public class WarDeployment implements Deployment {
         if ( this.contextPath == null ) {
             this.contextPath = "/";
         }
-
-
     }
 
     protected void ensureJBossWebXml() {
@@ -103,6 +104,15 @@ public class WarDeployment implements Deployment {
     public WebArchive getArchive() {
         ensureJBossWebXml();
         ensureWebInfLib();
+
+        /*
+        System.err.println( ">>>>>>>>>>>>>" );
+        Map<ArchivePath, Node> content = this.archive.getContent();
+        for( Map.Entry each : content.entrySet() ) {
+            System.err.println( each );
+        }
+        System.err.println( "<<<<<<<<<<<<<" );
+        */
         return this.archive;
     }
 }

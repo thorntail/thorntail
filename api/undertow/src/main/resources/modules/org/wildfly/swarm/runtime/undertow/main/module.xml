@@ -9,5 +9,7 @@
     <module name="org.wildfly.swarm.runtime.container"/>
 
     <module name="org.wildfly.extension.undertow"/>
+    <module name="io.undertow.core"/>
+    <module name="org.jboss.modules"/>
   </dependencies>
 </module>
