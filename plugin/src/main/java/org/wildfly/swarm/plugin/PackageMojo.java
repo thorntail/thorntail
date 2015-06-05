@@ -430,8 +430,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 handler
         );
 
-
-        String name = artifact.getArtifactId() + "-" + artifact.getVersion() + "-swarm.jar";
+        String name = this.project.getBuild().getFinalName() + "-swarm.jar";
 
         File file = new File(this.projectBuildDir, name);
         try (
