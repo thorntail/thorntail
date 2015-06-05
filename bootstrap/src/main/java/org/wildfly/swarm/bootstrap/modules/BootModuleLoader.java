@@ -12,8 +12,8 @@ public class BootModuleLoader extends ModuleLoader {
 
     public BootModuleLoader() throws IOException {
         super(new ModuleFinder[]{
-                new JBossModulesBootstrapModuleFinder(),
-                new JBossMSCBootstrapModuleFinder(),
+                new BootstrapClasspathModuleFinder(),
+                //new JBossMSCBootstrapModuleFinder(),
                 new BootstrapModuleFinder(),
                 new ClasspathModuleFinder(),
                 new AppDependenciesModuleFinder(),
