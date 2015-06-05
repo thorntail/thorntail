@@ -26,6 +26,8 @@ public class AppDependenciesModuleFinder implements ModuleFinder {
 
         ModuleSpec.Builder builder = ModuleSpec.build(identifier);
 
+
+        builder.addDependency( DependencySpec.createModuleDependencySpec( ModuleIdentifier.create( "javax.api" ), true ) );
         InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-dependencies.txt");
 
         if (depsTxt != null) {
