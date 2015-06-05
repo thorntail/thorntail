@@ -24,7 +24,11 @@ public class JAXRSDeployment extends WarDeployment {
     private boolean hasApplication;
 
     public JAXRSDeployment(Container container) throws IOException, ModuleLoadException {
-        super(container.getShrinkWrapDomain().getArchiveFactory().create(WebArchive.class));
+        this( container, null );
+    }
+
+    public JAXRSDeployment(Container container, String contextPath) throws IOException, ModuleLoadException {
+        super(container.getShrinkWrapDomain().getArchiveFactory().create(WebArchive.class), contextPath);
         setup();
     }
 
@@ -62,7 +66,7 @@ public class JAXRSDeployment extends WarDeployment {
     protected void ensureApplication() {
         if (!this.hasApplication) {
             String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
-            this.archive.add( new ByteArrayAsset( ApplicationFactory.create( name, "/" )), "WEB-INF/classes/" + name.replace('.', '/' ) + ".class");
+            this.archive.add( new ByteArrayAsset( ApplicationFactory.create( name, this.contextPath )), "WEB-INF/classes/" + name.replace('.', '/' ) + ".class");
             this.hasApplication = true;
         }
     }

@@ -22,14 +22,28 @@ public class WarDeployment implements Deployment {
     private final static String JBOSS_WEB_CONTENTS =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<jboss-web>\n" +
-                    "    <context-root>/</context-root>\n" +
+                    "    <context-root>${CONTEXT_PATH}</context-root>\n" +
                     "</jboss-web>";
 
     protected final WebArchive archive;
     protected boolean webInfLibAdded;
+    protected String contextPath;
 
     public WarDeployment(WebArchive archive) throws IOException, ModuleLoadException {
+        this( archive, null );
+    }
+
+    public WarDeployment(WebArchive archive, String contextPath) throws IOException, ModuleLoadException {
         this.archive = archive;
+        this.contextPath = contextPath;
+        if ( this.contextPath == null ) {
+            this.contextPath = System.getProperty( "wildfly.swarm.context.path" );
+        }
+        if ( this.contextPath == null ) {
+            this.contextPath = "/";
+        }
+
+
     }
 
     protected void ensureJBossWebXml() {
@@ -37,7 +51,7 @@ public class WarDeployment implements Deployment {
             return;
         }
 
-        this.archive.add(new StringAsset(JBOSS_WEB_CONTENTS), "WEB-INF/jboss-web.xml");
+        this.archive.add(new StringAsset(JBOSS_WEB_CONTENTS.replace("${CONTEXT_PATH}", this.contextPath)), "WEB-INF/jboss-web.xml");
     }
 
     protected void addJavaClassPathToWebInfLib() {

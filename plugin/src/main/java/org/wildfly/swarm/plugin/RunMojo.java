@@ -52,6 +52,9 @@ public class RunMojo extends AbstractMojo {
     @Parameter(alias = "bindAddress", defaultValue = "0.0.0.0")
     private String bindAddress;
 
+    @Parameter(alias ="contextPath", defaultValue = "/" )
+    private String contextPath;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (this.project.getPackaging().equals("war")) {
@@ -73,6 +76,7 @@ public class RunMojo extends AbstractMojo {
             cli.add("-Djboss.http.port=" + this.httpPort );
             cli.add("-Djboss.socket.binding.port-offset=" + this.portOffset );
             cli.add("-Djboss.bind.address=" + this.bindAddress );
+            cli.add("-Dwildfly.swarm.context.path=" + this.contextPath );
             cli.add("org.wildfly.swarm.Swarm");
 
             Process process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]));
@@ -100,6 +104,7 @@ public class RunMojo extends AbstractMojo {
             cli.add("-Djboss.http.port=" + this.httpPort );
             cli.add("-Djboss.socket.binding.port-offset=" + this.portOffset );
             cli.add("-Djboss.bind.address=" + this.bindAddress );
+            cli.add("-Dwildfly.swarm.context.path=" + this.contextPath );
             if (this.mainClass != null) {
                 cli.add(this.mainClass);
             } else {

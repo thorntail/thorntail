@@ -100,6 +100,9 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     @Parameter(alias = "bindAddress", defaultValue = "0.0.0.0")
     private String bindAddress;
 
+    @Parameter(alias ="contextPath", defaultValue = "/" )
+    private String contextPath;
+
 
     @Inject
     private ArtifactResolver resolver;
@@ -212,6 +215,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         Properties props = new Properties();
         //props.setProperty("wildfly.swarm.app.artifact", this.project.getBuild().getFinalName() + "." + this.project.getPackaging());
         props.setProperty("wildfly.swarm.app.artifact", this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging() );
+        props.setProperty("wildfly.swarm.context.path", this.contextPath );
         props.setProperty("jboss.http.port", "" + this.httpPort);
         props.setProperty("jboss.socket.binding.port-offset", "" + this.portOffset );
         props.setProperty("jboss.bind.address", this.bindAddress );
