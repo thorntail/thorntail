@@ -91,8 +91,19 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     @Parameter(alias = "mainClass")
     private String mainClass;
 
+    @Parameter(alias = "httpPort", defaultValue = "8080")
+    private int httpPort;
+
+    @Parameter(alias = "portOffset", defaultValue = "0")
+    private int portOffset;
+
+    @Parameter(alias = "bindAddress", defaultValue = "0.0.0.0")
+    private String bindAddress;
+
+
     @Inject
     private ArtifactResolver resolver;
+
 
     private Path dir;
 
@@ -196,11 +207,14 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     }
 
     private void createWildflySwarmProperties() throws MojoFailureException {
-
         Path propsPath = dir.resolve("META-INF").resolve("wildfly-swarm.properties");
 
         Properties props = new Properties();
-        props.setProperty("wildfly.swarm.app.artifact", this.project.getBuild().getFinalName() + "." + this.project.getPackaging());
+        //props.setProperty("wildfly.swarm.app.artifact", this.project.getBuild().getFinalName() + "." + this.project.getPackaging());
+        props.setProperty("wildfly.swarm.app.artifact", this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging() );
+        props.setProperty("jboss.http.port", "" + this.httpPort);
+        props.setProperty("jboss.socket.binding.port-offset", "" + this.portOffset );
+        props.setProperty("jboss.bind.address", this.bindAddress );
 
         try {
             try (FileOutputStream out = new FileOutputStream(propsPath.toFile())) {

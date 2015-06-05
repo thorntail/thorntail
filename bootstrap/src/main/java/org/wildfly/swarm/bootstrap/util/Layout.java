@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -35,6 +36,15 @@ public class Layout {
                         props.load(in);
                         if (props.containsKey("wildfly.swarm.app.artifact")) {
                             System.setProperty("wildfly.swarm.app.artifact", props.getProperty("wildfly.swarm.app.artifact"));
+                        }
+
+                        Enumeration<String> names = (Enumeration<String>) props.propertyNames();
+                        while ( names.hasMoreElements() ) {
+                            String name = names.nextElement();
+                            String value = props.getProperty(name);
+                            if ( System.getProperty( name ) == null ) {
+                                System.setProperty(name, value);
+                            }
                         }
                     }
                     return true;
