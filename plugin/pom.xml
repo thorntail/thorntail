@@ -17,8 +17,8 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm-plugin</artifactId>
 
-    <name>WildFly Boot: Plugin</name>
-    <description>WildFly Boot: Plugin</description>
+    <name>WildFly Swarm: Plugin</name>
+    <description>WildFly Swarm: Plugin</description>
 
     <packaging>maven-plugin</packaging>
 

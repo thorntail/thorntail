@@ -17,8 +17,8 @@
     <artifactId>wildfly-swarm-parent</artifactId>
     <version>1.0.0.Alpha3-SNAPSHOT</version>
 
-    <name>WildFly Boot: Parent</name>
-    <description>WildFly Boot: Parent</description>
+    <name>WildFly Swarm: Parent</name>
+    <description>WildFly Swarm: Parent</description>
 
     <packaging>pom</packaging>
 
