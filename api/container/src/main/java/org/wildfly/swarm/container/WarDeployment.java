@@ -1,9 +1,15 @@
 package org.wildfly.swarm.container;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
+import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -19,17 +25,8 @@ public class WarDeployment implements Deployment {
                     "    <context-root>/</context-root>\n" +
                     "</jboss-web>";
 
-    private final static String JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>  \n" +
-                    "<jboss-deployment-structure>  \n" +
-                    "    <deployment>  \n" +
-                    "         <dependencies>  \n" +
-                    "              <module name=\"APP\" slot=\"dependencies\" />  \n" +
-                    "        </dependencies>  \n" +
-                    "    </deployment>  \n" +
-                    "</jboss-deployment-structure>\n";
-
     protected final WebArchive archive;
+    protected boolean webInfLibAdded;
 
     public WarDeployment(WebArchive archive) throws IOException, ModuleLoadException {
         this.archive = archive;
@@ -41,14 +38,6 @@ public class WarDeployment implements Deployment {
         }
 
         this.archive.add(new StringAsset(JBOSS_WEB_CONTENTS), "WEB-INF/jboss-web.xml");
-    }
-
-    protected void ensureJBossDeploymentStructureXml() {
-        if (this.archive.contains("WEB-INF/jboss-deployment-structure.xml")) {
-            return;
-        }
-
-        this.archive.add(new StringAsset(JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS), "WEB-INF/jboss-deployment-structure.xml");
     }
 
     protected void addJavaClassPathToWebInfLib() {
@@ -68,9 +57,38 @@ public class WarDeployment implements Deployment {
         }
     }
 
+    protected void ensureWebInfLib() {
+        if (this.webInfLibAdded) {
+            return;
+        }
+        this.webInfLibAdded = true;
+        InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-dependencies.txt");
+
+        if (depsTxt != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt))) {
+
+                String line = null;
+
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.length() > 0) {
+                        File artifact = MavenArtifactUtil.resolveJarArtifact(line);
+                        try (FileInputStream artifactIn = new FileInputStream(artifact)) {
+                            this.archive.addAsLibrary(new ByteArrayAsset(artifactIn), artifact.getName());
+                        }
+                    }
+                }
+                depsTxt.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     public WebArchive getArchive() {
         ensureJBossWebXml();
-        ensureJBossDeploymentStructureXml();
+        ensureWebInfLib();
         return this.archive;
     }
 }
