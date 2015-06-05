@@ -1,1 +1,2 @@
 org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec
+org.jboss.spec.javax.websocket:jboss-websocket-api_1.1_spec
