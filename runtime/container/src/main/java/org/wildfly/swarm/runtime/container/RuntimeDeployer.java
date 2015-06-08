@@ -1,7 +1,10 @@
 package org.wildfly.swarm.runtime.container;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -34,6 +37,7 @@ public class RuntimeDeployer implements Deployer {
     private final ScheduledExecutorService executor;
 
     private final TempFileProvider tempFileProvider;
+    private final List<Closeable> mountPoints = new ArrayList<>();
 
     public RuntimeDeployer(ModelControllerClient client, SimpleContentProvider contentProvider) throws IOException {
         this.client = client;
@@ -47,7 +51,8 @@ public class RuntimeDeployer implements Deployer {
 
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(deployment.getName());
         try (InputStream in = new ZipExporterImpl(deployment).exportAsInputStream()) {
-            VFS.mountZip(in, deployment.getName(), mountPoint, tempFileProvider);
+            Closeable closeable = VFS.mountZip(in, deployment.getName(), mountPoint, tempFileProvider);
+            this.mountPoints.add( closeable );
         }
 
         byte[] hash = this.contentProvider.addContent(mountPoint);
@@ -64,6 +69,16 @@ public class RuntimeDeployer implements Deployer {
 
         System.setProperty("wildfly.swarm.current.deployment", deployment.getName());
         ModelNode result = client.execute(deploymentAdd);
+    }
+
+    void stop() {
+        for ( Closeable each : this.mountPoints ) {
+            try {
+                each.close();
+            } catch (IOException e) {
+            }
+        }
+
     }
 
 }

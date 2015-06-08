@@ -113,6 +113,11 @@ public class Container {
         return this;
     }
 
+    public Container stop() throws Exception {
+        this.server.stop();
+        return this;
+    }
+
     public Container start(Deployment deployment) throws Exception {
         return start().deploy( deployment );
     }
@@ -133,7 +138,6 @@ public class Container {
 
     public Container deploy(Deployment deployment) throws Exception {
         return deploy( deployment.getArchive() );
-
     }
 
 

@@ -1,9 +1,11 @@
 package org.wildfly.swarm.runtime.container;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -11,6 +13,7 @@ import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.server.SelfContainedContainer;
+import org.jboss.as.server.ServerService;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
@@ -18,6 +21,8 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceContainer;
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -28,12 +33,18 @@ import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CONTENT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ENABLED;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HASH;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INET_ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT_OFFSET;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUNTIME_NAME;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SHUTDOWN;
 
 /**
  * @author Bob McWhirter
@@ -43,6 +54,9 @@ public class RuntimeServer implements Server {
     private SelfContainedContainer container = new SelfContainedContainer();
 
     private SimpleContentProvider contentProvider = new SimpleContentProvider();
+    private ServiceContainer serviceContainer;
+    private ModelControllerClient client;
+    private RuntimeDeployer deployer;
 
     public RuntimeServer() {
     }
@@ -53,13 +67,50 @@ public class RuntimeServer implements Server {
 
         List<ModelNode> list = getList(config);
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
-        ServiceContainer serviceContainer = this.container.start(list, this.contentProvider);
-        ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
+        this.serviceContainer = this.container.start(list, this.contentProvider);
+        ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
-        ModelControllerClient client = controller.createClient(executor);
+        this.client = controller.createClient(executor);
 
-        return new RuntimeDeployer(client, this.contentProvider);
+        this.deployer = new RuntimeDeployer(this.client, this.contentProvider);
+        return this.deployer;
+    }
+
+    public void stop() throws Exception {
+
+        //ServiceController<ServerService> server = (ServiceController<ServerService>) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER);
+        //this.serviceContainer.getService( Services.JBOSS_SERVER_CONTROLLER ).setMode(ServiceController.Mode.REMOVE);
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        this.serviceContainer.addTerminateListener(new ServiceContainer.TerminateListener() {
+            @Override
+            public void handleTermination(Info info) {
+                latch.countDown();
+            }
+        });
+        this.serviceContainer.shutdown();
+
+        latch.await();
+
+        this.deployer.stop();
+        this.serviceContainer = null;
+        this.client = null;
+        this.deployer = null;
+
+        /*
+        final ModelNode read = new ModelNode();
+        read.get(OP).set("read-operation-names");
+        read.get(ADDRESS).setEmptyList();
+        ModelNode result = client.execute(read);
+        System.err.println( result );
+
+        final ModelNode shutdown = new ModelNode();
+        shutdown.get(OP).set("suspend");
+        shutdown.get(ADDRESS).setEmptyList();
+        result = client.execute(shutdown);
+        System.err.println( result );
+        */
     }
 
     private void applyDefaults(Container config) throws Exception {
@@ -199,7 +250,7 @@ public class RuntimeServer implements Server {
         Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
 
         if (!providerIter.hasNext()) {
-            providerLoader = ServiceLoader.load(RuntimeModuleProvider.class);
+            providerLoader = ServiceLoader.load(RuntimeModuleProvider.class, ClassLoader.getSystemClassLoader());
             providerIter = providerLoader.iterator();
         }
 

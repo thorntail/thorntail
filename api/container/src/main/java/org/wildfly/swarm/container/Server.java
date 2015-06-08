@@ -6,4 +6,5 @@ package org.wildfly.swarm.container;
 public interface Server {
 
     Deployer start(Container config) throws Exception;
+    void stop() throws Exception;
 }
