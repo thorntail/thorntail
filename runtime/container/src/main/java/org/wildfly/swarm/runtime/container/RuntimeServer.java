@@ -79,9 +79,6 @@ public class RuntimeServer implements Server {
 
     public void stop() throws Exception {
 
-        //ServiceController<ServerService> server = (ServiceController<ServerService>) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER);
-        //this.serviceContainer.getService( Services.JBOSS_SERVER_CONTROLLER ).setMode(ServiceController.Mode.REMOVE);
-
         final CountDownLatch latch = new CountDownLatch(1);
         this.serviceContainer.addTerminateListener(new ServiceContainer.TerminateListener() {
             @Override
@@ -97,20 +94,6 @@ public class RuntimeServer implements Server {
         this.serviceContainer = null;
         this.client = null;
         this.deployer = null;
-
-        /*
-        final ModelNode read = new ModelNode();
-        read.get(OP).set("read-operation-names");
-        read.get(ADDRESS).setEmptyList();
-        ModelNode result = client.execute(read);
-        System.err.println( result );
-
-        final ModelNode shutdown = new ModelNode();
-        shutdown.get(OP).set("suspend");
-        shutdown.get(ADDRESS).setEmptyList();
-        result = client.execute(shutdown);
-        System.err.println( result );
-        */
     }
 
     private void applyDefaults(Container config) throws Exception {
