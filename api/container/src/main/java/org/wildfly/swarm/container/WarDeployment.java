@@ -1,23 +1,29 @@
 package org.wildfly.swarm.container;
 
+import org.jboss.modules.MavenArtifactUtil;
+import org.jboss.modules.ModuleLoadException;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Map;
 
-import org.jboss.modules.MavenArtifactUtil;
-import org.jboss.modules.ModuleLoadException;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-/**
+/** A WAR-centric deployment.
+ *
+ * <p>The deployment handles some common activities if not provided by the
+ * application:</p>
+ *
+ * <ul>
+ *     <li>A jboss-web.xml is added, binding to the context path if provided,
+ *     otherwise, to /</li>
+ *     <li>WEB-INF/lib/* is populated with the application's dependencies.</li>
+ * </ul>
  * @author Bob McWhirter
  */
 public class WarDeployment implements Deployment {

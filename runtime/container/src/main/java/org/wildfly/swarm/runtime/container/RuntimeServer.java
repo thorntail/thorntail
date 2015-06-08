@@ -1,19 +1,9 @@
 package org.wildfly.swarm.runtime.container;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.server.SelfContainedContainer;
-import org.jboss.as.server.ServerService;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
@@ -21,8 +11,6 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceContainer;
-import org.jboss.msc.service.ServiceController;
-import org.jboss.msc.service.ServiceName;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -32,19 +20,21 @@ import org.wildfly.swarm.container.Server;
 import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CONTENT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ENABLED;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HASH;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INET_ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT_OFFSET;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUNTIME_NAME;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SHUTDOWN;
 
 /**
  * @author Bob McWhirter

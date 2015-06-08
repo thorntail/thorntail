@@ -13,7 +13,10 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 
-/**
+/** A deployment that references a Maven dependency.
+ *
+ * <p>Allows deployment of project dependencies using simpley {@code groupId:artifactId}</p>
+ *
  * @author Bob McWhirter
  */
 public class DependencyDeployment implements Deployment {
@@ -22,10 +25,23 @@ public class DependencyDeployment implements Deployment {
 
     private final String name;
 
+    /** Construct
+     *
+     * @param container The container.
+     * @param gav The simplified groupId:artifactId of the dependency.
+     * @throws Exception
+     */
     public DependencyDeployment(Container container, String gav) throws Exception {
         this(container, gav, name(gav));
     }
 
+    /** Construct
+     *
+     * @param container The container.
+     * @param gav The simplified groupId:artifactId of the dependency.
+     * @param name The explicit name for the deployment.
+     * @throws Exception
+     */
     public DependencyDeployment(Container container, String gav, String name) throws Exception {
         //String versionedGav = ProjectDependencies.getProjectDependencies().getVersionedGAV(gav);
         //this.file = ArtifactLoaderFactory.INSTANCE.getFile(versionedGav);
