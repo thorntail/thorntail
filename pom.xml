@@ -217,14 +217,9 @@
 
     <modules>
       <module>plugin</module>
-
       <module>bootstrap</module>
-<!--
-      <module>shrinkwrap</module>
--->
-
       <module>api</module>
       <module>runtime</module>
-
+      <module>integration-tests</module>
     </modules>
 </project>
