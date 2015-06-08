@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-integration-tests</artifactId>
+        <version>1.0.0.Alpha3-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm-integration-tests-prime</artifactId>
+
+    <name>WildFly Swarm: Integration Tests: Prime</name>
+    <description>WildFly Swarm: Integration Tests: Prime</description>
+
+    <packaging>jar</packaging>
+
+    <build>
+        <resources>
+            <resource>
+              <directory>${project.basedir}/src/main/resources</directory>
+              <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+          <plugin>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-plugin</artifactId>
+            <version>${project.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>package</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-undertow</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

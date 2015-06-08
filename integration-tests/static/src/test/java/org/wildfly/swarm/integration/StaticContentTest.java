@@ -16,6 +16,7 @@ public class StaticContentTest extends AbstractWildFlySwarmTestCase {
 
     @Test
     public void testStaticContent() throws Exception {
+        System.err.println( "--------> " + System.getProperty("maven.repo.local" ) );
         Container container = newContainer();
         container.start();
         StaticDeployment deployment = new StaticDeployment(container);
