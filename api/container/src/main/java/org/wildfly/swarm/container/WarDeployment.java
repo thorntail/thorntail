@@ -2,6 +2,8 @@ package org.wildfly.swarm.container;
 
 import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -13,6 +15,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /** A WAR-centric deployment.
  *
@@ -38,6 +43,8 @@ public class WarDeployment implements Deployment {
     protected boolean webInfLibAdded;
     protected String contextPath;
 
+    protected Map<String,String> staticResources = new HashMap<>();
+
     public WarDeployment(Container container) throws IOException, ModuleLoadException {
         this( container, null );
     }
@@ -51,6 +58,19 @@ public class WarDeployment implements Deployment {
         if ( this.contextPath == null ) {
             this.contextPath = "/";
         }
+    }
+
+    public WarDeployment staticContent() {
+        return staticContent( "/", "." );
+    }
+
+    public WarDeployment staticContent(String context) {
+        return staticContent(context, "." );
+    }
+
+    public WarDeployment staticContent(String context, String base) {
+        this.staticResources.put( context, base );
+        return this;
     }
 
     protected void ensureJBossWebXml() {
@@ -107,18 +127,51 @@ public class WarDeployment implements Deployment {
 
     }
 
-    public WebArchive getArchive() {
-        ensureJBossWebXml();
-        ensureWebInfLib();
+    private final static String JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>  \n" +
+                    "<jboss-deployment-structure>  \n" +
+                    "    <deployment>  \n" +
+                    "         <dependencies>  \n" +
+                    "              <module name=\"org.wildfly.swarm.runtime.undertow\"/>  \n" +
+                    "        </dependencies>  \n" +
+                    "    </deployment>  \n" +
+                    "</jboss-deployment-structure>\n";
 
-        /*
-        System.err.println( ">>>>>>>>>>>>>" );
-        Map<ArchivePath, Node> content = this.archive.getContent();
-        for( Map.Entry each : content.entrySet() ) {
-            System.err.println( each );
+    protected void setupStaticResources() {
+        if ( this.staticResources.isEmpty() ) {
+            return;
         }
-        System.err.println( "<<<<<<<<<<<<<" );
-        */
+        this.archive.addAsServiceProvider("io.undertow.server.handlers.builder.HandlerBuilder", "org.wildfly.swarm.runtime.undertow.StaticHandlerBuilder");
+        this.archive.addAsWebInfResource(new StringAsset(JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS), "jboss-deployment-structure.xml");
+
+        Set<Map.Entry<String, String>> entries = this.staticResources.entrySet();
+        StringBuilder conf = new StringBuilder();
+        for ( Map.Entry<String,String> each : entries ) {
+            conf.append( "path-prefix['" + each.getKey() + "'] -> static-content[base='" + each.getValue() + "']\n");
+        }
+
+        this.archive.addAsWebInfResource(new StringAsset(conf.toString()), "undertow-handlers.conf");
+    }
+
+    public WebArchive getArchive() {
+        return getArchive(false);
+    }
+
+    public WebArchive getArchive(boolean finalize) {
+        if ( finalize ) {
+            ensureJBossWebXml();
+            ensureWebInfLib();
+            setupStaticResources();
+
+            /*
+            System.err.println(">>>>>>>>>>>>>");
+            Map<ArchivePath, Node> content = this.archive.getContent();
+            for (Map.Entry each : content.entrySet()) {
+                System.err.println(each);
+            }
+            System.err.println("<<<<<<<<<<<<<");
+            */
+        }
         return this.archive;
     }
 }

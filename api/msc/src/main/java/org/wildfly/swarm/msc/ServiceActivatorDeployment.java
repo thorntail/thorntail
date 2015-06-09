@@ -33,8 +33,14 @@ public class ServiceActivatorDeployment implements Deployment {
 
     @Override
     public JavaArchive getArchive() {
-        this.archive.addAsServiceProvider(ServiceActivator.class, (Class[]) this.activators.toArray(new Class[]{}));
-        addJBossDeploymentStructure();
+        return getArchive(false);
+    }
+
+    public JavaArchive getArchive(boolean finalize) {
+        if (finalize) {
+            this.archive.addAsServiceProvider(ServiceActivator.class, (Class[]) this.activators.toArray(new Class[]{}));
+            addJBossDeploymentStructure();
+        }
         return this.archive;
     }
 

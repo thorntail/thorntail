@@ -117,6 +117,11 @@ public class DependencyDeployment implements Deployment {
 
     @Override
     public Archive getArchive() {
+        return getArchive(false);
+    }
+
+    @Override
+    public Archive getArchive(boolean finalize) {
         return this.archive;
     }
 }

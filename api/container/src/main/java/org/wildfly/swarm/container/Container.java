@@ -222,7 +222,7 @@ public class Container {
      * @throws Exception if an error occurs.
      */
     public Container deploy(Deployment deployment) throws Exception {
-        return deploy( deployment.getArchive() );
+        return deploy( deployment.getArchive(true) );
     }
 
 }

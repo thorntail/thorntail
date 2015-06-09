@@ -23,62 +23,63 @@ public class DatasourceDeployment implements Deployment {
         this.archive = container.create(ds.name() + "-ds.jar", JavaArchive.class);
     }
 
-    @Override
     public Archive getArchive() {
-        //File dsXml = File.createTempFile(getName(), "-ds.xml");
-        //dsXml.delete();
+        return getArchive(false);
+    }
 
-        StringWriter str = new StringWriter();
+    public Archive getArchive(boolean finalize) {
 
-        try (XmlWriter out = new XmlWriter(str)) {
+        if (finalize) {
 
-            XmlWriter.Element datasources = out.element("datasources")
-                    .attr("xmlns", "http://www.jboss.org/ironjacamar/schema")
-                    .attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-                    .attr("xsi:schemaLocation", "http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd");
+            StringWriter str = new StringWriter();
 
-            XmlWriter.Element datasource = datasources.element("datasource")
-                    .attr("jndi-name", this.ds.jndiName())
-                    .attr("enabled", "true")
-                    .attr("use-java-context", "true")
-                    .attr("pool-name", this.ds.name());
+            try (XmlWriter out = new XmlWriter(str)) {
 
-            datasource.element("connection-url")
-                    .content(this.ds.connectionURL())
-                    .end();
+                XmlWriter.Element datasources = out.element("datasources")
+                        .attr("xmlns", "http://www.jboss.org/ironjacamar/schema")
+                        .attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+                        .attr("xsi:schemaLocation", "http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd");
 
-            datasource.element("driver")
-                    .content(this.ds.driver())
-                    .end();
+                XmlWriter.Element datasource = datasources.element("datasource")
+                        .attr("jndi-name", this.ds.jndiName())
+                        .attr("enabled", "true")
+                        .attr("use-java-context", "true")
+                        .attr("pool-name", this.ds.name());
 
-            XmlWriter.Element security = datasource.element("security");
-
-            if (this.ds.userName() != null) {
-                security.element("user-name")
-                        .content(this.ds.userName())
-                        .end();
-            }
-
-            if (this.ds.password() != null) {
-                security.element("password")
-                        .content(this.ds.password())
+                datasource.element("connection-url")
+                        .content(this.ds.connectionURL())
                         .end();
 
-            }
-            security.end();
-            datasource.end();
-            datasources.end();
+                datasource.element("driver")
+                        .content(this.ds.driver())
+                        .end();
 
-            out.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                XmlWriter.Element security = datasource.element("security");
+
+                if (this.ds.userName() != null) {
+                    security.element("user-name")
+                            .content(this.ds.userName())
+                            .end();
+                }
+
+                if (this.ds.password() != null) {
+                    security.element("password")
+                            .content(this.ds.password())
+                            .end();
+
+                }
+                security.end();
+                datasource.end();
+                datasources.end();
+
+                out.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            this.archive.add(new StringAsset(str.toString()), "META-INF/" + this.ds.name() + "-ds.xml");
         }
 
-        this.archive.add(new StringAsset(str.toString()), "META-INF/" + this.ds.name() + "-ds.xml");
-
         return this.archive;
-
-        //VFS.mountReal(dsXml, mountPoint);
-        //return mountPoint;
     }
 }

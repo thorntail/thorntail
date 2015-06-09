@@ -15,10 +15,10 @@
     </parent>
 
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-integration-tests-static</artifactId>
+    <artifactId>wildfly-swarm-integration-tests-static-war</artifactId>
 
-    <name>WildFly Swarm: Integration Tests: Static</name>
-    <description>WildFly Swarm: Integration Tests: Static</description>
+    <name>WildFly Swarm: Integration Tests: Static WAR</name>
+    <description>WildFly Swarm: Integration Tests: Static WAR</description>
 
     <packaging>jar</packaging>
 
@@ -45,7 +45,7 @@
     <dependencies>
         <dependency>
           <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-integration-tests-prime</artifactId>
+          <artifactId>wildfly-swarm-integration-tests-base</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>

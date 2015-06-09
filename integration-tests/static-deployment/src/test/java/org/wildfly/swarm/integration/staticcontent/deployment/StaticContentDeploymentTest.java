@@ -1,10 +1,11 @@
-package org.wildfly.swarm.integration;
+package org.wildfly.swarm.integration.staticcontent.deployment;
 
 import java.io.InputStream;
 import java.net.URL;
 
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 import org.wildfly.swarm.undertow.StaticDeployment;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -12,11 +13,10 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Bob McWhirter
  */
-public class StaticContentTest extends AbstractWildFlySwarmTestCase {
+public class StaticContentDeploymentTest extends AbstractWildFlySwarmTestCase {
 
     @Test
     public void testStaticContent() throws Exception {
-        System.err.println( "--------> " + System.getProperty("maven.repo.local" ) );
         Container container = newContainer();
         container.start();
         StaticDeployment deployment = new StaticDeployment(container);

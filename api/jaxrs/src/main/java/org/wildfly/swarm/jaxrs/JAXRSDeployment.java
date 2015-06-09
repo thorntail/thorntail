@@ -73,8 +73,14 @@ public class JAXRSDeployment extends WarDeployment {
 
     @Override
     public WebArchive getArchive() {
-        ensureApplication();
-        return super.getArchive();
+        return getArchive(false);
+    }
+
+    public WebArchive getArchive(boolean finalize) {
+        if ( finalize ) {
+            ensureApplication();
+        }
+        return super.getArchive(finalize);
     }
 
 

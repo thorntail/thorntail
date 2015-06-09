@@ -114,7 +114,7 @@ public class RuntimeServer implements Server {
         Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
 
         if (!providerIter.hasNext()) {
-            providerLoader = ServiceLoader.load(RuntimeModuleProvider.class);
+            providerLoader = ServiceLoader.load(RuntimeModuleProvider.class, ClassLoader.getSystemClassLoader());
             providerIter = providerLoader.iterator();
         }
 

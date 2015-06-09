@@ -29,7 +29,9 @@ public class StaticHandlerBuilder implements HandlerBuilder {
 
     @Override
     public Map<String, Class<?>> parameters() {
-        return new HashMap<>();
+        HashMap<String,Class<?>> params = new HashMap<>();
+        params.put( "base", String.class );
+        return params;
     }
 
     @Override
@@ -44,27 +46,18 @@ public class StaticHandlerBuilder implements HandlerBuilder {
 
     @Override
     public HandlerWrapper build(Map<String, Object> map) {
+        System.err.println( "BUILD: " + map );
+        final String base = (String) map.get( "base" );
         return new HandlerWrapper() {
             @Override
             public HttpHandler wrap(HttpHandler next) {
                 HttpHandler cur = next;
 
-                Path f = Paths.get(System.getProperty("user.dir"), "target", "classes");
-                if (Files.exists(f)) {
-                    cur = new ResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
+                if ( base != null ) {
+                    cur = new ResourceHandler(new ClassPathResourceManager(ClassLoader.getSystemClassLoader(), base), cur);
+                } else {
+                    cur = new ResourceHandler(new ClassPathResourceManager(ClassLoader.getSystemClassLoader()), cur);
                 }
-
-                f = Paths.get(System.getProperty("user.dir"), "src", "main", "webapp");
-                if (Files.exists(f)) {
-                    cur = new ResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
-                }
-
-                f = Paths.get(System.getProperty("user.dir"), "src", "main", "resources");
-                if (Files.exists(f)) {
-                    cur = new ResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
-                }
-
-                cur = new ResourceHandler(new ClassPathResourceManager(ClassLoader.getSystemClassLoader()), cur);
 
                 try {
                     Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
@@ -72,6 +65,32 @@ public class StaticHandlerBuilder implements HandlerBuilder {
                 } catch (ModuleLoadException e) {
                 }
 
+                Path f = Paths.get(System.getProperty("user.dir"), "target", "classes");
+                System.err.println( "try: " + f );
+                if ( base != null ) {
+                    f = f.resolve(base);
+                }
+                if (Files.exists(f)) {
+                    cur = new ResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
+                }
+
+                f = Paths.get(System.getProperty("user.dir"), "src", "main", "webapp");
+                System.err.println( "try: " + f );
+                if ( base != null ) {
+                    f = f.resolve(base);
+                }
+                if (Files.exists(f)) {
+                    cur = new ResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
+                }
+
+                f = Paths.get(System.getProperty("user.dir"), "src", "main", "resources");
+                System.err.println( "try: " + f );
+                if ( base != null ) {
+                    f = f.resolve(base);
+                }
+                if (Files.exists(f)) {
+                    cur = new ResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
+                }
 
                 return cur;
             }

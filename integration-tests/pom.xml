@@ -23,8 +23,9 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>prime</module>
-    <module>static</module>
+    <module>base</module>
+    <module>static-deployment</module>
+    <module>static-war</module>
   </modules>
 
 </project>

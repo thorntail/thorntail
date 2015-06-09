@@ -15,10 +15,10 @@
     </parent>
 
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-integration-tests-prime</artifactId>
+    <artifactId>wildfly-swarm-integration-tests-static-deployment</artifactId>
 
-    <name>WildFly Swarm: Integration Tests: Prime</name>
-    <description>WildFly Swarm: Integration Tests: Prime</description>
+    <name>WildFly Swarm: Integration Tests: Static Deployment</name>
+    <description>WildFly Swarm: Integration Tests: Static Deployment</description>
 
     <packaging>jar</packaging>
 
@@ -31,24 +31,38 @@
         </resources>
         <plugins>
           <plugin>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>wildfly-swarm-plugin</artifactId>
-            <version>${project.version}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>package</goal>
-                </goals>
-              </execution>
-            </executions>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <maven.repo.local>${maven.repo.local}</maven.repo.local>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-integration-tests-base</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>wildfly-swarm-undertow</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
