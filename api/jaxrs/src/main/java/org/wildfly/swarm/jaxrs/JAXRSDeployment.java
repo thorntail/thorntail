@@ -6,6 +6,7 @@ import javax.ws.rs.core.Application;
 
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.WarDeployment;
@@ -18,7 +19,7 @@ public class JAXRSDeployment extends WarDeployment {
     private boolean hasApplication;
 
     public JAXRSDeployment(Container container) throws IOException, ModuleLoadException {
-        this( container, null );
+        this(container, null);
     }
 
     public JAXRSDeployment(Container container, String contextPath) throws IOException, ModuleLoadException {
@@ -60,8 +61,18 @@ public class JAXRSDeployment extends WarDeployment {
     protected void ensureApplication() {
         if (!this.hasApplication) {
             String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
-            this.archive.add( new ByteArrayAsset( ApplicationFactory.create( name, this.contextPath )), "WEB-INF/classes/" + name.replace('.', '/' ) + ".class");
+            this.archive.add(new ByteArrayAsset(ApplicationFactory.create(name, this.contextPath)), "WEB-INF/classes/" + name.replace('.', '/') + ".class");
             this.hasApplication = true;
+        }
+    }
+
+    protected void addExceptionMapper() {
+        try {
+            this.archive.add(new ByteArrayAsset(FaviconExceptionMapperFactory.create()), "WEB-INF/classes/org/wildfly/swarm/generated/FaviconExceptionMapper.class" );
+            this.archive.addClass(FaviconHandler.class);
+            this.archive.add( new ClassLoaderAsset( "favicon.ico", JAXRSDeployment.class.getClassLoader() ), "WEB-INF/classes/wildfly-swarm-resources/favicon.ico" );
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -71,12 +82,12 @@ public class JAXRSDeployment extends WarDeployment {
     }
 
     public WebArchive getArchive(boolean finalize) {
-        if ( finalize ) {
+        if (finalize) {
             ensureApplication();
+            addExceptionMapper();
         }
         return super.getArchive(finalize);
     }
-
 
 
 }

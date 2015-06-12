@@ -15,7 +15,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,6 +45,7 @@ public class WarDeployment implements Deployment {
     protected final WebArchive archive;
     protected boolean webInfLibAdded;
     protected String contextPath;
+    protected Set<String> structureModules = new HashSet<>();
 
     protected Map<String,String> staticResources = new HashMap<>();
 
@@ -70,6 +74,7 @@ public class WarDeployment implements Deployment {
 
     public WarDeployment staticContent(String context, String base) {
         this.staticResources.put( context, base );
+        this.structureModules.add( "org.wildfly.swarm.runtime.undertow" );
         return this;
     }
 
@@ -132,17 +137,23 @@ public class WarDeployment implements Deployment {
                     "<jboss-deployment-structure>  \n" +
                     "    <deployment>  \n" +
                     "         <dependencies>  \n" +
-                    "              <module name=\"org.wildfly.swarm.runtime.undertow\"/>  \n" +
+                    "              ${MODULES}\n" +
                     "        </dependencies>  \n" +
                     "    </deployment>  \n" +
                     "</jboss-deployment-structure>\n";
 
     protected void setupStaticResources() {
+        StringBuilder modules = new StringBuilder();
+        for ( String each : this.structureModules ) {
+            modules.append( "              <module name=\"" + each + "\"/>\n");
+        }
+        String structureContents = JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS.replace( "${MODULES}", modules.toString().trim() );
+        this.archive.addAsWebInfResource(new StringAsset(structureContents), "jboss-deployment-structure.xml");
+
         if ( this.staticResources.isEmpty() ) {
             return;
         }
         this.archive.addAsServiceProvider("io.undertow.server.handlers.builder.HandlerBuilder", "org.wildfly.swarm.runtime.undertow.StaticHandlerBuilder");
-        this.archive.addAsWebInfResource(new StringAsset(JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS), "jboss-deployment-structure.xml");
 
         Set<Map.Entry<String, String>> entries = this.staticResources.entrySet();
         StringBuilder conf = new StringBuilder();
