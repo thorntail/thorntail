@@ -137,6 +137,13 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
     private void addWildflySwarmBootstrapJar() throws MojoFailureException {
         Artifact artifact = findArtifact("org.wildfly.swarm", "wildfly-swarm-bootstrap", "jar");
+        if ( artifact == null ) {
+            getLog().error( "--------------------------------------------------------------------------------------------------------");
+            getLog().error( "Unable to locate wildfly-swarm-bootstrap.jar in project dependencies.");
+            getLog().error( "Please ensure that your project contains some wildfly-swarm-*.jar dependency with <scope>compile</scope>" );
+            getLog().error( "--------------------------------------------------------------------------------------------------------");
+            throw new MojoFailureException( "Unable to locate wildfly-swarm-bootstrap.jar in project dependencies." );
+        }
         try {
             expandArtifact(artifact);
         } catch (IOException e) {
