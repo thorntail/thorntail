@@ -20,7 +20,7 @@ In a normal WAR-based maven `pom.xml`, simply add the following
         <execution>
           <phase>package</phase>
           <goals>
-            <goal>create</goal>
+            <goal>package</goal>
           </goals>
         </execution>
       </executions>
