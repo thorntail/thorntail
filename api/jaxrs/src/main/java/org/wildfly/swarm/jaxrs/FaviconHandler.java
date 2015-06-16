@@ -19,25 +19,31 @@ import org.jboss.modules.ModuleLoadException;
 public class FaviconHandler {
     public Response toResponse(NotFoundException e) {
         if (e.getMessage().contains("favicon.ico")) {
-            final InputStream in = FaviconHandler.class.getClassLoader().getResourceAsStream("wildfly-swarm-resources/favicon.ico");
-            if (in != null) {
-                Response.ResponseBuilder builder = Response.ok();
-                builder.entity(new StreamingOutput() {
-                    @Override
-                    public void write(OutputStream output) throws IOException, WebApplicationException {
-                        try {
-                            byte[] buf = new byte[1024];
-                            int numRead = -1;
-                            while ((numRead = in.read(buf)) >= 0) {
-                                output.write(buf, 0, numRead);
+            try {
+                Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.undertow"));
+                ClassLoader cl = module.getClassLoader();
+                final InputStream in = cl.getResourceAsStream("favicon.ico");
+                if (in != null) {
+                    Response.ResponseBuilder builder = Response.ok();
+                    builder.entity(new StreamingOutput() {
+                        @Override
+                        public void write(OutputStream output) throws IOException, WebApplicationException {
+                            try {
+                                byte[] buf = new byte[1024];
+                                int numRead = -1;
+                                while ((numRead = in.read(buf)) >= 0) {
+                                    output.write(buf, 0, numRead);
+                                }
+                            } finally {
+                                in.close();
+                                output.flush();
                             }
-                        } finally {
-                            in.close();
-                            output.flush();
                         }
-                    }
-                });
-                return builder.build();
+                    });
+                    return builder.build();
+                }
+            } catch (ModuleLoadException e1) {
+                throw e;
             }
         }
 

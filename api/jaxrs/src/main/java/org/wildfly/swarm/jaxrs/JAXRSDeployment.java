@@ -70,7 +70,7 @@ public class JAXRSDeployment extends WarDeployment {
         try {
             this.archive.add(new ByteArrayAsset(FaviconExceptionMapperFactory.create()), "WEB-INF/classes/org/wildfly/swarm/generated/FaviconExceptionMapper.class" );
             this.archive.addClass(FaviconHandler.class);
-            this.archive.add( new ClassLoaderAsset( "favicon.ico", JAXRSDeployment.class.getClassLoader() ), "WEB-INF/classes/wildfly-swarm-resources/favicon.ico" );
+            this.structureModules.add( "org.jboss.modules" );
         } catch (IOException e) {
             e.printStackTrace();
         }
