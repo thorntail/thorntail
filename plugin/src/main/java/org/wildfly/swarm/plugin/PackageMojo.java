@@ -1,14 +1,6 @@
 package org.wildfly.swarm.plugin;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -100,7 +92,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     @Parameter(alias = "bindAddress", defaultValue = "0.0.0.0")
     private String bindAddress;
 
-    @Parameter(alias ="contextPath", defaultValue = "/" )
+    @Parameter(alias = "contextPath", defaultValue = "/")
     private String contextPath;
 
 
@@ -137,12 +129,12 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
     private void addWildflySwarmBootstrapJar() throws MojoFailureException {
         Artifact artifact = findArtifact("org.wildfly.swarm", "wildfly-swarm-bootstrap", "jar");
-        if ( artifact == null ) {
-            getLog().error( "--------------------------------------------------------------------------------------------------------");
-            getLog().error( "Unable to locate wildfly-swarm-bootstrap.jar in project dependencies.");
-            getLog().error( "Please ensure that your project contains some wildfly-swarm-*.jar dependency with <scope>compile</scope>" );
-            getLog().error( "--------------------------------------------------------------------------------------------------------");
-            throw new MojoFailureException( "Unable to locate wildfly-swarm-bootstrap.jar in project dependencies." );
+        if (artifact == null) {
+            getLog().error("--------------------------------------------------------------------------------------------------------");
+            getLog().error("Unable to locate wildfly-swarm-bootstrap.jar in project dependencies.");
+            getLog().error("Please ensure that your project contains some wildfly-swarm-*.jar dependency with <scope>compile</scope>");
+            getLog().error("--------------------------------------------------------------------------------------------------------");
+            throw new MojoFailureException("Unable to locate wildfly-swarm-bootstrap.jar in project dependencies.");
         }
         try {
             expandArtifact(artifact);
@@ -153,21 +145,44 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
     private void addBootstrapJars() throws MojoFailureException {
 
-        try {
-            Path bootstrapJars = this.dir.resolve("_bootstrap");
-            Files.createDirectories(bootstrapJars);
+        Set<String> bootstrapGavs = new HashSet<>();
+        Path projectArtifactPath = null;
 
+        try {
             Set<Artifact> artifacts = this.project.getArtifacts();
 
             for (Artifact each : artifacts) {
                 if (includeAsBootstrapJar(each)) {
-                    Path fs = bootstrapJars.resolve(each.getArtifactId() + "-" + each.getVersion() + "." + each.getType());
-                    Files.copy(each.getFile().toPath(), fs);
+                    gatherDependency(each);
+                    //bootstrapGavs.add(each.toString());
+                    if (each.getClassifier() == null) {
+                        bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
+                    } else {
+                        bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getClassifier() + ":" + each.getVersion());
+                    }
                 }
             }
-            Files.copy(this.project.getArtifact().getFile().toPath(), bootstrapJars.resolve(this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging()));
+
+            Path bootstrapJars = this.dir.resolve("_bootstrap");
+            projectArtifactPath = bootstrapJars.resolve(this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging());
+            Files.createDirectories(bootstrapJars);
+            Files.copy(this.project.getArtifact().getFile().toPath(), projectArtifactPath);
+
         } catch (IOException e) {
             throw new MojoFailureException("Unable to create _bootstrap directory", e);
+        }
+
+        final Path bootstrapTxt = dir.resolve("META-INF").resolve("wildfly-swarm-bootstrap.txt");
+        try {
+            Files.createDirectories(bootstrapTxt.getParent());
+            try (final OutputStreamWriter out = new OutputStreamWriter(Files.newOutputStream(bootstrapTxt, StandardOpenOption.CREATE))) {
+                for (String each : bootstrapGavs) {
+                    out.write("gav: " + each + "\n");
+                }
+                out.write("path: " + Paths.get("_bootstrap").resolve(this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging()) + "\n");
+            }
+        } catch (IOException e) {
+            throw new MojoFailureException("Could not create wildfly-swarm-bootstrap.txt", e);
         }
     }
 
@@ -221,11 +236,11 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
         Properties props = new Properties();
         //props.setProperty("wildfly.swarm.app.artifact", this.project.getBuild().getFinalName() + "." + this.project.getPackaging());
-        props.setProperty("wildfly.swarm.app.artifact", this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging() );
-        props.setProperty("wildfly.swarm.context.path", this.contextPath );
+        props.setProperty("wildfly.swarm.app.artifact", this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging());
+        props.setProperty("wildfly.swarm.context.path", this.contextPath);
         props.setProperty("jboss.http.port", "" + this.httpPort);
-        props.setProperty("jboss.socket.binding.port-offset", "" + this.portOffset );
-        props.setProperty("jboss.bind.address", this.bindAddress );
+        props.setProperty("jboss.socket.binding.port-offset", "" + this.portOffset);
+        props.setProperty("jboss.bind.address", this.bindAddress);
 
         try {
             try (FileOutputStream out = new FileOutputStream(propsPath.toFile())) {
@@ -376,7 +391,6 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     }
 
     protected void gatherDependency(String gav) throws ArtifactResolutionException, MojoFailureException {
-        //System.err.println( "gather: " + gav );
         String[] parts = gav.split(":");
 
         if (parts.length < 3) {
@@ -396,14 +410,6 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
             version = parts[2];
         }
 
-        /*
-        System.err.println( "groupId: " + groupId );
-        System.err.println( "artifactId: " + artifactId );
-        System.err.println( "version: " + version );
-        System.err.println( "packaging: " + packaging );
-        System.err.println( "classifier: " + classifier );
-        */
-
         ArtifactRequest request = new ArtifactRequest();
 
         org.eclipse.aether.artifact.DefaultArtifact aetherArtifact
@@ -418,9 +424,20 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
             try {
                 gatherDependency(result.getArtifact());
             } catch (IOException e) {
-                throw new MojoFailureException("Unable to gather dependenc: " + gav, e);
+                throw new MojoFailureException("Unable to gather dependency: " + gav, e);
             }
         }
+    }
+
+    protected void gatherDependency(Artifact artifact) throws IOException {
+        org.eclipse.aether.artifact.Artifact a = new org.eclipse.aether.artifact.DefaultArtifact(
+                artifact.getGroupId(),
+                artifact.getArtifactId(),
+                artifact.getClassifier(),
+                artifact.getType(),
+                artifact.getVersion());
+        a = a.setFile(artifact.getFile());
+        gatherDependency(a);
     }
 
     protected void gatherDependency(org.eclipse.aether.artifact.Artifact artifact) throws IOException {
@@ -436,8 +453,12 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         artifactPath = artifactPath.resolve(artifact.getVersion());
         artifactPath = artifactPath.resolve(artifact.getFile().getName());
 
+        if (Files.exists(artifactPath)) {
+            return;
+        }
+
         Files.createDirectories(artifactPath.getParent());
-        Files.copy(artifact.getFile().toPath(), artifactPath);
+        Files.copy(artifact.getFile().toPath(), artifactPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private void createJar() throws MojoFailureException {

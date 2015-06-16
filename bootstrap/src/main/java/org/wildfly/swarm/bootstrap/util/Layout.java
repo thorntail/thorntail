@@ -55,6 +55,7 @@ public class Layout {
         return false;
     }
 
+
     public static Path getRoot() throws IOException {
         URL location = Layout.class.getProtectionDomain().getCodeSource().getLocation();
         if (location.getProtocol().equals("file")) {
