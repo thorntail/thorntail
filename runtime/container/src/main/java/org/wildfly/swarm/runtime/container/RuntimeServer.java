@@ -53,6 +53,7 @@ public class RuntimeServer implements Server {
     private RuntimeDeployer deployer;
 
     private Map<Class<? extends Fraction>, ServerConfiguration> configByFractionType = new ConcurrentHashMap();
+    private List<ServerConfiguration> configList = new ArrayList<>();
 
     public RuntimeServer() {
     }
@@ -144,6 +145,7 @@ public class RuntimeServer implements Server {
 
             for (ServerConfiguration serverConfig : configLoaders) {
                 this.configByFractionType.put(serverConfig.getType(), serverConfig);
+                this.configList.add(serverConfig);
             }
         }
     }
@@ -219,6 +221,24 @@ public class RuntimeServer implements Server {
     }
 
     private void configureFractions(Container config, List<ModelNode> list) throws ModuleLoadException {
+
+        OUTER:
+        for (ServerConfiguration eachConfig : this.configList) {
+            boolean found = false;
+            INNER:
+            for (Fraction eachFraction : config.fractions()) {
+                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+                    found = true;
+                    list.addAll(eachConfig.getList(eachFraction));
+                    break INNER;
+                }
+            }
+            if ( ! found ) {
+                System.err.println( "*** unable to find fraction for: " + eachConfig.getType() );
+            }
+
+        }
+        /*
         for (Fraction fraction : config.fractions()) {
             ServerConfiguration serverConfig = this.configByFractionType.get(fraction.getClass());
             if (serverConfig != null) {
@@ -232,6 +252,7 @@ public class RuntimeServer implements Server {
                 }
             }
         }
+        */
     }
 
 }
