@@ -179,10 +179,32 @@ public class StaticResourceHandler implements HttpHandler {
                     exchange.endExchange();
                     return;
                 }
-                if (resource == null || resource.isDirectory() ) {
+                if (resource == null) {
                     //usually a 404 handler
                     next.handleRequest(exchange);
                     return;
+                }
+
+                if (resource.isDirectory()) {
+                    Resource indexResource;
+                    try {
+                        indexResource = getIndexFiles(resourceManager, resource.getPath(), welcomeFiles);
+                    } catch (IOException e) {
+                        UndertowLogger.REQUEST_IO_LOGGER.ioException(e);
+                        exchange.setResponseCode(StatusCodes.INTERNAL_SERVER_ERROR);
+                        exchange.endExchange();
+                        return;
+                    }
+                    if (indexResource == null) {
+                        next.handleRequest(exchange);
+                        return;
+                    } else if (!exchange.getRequestPath().endsWith("/")) {
+                        exchange.setResponseCode(StatusCodes.FOUND);
+                        exchange.getResponseHeaders().put(Headers.LOCATION, RedirectBuilder.redirect(exchange, exchange.getRelativePath() + "/", true));
+                        exchange.endExchange();
+                        return;
+                    }
+                    resource = indexResource;
                 }
 
                 final ETag etag = resource.getETag();
@@ -207,16 +229,16 @@ public class StaticResourceHandler implements HttpHandler {
                 }
                 ByteRange range = null;
                 long start = -1, end = -1;
-                if(resource instanceof RangeAwareResource && ((RangeAwareResource)resource).isRangeSupported() && contentLength != null && contentEncodedResourceManager == null) {
+                if (resource instanceof RangeAwareResource && ((RangeAwareResource) resource).isRangeSupported() && contentLength != null && contentEncodedResourceManager == null) {
                     //TODO: figure out what to do with the content encoded resource manager
                     range = ByteRange.parse(exchange.getRequestHeaders().getFirst(Headers.RANGE));
-                    if(range != null && range.getRanges() == 1) {
+                    if (range != null && range.getRanges() == 1) {
                         start = range.getStart(0);
                         end = range.getEnd(0);
-                        if(start == -1 ) {
+                        if (start == -1) {
                             //suffix range
                             long toWrite = end;
-                            if(toWrite >= 0) {
+                            if (toWrite >= 0) {
                                 exchange.setResponseContentLength(toWrite);
                             } else {
                                 //ignore the range request
@@ -224,10 +246,10 @@ public class StaticResourceHandler implements HttpHandler {
                             }
                             start = contentLength - end;
                             end = contentLength;
-                        } else if(end == -1) {
+                        } else if (end == -1) {
                             //prefix range
                             long toWrite = contentLength - start;
-                            if(toWrite >= 0) {
+                            if (toWrite >= 0) {
                                 exchange.setResponseContentLength(toWrite);
                             } else {
                                 //ignore the range request
@@ -238,7 +260,7 @@ public class StaticResourceHandler implements HttpHandler {
                             long toWrite = end - start + 1;
                             exchange.setResponseContentLength(toWrite);
                         }
-                        if(range != null) {
+                        if (range != null) {
                             exchange.setResponseCode(StatusCodes.PARTIAL_CONTENT);
                             exchange.getResponseHeaders().put(Headers.CONTENT_RANGE, range.getStart(0) + "-" + range.getEnd(0) + "/" + contentLength);
                         }
@@ -282,14 +304,14 @@ public class StaticResourceHandler implements HttpHandler {
 
                 if (!sendContent) {
                     exchange.endExchange();
-                } else if(range != null) {
-                    ((RangeAwareResource)resource).serveRange(exchange.getResponseSender(), exchange, start, end, IoCallback.END_EXCHANGE);
+                } else if (range != null) {
+                    ((RangeAwareResource) resource).serveRange(exchange.getResponseSender(), exchange, start, end, IoCallback.END_EXCHANGE);
                 } else {
                     resource.serve(exchange.getResponseSender(), exchange, IoCallback.END_EXCHANGE);
                 }
             }
         };
-        if(exchange.isInIoThread()) {
+        if (exchange.isInIoThread()) {
             exchange.dispatch(dispatchTask);
         } else {
             dispatchTask.handleRequest(exchange);
@@ -315,7 +337,7 @@ public class StaticResourceHandler implements HttpHandler {
     }
 
     private String canonicalize(String s) {
-        if(canonicalizePaths) {
+        if (canonicalizePaths) {
             return CanonicalPathUtils.canonicalize(s);
         }
         return s;
@@ -401,10 +423,11 @@ public class StaticResourceHandler implements HttpHandler {
 
     /**
      * If this handler should use canonicalized paths.
-     *
+     * <p/>
      * WARNING: If this is not true and {@link io.undertow.server.handlers.CanonicalPathHandler} is not installed in
      * the handler chain then is may be possible to perform a directory traversal attack. If you set this to false make
      * sure you have some kind of check in place to control the path.
+     *
      * @param canonicalizePaths If paths should be canonicalized
      */
     public void setCanonicalizePaths(boolean canonicalizePaths) {
@@ -438,7 +461,7 @@ public class StaticResourceHandler implements HttpHandler {
 
         @Override
         public HandlerWrapper build(Map<String, Object> config) {
-            return new Wrapper((String)config.get("location"), (Boolean) config.get("allow-listing"));
+            return new Wrapper((String) config.get("location"), (Boolean) config.get("allow-listing"));
         }
 
     }

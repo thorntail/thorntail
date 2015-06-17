@@ -21,8 +21,11 @@ public class StaticContentDeploymentTest extends AbstractWildFlySwarmTestCase {
         container.start();
         StaticDeployment deployment = new StaticDeployment(container);
         container.deploy( deployment );
-        String result = fetch( "http://localhost:8080/static-content.txt" );
-        assertThat( result ).contains( "This is static." );
+        assertThat( fetch( "http://localhost:8080/static-content.txt" ) ).contains( "This is static." );
+        assertThat( fetch( "http://localhost:8080/index.html" ) ).contains( "This is index.html." );
+        assertThat( fetch( "http://localhost:8080/foo/index.html" ) ).contains( "This is foo/index.html." );
+        assertThat( fetch( "http://localhost:8080/" ) ).contains( "This is index.html." );
+        assertThat( fetch( "http://localhost:8080/foo" ) ).contains( "This is foo/index.html." );
         container.stop();
     }
 }
