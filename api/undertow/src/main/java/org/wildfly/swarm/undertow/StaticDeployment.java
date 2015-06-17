@@ -21,7 +21,7 @@ public class StaticDeployment extends WarDeployment {
 
     public StaticDeployment(Container container, String contextPath, String base) throws IOException, ModuleLoadException {
         super(container, contextPath);
-        staticContent( contextPath, base );
+        staticContent( "/", base );
     }
 
 }
