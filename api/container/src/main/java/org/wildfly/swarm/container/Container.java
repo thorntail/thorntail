@@ -6,6 +6,15 @@
 
 package org.wildfly.swarm.container;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
@@ -16,19 +25,17 @@ import org.jboss.shrinkwrap.api.Domain;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
-/** A WildFly-Swarm container.
+/**
+ * A WildFly-Swarm container.
  *
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class Container {
 
-    private List<Fraction> fractions = new ArrayList<>();
+    private Map<Class<? extends Fraction>, Fraction> fractions = new ConcurrentHashMap<>();
+    private List<Fraction> dependentFractions = new ArrayList<>();
+    private Set<Class<? extends Fraction>> defaultFractionTypes = new HashSet<>();
     private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
     private List<Interface> interfaces = new ArrayList<>();
 
@@ -90,6 +97,25 @@ public class Container {
         }
     }
 
+    public void applyFractionDefaults(Server server) throws Exception {
+        Set<Class<? extends Fraction>> availFractions = server.getFractionTypes();
+
+        // Process any dependent fractions from Application added fractions
+        if (!this.dependentFractions.isEmpty()) {
+            this.dependentFractions.stream().filter(dependentFraction -> this.fractions.get(dependentFraction.getClass()) == null).forEach(this::fraction);
+            this.dependentFractions.clear();
+        }
+
+        // Provide defaults for those remaining
+        availFractions.stream().filter(fractionClass -> this.fractions.get(fractionClass) == null).forEach(fractionClass -> fractionDefault(server.createDefaultFor(fractionClass)));
+
+        // Determine if any dependent fractions should override non Application added fractions
+        if (!this.dependentFractions.isEmpty()) {
+            this.dependentFractions.stream().filter(dependentFraction -> this.fractions.get(dependentFraction.getClass()) == null || (this.fractions.get(dependentFraction.getClass()) != null && this.defaultFractionTypes.contains(dependentFraction.getClass()))).forEach(this::fraction);
+            this.dependentFractions.clear();
+        }
+    }
+
     /** Add a fraction to the container.
      *
      * @param fraction The fraction to add.
@@ -107,12 +133,48 @@ public class Container {
      * @return The container.
      */
     public Container fraction(Fraction fraction) {
-        this.fractions.add(fraction);
+        this.fractions.put(fractionRoot(fraction.getClass()), fraction);
+        fraction.initialize(new InitContext());
         return this;
     }
 
     public List<Fraction> fractions() {
-        return this.fractions;
+        return this.fractions.values().stream().collect(Collectors.toList());
+    }
+
+    private void fractionDefault(Fraction defaultFraction) {
+        this.defaultFractionTypes.add(fractionRoot(defaultFraction.getClass()));
+        fraction(defaultFraction);
+    }
+
+    private Class<? extends Fraction> fractionRoot(Class<? extends Fraction> fractionClass) {
+        Class<? extends Fraction> fractionRoot = fractionClass;
+        boolean rootFound = false;
+
+        while (!rootFound) {
+            Class<?>[] interfaces = fractionRoot.getInterfaces();
+            for (Class<?> anInterface : interfaces) {
+                if (anInterface.getName().equals(Fraction.class.getName())) {
+                    rootFound = true;
+                    break;
+                }
+            }
+
+            if (!rootFound) {
+                fractionRoot = (Class<? extends Fraction>) fractionRoot.getSuperclass();
+            }
+        }
+
+        return fractionRoot;
+    }
+
+    /**
+     * Add a fraction to the container that is a dependency of another fraction.
+     *
+     * @param fraction The dependent fraction to add.
+     */
+    private void dependentFraction(Fraction fraction) {
+        this.dependentFractions.add(fraction);
     }
 
     /** Configure a network interface.
@@ -225,4 +287,13 @@ public class Container {
         return deploy( deployment.getArchive(true) );
     }
 
+    /**
+     * Initialization Context to be passed to Fractions to allow them to provide
+     * additional functionality into the Container.
+     */
+    public class InitContext {
+        public void fraction(Fraction fraction) {
+            dependentFraction(fraction);
+        }
+    }
 }

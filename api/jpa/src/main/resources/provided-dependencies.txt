@@ -1,1 +1,2 @@
 org.hibernate.javax.persistence:hibernate-jpa-2.1-api
+com.h2database:h2

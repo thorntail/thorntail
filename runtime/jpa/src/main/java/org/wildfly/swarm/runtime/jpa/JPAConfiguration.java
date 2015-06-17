@@ -43,7 +43,7 @@ public class JPAConfiguration extends AbstractServerConfiguration<JPAFraction> {
         node = new ModelNode();
         node.get(OP_ADDR).set(address.toModelNode());
         node.get(OP).set(ADD);
-        node.get("default-datasource").set("");
+        node.get("default-datasource").set(fraction.defaultDatasourceName() != null ? fraction.defaultDatasourceName() : "");
         node.get("default-extended-persistence-inheritence").set("DEEP");
         list.add(node);
 

@@ -23,7 +23,10 @@ import org.wildfly.swarm.container.SocketBindingGroup;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -38,6 +41,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.POR
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class RuntimeServer implements Server {
 
@@ -48,11 +52,15 @@ public class RuntimeServer implements Server {
     private ModelControllerClient client;
     private RuntimeDeployer deployer;
 
+    private Map<Class<? extends Fraction>, ServerConfiguration> configByFractionType = new ConcurrentHashMap();
+
     public RuntimeServer() {
     }
 
     @Override
     public Deployer start(Container config) throws Exception {
+        loadFractionConfigurations();
+
         applyDefaults(config);
 
         List<ModelNode> list = getList(config);
@@ -86,10 +94,21 @@ public class RuntimeServer implements Server {
         this.deployer = null;
     }
 
+    @Override
+    public Set<Class<? extends Fraction>> getFractionTypes() {
+        return this.configByFractionType.keySet();
+    }
+
+    @Override
+    public Fraction createDefaultFor(Class<? extends Fraction> fractionClazz) {
+        return this.configByFractionType.get(fractionClazz).defaultFraction();
+    }
+
     private void applyDefaults(Container config) throws Exception {
         applyInterfaceDefaults(config);
         applySocketBindingGroupDefaults(config);
-        applyFractionDefaults(config);
+
+        config.applyFractionDefaults(this);
     }
 
     private void applyInterfaceDefaults(Container config) {
@@ -107,7 +126,7 @@ public class RuntimeServer implements Server {
         }
     }
 
-    private void applyFractionDefaults(Container config) throws Exception {
+    private void loadFractionConfigurations() throws Exception {
         Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
         ServiceLoader<RuntimeModuleProvider> providerLoader = m1.loadService(RuntimeModuleProvider.class);
 
@@ -118,30 +137,13 @@ public class RuntimeServer implements Server {
             providerIter = providerLoader.iterator();
         }
 
-        OUTER:
         while (providerIter.hasNext()) {
             RuntimeModuleProvider provider = providerIter.next();
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
-            ServiceLoader<ServerConfiguration> configLoader = module.loadService(ServerConfiguration.class);
+            ServiceLoader<ServerConfiguration> configLoaders = module.loadService(ServerConfiguration.class);
 
-            Iterator<ServerConfiguration> configIter = configLoader.iterator();
-
-            MIDDLE:
-            while (configIter.hasNext()) {
-                ServerConfiguration each = configIter.next();
-
-                boolean found = false;
-                INNER:
-                for (Fraction fraction : config.fractions()) {
-                    if (fraction.getClass().equals(each.getType())) {
-                        found = true;
-                        break INNER;
-                    }
-                }
-
-                if (!found) {
-                    config.fraction(each.defaultFraction());
-                }
+            for (ServerConfiguration serverConfig : configLoaders) {
+                this.configByFractionType.put(serverConfig.getType(), serverConfig);
             }
         }
     }
@@ -217,33 +219,15 @@ public class RuntimeServer implements Server {
     }
 
     private void configureFractions(Container config, List<ModelNode> list) throws ModuleLoadException {
-        Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
-        ServiceLoader<RuntimeModuleProvider> providerLoader = m1.loadService(RuntimeModuleProvider.class);
-
-        Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
-
-        if (!providerIter.hasNext()) {
-            providerLoader = ServiceLoader.load(RuntimeModuleProvider.class, ClassLoader.getSystemClassLoader());
-            providerIter = providerLoader.iterator();
-        }
-
-        OUTER:
-        while (providerIter.hasNext()) {
-            RuntimeModuleProvider provider = providerIter.next();
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
-            ServiceLoader<ServerConfiguration> configLoader = module.loadService(ServerConfiguration.class);
-
-            Iterator<ServerConfiguration> configIter = configLoader.iterator();
-
-            MIDDLE:
-            while (configIter.hasNext()) {
-                ServerConfiguration each = configIter.next();
-
-                INNER:
-                for (Fraction fraction : config.fractions()) {
-                    if (fraction.getClass().equals(each.getType())) {
-                        list.addAll(each.getList(fraction));
-                        break INNER;
+        for (Fraction fraction : config.fractions()) {
+            ServerConfiguration serverConfig = this.configByFractionType.get(fraction.getClass());
+            if (serverConfig != null) {
+                list.addAll(serverConfig.getList(fraction));
+            } else {
+                for (Class<? extends Fraction> fractionClass : this.configByFractionType.keySet()) {
+                    if (fraction.getClass().isAssignableFrom(fractionClass)) {
+                        list.addAll(this.configByFractionType.get(fractionClass).getList(fraction));
+                        break;
                     }
                 }
             }
