@@ -28,7 +28,7 @@ public class JPAFraction implements Fraction {
     }
 
     public String defaultDatasourceName() {
-        return this.defaultDatasourceName;
+        return "java:jboss/datasources/" + this.defaultDatasourceName;
     }
 
     @Override
