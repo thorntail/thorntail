@@ -179,7 +179,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 for (String each : bootstrapGavs) {
                     out.write("gav: " + each + "\n");
                 }
-                out.write("path: " + Paths.get("_bootstrap").resolve(this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging()) + "\n");
+                out.write("path: _bootstrap/" + this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging() + "\n");
             }
         } catch (IOException e) {
             throw new MojoFailureException("Could not create wildfly-swarm-bootstrap.txt", e);
