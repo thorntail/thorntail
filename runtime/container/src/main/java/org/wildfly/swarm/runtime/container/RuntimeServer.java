@@ -20,12 +20,7 @@ import org.wildfly.swarm.container.Server;
 import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -37,6 +32,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INE
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT_OFFSET;
 
 /**
@@ -65,6 +61,10 @@ public class RuntimeServer implements Server {
         applyDefaults(config);
 
         List<ModelNode> list = getList(config);
+
+        // float all <extension> up to the head of the list
+        list.sort( new ExtensionOpPriorityComparator() );
+
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
         this.serviceContainer = this.container.start(list, this.contentProvider);
         ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
@@ -75,6 +75,29 @@ public class RuntimeServer implements Server {
         this.deployer = new RuntimeDeployer(this.client, this.contentProvider);
         return this.deployer;
     }
+
+    private static class ExtensionOpPriorityComparator implements Comparator<ModelNode> {
+        @Override
+        public int compare(ModelNode left, ModelNode right) {
+
+            PathAddress leftAddr = PathAddress.pathAddress(left.get(OP_ADDR));
+            PathAddress rightAddr = PathAddress.pathAddress(right.get(OP_ADDR));
+
+            String leftOpName = left.require(OP).asString();
+            String rightOpName = left.require(OP).asString();
+
+            if ( leftAddr.size() == 1 && leftAddr.getElement(0).getKey().equals(EXTENSION) && leftOpName.equals(ADD) ) {
+                return -1;
+            }
+
+            if ( rightAddr.size() == 1 && rightAddr.getElement(0).getKey().equals(EXTENSION) && rightOpName.equals(ADD) ) {
+                return 1;
+            }
+
+            return 0;
+        }
+    }
+
 
     public void stop() throws Exception {
 
