@@ -27,6 +27,7 @@
     <module>jaxrs</module>
     <module>static-deployment</module>
     <module>static-war</module>
+    <module>fractions</module>
   </modules>
 
 </project>
