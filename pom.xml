@@ -74,6 +74,7 @@
           <tagNameFormat>@{project.version}</tagNameFormat>
           <pushChanges>false</pushChanges>
           <scmCommentPrefix>[RELEASE] </scmCommentPrefix>
+          <preparationGoals>clean install</preparationGoals>
         </configuration>
       </plugin>
     </plugins>
