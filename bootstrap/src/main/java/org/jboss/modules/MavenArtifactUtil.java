@@ -269,7 +269,6 @@ public class MavenArtifactUtil {
      * @throws IOException Unable to download artifact
      */
     public static File resolveJarArtifact(String qualifier) throws IOException {
-        System.err.println( "resolve jar artifact: " + qualifier );
         if (qualifier.startsWith("${") && qualifier.endsWith("}")) {
             qualifier = qualifier.substring(2, qualifier.length() - 1);
         }
@@ -293,25 +292,20 @@ public class MavenArtifactUtil {
             String artifactRelativePath = "m2repo/" + relativeArtifactPath('/', groupId, artifactId, version);
             String jarPath = artifactRelativePath + classifier + ".jar";
 
-            System.err.println( "check classloader: " + MavenArtifactUtil.class.getClassLoader() );
             InputStream stream = MavenArtifactUtil.class.getClassLoader().getResourceAsStream(jarPath);
             if (stream != null) {
-                System.err.println( "found" );
                 return copyTempJar(artifactId + "-" + version, stream);
             }
 
             artifactRelativePath = relativeArtifactPath(groupId, artifactId, version);
             jarPath = artifactRelativePath + classifier + ".jar";
 
-            System.err.println( "check local repo: " + localRepository );
             Path fp = java.nio.file.Paths.get(localRepository.toString(), jarPath);
             if (Files.exists(fp)) {
-                System.err.println( "found!" );
                 return fp.toFile();
             }
 
             List<String> remoteRepos = mavenSettings.getRemoteRepositories();
-            System.err.println( "check remote repos: " + remoteRepos );
             if (remoteRepos.isEmpty()) {
                 return null;
             }
@@ -325,11 +319,9 @@ public class MavenArtifactUtil {
                     downloadFile(qualifier + ":pom", remotePomPath, pomFile);
                     downloadFile(qualifier + ":jar", remoteJarPath, jarFile);
                     if (jarFile.exists()) { //download successful
-                        System.err.println( "downloaded!");
                         return jarFile;
                     }
                 } catch (IOException e) {
-                    System.err.println( "failed to download" );
                     Module.log.trace(e, "Could not download '%s' from '%s' repository", artifactRelativePath, remoteRepository);
                     //
                 }
