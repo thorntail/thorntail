@@ -71,7 +71,9 @@
         <artifactId>maven-release-plugin</artifactId>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
+          <tagNameFormat>@{project.version}</tagNameFormat>
           <pushChanges>false</pushChanges>
+          <scmCommentPrefix>[RELEASE] </scmCommentPrefix>
         </configuration>
       </plugin>
     </plugins>
