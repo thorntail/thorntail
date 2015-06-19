@@ -33,8 +33,8 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
     @Override
     public LoggingFraction defaultFraction() {
         return new LoggingFraction()
-                .formatter("PATTERN", "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n")
-                .consoleHandler(DEFAULT_LEVEL, "PATTERN")
+                .formatter("COLOR_PATTERN", "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n")
+                .consoleHandler(DEFAULT_LEVEL, "COLOR_PATTERN")
                 .rootLogger("CONSOLE", DEFAULT_LEVEL);
 
     }
