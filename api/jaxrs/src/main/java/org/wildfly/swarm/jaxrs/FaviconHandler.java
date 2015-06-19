@@ -25,21 +25,7 @@ public class FaviconHandler {
                 final InputStream in = cl.getResourceAsStream("favicon.ico");
                 if (in != null) {
                     Response.ResponseBuilder builder = Response.ok();
-                    builder.entity(new StreamingOutput() {
-                        @Override
-                        public void write(OutputStream output) throws IOException, WebApplicationException {
-                            try {
-                                byte[] buf = new byte[1024];
-                                int numRead = -1;
-                                while ((numRead = in.read(buf)) >= 0) {
-                                    output.write(buf, 0, numRead);
-                                }
-                            } finally {
-                                in.close();
-                                output.flush();
-                            }
-                        }
-                    });
+                    builder.entity( new FaviconEntity(in) );
                     return builder.build();
                 }
             } catch (ModuleLoadException e1) {

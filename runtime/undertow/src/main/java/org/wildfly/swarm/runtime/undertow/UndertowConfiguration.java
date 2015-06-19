@@ -89,9 +89,6 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
         node.get(OP).set(ADD);
         list.add(node);
 
-
-
-
         return list;
 
     }
