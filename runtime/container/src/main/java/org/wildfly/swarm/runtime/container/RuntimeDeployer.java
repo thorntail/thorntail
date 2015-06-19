@@ -55,6 +55,12 @@ public class RuntimeDeployer implements Deployer {
             this.mountPoints.add( closeable );
         }
 
+        List<VirtualFile> children = mountPoint.getChildrenRecursively();
+        for ( VirtualFile each : children ) {
+            // force physical files
+            each.getPhysicalFile();
+        }
+
         byte[] hash = this.contentProvider.addContent(mountPoint);
 
         final ModelNode deploymentAdd = new ModelNode();
