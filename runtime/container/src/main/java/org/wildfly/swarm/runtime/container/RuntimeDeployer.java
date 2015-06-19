@@ -51,14 +51,8 @@ public class RuntimeDeployer implements Deployer {
 
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(deployment.getName());
         try (InputStream in = new ZipExporterImpl(deployment).exportAsInputStream()) {
-            Closeable closeable = VFS.mountZip(in, deployment.getName(), mountPoint, tempFileProvider);
+            Closeable closeable = VFS.mountZipExpanded(in, deployment.getName(), mountPoint, tempFileProvider);
             this.mountPoints.add( closeable );
-        }
-
-        List<VirtualFile> children = mountPoint.getChildrenRecursively();
-        for ( VirtualFile each : children ) {
-            // force physical files
-            each.getPhysicalFile();
         }
 
         byte[] hash = this.contentProvider.addContent(mountPoint);
