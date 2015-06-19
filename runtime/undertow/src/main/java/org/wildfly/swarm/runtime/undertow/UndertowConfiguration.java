@@ -79,6 +79,18 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
         node.get(OP).set(ADD);
         list.add(node);
 
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("servlet-container", "default").append( "setting", "websockets" ).toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("servlet-container", "default").append( "setting", "jsp" ).toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+
+
 
         return list;
 
