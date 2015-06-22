@@ -39,8 +39,8 @@
     <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha3</version.wildfly.swarm.fraction.plugin>
 
     <version.wildfly>9.0.0.CR2</version.wildfly>
-    <version.org.jboss.msc.jboss-msc>1.2.4.Final</version.org.jboss.msc.jboss-msc>
-    <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>1.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
+    <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
+    <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>1.0.1.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
 
     <maven.min.version>3.2.1</maven.min.version>
 
