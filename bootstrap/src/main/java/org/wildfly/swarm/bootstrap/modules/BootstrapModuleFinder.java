@@ -53,6 +53,9 @@ public class BootstrapModuleFinder implements ModuleFinder {
                         if (line.startsWith("gav:")) {
                             line = line.substring( 4 ).trim();
                             File artifact = MavenArtifactUtil.resolveJarArtifact(line);
+                            if ( artifact == null ) {
+                                throw new IOException( "Unable to locate artifact: " + line );
+                            }
                             builder.addResourceRoot(
                                     ResourceLoaderSpec.createResourceLoaderSpec(
                                             ResourceLoaders.createJarResourceLoader(artifact.getName(), new JarFile(artifact))

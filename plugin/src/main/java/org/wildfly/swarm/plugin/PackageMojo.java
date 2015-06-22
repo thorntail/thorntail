@@ -158,7 +158,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                     if (each.getClassifier() == null) {
                         bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
                     } else {
-                        bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getClassifier() + ":" + each.getVersion());
+                        bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + ":" + each.getClassifier());
                     }
                 }
             }
