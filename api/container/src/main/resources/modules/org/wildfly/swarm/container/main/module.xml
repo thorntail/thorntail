@@ -87,7 +87,7 @@
       </exports>
     </module>
 
-    <module name="org.wildfly.swarm.runtime.container"/>
+    <module name="org.wildfly.swarm.runtime.container" export="true"/>
 
   </dependencies>
 </module>

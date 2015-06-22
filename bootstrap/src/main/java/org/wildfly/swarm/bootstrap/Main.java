@@ -56,7 +56,14 @@ public class Main {
             throw new NoSuchMethodException("Main method is not static for " + mainClass);
         }
 
-        mainMethod.invoke(null, new Object[]{args});
+        try {
+            mainMethod.invoke(null, new Object[]{args});
+        } catch (Throwable e) {
+            while ( e != null ) {
+                e.printStackTrace();
+                e = e.getCause();
+            }
+        }
 
         /*
         Module container = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container"));

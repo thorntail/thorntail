@@ -63,17 +63,13 @@ public class Container {
     }
 
     private void createShrinkWrapDomain() throws ModuleLoadException {
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.extensionLoader( new ShrinkWrapExtensionLoader() );
-
-        Set<ClassLoader> classLoaders = new HashSet<>();
-
-        classLoaders.add( Module.getBootModuleLoader().loadModule( ModuleIdentifier.create("org.wildfly.swarm.bootstrap" ) ).getClassLoader() );
-        classLoaders.add( ClassLoader.getSystemClassLoader() );
-
-        builder.classLoaders(classLoaders);
-        Configuration config = builder.build();
-        this.domain = ShrinkWrap.createDomain( config );
+        ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader( Container.class.getClassLoader() );
+            this.domain = ShrinkWrap.getDefaultDomain();
+        } finally {
+            Thread.currentThread().setContextClassLoader( originalCl );
+        }
     }
 
     private void createServer() throws Exception {
