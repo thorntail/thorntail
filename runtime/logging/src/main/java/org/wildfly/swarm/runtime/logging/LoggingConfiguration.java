@@ -3,13 +3,11 @@ package org.wildfly.swarm.runtime.logging;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.logging.ConsoleHandler;
-import org.wildfly.swarm.logging.Formatter;
-import org.wildfly.swarm.logging.LoggingFraction;
-import org.wildfly.swarm.logging.RootLogger;
+import org.wildfly.swarm.logging.*;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -59,6 +57,7 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
 
         addFormatters(fraction, list);
         addConsoleHandler(fraction, list);
+        addFileHandlers(fraction, list);
         addRootLogger(fraction, list);
 
         return list;
@@ -91,6 +90,29 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         list.add(node);
     }
 
+    private void addFileHandlers(LoggingFraction fraction, List<ModelNode> list) {
+        for (FileHandler each : fraction.fileHandlers()) {
+            addFileHandler(each, list);
+        }
+    }
+
+    private void addFileHandler(FileHandler handler, List<ModelNode> list) {
+        ModelNode node = new ModelNode();
+
+        node.get(OP_ADDR).set(loggingAddress.append("file-handler", handler.name()).toModelNode());
+        node.get(OP).set(ADD);
+        node.get("level").set(handler.level());
+        node.get("named-formatter").set(handler.formatter());
+
+        ModelNode file = new ModelNode();
+        file.get( "path" ).set( handler.path() );
+        file.get( "relative-to" ).set( "jboss.server.log.dir" );
+        node.get("file").set( file );
+        node.get("append").set(true);
+
+        list.add(node);
+    }
+
     private void addRootLogger(LoggingFraction fraction, List<ModelNode> list) {
         RootLogger logger = fraction.rootLogger();
         if (logger == null) {
@@ -99,7 +121,9 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(loggingAddress.append("root-logger", "ROOT").toModelNode());
         node.get(OP).set(ADD);
-        node.get("handlers").add(logger.getHandler());
+        for ( String handler : logger.getHandlers() ) {
+            node.get( "handlers" ).add( handler );
+        }
         node.get("level").set(logger.getLevel());
         list.add(node);
     }

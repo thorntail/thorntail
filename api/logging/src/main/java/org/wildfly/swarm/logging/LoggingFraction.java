@@ -1,8 +1,6 @@
 package org.wildfly.swarm.logging;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.wildfly.swarm.container.Fraction;
 
@@ -14,6 +12,7 @@ public class LoggingFraction implements Fraction {
     private Map<String, Formatter> formatters = new HashMap<>();
 
     private ConsoleHandler consoleHandler;
+    private List<FileHandler> fileHandlers = new ArrayList<>();
 
     private RootLogger rootLogger;
 
@@ -54,8 +53,17 @@ public class LoggingFraction implements Fraction {
         return this.consoleHandler;
     }
 
-    public LoggingFraction rootLogger(String handler, String level) {
-        this.rootLogger = new RootLogger(handler, level);
+    public LoggingFraction fileHandler(String name, String path, String level, String formatter) {
+        this.fileHandlers.add( new FileHandler( name, path, level, formatter ) );
+        return this;
+    }
+
+    public List<FileHandler> fileHandlers() {
+        return this.fileHandlers;
+    }
+
+    public LoggingFraction rootLogger(String level, String...handlers) {
+        this.rootLogger = new RootLogger(level, handlers);
         return this;
     }
 
@@ -103,7 +111,7 @@ public class LoggingFraction implements Fraction {
         return new LoggingFraction()
                 .defaultColorFormatter()
                 .consoleHandler(level, "COLOR_PATTERN")
-                .rootLogger("CONSOLE", level);
+                .rootLogger(level, "CONSOLE");
     }
 
 }
