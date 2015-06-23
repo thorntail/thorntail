@@ -2,7 +2,7 @@ package org.wildfly.swarm.integration.staticcontent.war;
 
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.WarDeployment;
+import org.wildfly.swarm.undertow.WarDeployment;
 import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 
 import static org.fest.assertions.Assertions.assertThat;

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.WarDeployment;
 
 /**
  * @author Bob McWhirter

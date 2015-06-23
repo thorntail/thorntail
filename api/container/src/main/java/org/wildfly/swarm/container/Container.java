@@ -6,11 +6,13 @@
 
 package org.wildfly.swarm.container;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -43,7 +45,8 @@ public class Container {
     private Deployer deployer;
     private Domain domain;
 
-    /** Construct a new, un-started container.
+    /**
+     * Construct a new, un-started container.
      *
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
@@ -52,11 +55,11 @@ public class Container {
         createShrinkWrapDomain();
     }
 
-    /** Retrieve the ShrinkWrap domain for creating archives.
-     *
-     * @see #create(String, Class)
+    /**
+     * Retrieve the ShrinkWrap domain for creating archives.
      *
      * @return The ShrinkWrap Domain.
+     * @see #create(String, Class)
      */
     public Domain getShrinkWrapDomain() {
         return this.domain;
@@ -65,15 +68,15 @@ public class Container {
     private void createShrinkWrapDomain() throws ModuleLoadException {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader( Container.class.getClassLoader() );
+            Thread.currentThread().setContextClassLoader(Container.class.getClassLoader());
             this.domain = ShrinkWrap.getDefaultDomain();
         } finally {
-            Thread.currentThread().setContextClassLoader( originalCl );
+            Thread.currentThread().setContextClassLoader(originalCl);
         }
     }
 
     private void createServer() throws Exception {
-        if ( System.getProperty( "boot.module.loader" ) == null ) {
+        if (System.getProperty("boot.module.loader") == null) {
             System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
         }
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.container"));
@@ -112,20 +115,20 @@ public class Container {
         }
     }
 
-    /** Add a fraction to the container.
+    /**
+     * Add a fraction to the container.
      *
      * @param fraction The fraction to add.
-     *
      * @return The container.
      */
     public Container subsystem(Fraction fraction) {
         return fraction(fraction);
     }
 
-    /** Add a fraction to the container.
+    /**
+     * Add a fraction to the container.
      *
      * @param fraction The fraction to add.
-     *
      * @return The container.
      */
     public Container fraction(Fraction fraction) {
@@ -173,9 +176,10 @@ public class Container {
         this.dependentFractions.add(fraction);
     }
 
-    /** Configure a network interface.
+    /**
+     * Configure a network interface.
      *
-     * @param name The name of the interface.
+     * @param name       The name of the interface.
      * @param expression The expression to define the interface.
      * @return The container.
      */
@@ -188,7 +192,8 @@ public class Container {
         return this.interfaces;
     }
 
-    /** Configure a socket-binding-group.
+    /**
+     * Configure a socket-binding-group.
      *
      * @param group The socket-binding group to add.
      * @return The container.
@@ -202,17 +207,19 @@ public class Container {
         return this.socketBindingGroups;
     }
 
-    /** Start the container.
+    /**
+     * Start the container.
      *
      * @return The container.
      * @throws Exception if an error occurs.
      */
     public Container start() throws Exception {
-        this.deployer = this.server.start( this );
+        this.deployer = this.server.start(this);
         return this;
     }
 
-    /** Stop the container, undeploying all deployments.
+    /**
+     * Stop the container, undeploying all deployments.
      *
      * @return THe container.
      * @throws Exception If an error occurs.
@@ -222,28 +229,27 @@ public class Container {
         return this;
     }
 
-    /** Start the container with a deployment.
-     *
+    /**
+     * Start the container with a deployment.
+     * <p/>
      * <p>Effectively calls {@code start().deploy(deployment)}</p>
      *
-     * @see #start()
-     * @see #deploy(Deployment)
-     *
      * @param deployment The deployment to deploy.
-     *
      * @return The container.
      * @throws Exception if an error occurs.
+     * @see #start()
+     * @see #deploy(Deployment)
      */
     public Container start(Deployment deployment) throws Exception {
-        return start().deploy( deployment );
+        return start().deploy(deployment);
     }
 
-    /** Create a ShrinkWrap archive with a given name and type.
+    /**
+     * Create a ShrinkWrap archive with a given name and type.
      *
      * @param name The name of the archive.
      * @param type The type of the archive.
-     * @param <T> An interface of a ShrinkWrap archive type.
-     *
+     * @param <T>  An interface of a ShrinkWrap archive type.
      * @return The newly created archive.
      */
     public <T extends Archive> T create(String name, Class<T> type) {
@@ -251,18 +257,20 @@ public class Container {
         return archive;
     }
 
-    /** Deploy the default WAR deployment.
-     *
+    /**
+     * Deploy the default WAR deployment.
+     * <p/>
      * <p>For WAR-based applications, the primary WAR artifact iwll be deployed.</p>
      *
      * @return The container.
      * @throws Exception if an error occurs.
      */
     public Container deploy() throws Exception {
-        return deploy( new DefaultWarDeployment(this));
+        return deploy(createDefaultDeployment());
     }
 
-    /** Deploy an archive.
+    /**
+     * Deploy an archive.
      *
      * @param deployment The ShrinkWrap archive to deploy.
      * @return The container.
@@ -273,14 +281,15 @@ public class Container {
         return this;
     }
 
-    /** Deploy a deployment
+    /**
+     * Deploy a deployment
      *
      * @param deployment The deployment to deploy.
      * @return The container.
      * @throws Exception if an error occurs.
      */
     public Container deploy(Deployment deployment) throws Exception {
-        return deploy( deployment.getArchive(true) );
+        return deploy(deployment.getArchive(true));
     }
 
     /**
@@ -291,5 +300,76 @@ public class Container {
         public void fraction(Fraction fraction) {
             dependentFraction(fraction);
         }
+    }
+
+    protected Deployment createDefaultDeployment() throws Exception {
+        Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
+        ServiceLoader<DefaultDeploymentFactory> providerLoader = m1.loadService(DefaultDeploymentFactory.class);
+
+        Iterator<DefaultDeploymentFactory> providerIter = providerLoader.iterator();
+
+        if (!providerIter.hasNext()) {
+            providerLoader = ServiceLoader.load(DefaultDeploymentFactory.class, ClassLoader.getSystemClassLoader());
+            providerIter = providerLoader.iterator();
+        }
+
+        Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
+
+        while (providerIter.hasNext()) {
+            DefaultDeploymentFactory factory = providerIter.next();
+            DefaultDeploymentFactory current = factories.get(factory.getType());
+            if (current == null) {
+                factories.put(factory.getType(), factory);
+            } else {
+                // if this one is high priority than the previously-seen
+                // factory, replace it.
+                if (factory.getPriority() > current.getPriority()) {
+                    factories.put(factory.getType(), factory);
+                }
+            }
+        }
+
+        DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
+
+        if (factory == null) {
+            throw new RuntimeException("Unable to create default deployment");
+        }
+
+        return factory.create( this );
+    }
+
+    protected String determineDeploymentType() throws IOException {
+        String artifact = System.getProperty("wildfly.swarm.app.path");
+        if (artifact != null) {
+            int dotLoc = artifact.lastIndexOf('.');
+            if (dotLoc >= 0) {
+                return artifact.substring(dotLoc + 1);
+            }
+        }
+
+        artifact = System.getProperty("wildfly.swarm.app.artifact");
+        if (artifact != null) {
+            int dotLoc = artifact.lastIndexOf('.');
+            if (dotLoc >= 0) {
+                return artifact.substring(dotLoc + 1);
+            }
+        }
+
+        if (Files.exists(Paths.get("pom.xml"))) {
+            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("pom.xml").toFile()))){
+                String line = null;
+
+                while ( ( line = in.readLine() ) != null ) {
+                    line = line.trim();
+                    if ( line.equals("<packaging>jar</packaging>") ) {
+                        return "jar";
+                    } else if ( line.equals( "<packaging>war</packaging>" ) ) {
+                        return "war";
+                    }
+                }
+            }
+        }
+
+        return "unknown";
     }
 }

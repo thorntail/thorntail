@@ -1,10 +1,7 @@
 package org.wildfly.swarm.integration.jaxrs;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.WarDeployment;
 import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 import org.wildfly.swarm.jaxrs.JAXRSDeployment;
 

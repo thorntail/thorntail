@@ -1,13 +1,13 @@
-package org.wildfly.swarm.container;
+package org.wildfly.swarm.undertow;
 
 import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.Deployment;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,10 +15,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
