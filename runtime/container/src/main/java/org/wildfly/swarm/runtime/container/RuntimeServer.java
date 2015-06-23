@@ -163,7 +163,7 @@ public class RuntimeServer implements Server {
 
         while (providerIter.hasNext()) {
             RuntimeModuleProvider provider = providerIter.next();
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName()));
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName(), provider.getSlotName()));
             ServiceLoader<ServerConfiguration> configLoaders = module.loadService(ServerConfiguration.class);
 
             for (ServerConfiguration serverConfig : configLoaders) {
