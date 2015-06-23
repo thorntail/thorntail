@@ -6,10 +6,9 @@ import javax.ws.rs.core.Application;
 
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.WarDeployment;
+import org.wildfly.swarm.undertow.WarDeployment;
 
 /**
  * @author Bob McWhirter
@@ -70,7 +69,6 @@ public class JAXRSDeployment extends WarDeployment {
         try {
             this.archive.add(new ByteArrayAsset(FaviconExceptionMapperFactory.create()), "WEB-INF/classes/org/wildfly/swarm/generated/FaviconExceptionMapper.class" );
             this.archive.addClass(FaviconHandler.class);
-            this.archive.addClass(FaviconEntity.class);
             this.structureModules.add( "org.jboss.modules" );
         } catch (IOException e) {
             e.printStackTrace();
