@@ -155,10 +155,12 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 if (includeAsBootstrapJar(each)) {
                     gatherDependency(each);
                     //bootstrapGavs.add(each.toString());
-                    if (each.getClassifier() == null) {
-                        bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
-                    } else {
-                        bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + ":" + each.getClassifier());
+                    if ( each.getType().equals( "jar" ) ) {
+                        if (each.getClassifier() == null) {
+                            bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
+                        } else {
+                            bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + ":" + each.getClassifier());
+                        }
                     }
                 }
             }
@@ -316,7 +318,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 if (provided.contains(each.getGroupId() + ":" + each.getArtifactId())) {
                     continue;
                 }
-                if (each.getScope().equals("compile")) {
+                if (each.getScope().equals("compile") && each.getType().equals("jar")) {
                     this.dependencies.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
                     out.write(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n");
                 }
@@ -349,6 +351,9 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     }
 
     protected void analyzeModuleDependencies(Artifact artifact) throws IOException {
+        if (!artifact.getType().equals("jar")) {
+            return;
+        }
 
         JarFile jar = new JarFile(artifact.getFile());
 

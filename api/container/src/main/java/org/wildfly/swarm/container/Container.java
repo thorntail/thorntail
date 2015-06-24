@@ -370,6 +370,21 @@ public class Container {
             }
         }
 
+        if (Files.exists(Paths.get("Mavenfile"))) {
+            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("Mavenfile").toFile()))){
+                String line = null;
+
+                while ( ( line = in.readLine() ) != null ) {
+                    line = line.trim();
+                    if ( line.equals("packaging :jar") ) {
+                        return "jar";
+                    } else if ( line.equals( "packaging :war" ) ) {
+                        return "war";
+                    }
+                }
+            }
+        }
+
         return "unknown";
     }
 }
