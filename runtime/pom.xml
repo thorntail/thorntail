@@ -44,7 +44,6 @@
     <module>transactions</module>
     <module>undertow</module>
     <module>weld</module>
-    <module>weld-jaxrs</module>
   </modules>
 
 </project>

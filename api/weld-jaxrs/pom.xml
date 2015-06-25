@@ -33,14 +33,6 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-        <!--
-                        <configuration>
-                          <feature-pack>org.wildfly:wildfly-feature-pack</feature-pack>
-                          <modules>
-                            <module>org.jboss.resteasy.resteasy-validator-provider-11</module>
-                          </modules>
-                        </configuration>
-        -->
       </plugin>
     </plugins>
   </build>
@@ -53,11 +45,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-jaxrs</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
     </dependency>
 
     <dependency>
