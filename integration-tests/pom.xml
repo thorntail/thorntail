@@ -25,6 +25,7 @@
   <modules>
     <module>base</module>
     <module>jaxrs</module>
+    <module>ejb</module>
     <module>static-deployment</module>
     <module>static-war</module>
     <module>fractions</module>

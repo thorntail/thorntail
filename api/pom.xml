@@ -28,6 +28,7 @@
     <module>container</module>
     <module>datasources</module>
     <module>ee</module>
+    <module>ejb</module>
     <module>hibernate-validator</module>
     <module>io</module>
     <module>jca</module>
