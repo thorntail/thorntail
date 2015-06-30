@@ -47,6 +47,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+import org.wildfly.swarm.tools.BuildTool;
 
 /**
  * @author Bob McWhirter
@@ -60,7 +61,6 @@ import org.eclipse.aether.resolution.ArtifactResult;
 )
 public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
-    private static final Pattern ARTIFACT_PATTERN = Pattern.compile("<artifact name=\"([^\"]+)\".*");
 
     @Component
     protected MavenProject project;
@@ -73,6 +73,9 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
     protected List<ArtifactRepository> remoteRepositories;
+
+    @Inject
+    private ArtifactResolver resolver;
 
     @Parameter(alias = "modules")
     private String[] additionalModules;
@@ -96,501 +99,62 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     private String contextPath;
 
 
-    @Inject
-    private ArtifactResolver resolver;
 
 
-    private Path dir;
-
-    private Set<String> dependencies = new HashSet<>();
+    private BuildTool tool;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        setupDirectory();
-        addWildflySwarmBootstrapJar();
-        addBootstrapJars();
-        createManifest();
-        createWildflySwarmProperties();
-        createDependenciesTxt();
-        collectDependencies();
-        createJar();
-    }
+        this.tool = new BuildTool( Paths.get( this.projectBuildDir ) );
 
-    private void setupDirectory() throws MojoFailureException {
-        this.dir = Paths.get(this.projectBuildDir, "wildfly-swarm-archive");
-        try {
-            if (Files.exists(dir)) {
-                emptyDir(dir);
-            }
-        } catch (IOException e) {
-            throw new MojoFailureException("Failed to setup wildfly-swarm-archive directory", e);
-        }
-    }
+        this.tool.projectArtifact(
+                this.project.getArtifact().getGroupId(),
+                this.project.getArtifact().getArtifactId(),
+                this.project.getArtifact().getVersion(),
+                this.project.getArtifact().getType(),
+                this.project.getArtifact().getFile());
 
-    private void addWildflySwarmBootstrapJar() throws MojoFailureException {
-        Artifact artifact = findArtifact("org.wildfly.swarm", "wildfly-swarm-bootstrap", "jar");
-        if (artifact == null) {
-            getLog().error("--------------------------------------------------------------------------------------------------------");
-            getLog().error("Unable to locate wildfly-swarm-bootstrap.jar in project dependencies.");
-            getLog().error("Please ensure that your project contains some wildfly-swarm-*.jar dependency with <scope>compile</scope>");
-            getLog().error("--------------------------------------------------------------------------------------------------------");
-            throw new MojoFailureException("Unable to locate wildfly-swarm-bootstrap.jar in project dependencies.");
-        }
-        try {
-            expandArtifact(artifact);
-        } catch (IOException e) {
-            throw new MojoFailureException("Unable to add bootstrap", e);
-        }
-    }
-
-    private void addBootstrapJars() throws MojoFailureException {
-
-        Set<String> bootstrapGavs = new HashSet<>();
-        Path projectArtifactPath = null;
-
-        try {
-            Set<Artifact> artifacts = this.project.getArtifacts();
-
-            for (Artifact each : artifacts) {
-                if (includeAsBootstrapJar(each)) {
-                    gatherDependency(each);
-                    //bootstrapGavs.add(each.toString());
-                    if ( each.getType().equals( "jar" ) ) {
-                        if (each.getClassifier() == null) {
-                            bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
-                        } else {
-                            bootstrapGavs.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + ":" + each.getClassifier());
-                        }
-                    }
-                }
-            }
-
-            Path bootstrapJars = this.dir.resolve("_bootstrap");
-            projectArtifactPath = bootstrapJars.resolve(this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging());
-            Files.createDirectories(bootstrapJars);
-            Files.copy(this.project.getArtifact().getFile().toPath(), projectArtifactPath);
-
-        } catch (IOException e) {
-            throw new MojoFailureException("Unable to create _bootstrap directory", e);
-        }
-
-        final Path bootstrapTxt = dir.resolve("META-INF").resolve("wildfly-swarm-bootstrap.txt");
-        try {
-            Files.createDirectories(bootstrapTxt.getParent());
-            try (final OutputStreamWriter out = new OutputStreamWriter(Files.newOutputStream(bootstrapTxt, StandardOpenOption.CREATE))) {
-                for (String each : bootstrapGavs) {
-                    out.write("gav: " + each + "\n");
-                }
-                out.write("path: _bootstrap/" + this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging() + "\n");
-            }
-        } catch (IOException e) {
-            throw new MojoFailureException("Could not create wildfly-swarm-bootstrap.txt", e);
-        }
-    }
-
-    private boolean includeAsBootstrapJar(Artifact artifact) {
-        // TODO figure out a better more generic way
-        if (artifact.getGroupId().equals("org.wildfly.swarm") && artifact.getArtifactId().equals("wildfly-swarm-bootstrap")) {
-            return false;
-        }
-
-        if (artifact.getGroupId().equals("org.wildfly.swarm")) {
-            return true;
-        }
-
-        if (artifact.getGroupId().equals("org.jboss.shrinkwrap")) {
-            return true;
-        }
-
-        if (artifact.getGroupId().equals("org.jboss.msc") && artifact.getArtifactId().equals("jboss-msc")) {
-            return false;
-        }
-
-        return !artifact.getScope().equals("provided");
-    }
-
-    private void createManifest() throws MojoFailureException {
-        Manifest manifest = new Manifest();
-
-        Attributes attrs = manifest.getMainAttributes();
-        attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-        attrs.put(Attributes.Name.MAIN_CLASS, "org.wildfly.swarm.bootstrap.Main");
-        if (this.mainClass != null && !this.mainClass.equals("")) {
-            attrs.put(new Attributes.Name("Wildfly-Swarm-Main-Class"), this.mainClass);
-        }
-        attrs.putValue("Application-Artifact", this.project.getArtifact().getFile().getName());
-
-        // Write the manifest to the dir
-        final Path manifestPath = dir.resolve("META-INF").resolve("MANIFEST.MF");
-        // Ensure the directories have been created
-        try {
-            Files.createDirectories(manifestPath.getParent());
-            try (final OutputStream out = Files.newOutputStream(manifestPath, StandardOpenOption.CREATE)) {
-                manifest.write(out);
-            }
-        } catch (IOException e) {
-            throw new MojoFailureException("Could not create manifest file: " + manifestPath.toString(), e);
-        }
-    }
-
-    private void createWildflySwarmProperties() throws MojoFailureException {
-        Path propsPath = dir.resolve("META-INF").resolve("wildfly-swarm.properties");
-
-        Properties props = new Properties();
-        //props.setProperty("wildfly.swarm.app.artifact", this.project.getBuild().getFinalName() + "." + this.project.getPackaging());
-        props.setProperty("wildfly.swarm.app.artifact", this.project.getArtifactId() + "-" + this.project.getVersion() + "." + this.project.getPackaging());
-        props.setProperty("wildfly.swarm.context.path", this.contextPath);
-        props.setProperty("jboss.http.port", "" + this.httpPort);
-        props.setProperty("jboss.socket.binding.port-offset", "" + this.portOffset);
-        props.setProperty("jboss.bind.address", this.bindAddress);
-
-        try {
-            try (FileOutputStream out = new FileOutputStream(propsPath.toFile())) {
-                props.store(out, "Generated By Wildfly Swarm");
-            }
-        } catch (IOException e) {
-            throw new MojoFailureException("Unable to create META-INF/wildfly-swarm.properties", e);
-        }
-    }
-
-    private void createDependenciesTxt() throws MojoFailureException {
-        Set<String> provided = new HashSet<>();
-        Set<Artifact> artifacts = this.project.getArtifacts();
-
-        for (Artifact each : artifacts) {
-            if (each.getType().equals("jar")) {
-                try {
-                    try (JarFile jar = new JarFile(each.getFile())) {
-
-                        ZipEntry entry = jar.getEntry("provided-dependencies.txt");
-                        if (entry != null) {
-                            // add ourselves
-                            provided.add(each.getGroupId() + ":" + each.getArtifactId());
-
-                            try (InputStream in = jar.getInputStream(entry)) {
-                                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                                String line = null;
-
-                                // add everything mentioned in the file
-                                while ((line = reader.readLine()) != null) {
-                                    line = line.trim();
-                                    if (line.length() > 0) {
-                                        provided.add(line);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    throw new MojoFailureException("Unable to inspect jar", e);
-                }
-            }
+        Set<Artifact> deps = this.project.getArtifacts();
+        for ( Artifact each : deps ) {
+            this.tool.dependency(each.getScope(), each.getGroupId(), each.getArtifactId(), each.getVersion(), each.getType(), each.getClassifier(), each.getFile());
         }
 
         List<Resource> resources = this.project.getResources();
-        for (Resource each : resources) {
-            Path providedDependencies = Paths.get(each.getDirectory(), "provided-dependencies.txt");
-            if (Files.exists(providedDependencies)) {
-
-                try {
-                    try (InputStream in = new FileInputStream(providedDependencies.toFile())) {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                        String line = null;
-
-                        // add everything mentioned in the file
-                        while ((line = reader.readLine()) != null) {
-                            line = line.trim();
-                            if (line.length() > 0) {
-                                provided.add(line);
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    throw new MojoFailureException("Error reading project's provided-dependencies.txt");
-                }
-            }
+        for ( Resource each : resources ) {
+           this.tool.resourceDirectory( each.getDirectory() );
         }
 
-        Path depsPath = dir.resolve("META-INF").resolve("wildfly-swarm-dependencies.txt");
+        this.tool
+                .mainClass( this.mainClass )
+                .contextPath( this.contextPath )
+                .portOffset( this.portOffset )
+                .httpPort( this.httpPort )
+                .bindAddress( this.bindAddress );
 
-        try (FileWriter out = new FileWriter(depsPath.toFile())) {
-            for (Artifact each : artifacts) {
-                if (provided.contains(each.getGroupId() + ":" + each.getArtifactId())) {
-                    continue;
-                }
-                if (each.getScope().equals("compile") && each.getType().equals("jar")) {
-                    this.dependencies.add(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion());
-                    out.write(each.getGroupId() + ":" + each.getArtifactId() + ":" + each.getVersion() + "\n");
-                }
+        this.tool.artifactResolvingHelper( new MavenArtifactResolvingHelper( this.resolver, this.repositorySystemSession, this.remoteRepositories ) );
 
-            }
-        } catch (Exception e) {
-            throw new MojoFailureException("Unable to create META-INF/wildfly-swarm-dependencies.txt");
-        }
-    }
-
-    protected void collectDependencies() throws MojoFailureException {
-        if (!this.bundleDependencies) {
-            return;
-        }
         try {
-            analyzeModuleDependencies();
-        } catch (IOException e) {
-            throw new MojoFailureException("Unable to collect dependencies", e);
+            File jar = this.tool.build( this.project.getBuild().getFinalName() );
+
+            Artifact primaryArtifact = this.project.getArtifact();
+
+            ArtifactHandler handler = new DefaultArtifactHandler("jar");
+            Artifact swarmJarArtifact = new DefaultArtifact(
+                    primaryArtifact.getGroupId(),
+                    primaryArtifact.getArtifactId(),
+                    primaryArtifact.getVersion(),
+                    primaryArtifact.getScope(),
+                    "jar",
+                    "swarm",
+                    handler
+            );
+
+            swarmJarArtifact.setFile( jar );
+
+            this.project.addAttachedArtifact( swarmJarArtifact );
+        } catch (Exception e) {
+            throw new MojoFailureException("Unable to create -swarm.jar", e);
         }
-
-        gatherDependencies();
-    }
-
-    protected void analyzeModuleDependencies() throws IOException {
-        for (Artifact each : this.project.getArtifacts()) {
-            if (includeAsBootstrapJar(each)) {
-                analyzeModuleDependencies(each);
-            }
-        }
-    }
-
-    protected void analyzeModuleDependencies(Artifact artifact) throws IOException {
-        if (!artifact.getType().equals("jar")) {
-            return;
-        }
-
-        JarFile jar = new JarFile(artifact.getFile());
-
-        Enumeration<JarEntry> entries = jar.entries();
-
-        while (entries.hasMoreElements()) {
-            JarEntry each = entries.nextElement();
-            String name = each.getName();
-
-            if (name.startsWith("modules/") && name.endsWith("module.xml")) {
-                try (InputStream in = jar.getInputStream(each)) {
-                    analyzeModuleDependencies(in);
-                }
-            }
-        }
-    }
-
-    protected void analyzeModuleDependencies(InputStream moduleXml) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(moduleXml));
-
-        String line = null;
-
-        while ((line = reader.readLine()) != null) {
-            Matcher matcher = ARTIFACT_PATTERN.matcher(line.trim());
-            if (matcher.matches()) {
-                this.dependencies.add(matcher.group(1));
-            }
-        }
-
-    }
-
-    protected void gatherDependencies() throws MojoFailureException {
-        for (String each : this.dependencies) {
-            try {
-                gatherDependency(each);
-            } catch (ArtifactResolutionException e) {
-                throw new MojoFailureException("Unable to resolve artifact: " + each, e);
-            }
-        }
-    }
-
-    protected void gatherDependency(String gav) throws ArtifactResolutionException, MojoFailureException {
-        String[] parts = gav.split(":");
-
-        if (parts.length < 3) {
-            throw new MojoFailureException("GAV must be at least 3 parts: " + gav);
-        }
-
-        String groupId = parts[0];
-        String artifactId = parts[1];
-        String packaging = "jar";
-        String version = null;
-        String classifier = null;
-
-        if (parts.length > 3) {
-            version = parts[2];
-            classifier = parts[3];
-        } else {
-            version = parts[2];
-        }
-
-        ArtifactRequest request = new ArtifactRequest();
-
-        org.eclipse.aether.artifact.DefaultArtifact aetherArtifact
-                = new org.eclipse.aether.artifact.DefaultArtifact(groupId, artifactId, classifier, packaging, version);
-
-        request.setArtifact(aetherArtifact);
-        request.setRepositories(remoteRepositories());
-
-        ArtifactResult result = resolver.resolveArtifact(this.repositorySystemSession, request);
-
-        if (result.isResolved()) {
-            try {
-                gatherDependency(result.getArtifact());
-            } catch (IOException e) {
-                throw new MojoFailureException("Unable to gather dependency: " + gav, e);
-            }
-        }
-    }
-
-    protected void gatherDependency(Artifact artifact) throws IOException {
-        org.eclipse.aether.artifact.Artifact a = new org.eclipse.aether.artifact.DefaultArtifact(
-                artifact.getGroupId(),
-                artifact.getArtifactId(),
-                artifact.getClassifier(),
-                artifact.getType(),
-                artifact.getVersion());
-        a = a.setFile(artifact.getFile());
-        gatherDependency(a);
-    }
-
-    protected void gatherDependency(org.eclipse.aether.artifact.Artifact artifact) throws IOException {
-        Path artifactPath = this.dir.resolve("m2repo");
-
-        String[] groupIdParts = artifact.getGroupId().split("\\.");
-
-        for (int i = 0; i < groupIdParts.length; ++i) {
-            artifactPath = artifactPath.resolve(groupIdParts[i]);
-        }
-
-        artifactPath = artifactPath.resolve(artifact.getArtifactId());
-        artifactPath = artifactPath.resolve(artifact.getVersion());
-        artifactPath = artifactPath.resolve(artifact.getFile().getName());
-
-        if (Files.exists(artifactPath)) {
-            return;
-        }
-
-        Files.createDirectories(artifactPath.getParent());
-        Files.copy(artifact.getFile().toPath(), artifactPath, StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    private void createJar() throws MojoFailureException {
-
-        Artifact primaryArtifact = this.project.getArtifact();
-
-        ArtifactHandler handler = new DefaultArtifactHandler("jar");
-        Artifact artifact = new DefaultArtifact(
-                primaryArtifact.getGroupId(),
-                primaryArtifact.getArtifactId(),
-                primaryArtifact.getVersion(),
-                primaryArtifact.getScope(),
-                "jar",
-                "swarm",
-                handler
-        );
-
-        String name = this.project.getBuild().getFinalName() + "-swarm.jar";
-
-        File file = new File(this.projectBuildDir, name);
-        try (
-                FileOutputStream fileOut = new FileOutputStream(file);
-                JarOutputStream out = new JarOutputStream(fileOut)
-        ) {
-            writeToJar(out, this.dir);
-        } catch (IOException e) {
-            throw new MojoFailureException("Unable to create jar", e);
-        }
-
-        artifact.setFile(file);
-
-        this.project.addAttachedArtifact(artifact);
-    }
-
-    private void emptyDir(final Path dir) throws IOException {
-        Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                Files.delete(dir);
-                return FileVisitResult.CONTINUE;
-            }
-        });
-    }
-
-    private void expandArtifact(Artifact artifact) throws IOException {
-
-        Path destination = this.dir;
-
-        File artifactFile = artifact.getFile();
-
-        if (artifact.getType().equals("jar")) {
-            JarFile jarFile = new JarFile(artifactFile);
-            Enumeration<JarEntry> entries = jarFile.entries();
-
-            while (entries.hasMoreElements()) {
-                JarEntry each = entries.nextElement();
-                if (each.getName().startsWith("META-INF")) {
-                    continue;
-                }
-                Path fsEach = destination.resolve(each.getName());
-                if (each.isDirectory()) {
-                    Files.createDirectories(fsEach);
-                } else {
-                    try (InputStream in = jarFile.getInputStream(each)) {
-                        Files.createDirectories(fsEach.getParent());
-                        Files.copy(in, fsEach, StandardCopyOption.REPLACE_EXISTING);
-                    }
-                }
-            }
-        }
-    }
-
-    private Artifact findArtifact(String groupId, String artifactId, String type) {
-        Set<Artifact> artifacts = this.project.getArtifacts();
-
-        for (Artifact each : artifacts) {
-            if (each.getGroupId().equals(groupId) && each.getArtifactId().equals(artifactId) && each.getType().equals(type)) {
-                return each;
-            }
-        }
-
-        return null;
-    }
-
-
-    private void writeToJar(final JarOutputStream out, final Path entry) throws IOException {
-        String rootPath = this.dir.toAbsolutePath().toString();
-        String entryPath = entry.toAbsolutePath().toString();
-
-        if (!rootPath.equals(entryPath)) {
-            String jarPath = entryPath.substring(rootPath.length() + 1);
-            if (Files.isDirectory(entry)) {
-                jarPath = jarPath + "/";
-            }
-            out.putNextEntry(new ZipEntry(jarPath.replace(File.separatorChar, '/')));
-        }
-
-        if (Files.isDirectory(entry)) {
-            Files.walkFileTree(entry, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                    writeToJar(out, file);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } else {
-            Files.copy(entry, out);
-        }
-    }
-
-    protected List<RemoteRepository> remoteRepositories() {
-        List<RemoteRepository> repos = new ArrayList<>();
-
-        for (ArtifactRepository each : this.remoteRepositories) {
-            RemoteRepository.Builder builder = new RemoteRepository.Builder(each.getId(), "default", each.getUrl());
-            repos.add(builder.build());
-        }
-
-        repos.add(new RemoteRepository.Builder("jboss-public-repository-group", "default", "http://repository.jboss.org/nexus/content/groups/public/").build());
-
-        return repos;
     }
 
 }
