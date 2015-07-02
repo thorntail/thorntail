@@ -1,28 +1,9 @@
-package org.wildfly.swarm.plugin;
+package org.wildfly.swarm.plugin.maven;
 
 import java.io.*;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
 
 import javax.inject.Inject;
 
@@ -43,10 +24,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
 import org.wildfly.swarm.tools.BuildTool;
 
 /**
@@ -131,7 +108,12 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 .httpPort( this.httpPort )
                 .bindAddress( this.bindAddress );
 
-        this.tool.artifactResolvingHelper( new MavenArtifactResolvingHelper( this.resolver, this.repositorySystemSession, this.remoteRepositories ) );
+        MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystemSession);
+        for (ArtifactRepository each : this.remoteRepositories) {
+            resolvingHelper.remoteRepository( each );
+        }
+
+        this.tool.artifactResolvingHelper( resolvingHelper );
 
         try {
             File jar = this.tool.build( this.project.getBuild().getFinalName() );

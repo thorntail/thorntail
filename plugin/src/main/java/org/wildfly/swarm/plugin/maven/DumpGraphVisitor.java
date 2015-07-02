@@ -1,4 +1,4 @@
-package org.wildfly.swarm.plugin;
+package org.wildfly.swarm.plugin.maven;
 
 import java.util.HashSet;
 import java.util.Set;

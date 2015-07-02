@@ -1,4 +1,4 @@
-package org.wildfly.swarm.plugin;
+package org.wildfly.swarm.plugin.maven;
 
 /**
  * @author Bob McWhirter

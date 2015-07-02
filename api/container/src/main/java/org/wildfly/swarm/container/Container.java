@@ -332,6 +332,7 @@ public class Container {
         DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
 
         if (factory == null) {
+            System.err.println( "factories: " + factories + " // " + determineDeploymentType() );
             throw new RuntimeException("Unable to create default deployment");
         }
 

@@ -1,4 +1,4 @@
-package org.wildfly.swarm.plugin;
+package org.wildfly.swarm.plugin.maven;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.eclipse.aether.RepositorySystemSession;
@@ -24,15 +24,19 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
 
 
-    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystemSession session, List<ArtifactRepository> remoteRepositories) {
+    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystemSession session) {
         this.resolver = resolver;
         this.session = session;
-        for (ArtifactRepository each : remoteRepositories) {
-            RemoteRepository.Builder builder = new RemoteRepository.Builder(each.getId(), "default", each.getUrl());
-            this.remoteRepositories.add(builder.build());
-        }
-
         this.remoteRepositories.add(new RemoteRepository.Builder("jboss-public-repository-group", "default", "http://repository.jboss.org/nexus/content/groups/public/").build());
+    }
+
+    public void remoteRepository(ArtifactRepository repo) {
+        RemoteRepository.Builder builder = new RemoteRepository.Builder(repo.getId(), "default", repo.getUrl());
+        this.remoteRepositories.add(builder.build());
+    }
+
+    public void remoteRepository(RemoteRepository repo) {
+        this.remoteRepositories.add( repo );
     }
 
     @Override
@@ -56,6 +60,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 return spec;
             }
         } catch (ArtifactResolutionException e) {
+            System.err.println( "ERR " + e );
+            e.printStackTrace();
             return null;
         }
 

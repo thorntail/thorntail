@@ -82,6 +82,14 @@ public class BuildTool {
         return this;
     }
 
+    public Set<ArtifactSpec> dependencies() {
+        return this.dependencies;
+    }
+
+    public Set<ArtifactSpec> moduleDependencies() {
+        return this.moduleDependencies;
+    }
+
     public BuildTool artifactResolvingHelper(ArtifactResolvingHelper resolver) {
         this.resolver = resolver;
         return this;
@@ -175,12 +183,13 @@ public class BuildTool {
     }
 
     protected void gatherDependency(ArtifactSpec artifact) throws Exception {
+        ArtifactSpec originalArtifact = artifact;
         if ( artifact.file == null ) {
             artifact = this.resolver.resolve(artifact);
         }
 
         if (artifact == null) {
-            throw new BuildException("Unable to resolve artifact: " + artifact);
+            throw new BuildException("Unable to resolve artifact: " + originalArtifact);
         }
 
         Path artifactPath = this.dir.resolve("m2repo");
@@ -383,7 +392,6 @@ public class BuildTool {
     private File createJar(String baseName) throws IOException {
 
         File file = this.outputDir.resolve(baseName + "-swarm.jar").toFile();
-        System.err.println( "created: " + file );
         try (
                 FileOutputStream fileOut = new FileOutputStream(file);
                 JarOutputStream out = new JarOutputStream(fileOut)
@@ -422,29 +430,23 @@ public class BuildTool {
 
     public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier) {
         for (ArtifactSpec each : this.dependencies) {
-            System.err.println("check: " + each.groupId + ":" + each.artifactId + ":" + each.packaging);
             if (groupId != null && !groupId.equals(each.groupId)) {
-                System.err.println("wrong group");
                 continue;
             }
 
             if (artifactId != null && !artifactId.equals(each.artifactId)) {
-                System.err.println("wrong artifact");
                 continue;
             }
 
             if (version != null && !version.equals(each.version)) {
-                System.err.println("wrong version");
                 continue;
             }
 
             if (packaging != null && !packaging.equals(each.packaging)) {
-                System.err.println("wrong packaging");
                 continue;
             }
 
             if (classifier != null && !classifier.equals(each.classifier)) {
-                System.err.println("wrong classifier");
                 continue;
             }
 
