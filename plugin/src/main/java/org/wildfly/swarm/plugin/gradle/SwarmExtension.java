@@ -10,11 +10,11 @@ public class SwarmExtension {
 
     }
 
-    public void setMainClass(String mainClass) {
+    public void setMainClassName(String mainClass) {
         this.mainClass = mainClass;
     }
 
-    public String getMainClass() {
+    public String getMainClassName() {
         return this.mainClass;
     }
 }
