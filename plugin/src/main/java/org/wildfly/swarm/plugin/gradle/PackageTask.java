@@ -28,8 +28,6 @@ public class PackageTask extends DefaultTask {
 
     @TaskAction
     public void packageForSwarm() throws Exception {
-        System.err.println("running task");
-
         Project project = getProject();
 
         SwarmExtension ext = (SwarmExtension) project.getExtensions().getByName("swarm");
@@ -49,7 +47,7 @@ public class PackageTask extends DefaultTask {
 
         this.tool.mainClass( ext.getMainClass() );
 
-        this.tool.build(project.getName());
+        this.tool.build(project.getName(), project.getBuildDir().toPath().resolve( "libs" ));
     }
 
     private void walk(ResolvedDependency dep) {

@@ -101,6 +101,10 @@ public class BuildTool {
     }
 
     public File build(String baseName) throws Exception {
+        return build( baseName, this.outputDir );
+    }
+
+    public File build(String baseName, Path dir) throws Exception {
         prepareDir();
         addWildflySwarmBootstrapJar();
         addBootstrapJars();
@@ -108,7 +112,7 @@ public class BuildTool {
         createWildflySwarmProperties();
         createDependenciesTxt();
         collectDependencies();
-        return createJar(baseName);
+        return createJar(baseName, dir);
     }
 
     private void prepareDir() throws IOException {
@@ -389,9 +393,9 @@ public class BuildTool {
         }
     }
 
-    private File createJar(String baseName) throws IOException {
+    private File createJar(String baseName, Path dir) throws IOException {
 
-        File file = this.outputDir.resolve(baseName + "-swarm.jar").toFile();
+        File file = dir.resolve(baseName + "-swarm.jar").toFile();
         try (
                 FileOutputStream fileOut = new FileOutputStream(file);
                 JarOutputStream out = new JarOutputStream(fileOut)

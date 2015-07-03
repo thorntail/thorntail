@@ -9,10 +9,12 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.artifacts.ResolvedDependency;
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.internal.artifacts.DefaultExcludeRule;
 import org.gradle.api.internal.artifacts.dependencies.DefaultDependencyArtifact;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
@@ -33,6 +35,13 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     public GradleArtifactResolvingHelper(Project project) {
         this.project = project;
+        this.project.getRepositories().maven(new Action<MavenArtifactRepository>() {
+            @Override
+            public void execute(MavenArtifactRepository repo) {
+                repo.setName("jboss-public");
+                repo.setUrl("http://repository.jboss.org/nexus/content/groups/public/");
+            }
+        });
     }
 
 
