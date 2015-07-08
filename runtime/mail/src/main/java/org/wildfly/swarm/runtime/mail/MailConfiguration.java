@@ -72,7 +72,7 @@ public class MailConfiguration extends AbstractServerConfiguration<MailFraction>
         list.add(node);
 
         node = new ModelNode();
-        node.get(OP_ADDR).set(smtpServerAddress.append("socket-binding-group", "standard-sockets").append("remote-destination-outbound-socket-binding", smtpServer.outboundSocketBindingRef()).toModelNode());
+        node.get(OP_ADDR).set(PathAddress.pathAddress("socket-binding-group", "default-sockets").append("remote-destination-outbound-socket-binding", smtpServer.outboundSocketBindingRef()).toModelNode());
         node.get(OP).set(ADD);
         node.get("host").set(smtpServer.host());
         node.get("port").set(smtpServer.port());
