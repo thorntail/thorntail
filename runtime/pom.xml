@@ -34,6 +34,7 @@
     <module>jaxrs</module>
     <module>jpa</module>
     <module>logging</module>
+    <module>mail</module>
     <module>messaging</module>
     <module>msc</module>
     <module>naming</module>
