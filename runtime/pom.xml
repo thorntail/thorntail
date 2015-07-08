@@ -33,6 +33,7 @@
     <module>jca</module>
     <module>jaxrs</module>
     <module>jpa</module>
+    <module>jsf</module>
     <module>logging</module>
     <module>mail</module>
     <module>messaging</module>

@@ -26,6 +26,7 @@
     <module>base</module>
     <module>jaxrs</module>
     <module>ejb</module>
+    <module>jsf</module>
     <module>mail</module>
     <module>static-deployment</module>
     <module>static-war</module>
