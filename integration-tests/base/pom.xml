@@ -4,50 +4,51 @@
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-integration-tests</artifactId>
-        <version>1.0.0.Alpha4-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
-
+  <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-integration-tests-base</artifactId>
+    <artifactId>wildfly-swarm-integration-tests</artifactId>
+    <version>1.0.0.Alpha4-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
 
-    <name>WildFly Swarm: Integration Tests: Base</name>
-    <description>WildFly Swarm: Integration Tests: Base</description>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-integration-tests-base</artifactId>
 
-    <packaging>jar</packaging>
+  <name>WildFly Swarm: Integration Tests: Base</name>
+  <description>WildFly Swarm: Integration Tests: Base</description>
 
-    <build>
-    </build>
+  <packaging>jar</packaging>
 
-    <dependencies>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-logging</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-core-feature-pack</artifactId>
-          <type>zip</type>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly</groupId>
-          <artifactId>wildfly-servlet-feature-pack</artifactId>
-          <type>zip</type>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly</groupId>
-          <artifactId>wildfly-feature-pack</artifactId>
-          <type>zip</type>
-          <scope>provided</scope>
-        </dependency>
-    </dependencies>
+  <build>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>

@@ -33,15 +33,6 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-        <!--
-                        <configuration>
-                          <feature-pack>org.wildfly:wildfly-web-feature-pack</feature-pack>
-                          <modules>
-                            <module>org.jboss.as.security</module>
-                            <module>org.jboss.security.negotiation</module>
-                          </modules>
-                        </configuration>
-        -->
       </plugin>
     </plugins>
   </build>

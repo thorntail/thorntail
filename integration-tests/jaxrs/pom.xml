@@ -4,71 +4,67 @@
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-integration-tests</artifactId>
-        <version>1.0.0.Alpha4-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
-
+  <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-integration-tests-jaxrs</artifactId>
+    <artifactId>wildfly-swarm-integration-tests</artifactId>
+    <version>1.0.0.Alpha4-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
 
-    <name>WildFly Swarm: Integration Tests: JAX-RS</name>
-    <description>WildFly Swarm: Integration Tests: JAX-RS</description>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-integration-tests-jaxrs</artifactId>
 
-    <packaging>jar</packaging>
+  <name>WildFly Swarm: Integration Tests: JAX-RS</name>
+  <description>WildFly Swarm: Integration Tests: JAX-RS</description>
 
-    <build>
-        <resources>
-            <resource>
-              <directory>${project.basedir}/src/main/resources</directory>
-              <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <systemPropertyVariables>
-                <maven.repo.local>${maven.repo.local}</maven.repo.local>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-    </build>
+  <packaging>jar</packaging>
 
-    <dependencies>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-integration-tests-base</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>joda-time</groupId>
-          <artifactId>joda-time</artifactId>
-          <version>2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>wildfly-swarm-jaxrs</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <maven.repo.local>${maven.repo.local}</maven.repo.local>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-integration-tests-base</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-jaxrs</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>

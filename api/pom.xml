@@ -40,9 +40,6 @@
     <module>messaging</module>
     <module>msc</module>
     <module>naming</module>
-    <!--
-          <module>request-controller</module>
-    -->
     <module>security</module>
     <module>transactions</module>
     <module>undertow</module>
