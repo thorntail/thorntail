@@ -59,6 +59,31 @@ public class PackageTask extends DefaultTask {
 
         this.tool.mainClass( ext.getMainClassName() );
 
+        Integer httpPort = ext.getHttpPort();
+        if(httpPort != null) {
+            this.tool.httpPort(httpPort);
+        }
+
+        Integer portOffset = ext.getPortOffset();
+        if(portOffset != null) {
+            this.tool.portOffset(portOffset);
+        }
+
+        String bindAddress = ext.getBindAddress();
+        if(bindAddress != null) {
+            this.tool.bindAddress(bindAddress);
+        }
+
+        String contextPath = ext.getContextPath();
+        if(contextPath != null) {
+            this.tool.contextPath(contextPath);
+        }
+
+        Boolean bundleDependencies = ext.getBundleDependencies();
+        if(bundleDependencies != null) {
+            this.tool.bundleDependencies(bundleDependencies);
+        }
+
         this.tool.build(project.getName(), project.getBuildDir().toPath().resolve( "libs" ));
     }
 
