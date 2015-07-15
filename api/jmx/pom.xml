@@ -15,10 +15,10 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-clustering</artifactId>
+  <artifactId>wildfly-swarm-jmx</artifactId>
 
-  <name>WildFly Swarm: Clustering API</name>
-  <description>WildFly Swarm: Clustering API</description>
+  <name>WildFly Swarm: JMX API</name>
+  <description>WildFly Swarm: JMX API</description>
 
   <packaging>jar</packaging>
 
@@ -41,14 +41,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-container</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jmx</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-clustering-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

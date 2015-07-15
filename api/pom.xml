@@ -24,9 +24,9 @@
 
   <modules>
     <module>bean-validation</module>
+    <module>clustering</module>
     <module>connector</module>
     <module>container</module>
-    <module>clustering</module>
     <module>datasources</module>
     <module>ee</module>
     <module>ejb</module>
@@ -34,6 +34,7 @@
     <module>io</module>
     <module>jca</module>
     <module>jaxrs</module>
+    <module>jmx</module>
     <module>jpa</module>
     <module>jsf</module>
     <module>logging</module>

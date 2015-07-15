@@ -50,6 +50,7 @@ public class ServiceActivatorDeployment implements Deployment {
                 "    <deployment>  \n" +
                 "         <dependencies>  \n" +
                 "              <module name=\"APP\" slot=\"dependencies\"/>  \n" +
+                "              <module name=\"org.wildfly.clustering.api\" optional=\"true\"/> \n" +
                 "        </dependencies>  \n" +
                 "    </deployment>  \n" +
                 "</jboss-deployment-structure>\n");

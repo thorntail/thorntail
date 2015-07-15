@@ -26,14 +26,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INET_ADDRESS;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT_OFFSET;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
 /**
  * @author Bob McWhirter
@@ -251,6 +244,12 @@ public class RuntimeServer implements Server {
         node.get(OP_ADDR).set(address.append("socket-binding", binding.name()).toModelNode());
         node.get(OP).set(ADD);
         node.get(PORT).set(new ValueExpression(binding.portExpression()));
+        if ( binding.multicastAddress() != null ) {
+            node.get(MULTICAST_ADDRESS).set( binding.multicastAddress() );
+        }
+        if ( binding.multicastPortExpression() != null ) {
+            node.get(MULTICAST_PORT ).set( new ValueExpression( binding.multicastPortExpression() ) );
+        }
 
         list.add(node);
     }

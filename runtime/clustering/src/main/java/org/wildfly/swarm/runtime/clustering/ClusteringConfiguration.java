@@ -28,12 +28,13 @@ public class ClusteringConfiguration extends AbstractServerConfiguration<Cluster
     @Override
     public List<ModelNode> getList(ClusteringFraction fraction) {
         List<ModelNode> list = new ArrayList<>();
-        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "bean-validation"));
 
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.clustering.jgroups");
         node.get(OP).set(ADD);
         list.add(node);
+
+        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "jgroups"));
 
         node = new ModelNode();
         node.get(OP_ADDR).set(address.toModelNode());
@@ -121,10 +122,9 @@ public class ClusteringConfiguration extends AbstractServerConfiguration<Cluster
         list.add(node);
 
         node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "udp").append("protocol", "RVSP").toModelNode());
+        node.get(OP_ADDR).set(address.append("stack", "udp").append("protocol", "RSVP").toModelNode());
         node.get(OP).set(ADD);
         list.add(node);
-
 
         return list;
 
