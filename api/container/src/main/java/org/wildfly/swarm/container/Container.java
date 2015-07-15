@@ -39,6 +39,7 @@ public class Container {
     private List<Fraction> dependentFractions = new ArrayList<>();
     private Set<Class<? extends Fraction>> defaultFractionTypes = new HashSet<>();
     private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
+    private Map<String, List<SocketBinding>> socketBindings = new HashMap<>();
     private List<Interface> interfaces = new ArrayList<>();
 
     private Server server;
@@ -207,6 +208,43 @@ public class Container {
         return this.socketBindingGroups;
     }
 
+    public SocketBindingGroup getSocketBindingGroup(String name) {
+        for (SocketBindingGroup each : this.socketBindingGroups) {
+            if (each.name().equals(name)) {
+                return each;
+            }
+        }
+
+        return null;
+    }
+
+
+    public Map<String, List<SocketBinding>> socketBindings() {
+        return this.socketBindings;
+    }
+
+
+    void socketBinding(SocketBinding binding) {
+        socketBinding("default-sockets", binding);
+    }
+
+    void socketBinding(String groupName, SocketBinding binding) {
+        List<SocketBinding> list = this.socketBindings.get(groupName);
+
+        if (list == null) {
+            list = new ArrayList<>();
+            this.socketBindings.put(groupName, list);
+        }
+
+        for (SocketBinding each : list) {
+            if (each.name().equals(binding.name())) {
+                throw new RuntimeException("Socket binding '" + binding.name() + "' already configured for '" + each.portExpression() + "'");
+            }
+        }
+
+        list.add( binding );
+    }
+
     /**
      * Start the container.
      *
@@ -298,7 +336,15 @@ public class Container {
      */
     public class InitContext {
         public void fraction(Fraction fraction) {
-            dependentFraction(fraction);
+            Container.this.dependentFraction(fraction);
+        }
+
+        public void socketBinding(SocketBinding binding) {
+            socketBinding("default-sockets", binding );
+        }
+
+        public void socketBinding(String groupName, SocketBinding binding) {
+            Container.this.socketBinding(groupName, binding );
         }
     }
 
@@ -332,11 +378,10 @@ public class Container {
         DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
 
         if (factory == null) {
-            System.err.println( "factories: " + factories + " // " + determineDeploymentType() );
             throw new RuntimeException("Unable to create default deployment");
         }
 
-        return factory.create( this );
+        return factory.create(this);
     }
 
     protected String determineDeploymentType() throws IOException {
@@ -357,14 +402,14 @@ public class Container {
         }
 
         if (Files.exists(Paths.get("pom.xml"))) {
-            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("pom.xml").toFile()))){
+            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("pom.xml").toFile()))) {
                 String line = null;
 
-                while ( ( line = in.readLine() ) != null ) {
+                while ((line = in.readLine()) != null) {
                     line = line.trim();
-                    if ( line.equals("<packaging>jar</packaging>") ) {
+                    if (line.equals("<packaging>jar</packaging>")) {
                         return "jar";
-                    } else if ( line.equals( "<packaging>war</packaging>" ) ) {
+                    } else if (line.equals("<packaging>war</packaging>")) {
                         return "war";
                     }
                 }
@@ -372,14 +417,14 @@ public class Container {
         }
 
         if (Files.exists(Paths.get("Mavenfile"))) {
-            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("Mavenfile").toFile()))){
+            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("Mavenfile").toFile()))) {
                 String line = null;
 
-                while ( ( line = in.readLine() ) != null ) {
+                while ((line = in.readLine()) != null) {
                     line = line.trim();
-                    if ( line.equals("packaging :jar") ) {
+                    if (line.equals("packaging :jar")) {
                         return "jar";
-                    } else if ( line.equals( "packaging :war" ) ) {
+                    } else if (line.equals("packaging :war")) {
                         return "war";
                     }
                 }

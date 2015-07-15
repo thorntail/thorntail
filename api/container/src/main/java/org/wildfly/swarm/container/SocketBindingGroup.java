@@ -36,13 +36,8 @@ public class SocketBindingGroup {
         return this.portOffsetExpression;
     }
 
-    public SocketBindingGroup socketBinding(String name, String portExpression) {
-        this.socketBindings.add(new SocketBinding(name, portExpression));
-        return this;
-    }
-
-    public SocketBindingGroup socketBinding(String name, int port) {
-        this.socketBindings.add(new SocketBinding(name, "" + port));
+    public SocketBindingGroup socketBinding(SocketBinding binding) {
+        this.socketBindings.add(binding);
         return this;
     }
 

@@ -26,6 +26,7 @@
     <module>bean-validation</module>
     <module>connector</module>
     <module>container</module>
+    <module>clustering</module>
     <module>datasources</module>
     <module>ee</module>
     <module>ejb</module>

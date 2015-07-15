@@ -24,6 +24,7 @@
 
   <modules>
     <module>bean-validation</module>
+    <module>clustering</module>
     <module>connector</module>
     <module>container</module>
     <module>datasources</module>

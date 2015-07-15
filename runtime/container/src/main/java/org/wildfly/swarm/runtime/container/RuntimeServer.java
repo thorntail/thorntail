@@ -129,10 +129,9 @@ public class RuntimeServer implements Server {
     }
 
     private void applyDefaults(Container config) throws Exception {
+        config.applyFractionDefaults(this);
         applyInterfaceDefaults(config);
         applySocketBindingGroupDefaults(config);
-
-        config.applyFractionDefaults(this);
     }
 
     private void applyInterfaceDefaults(Container config) {
@@ -145,8 +144,21 @@ public class RuntimeServer implements Server {
         if (config.socketBindingGroups().isEmpty()) {
             config.socketBindingGroup(
                     new SocketBindingGroup("default-sockets", "public", "${jboss.socket.binding.port-offset:0}")
-                            .socketBinding("http", "${jboss.http.port:8080}")
             );
+        }
+
+        Set<String> groupNames = config.socketBindings().keySet();
+
+        for ( String each : groupNames ) {
+            List<SocketBinding> bindings = config.socketBindings().get( each );
+            SocketBindingGroup group = config.getSocketBindingGroup(each);
+            if ( group == null ) {
+                throw new RuntimeException( "No socket-binding-group for '" + each + "'" );
+            }
+
+            for (SocketBinding binding : bindings) {
+                group.socketBinding( binding );
+            }
         }
     }
 
