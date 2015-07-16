@@ -77,11 +77,13 @@ public class RunMojo extends AbstractMojo {
             cli.add(dependencies(false));
             cli.add("-Dwildfly.swarm.app.path=" + Paths.get(this.projectBuildDir, this.project.getBuild().getFinalName()).toString());
 
-            Enumeration<?> propNames = this.properties.propertyNames();
+            Properties runProps = runProperties();
+
+            Enumeration<?> propNames = runProps.propertyNames();
 
             while( propNames.hasMoreElements() ) {
                 String name = (String) propNames.nextElement();
-                cli.add( "-D" + name + "=" + this.properties.getProperty( name ) );
+                cli.add( "-D" + name + "=" + runProps.getProperty( name ) );
             }
 
             cli.add("-Dwildfly.swarm.context.path=" + this.contextPath );
@@ -98,7 +100,6 @@ public class RunMojo extends AbstractMojo {
         } catch (InterruptedException e) {
             // ignore;
         }
-
     }
 
     protected void executeJar() throws MojoFailureException {
@@ -109,12 +110,17 @@ public class RunMojo extends AbstractMojo {
             cli.add(java.toString());
             cli.add("-classpath");
             cli.add(dependencies(true));
-            Enumeration<?> propNames = this.properties.propertyNames();
+
+            Properties runProps = runProperties();
+
+            Enumeration<?> propNames = runProps.propertyNames();
 
             while( propNames.hasMoreElements() ) {
                 String name = (String) propNames.nextElement();
-                cli.add( "-D" + name + "=" + this.properties.getProperty( name ) );
+                cli.add( "-D" + name + "=" + runProps.getProperty( name ) );
+                System.err.println( name + " = " + runProps.getProperty( name ) );
             }
+
             cli.add("-Dwildfly.swarm.context.path=" + this.contextPath );
             if (this.mainClass != null) {
                 cli.add(this.mainClass);
@@ -134,6 +140,22 @@ public class RunMojo extends AbstractMojo {
             // ignore;
         }
 
+    }
+
+    Properties runProperties() {
+        Properties props = new Properties();
+        props.putAll( this.properties );
+
+        Properties sysProps = System.getProperties();
+
+        Set<String> names = sysProps.stringPropertyNames();
+        for (String name : names) {
+            if ( name.startsWith( "jboss" ) || name.startsWith( "wildfly" ) ) {
+                props.put( name, sysProps.get( name ) );
+            }
+        }
+
+        return props;
     }
 
     String dependencies(boolean includeProjectArtifact) {
