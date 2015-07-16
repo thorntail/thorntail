@@ -2,6 +2,7 @@ package org.wildfly.swarm.msc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -14,12 +15,13 @@ import org.wildfly.swarm.container.Deployment;
  */
 public class ServiceActivatorDeployment implements Deployment {
 
+    private static AtomicInteger COUNTER = new AtomicInteger();
     private final JavaArchive archive;
 
     private final List<Class<? extends ServiceActivator>> activators = new ArrayList<>();
 
     public ServiceActivatorDeployment(Container container) {
-        this.archive = container.create("services.jar", JavaArchive.class);
+        this.archive = container.create("services-" + COUNTER.incrementAndGet() + ".jar", JavaArchive.class);
     }
 
     public void addServiceActivator(Class<? extends ServiceActivator> activator) {
