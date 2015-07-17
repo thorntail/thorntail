@@ -40,7 +40,8 @@ public class ClusteringConfiguration extends AbstractServerConfiguration<Cluster
         node.get(OP_ADDR).set(address.toModelNode());
         node.get(OP).set(ADD);
         node.get("default-channel").set("ee");
-        node.get("default-stack").set("udp");
+        //node.get("default-stack").set("udp");
+        node.get("default-stack").set("tcp");
         list.add(node);
 
 
@@ -125,6 +126,88 @@ public class ClusteringConfiguration extends AbstractServerConfiguration<Cluster
         node.get(OP_ADDR).set(address.append("stack", "udp").append("protocol", "RSVP").toModelNode());
         node.get(OP).set(ADD);
         list.add(node);
+
+
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").toModelNode() );
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("transport", "TCP").toModelNode() );
+        node.get(OP).set(ADD);
+        node.get(SOCKET_BINDING).set( "jgroups-tcp" );
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append( "protocol", "MPING" ).toModelNode() );
+        node.get(OP).set(ADD);
+        node.get(SOCKET_BINDING).set( "jgroups-mping" );
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "MERGE3").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "FD_SOCK").toModelNode());
+        node.get(OP).set(ADD);
+        node.get(SOCKET_BINDING).set( "jgroups-tcp-fd" );
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "FD").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "VERIFY_SUSPECT").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "pbcast.NAKACK2").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "UNICAST3").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "pbcast.STABLE").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "pbcast.GMS").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "MFC").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "FRAG2").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+        node = new ModelNode();
+        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "RSVP").toModelNode());
+        node.get(OP).set(ADD);
+        list.add(node);
+
+
+
+
+
+
+
 
         return list;
 

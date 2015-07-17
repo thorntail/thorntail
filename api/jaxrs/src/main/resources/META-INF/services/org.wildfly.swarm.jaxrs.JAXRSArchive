@@ -1,0 +1,3 @@
+implementingClassName=org.wildfly.swarm.jaxrs.JAXRSArchiveImpl
+extension=.war
+archiveFormat=ZIP

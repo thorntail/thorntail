@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
@@ -48,6 +51,14 @@ public class RuntimeDeployer implements Deployer {
 
     @Override
     public void deploy(Archive deployment) throws IOException {
+
+        Map<ArchivePath, Node> c = deployment.getContent();
+        for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
+            if ( each.getValue().getAsset() != null ) {
+                System.err.println( each.getKey() + " // " + each.getValue() );
+            }
+        }
+
 
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(deployment.getName());
         try (InputStream in = new ZipExporterImpl(deployment).exportAsInputStream()) {

@@ -5,7 +5,13 @@
  */
 package org.wildfly.swarm;
 
+import org.jboss.modules.ModuleLoadException;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.container.Container;
+
+import java.io.IOException;
+import java.util.List;
 
 /** Default {@code main(...)} if an application does not provide one.
  *
@@ -24,5 +30,13 @@ public class Swarm {
     public static void main(String... args) throws Exception {
         Container container = new Container().start();
         container.deploy();
+    }
+
+    public static JavaArchive artifact(String gav) throws Exception {
+        return ArtifactManager.artifact( gav );
+    }
+
+    public static List<JavaArchive> allArtifacts() throws Exception {
+        return ArtifactManager.allArtifacts();
     }
 }

@@ -1,0 +1,151 @@
+package org.wildfly.swarm.undertow;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
+import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
+import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
+
+import java.util.logging.Logger;
+
+/**
+ * @author Bob McWhirter
+ */
+public class WARArchiveImpl extends WebContainerBase<WARArchive> implements WARArchive {
+
+    // -------------------------------------------------------------------------------------||
+    // Class Members ----------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    @SuppressWarnings("unused")
+    private static final Logger log = Logger.getLogger(WebArchiveImpl.class.getName());
+
+    /**
+     * Path to the web inside of the Archive.
+     */
+    private static final ArchivePath PATH_WEB = ArchivePaths.root();
+
+    /**
+     * Path to the WEB-INF inside of the Archive.
+     */
+    private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
+
+    /**
+     * Path to the resources inside of the Archive.
+     */
+    private static final ArchivePath PATH_RESOURCE = ArchivePaths.create(PATH_WEB_INF, "classes");
+
+    /**
+     * Path to the libraries inside of the Archive.
+     */
+    private static final ArchivePath PATH_LIBRARY = ArchivePaths.create(PATH_WEB_INF, "lib");
+
+    /**
+     * Path to the classes inside of the Archive.
+     */
+    private static final ArchivePath PATH_CLASSES = ArchivePaths.create(PATH_WEB_INF, "classes");
+
+    /**
+     * Path to the manifests inside of the Archive.
+     */
+    private static final ArchivePath PATH_MANIFEST = ArchivePaths.create("META-INF");
+
+    /**
+     * Path to web archive service providers.
+     */
+    private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
+
+    // -------------------------------------------------------------------------------------||
+    // Instance Members -------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    // -------------------------------------------------------------------------------------||
+    // Constructor ------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    /**
+     * Create a new JAXRS Archive with any type storage engine as backing.
+     *
+     * @param delegate The storage backing.
+     */
+    public WARArchiveImpl(Archive<?> delegate) {
+        super(WARArchive.class, delegate);
+        setDefaultContextRoot();
+    }
+
+    // -------------------------------------------------------------------------------------||
+    // Required Implementations -----------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see ContainerBase#getManifestPath()
+     */
+    @Override
+    protected ArchivePath getManifestPath() {
+        return PATH_MANIFEST;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see ContainerBase#getClassesPath()
+     */
+    @Override
+    protected ArchivePath getClassesPath() {
+        return PATH_CLASSES;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see ContainerBase#getResourcePath()
+     */
+    @Override
+    protected ArchivePath getResourcePath() {
+        return PATH_RESOURCE;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see ContainerBase#getLibraryPath()
+     */
+    @Override
+    protected ArchivePath getLibraryPath() {
+        return PATH_LIBRARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see WebContainerBase#getWebPath()
+     */
+    @Override
+    protected ArchivePath getWebPath() {
+        return PATH_WEB;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see WebContainerBase#getWebInfPath()
+     */
+    @Override
+    protected ArchivePath getWebInfPath() {
+        return PATH_WEB_INF;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see WebContainerBase#getWebInfPath()
+     */
+    @Override
+    protected ArchivePath getServiceProvidersPath() {
+        return PATH_SERVICE_PROVIDERS;
+    }
+
+}

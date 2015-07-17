@@ -1,0 +1,3 @@
+implementingClassName=org.wildfly.swarm.undertow.WARArchiveImpl
+extension=.war
+archiveFormat=ZIP
