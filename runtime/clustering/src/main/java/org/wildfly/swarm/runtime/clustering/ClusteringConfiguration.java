@@ -40,8 +40,7 @@ public class ClusteringConfiguration extends AbstractServerConfiguration<Cluster
         node.get(OP_ADDR).set(address.toModelNode());
         node.get(OP).set(ADD);
         node.get("default-channel").set("ee");
-        //node.get("default-stack").set("udp");
-        node.get("default-stack").set("tcp");
+        node.get("default-stack").set("udp");
         list.add(node);
 
 
