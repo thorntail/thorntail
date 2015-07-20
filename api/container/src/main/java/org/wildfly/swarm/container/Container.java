@@ -21,8 +21,6 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.Configuration;
-import org.jboss.shrinkwrap.api.ConfigurationBuilder;
 import org.jboss.shrinkwrap.api.Domain;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
@@ -54,16 +52,6 @@ public class Container {
     public Container() throws Exception {
         createServer();
         createShrinkWrapDomain();
-    }
-
-    /**
-     * Retrieve the ShrinkWrap domain for creating archives.
-     *
-     * @return The ShrinkWrap Domain.
-     * @see #create(String, Class)
-     */
-    public Domain getShrinkWrapDomain() {
-        return this.domain;
     }
 
     private void createShrinkWrapDomain() throws ModuleLoadException {
@@ -276,23 +264,10 @@ public class Container {
      * @return The container.
      * @throws Exception if an error occurs.
      * @see #start()
-     * @see #deploy(Deployment)
+     * @see #deploy(Archive)
      */
-    public Container start(Deployment deployment) throws Exception {
+    public Container start(Archive deployment) throws Exception {
         return start().deploy(deployment);
-    }
-
-    /**
-     * Create a ShrinkWrap archive with a given name and type.
-     *
-     * @param name The name of the archive.
-     * @param type The type of the archive.
-     * @param <T>  An interface of a ShrinkWrap archive type.
-     * @return The newly created archive.
-     */
-    public <T extends Archive> T create(String name, Class<T> type) {
-        T archive = this.domain.getArchiveFactory().create(type, name);
-        return archive;
     }
 
     /**
@@ -320,17 +295,6 @@ public class Container {
     }
 
     /**
-     * Deploy a deployment
-     *
-     * @param deployment The deployment to deploy.
-     * @return The container.
-     * @throws Exception if an error occurs.
-     */
-    public Container deploy(Deployment deployment) throws Exception {
-        return deploy(deployment.getArchive(true));
-    }
-
-    /**
      * Initialization Context to be passed to Fractions to allow them to provide
      * additional functionality into the Container.
      */
@@ -348,7 +312,7 @@ public class Container {
         }
     }
 
-    protected Deployment createDefaultDeployment() throws Exception {
+    protected Archive createDefaultDeployment() throws Exception {
         Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
         ServiceLoader<DefaultDeploymentFactory> providerLoader = m1.loadService(DefaultDeploymentFactory.class);
 

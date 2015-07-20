@@ -1,12 +1,13 @@
 package org.wildfly.swarm.integration.mail;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.After;
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 import org.wildfly.swarm.mail.MailFraction;
 import org.wildfly.swarm.mail.SmtpServer;
-import org.wildfly.swarm.undertow.WarDeployment;
+import org.wildfly.swarm.undertow.WARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -22,7 +23,7 @@ public class MailTest extends AbstractWildFlySwarmTestCase {
         container.start();
 
 
-        WarDeployment deployment = new WarDeployment(container);
+        WARArchive deployment = ShrinkWrap.create( WARArchive.class );
         deployment.staticContent();
         container.deploy(deployment);
 
@@ -41,7 +42,7 @@ public class MailTest extends AbstractWildFlySwarmTestCase {
         container.start();
 
 
-        WarDeployment deployment = new WarDeployment(container);
+        WARArchive deployment = ShrinkWrap.create( WARArchive.class );
         deployment.staticContent();
         container.deploy(deployment);
 

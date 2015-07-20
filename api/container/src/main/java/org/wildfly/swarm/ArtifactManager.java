@@ -20,8 +20,16 @@ import java.util.regex.Pattern;
 public class ArtifactManager {
 
     public static JavaArchive artifact(String gav) throws IOException, ModuleLoadException {
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
-        new ZipImporterImpl(archive).importFrom(findFile(gav));
+        File file = findFile(gav);
+        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, file.getName());
+        new ZipImporterImpl(archive).importFrom(file);
+        return archive;
+    }
+
+    public static JavaArchive artifact(String gav, String asName) throws IOException, ModuleLoadException {
+        File file = findFile(gav);
+        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, asName);
+        new ZipImporterImpl(archive).importFrom(file);
         return archive;
     }
 

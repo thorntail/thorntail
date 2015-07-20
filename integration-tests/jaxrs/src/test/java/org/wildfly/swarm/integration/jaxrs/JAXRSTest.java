@@ -1,9 +1,10 @@
 package org.wildfly.swarm.integration.jaxrs;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
-import org.wildfly.swarm.jaxrs.JAXRSDeployment;
+import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -17,8 +18,9 @@ public class JAXRSTest extends AbstractWildFlySwarmTestCase {
         Container container = newContainer();
         container.start();
 
-        JAXRSDeployment deployment = new JAXRSDeployment(container);
+        JAXRSArchive deployment = ShrinkWrap.create( JAXRSArchive.class );
         deployment.addResource(MyResource.class);
+        deployment.addAllDependencies();
         container.deploy(deployment);
 
         assertThat(fetch("http://localhost:8080/")).contains("Howdy at");
@@ -30,10 +32,11 @@ public class JAXRSTest extends AbstractWildFlySwarmTestCase {
         Container container = newContainer();
         container.start();
 
-        JAXRSDeployment deployment = new JAXRSDeployment(container);
+        JAXRSArchive deployment = ShrinkWrap.create( JAXRSArchive.class );
 
         deployment.staticContent();
         deployment.addResource(MyResource.class);
+        deployment.addAllDependencies();
 
         container.deploy(deployment);
 

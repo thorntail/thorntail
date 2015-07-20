@@ -52,12 +52,14 @@ public class RuntimeDeployer implements Deployer {
     @Override
     public void deploy(Archive deployment) throws IOException {
 
+        /*
         Map<ArchivePath, Node> c = deployment.getContent();
         for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
             if ( each.getValue().getAsset() != null ) {
                 System.err.println( each.getKey() + " // " + each.getValue() );
             }
         }
+        */
 
 
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(deployment.getName());

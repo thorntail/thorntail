@@ -31,10 +31,7 @@ public class JBossWebAsset implements Asset{
 
     @Override
     public InputStream openStream() {
-        StringBuilder modules = new StringBuilder();
         String contents = JBOSS_WEB_CONTENTS.replace( "${CONTEXT_ROOT}", contextRoot.trim() );
-
-        System.err.println( "return " + contents );
         return new ByteArrayInputStream( contents.getBytes() );
     }
 }

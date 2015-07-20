@@ -19,6 +19,7 @@ public interface WARArchive extends
         ServiceProviderContainer<WARArchive>,
         JBossDeploymentStructureContainer<WARArchive>,
         JBossWebContainer<WARArchive>,
-        DependenciesContainer<WARArchive> {
+        DependenciesContainer<WARArchive>,
+        StaticContentContainer<WARArchive> {
 
-}
+        }

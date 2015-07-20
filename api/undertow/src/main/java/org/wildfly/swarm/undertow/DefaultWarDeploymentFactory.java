@@ -1,9 +1,12 @@
 package org.wildfly.swarm.undertow;
 
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
-import org.wildfly.swarm.container.*;
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.DefaultDeploymentFactory;
+import org.wildfly.swarm.container.DependenciesContainer;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +31,10 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
     }
 
     @Override
-    public Deployment create(Container container) throws Exception {
+    public Archive create(Container container) throws Exception {
         WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName() );
         setup( archive );
-        return new SimpleDeployment( archive );
+        return archive;
     }
 
     protected String determineName() {
@@ -86,7 +89,6 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
 
         if (appArtifact != null) {
             try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
-                System.err.println("loading app artifact");
                 ZipImporterImpl importer = new ZipImporterImpl(archive);
                 importer.importFrom(in);
             }

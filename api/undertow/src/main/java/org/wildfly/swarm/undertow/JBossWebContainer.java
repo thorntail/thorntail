@@ -9,6 +9,11 @@ import org.jboss.shrinkwrap.api.Node;
 public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
 
     default T setDefaultContextRoot() {
+        Node jbossWeb = this.get("WEB-INF/jboss-web.xml");
+        if ( jbossWeb != null ) {
+            return (T) this;
+        }
+
         String contextRoot = System.getProperty( "wildfly.swarm.context.path" );
         if ( contextRoot == null ){
             contextRoot = "/";
@@ -20,16 +25,17 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
 
     default T setContextRoot(String contextRoot) {
 
-        Node structure = this.get("WEB-INF/jboss-web.xml");
+        Node jbossWeb = this.get("WEB-INF/jboss-web.xml");
         JBossWebAsset asset = null;
-        if ( structure == null ) {
+        if ( jbossWeb == null ) {
             asset = new JBossWebAsset();
             this.add( asset, "WEB-INF/jboss-web.xml" );
         } else {
-            asset = (JBossWebAsset) structure.getAsset();
+            asset = (JBossWebAsset) jbossWeb.getAsset();
         }
 
         asset.setContextRoot( contextRoot );
+
         return (T) this;
     }
 }

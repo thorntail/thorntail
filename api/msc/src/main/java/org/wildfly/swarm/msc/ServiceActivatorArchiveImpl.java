@@ -28,7 +28,6 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
      */
     public ServiceActivatorArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
-        getArchive().addHandlers( new MyListener() );
         this.asset = new ServiceActivatorAsset();
         if ( getArchive().getName().endsWith( ".war" ) ) {
             getArchive().as(WebArchive.class).addAsManifestResource(this.asset, "services/" + ServiceActivator.class.getName() );
@@ -45,13 +44,6 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
         }
         this.asset.addServiceActivator( cls );
         return this;
-    }
-
-    public static final class MyListener implements  ArchiveEventHandler {
-        @Override
-        public void handle(ArchiveEvent event) {
-            System.err.println( "handle: " + event + ", " + event.getPath() );
-        }
     }
 
 }

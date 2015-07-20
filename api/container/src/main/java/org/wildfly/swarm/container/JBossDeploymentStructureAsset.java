@@ -42,7 +42,6 @@ public class JBossDeploymentStructureAsset implements Asset{
         }
         String structureContents = JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS.replace( "${MODULES}", modules.toString().trim() );
 
-        System.err.println( "return " + structureContents );
         return new ByteArrayInputStream( structureContents.getBytes() );
     }
 }
