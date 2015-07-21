@@ -1,0 +1,2 @@
+com.netflix.ribbon:ribbon-core
+com.netflix.ribbon:ribbon-load-balancer

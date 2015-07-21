@@ -47,6 +47,9 @@
     <module>undertow</module>
     <module>weld</module>
     <module>weld-jaxrs</module>
+
+    <!-- extras -->
+    <module>netflix-ribbon</module>
   </modules>
 
   <build>

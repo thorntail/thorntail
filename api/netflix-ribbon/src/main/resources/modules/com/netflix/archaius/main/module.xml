@@ -1,0 +1,14 @@
+<module xmlns="urn:jboss:module:1.3" name="com.netflix.archaius">
+  <resources>
+    <artifact name="com.netflix.archaius:archaius-core:${version.com.netflix.archaius}"/>
+    <artifact name="commons-configuration:commons-configuration:${version.commons-configuration}"/>
+  </resources>
+
+  <dependencies>
+    <module name="org.slf4j"/>
+    <module name="org.apache.commons.lang"/>
+    <module name="org.apache.commons.logging"/>
+    <module name="com.google.guava"/>
+  </dependencies>
+
+</module>

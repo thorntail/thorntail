@@ -45,6 +45,9 @@
     <module>transactions</module>
     <module>undertow</module>
     <module>weld</module>
+ 
+    <!-- extras -->
+    <module>netflix-ribbon</module>
   </modules>
 
 </project>

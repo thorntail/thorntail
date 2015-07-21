@@ -42,6 +42,10 @@
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>1.1.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
 
+    <version.com.netflix.ribbon>2.1.0</version.com.netflix.ribbon>
+    <version.com.netflix.archaius>0.6.6</version.com.netflix.archaius>
+    <version.commons-configuration>1.8:</version.commons-configuration>
+
     <maven.min.version>3.2.1</maven.min.version>
 
     <!-- Surefire args -->
@@ -248,11 +252,13 @@
         <artifactId>wildfly-swarm-weld-jaxrs</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-shrinkwrap</artifactId>
+        <artifactId>wildfly-swarm-netflix-ribbon</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-parent</artifactId>
@@ -274,6 +280,20 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <pluginRepositories>
     <pluginRepository>

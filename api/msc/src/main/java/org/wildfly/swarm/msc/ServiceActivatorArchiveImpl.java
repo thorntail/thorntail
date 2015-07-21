@@ -1,17 +1,11 @@
 package org.wildfly.swarm.msc;
 
 import org.jboss.msc.service.ServiceActivator;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchiveEvent;
-import org.jboss.shrinkwrap.api.ArchiveEventHandler;
-import org.jboss.shrinkwrap.api.ArchiveFormat;
-import org.jboss.shrinkwrap.api.container.ClassContainer;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
-import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
-import org.jboss.shrinkwrap.spi.ArchiveFormatAssociable;
 
 /**
  * @author Bob McWhirter
@@ -19,7 +13,7 @@ import org.jboss.shrinkwrap.spi.ArchiveFormatAssociable;
 
 public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> implements ServiceActivatorArchive {
 
-    private final ServiceActivatorAsset asset;
+    private ServiceActivatorAsset asset;
 
     /**
      * Constructs a new instance using the underlying specified archive, which is required
@@ -28,11 +22,25 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
      */
     public ServiceActivatorArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
-        this.asset = new ServiceActivatorAsset();
+
         if ( getArchive().getName().endsWith( ".war" ) ) {
-            getArchive().as(WebArchive.class).addAsManifestResource(this.asset, "services/" + ServiceActivator.class.getName() );
-        } else if ( getArchive().getName().endsWith( ".jar" ) ) {
-            getArchive().as(JavaArchive.class).addAsManifestResource(this.asset, "services/" + ServiceActivator.class.getName());
+            Node node = getArchive().get("WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName());
+            if ( node != null ) {
+                System.err.println( "found asset" );
+                this.asset = (ServiceActivatorAsset) node.getAsset();
+            } else {
+                System.err.println( "create/add asset" );
+                this.asset = new ServiceActivatorAsset();
+                getArchive().add( this.asset, "WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName() );
+            }
+        }  else if ( getArchive().getName().endsWith( ".jar" ) ) {
+            Node node = getArchive().get("META-INF/services/" + ServiceActivator.class.getName());
+            if ( node != null ) {
+                this.asset = (ServiceActivatorAsset) node.getAsset();
+            } else {
+                this.asset = new ServiceActivatorAsset();
+                getArchive().add( this.asset, "META-INF/services/" + ServiceActivator.class.getName() );
+            }
         }
     }
 
@@ -43,6 +51,11 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
             getArchive().as(JavaArchive.class).addClass( cls );
         }
         this.asset.addServiceActivator( cls );
+        return this;
+    }
+
+    public ServiceActivatorArchive addServiceActivator(String className) {
+        this.asset.addServiceActivator( className );
         return this;
     }
 

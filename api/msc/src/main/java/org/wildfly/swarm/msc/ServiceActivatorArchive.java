@@ -16,5 +16,6 @@ import org.wildfly.swarm.container.JBossDeploymentStructureContainer;
 public interface ServiceActivatorArchive extends Assignable {
 
     ServiceActivatorArchive addServiceActivator(Class<? extends ServiceActivator> cls);
+    ServiceActivatorArchive addServiceActivator(String clsName);
 
 }
