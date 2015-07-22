@@ -30,7 +30,6 @@ public class ApplicationAdvertiserActivator implements ServiceActivator {
             while ((appName = reader.readLine()) != null) {
                 appName = appName.trim();
                 if (!appName.isEmpty()) {
-                    System.err.println( "setup advertiser for " + appName );
                     ApplicationAdvertiser advertiser = new ApplicationAdvertiser(appName);
 
                     target.addService(ServiceName.of("netflix", "ribbon", "advertise", appName), advertiser)

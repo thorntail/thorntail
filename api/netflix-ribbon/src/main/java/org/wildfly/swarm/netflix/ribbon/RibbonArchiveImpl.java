@@ -25,7 +25,7 @@ public class RibbonArchiveImpl extends AssignableBase<ArchiveBase<?>> implements
         as(JARArchive.class).addModule( "org.wildfly.clustering.api" );
         as(JARArchive.class).addModule( "com.netflix.ribbon" );
         as(JARArchive.class).addModule( "com.netflix.archaius" );
-        as(JARArchive.class).add( new StringAsset( "ribbon.NIWSServerListClassName:org.wildfly.swarm.runtime.netflix.ribbon.ClusterServerList" ), "WEB-INF/classes/config.properties" );
+        as(JARArchive.class).add( new RibbonConfigAsset() );
     }
 
     @Override

@@ -11,8 +11,6 @@ public class ClusterManagerActivator implements ServiceActivator {
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
-        System.err.println("activating ribbon clustermanager");
-
         ServiceTarget target = context.getServiceTarget();
 
         ClusterManager manager = new ClusterManager();

@@ -6,22 +6,19 @@ import org.wildfly.clustering.dispatcher.Command;
 /**
  * @author Bob McWhirter
  */
-public class UnadvertiseCommand implements Command<Void,ClusterRegistry> {
+public class UnadvertiseCommand implements Command<Void,ClusterManager> {
 
     private final String appName;
-    private final String host;
-    private final int port;
+    private final String nodeKey;
 
-    public UnadvertiseCommand(String appName, String host, int port) {
+    public UnadvertiseCommand(String nodeKey, String appName) {
+        this.nodeKey = nodeKey;
         this.appName = appName;
-        this.host = host;
-        this.port = port;
     }
 
     @Override
-    public Void execute(ClusterRegistry context) throws Exception {
-        //context.register( this.appName, new Server( this.host, this.port ));
-        System.err.println( "Unadvertise" );
+    public Void execute(ClusterManager context) throws Exception {
+        context.unregister( this.nodeKey, this.appName );
         return null;
     }
 }
