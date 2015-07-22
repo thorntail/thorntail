@@ -121,7 +121,7 @@ the desired `Main-Class` inside your `.war.
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.mycompany.myapp.MyMain</addClasspath>
+              <mainClass>com.mycompany.myapp.MyMain</mainClass>
             </manifest>
           </archive>
         </configuration>
