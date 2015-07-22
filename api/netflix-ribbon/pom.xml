@@ -66,15 +66,7 @@
     <dependency>
       <groupId>io.reactivex</groupId>
       <artifactId>rxjava</artifactId>
-      <version>1.0.9</version>
     </dependency>
-<!--
-    <dependency>
-      <groupId>com.netflix.archaius</groupId>
-      <artifactId>archaius-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
--->
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

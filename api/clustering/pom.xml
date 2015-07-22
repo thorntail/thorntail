@@ -46,11 +46,13 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-jmx</artifactId>
     </dependency>
+<!--
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-clustering-api</artifactId>
       <scope>provided</scope>
     </dependency>
+-->
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
