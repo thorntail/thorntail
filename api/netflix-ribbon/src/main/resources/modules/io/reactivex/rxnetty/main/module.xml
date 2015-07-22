@@ -1,0 +1,15 @@
+<module xmlns="urn:jboss:module:1.3" name="io.reactivex.rxnetty">
+  <resources>
+    <artifact name="io.reactivex:rxnetty:0.4.9"/>
+    <artifact name="io.reactivex:rxnetty-contexts:0.4.9"/>
+    <artifact name="io.reactivex:rxnetty-servo:0.4.9"/>
+  </resources>
+
+  <dependencies>
+    <module name="io.reactivex.rxjava"/>
+    <module name="io.netty"/>
+    <module name="com.netflix.servo"/>
+    <module name="org.slf4j"/>
+  </dependencies>
+
+</module>

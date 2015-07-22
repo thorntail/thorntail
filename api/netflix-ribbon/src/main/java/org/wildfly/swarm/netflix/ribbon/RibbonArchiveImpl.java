@@ -20,17 +20,20 @@ public class RibbonArchiveImpl extends AssignableBase<ArchiveBase<?>> implements
      */
     public RibbonArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
-        as(ServiceActivatorArchive.class ).addServiceActivator( "org.wildfly.swarm.runtime.netflix.ribbon.ClusterManagerActivator" );
-        as(JARArchive.class).addModule( "org.wildfly.swarm.netflix.ribbon", "runtime" );
-        as(JARArchive.class).addModule( "org.wildfly.clustering.api" );
-        as(JARArchive.class).addModule( "com.netflix.ribbon" );
-        as(JARArchive.class).addModule( "com.netflix.archaius" );
-        as(JARArchive.class).add( new RibbonConfigAsset() );
+        as(ServiceActivatorArchive.class).addServiceActivator("org.wildfly.swarm.runtime.netflix.ribbon.ClusterManagerActivator");
+        as(JARArchive.class).addModule("org.wildfly.swarm.netflix.ribbon", "runtime");
+        as(JARArchive.class).addModule("org.wildfly.clustering.api");
+        as(JARArchive.class).addModule("com.netflix.ribbon");
+        as(JARArchive.class).addModule("com.netflix.archaius");
+        as(JARArchive.class).addModule("com.netflix.hystrix");
+        as(JARArchive.class).addModule("io.reactivex.rxjava");
+        as(JARArchive.class).addModule("io.netty");
+        as(JARArchive.class).add(new RibbonConfigAsset());
     }
 
     @Override
     public void setApplicationName(String name) {
-        as(ServiceActivatorArchive.class ).addServiceActivator( "org.wildfly.swarm.runtime.netflix.ribbon.ApplicationAdvertiserActivator" );
+        as(ServiceActivatorArchive.class).addServiceActivator("org.wildfly.swarm.runtime.netflix.ribbon.ApplicationAdvertiserActivator");
         as(JARArchive.class).add(new StringAsset(name), "META-INF/netflix-ribbon-application.conf");
     }
 

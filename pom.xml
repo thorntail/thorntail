@@ -44,6 +44,7 @@
 
     <version.com.netflix.ribbon>2.1.0</version.com.netflix.ribbon>
     <version.com.netflix.archaius>0.6.6</version.com.netflix.archaius>
+    <version.com.netflix.hystrix>1.4.3</version.com.netflix.hystrix>
     <version.commons-configuration>1.8:</version.commons-configuration>
 
     <maven.min.version>3.2.1</maven.min.version>
@@ -257,6 +258,27 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-netflix-ribbon</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon-core</artifactId>
+        <version>${version.com.netflix.ribbon}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon-loadbalancer</artifactId>
+        <version>${version.com.netflix.ribbon}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.archaius</groupId>
+        <artifactId>archaius-core</artifactId>
+        <version>${version.com.netflix.archaius}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.hystrix</groupId>
+        <artifactId>hystrix-core</artifactId>
+        <version>${version.com.netflix.hystrix}</version>
       </dependency>
 
       <dependency>

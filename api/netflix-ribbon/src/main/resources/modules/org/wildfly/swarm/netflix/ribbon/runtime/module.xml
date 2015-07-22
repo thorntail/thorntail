@@ -4,6 +4,7 @@
   </resources>
 
   <dependencies>
+    <module name="com.netflix.ribbon"/>
     <module name="org.wildfly.swarm.netflix.ribbon" slot="runtime"/>
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.runtime.container"/>
