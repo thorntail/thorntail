@@ -3,11 +3,13 @@ package org.wildfly.swarm.runtime.clustering;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.jboss.dmr.ValueExpression;
 import org.wildfly.swarm.clustering.*;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
@@ -68,6 +70,10 @@ public class ClusteringConfiguration extends AbstractServerConfiguration<Cluster
             node.get(OP_ADDR).set(stackAddr.append("transport", stack.transport().name()).toModelNode());
             node.get(OP).set(ADD);
             node.get("socket-binding").set(stack.transport().socketBinding());
+            for (Map.Entry<String, String> entry : stack.transport().properties().entrySet()) {
+                node.get(entry.getKey()).set(new ValueExpression(entry.getValue()));
+            }
+
             list.add(node);
 
             for (Protocol protocol : stack.protocols()) {
@@ -76,6 +82,9 @@ public class ClusteringConfiguration extends AbstractServerConfiguration<Cluster
                 node.get(OP).set(ADD);
                 if (protocol instanceof SocketBindingProtocol) {
                     node.get(SOCKET_BINDING).set(((SocketBindingProtocol) protocol).socketBinding());
+                }
+                for (Map.Entry<String, String> entry : protocol.properties().entrySet()) {
+                    node.get(entry.getKey()).set(new ValueExpression(entry.getValue()));
                 }
                 list.add(node);
             }
