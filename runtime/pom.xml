@@ -36,6 +36,7 @@
     <module>jmx</module>
     <module>jpa</module>
     <module>jsf</module>
+    <module>keycloak</module>
     <module>logging</module>
     <module>mail</module>
     <module>messaging</module>

@@ -51,6 +51,9 @@
     <version.rxjava>1.0.9</version.rxjava>
     <version.rxnetty>0.4.9</version.rxnetty>
 
+    <version.keycloak>1.3.1.Final</version.keycloak>
+    <version.iharder.base64>2.3.8</version.iharder.base64>
+
     <maven.min.version>3.2.1</maven.min.version>
 
     <!-- Surefire args -->
@@ -199,6 +202,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-keycloak</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-logging</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -308,6 +316,12 @@
         <artifactId>wildfly-feature-pack</artifactId>
         <version>${version.wildfly}</version>
         <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-server-feature-pack</artifactId>
+        <type>zip</type>
+        <version>${version.keycloak}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
