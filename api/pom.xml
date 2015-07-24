@@ -34,6 +34,7 @@
     <module>io</module>
     <module>jca</module>
     <module>jaxrs</module>
+    <module>jaxrs-multipart</module>
     <module>jmx</module>
     <module>jpa</module>
     <module>jsf</module>
