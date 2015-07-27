@@ -41,8 +41,6 @@ public class KeycloakConfiguration extends AbstractServerConfiguration<KeycloakF
         node.get(OP).set(ADD);
         list.add(node);
 
-        System.err.println( "keycloak: " + list );
-
         return list;
 
     }

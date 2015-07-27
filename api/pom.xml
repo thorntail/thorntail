@@ -51,7 +51,20 @@
     <module>weld-jaxrs</module>
 
     <!-- extras -->
-    <module>netflix-ribbon</module>
+
+    <!-- netflix -->
+    <module>archaius</module>
+    <module>hystrix</module>
+    <module>ribbon</module>
+    <module>ribbon-secured</module>
+    <module>ribbon-secured-client</module>
+    <module>servo</module>
+    <module>guava</module>
+    <module>rxjava</module>
+    <module>rxnetty</module>
+<!--
+    <module>netflix-ribbon-keycloak</module>
+-->
   </modules>
 
   <build>

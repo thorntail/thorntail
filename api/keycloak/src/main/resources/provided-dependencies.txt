@@ -1,0 +1,5 @@
+org.keycloak:keycloak-core
+org.keycloak:keycloak-undertow-adapter
+org.keycloak:keycloak-adapter-core
+net.iharder:base64
+org.bouncycastle:bcprov-jdk15on

@@ -7,5 +7,8 @@ import org.jboss.shrinkwrap.api.Assignable;
  */
 public interface Secured extends Assignable {
 
+    SecurityConstraint protect();
+    SecurityConstraint protect(String urlPattern);
+
 
 }
