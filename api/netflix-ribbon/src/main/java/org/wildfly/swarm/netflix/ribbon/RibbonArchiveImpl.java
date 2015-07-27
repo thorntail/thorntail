@@ -27,7 +27,9 @@ public class RibbonArchiveImpl extends AssignableBase<ArchiveBase<?>> implements
         as(JARArchive.class).addModule("com.netflix.archaius");
         as(JARArchive.class).addModule("com.netflix.hystrix");
         as(JARArchive.class).addModule("io.reactivex.rxjava");
+        as(JARArchive.class).addModule("io.reactivex.rxnetty");
         as(JARArchive.class).addModule("io.netty");
+        as(JARArchive.class).addModule("org.picketbox");
         as(JARArchive.class).add(new RibbonConfigAsset());
     }
 
