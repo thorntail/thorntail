@@ -8,6 +8,9 @@
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.runtime.container"/>
 
+    <module name="io.undertow.servlet"/>
+    <module name="io.undertow.core"/>
+    <module name="org.keycloak.keycloak-undertow-adapter"/>
     <module name="org.keycloak.keycloak-adapter-subsystem"/>
   </dependencies>
 </module>
