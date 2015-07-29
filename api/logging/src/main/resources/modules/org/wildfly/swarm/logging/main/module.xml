@@ -16,6 +16,8 @@
     <system export="true">
       <paths>
         <path name="org/wildfly/swarm/logging"/>
+        <path name="org/wildfly/swarm/logging/format"/>
+        <path name="org/wildfly/swarm/logging/handlers"/>
       </paths>
     </system>
 

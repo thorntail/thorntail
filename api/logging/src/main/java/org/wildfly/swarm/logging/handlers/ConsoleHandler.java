@@ -1,4 +1,4 @@
-package org.wildfly.swarm.logging;
+package org.wildfly.swarm.logging.handlers;
 
 /**
  * @author Bob McWhirter

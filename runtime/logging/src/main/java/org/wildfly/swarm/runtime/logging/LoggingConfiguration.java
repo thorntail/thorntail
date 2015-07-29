@@ -3,11 +3,19 @@ package org.wildfly.swarm.runtime.logging;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.logging.*;
+import org.jboss.dmr.ValueExpression;
+import org.wildfly.swarm.logging.handlers.ConsoleHandler;
+import org.wildfly.swarm.logging.handlers.CustomHandler;
+import org.wildfly.swarm.logging.handlers.FileHandler;
+import org.wildfly.swarm.logging.LoggingFraction;
+import org.wildfly.swarm.logging.RootLogger;
+import org.wildfly.swarm.logging.format.CustomFormatter;
+import org.wildfly.swarm.logging.format.Formatter;
+import org.wildfly.swarm.logging.format.PatternFormatter;
+import org.wildfly.swarm.logging.handlers.Handler;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -57,7 +65,7 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
 
         addFormatters(fraction, list);
         addConsoleHandler(fraction, list);
-        addFileHandlers(fraction, list);
+        addHandlers(fraction, list);
         addRootLogger(fraction, list);
 
         return list;
@@ -65,15 +73,28 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
 
     private void addFormatters(LoggingFraction fraction, List<ModelNode> list) {
         for (Formatter each : fraction.formatters()) {
-            addFormatter(each, list);
+            if (each.isPattern()) {
+                addPatternFormatter((PatternFormatter) each, list);
+            } else if (each.isCustom()) {
+                addCustomFormatter((CustomFormatter) each, list);
+            }
         }
     }
 
-    private void addFormatter(Formatter formatter, List<ModelNode> list) {
+    private void addPatternFormatter(PatternFormatter formatter, List<ModelNode> list) {
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(loggingAddress.append("pattern-formatter", formatter.getName()).toModelNode());
         node.get(OP).set(ADD);
         node.get("pattern").set(formatter.getPattern());
+        list.add(node);
+    }
+
+    private void addCustomFormatter(CustomFormatter formatter, List<ModelNode> list) {
+        ModelNode node = new ModelNode();
+        node.get(OP_ADDR).set(loggingAddress.append("custom-formatter", formatter.getName()).toModelNode());
+        node.get(OP).set(ADD);
+        node.get("module").set(formatter.getModule());
+        node.get("class").set(formatter.getClassName());
         list.add(node);
     }
 
@@ -90,9 +111,13 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         list.add(node);
     }
 
-    private void addFileHandlers(LoggingFraction fraction, List<ModelNode> list) {
-        for (FileHandler each : fraction.fileHandlers()) {
-            addFileHandler(each, list);
+    private void addHandlers(LoggingFraction fraction, List<ModelNode> list) {
+        for (Handler each : fraction.handlers()) {
+            if (each.isFile()) {
+                addFileHandler((FileHandler)each, list);
+            } else if (each.isCustom()) {
+                addCustomHandler((CustomHandler)each, list);
+            }
         }
     }
 
@@ -105,10 +130,26 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         node.get("named-formatter").set(handler.formatter());
 
         ModelNode file = new ModelNode();
-        file.get( "path" ).set( handler.path() );
-        file.get( "relative-to" ).set( "jboss.server.log.dir" );
-        node.get("file").set( file );
+        file.get("path").set(handler.path());
+        file.get("relative-to").set("jboss.server.log.dir");
+        node.get("file").set(file);
         node.get("append").set(true);
+
+        list.add(node);
+    }
+
+    private void addCustomHandler(CustomHandler handler, List<ModelNode> list) {
+        ModelNode node = new ModelNode();
+
+        node.get(OP_ADDR).set(loggingAddress.append("custom-handler", handler.name()).toModelNode());
+        node.get(OP).set(ADD);
+        node.get("class").set(handler.className());
+        node.get("module").set(handler.module());
+        node.get("named-formatter").set(handler.formatter());
+
+        ModelNode properties = new ModelNode();
+        handler.properties().forEach((key, value) -> properties.get((String) key).set(new ValueExpression((String) value)));
+        node.get("properties").set(properties);
 
         list.add(node);
     }
@@ -121,8 +162,8 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(loggingAddress.append("root-logger", "ROOT").toModelNode());
         node.get(OP).set(ADD);
-        for ( String handler : logger.getHandlers() ) {
-            node.get( "handlers" ).add( handler );
+        for (String handler : logger.getHandlers()) {
+            node.get("handlers").add(handler);
         }
         node.get("level").set(logger.getLevel());
         list.add(node);
