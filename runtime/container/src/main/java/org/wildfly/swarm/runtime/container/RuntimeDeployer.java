@@ -1,14 +1,5 @@
 package org.wildfly.swarm.runtime.container;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
@@ -20,13 +11,17 @@ import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.container.Deployer;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CONTENT;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ENABLED;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HASH;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUNTIME_NAME;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
 /**
  * @author Bob McWhirter
@@ -37,20 +32,26 @@ public class RuntimeDeployer implements Deployer {
 
     private final SimpleContentProvider contentProvider;
 
-    private final ScheduledExecutorService executor;
-
+    private final List<ServerConfiguration> configurations;
     private final TempFileProvider tempFileProvider;
     private final List<Closeable> mountPoints = new ArrayList<>();
 
-    public RuntimeDeployer(ModelControllerClient client, SimpleContentProvider contentProvider) throws IOException {
+    public RuntimeDeployer(List<ServerConfiguration> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
+        this.configurations = configurations;
         this.client = client;
         this.contentProvider = contentProvider;
-        this.executor = Executors.newSingleThreadScheduledExecutor();
-        this.tempFileProvider = TempFileProvider.create("wildfly-swarm", this.executor);
+        this.tempFileProvider = tempFileProvider;
+        //this.executor = Executors.newSingleThreadScheduledExecutor();
+        //this.tempFileProvider = TempFileProvider.create("wildfly-swarm", this.executor);
     }
 
     @Override
     public void deploy(Archive deployment) throws IOException {
+
+        for (ServerConfiguration each : this.configurations) {
+            each.prepareArchive(deployment);
+        }
+
 
         /*
         Map<ArchivePath, Node> c = deployment.getContent();
@@ -60,7 +61,6 @@ public class RuntimeDeployer implements Deployer {
             }
         }
         */
-
 
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(deployment.getName());
         try (InputStream in = new ZipExporterImpl(deployment).exportAsInputStream()) {

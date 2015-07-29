@@ -26,10 +26,8 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
         if ( getArchive().getName().endsWith( ".war" ) ) {
             Node node = getArchive().get("WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName());
             if ( node != null ) {
-                System.err.println( "found asset" );
                 this.asset = (ServiceActivatorAsset) node.getAsset();
             } else {
-                System.err.println( "create/add asset" );
                 this.asset = new ServiceActivatorAsset();
                 getArchive().add( this.asset, "WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName() );
             }

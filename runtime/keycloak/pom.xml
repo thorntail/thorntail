@@ -32,6 +32,11 @@
       <artifactId>wildfly-swarm-keycloak</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-undertow-adapter</artifactId>
+      <version>${version.keycloak}</version>
+    </dependency>
+    <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-servlet</artifactId>
       <scope>provided</scope>

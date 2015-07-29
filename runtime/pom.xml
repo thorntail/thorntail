@@ -48,7 +48,11 @@
     <module>weld</module>
  
     <!-- extras -->
-    <module>netflix-ribbon</module>
+    <module>ribbon</module>
+    <module>ribbon-secured</module>
+<!--
+    <module>netflix-ribbon-keycloak</module>
+-->
   </modules>
 
 </project>

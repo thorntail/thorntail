@@ -10,7 +10,9 @@ import org.jboss.dmr.ValueExpression;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.msc.service.ServiceContainer;
+import org.jboss.msc.service.*;
+import org.jboss.msc.value.ImmediateValue;
+import org.jboss.vfs.TempFileProvider;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -21,10 +23,7 @@ import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
@@ -37,11 +36,15 @@ public class RuntimeServer implements Server {
     private SelfContainedContainer container = new SelfContainedContainer();
 
     private SimpleContentProvider contentProvider = new SimpleContentProvider();
+
     private ServiceContainer serviceContainer;
+
     private ModelControllerClient client;
+
     private RuntimeDeployer deployer;
 
     private Map<Class<? extends Fraction>, ServerConfiguration> configByFractionType = new ConcurrentHashMap();
+
     private List<ServerConfiguration> configList = new ArrayList<>();
 
     public RuntimeServer() {
@@ -56,16 +59,45 @@ public class RuntimeServer implements Server {
         List<ModelNode> list = getList(config);
 
         // float all <extension> up to the head of the list
-        list.sort( new ExtensionOpPriorityComparator() );
+        list.sort(new ExtensionOpPriorityComparator());
 
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
-        this.serviceContainer = this.container.start(list, this.contentProvider);
+
+        ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
+        TempFileProvider tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor);
+        List<ServiceActivator> activators = new ArrayList<>();
+        activators.add(new ServiceActivator() {
+            @Override
+            public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
+                context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<Object>(tempFileProvider)))
+                        .install();
+            }
+        });
+
+        OUTER:
+        for (ServerConfiguration eachConfig : this.configList) {
+            boolean found = false;
+            INNER:
+            for (Fraction eachFraction : config.fractions()) {
+                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+                    found = true;
+                    activators.addAll(eachConfig.getServiceActivators(eachFraction));
+                    break INNER;
+                }
+            }
+            if (!found) {
+                System.err.println("*** unable to find fraction for: " + eachConfig.getType());
+            }
+        }
+
+
+        this.serviceContainer = this.container.start(list, this.contentProvider, activators);
         ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
         this.client = controller.createClient(executor);
+        this.deployer = new RuntimeDeployer(this.configList, this.client, this.contentProvider, tempFileProvider);
 
-        this.deployer = new RuntimeDeployer(this.client, this.contentProvider);
         return this.deployer;
     }
 
@@ -79,11 +111,11 @@ public class RuntimeServer implements Server {
             String leftOpName = left.require(OP).asString();
             String rightOpName = left.require(OP).asString();
 
-            if ( leftAddr.size() == 1 && leftAddr.getElement(0).getKey().equals(EXTENSION) && leftOpName.equals(ADD) ) {
+            if (leftAddr.size() == 1 && leftAddr.getElement(0).getKey().equals(EXTENSION) && leftOpName.equals(ADD)) {
                 return -1;
             }
 
-            if ( rightAddr.size() == 1 && rightAddr.getElement(0).getKey().equals(EXTENSION) && rightOpName.equals(ADD) ) {
+            if (rightAddr.size() == 1 && rightAddr.getElement(0).getKey().equals(EXTENSION) && rightOpName.equals(ADD)) {
                 return 1;
             }
 
@@ -142,15 +174,15 @@ public class RuntimeServer implements Server {
 
         Set<String> groupNames = config.socketBindings().keySet();
 
-        for ( String each : groupNames ) {
-            List<SocketBinding> bindings = config.socketBindings().get( each );
+        for (String each : groupNames) {
+            List<SocketBinding> bindings = config.socketBindings().get(each);
             SocketBindingGroup group = config.getSocketBindingGroup(each);
-            if ( group == null ) {
-                throw new RuntimeException( "No socket-binding-group for '" + each + "'" );
+            if (group == null) {
+                throw new RuntimeException("No socket-binding-group for '" + each + "'");
             }
 
             for (SocketBinding binding : bindings) {
-                group.socketBinding( binding );
+                group.socketBinding(binding);
             }
         }
     }
@@ -244,11 +276,11 @@ public class RuntimeServer implements Server {
         node.get(OP_ADDR).set(address.append("socket-binding", binding.name()).toModelNode());
         node.get(OP).set(ADD);
         node.get(PORT).set(new ValueExpression(binding.portExpression()));
-        if ( binding.multicastAddress() != null ) {
-            node.get(MULTICAST_ADDRESS).set( binding.multicastAddress() );
+        if (binding.multicastAddress() != null) {
+            node.get(MULTICAST_ADDRESS).set(binding.multicastAddress());
         }
-        if ( binding.multicastPortExpression() != null ) {
-            node.get(MULTICAST_PORT ).set( new ValueExpression( binding.multicastPortExpression() ) );
+        if (binding.multicastPortExpression() != null) {
+            node.get(MULTICAST_PORT).set(new ValueExpression(binding.multicastPortExpression()));
         }
 
         list.add(node);
@@ -267,8 +299,8 @@ public class RuntimeServer implements Server {
                     break INNER;
                 }
             }
-            if ( ! found ) {
-                System.err.println( "*** unable to find fraction for: " + eachConfig.getType() );
+            if (!found) {
+                System.err.println("*** unable to find fraction for: " + eachConfig.getType());
             }
 
         }
