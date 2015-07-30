@@ -27,4 +27,8 @@ public interface ServerConfiguration<T extends Fraction> {
 
     }
 
+    default boolean isIgnorable() {
+        return false;
+    }
+
 }

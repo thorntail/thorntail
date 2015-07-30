@@ -219,6 +219,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-logstash</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-mail</artifactId>
         <version>${project.version}</version>
       </dependency>

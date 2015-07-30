@@ -49,15 +49,15 @@ public class RunMojo extends AbstractMojo {
     @Parameter(alias = "bindAddress", defaultValue = "0.0.0.0")
     private String bindAddress;
 
-    @Parameter(alias ="contextPath", defaultValue = "/" )
+    @Parameter(alias = "contextPath", defaultValue = "/")
     private String contextPath;
 
-    @Parameter(alias = "properties" )
+    @Parameter(alias = "properties")
     private Properties properties;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if ( this.properties == null ) {
+        if (this.properties == null) {
             this.properties = new Properties();
         }
         if (this.project.getPackaging().equals("war")) {
@@ -81,12 +81,12 @@ public class RunMojo extends AbstractMojo {
 
             Enumeration<?> propNames = runProps.propertyNames();
 
-            while( propNames.hasMoreElements() ) {
+            while (propNames.hasMoreElements()) {
                 String name = (String) propNames.nextElement();
-                cli.add( "-D" + name + "=" + runProps.getProperty( name ) );
+                cli.add("-D" + name + "=" + runProps.getProperty(name));
             }
 
-            cli.add("-Dwildfly.swarm.context.path=" + this.contextPath );
+            cli.add("-Dwildfly.swarm.context.path=" + this.contextPath);
             cli.add("org.wildfly.swarm.Swarm");
 
             Process process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]));
@@ -115,13 +115,13 @@ public class RunMojo extends AbstractMojo {
 
             Enumeration<?> propNames = runProps.propertyNames();
 
-            while( propNames.hasMoreElements() ) {
+            while (propNames.hasMoreElements()) {
                 String name = (String) propNames.nextElement();
-                cli.add( "-D" + name + "=" + runProps.getProperty( name ) );
-                System.err.println( name + " = " + runProps.getProperty( name ) );
+                cli.add("-D" + name + "=" + runProps.getProperty(name));
+                System.err.println(name + " = " + runProps.getProperty(name));
             }
 
-            cli.add("-Dwildfly.swarm.context.path=" + this.contextPath );
+            cli.add("-Dwildfly.swarm.context.path=" + this.contextPath);
             if (this.mainClass != null) {
                 cli.add(this.mainClass);
             } else {
@@ -144,14 +144,14 @@ public class RunMojo extends AbstractMojo {
 
     Properties runProperties() {
         Properties props = new Properties();
-        props.putAll( this.properties );
+        props.putAll(this.properties);
 
         Properties sysProps = System.getProperties();
 
         Set<String> names = sysProps.stringPropertyNames();
         for (String name : names) {
-            if ( name.startsWith( "jboss" ) || name.startsWith( "wildfly" ) ) {
-                props.put( name, sysProps.get( name ) );
+            if (name.startsWith("jboss") || name.startsWith("wildfly") || name.startsWith("swarm")) {
+                props.put(name, sysProps.get(name));
             }
         }
 

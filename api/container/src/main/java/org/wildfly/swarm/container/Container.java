@@ -131,6 +131,9 @@ public class Container {
     }
 
     private void fractionDefault(Fraction defaultFraction) {
+        if ( defaultFraction == null ) {
+            return;
+        }
         this.defaultFractionTypes.add(fractionRoot(defaultFraction.getClass()));
         fraction(defaultFraction);
     }

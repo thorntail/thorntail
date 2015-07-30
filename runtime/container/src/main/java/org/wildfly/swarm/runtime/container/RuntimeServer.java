@@ -85,7 +85,7 @@ public class RuntimeServer implements Server {
                     break INNER;
                 }
             }
-            if (!found) {
+            if (!found && !eachConfig.isIgnorable()) {
                 System.err.println("*** unable to find fraction for: " + eachConfig.getType());
             }
         }
@@ -299,7 +299,7 @@ public class RuntimeServer implements Server {
                     break INNER;
                 }
             }
-            if (!found) {
+            if (!found && !eachConfig.isIgnorable()) {
                 System.err.println("*** unable to find fraction for: " + eachConfig.getType());
             }
 

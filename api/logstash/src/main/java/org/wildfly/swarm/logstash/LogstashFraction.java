@@ -18,6 +18,7 @@ public class LogstashFraction implements Fraction {
 
     public LogstashFraction() {
         this("wildflySwarmNode", "${jboss.node.name}");
+        hostname( "${logstash.host}" );
     }
 
     public LogstashFraction(String nodeKey, String nodeValue) {
@@ -29,13 +30,18 @@ public class LogstashFraction implements Fraction {
         return this;
     }
 
-    public LogstashFraction hostname(String hostnameExpression) {
-        this.handlerProperties.put("hostname", hostnameExpression);
+    public LogstashFraction hostname(String hostname) {
+        this.handlerProperties.put("hostname", hostname);
         return this;
     }
 
     public LogstashFraction port(String portExpression) {
         this.handlerProperties.put("port", portExpression);
+        return this;
+    }
+
+    public LogstashFraction port(int port) {
+        this.handlerProperties.put("port", "" + port);
         return this;
     }
 
