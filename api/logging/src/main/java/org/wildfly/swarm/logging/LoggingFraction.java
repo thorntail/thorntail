@@ -91,6 +91,11 @@ public class LoggingFraction implements Fraction {
         return this;
     }
 
+    public LoggingFraction customFormatter(String name, String module, String className, Properties properties) {
+        this.formatters.put(name, new CustomFormatter(name, module, className, properties));
+        return this;
+    }
+
     /**
      * Configure a default non-color formatter named {@code PATTERN}.
      *

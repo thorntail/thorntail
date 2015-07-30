@@ -2,6 +2,8 @@ package org.wildfly.swarm.runtime.logging;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
@@ -95,6 +97,24 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         node.get(OP).set(ADD);
         node.get("module").set(formatter.getModule());
         node.get("class").set(formatter.getClassName());
+
+        if (formatter.properties().size() > 0) {
+            ModelNode properties = new ModelNode();
+            StringBuffer buff = new StringBuffer();
+            boolean first = true;
+            for (Map.Entry<Object, Object> entry : formatter.properties().entrySet()) {
+                if (!first) {
+                    buff.append(",");
+                }
+                buff.append(entry.getKey());
+                buff.append("=");
+                buff.append(entry.getValue());
+                first = false;
+            }
+            properties.get("metaData").set(new ValueExpression(buff.toString()));
+            node.get("properties").set(properties);
+        }
+
         list.add(node);
     }
 
@@ -147,9 +167,11 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         node.get("module").set(handler.module());
         node.get("named-formatter").set(handler.formatter());
 
-        ModelNode properties = new ModelNode();
-        handler.properties().forEach((key, value) -> properties.get((String) key).set(new ValueExpression((String) value)));
-        node.get("properties").set(properties);
+        if (handler.properties().size() > 0) {
+            ModelNode properties = new ModelNode();
+            handler.properties().forEach((key, value) -> properties.get((String) key).set(new ValueExpression((String) value)));
+            node.get("properties").set(properties);
+        }
 
         list.add(node);
     }
