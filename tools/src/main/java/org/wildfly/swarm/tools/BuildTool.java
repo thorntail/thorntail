@@ -1,43 +1,67 @@
 package org.wildfly.swarm.tools;
 
-import java.io.*;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
-import java.util.jar.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
 
 /**
  * @author Bob McWhirter
  */
 public class BuildTool {
 
+    private final JavaArchive archive;
+
     private String mainClass;
+
     private String contextPath = "/";
-    //private int httpPort = 8080;
-    //private int portOffset = 0;
-    //private String bindAddress = "0.0.0.0";
+
     private boolean bundleDependencies = true;
 
     private final Set<ArtifactSpec> dependencies = new HashSet<>();
+
     private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
+
     private final Set<String> resourceDirectories = new HashSet<>();
-    private ArtifactSpec projectArtifact;
+
+    //private ArtifactSpec projectArtifact;
+    private ProjectAsset projectAsset;
+
     private ArtifactResolvingHelper resolver;
 
-    private Path outputDir;
-    private final Path dir;
     private Properties properties = new Properties();
 
-    public BuildTool(File outputDir) {
-        this(outputDir.toPath());
-    }
-
-    public BuildTool(Path outputDir) {
-        this.outputDir = outputDir;
-        this.dir = this.outputDir.resolve("wildfly-swarm-archive");
+    public BuildTool() {
+        this.archive = ShrinkWrap.create(JavaArchive.class);
     }
 
     public BuildTool mainClass(String mainClass) {
@@ -51,7 +75,7 @@ public class BuildTool {
     }
 
     public BuildTool properties(Properties properties) {
-        this.properties.putAll( properties );
+        this.properties.putAll(properties);
         return this;
     }
 
@@ -61,7 +85,12 @@ public class BuildTool {
     }
 
     public BuildTool projectArtifact(String groupId, String artifactId, String version, String packaging, File file) {
-        this.projectArtifact = new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file);
+        this.projectAsset = new ArtifactAsset( new ArtifactSpec( null, groupId, artifactId, version, packaging, null, file ) );
+        return this;
+    }
+
+    public BuildTool projectArchive(Archive archive) {
+        this.projectAsset = new ArchiveAsset( archive );
         return this;
     }
 
@@ -88,25 +117,19 @@ public class BuildTool {
         return this;
     }
 
-    public File build(String baseName) throws Exception {
-        return build( baseName, this.outputDir );
+    public File build(String baseName, Path dir) throws Exception {
+        build();
+        return createJar(baseName, dir);
     }
 
-    public File build(String baseName, Path dir) throws Exception {
-        prepareDir();
+    public Archive build() throws Exception {
         addWildflySwarmBootstrapJar();
         addBootstrapJars();
         createManifest();
         createWildflySwarmProperties();
         createDependenciesTxt();
         collectDependencies();
-        return createJar(baseName, dir);
-    }
-
-    private void prepareDir() throws IOException {
-        if (Files.exists(this.dir)) {
-            emptyDir(this.dir);
-        }
+        return this.archive;
     }
 
     private void addWildflySwarmBootstrapJar() throws BuildException, IOException {
@@ -121,7 +144,6 @@ public class BuildTool {
     private void addBootstrapJars() throws Exception {
 
         Set<String> bootstrapGavs = new HashSet<>();
-        Path projectArtifactPath = null;
 
         for (ArtifactSpec each : this.dependencies) {
             if (includeAsBootstrapJar(each)) {
@@ -136,20 +158,17 @@ public class BuildTool {
             }
         }
 
-        Path bootstrapJars = this.dir.resolve("_bootstrap");
-        projectArtifactPath = bootstrapJars.resolve(this.projectArtifact.artifactId + "-" + this.projectArtifact.version + "." + this.projectArtifact.packaging);
-        Files.createDirectories(bootstrapJars);
-        Files.copy(this.projectArtifact.file.toPath(), projectArtifactPath);
+        //String projectArtifactPath = "_bootstrap/" + this.projectArtifact.artifactId + "-" + this.projectArtifact.version + "." + this.projectArtifact.packaging;
+        //this.archive.add(new FileAsset(this.projectArtifact.file), projectArtifactPath);
+        this.archive.add( this.projectAsset );
 
-
-        final Path bootstrapTxt = dir.resolve("META-INF").resolve("wildfly-swarm-bootstrap.txt");
-        Files.createDirectories(bootstrapTxt.getParent());
-        try (final OutputStreamWriter out = new OutputStreamWriter(Files.newOutputStream(bootstrapTxt, StandardOpenOption.CREATE))) {
-            for (String each : bootstrapGavs) {
-                out.write("gav: " + each + "\n");
-            }
-            out.write("path: _bootstrap/" + this.projectArtifact.artifactId + "-" + this.projectArtifact.version + "." + this.projectArtifact.packaging + "\n");
+        StringBuilder bootstrapTxt = new StringBuilder();
+        for (String each : bootstrapGavs) {
+            bootstrapTxt.append("gav:").append(each).append("\n");
         }
+        bootstrapTxt.append("path:").append(this.projectAsset.getName()).append("\n");
+        this.archive.add(new StringAsset(bootstrapTxt.toString()), "META-INF/wildfly-swarm-bootstrap.txt");
+
     }
 
 
@@ -171,12 +190,16 @@ public class BuildTool {
             return false;
         }
 
+        if (dependency.groupId.equals("org.jboss.modules") && dependency.artifactId.equals("jboss-modules")) {
+            return false;
+        }
+
         return !dependency.scope.equals("provided");
     }
 
     protected void gatherDependency(ArtifactSpec artifact) throws Exception {
         ArtifactSpec originalArtifact = artifact;
-        if ( artifact.file == null ) {
+        if (artifact.file == null) {
             artifact = this.resolver.resolve(artifact);
         }
 
@@ -184,24 +207,19 @@ public class BuildTool {
             throw new BuildException("Unable to resolve artifact: " + originalArtifact);
         }
 
-        Path artifactPath = this.dir.resolve("m2repo");
+        StringBuilder artifactPath = new StringBuilder("m2repo");
 
         String[] groupIdParts = artifact.groupId.split("\\.");
 
         for (int i = 0; i < groupIdParts.length; ++i) {
-            artifactPath = artifactPath.resolve(groupIdParts[i]);
+            artifactPath.append('/').append(groupIdParts[i]);
         }
 
-        artifactPath = artifactPath.resolve(artifact.artifactId);
-        artifactPath = artifactPath.resolve(artifact.version);
-        artifactPath = artifactPath.resolve(artifact.file.getName());
+        artifactPath.append('/').append(artifact.artifactId);
+        artifactPath.append('/').append(artifact.version);
+        artifactPath.append('/').append(artifact.file.getName());
 
-        if (Files.exists(artifactPath)) {
-            return;
-        }
-
-        Files.createDirectories(artifactPath.getParent());
-        Files.copy(artifact.file.toPath(), artifactPath, StandardCopyOption.REPLACE_EXISTING);
+        this.archive.add(new FileAsset(artifact.file), artifactPath.toString());
     }
 
     private void createManifest() throws IOException {
@@ -213,37 +231,34 @@ public class BuildTool {
         if (this.mainClass != null && !this.mainClass.equals("")) {
             attrs.put(new Attributes.Name("Wildfly-Swarm-Main-Class"), this.mainClass);
         }
-        attrs.putValue("Application-Artifact", this.projectArtifact.file.getName());
+        //attrs.putValue("Application-Artifact", this.projectArtifact.file.getName());
 
-        // Write the manifest to the dir
-        final Path manifestPath = dir.resolve("META-INF").resolve("MANIFEST.MF");
-        // Ensure the directories have been created
-        Files.createDirectories(manifestPath.getParent());
-        try (final OutputStream out = Files.newOutputStream(manifestPath, StandardOpenOption.CREATE)) {
-            manifest.write(out);
-        }
+        ByteArrayOutputStream manifestBytes = new ByteArrayOutputStream();
+        manifest.write(manifestBytes);
+        this.archive.addAsManifestResource(new ByteArrayAsset(manifestBytes.toByteArray()), "MANIFEST.MF");
     }
 
     private void createWildflySwarmProperties() throws IOException {
-        Path propsPath = dir.resolve("META-INF").resolve("wildfly-swarm.properties");
 
         Properties props = new Properties();
 
         Enumeration<?> propNames = this.properties.propertyNames();
 
-        while ( propNames.hasMoreElements() ) {
+        while (propNames.hasMoreElements()) {
             String eachName = (String) propNames.nextElement();
             String eachValue = this.properties.get(eachName).toString();
             props.put(eachName, eachValue);
         }
         //props.putAll( this.properties );
 
-        props.setProperty("wildfly.swarm.app.artifact", this.projectArtifact.artifactId + "-" + this.projectArtifact.version + "." + this.projectArtifact.packaging);
+        //props.setProperty("wildfly.swarm.app.artifact", this.projectArtifact.artifactId + "-" + this.projectArtifact.version + "." + this.projectArtifact.packaging);
+        props.setProperty("wildfly.swarm.app.artifact", this.projectAsset.getSimpleName() );
         props.setProperty("wildfly.swarm.context.path", this.contextPath);
 
-        try (FileOutputStream out = new FileOutputStream(propsPath.toFile())) {
-            props.store(out, "Generated By Wildfly Swarm");
-        }
+        ByteArrayOutputStream propsBytes = new ByteArrayOutputStream();
+        props.store(propsBytes, "Generated by WildFly Swarm");
+
+        this.archive.addAsManifestResource(new ByteArrayAsset(propsBytes.toByteArray()), "wildfly-swarm.properties");
     }
 
 
@@ -295,21 +310,20 @@ public class BuildTool {
             }
         }
 
-        Path depsPath = dir.resolve("META-INF").resolve("wildfly-swarm-dependencies.txt");
+        StringBuilder depsTxt = new StringBuilder();
 
-        try (FileWriter out = new FileWriter(depsPath.toFile())) {
-            for (ArtifactSpec each : this.dependencies) {
-                if (provided.contains(each.groupId + ":" + each.artifactId)) {
-                    continue;
-                }
-                if (each.scope.equals("compile") && each.packaging.equals("jar")) {
-                    //this.dependencies.add(each.groupId + ":" + each.artifactId + ":" + each.version);
-                    each.shouldGather = true;
-                    out.write(each.groupId + ":" + each.artifactId + ":" + each.version + "\n");
-                }
-
+        for (ArtifactSpec each : this.dependencies) {
+            if (provided.contains(each.groupId + ":" + each.artifactId)) {
+                continue;
+            }
+            if (each.scope.equals("compile") && each.packaging.equals("jar")) {
+                //this.dependencies.add(each.groupId + ":" + each.artifactId + ":" + each.version);
+                each.shouldGather = true;
+                depsTxt.append(each.groupId).append(':').append(each.artifactId).append(':').append(each.version).append("\n");
             }
         }
+
+        this.archive.addAsManifestResource( new StringAsset( depsTxt.toString() ), "wildfly-swarm-dependencies.txt" );
     }
 
     protected void collectDependencies() throws Exception {
@@ -388,43 +402,11 @@ public class BuildTool {
     }
 
     private File createJar(String baseName, Path dir) throws IOException {
-
-        File file = dir.resolve(baseName + "-swarm.jar").toFile();
-        try (
-                FileOutputStream fileOut = new FileOutputStream(file);
-                JarOutputStream out = new JarOutputStream(fileOut)
-        ) {
-            writeToJar(out, this.dir);
-        }
-
-        return file;
+        File out = new File( dir.toFile(), baseName + "-swarm.jar" );
+        ZipExporter exporter = this.archive.as(ZipExporter.class);
+        exporter.exportTo( out, true );
+        return out;
     }
-
-    private void writeToJar(final JarOutputStream out, final Path entry) throws IOException {
-        String rootPath = this.dir.toAbsolutePath().toString();
-        String entryPath = entry.toAbsolutePath().toString();
-
-        if (!rootPath.equals(entryPath)) {
-            String jarPath = entryPath.substring(rootPath.length() + 1);
-            if (Files.isDirectory(entry)) {
-                jarPath = jarPath + "/";
-            }
-            out.putNextEntry(new ZipEntry(jarPath.replace(File.separatorChar, '/')));
-        }
-
-        if (Files.isDirectory(entry)) {
-            Files.walkFileTree(entry, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                    writeToJar(out, file);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } else {
-            Files.copy(entry, out);
-        }
-    }
-
 
     public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier) {
         for (ArtifactSpec each : this.dependencies) {
@@ -464,31 +446,10 @@ public class BuildTool {
             if (each.getName().startsWith("META-INF")) {
                 continue;
             }
-            Path fsEach = this.dir.resolve(each.getName());
-            if (each.isDirectory()) {
-                Files.createDirectories(fsEach);
-            } else {
-                try (InputStream in = jarFile.getInputStream(each)) {
-                    Files.createDirectories(fsEach.getParent());
-                    Files.copy(in, fsEach, StandardCopyOption.REPLACE_EXISTING);
-                }
+            if ( each.isDirectory() ) {
+                continue;
             }
+            this.archive.add(new ZipFileEntryAsset(jarFile, each), each.getName());
         }
-    }
-
-    private void emptyDir(final Path dir) throws IOException {
-        Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                Files.delete(dir);
-                return FileVisitResult.CONTINUE;
-            }
-        });
     }
 }

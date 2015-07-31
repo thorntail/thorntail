@@ -125,7 +125,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         }
 
 
-        this.tool = new BuildTool(Paths.get(this.projectBuildDir));
+        this.tool = new BuildTool();
 
         this.tool.projectArtifact(
                 this.project.getArtifact().getGroupId(),
@@ -157,7 +157,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         this.tool.artifactResolvingHelper(resolvingHelper);
 
         try {
-            File jar = this.tool.build(this.project.getBuild().getFinalName());
+            File jar = this.tool.build(this.project.getBuild().getFinalName(), Paths.get( this.projectBuildDir ));
 
             Artifact primaryArtifact = this.project.getArtifact();
 

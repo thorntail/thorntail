@@ -41,6 +41,7 @@
     <version.wildfly>10.0.0.Alpha6</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>1.1.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
+    <version.org.arquillian>1.1.8.Final</version.org.arquillian>
 
     <version.com.netflix.ribbon>2.1.0</version.com.netflix.ribbon>
     <version.com.netflix.archaius>0.6.6</version.com.netflix.archaius>
@@ -406,6 +407,41 @@
         <type>zip</type>
         <version>${version.keycloak}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${version.org.arquillian}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.aether</groupId>
+        <artifactId>aether-api</artifactId>
+        <version>0.9.0.M3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.aether</groupId>
+        <artifactId>aether-impl</artifactId>
+        <version>0.9.0.M3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.aether</groupId>
+        <artifactId>aether-spi</artifactId>
+        <version>0.9.0.M3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.aether</groupId>
+        <artifactId>aether-util</artifactId>
+        <version>0.9.0.M3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.aether</groupId>
+        <artifactId>aether-connector-wagon</artifactId>
+        <version>0.9.0.M2</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -443,6 +479,7 @@
     <module>bootstrap</module>
     <module>api</module>
     <module>runtime</module>
+    <module>arquillian</module>
     <module>integration-tests</module>
   </modules>
 </project>

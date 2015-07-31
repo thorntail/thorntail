@@ -71,6 +71,10 @@ public class ArtifactSpec {
     }
 
     public String toString() {
-        return this.groupId + ":" + this.artifactId + ":" + this.version + ":" + this.packaging + (this.classifier == null ? "" : this.classifier) + ":" + " [" + this.scope + "]";
+        return coordinates() + " [" + this.scope + "]";
+    }
+
+    public String coordinates() {
+        return this.groupId + ":" + this.artifactId + ":" + this.packaging + ":" + (this.classifier == null ? "" : this.classifier + ":" ) + this.version;
     }
 }

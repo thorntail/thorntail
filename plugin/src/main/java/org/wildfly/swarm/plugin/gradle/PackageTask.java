@@ -47,7 +47,7 @@ public class PackageTask extends DefaultTask {
         ConfigurationContainer configs = project.getConfigurations();
         Configuration compile = configs.getByName("compile");
 
-        this.tool = new BuildTool(project.getBuildDir());
+        this.tool = new BuildTool();
         this.tool.artifactResolvingHelper( new GradleArtifactResolvingHelper(project));
 
         Set<ResolvedDependency> deps = compile.getResolvedConfiguration().getFirstLevelModuleDependencies();

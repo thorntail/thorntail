@@ -36,7 +36,6 @@ public class Main {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
         Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
 
-
         String mainClassName = null;
         Manifest manifest = Layout.getManifest();
 
@@ -65,11 +64,5 @@ public class Main {
             }
         }
 
-        /*
-        Module container = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container"));
-        Class<?> mainClass = container.getClassLoader().loadClass("org.wildfly.swarm.container.Main");
-        final Method mainMethod = mainClass.getMethod("main", String[].class);
-        mainMethod.invoke(null, new Object[]{args});
-        */
     }
 }
