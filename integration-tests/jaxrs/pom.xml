@@ -16,7 +16,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-integration-tests-arq-jaxrs</artifactId>
+  <artifactId>wildfly-swarm-integration-tests-jaxrs</artifactId>
 
   <name>WildFly Swarm: Integration Tests: JAX-RS</name>
   <description>WildFly Swarm: Integration Tests: JAX-RS</description>
@@ -47,18 +47,6 @@
     </plugins>
   </build>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss.arquillian</groupId>
-        <artifactId>arquillian-bom</artifactId>
-        <version>1.1.8.Final</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -68,23 +56,6 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>2.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert</artifactId>
-      <version>1.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

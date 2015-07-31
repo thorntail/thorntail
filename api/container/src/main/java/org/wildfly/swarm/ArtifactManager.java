@@ -5,10 +5,18 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 
 import java.io.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -57,6 +65,7 @@ public class ArtifactManager {
         } else {
             String classpath = System.getProperty("java.class.path");
             String javaHome = System.getProperty("java.home");
+            Path pwd = Paths.get( System.getProperty("user.dir" ) );
             if (classpath != null) {
                 String[] elements = classpath.split(File.pathSeparator);
 
@@ -67,6 +76,22 @@ public class ArtifactManager {
                             JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
                             new ZipImporterImpl(archive).importFrom(artifact);
                             archives.add( archive );
+                        }  else {
+                            if ( artifact.toPath().startsWith( pwd ) ) {
+                                continue;
+                            }
+
+                            JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
+                            Path basePath = artifact.toPath();
+                            Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
+                                @Override
+                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                                    //System.err.println(  basePath.relativize(file).toString() );
+                                    archive.add(new FileAsset(file.toFile()), basePath.relativize(file).toString());
+                                    return FileVisitResult.CONTINUE;
+                                }
+                            });
+                            archives.add(archive);
                         }
                     }
                 }

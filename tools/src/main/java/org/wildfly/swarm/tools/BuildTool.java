@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -24,8 +23,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -134,8 +131,10 @@ public class BuildTool {
 
     private void addWildflySwarmBootstrapJar() throws BuildException, IOException {
         ArtifactSpec artifact = findArtifact("org.wildfly.swarm", "wildfly-swarm-bootstrap", null, "jar", null);
-        if (artifact == null) {
-            throw new BuildException("Unable to locate wildfly-swarm-bootstrap.jar in project dependencies.");
+
+        if ( ! bootstrapJarShadesJBossModules( artifact.file ) ) {
+            ArtifactSpec jbossModules = findArtifact("org.jboss.modules", "jboss-modules", null, "jar", null);
+            expandArtifact( jbossModules.file );
         }
         expandArtifact(artifact.file);
     }
@@ -158,8 +157,6 @@ public class BuildTool {
             }
         }
 
-        //String projectArtifactPath = "_bootstrap/" + this.projectArtifact.artifactId + "-" + this.projectArtifact.version + "." + this.projectArtifact.packaging;
-        //this.archive.add(new FileAsset(this.projectArtifact.file), projectArtifactPath);
         this.archive.add( this.projectAsset );
 
         StringBuilder bootstrapTxt = new StringBuilder();
@@ -404,7 +401,7 @@ public class BuildTool {
     private File createJar(String baseName, Path dir) throws IOException {
         File out = new File( dir.toFile(), baseName + "-swarm.jar" );
         ZipExporter exporter = this.archive.as(ZipExporter.class);
-        exporter.exportTo( out, true );
+        exporter.exportTo(out, true);
         return out;
     }
 
@@ -436,8 +433,23 @@ public class BuildTool {
         return null;
     }
 
-    public void expandArtifact(File artifactFile) throws IOException {
+    public boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
+        JarFile jarFile = new JarFile(artifactFile);
+        Enumeration<JarEntry> entries = jarFile.entries();
 
+        boolean jbossModulesFound = false;
+
+        while (entries.hasMoreElements()) {
+            JarEntry each = entries.nextElement();
+            if ( each.getName().startsWith( "org/jboss/modules/ModuleLoader" ) ) {
+                jbossModulesFound = true;
+            }
+        }
+
+        return jbossModulesFound;
+    }
+
+    public void expandArtifact(File artifactFile) throws IOException {
         JarFile jarFile = new JarFile(artifactFile);
         Enumeration<JarEntry> entries = jarFile.entries();
 

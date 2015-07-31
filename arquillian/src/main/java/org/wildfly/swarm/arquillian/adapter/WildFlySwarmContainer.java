@@ -10,7 +10,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -23,8 +22,6 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaD
 import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
 import org.jboss.arquillian.protocol.servlet.ServletMethodExecutor;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
@@ -46,6 +43,7 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
     private Process process;
 
     private LatchedBridge stdout;
+
     private IOBridge stderr;
 
     @Override
@@ -72,6 +70,15 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
+
+        /*
+        System.err.println( ">>> CORE" );
+        for (Map.Entry<ArchivePath, Node> each : archive.getContent().entrySet()) {
+            System.err.println("-> " + each.getKey());
+        }
+        System.err.println( "<<< CORE" );
+        */
+
 
         BuildTool tool = new BuildTool();
         tool.projectArchive(archive);
@@ -100,7 +107,16 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
                 throw new DeploymentException("Unable to locate `java` binary");
             }
 
-            Archive wrapped = tool.build();
+            Archive<?> wrapped = tool.build();
+
+            /*
+            for (Map.Entry<ArchivePath, Node> each : wrapped.getContent().entrySet()) {
+                if (each.getKey().get().startsWith("/org/")) {
+                    System.err.println("-> " + each.getKey());
+                }
+            }
+            */
+
             File executable = File.createTempFile("arquillian", "-swarm.jar");
             wrapped.as(ZipExporter.class).exportTo(executable, true);
             executable.deleteOnExit();
