@@ -24,6 +24,8 @@ import org.wildfly.swarm.container.SocketBindingGroup;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
@@ -47,7 +49,19 @@ public class RuntimeServer implements Server {
 
     private List<ServerConfiguration> configList = new ArrayList<>();
 
-    public RuntimeServer() {
+    public RuntimeServer() throws ModuleLoadException {
+        Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.logging"));
+
+        ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
+            System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
+            //force logging init
+            System.err.println("logmanager: " + LogManager.getLogManager());
+            System.err.println("logmanager: " + LogManager.getLogManager().getClass().getClassLoader());
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalCl);
+        }
     }
 
     @Override

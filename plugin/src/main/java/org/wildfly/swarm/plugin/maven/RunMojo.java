@@ -162,6 +162,9 @@ public class RunMojo extends AbstractMojo {
         List<String> elements = new ArrayList<>();
         Set<Artifact> artifacts = this.project.getArtifacts();
         for (Artifact each : artifacts) {
+            if ( each.getGroupId().equals( "org.jboss.logmanager") && each.getArtifactId().equals("jboss-logmanager" ) ){
+                continue;
+            }
             elements.add(each.getFile().toString());
         }
 

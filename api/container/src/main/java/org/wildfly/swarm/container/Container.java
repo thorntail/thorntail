@@ -71,18 +71,6 @@ public class Container {
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.container"));
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.runtime.container.RuntimeServer");
         this.server = (Server) serverClass.newInstance();
-
-        Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.logging"));
-
-        ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
-            System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
-            //force logging init
-            Logger.getGlobal();
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalCl);
-        }
     }
 
     public void applyFractionDefaults(Server server) throws Exception {
