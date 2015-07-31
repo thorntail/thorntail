@@ -6,6 +6,8 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.messaging.MessagingFraction;
 import org.wildfly.swarm.messaging.MessagingServer;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
@@ -21,7 +23,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
  */
 public class MessagingConfiguration extends AbstractServerConfiguration<MessagingFraction> {
 
-    private PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "messaging"));
+    private PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "messaging-activemq"));
 
     public MessagingConfiguration() {
         super(MessagingFraction.class);
@@ -33,11 +35,16 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     }
 
     @Override
+    public void prepareArchive(Archive a) {
+        a.as(JARArchive.class).addModule("javax.jms.api" );
+    }
+
+    @Override
     public List<ModelNode> getList(MessagingFraction fraction) {
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.messaging");
+        node.get(OP_ADDR).set(EXTENSION, "org.wildfly.extension.messaging-activemq");
         node.get(OP).set(ADD);
         list.add(node);
 
@@ -60,7 +67,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     }
 
     protected void addServer(MessagingServer server, List<ModelNode> list) {
-        PathAddress serverAddress = this.address.append("hornetq-server", server.name());
+        PathAddress serverAddress = this.address.append("server", server.name());
 
 
         ModelNode node = new ModelNode();
@@ -85,7 +92,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
             node = new ModelNode();
             node.get(OP_ADDR).set(serverAddress.append("connection-factory", "InVmConnectionFactory").toModelNode());
             node.get(OP).set(ADD);
-            node.get("connector").set("in-vm", new ModelNode());
+            node.get("connectors").setEmptyList().add("in-vm");
             node.get("entries").setEmptyList().add(server.inVMConnectorJNDIName());
             list.add(node);
         }
@@ -95,7 +102,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     }
 
     protected void addTopics(MessagingServer server, List<ModelNode> list) {
-        PathAddress serverAddress = this.address.append("hornetq-server", server.name());
+        PathAddress serverAddress = this.address.append("server", server.name());
 
         for (String each : server.topics()) {
             ModelNode node = new ModelNode();
@@ -107,7 +114,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     }
 
     protected void addQueues(MessagingServer server, List<ModelNode> list) {
-        PathAddress serverAddress = this.address.append("hornetq-server", server.name());
+        PathAddress serverAddress = this.address.append("server", server.name());
 
         for (String each : server.topics()) {
             ModelNode node = new ModelNode();

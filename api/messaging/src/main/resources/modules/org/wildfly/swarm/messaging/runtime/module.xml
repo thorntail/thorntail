@@ -1,4 +1,4 @@
-<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.runtime.messaging">
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.messaging" slot="runtime">
   <resources>
     <artifact name="org.wildfly.swarm:wildfly-swarm-runtime-messaging:${project.version}"/>
   </resources>
@@ -8,6 +8,6 @@
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.runtime.container"/>
 
-    <module name="org.jboss.as.messaging"/>
+    <module name="org.wildfly.extension.messaging-activemq"/>
   </dependencies>
 </module>

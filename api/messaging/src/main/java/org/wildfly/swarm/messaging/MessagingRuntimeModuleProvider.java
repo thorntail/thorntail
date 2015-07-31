@@ -8,6 +8,11 @@ import org.wildfly.swarm.container.RuntimeModuleProvider;
 public class MessagingRuntimeModuleProvider implements RuntimeModuleProvider {
     @Override
     public String getModuleName() {
-        return "org.wildfly.swarm.runtime.messaging";
+        return "org.wildfly.swarm.messaging";
+    }
+
+    @Override
+    public String getSlotName() {
+        return "runtime";
     }
 }
