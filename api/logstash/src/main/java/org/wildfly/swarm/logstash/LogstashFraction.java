@@ -31,17 +31,17 @@ public class LogstashFraction implements Fraction {
     }
 
     public LogstashFraction hostname(String hostname) {
-        this.handlerProperties.put("hostname", hostname);
+        this.handlerProperties.put("hostname", "${swarm.logstash.hostname:" + hostname + "}");
         return this;
     }
 
-    public LogstashFraction port(String portExpression) {
-        this.handlerProperties.put("port", portExpression);
+    public LogstashFraction port(String port) {
+        this.handlerProperties.put("port", "${swarm.logstash.port:" + port + "}");
         return this;
     }
 
     public LogstashFraction port(int port) {
-        this.handlerProperties.put("port", "" + port);
+        port( "" + port );
         return this;
     }
 
