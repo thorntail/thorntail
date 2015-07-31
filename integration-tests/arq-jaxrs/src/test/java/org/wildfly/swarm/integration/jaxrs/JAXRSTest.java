@@ -19,7 +19,6 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-@RunAsClient
 public class JAXRSTest  {
 
     @Deployment
