@@ -57,8 +57,7 @@ public class RuntimeServer implements Server {
             Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
             System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
             //force logging init
-            System.err.println("logmanager: " + LogManager.getLogManager());
-            System.err.println("logmanager: " + LogManager.getLogManager().getClass().getClassLoader());
+            LogManager.getLogManager();
         } finally {
             Thread.currentThread().setContextClassLoader(originalCl);
         }
