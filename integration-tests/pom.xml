@@ -25,7 +25,6 @@
   <modules>
     <module>base</module>
     <module>jaxrs</module>
-    <module>arq-jaxrs</module>
     <module>ejb</module>
     <module>jsf</module>
     <module>mail</module>

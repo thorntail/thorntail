@@ -1,9 +1,17 @@
 package org.wildfly.swarm.integration.jaxrs;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -11,41 +19,40 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Bob McWhirter
  */
-public class JAXRSTest extends AbstractWildFlySwarmTestCase {
+@RunWith(Arquillian.class)
+public class JAXRSTest  {
 
-    @Test
-    public void testSimple() throws Exception {
-        Container container = newContainer();
-        container.start();
-
-        JAXRSArchive deployment = ShrinkWrap.create( JAXRSArchive.class );
+    @Deployment
+    public static Archive createDeployment() throws Exception {
+        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
         deployment.addResource(MyResource.class);
         deployment.addAllDependencies();
-        container.deploy(deployment);
-
-        assertThat(fetch("http://localhost:8080/")).contains("Howdy at");
-        container.stop();
+        deployment.staticContent();
+        return deployment;
     }
 
-    @Test
-    public void testSimpleWithStatic() throws Exception {
-        Container container = newContainer();
-        container.start();
-
-        JAXRSArchive deployment = ShrinkWrap.create( JAXRSArchive.class );
-
-        deployment.staticContent();
-        deployment.addResource(MyResource.class);
-        deployment.addAllDependencies();
-
-        container.deploy(deployment);
-
-        //CountDownLatch latch = new CountDownLatch(1);
-        //latch.await();
-
+    @RunAsClient @Test
+    public void testSimple() throws IOException {
         assertThat(fetch("http://localhost:8080/")).contains("Howdy at");
         assertThat(fetch("http://localhost:8080/static-content.txt")).contains("This is static.");
-
-        container.stop();
     }
+
+    protected String fetch(String urlStr) throws IOException {
+        URL url = new URL(urlStr);
+        StringBuffer buffer = new StringBuffer();
+        try (InputStream in = url.openStream()) {
+            int numRead = 0;
+            while (numRead >= 0) {
+                byte[] b = new byte[1024];
+                numRead = in.read(b);
+                if (numRead < 0) {
+                    break;
+                }
+                buffer.append(new String(b, 0, numRead));
+            }
+        }
+
+        return buffer.toString();
+    }
+
 }

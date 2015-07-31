@@ -16,7 +16,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-integration-tests-jaxrs</artifactId>
+  <artifactId>wildfly-swarm-integration-tests-arq-jaxrs</artifactId>
 
   <name>WildFly Swarm: Integration Tests: JAX-RS</name>
   <description>WildFly Swarm: Integration Tests: JAX-RS</description>
@@ -35,6 +35,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+<!--
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+-->
           <systemPropertyVariables>
             <maven.repo.local>${maven.repo.local}</maven.repo.local>
           </systemPropertyVariables>
@@ -43,11 +47,22 @@
     </plugins>
   </build>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>1.1.8.Final</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-integration-tests-base</artifactId>
-      <version>${project.version}</version>
+      <artifactId>wildfly-swarm-jaxrs</artifactId>
     </dependency>
     <dependency>
       <groupId>joda-time</groupId>
@@ -62,7 +77,13 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jaxrs</artifactId>
+      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
