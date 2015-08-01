@@ -23,6 +23,7 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
 import org.jboss.arquillian.protocol.servlet.ServletMethodExecutor;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -39,6 +40,8 @@ import org.wildfly.swarm.tools.BuildTool;
  * @author Bob McWhirter
  */
 public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmContainerConfiguration> {
+
+    private Class<?> testClass;
 
     private Process process;
 
@@ -68,6 +71,28 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
         return new ProtocolDescription("Servlet 3.0");
     }
 
+    public void setTestClass(Class<?> testClass) {
+        this.testClass = testClass;
+    }
+
+    public boolean isContainerFactory(Class<?> cls) {
+        if (cls.getName().equals("org.wildfly.swarm.ContainerFactory")) {
+            return true;
+        }
+
+        for (Class<?> interf : cls.getInterfaces()) {
+            if (isContainerFactory(interf)) {
+                return true;
+            }
+        }
+
+        if (cls.getSuperclass() != null) {
+            return isContainerFactory(cls.getSuperclass());
+        }
+
+        return false;
+    }
+
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
 
@@ -79,6 +104,12 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
         System.err.println( "<<< CORE" );
         */
 
+
+        //System.err.println("is factory: " + isContainerFactory(this.testClass));
+        if ( isContainerFactory( this.testClass ) ) {
+            archive.as(JavaArchive.class).addAsServiceProvider( "org.wildfly.swarm.ContainerFactory", this.testClass.getName() );
+            archive.as(JavaArchive.class).addClass( this.testClass );
+        }
 
         BuildTool tool = new BuildTool();
         tool.projectArchive(archive);

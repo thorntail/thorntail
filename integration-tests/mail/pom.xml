@@ -47,18 +47,10 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-mail</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-undertow</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert</artifactId>
-      <version>1.4</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

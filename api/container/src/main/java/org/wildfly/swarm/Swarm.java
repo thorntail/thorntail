@@ -5,13 +5,14 @@
  */
 package org.wildfly.swarm;
 
-import org.jboss.modules.ModuleLoadException;
-import org.jboss.shrinkwrap.api.Archive;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceLoader;
+
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.container.Container;
-
-import java.io.IOException;
-import java.util.List;
 
 /** Default {@code main(...)} if an application does not provide one.
  *
@@ -28,7 +29,25 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
+        Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
+
+        ServiceLoader<ContainerFactory> factory = bootstrap.loadService(ContainerFactory.class);
+        Iterator<ContainerFactory> factoryIter = factory.iterator();
+
+        if ( ! factoryIter.hasNext() ) {
+            simpleMain( args );
+        } else {
+            factoryMain( factoryIter.next(), args );
+        }
+    }
+
+    public static void simpleMain(String...args) throws Exception {
         Container container = new Container().start();
+        container.deploy();
+    }
+
+    public static void factoryMain(ContainerFactory factory, String...args) throws Exception {
+        Container container = factory.newContainer(args).start();
         container.deploy();
     }
 
