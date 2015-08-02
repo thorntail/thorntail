@@ -84,6 +84,9 @@ public class RuntimeServer implements Server {
             public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
                 context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<Object>(tempFileProvider)))
                         .install();
+                // Provide the main command line args as a value service
+                context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<Object>(config.getArgs())))
+                    .install();
             }
         });
 
