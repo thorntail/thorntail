@@ -43,6 +43,8 @@ public class Container {
     private Server server;
     private Deployer deployer;
     private Domain domain;
+    /** Command line args if any */
+    private String[] args;
 
     /**
      * Construct a new, un-started container.
@@ -221,7 +223,7 @@ public class Container {
             }
         }
 
-        list.add( binding );
+        list.add(binding);
     }
 
     /**
@@ -283,6 +285,23 @@ public class Container {
     public Container deploy(Archive deployment) throws Exception {
         this.deployer.deploy(deployment);
         return this;
+    }
+
+    /**
+     * Get the possibly null container main method arguments.
+     * @return main method arguments, possibly null
+     */
+    public String[] getArgs() {
+        return args;
+    }
+
+    /**
+     * Set the main method arguments. This will be available as a ValueService<String[]> under the name
+     * wildfly.swarm.main-args
+     * @param args arguments passed to the main(String[]) method.
+     */
+    public void setArgs(String[] args) {
+        this.args = args;
     }
 
     /**
