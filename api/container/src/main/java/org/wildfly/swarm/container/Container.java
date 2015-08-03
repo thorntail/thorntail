@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.log.StreamModuleLogger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Domain;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -52,7 +53,19 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container() throws Exception {
-        createServer();
+        this(false);
+    }
+
+    /**
+     * Construct a new, un-started container.
+     *
+     * @param debugBootstrap - flag to indicate if the module layer should be put into bootstrap debug mode. Same as
+     *                       the jboss-module -debuglog mode which enables trace logging to System.out during the
+     *                       initial bootstrap of the module layer.
+     * @throws Exception If an error occurs performing classloading and initialization magic.
+     */
+    public Container(boolean debugBootstrap) throws Exception {
+        createServer(debugBootstrap);
         createShrinkWrapDomain();
     }
 
@@ -66,9 +79,12 @@ public class Container {
         }
     }
 
-    private void createServer() throws Exception {
+    private void createServer(boolean debugBootstrap) throws Exception {
         if (System.getProperty("boot.module.loader") == null) {
             System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+        }
+        if (debugBootstrap) {
+            Module.setModuleLogger(new StreamModuleLogger(System.err));
         }
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.runtime.container"));
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.runtime.container.RuntimeServer");
