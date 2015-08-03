@@ -61,7 +61,11 @@ public class StaticHandlerBuilder implements HandlerBuilder {
 
                 try {
                     Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
-                    cur = new StaticResourceHandler(new ClassPathResourceManager(module.getClassLoader()), cur);
+                    if ( base != null ) {
+                        cur = new StaticResourceHandler(new ClassPathResourceManager(module.getClassLoader(), base), cur);
+                    } else {
+                        cur = new StaticResourceHandler(new ClassPathResourceManager(module.getClassLoader()), cur);
+                    }
                 } catch (ModuleLoadException e) {
                 }
 
