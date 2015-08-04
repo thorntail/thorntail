@@ -10,6 +10,7 @@ import org.wildfly.clustering.dispatcher.CommandDispatcherFactory;
 import org.wildfly.clustering.group.Group;
 import org.wildfly.clustering.group.Node;
 import org.wildfly.clustering.group.NodeFactory;
+import org.wildfly.swarm.netflix.ribbon.RibbonTopology;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -44,6 +44,8 @@
         <path name="org/jboss/shrinkwrap/api/asset"/>
 
         <path name="org/jboss/shrinkwrap/spi"/>
+
+        <path name="org.jboss.shrinkwrap.api.nio.file"/>
         <path name="META-INF/services"/>
       </paths>
     </system>
@@ -83,6 +85,7 @@
         <include path="org/jboss/shrinkwrap/api/asset"/>
 
         <include path="org/jboss/shrinkwrap/spi"/>
+        <include path="org.jboss.shrinkwrap.api.nio.file"/>
         <include path="META-INF/services"/>
       </exports>
     </module>

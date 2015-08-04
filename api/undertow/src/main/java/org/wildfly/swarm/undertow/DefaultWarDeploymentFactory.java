@@ -32,8 +32,10 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
 
     @Override
     public Archive create(Container container) throws Exception {
-        WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName() );
+        WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
         setup( archive );
+        archive.addModule("org.wildfly.swarm.runtime.undertow");
+        archive.addAsServiceProvider("io.undertow.server.handlers.builder.HandlerBuilder", "org.wildfly.swarm.runtime.undertow.StaticHandlerBuilder");
         return archive;
     }
 

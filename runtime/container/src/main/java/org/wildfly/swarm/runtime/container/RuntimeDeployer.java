@@ -1,27 +1,36 @@
 package org.wildfly.swarm.runtime.container;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.container.Deployer;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CONTENT;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ENABLED;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HASH;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUNTIME_NAME;
 
 /**
  * @author Bob McWhirter
@@ -33,7 +42,9 @@ public class RuntimeDeployer implements Deployer {
     private final SimpleContentProvider contentProvider;
 
     private final List<ServerConfiguration> configurations;
+
     private final TempFileProvider tempFileProvider;
+
     private final List<Closeable> mountPoints = new ArrayList<>();
 
     public RuntimeDeployer(List<ServerConfiguration> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
@@ -52,20 +63,18 @@ public class RuntimeDeployer implements Deployer {
             each.prepareArchive(deployment);
         }
 
-
         /*
         Map<ArchivePath, Node> c = deployment.getContent();
         for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
-            if ( each.getValue().getAsset() != null ) {
-                System.err.println( each.getKey() + " // " + each.getValue() );
-            }
+            System.err.println(each.getKey() + " // " + each.getValue());
         }
         */
 
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(deployment.getName());
-        try (InputStream in = new ZipExporterImpl(deployment).exportAsInputStream()) {
+
+        try (InputStream in = deployment.as(ZipExporter.class).exportAsInputStream()) {
             Closeable closeable = VFS.mountZipExpanded(in, deployment.getName(), mountPoint, tempFileProvider);
-            this.mountPoints.add( closeable );
+            this.mountPoints.add(closeable);
         }
 
         byte[] hash = this.contentProvider.addContent(mountPoint);
@@ -85,7 +94,7 @@ public class RuntimeDeployer implements Deployer {
     }
 
     void stop() {
-        for ( Closeable each : this.mountPoints ) {
+        for (Closeable each : this.mountPoints) {
             try {
                 each.close();
             } catch (IOException e) {

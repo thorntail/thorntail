@@ -12,5 +12,6 @@
     <module name="org.jboss.msc"/>
     <module name="org.wildfly.clustering.api"/>
     <module name="org.jboss.as.network"/>
+    <module name="org.jboss.as.naming"/>
   </dependencies>
 </module>

@@ -12,6 +12,7 @@ import java.util.ServiceLoader;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.container.Container;
 
 /** Default {@code main(...)} if an application does not provide one.
@@ -29,6 +30,9 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
+        if ( System.getProperty( "boot.module.loader" ) == null ) {
+            System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader" );
+        }
         Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
 
         ServiceLoader<ContainerFactory> factory = bootstrap.loadService(ContainerFactory.class);

@@ -41,6 +41,7 @@ public class RibbonConfiguration extends AbstractServerConfiguration<RibbonFract
 
     @Override
     public void prepareArchive(Archive archive) {
+        archive.as(JARArchive.class).addModule("org.wildfly.swarm.netflix.ribbon");
         archive.as(JARArchive.class).addModule("org.wildfly.swarm.netflix.ribbon", "runtime");
         archive.as(JARArchive.class).addModule("com.netflix.ribbon" );
         archive.as(JARArchive.class).addModule("io.reactivex.rxjava" );

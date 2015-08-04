@@ -54,6 +54,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-naming</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.netflix.ribbon</groupId>
       <artifactId>ribbon-core</artifactId>
       <version>${version.com.netflix.ribbon}</version>
