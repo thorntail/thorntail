@@ -23,7 +23,7 @@ public class UndertowHandlersAsset implements Asset {
 
         StringBuilder conf = new StringBuilder();
         for ( String[] each : this.staticContent ) {
-            conf.append( "path-prefix['" + each[0] + "'] -> static-content[base='" + each[1] + "']\n");
+            conf.append( "path-prefix('" + each[0] + "') -> static-content(base='" + each[1] + "')\n");
         }
 
         return new ByteArrayInputStream( conf.toString().getBytes() );
