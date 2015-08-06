@@ -3,6 +3,8 @@ package org.wildfly.swarm.runtime.keycloak;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.keycloak.KeycloakFraction;
 import org.wildfly.swarm.runtime.container.AbstractServerConfiguration;
 
@@ -23,6 +25,11 @@ public class KeycloakConfiguration extends AbstractServerConfiguration<KeycloakF
     @Override
     public KeycloakFraction defaultFraction() {
         return new KeycloakFraction();
+    }
+
+    @Override
+    public void prepareArchive(Archive a) {
+        a.as(JARArchive.class).addModule( "org.keycloak.keycloak-core" );
     }
 
     @Override
