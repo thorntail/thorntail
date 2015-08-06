@@ -15,10 +15,10 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-ribbon</artifactId>
+  <artifactId>wildfly-swarm-ribbon-client</artifactId>
 
-  <name>WildFly Swarm: Netflix Ribbon API</name>
-  <description>WildFly Swarm: Netflix Ribbon API</description>
+  <name>WildFly Swarm: Netflix Ribbon Client API</name>
+  <description>WildFly Swarm: Netflix Ribbon Client API</description>
 
   <packaging>jar</packaging>
 
@@ -38,10 +38,7 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ribbon-client</artifactId>
-    </dependency>
+<!--
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-rxnetty</artifactId>
@@ -81,6 +78,7 @@
       <groupId>com.netflix.ribbon</groupId>
       <artifactId>ribbon</artifactId>
     </dependency>
+-->
 
     <!--
       <dependency>

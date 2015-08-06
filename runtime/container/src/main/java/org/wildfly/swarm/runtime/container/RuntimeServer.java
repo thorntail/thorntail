@@ -74,6 +74,8 @@ public class RuntimeServer implements Server {
         // float all <extension> up to the head of the list
         list.sort(new ExtensionOpPriorityComparator());
 
+        //System.err.println( list );
+
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
 
         ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();

@@ -1,8 +1,8 @@
 package org.wildfly.swarm.runtime.netflix.ribbon;
 
 import com.netflix.loadbalancer.Server;
-import org.wildfly.swarm.netflix.ribbon.RibbonTopology;
-import org.wildfly.swarm.netflix.ribbon.RibbonTopologyListener;
+import org.wildfly.swarm.netflix.ribbon.client.RibbonTopology;
+import org.wildfly.swarm.netflix.ribbon.client.RibbonTopologyListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;

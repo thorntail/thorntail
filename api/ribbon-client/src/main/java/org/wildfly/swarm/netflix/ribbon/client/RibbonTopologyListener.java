@@ -1,4 +1,4 @@
-package org.wildfly.swarm.netflix.ribbon;
+package org.wildfly.swarm.netflix.ribbon.client;
 
 /**
  * @author Bob McWhirter

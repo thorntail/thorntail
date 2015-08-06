@@ -5,7 +5,9 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Bob McWhirter
@@ -23,7 +25,7 @@ public class JBossDeploymentStructureAsset implements Asset{
                     "    </deployment>  \n" +
                     "</jboss-deployment-structure>\n";
 
-    private List<String> modules = new ArrayList<>();
+    private Set<String> modules = new HashSet<>();
 
     public JBossDeploymentStructureAsset() {
 
@@ -42,6 +44,11 @@ public class JBossDeploymentStructureAsset implements Asset{
         }
         String structureContents = JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS.replace( "${MODULES}", modules.toString().trim() );
 
+        /*
+        System.err.println( "----" );
+        System.err.println( structureContents );
+        System.err.println( "----" );
+        */
         return new ByteArrayInputStream( structureContents.getBytes() );
     }
 }

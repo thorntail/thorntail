@@ -57,6 +57,7 @@
     <module>archaius</module>
     <module>hystrix</module>
     <module>ribbon</module>
+    <module>ribbon-client</module>
     <module>ribbon-secured</module>
     <module>ribbon-secured-client</module>
     <module>servo</module>

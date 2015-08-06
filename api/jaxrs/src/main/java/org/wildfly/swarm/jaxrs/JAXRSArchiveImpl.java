@@ -100,10 +100,18 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
             String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
             String path = "WEB-INF/classes/" + name.replace('.', '/') + ".class";
 
-            byte[] generatedApp = ApplicationFactory.create(name, "/");
-            add(new ByteArrayAsset(generatedApp), path);
-
-            addHandlers(new ApplicationHandler(this, path));
+            byte[] generatedApp = new byte[0];
+            try {
+                generatedApp = ApplicationFactory2.create(name, "/");
+                System.err.println( "ADD " + path );
+                System.err.println( "ADD " + path );
+                System.err.println( "ADD " + path );
+                System.err.println( "ADD " + path );
+                add(new ByteArrayAsset(generatedApp), path);
+                addHandlers(new ApplicationHandler(this, path));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -235,6 +243,13 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         public void handle(ArchiveEvent event) {
             Asset asset = event.getAsset();
             if (hasApplicationPathAnnotation(event.getPath(), asset)) {
+                System.err.println( "remove generated app" );
+                System.err.println( "remove generated app" );
+                System.err.println( "remove generated app" );
+                System.err.println( "remove generated app" );
+                System.err.println( "remove generated app" );
+                System.err.println( "remove generated app" );
+                System.err.println( "remove generated app" );
                 this.archive.delete(this.path);
             }
         }

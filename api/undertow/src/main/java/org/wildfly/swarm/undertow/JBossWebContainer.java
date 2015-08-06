@@ -24,7 +24,6 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
     }
 
     default T setContextRoot(String contextRoot) {
-
         Node jbossWeb = this.get("WEB-INF/jboss-web.xml");
         JBossWebAsset asset = null;
         if ( jbossWeb == null ) {

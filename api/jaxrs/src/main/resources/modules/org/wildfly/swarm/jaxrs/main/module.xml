@@ -16,6 +16,9 @@
     </module>
 
     <module name="org.wildfly.swarm.runtime.jaxrs"/>
+    <!--
+    <module name="javax.ws.rs.api"/>
+    -->
 
   </dependencies>
 </module>

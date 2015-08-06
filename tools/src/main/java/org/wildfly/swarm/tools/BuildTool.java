@@ -175,6 +175,10 @@ public class BuildTool {
             return false;
         }
 
+        if ( hasNonBootstrapMarker(dependency) ) {
+            return false;
+        }
+
         if (dependency.groupId.equals("org.wildfly.swarm")) {
             return true;
         }
@@ -192,6 +196,21 @@ public class BuildTool {
         }
 
         return !dependency.scope.equals("provided");
+    }
+
+    protected boolean hasNonBootstrapMarker(ArtifactSpec spec) {
+        if ( spec.file != null ) {
+
+            try ( JarFile jar = new JarFile(spec.file) ) {
+                ZipEntry entry = jar.getEntry("META-INF/wildfly-swarm-non-bootstrap.txt");
+                return ( entry != null );
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
+
+        }
+
+        return false;
     }
 
     protected void gatherDependency(ArtifactSpec artifact) throws Exception {
