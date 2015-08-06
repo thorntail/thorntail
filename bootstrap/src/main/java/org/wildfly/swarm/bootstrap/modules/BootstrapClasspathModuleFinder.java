@@ -21,6 +21,7 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
 
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
+        System.err.println( "BootstrapClassPathModule: " + identifier );
         final String path = "modules/" + identifier.getName().replace('.', '/') + "/" + identifier.getSlot() + "/module.xml";
 
         ClassLoader cl = BootstrapClasspathModuleFinder.class.getClassLoader();

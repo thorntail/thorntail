@@ -34,7 +34,7 @@ public class Main {
 
     public static void main(String[] args) throws Throwable {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
-        Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
+        //Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
 
         String mainClassName = null;
         Manifest manifest = Layout.getManifest();
@@ -47,7 +47,9 @@ public class Main {
             mainClassName = "org.wildfly.swarm.Swarm";
         }
 
-        Class<?> mainClass = bootstrap.getClassLoader().loadClass(mainClassName);
+        Module app = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create("swarm.application" ));
+
+        Class<?> mainClass = app.getClassLoader().loadClass(mainClassName);
         final Method mainMethod = mainClass.getMethod("main", String[].class);
 
         final int modifiers = mainMethod.getModifiers();

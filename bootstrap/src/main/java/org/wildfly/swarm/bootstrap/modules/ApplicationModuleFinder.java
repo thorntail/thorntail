@@ -1,31 +1,42 @@
 package org.wildfly.swarm.bootstrap.modules;
 
-import org.jboss.modules.*;
-import org.wildfly.swarm.bootstrap.util.Layout;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
+
+import org.jboss.modules.DependencySpec;
+import org.jboss.modules.MavenArtifactUtil;
+import org.jboss.modules.ModuleFinder;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.ModuleLoader;
+import org.jboss.modules.ModuleSpec;
+import org.jboss.modules.ResourceLoaderSpec;
+import org.jboss.modules.ResourceLoaders;
+import org.wildfly.swarm.bootstrap.util.Layout;
 
 /**
  * Module-finder used only for loading the first set of jars when run in an fat-jar scenario.
  *
  * @author Bob McWhirter
  */
-public class BootstrapModuleFinder implements ModuleFinder {
+public class ApplicationModuleFinder implements ModuleFinder {
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        System.err.println( "BootstrapModuleFinder: " + identifier );
+        System.err.println("ApplicationModuleFinder: " + identifier);
 
-        if (!identifier.getName().equals("org.wildfly.swarm.bootstrap")) {
+        if (!identifier.getName().equals("swarm.application")) {
             return null;
         }
 
         ModuleSpec.Builder builder = ModuleSpec.build(identifier);
 
-        /*
         try {
             if (Layout.isFatJar()) {
                 gatherJarsFromJar(builder);
@@ -33,12 +44,9 @@ public class BootstrapModuleFinder implements ModuleFinder {
         } catch (IOException e) {
             throw new ModuleLoadException(e);
         }
-        */
 
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.swarm.bootstrap")));
         builder.addDependency(DependencySpec.createLocalDependencySpec());
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
 
         return builder.create();
     }
@@ -55,7 +63,7 @@ public class BootstrapModuleFinder implements ModuleFinder {
                     if (!line.isEmpty()) {
                         if (line.startsWith("module:")) {
                             line = line.substring(7);
-                            System.err.println( "add module: " + line );
+                            System.err.println("add module: " + line);
                             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create(line)));
                         } else if (line.startsWith("gav:")) {
                             line = line.substring(4).trim();
