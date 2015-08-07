@@ -260,6 +260,7 @@
     <module>msc</module>
     <module>naming</module>
     <module>security</module>
+    <module>transactions</module>
     <module>undertow</module>
     <module>weld</module>
 
