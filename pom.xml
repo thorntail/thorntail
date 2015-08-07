@@ -257,6 +257,7 @@
     <module>jpa</module>
     <module>logging</module>
     <module>naming</module>
+    <module>security</module>
     <module>undertow</module>
     <module>weld</module>
 
