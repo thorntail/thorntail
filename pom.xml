@@ -247,6 +247,7 @@
     <module>container</module>
 
     <!-- fractions -->
+    <module>bean-validation</module>
     <module>connector</module>
     <module>datasources</module>
     <module>ee</module>
