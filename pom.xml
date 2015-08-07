@@ -254,6 +254,7 @@
     <module>jaxrs</module>
     <module>jca</module>
     <module>jmx</module>
+    <module>jpa</module>
     <module>logging</module>
     <module>naming</module>
     <module>undertow</module>
