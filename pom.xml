@@ -248,6 +248,7 @@
 
     <!-- fractions -->
     <module>bean-validation</module>
+    <module>clustering</module>
     <module>connector</module>
     <module>datasources</module>
     <module>ee</module>
