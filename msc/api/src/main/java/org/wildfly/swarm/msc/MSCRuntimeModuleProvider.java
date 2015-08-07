@@ -1,14 +1,14 @@
-package org.wildfly.swarm.security;
+package org.wildfly.swarm.msc;
 
 import org.wildfly.swarm.container.RuntimeModuleProvider;
 
 /**
  * @author Bob McWhirter
  */
-public class SecurityRuntimeModuleProvider implements RuntimeModuleProvider {
+public class MSCRuntimeModuleProvider implements RuntimeModuleProvider {
     @Override
     public String getModuleName() {
-        return "org.wildfly.swarm.security";
+        return "org.wildfly.swarm.msc";
     }
 
     @Override

@@ -1,0 +1,10 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.msc" slot="api">
+  <resources>
+    <artifact name="org.wildfly.swarm:wildfly-swarm-msc-runtime:${project.version}"/>
+  </resources>
+
+  <dependencies>
+    <module name="org.wildfly.swarm.msc"/>
+    <module name="org.wildfly.swarm.container"/>
+  </dependencies>
+</module>

@@ -256,6 +256,7 @@
     <module>jmx</module>
     <module>jpa</module>
     <module>logging</module>
+    <module>msc</module>
     <module>naming</module>
     <module>security</module>
     <module>undertow</module>
