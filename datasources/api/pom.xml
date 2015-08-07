@@ -9,16 +9,16 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-container-parent</artifactId>
+    <artifactId>wildfly-swarm-datasources-parent</artifactId>
     <version>1.0.0.Alpha4-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-container</artifactId>
+  <artifactId>wildfly-swarm-datasources</artifactId>
 
-  <name>WildFly Swarm: Container API</name>
-  <description>WildFly Swarm: Container API</description>
+  <name>WildFly Swarm: Datasources API</name>
+  <description>WildFly Swarm: Datasources API</description>
 
   <packaging>jar</packaging>
 
@@ -44,31 +44,23 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-modules</artifactId>
+      <artifactId>wildfly-swarm-container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-datasources-modules</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
-      <scope>provided</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.shrinkwrap</groupId>
-      <artifactId>shrinkwrap-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.shrinkwrap</groupId>
-      <artifactId>shrinkwrap-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.shrinkwrap</groupId>
-      <artifactId>shrinkwrap-impl-base</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm-all</artifactId>
-      <version>5.0.4</version>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

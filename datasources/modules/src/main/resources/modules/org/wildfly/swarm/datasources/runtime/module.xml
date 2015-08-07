@@ -1,0 +1,13 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.datasources" slot="runtime">
+  <resources>
+    <artifact name="org.wildfly.swarm:wildfly-swarm-datasources-runtime:${project.version}"/>
+  </resources>
+
+  <dependencies>
+    <module name="org.wildfly.swarm.datasources"/>
+    <module name="org.wildfly.swarm.container"/>
+    <module name="org.wildfly.swarm.container" slot="runtime"/>
+
+    <module name="org.jboss.as.connector"/>
+  </dependencies>
+</module>

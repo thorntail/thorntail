@@ -1,0 +1,12 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.jaxrs">
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/jaxrs"/>
+      </paths>
+    </system>
+
+    <module name="org.wildfly.swarm.jaxrs" slot="api" export="true"/>
+
+  </dependencies>
+</module>

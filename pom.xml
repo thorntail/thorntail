@@ -237,24 +237,29 @@
   </pluginRepositories>
 
   <modules>
+    <!-- misc -->
     <module>tools</module>
     <module>plugin</module>
     <module>arquillian</module>
-<!--
--->
-    <module>bootstrap</module>
 
+    <!-- base -->
+    <module>bootstrap</module>
     <module>container</module>
+
+    <!-- fractions -->
+    <module>connector</module>
+    <module>datasources</module>
     <module>ee</module>
     <module>io</module>
+    <module>jaxrs</module>
+    <module>jca</module>
+    <module>jmx</module>
     <module>logging</module>
     <module>naming</module>
     <module>undertow</module>
+    <module>weld</module>
 
 <!--
-    <module>api</module>
-    <module>modules</module>
-    <module>runtime</module>
     <module>integration-tests</module>
 -->
   </modules>
