@@ -4,9 +4,14 @@ import org.jboss.modules.*;
 import org.wildfly.swarm.bootstrap.util.Layout;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.jar.JarFile;
 
 /**
@@ -17,7 +22,6 @@ import java.util.jar.JarFile;
 public class BootstrapModuleFinder implements ModuleFinder {
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        System.err.println( "BootstrapModuleFinder: " + identifier );
 
         if (!identifier.getName().equals("org.wildfly.swarm.bootstrap")) {
             return null;
@@ -25,7 +29,6 @@ public class BootstrapModuleFinder implements ModuleFinder {
 
         ModuleSpec.Builder builder = ModuleSpec.build(identifier);
 
-        /*
         try {
             if (Layout.isFatJar()) {
                 gatherJarsFromJar(builder);
@@ -33,18 +36,18 @@ public class BootstrapModuleFinder implements ModuleFinder {
         } catch (IOException e) {
             throw new ModuleLoadException(e);
         }
-        */
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
 
         return builder.create();
     }
 
     protected void gatherJarsFromJar(ModuleSpec.Builder builder) throws IOException {
-        InputStream bootstrapTxt = getClass().getClassLoader().getResourceAsStream("META-INF/wildfly-swarm-bootstrap.txt");
+        InputStream bootstrapTxt = getClass().getClassLoader().getResourceAsStream("META-INF/wildfly-swarm-bootstrap.conf");
 
         if (bootstrapTxt != null) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(bootstrapTxt))) {
@@ -53,49 +56,15 @@ public class BootstrapModuleFinder implements ModuleFinder {
                 while ((line = in.readLine()) != null) {
                     line = line.trim();
                     if (!line.isEmpty()) {
-                        if (line.startsWith("module:")) {
-                            line = line.substring(7);
-                            System.err.println( "add module: " + line );
-                            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create(line)));
-                        } else if (line.startsWith("gav:")) {
-                            line = line.substring(4).trim();
-                            File artifact = MavenArtifactUtil.resolveJarArtifact(line);
-                            if (artifact == null) {
-                                throw new IOException("Unable to locate artifact: " + line);
-                            }
-                            builder.addResourceRoot(
-                                    ResourceLoaderSpec.createResourceLoaderSpec(
-                                            ResourceLoaders.createJarResourceLoader(artifact.getName(), new JarFile(artifact))
-                                    )
-                            );
-                        } else if (line.startsWith("path:")) {
-                            line = line.substring(5).trim();
-
-                            int slashLoc = line.lastIndexOf('/');
-                            String name = line;
-
-                            if (slashLoc > 0) {
-                                name = line.substring(slashLoc + 1);
-                            }
-
-                            String ext = ".jar";
-                            int dotLoc = name.lastIndexOf('.');
-                            if (dotLoc > 0) {
-                                ext = name.substring(dotLoc);
-                                name = name.substring(0, dotLoc);
-                            }
-
-                            Path tmp = Files.createTempFile(name, ext);
-
-                            try (InputStream artifactIn = getClass().getClassLoader().getResourceAsStream(line)) {
-                                Files.copy(artifactIn, tmp, StandardCopyOption.REPLACE_EXISTING);
-                            }
-                            builder.addResourceRoot(
-                                    ResourceLoaderSpec.createResourceLoaderSpec(
-                                            ResourceLoaders.createJarResourceLoader(tmp.getFileName().toString(), new JarFile(tmp.toFile()))
-                                    )
-                            );
+                        File artifact = MavenArtifactUtil.resolveJarArtifact(line);
+                        if (artifact == null) {
+                            throw new IOException("Unable to locate artifact: " + line);
                         }
+                        builder.addResourceRoot(
+                                ResourceLoaderSpec.createResourceLoaderSpec(
+                                        ResourceLoaders.createJarResourceLoader(artifact.getName(), new JarFile(artifact))
+                                )
+                        );
                     }
                 }
             }

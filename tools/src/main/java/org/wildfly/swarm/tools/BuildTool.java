@@ -59,6 +59,9 @@ public class BuildTool {
 
     private Properties properties = new Properties();
 
+    private Set<ArtifactSpec> bootstrappedArtifacts = new HashSet<>();
+    private Set<String> bootstrappedModules = new HashSet<>();
+
     private Map<String, String> providedMappings = new HashMap<>();
 
     public BuildTool() {
@@ -125,10 +128,12 @@ public class BuildTool {
 
     public Archive build() throws Exception {
         addWildflySwarmBootstrapJar();
+        //addBootstrapJars();
+        setupBootstrap();
+        setupApplication();
         createManifest();
         createWildflySwarmProperties();
         createDependenciesTxt();
-        addBootstrapJars();
         collectDependencies();
         return this.archive;
     }
@@ -144,25 +149,52 @@ public class BuildTool {
     }
 
 
-    private void addBootstrapJars() throws Exception {
+    private void setupBootstrap() throws Exception {
 
-        //Set<String> bootstrapGavs = new HashSet<>();
-
-        Set<ArtifactSpec> bootstrapArtifacts = new HashSet<>();
 
         for (ArtifactSpec each : this.dependencies) {
-            if (includeAsBootstrapJar(each)) {
-                bootstrapArtifacts.add(each);
-                /*
-                gatherDependency(each);
-                if (each.packaging.equals("jar")) {
-                    if (each.classifier == null || each.classifier.equals("")) {
-                        bootstrapGavs.add(each.groupId + ":" + each.artifactId + ":" + each.version);
-                    } else {
-                        bootstrapGavs.add(each.groupId + ":" + each.artifactId + ":" + each.version + ":" + each.classifier);
+
+            if ( includeAsBootstrapJar(each ) ) {
+                this.bootstrappedArtifacts.add(each);
+            } else {
+                try (JarFile jar = new JarFile(each.file)) {
+                    ZipEntry entry = jar.getEntry("wildfly-swarm-bootstrap.conf");
+                    if (entry != null ) {
+                        System.err.println("bootstrap: " + each.file);
+                        this.bootstrappedArtifacts.add(each);
+
+                        try ( InputStream in = jar.getInputStream( entry ) ) {
+                            BufferedReader reader = new BufferedReader( new InputStreamReader( in ));
+                            String line = null;
+
+                            while ( ( line = reader.readLine() ) != null ) {
+                                line = line.trim();
+                                if ( ! line.isEmpty() ) {
+                                    this.bootstrappedModules.add( line );
+                                }
+                            }
+                        }
                     }
                 }
-                */
+            }
+        }
+
+        StringBuilder bootstrapTxt = new StringBuilder();
+
+        for (ArtifactSpec each : this.bootstrappedArtifacts) {
+            bootstrapTxt.append(each.mscCoordinates()).append("\n");
+        }
+
+        this.archive.add(new StringAsset(bootstrapTxt.toString()), "META-INF/wildfly-swarm-bootstrap.conf");
+    }
+
+    private void setupApplication() throws Exception {
+
+        Set<ArtifactSpec> applicationArtifacts = new HashSet<>();
+
+        for (ArtifactSpec each : this.dependencies) {
+            if (!this.bootstrappedArtifacts.contains(each)) {
+                applicationArtifacts.add(each);
             }
         }
 
@@ -170,57 +202,50 @@ public class BuildTool {
 
         System.err.println("mappings: " + this.providedMappings);
         StringBuilder bootstrapTxt = new StringBuilder();
-        /*
-        for (String each : bootstrapGavs) {
-            String mapped = this.providedMappings.get( each );
-            if ( mapped != null) {
-                bootstrapTxt.append("module:").append(mapped).append("\n");
-            } else {
-                bootstrapTxt.append("gav:").append(each).append("\n");
-            }
-        }
-        */
 
-        for (ArtifactSpec each : bootstrapArtifacts) {
+        for (String each : this.bootstrappedModules) {
+            bootstrapTxt.append( "module:").append(each).append( "\n" );
+        }
+
+        for (ArtifactSpec each : applicationArtifacts) {
             String mapped = this.providedMappings.get(each.groupId + ":" + each.artifactId);
             if (mapped != null) {
                 bootstrapTxt.append("module:").append(mapped).append("\n");
             } else {
-                if (includeAsBootstrapJar(each)) {
-                    gatherDependency(each);
-                    if (each.classifier == null || each.classifier.equals("")) {
-                        bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version).append("\n");
-                    } else {
-                        bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version + ":" + each.classifier).append("\n");
-                    }
+                gatherDependency(each);
+                if (each.classifier == null || each.classifier.equals("")) {
+                    bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version).append("\n");
+                } else {
+                    bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version + ":" + each.classifier).append("\n");
                 }
             }
         }
 
         bootstrapTxt.append("path:").append(this.projectAsset.getName()).append("\n");
-        this.archive.add(new StringAsset(bootstrapTxt.toString()), "META-INF/wildfly-swarm-bootstrap.txt");
+        this.archive.add(new StringAsset(bootstrapTxt.toString()), "META-INF/wildfly-swarm-application.conf");
 
     }
 
 
     public boolean includeAsBootstrapJar(ArtifactSpec dependency) {
         // TODO figure out a better more generic way
+        /*
         if (dependency.groupId.equals("org.wildfly.swarm") && dependency.artifactId.equals("wildfly-swarm-bootstrap")) {
             return false;
         }
+        */
 
-        if (hasNonBootstrapMarker(dependency)) {
-            return false;
-        }
-
-        if (dependency.groupId.equals("org.wildfly.swarm")) {
-            return true;
-        }
-
+        /*
         if (dependency.groupId.equals("org.jboss.shrinkwrap")) {
             return true;
         }
 
+        if (dependency.groupId.equals("org.ow2.asm")) {
+            return true;
+        }
+        */
+
+        /*
         if (dependency.groupId.equals("org.jboss.msc") && dependency.artifactId.equals("jboss-msc")) {
             return false;
         }
@@ -230,6 +255,9 @@ public class BuildTool {
         }
 
         return !dependency.scope.equals("provided");
+        */
+
+        return false;
     }
 
     protected boolean hasNonBootstrapMarker(ArtifactSpec spec) {

@@ -1,5 +1,0 @@
-org.jboss.shrinkwrap:shrinkwrap-api
-org.jboss.shrinkwrap:shrinkwrap-spi
-org.jboss.shrinkwrap:shrinkwrap-impl-base
-org.jboss.shrinkwrap:shrinkwrap-api-nio2
-org.jboss.shrinkwrap:shrinkwrap-impl-nio2

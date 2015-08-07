@@ -23,10 +23,13 @@
   <packaging>pom</packaging>
 
   <modules>
+<!--
     <module>bean-validation</module>
     <module>clustering</module>
     <module>connector</module>
+-->
     <module>container</module>
+<!--
     <module>datasources</module>
     <module>ee</module>
     <module>ejb</module>
@@ -50,10 +53,12 @@
     <module>undertow</module>
     <module>weld</module>
     <module>weld-jaxrs</module>
+-->
 
     <!-- extras -->
 
     <!-- netflix -->
+<!--
     <module>archaius</module>
     <module>hystrix</module>
     <module>ribbon</module>
@@ -64,8 +69,6 @@
     <module>guava</module>
     <module>rxjava</module>
     <module>rxnetty</module>
-<!--
-    <module>netflix-ribbon-keycloak</module>
 -->
   </modules>
 

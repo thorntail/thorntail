@@ -42,6 +42,8 @@
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>1.1.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.org.arquillian>1.1.8.Final</version.org.arquillian>
+    <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
+    <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
 
     <version.com.netflix.ribbon>2.1.0</version.com.netflix.ribbon>
     <version.com.netflix.archaius>0.6.6</version.com.netflix.archaius>
@@ -104,6 +106,14 @@
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-fraction-plugin</artifactId>
           <version>${version.wildfly.swarm.fraction.plugin}</version>
+          <executions>
+            <execution>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -139,260 +149,6 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-runtime-container</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-bean-validation</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-clustering</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-connector</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-datasources</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-ee</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-ejb</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-hibernate-validator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-io</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-jca</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-jaxrs</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-jmx</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-jpa</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-jsf</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-keycloak</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-runtime-keycloak</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-logging</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-logstash</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-mail</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-messaging</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-msc</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-runtime-logging</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-naming</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-request-controller</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-security</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-transactions</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-undertow</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-weld</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-weld-jaxrs</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-archaius</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-hystrix</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-ribbon</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-ribbon-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-ribbon-secured</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-ribbon-secured-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-servo</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-rxjava</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-rxnetty</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-guava</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-ribbon-secured</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.netflix.ribbon</groupId>
-        <artifactId>ribbon</artifactId>
-        <version>${version.com.netflix.ribbon}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.netflix.ribbon</groupId>
-        <artifactId>ribbon-core</artifactId>
-        <version>${version.com.netflix.ribbon}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.netflix.ribbon</groupId>
-        <artifactId>ribbon-loadbalancer</artifactId>
-        <version>${version.com.netflix.ribbon}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.netflix.ribbon</groupId>
-        <artifactId>ribbon-transport</artifactId>
-        <version>${version.com.netflix.ribbon}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.netflix.archaius</groupId>
-        <artifactId>archaius-core</artifactId>
-        <version>${version.com.netflix.archaius}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.netflix.hystrix</groupId>
-        <artifactId>hystrix-core</artifactId>
-        <version>${version.com.netflix.hystrix}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.reactivex</groupId>
-        <artifactId>rxjava</artifactId>
-        <version>${version.rxjava}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.reactivex</groupId>
-        <artifactId>rxnetty</artifactId>
-        <version>${version.rxnetty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-buffer</artifactId>
-        <version>${version.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport</artifactId>
-        <version>${version.netty}</version>
-      </dependency>
-
-
-      <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-parent</artifactId>
         <version>${version.wildfly}</version>
@@ -417,7 +173,6 @@
         <type>zip</type>
         <version>${version.keycloak}</version>
       </dependency>
-
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
@@ -425,7 +180,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
         <groupId>org.eclipse.aether</groupId>
         <artifactId>aether-api</artifactId>
@@ -451,7 +205,6 @@
         <artifactId>aether-connector-wagon</artifactId>
         <version>0.9.0.M2</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -486,10 +239,23 @@
   <modules>
     <module>tools</module>
     <module>plugin</module>
-    <module>bootstrap</module>
-    <module>api</module>
-    <module>runtime</module>
     <module>arquillian</module>
+<!--
+-->
+    <module>bootstrap</module>
+
+    <module>container</module>
+    <module>ee</module>
+    <module>io</module>
+    <module>logging</module>
+    <module>naming</module>
+    <module>undertow</module>
+
+<!--
+    <module>api</module>
+    <module>modules</module>
+    <module>runtime</module>
     <module>integration-tests</module>
+-->
   </modules>
 </project>

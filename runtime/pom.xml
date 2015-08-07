@@ -23,10 +23,13 @@
   <packaging>pom</packaging>
 
   <modules>
+<!--
     <module>bean-validation</module>
     <module>clustering</module>
     <module>connector</module>
+-->
     <module>container</module>
+<!--
     <module>datasources</module>
     <module>ee</module>
     <module>ejb</module>
@@ -47,12 +50,12 @@
     <module>transactions</module>
     <module>undertow</module>
     <module>weld</module>
+-->
  
     <!-- extras -->
+<!--
     <module>ribbon</module>
     <module>ribbon-secured</module>
-<!--
-    <module>netflix-ribbon-keycloak</module>
 -->
   </modules>
 

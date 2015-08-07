@@ -77,4 +77,8 @@ public class ArtifactSpec {
     public String coordinates() {
         return this.groupId + ":" + this.artifactId + ":" + this.packaging + ":" + (this.classifier == null ? "" : this.classifier + ":" ) + this.version;
     }
+
+    public String mscCoordinates() {
+        return this.groupId + ":" + this.artifactId + ":" + this.version + (this.classifier == null ? "" : ( ":" + this.classifier ) );
+    }
 }

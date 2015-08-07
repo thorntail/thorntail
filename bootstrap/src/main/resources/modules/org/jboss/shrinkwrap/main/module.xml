@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<module xmlns="urn:jboss:module:1.3" name="org.jboss.shrinkwrap">
+
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/container"/>
+        <path name="org/wildfly/swarm/container/util"/>
+
+        <path name="org/jboss/shrinkwrap/api"/>
+        <path name="org/jboss/shrinkwrap/api/container"/>
+        <path name="org/jboss/shrinkwrap/api/formatter"/>
+        <path name="org/jboss/shrinkwrap/api/asset"/>
+        <path name="org/jboss/shrinkwrap/api/exporter"/>
+        <path name="org/jboss/shrinkwrap/api/serialization"/>
+        <path name="org/jboss/shrinkwrap/api/importer"/>
+        <path name="org/jboss/shrinkwrap/api/classloader"/>
+        <path name="org/jboss/shrinkwrap/api/spec"/>
+
+        <path name="org/jboss/shrinkwrap/impl"/>
+        <path name="org/jboss/shrinkwrap/impl/base"/>
+        <path name="org/jboss/shrinkwrap/impl/base/container"/>
+        <path name="org/jboss/shrinkwrap/impl/base/asset"/>
+        <path name="org/jboss/shrinkwrap/impl/base/io"/>
+        <path name="org/jboss/shrinkwrap/impl/base/io/tar"/>
+        <path name="org/jboss/shrinkwrap/impl/base/exporter"/>
+        <path name="org/jboss/shrinkwrap/impl/base/exporter/tar"/>
+        <path name="org/jboss/shrinkwrap/impl/base/exporter/zip"/>
+        <path name="org/jboss/shrinkwrap/impl/base/filter"/>
+        <path name="org/jboss/shrinkwrap/impl/base/path"/>
+        <path name="org/jboss/shrinkwrap/impl/base/serialization"/>
+        <path name="org/jboss/shrinkwrap/impl/base/importer"/>
+        <path name="org/jboss/shrinkwrap/impl/base/importer/tar"/>
+        <path name="org/jboss/shrinkwrap/impl/base/importer/zip"/>
+        <path name="org/jboss/shrinkwrap/impl/base/spec"/>
+        <path name="org/jboss/shrinkwrap/api"/>
+        <path name="org/jboss/shrinkwrap/api/asset"/>
+
+        <path name="org/jboss/shrinkwrap/spi"/>
+        <path name="META-INF/services"/>
+      </paths>
+    </system>
+    <module name="org.jboss.shrinkwrap" slot="impl" services="import" export="true"/>
+  </dependencies>
+</module>

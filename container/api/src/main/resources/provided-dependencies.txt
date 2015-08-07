@@ -1,0 +1,3 @@
+org.jboss.shrinkwrap:shrinkwrap-api
+org.jboss.shrinkwrap:shrinkwrap-spi
+org.jboss.shrinkwrap:shrinkwrap-impl-base

@@ -20,7 +20,6 @@ public class ClasspathModuleFinder implements ModuleFinder {
 
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        System.err.println( "ClasspathModuleFinder: " + identifier );
         final String path = "modules/" + identifier.getName().replace('.', '/') + "/" + identifier.getSlot() + "/module.xml";
 
         ClassLoader cl = Layout.getBootstrapClassLoader();

@@ -1,1 +1,0 @@
-org.jboss.spec.javax.enterprise.concurrent:jboss-concurrency-api_1.0_spec

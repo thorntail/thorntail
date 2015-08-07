@@ -160,8 +160,9 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
             this.process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]));
 
-            this.stdout = new LatchedBridge("out", process.getInputStream(), System.out);
-            this.stderr = new IOBridge("err", process.getErrorStream(), System.err);
+            CountDownLatch latch = new CountDownLatch(1);
+            this.stdout = new LatchedBridge("out", latch, process.getInputStream(), System.out);
+            this.stderr = new LatchedBridge("err", latch, process.getErrorStream(), System.err);
 
             new Thread(stdout).start();
             new Thread(stderr).start();
@@ -170,7 +171,7 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             HTTPContext context = new HTTPContext("localhost", 8080);
             context.add(new Servlet(ServletMethodExecutor.ARQUILLIAN_SERVLET_NAME, "/"));
             metaData.addContext(context);
-            stdout.getLatch().await();
+            latch.await();
             return metaData;
         } catch (Exception e) {
             throw new DeploymentException(e.getMessage(), e);
@@ -184,6 +185,7 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             this.process.waitFor(10, TimeUnit.SECONDS);
             this.process.destroyForcibly();
             this.process.waitFor(10, TimeUnit.SECONDS);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -256,9 +258,9 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
         private final CountDownLatch latch;
 
-        public LatchedBridge(String name, InputStream in, OutputStream out) {
+        public LatchedBridge(String name, CountDownLatch latch, InputStream in, OutputStream out) {
             super(name, in, out);
-            this.latch = new CountDownLatch(1);
+            this.latch = latch;
         }
 
         public CountDownLatch getLatch() {

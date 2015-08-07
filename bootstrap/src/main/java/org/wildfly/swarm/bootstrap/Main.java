@@ -50,6 +50,8 @@ public class Main {
         Module app = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create("swarm.application" ));
 
         Class<?> mainClass = app.getClassLoader().loadClass(mainClassName);
+
+        System.err.println( "RUN MAIN: " + mainClass + " from " + mainClass.getClassLoader() );
         final Method mainMethod = mainClass.getMethod("main", String[].class);
 
         final int modifiers = mainMethod.getModifiers();
