@@ -252,6 +252,7 @@
     <module>connector</module>
     <module>datasources</module>
     <module>ee</module>
+    <module>ejb</module>
     <module>io</module>
     <module>jaxrs</module>
     <module>jca</module>
