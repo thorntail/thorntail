@@ -256,6 +256,7 @@
     <module>hibernate-validator</module>
     <module>io</module>
     <module>jaxrs</module>
+    <module>jaxrs-weld</module>
     <module>jca</module>
     <module>jmx</module>
     <module>jpa</module>
