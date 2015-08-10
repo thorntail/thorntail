@@ -46,13 +46,11 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-container-modules</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-undertow-modules</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

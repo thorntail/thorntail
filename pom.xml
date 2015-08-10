@@ -253,6 +253,7 @@
     <module>datasources</module>
     <module>ee</module>
     <module>ejb</module>
+    <module>hibernate-validator</module>
     <module>io</module>
     <module>jaxrs</module>
     <module>jca</module>
