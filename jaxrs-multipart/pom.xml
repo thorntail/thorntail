@@ -9,7 +9,7 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-api</artifactId>
+    <artifactId>wildfly-swarm-parent</artifactId>
     <version>1.0.0.Alpha4-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-jaxrs-multipart</artifactId>
 
-  <name>WildFly Swarm: JAX-RS Multipart API</name>
-  <description>WildFly Swarm: JAX-RS Multipart API</description>
+  <name>WildFly Swarm: JAX-RS + Multipart</name>
+  <description>WildFly Swarm: JAX-RS + Multipart</description>
 
   <packaging>jar</packaging>
 
@@ -39,12 +39,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-jaxrs</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>
