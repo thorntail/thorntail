@@ -9,18 +9,26 @@ package org.wildfly.swarm.container;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
@@ -28,12 +36,10 @@ import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.log.StreamModuleLogger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Domain;
-import org.jboss.shrinkwrap.api.ExtensionLoader;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.base.ServiceExtensionLoader;
 import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
@@ -95,13 +101,18 @@ public class Container {
     private void createShrinkWrapDomain() throws ModuleLoadException {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
-            //Thread.currentThread().setContextClassLoader(Container.class.getClassLoader());
-            Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-            Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
+            if (isFatJar()) {
+                Thread.currentThread().setContextClassLoader(Container.class.getClassLoader());
+                Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
+            }
             this.domain = ShrinkWrap.getDefaultDomain();
+            System.err.println("perform overrides for default domain");
             this.domain.getConfiguration().getExtensionLoader().addOverride(ZipExporter.class, ZipExporterImpl.class);
             this.domain.getConfiguration().getExtensionLoader().addOverride(JavaArchive.class, JavaArchiveImpl.class);
             this.domain.getConfiguration().getExtensionLoader().addOverride(WebArchive.class, WebArchiveImpl.class);
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             Thread.currentThread().setContextClassLoader(originalCl);
         }
@@ -466,5 +477,46 @@ public class Container {
         }
 
         return "unknown";
+    }
+
+    public static boolean isFatJar() throws IOException {
+        URL location = Container.class.getProtectionDomain().getCodeSource().getLocation();
+        Path root = null;
+        if (location.getProtocol().equals("file")) {
+            try {
+                root = Paths.get(location.toURI());
+            } catch (URISyntaxException e) {
+                throw new IOException(e);
+            }
+        } else if ( location.toExternalForm().startsWith( "jar:file:" ) ) {
+            return true;
+        }
+
+        if (Files.isRegularFile(root)) {
+            try (JarFile jar = new JarFile(root.toFile())) {
+                ZipEntry propsEntry = jar.getEntry("META-INF/wildfly-swarm.properties");
+                if (propsEntry != null) {
+                    try (InputStream in = jar.getInputStream(propsEntry)) {
+                        Properties props = new Properties();
+                        props.load(in);
+                        if (props.containsKey("wildfly.swarm.app.artifact")) {
+                            System.setProperty("wildfly.swarm.app.artifact", props.getProperty("wildfly.swarm.app.artifact"));
+                        }
+
+                        Enumeration<String> names = (Enumeration<String>) props.propertyNames();
+                        while (names.hasMoreElements()) {
+                            String name = names.nextElement();
+                            String value = props.getProperty(name);
+                            if (System.getProperty(name) == null) {
+                                System.setProperty(name, value);
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
