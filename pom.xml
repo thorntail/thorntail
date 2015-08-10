@@ -258,6 +258,7 @@
     <module>jca</module>
     <module>jmx</module>
     <module>jpa</module>
+    <module>jsf</module>
     <module>logging</module>
     <module>msc</module>
     <module>naming</module>
