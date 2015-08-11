@@ -58,6 +58,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-core</artifactId>
+      <version>${version.keycloak}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-arquillian</artifactId>
       <version>${project.version}</version>
