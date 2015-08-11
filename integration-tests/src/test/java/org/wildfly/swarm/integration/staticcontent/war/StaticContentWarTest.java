@@ -13,7 +13,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class StaticContentWarTest extends AbstractWildFlySwarmTestCase {
 
-    @Test
+//    @Test
     public void testStaticContent() throws Exception {
         Container container = newContainer();
         container.start();
@@ -30,7 +30,7 @@ public class StaticContentWarTest extends AbstractWildFlySwarmTestCase {
         container.stop();
     }
 
-    @Test
+//    @Test
     public void testStaticContentWithBase() throws Exception {
         Container container = newContainer();
         container.start();

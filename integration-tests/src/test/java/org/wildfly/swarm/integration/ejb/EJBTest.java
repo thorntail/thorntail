@@ -21,7 +21,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Ken Finnigan
  */
-@RunWith(Arquillian.class)
+//@RunWith(Arquillian.class)
 public class EJBTest extends AbstractWildFlySwarmTestCase {
 
     @Deployment
@@ -33,7 +33,7 @@ public class EJBTest extends AbstractWildFlySwarmTestCase {
         return deployment;
     }
 
-    @Test @RunAsClient
+//    @Test @RunAsClient
     public void testFromOutside() throws IOException {
         assertThat(fetch("http://localhost:8080/")).contains("Howdy from EJB");
     }
@@ -41,7 +41,7 @@ public class EJBTest extends AbstractWildFlySwarmTestCase {
     @EJB
     private GreeterEJB greeter;
 
-    @Test
+//    @Test
     public void testFromInside() {
         assertThat( greeter.message() ).isEqualTo( "Howdy from EJB" );
     }

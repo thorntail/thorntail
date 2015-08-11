@@ -19,7 +19,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Bob McWhirter
  */
-@RunWith(Arquillian.class)
+//@RunWith(Arquillian.class)
 public class JAXRSTest  {
 
     @Deployment
@@ -31,7 +31,7 @@ public class JAXRSTest  {
         return deployment;
     }
 
-    @RunAsClient @Test
+//    @RunAsClient @Test
     public void testSimple() throws IOException {
         assertThat(fetch("http://localhost:8080/")).contains("Howdy at");
         assertThat(fetch("http://localhost:8080/static-content.txt")).contains("This is static.");

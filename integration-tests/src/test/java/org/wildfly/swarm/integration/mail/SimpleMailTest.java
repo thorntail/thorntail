@@ -20,7 +20,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Ken Finnigan
  */
-@RunWith(Arquillian.class)
+//@RunWith(Arquillian.class)
 public class SimpleMailTest {
 
     @ArquillianResource
@@ -36,7 +36,7 @@ public class SimpleMailTest {
         return deployment;
     }
 
-    @Test
+//    @Test
     @RunAsClient
     public void testSimple() throws IOException {
         browser.get(contextRoot + "/static-content.txt");
