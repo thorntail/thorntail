@@ -9,7 +9,7 @@
     </system>
 
     <!-- For when bootstrapped through a fat-jar -->
-    <module name="org.wildfly.swarm.bean-validation" slot="api" export="true" service="export"/>
+    <module name="org.wildfly.swarm.bean-validation" slot="api" export="true" services="export"/>
 
   </dependencies>
 </module>
