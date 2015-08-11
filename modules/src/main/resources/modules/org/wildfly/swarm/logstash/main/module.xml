@@ -13,7 +13,7 @@
       </paths>
     </system>
 
-    <module name="org.wildfly.swarm.logstash" slot="api" export="true"/>
+    <module name="org.wildfly.swarm.logstash" slot="api" export="true" services="export"/>
 
   </dependencies>
 </module>
