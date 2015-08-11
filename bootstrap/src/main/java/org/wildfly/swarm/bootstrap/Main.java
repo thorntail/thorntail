@@ -33,6 +33,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws Throwable {
+        System.err.println( "******** Current bootstrap.Main" );
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
 
         String mainClassName = null;
