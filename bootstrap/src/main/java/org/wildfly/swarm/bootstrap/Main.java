@@ -34,7 +34,6 @@ public class Main {
 
     public static void main(String[] args) throws Throwable {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
-        //Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
 
         String mainClassName = null;
         Manifest manifest = Layout.getManifest();
@@ -48,6 +47,8 @@ public class Main {
         }
 
         Module app = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create("swarm.application" ));
+
+        System.err.println( "DEBUG_FOR_CI: " + app );
 
         Class<?> mainClass = app.getClassLoader().loadClass(mainClassName);
 
