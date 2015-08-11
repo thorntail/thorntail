@@ -97,7 +97,6 @@ public class RuntimeServer implements Server {
 
         OUTER:
         for (ServerConfiguration eachConfig : this.configList) {
-            System.err.println( "get activators: " + eachConfig );
             boolean found = false;
             INNER:
             for (Fraction eachFraction : config.fractions()) {
@@ -226,7 +225,6 @@ public class RuntimeServer implements Server {
             ServiceLoader<ServerConfiguration> configLoaders = module.loadService(ServerConfiguration.class);
 
             for (ServerConfiguration serverConfig : configLoaders) {
-                System.err.println( "CONFIG: " + serverConfig + " // " + serverConfig.getClass().getClassLoader() );
                 this.configByFractionType.put(serverConfig.getType(), serverConfig);
                 this.configList.add(serverConfig);
             }

@@ -24,7 +24,6 @@ public class ApplicationFactory2 implements Opcodes {
             @Override
             public String map(String typeName) {
                 if (typeName.equals("org/wildfly/swarm/jaxrs/DefaultApplication")) {
-                    System.err.println( "map" );
                     return slashName;
                 }
                 return super.map(typeName);

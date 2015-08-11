@@ -51,12 +51,10 @@ public class ApplicationModuleFinder implements ModuleFinder {
 
                 while (results.hasMoreElements()) {
                     URL each = results.nextElement();
-                    System.err.println("----> " + each);
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(each.openStream()))) {
                         String line = null;
                         while ((line = reader.readLine()) != null) {
                             line = line.trim();
-                            System.err.println( ":: " + line );
                             if ( ! line.isEmpty() ) {
                                 builder.addDependency(
                                         DependencySpec.createModuleDependencySpec(
@@ -68,7 +66,6 @@ public class ApplicationModuleFinder implements ModuleFinder {
                                                 ClassFilters.acceptAll(),
                                                 null,
                                                 ModuleIdentifier.create(line), false));
-                                //ModuleIdentifier.create(line, "api"), false));
                             }
                         }
                     }

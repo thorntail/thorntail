@@ -103,10 +103,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
             byte[] generatedApp = new byte[0];
             try {
                 generatedApp = ApplicationFactory2.create(name, "/");
-                System.err.println( "ADD " + path );
-                System.err.println( "ADD " + path );
-                System.err.println( "ADD " + path );
-                System.err.println( "ADD " + path );
                 add(new ByteArrayAsset(generatedApp), path);
                 addHandlers(new ApplicationHandler(this, path));
             } catch (IOException e) {
@@ -243,13 +239,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         public void handle(ArchiveEvent event) {
             Asset asset = event.getAsset();
             if (hasApplicationPathAnnotation(event.getPath(), asset)) {
-                System.err.println( "remove generated app" );
-                System.err.println( "remove generated app" );
-                System.err.println( "remove generated app" );
-                System.err.println( "remove generated app" );
-                System.err.println( "remove generated app" );
-                System.err.println( "remove generated app" );
-                System.err.println( "remove generated app" );
                 this.archive.delete(this.path);
             }
         }

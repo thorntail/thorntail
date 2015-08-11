@@ -160,7 +160,6 @@ public class BuildTool {
                 try (JarFile jar = new JarFile(each.file)) {
                     ZipEntry entry = jar.getEntry("wildfly-swarm-bootstrap.conf");
                     if (entry != null ) {
-                        System.err.println("bootstrap: " + each.file);
                         this.bootstrappedArtifacts.add(each);
 
                         try ( InputStream in = jar.getInputStream( entry ) ) {
@@ -200,7 +199,6 @@ public class BuildTool {
 
         this.archive.add(this.projectAsset);
 
-        System.err.println("mappings: " + this.providedMappings);
         StringBuilder bootstrapTxt = new StringBuilder();
 
         for (String each : this.bootstrappedModules) {
