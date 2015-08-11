@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-hibernate-validator</artifactId>
 
-  <name>WildFly Swarm: Hibernate Validator API</name>
-  <description>WildFly Swarm: Hibernate Validator API</description>
+  <name>WildFly Swarm: Hibernate Validator</name>
+  <description>WildFly Swarm: Hibernate Validator</description>
 
   <packaging>jar</packaging>
 
