@@ -56,6 +56,11 @@
       <artifactId>wildfly-swarm-undertow</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-security</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.keycloak</groupId>

@@ -8,6 +8,7 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ThreadSetupAction;
+import org.jboss.security.SecurityContextAssociation;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.undertow.UndertowHttpFacade;
 
