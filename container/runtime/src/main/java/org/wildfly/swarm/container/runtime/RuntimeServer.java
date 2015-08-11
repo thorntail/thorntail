@@ -97,6 +97,7 @@ public class RuntimeServer implements Server {
 
         OUTER:
         for (ServerConfiguration eachConfig : this.configList) {
+            System.err.println( "get activators: " + eachConfig );
             boolean found = false;
             INNER:
             for (Fraction eachFraction : config.fractions()) {

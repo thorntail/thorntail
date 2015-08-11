@@ -1,1 +1,1 @@
-org.wildfly.swarm.runtime.netflix.ribbon.secured.RibbonSecuredConfiguration
+org.wildfly.swarm.netflix.ribbon.secured.RibbonSecuredConfiguration

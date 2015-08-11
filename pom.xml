@@ -270,6 +270,7 @@
     <module>msc</module>
     <module>naming</module>
     <module>ribbon</module>
+    <module>ribbon-secured</module>
     <module>security</module>
     <module>transactions</module>
     <module>undertow</module>

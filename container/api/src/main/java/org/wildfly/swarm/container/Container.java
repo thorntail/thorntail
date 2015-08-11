@@ -102,10 +102,14 @@ public class Container {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             if (isFatJar()) {
+                System.err.println( "loading from fat-jar, using swarm.application" );
                 Thread.currentThread().setContextClassLoader(Container.class.getClassLoader());
                 Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
                 Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
+            } else {
+                System.err.println( "loading from classpath" );
             }
+            System.err.println( "TCCL: " + Thread.currentThread().getContextClassLoader() );
             this.domain = ShrinkWrap.getDefaultDomain();
             System.err.println("perform overrides for default domain");
             this.domain.getConfiguration().getExtensionLoader().addOverride(ZipExporter.class, ZipExporterImpl.class);

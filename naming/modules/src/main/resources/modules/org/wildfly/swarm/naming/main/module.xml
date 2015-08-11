@@ -9,7 +9,7 @@
       </paths>
     </system>
 
-    <module name="org.wildfly.swarm.naming" slot="api" export="true"/>
+    <module name="org.wildfly.swarm.naming" slot="api" export="true" services="export"/>
 
   </dependencies>
 

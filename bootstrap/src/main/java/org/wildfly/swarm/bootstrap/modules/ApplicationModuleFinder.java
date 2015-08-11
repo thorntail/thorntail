@@ -67,7 +67,8 @@ public class ApplicationModuleFinder implements ModuleFinder {
                                                 ClassFilters.acceptAll(),
                                                 ClassFilters.acceptAll(),
                                                 null,
-                                                ModuleIdentifier.create(line, "api"), false));
+                                                ModuleIdentifier.create(line), false));
+                                //ModuleIdentifier.create(line, "api"), false));
                             }
                         }
                     }
