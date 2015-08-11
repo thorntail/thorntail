@@ -57,7 +57,7 @@
     <version.guava>14.0.1</version.guava>
 
     <version.keycloak>1.4.0.Final</version.keycloak>
-    <version.iharder.base64>2.3.8</version.iharder.base64>
+    <version.h2>1.4.187</version.h2>
 
     <maven.min.version>3.2.1</maven.min.version>
 
