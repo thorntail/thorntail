@@ -9,7 +9,7 @@
     </system>
 
     <!-- For when bootstrapped through a fat-jar -->
-    <module name="org.wildfly.swarm.messaging" slot="api" export="true"/>
+    <module name="org.wildfly.swarm.messaging" slot="api" export="true" services="export"/>
 
   </dependencies>
 </module>
