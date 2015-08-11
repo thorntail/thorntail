@@ -1,8 +1,0 @@
-com.netflix.ribbon:ribbon
-com.netflix.ribbon:ribbon-core
-com.netflix.ribbon:ribbon-transport
-com.netflix.ribbon:ribbon-load-balancer
-com.netflix.hystrix:hystrix-core
-io.reactivex:rxjava
-io.reactivex:rxnetty
-io.netty:netty-buffer
