@@ -43,6 +43,9 @@
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>1.1.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.org.arquillian>1.1.8.Final</version.org.arquillian>
     <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
+    <version.org.jboss.arquillian.drone>2.0.0.Alpha4</version.org.jboss.arquillian.drone>
+    <version.org.arquillian.graphene>2.1.0.Alpha2</version.org.arquillian.graphene>
+    <version.org.jboss.shrinkwrap.descriptor>2.0.0-alpha-7</version.org.jboss.shrinkwrap.descriptor>
     <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
 
     <version.com.netflix.ribbon>2.1.0</version.com.netflix.ribbon>
@@ -133,6 +136,7 @@
   </dependencies>
   <dependencyManagement>
     <dependencies>
+      <!-- Project Artifacts -->
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-tools</artifactId>
@@ -153,6 +157,48 @@
         <artifactId>wildfly-swarm-container</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-connector</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-ejb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jaxrs</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jca</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-mail</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-weld</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-undertow</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- Feature Packs -->
       <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-parent</artifactId>
@@ -178,6 +224,15 @@
         <type>zip</type>
         <version>${version.keycloak}</version>
       </dependency>
+
+      <!-- Test Dependencies -->
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-bom</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptor}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
@@ -185,6 +240,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian.extension</groupId>
+        <artifactId>arquillian-drone-bom</artifactId>
+        <version>${version.org.jboss.arquillian.drone}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.eclipse.aether</groupId>
         <artifactId>aether-api</artifactId>
@@ -288,8 +351,6 @@
     <module>rxnetty</module>
     <module>servo</module>
 
-<!--
     <module>integration-tests</module>
--->
   </modules>
 </project>
