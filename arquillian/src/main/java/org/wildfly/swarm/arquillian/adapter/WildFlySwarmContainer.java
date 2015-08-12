@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -30,8 +31,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
@@ -45,6 +46,8 @@ import org.wildfly.swarm.tools.BuildTool;
 public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmContainerConfiguration> {
 
     private Class<?> testClass;
+
+    private List<String> requestedMavenArtifacts;
 
     private Process process;
 
@@ -76,6 +79,10 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
     public void setTestClass(Class<?> testClass) {
         this.testClass = testClass;
+    }
+
+    public void setRequestedMavenArtifacts(List<String> artifacts) {
+        this.requestedMavenArtifacts = artifacts;
     }
 
     public boolean isContainerFactory(Class<?> cls) {
@@ -127,11 +134,24 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
         tool.artifactResolvingHelper(new ArquillianArtifactResolvingHelper(resolver));
 
-        MavenResolvedArtifact[] deps = resolver.loadPomFromFile("pom.xml").importDependencies(ScopeType.COMPILE).resolve().withTransitivity().asResolvedArtifact();
+        boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;
 
-        for (MavenResolvedArtifact dep : deps) {
-            MavenCoordinate coord = dep.getCoordinate();
-            tool.dependency(dep.getScope().name(), coord.getGroupId(), coord.getArtifactId(), coord.getVersion(), coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+        if (!hasRequestedArtifacts) {
+            MavenResolvedArtifact[] deps = resolver.loadPomFromFile("pom.xml").importRuntimeAndTestDependencies().resolve().withTransitivity().asResolvedArtifact();
+
+            for (MavenResolvedArtifact dep : deps) {
+                MavenCoordinate coord = dep.getCoordinate();
+                tool.dependency(dep.getScope().name(), coord.getGroupId(), coord.getArtifactId(), coord.getVersion(), coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+            }
+        } else {
+            for (String requestedDep : this.requestedMavenArtifacts) {
+                MavenResolvedArtifact[] deps = resolver.loadPomFromFile("pom.xml").resolve(requestedDep).withTransitivity().asResolvedArtifact();
+
+                for (MavenResolvedArtifact dep : deps) {
+                    MavenCoordinate coord = dep.getCoordinate();
+                    tool.dependency(dep.getScope().name(), coord.getGroupId(), coord.getArtifactId(), coord.getVersion(), coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                }
+            }
         }
 
         try {
