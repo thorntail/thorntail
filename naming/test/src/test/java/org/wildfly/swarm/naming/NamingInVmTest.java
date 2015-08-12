@@ -9,7 +9,6 @@ import org.wildfly.swarm.container.Container;
  */
 public class NamingInVmTest {
 
-    @Ignore
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
