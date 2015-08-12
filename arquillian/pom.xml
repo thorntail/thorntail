@@ -91,6 +91,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.arquillian.config</groupId>
+      <artifactId>arquillian-config-impl-base</artifactId>
+    </dependency>
+
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>compile</scope>
