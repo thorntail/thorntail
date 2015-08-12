@@ -60,6 +60,7 @@ public class BuildTool {
     private Properties properties = new Properties();
 
     private Set<ArtifactSpec> bootstrappedArtifacts = new HashSet<>();
+
     private Set<String> bootstrappedModules = new HashSet<>();
 
     private Map<String, String> providedMappings = new HashMap<>();
@@ -150,27 +151,20 @@ public class BuildTool {
 
 
     private void setupBootstrap() throws Exception {
-
-
         for (ArtifactSpec each : this.dependencies) {
+            try (JarFile jar = new JarFile(each.file)) {
+                ZipEntry entry = jar.getEntry("wildfly-swarm-bootstrap.conf");
+                if (entry != null) {
+                    this.bootstrappedArtifacts.add(each);
 
-            if ( includeAsBootstrapJar(each ) ) {
-                this.bootstrappedArtifacts.add(each);
-            } else {
-                try (JarFile jar = new JarFile(each.file)) {
-                    ZipEntry entry = jar.getEntry("wildfly-swarm-bootstrap.conf");
-                    if (entry != null ) {
-                        this.bootstrappedArtifacts.add(each);
+                    try (InputStream in = jar.getInputStream(entry)) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        String line = null;
 
-                        try ( InputStream in = jar.getInputStream( entry ) ) {
-                            BufferedReader reader = new BufferedReader( new InputStreamReader( in ));
-                            String line = null;
-
-                            while ( ( line = reader.readLine() ) != null ) {
-                                line = line.trim();
-                                if ( ! line.isEmpty() ) {
-                                    this.bootstrappedModules.add( line );
-                                }
+                        while ((line = reader.readLine()) != null) {
+                            line = line.trim();
+                            if (!line.isEmpty()) {
+                                this.bootstrappedModules.add(line);
                             }
                         }
                     }
@@ -182,6 +176,7 @@ public class BuildTool {
 
         for (ArtifactSpec each : this.bootstrappedArtifacts) {
             bootstrapTxt.append(each.mscCoordinates()).append("\n");
+            gatherDependency(each);
         }
 
         this.archive.add(new StringAsset(bootstrapTxt.toString()), "META-INF/wildfly-swarm-bootstrap.conf");
@@ -202,7 +197,7 @@ public class BuildTool {
         StringBuilder bootstrapTxt = new StringBuilder();
 
         for (String each : this.bootstrappedModules) {
-            bootstrapTxt.append( "module:").append(each).append( "\n" );
+            bootstrapTxt.append("module:").append(each).append("\n");
         }
 
         for (ArtifactSpec each : applicationArtifacts) {
@@ -420,10 +415,8 @@ public class BuildTool {
 
 
     protected void analyzeModuleDependencies() throws IOException {
-        for (ArtifactSpec each : this.dependencies) {
-            if (includeAsBootstrapJar(each)) {
-                analyzeModuleDependencies(each);
-            }
+        for ( ArtifactSpec each : this.bootstrappedArtifacts ) {
+            analyzeModuleDependencies(each);
         }
     }
 

@@ -40,7 +40,11 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
             }, "/", in, path.toString(), delegateLoader, identifier);
 
         } catch (IOException e) {
+            e.printStackTrace();
             throw new ModuleLoadException(e);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         } finally {
             try {
                 in.close();

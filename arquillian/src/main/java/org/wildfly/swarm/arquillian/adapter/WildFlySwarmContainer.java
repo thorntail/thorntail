@@ -10,6 +10,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +23,8 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaD
 import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
 import org.jboss.arquillian.protocol.servlet.ServletMethodExecutor;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
@@ -106,9 +109,9 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
 
         //System.err.println("is factory: " + isContainerFactory(this.testClass));
-        if ( isContainerFactory( this.testClass ) ) {
-            archive.as(JavaArchive.class).addAsServiceProvider( "org.wildfly.swarm.ContainerFactory", this.testClass.getName() );
-            archive.as(JavaArchive.class).addClass( this.testClass );
+        if (isContainerFactory(this.testClass)) {
+            archive.as(JavaArchive.class).addAsServiceProvider("org.wildfly.swarm.ContainerFactory", this.testClass.getName());
+            archive.as(JavaArchive.class).addClass(this.testClass);
         }
 
         BuildTool tool = new BuildTool();
@@ -141,10 +144,10 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             Archive<?> wrapped = tool.build();
 
             /*
+            wrapped.as(ZipExporter.class).exportTo(new File("test.jar"), true);
+
             for (Map.Entry<ArchivePath, Node> each : wrapped.getContent().entrySet()) {
-                if (each.getKey().get().startsWith("/org/")) {
-                    System.err.println("-> " + each.getKey());
-                }
+                System.err.println("-> " + each.getKey());
             }
             */
 

@@ -75,6 +75,7 @@ public class MavenArtifactUtil {
             if (Files.exists(settingsPath)) {
                 parseSettingsXml(settingsPath, settings);
             }
+            Path localRepo = settings.getLocalRepository();
             if (settings.getLocalRepository() == null) {
                 Path repository = m2.resolve("repository");
                 settings.setLocalRepository(repository);
@@ -126,7 +127,19 @@ public class MavenArtifactUtil {
                     switch (reader.getName()) {
                         case "localRepository": {
                             String localRepository = reader.nextText();
-                            mavenSettings.setLocalRepository(java.nio.file.Paths.get(localRepository));
+                            if ( localRepository != null && ! localRepository.trim().isEmpty() ) {
+                                mavenSettings.setLocalRepository(java.nio.file.Paths.get(localRepository));
+                            }
+
+                            String localRepositoryPath = System.getProperty("local.maven.repo.path");
+                            if (localRepositoryPath != null) {
+                                mavenSettings.setLocalRepository(java.nio.file.Paths.get(localRepositoryPath.split(File.pathSeparator)[0]));
+                            }
+
+                            localRepositoryPath = System.getProperty("maven.repo.local");
+                            if (localRepositoryPath != null) {
+                                mavenSettings.setLocalRepository(java.nio.file.Paths.get(localRepositoryPath));
+                            }
                             break;
                         }
                         case "profiles": {

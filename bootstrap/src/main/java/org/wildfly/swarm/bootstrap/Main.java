@@ -33,7 +33,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws Throwable {
-        System.err.println( "******** Current bootstrap.Main" );
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
 
         String mainClassName = null;
@@ -48,8 +47,6 @@ public class Main {
         }
 
         Module app = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create("swarm.application" ));
-
-        System.err.println( "DEBUG_FOR_CI: " + app );
 
         Class<?> mainClass = app.getClassLoader().loadClass(mainClassName);
 

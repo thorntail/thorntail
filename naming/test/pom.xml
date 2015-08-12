@@ -31,6 +31,10 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
 
@@ -40,6 +44,13 @@
       <artifactId>wildfly-swarm-naming</artifactId>
       <version>${project.version}</version>
     </dependency>
+<!--
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-naming-runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+-->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-naming-modules</artifactId>

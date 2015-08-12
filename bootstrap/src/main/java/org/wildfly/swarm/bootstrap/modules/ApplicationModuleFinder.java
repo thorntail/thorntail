@@ -110,7 +110,15 @@ public class ApplicationModuleFinder implements ModuleFinder {
                             line = line.substring(7);
                             //public static DependencySpec createModuleDependencySpec(final PathFilter importFilter, final PathFilter exportFilter, final PathFilter resourceImportFilter, final PathFilter resourceExportFilter, final ClassFilter classImportFilter, final ClassFilter classExportFilter, final ModuleLoader moduleLoader, final ModuleIdentifier identifier, final boolean optional) {
                             builder.addDependency(
-                                    DependencySpec.createModuleDependencySpec(PathFilters.acceptAll(), PathFilters.acceptAll(), PathFilters.acceptAll(), PathFilters.acceptAll(), ClassFilters.acceptAll(), ClassFilters.acceptAll(), null, ModuleIdentifier.create(line), false));
+                                    DependencySpec.createModuleDependencySpec(
+                                            PathFilters.acceptAll(),
+                                            PathFilters.acceptAll(),
+                                            PathFilters.acceptAll(),
+                                            PathFilters.acceptAll(),
+                                            ClassFilters.acceptAll(),
+                                            ClassFilters.acceptAll(),
+                                            null,
+                                            ModuleIdentifier.create(line), false));
                         } else if (line.startsWith("gav:")) {
                             line = line.substring(4).trim();
                             File artifact = MavenArtifactUtil.resolveJarArtifact(line);
