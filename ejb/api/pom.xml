@@ -25,10 +25,6 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-bootstrap</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-container</artifactId>
     </dependency>
     <dependency>
@@ -37,6 +33,13 @@
       <version>${project.version}</version>
     </dependency>
 
+    <!-- Dependent APIs -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-jca</artifactId>
+    </dependency>
+
+    <!-- Provided APIs -->
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.2_spec</artifactId>

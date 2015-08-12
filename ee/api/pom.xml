@@ -25,10 +25,6 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-bootstrap</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-container</artifactId>
     </dependency>
     <dependency>
@@ -36,16 +32,11 @@
       <artifactId>wildfly-swarm-ee-modules</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <!-- Provided APIs -->
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
+      <groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
+      <artifactId>jboss-concurrency-api_1.0_spec</artifactId>
     </dependency>
   </dependencies>
 

@@ -38,6 +38,7 @@
   </build>
 
   <dependencies>
+    <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-jaxrs</artifactId>
@@ -48,6 +49,7 @@
       <artifactId>wildfly-swarm-weld</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
