@@ -25,7 +25,7 @@ public class ClusteringConfiguration extends AbstractServerConfiguration<Cluster
     @Override
     public ClusteringFraction defaultFraction() {
         return new ClusteringFraction()
-                .defaultChannel(new Channel("ee"))
+                .defaultChannel(new Channel("swarm-clustering"))
                 .defaultStack(Stack.defaultUDPStack());
     }
 
