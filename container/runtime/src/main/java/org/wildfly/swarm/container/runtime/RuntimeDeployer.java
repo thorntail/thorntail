@@ -69,6 +69,7 @@ public class RuntimeDeployer implements Deployer {
         try (InputStream in = deployment.as(ZipExporter.class).exportAsInputStream()) {
             Closeable closeable = VFS.mountZipExpanded(in, deployment.getName(), mountPoint, tempFileProvider);
             this.mountPoints.add(closeable);
+            //System.err.println( "mount: " + mountPoint + " // " + mountPoint.getPhysicalFile() );
         }
 
         byte[] hash = this.contentProvider.addContent(mountPoint);

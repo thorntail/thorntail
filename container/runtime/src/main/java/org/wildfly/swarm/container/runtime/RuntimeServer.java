@@ -22,6 +22,8 @@ import org.wildfly.swarm.container.Server;
 import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.LogManager;
@@ -80,6 +82,12 @@ public class RuntimeServer implements Server {
         //System.err.println( list );
 
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
+
+        UUID grist = java.util.UUID.randomUUID();
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        System.err.println( "tmpDir: " + tmpDir );
+        Path gristedTmp = Paths.get(tmpDir).resolve("wildfly-swarm-" + grist);
+        System.setProperty( "jboss.server.temp.dir", gristedTmp.toString() );
 
         ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
         TempFileProvider tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor);
