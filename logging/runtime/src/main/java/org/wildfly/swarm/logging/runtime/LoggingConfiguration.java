@@ -40,6 +40,17 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
 
     @Override
     public LoggingFraction defaultFraction() {
+        String prop = System.getProperty("swarm.logging");
+        if ( prop != null ) {
+            prop = prop.trim().toLowerCase();
+
+            if ( prop.equals("debug" ) ) {
+                return LoggingFraction.createDebugLoggingFraction();
+            } else if (prop.equals("trace" ) ) {
+                return LoggingFraction.createTraceLoggingFraction();
+            }
+        }
+
         return LoggingFraction.createDefaultLoggingFraction();
     }
 
