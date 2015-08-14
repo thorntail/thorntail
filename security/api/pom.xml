@@ -32,6 +32,12 @@
       <artifactId>wildfly-swarm-security-modules</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <!-- provided dependencies -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
