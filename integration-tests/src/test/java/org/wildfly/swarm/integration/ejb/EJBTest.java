@@ -47,7 +47,7 @@ public class EJBTest {
     }
 
     @ArtifactDependencies
-    public static List<String> artifactDependencies() {
+    public static List<String> appDependencies() {
         return Arrays.asList(
                 "org.wildfly.swarm:wildfly-swarm-ejb",
                 "org.wildfly.swarm:wildfly-swarm-jaxrs"
