@@ -18,8 +18,7 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
 
     default T staticContent(String context, String base) {
         as(WARArchive.class).addModule("org.wildfly.swarm.undertow", "runtime");
-        as(WARArchive.class).addAsServiceProvider("io.undertow.server.handlers.builder.HandlerBuilder", "org.wildfly.swarm.runtime.undertow.StaticHandlerBuilder");
-
+        as(WARArchive.class).addAsServiceProvider("io.undertow.server.handlers.builder.HandlerBuilder", "org.wildfly.swarm.undertow.runtime.StaticHandlerBuilder");
 
         Node node = as(WARArchive.class).get("WEB-INF/undertow-handlers.conf");
 
