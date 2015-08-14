@@ -3,6 +3,7 @@ package org.wildfly.swarm.undertow.runtime;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,12 +31,13 @@ public class StaticHandlerBuilder implements HandlerBuilder {
     public Map<String, Class<?>> parameters() {
         HashMap<String,Class<?>> params = new HashMap<>();
         params.put( "base", String.class );
+        params.put( "prefix", String.class );
         return params;
     }
 
     @Override
     public Set<String> requiredParameters() {
-        return new HashSet<>();
+        return Collections.emptySet();
     }
 
     @Override
@@ -46,6 +48,9 @@ public class StaticHandlerBuilder implements HandlerBuilder {
     @Override
     public HandlerWrapper build(Map<String, Object> map) {
         final String base = (String) map.get( "base" );
+        final String prefix = (String) map.get( "prefix" );
+
+
         return new HandlerWrapper() {
             @Override
             public HttpHandler wrap(final HttpHandler next) {
@@ -53,17 +58,17 @@ public class StaticHandlerBuilder implements HandlerBuilder {
                 HttpHandler cur = next;
 
                 if ( base != null ) {
-                    cur = new StaticResourceHandler(new ClassPathResourceManager(ClassLoader.getSystemClassLoader(), base), cur);
+                    cur = new StaticResourceHandler(prefix, new ClassPathResourceManager(ClassLoader.getSystemClassLoader(), base), cur);
                 } else {
-                    cur = new StaticResourceHandler(new ClassPathResourceManager(ClassLoader.getSystemClassLoader()), cur);
+                    cur = new StaticResourceHandler(prefix, new ClassPathResourceManager(ClassLoader.getSystemClassLoader()), cur);
                 }
 
                 try {
                     Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
                     if ( base != null ) {
-                        cur = new StaticResourceHandler(new ClassPathResourceManager(module.getClassLoader(), base), cur);
+                        cur = new StaticResourceHandler(prefix, new ClassPathResourceManager(module.getClassLoader(), base), cur);
                     } else {
-                        cur = new StaticResourceHandler(new ClassPathResourceManager(module.getClassLoader()), cur);
+                        cur = new StaticResourceHandler(prefix, new ClassPathResourceManager(module.getClassLoader()), cur);
                     }
                 } catch (ModuleLoadException e) {
                 }
@@ -73,7 +78,7 @@ public class StaticHandlerBuilder implements HandlerBuilder {
                     f = f.resolve(base);
                 }
                 if (Files.exists(f)) {
-                    cur = new StaticResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
+                    cur = new StaticResourceHandler(prefix, new FileResourceManager(f.toFile(), 1024), cur);
                 }
 
                 f = Paths.get(System.getProperty("user.dir"), "src", "main", "webapp");
@@ -81,7 +86,7 @@ public class StaticHandlerBuilder implements HandlerBuilder {
                     f = f.resolve(base);
                 }
                 if (Files.exists(f)) {
-                    cur = new StaticResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
+                    cur = new StaticResourceHandler(prefix, new FileResourceManager(f.toFile(), 1024), cur);
                 }
 
                 f = Paths.get(System.getProperty("user.dir"), "src", "main", "resources");
@@ -89,7 +94,7 @@ public class StaticHandlerBuilder implements HandlerBuilder {
                     f = f.resolve(base);
                 }
                 if (Files.exists(f)) {
-                    cur = new StaticResourceHandler(new FileResourceManager(f.toFile(), 1024), cur);
+                    cur = new StaticResourceHandler(prefix, new FileResourceManager(f.toFile(), 1024), cur);
                 }
 
                 return cur;

@@ -62,6 +62,9 @@ import io.undertow.util.StatusCodes;
 public class StaticResourceHandler implements HttpHandler {
 
     private final List<String> welcomeFiles = new CopyOnWriteArrayList<>(new String[]{"index.html", "index.htm", "default.html", "default.htm"});
+
+    private final String prefix;
+
     /**
      * If directory listing is enabled.
      */
@@ -107,12 +110,17 @@ public class StaticResourceHandler implements HttpHandler {
     private final HttpHandler next;
 
     public StaticResourceHandler(ResourceManager resourceManager) {
-        this(resourceManager, ResponseCodeHandler.HANDLE_404);
+        this(null, resourceManager);
     }
 
-    public StaticResourceHandler(ResourceManager resourceManager, HttpHandler next) {
+    public StaticResourceHandler(String prefix, ResourceManager resourceManager) {
+        this(prefix, resourceManager, ResponseCodeHandler.HANDLE_404);
+    }
+
+    public StaticResourceHandler(String prefix, ResourceManager resourceManager, HttpHandler next) {
         this.resourceManager = resourceManager;
         this.next = next;
+        this.prefix = prefix;
     }
 
 
@@ -122,6 +130,7 @@ public class StaticResourceHandler implements HttpHandler {
     @Deprecated
     public StaticResourceHandler() {
         this.next = ResponseCodeHandler.HANDLE_404;
+        this.prefix = null;
     }
 
     @Override
@@ -139,6 +148,17 @@ public class StaticResourceHandler implements HttpHandler {
     }
 
     private void serveResource(final HttpServerExchange exchange, final boolean sendContent) throws Exception {
+
+        String tmpPath = exchange.getRelativePath();
+
+        // if provided a prefix, remove it.
+        if ( this.prefix != null ) {
+            if ( tmpPath.startsWith( this.prefix ) ) {
+                tmpPath = tmpPath.substring( this.prefix.length() );
+            }
+        }
+
+        final String relativePath = tmpPath;
 
         ResponseCache cache = exchange.getAttachment(ResponseCache.ATTACHMENT_KEY);
         final boolean cachable = this.cachable.resolve(exchange);
@@ -167,10 +187,10 @@ public class StaticResourceHandler implements HttpHandler {
             public void handleRequest(HttpServerExchange exchange) throws Exception {
                 Resource resource = null;
                 try {
-                    if (File.separatorChar == '/' || !exchange.getRelativePath().contains(File.separator)) {
+                    if (File.separatorChar == '/' || !relativePath.contains(File.separator)) {
                         //we don't process resources that contain the sperator character if this is not /
                         //this prevents attacks where people use windows path seperators in file URLS's
-                        resource = resourceManager.getResource(canonicalize(exchange.getRelativePath()));
+                        resource = resourceManager.getResource(canonicalize(relativePath));
                     }
                 } catch (IOException e) {
                     UndertowLogger.REQUEST_IO_LOGGER.ioException(e);
@@ -199,7 +219,7 @@ public class StaticResourceHandler implements HttpHandler {
                         return;
                     } else if (!exchange.getRequestPath().endsWith("/")) {
                         exchange.setResponseCode(StatusCodes.FOUND);
-                        exchange.getResponseHeaders().put(Headers.LOCATION, RedirectBuilder.redirect(exchange, exchange.getRelativePath() + "/", true));
+                        exchange.getResponseHeaders().put(Headers.LOCATION, RedirectBuilder.redirect(exchange, relativePath + "/", true));
                         exchange.endExchange();
                         return;
                     }

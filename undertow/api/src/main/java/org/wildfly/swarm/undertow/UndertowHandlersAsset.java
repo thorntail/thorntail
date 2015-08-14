@@ -15,17 +15,17 @@ public class UndertowHandlersAsset implements Asset {
     private List<String[]> staticContent = new ArrayList<>();
 
     public void staticContent(String context, String base) {
-        staticContent.add( new String[] { context, base } );
+        staticContent.add(new String[]{context, base});
     }
 
     @Override
     public InputStream openStream() {
 
         StringBuilder conf = new StringBuilder();
-        for ( String[] each : this.staticContent ) {
-            conf.append( "path-prefix('" + each[0] + "') -> static-content(base='" + each[1] + "')\n");
+        for (String[] each : this.staticContent) {
+            conf.append("path-prefix('" + each[0] + "') -> static-content(base='" + each[1] + "', prefix='" + each[0] + "')\n");
         }
 
-        return new ByteArrayInputStream( conf.toString().getBytes() );
+        return new ByteArrayInputStream(conf.toString().getBytes());
     }
 }
