@@ -22,6 +22,10 @@
 
   <packaging>jar</packaging>
 
+  <properties>
+    <version.config-api>0.2.0-SNAPSHOT</version.config-api>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -31,6 +35,11 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-logging-modules</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>config-lib</artifactId>
+      <version>${version.config-api}</version>
     </dependency>
   </dependencies>
 

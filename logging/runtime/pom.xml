@@ -22,6 +22,10 @@
 
   <packaging>jar</packaging>
 
+  <properties>
+    <version.config-api>0.2.0-SNAPSHOT</version.config-api>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -37,6 +41,11 @@
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-server</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>config-lib</artifactId>
+      <version>${version.config-api}</version>
     </dependency>
 <!--
     <dependency>

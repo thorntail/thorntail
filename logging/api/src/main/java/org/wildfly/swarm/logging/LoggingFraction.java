@@ -1,36 +1,35 @@
 package org.wildfly.swarm.logging;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
+import org.wildfly.swarm.config.logging.Logging;
+import org.wildfly.swarm.config.logging.subsystem.asyncHandler.AsyncHandler;
+import org.wildfly.swarm.config.logging.subsystem.consoleHandler.ConsoleHandler;
+import org.wildfly.swarm.config.logging.subsystem.customFormatter.CustomFormatter;
+import org.wildfly.swarm.config.logging.subsystem.customHandler.CustomHandler;
+import org.wildfly.swarm.config.logging.subsystem.fileHandler.FileHandler;
+import org.wildfly.swarm.config.logging.subsystem.patternFormatter.PatternFormatter;
+import org.wildfly.swarm.config.logging.subsystem.rootLogger.Root;
+import org.wildfly.swarm.config.logging.subsystem.syslogHandler.SyslogHandler;
 import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.logging.format.CustomFormatter;
-import org.wildfly.swarm.logging.format.Formatter;
-import org.wildfly.swarm.logging.format.PatternFormatter;
-import org.wildfly.swarm.logging.handlers.ConsoleHandler;
-import org.wildfly.swarm.logging.handlers.CustomHandler;
-import org.wildfly.swarm.logging.handlers.FileHandler;
-import org.wildfly.swarm.logging.handlers.Handler;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Bob McWhirter
  * @author Ken Finnigan
+ * @author Lance Ball
  */
 public class LoggingFraction implements Fraction {
 
-    private Map<String, Formatter> formatters = new HashMap<>();
+    public static final String CONSOLE = "CONSOLE";
+    public static final String PATTERN = "PATTERN";
+    public static final String COLOR_PATTERN = "COLOR_PATTERN";
 
-    private ConsoleHandler consoleHandler;
-
-    private Map<String, Handler> handlers = new HashMap<>();
-
-    private RootLogger rootLogger;
+    private final Logging logging;
 
     public LoggingFraction() {
+        logging = new Logging();
     }
 
     /**
@@ -77,24 +76,11 @@ public class LoggingFraction implements Fraction {
     public static LoggingFraction createDefaultLoggingFraction(String level) {
         return new LoggingFraction()
                 .defaultColorFormatter()
-                .consoleHandler(level, "COLOR_PATTERN")
-                .rootLogger(level, "CONSOLE");
+                .consoleHandler(level, COLOR_PATTERN)
+                .rootLogger(level, CONSOLE);
     }
 
-    public LoggingFraction formatter(String name, String pattern) {
-        this.formatters.put(name, new PatternFormatter(name, pattern));
-        return this;
-    }
-
-    public LoggingFraction customFormatter(String name, String module, String className) {
-        this.formatters.put(name, new CustomFormatter(name, module, className));
-        return this;
-    }
-
-    public LoggingFraction customFormatter(String name, String module, String className, Properties properties) {
-        this.formatters.put(name, new CustomFormatter(name, module, className, properties));
-        return this;
-    }
+    // ------- FORMATTERS ---------
 
     /**
      * Configure a default non-color formatter named {@code PATTERN}.
@@ -102,7 +88,7 @@ public class LoggingFraction implements Fraction {
      * @return This fraction.
      */
     public LoggingFraction defaultFormatter() {
-        return formatter("PATTERN", "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
+        return formatter(PATTERN, "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
     }
 
     /**
@@ -111,48 +97,197 @@ public class LoggingFraction implements Fraction {
      * @return This fraction.
      */
     public LoggingFraction defaultColorFormatter() {
-        return formatter("COLOR_PATTERN", "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
+        return formatter(COLOR_PATTERN, "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
     }
 
-    public Collection<Formatter> formatters() {
-        return this.formatters.values();
+
+    /**
+     * Add a new PatternFormatter to this Logger
+     *
+     * @param name the name of the formatter
+     * @param pattern the pattern string
+     * @return This fraction.
+     */
+    public LoggingFraction formatter(String name, String pattern) {
+        this.logging.patternFormatters(new PatternFormatter(name).pattern(pattern));
+        return this;
     }
 
+    /**
+     * Add a CustomFormatter to this logger
+     *
+     * @param name the name of the formatter
+     * @param module the module that the logging handler depends on
+     * @param className the logging handler class to be used
+     * @return This fraction.
+     */
+    public LoggingFraction customFormatter(String name, String module, String className) {
+        return customFormatter(name, module, className, null);
+    }
+
+    /**
+     * Add a CustomFormatter to this logger
+     *
+     * @param name the name of the formatter
+     * @param module the module that the logging handler depends on
+     * @param className the logging handler class to be used
+     * @param properties the properties
+     * @return this fraction
+     */
+    public LoggingFraction customFormatter(String name, String module, String className, Properties properties) {
+        // TODO: CUSTOMFORMATTER, Y U NO USE PROPERTIES
+        this.logging.customFormatters(
+                new CustomFormatter(name)
+                        .module(module)
+                        .attributeClass(className));
+        return this;
+    }
+
+    /**
+     * Get the list of PatternFormatter configurations
+     * @return The list of formatters
+     */
+    public List<PatternFormatter> patternFormatters() {
+        return this.logging.subresources().patternFormatters();
+    }
+
+    /**
+     * Get the list of CustomFormatter configurations
+     * @return The list of custom formatters
+     */
+    public List<CustomFormatter> customFormatters() {
+        return this.logging.subresources().customFormatters();
+    }
+
+    // ---------- HANDLERS ----------
+
+    /**
+     * Add a ConsoleHandler to the list of handlers for this logger.
+     *
+     * @param level The logging level
+     * @param formatter A pattern string for the console's formatter
+     * @return This fraction
+     */
     public LoggingFraction consoleHandler(String level, String formatter) {
-        this.consoleHandler = new ConsoleHandler(level, formatter);
+        this.logging.consoleHandlers(
+                new ConsoleHandler(CONSOLE)
+                .level(level)
+                .formatter(formatter)
+        );
         return this;
     }
 
-    public ConsoleHandler consoleHandler() {
-        return this.consoleHandler;
+    /**
+     * Get the list of ConsoleHandlers for this logger
+     * @return the list of handlers
+     */
+    public List<ConsoleHandler> consoleHandlers() {
+        return this.logging.subresources().consoleHandlers();
     }
 
+    /**
+     * Add a FileHandler to the list of handlers for this logger
+     *
+     * @param name The name of the handler
+     * @param path The log file path
+     * @param level The logging level
+     * @param formatter The pattern string for the formatter
+     * @return This fraction
+     */
     public LoggingFraction fileHandler(String name, String path, String level, String formatter) {
-        this.handlers.put(name, new FileHandler(name, path, level, formatter));
+        this.logging.fileHandlers(
+                new FileHandler(name)
+                .level(level)
+                .formatter(formatter)
+                // TODO: FILEHANDLER, Y U NO USE PATH?
+        );
         return this;
     }
 
+    /**
+     * Get the list of FileHandlers configured on this logger
+     * @return the list of FileHandlers
+     */
+    public List<FileHandler> fileHandlers() {
+        return this.logging.subresources().fileHandlers();
+    }
+
+    /**
+     * Add a CustomHandler to this logger
+     *
+     * @param name the name of the handler
+     * @param module the module that the handler uses
+     * @param className the handler class name
+     * @param properties properties for the handler
+     * @param formatter a pattern string for the formatter
+     * @return this fraction
+     */
     public LoggingFraction customHandler(String name, String module, String className, Properties properties, String formatter) {
-        this.handlers.put(name, new CustomHandler(name, module, className, properties, formatter));
+        this.logging.customHandlers(
+                new CustomHandler(name)
+                        .module(module)
+                        .attributeClass(className)
+                        .formatter(formatter)
+                // TODO: CUSTOMHANDLER, Y U NO USE PROPERTIES?
+        );
         return this;
     }
 
-    public List<Handler> handlers() {
-        return this.handlers.values().stream().collect(Collectors.toList());
+    /**
+     * Get the list of CustomHandlers for this logger
+     * @return the list of handlers
+     */
+    public List<CustomHandler> customHandlers() {
+        return this.logging.subresources().customHandlers();
     }
 
+    /**
+     * Get the list of AsyncHandlers for this logger
+     * @return the list of handlers
+     */
+    public List<AsyncHandler> asyncHandlers() {
+        return this.logging.subresources().asyncHandlers();
+    }
+
+    /**
+     * Get the list of SyslogHandlers for this logger
+     * @return the list of handlers
+     */
+    public List<SyslogHandler> syslogHandlers() {
+        return this.logging.subresources().syslogHandlers();
+    }
+
+    // TODO: Add methods for PeriodicRotatingFileHandler, PeriodicSizeRotatingFileHandler, SizeRotatingFileHandler
+
+    // -------- ROOT logger ---------
+
+    /**
+     * Add a root logger to this fraction
+     * @param level the log level
+     * @return this fraction
+     */
     public LoggingFraction rootLogger(String level) {
-        this.rootLogger = new RootLogger(level, this.handlers.keySet().toArray(new String[this.handlers.size()]));
-        return this;
+        return rootLogger(level, null);
     }
 
+    /**
+     * Add a root logger to this fraction
+     * @param level the log level
+     * @param handlers a list of handlers
+     * @return this fraction
+     */
     public LoggingFraction rootLogger(String level, String... handlers) {
-        this.rootLogger = new RootLogger(level, handlers);
+        this.logging.root( new Root().level(level) );
+        // TODO: Y U USE HANDLERS ON ROOT HERE?
         return this;
     }
 
-    public RootLogger rootLogger() {
-        return this.rootLogger;
+    /**
+     * Get the root logger for this fraction
+     * @return the Root logger
+     */
+    public Root rootLogger() {
+        return this.logging.root();
     }
 
 }
