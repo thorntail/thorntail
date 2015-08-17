@@ -187,6 +187,8 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             this.stdout = new LatchedBridge("out", latch, process.getInputStream(), System.out);
             this.stderr = new LatchedBridge("err", latch, process.getErrorStream(), System.err);
 
+            this.process.getOutputStream().close();
+
             new Thread(stdout).start();
             new Thread(stderr).start();
 
@@ -204,6 +206,17 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
     @Override
     public void undeploy(Archive<?> archive) throws DeploymentException {
         try {
+            try {
+                this.stdout.close();
+            }  catch (IOException e) {
+                // ignore
+            }
+            try {
+                this.stderr.close();
+            } catch (IOException e) {
+                // ignore
+            }
+
             this.process.destroy();
             this.process.waitFor(10, TimeUnit.SECONDS);
             this.process.destroyForcibly();
@@ -267,13 +280,17 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
                     processLine(line);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
 
         protected void processLine(String line) throws IOException {
             out.write(line.getBytes());
             out.write('\n');
+        }
+
+        public void close() throws IOException {
+            this.in.close();
         }
     }
 
