@@ -169,8 +169,10 @@ public class Container {
      * @return The container.
      */
     public Container fraction(Fraction fraction) {
-        this.fractions.put(fractionRoot(fraction.getClass()), fraction);
-        fraction.initialize(new InitContext());
+        if ( fraction != null ) {
+            this.fractions.put(fractionRoot(fraction.getClass()), fraction);
+            fraction.initialize(new InitContext());
+        }
         return this;
     }
 
