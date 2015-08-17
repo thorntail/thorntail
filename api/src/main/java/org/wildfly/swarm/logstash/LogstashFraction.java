@@ -41,7 +41,7 @@ public class LogstashFraction implements Fraction {
     }
 
     public LogstashFraction port(int port) {
-        port( "" + port );
+        port("" + port);
         return this;
     }
 
@@ -57,4 +57,25 @@ public class LogstashFraction implements Fraction {
                 .customHandler("logstash-handler", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.handlers.SocketHandler", this.handlerProperties, "logstash")
                 .rootLogger(this.level));
     }
+
+    public static Fraction createDefaultLogstashFraction() {
+        return createDefaultLogstashFraction(true);
+    }
+
+    public static Fraction createDefaultLogstashFraction(boolean loggingFractionIfNoLogstash) {
+        String hostname = System.getProperty( "swarm.logstash.hostname" );
+        String port = System.getProperty("swarm.logstash.port");
+
+        if ( hostname != null && port != null ) {
+            return new LogstashFraction()
+                    .hostname(hostname)
+                    .port(port);
+        }
+
+        if( loggingFractionIfNoLogstash ) {
+            return LoggingFraction.createDefaultLoggingFraction();
+        }
+        return null;
+    }
+
 }

@@ -23,16 +23,7 @@ public class LogstashConfiguration extends AbstractServerConfiguration<LogstashF
 
     @Override
     public LogstashFraction defaultFraction() {
-        String hostname = System.getProperty( "swarm.logstash.hostname" );
-        String port = System.getProperty("swarm.logstash.port");
-
-        if ( hostname != null && port != null ) {
-            return new LogstashFraction()
-                    .hostname(hostname)
-                    .port(port);
-        }
-
-        return null;
+        return (LogstashFraction) LogstashFraction.createDefaultLogstashFraction(false);
     }
 
     @Override
