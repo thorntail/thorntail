@@ -165,6 +165,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-ee</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-ejb</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -186,6 +191,16 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-mail</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-naming</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-security</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
