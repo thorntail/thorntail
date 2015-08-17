@@ -38,7 +38,7 @@
   <properties>
     <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha3</version.wildfly.swarm.fraction.plugin>
 
-    <version.wildfly>10.0.0.Alpha6</version.wildfly>
+    <version.wildfly>10.0.0.Beta1</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>1.1.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.org.arquillian>1.1.8.Final</version.org.arquillian>
@@ -241,14 +241,24 @@
         <version>${version.keycloak}</version>
       </dependency>
 
-      <!-- Test Dependencies -->
-      <!--<dependency>-->
-        <!--<groupId>org.jboss.shrinkwrap.descriptors</groupId>-->
-        <!--<artifactId>shrinkwrap-descriptors-bom</artifactId>-->
-        <!--<version>${version.org.jboss.shrinkwrap.descriptor}</version>-->
-        <!--<scope>import</scope>-->
-        <!--<type>pom</type>-->
-      <!--</dependency>-->
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-api</artifactId>
+        <version>${version.org.jboss.shrinkwrap}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-spi</artifactId>
+        <version>${version.org.jboss.shrinkwrap}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-impl-base</artifactId>
+        <version>${version.org.jboss.shrinkwrap}</version>
+        <scope>compile</scope>
+      </dependency>
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
