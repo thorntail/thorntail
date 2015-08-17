@@ -15,12 +15,28 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-messaging-runtime</artifactId>
+  <artifactId>wildfly-swarm-messaging-test</artifactId>
 
-  <name>WildFly Swarm: Messaging Runtime</name>
-  <description>WildFly Swarm: Messaging Runtime</description>
+  <name>WildFly Swarm: Messaging Test</name>
+  <description>WildFly Swarm: Messaging Test</description>
 
   <packaging>jar</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
@@ -28,27 +44,28 @@
       <artifactId>wildfly-swarm-messaging</artifactId>
       <version>${project.version}</version>
     </dependency>
+<!--
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-runtime</artifactId>
+      <artifactId>wildfly-swarm-messaging-runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+-->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-messaging-modules</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-naming-runtime</artifactId>
+      <artifactId>wildfly-swarm-arquillian</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-security-runtime</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
