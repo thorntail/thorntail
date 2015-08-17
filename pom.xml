@@ -87,6 +87,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <reuseForks>false</reuseForks>
+          <runOrder>alphabetical</runOrder>
           <systemPropertyVariables>
             <maven.repo.local>${maven.repo.local}</maven.repo.local>
           </systemPropertyVariables>
