@@ -10,8 +10,10 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -178,6 +180,19 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             List<String> cli = new ArrayList<>();
 
             cli.add(java.toString());
+
+            cli.add("-Djava.net.preferIPv4Stack=true");
+
+            Enumeration<?> names = System.getProperties().propertyNames();
+
+            while (names.hasMoreElements()) {
+                String key = (String) names.nextElement();
+                if (key.startsWith("jboss") || key.startsWith("swarm") || key.startsWith("wildfly")) {
+                    String value = System.getProperty(key);
+                    cli.add("-D" + key + "=" + value);
+                }
+            }
+
             cli.add("-jar");
             cli.add(executable.getAbsolutePath());
 
@@ -208,7 +223,7 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
         try {
             try {
                 this.stdout.close();
-            }  catch (IOException e) {
+            } catch (IOException e) {
                 // ignore
             }
             try {
