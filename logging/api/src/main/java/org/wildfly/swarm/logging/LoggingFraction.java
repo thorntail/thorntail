@@ -11,7 +11,6 @@ import org.wildfly.swarm.config.logging.subsystem.rootLogger.Root;
 import org.wildfly.swarm.config.logging.subsystem.syslogHandler.SyslogHandler;
 import org.wildfly.swarm.container.Fraction;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,10 +25,21 @@ public class LoggingFraction implements Fraction {
     public static final String PATTERN = "PATTERN";
     public static final String COLOR_PATTERN = "COLOR_PATTERN";
 
+    public final class Level {
+        public static final String TRACE = "TRACE";
+        public static final String DEBUG = "DEBUG";
+        public static final String ERROR = "ERROR";
+        public static final String INFO = "INFO";
+    }
+
     private final Logging logging;
 
     public LoggingFraction() {
         logging = new Logging();
+    }
+
+    public Logging logger() {
+        return this.logging;
     }
 
     /**
@@ -38,7 +48,7 @@ public class LoggingFraction implements Fraction {
      * @return The fully-configured fraction.
      */
     public static LoggingFraction createTraceLoggingFraction() {
-        return createDefaultLoggingFraction("TRACE");
+        return createDefaultLoggingFraction(Level.TRACE);
     }
 
     /**
@@ -47,7 +57,7 @@ public class LoggingFraction implements Fraction {
      * @return The fully-configured fraction.
      */
     public static LoggingFraction createDebugLoggingFraction() {
-        return createDefaultLoggingFraction("DEBUG");
+        return createDefaultLoggingFraction(Level.DEBUG);
     }
 
     /**
@@ -56,7 +66,7 @@ public class LoggingFraction implements Fraction {
      * @return The fully-configured fraction.
      */
     public static LoggingFraction createErrorLoggingFraction() {
-        return createDefaultLoggingFraction("ERROR");
+        return createDefaultLoggingFraction(Level.ERROR);
     }
 
     /**
@@ -65,7 +75,7 @@ public class LoggingFraction implements Fraction {
      * @return The fully-configured fraction.
      */
     public static LoggingFraction createDefaultLoggingFraction() {
-        return createDefaultLoggingFraction("INFO");
+        return createDefaultLoggingFraction(Level.INFO);
     }
 
     /**

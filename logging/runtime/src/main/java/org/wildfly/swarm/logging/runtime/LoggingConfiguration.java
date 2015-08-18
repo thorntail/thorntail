@@ -27,7 +27,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
  * @author Lance Ball
  */
 public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFraction> {
-    private static final String DEFAULT_LEVEL = "INFO";
+    private static final String DEFAULT_LEVEL = LoggingFraction.Level.INFO;
 
     private final PathAddress loggingAddress = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "logging"));
 
