@@ -44,6 +44,11 @@
       <artifactId>wildfly-swarm-bean-validation</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-ee</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- Provided APIs -->
     <dependency>
