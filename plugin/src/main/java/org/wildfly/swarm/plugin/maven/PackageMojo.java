@@ -143,6 +143,18 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         for (Resource each : resources) {
             this.tool.resourceDirectory(each.getDirectory());
         }
+        
+        
+        if (additionalModules == null) {
+            additionalModules = new String[] {"modules"};
+        }
+        
+        for (String additionalModule : additionalModules) {
+            File source = new File(this.project.getBuild().getOutputDirectory() + File.separator + additionalModule);
+            if (source.exists()) {
+                this.tool.additionnalModules().add(source.getAbsolutePath());
+            }
+        }
 
         this.tool
                 .properties(this.properties)
@@ -181,3 +193,4 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     }
 
 }
+

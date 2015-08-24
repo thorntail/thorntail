@@ -65,6 +65,8 @@ public class BuildTool {
 
     private Map<String, String> providedMappings = new HashMap<>();
 
+    private Set<String> additionnalModules = new HashSet<>();
+    
     public BuildTool() {
         this.archive = ShrinkWrap.create(JavaArchive.class);
     }
@@ -112,6 +114,10 @@ public class BuildTool {
         return this.moduleDependencies;
     }
 
+    public Set<String> additionnalModules() {
+        return this.additionnalModules;
+    }
+
     public BuildTool artifactResolvingHelper(ArtifactResolvingHelper resolver) {
         this.resolver = resolver;
         return this;
@@ -136,6 +142,7 @@ public class BuildTool {
         createWildflySwarmProperties();
         createDependenciesTxt();
         collectDependencies();
+        addAdditionnalModule();
         return this.archive;
     }
 
@@ -544,4 +551,12 @@ public class BuildTool {
             this.archive.add(new ZipFileEntryAsset(jarFile, each), each.getName());
         }
     }
+
+    private void addAdditionnalModule() {
+        for (String additionnalModule : additionnalModules) {
+            File file = new File(additionnalModule);
+            this.archive.addAsResource(file, "modules");
+        }
+    }
 }
+
