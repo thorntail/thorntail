@@ -6,6 +6,7 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.jboss.dmr.ValueExpression;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.ejb.EJBFraction;
 
@@ -50,6 +51,8 @@ public class EJBConfiguration extends AbstractServerConfiguration<EJBFraction> {
         node.get("default-security-domain").set("other");
         node.get("default-missing-method-permissions-deny-access").set("true");
         node.get("log-system-exceptions").set("true");
+
+        node.get("default-resource-adapter-name").set(new ValueExpression("${ejb.resource-adapter-name:activemq-ra.rar}"));
         list.add(node);
 
         setBeanPools(list);

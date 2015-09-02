@@ -36,7 +36,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
 
     @Override
     public void prepareArchive(Archive a) {
-        a.as(JARArchive.class).addModule("javax.jms.api" );
+        a.as(JARArchive.class).addModule("javax.jms.api");
     }
 
     @Override
@@ -99,6 +99,8 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
 
         addTopics(server, list);
         addQueues(server, list);
+
+        addConnectionFactory(server, list);
     }
 
     protected void addTopics(MessagingServer server, List<ModelNode> list) {
@@ -123,5 +125,19 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
             node.get("entries").setEmptyList().add("java:/jms/queue/" + each);
             list.add(node);
         }
+    }
+
+    protected void addConnectionFactory(MessagingServer server, List<ModelNode> list) {
+        PathAddress serverAddress = this.address.append("server", server.name());
+
+        ModelNode node = new ModelNode();
+        node.get(OP_ADDR).set(serverAddress.append("pooled-connection-factory", "activemq-ra").toModelNode());
+        node.get(OP).set(ADD);
+        node.get("transaction").set("xa");
+        node.get("connectors").add("in-vm");
+        node.get("entries").add("java:/JmsXA");
+        node.get("entries").add("java:jboss/DefaultJMSConnectionFactory");
+
+        list.add( node );
     }
 }
