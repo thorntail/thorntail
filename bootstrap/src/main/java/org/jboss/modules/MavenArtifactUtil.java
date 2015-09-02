@@ -127,7 +127,7 @@ public class MavenArtifactUtil {
                     switch (reader.getName()) {
                         case "localRepository": {
                             String localRepository = reader.nextText();
-                            if ( localRepository != null && ! localRepository.trim().isEmpty() ) {
+                            if (localRepository != null && !localRepository.trim().isEmpty()) {
                                 mavenSettings.setLocalRepository(java.nio.file.Paths.get(localRepository));
                             }
 
@@ -282,6 +282,10 @@ public class MavenArtifactUtil {
      * @throws IOException Unable to download artifact
      */
     public static File resolveJarArtifact(String qualifier) throws IOException {
+        return resolveArtifact(qualifier, "jar");
+    }
+
+    public static File resolveArtifact(String qualifier, String packaging) throws IOException {
         if (qualifier.startsWith("${") && qualifier.endsWith("}")) {
             qualifier = qualifier.substring(2, qualifier.length() - 1);
         }
@@ -303,15 +307,15 @@ public class MavenArtifactUtil {
         // serialize artifact lookup because we want to prevent parallel download
         synchronized (artifactLock) {
             String artifactRelativePath = "m2repo/" + relativeArtifactPath('/', groupId, artifactId, version);
-            String jarPath = artifactRelativePath + classifier + ".jar";
+            String jarPath = artifactRelativePath + classifier + "." + packaging;
 
             InputStream stream = MavenArtifactUtil.class.getClassLoader().getResourceAsStream(jarPath);
             if (stream != null) {
-                return copyTempJar(artifactId + "-" + version, stream);
+                return copyTempJar(artifactId + "-" + version, stream, packaging);
             }
 
             artifactRelativePath = relativeArtifactPath(groupId, artifactId, version);
-            jarPath = artifactRelativePath + classifier + ".jar";
+            jarPath = artifactRelativePath + classifier + "." + packaging;
 
             Path fp = java.nio.file.Paths.get(localRepository.toString(), jarPath);
             if (Files.exists(fp)) {
@@ -328,9 +332,9 @@ public class MavenArtifactUtil {
             for (String remoteRepository : remoteRepos) {
                 try {
                     String remotePomPath = remoteRepository + artifactRelativePath + ".pom";
-                    String remoteJarPath = remoteRepository + artifactRelativePath + classifier + ".jar";
+                    String remoteJarPath = remoteRepository + artifactRelativePath + classifier + "." + packaging;
                     downloadFile(qualifier + ":pom", remotePomPath, pomFile);
-                    downloadFile(qualifier + ":jar", remoteJarPath, jarFile);
+                    downloadFile(qualifier + ":" + packaging, remoteJarPath, jarFile);
                     if (jarFile.exists()) { //download successful
                         return jarFile;
                     }
@@ -359,9 +363,9 @@ public class MavenArtifactUtil {
         return builder.toString();
     }
 
-    public static File copyTempJar(String artifact, InputStream in) throws IOException {
+    public static File copyTempJar(String artifact, InputStream in, String packaging) throws IOException {
         try {
-            File temp = File.createTempFile(artifact, ".jar");
+            File temp = File.createTempFile(artifact, "." + packaging);
             temp.deleteOnExit();
             try (FileOutputStream out = new FileOutputStream(temp)) {
                 byte[] buf = new byte[1024];

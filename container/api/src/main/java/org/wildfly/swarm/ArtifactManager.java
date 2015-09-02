@@ -42,7 +42,7 @@ public class ArtifactManager {
     }
 
     public static List<JavaArchive> allArtifacts() throws IOException {
-        List<JavaArchive> archives  = new ArrayList<>();
+        List<JavaArchive> archives = new ArrayList<>();
 
         InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-dependencies.txt");
 
@@ -58,14 +58,14 @@ public class ArtifactManager {
 
                         JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
                         new ZipImporterImpl(archive).importFrom(artifact);
-                        archives.add( archive );
+                        archives.add(archive);
                     }
                 }
             }
         } else {
             String classpath = System.getProperty("java.class.path");
             String javaHome = System.getProperty("java.home");
-            Path pwd = Paths.get( System.getProperty("user.dir" ) );
+            Path pwd = Paths.get(System.getProperty("user.dir"));
             if (classpath != null) {
                 String[] elements = classpath.split(File.pathSeparator);
 
@@ -75,9 +75,9 @@ public class ArtifactManager {
                         if (artifact.isFile()) {
                             JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
                             new ZipImporterImpl(archive).importFrom(artifact);
-                            archives.add( archive );
-                        }  else {
-                            if ( artifact.toPath().startsWith( pwd ) ) {
+                            archives.add(archive);
+                        } else {
+                            if (artifact.toPath().startsWith(pwd)) {
                                 continue;
                             }
 
@@ -103,6 +103,12 @@ public class ArtifactManager {
     }
 
     private static File findFile(String gav) throws IOException, ModuleLoadException {
+
+        // groupId:artifactId
+        // groupId:artifactId:version
+        // groupId:artifactId:packaging:version
+        // groupId:artifactId:packaging:version:classifier
+
         String[] parts = gav.split(":");
 
         if (parts.length < 2) {
@@ -111,38 +117,103 @@ public class ArtifactManager {
 
         String groupId = parts[0];
         String artifactId = parts[1];
+        String packaging = "jar";
         String version = null;
         String classifier = "";
 
-        if (parts.length > 3) {
-            classifier = parts[3];
+        if (parts.length == 3) {
+            version = parts[2];
         }
 
-        if (parts.length > 2) {
-            version = parts[2];
-        } else {
-            version = determineVersionViaModule(groupId, artifactId, classifier);
+        if (parts.length == 4) {
+            packaging = parts[2];
+            version = parts[3];
+        }
+
+        if (parts.length == 5) {
+            packaging = parts[2];
+            version = parts[3];
+            classifier = parts[4];
+        }
+
+        if (version.isEmpty() || version.equals("*")) {
+            version = null;
         }
 
         if (version == null) {
-            version = determineVersionViaClasspath(groupId, artifactId, classifier);
+            version = determineVersionViaDependenciesTxt(groupId, artifactId, packaging, classifier);
+        }
+
+        if (version == null) {
+            version = determineVersionViaClasspath(groupId, artifactId, packaging, classifier);
         }
 
         if (version == null) {
             throw new RuntimeException("Unable to determine version number from 2-part GAV.  Try three!");
         }
 
-        return MavenArtifactUtil.resolveJarArtifact(groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : ":" + classifier));
+        System.err.println( "found version: " + version );
+
+        return MavenArtifactUtil.resolveArtifact(groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : ":" + classifier), packaging);
     }
 
-    private static String determineVersionViaModule(String groupId, String artifactId, String classifier) throws ModuleLoadException {
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("APP", "dependencies"));
-        return module.getProperty("version." + groupId + ":" + artifactId + "::" + classifier);
+    private static String determineVersionViaDependenciesTxt(String groupId, String artifactId, String packaging, String classifier) throws IOException {
+
+        if (packaging.equals("jar")) {
+            InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-dependencies.txt");
+
+            if (depsTxt != null) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt))) {
+
+                    String line = null;
+
+                    while ((line = reader.readLine()) != null) {
+                        line = line.trim();
+                        if (line.length() > 0) {
+                            String[] parts = line.split(":");
+                            if (parts.length >= 3) {
+                                if (parts[0].equals(groupId) && parts[1].equals(artifactId)) {
+                                    return parts[2];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-extra-dependencies.txt");
+
+        if (depsTxt != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt))) {
+
+                String line = null;
+
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.length() > 0) {
+                        String[] parts = line.split(":");
+                        if (parts.length == 4) {
+                            if (parts[0].equals(groupId) && parts[1].equals(artifactId) && parts[2].equals(packaging)) {
+                                return parts[3];
+                            }
+                        }
+                        if (parts.length == 5) {
+                            if (parts[0].equals(groupId) && parts[1].equals(artifactId) && parts[2].equals(packaging) && parts[4].equals(classifier)) {
+                                return parts[3];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
-    private static String determineVersionViaClasspath(String groupId, String artifactId, String classifier) {
+    private static String determineVersionViaClasspath(String groupId, String artifactId, String packaging, String classifier) {
 
-        String regexp = ".*" + artifactId + "-(.+)" + (classifier.length() == 0 ? "" : "-" + classifier) + ".jar";
+        String regexp = ".*" + artifactId + "-(.+)" + (classifier.length() == 0 ? "" : "-" + classifier) + "." + packaging;
         Pattern pattern = Pattern.compile(regexp);
 
         String classpath = System.getProperty("java.class.path");

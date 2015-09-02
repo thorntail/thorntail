@@ -66,7 +66,7 @@ public class BuildTool {
     private Map<String, String> providedMappings = new HashMap<>();
 
     private Set<String> additionnalModules = new HashSet<>();
-    
+
     public BuildTool() {
         this.archive = ShrinkWrap.create(JavaArchive.class);
     }
@@ -195,7 +195,9 @@ public class BuildTool {
 
         for (ArtifactSpec each : this.dependencies) {
             if (!this.bootstrappedArtifacts.contains(each)) {
-                applicationArtifacts.add(each);
+                if ( each.packaging.equals("jar" ) ) {
+                    applicationArtifacts.add(each);
+                }
             }
         }
 
@@ -397,19 +399,26 @@ public class BuildTool {
         }
 
         StringBuilder depsTxt = new StringBuilder();
+        StringBuilder extraDepsTxt = new StringBuilder();
 
         for (ArtifactSpec each : this.dependencies) {
             if (provided.contains(each.groupId + ":" + each.artifactId)) {
                 continue;
             }
-            if (each.scope.equals("compile") && each.packaging.equals("jar")) {
-                //this.dependencies.add(each.groupId + ":" + each.artifactId + ":" + each.version);
-                each.shouldGather = true;
-                depsTxt.append(each.groupId).append(':').append(each.artifactId).append(':').append(each.version).append("\n");
+            if (each.scope.equals("compile")) {
+                if (each.packaging.equals("jar")) {
+                    //this.dependencies.add(each.groupId + ":" + each.artifactId + ":" + each.version);
+                    each.shouldGather = true;
+                    depsTxt.append(each.groupId).append(':').append(each.artifactId).append(':').append(each.version).append("\n");
+                } else {
+                    each.shouldGather = true;
+                    extraDepsTxt.append(each.groupId).append(':').append(each.artifactId).append(':').append(each.packaging).append(":").append(each.version).append("\n");
+                }
             }
-        }
 
-        this.archive.addAsManifestResource(new StringAsset(depsTxt.toString()), "wildfly-swarm-dependencies.txt");
+            this.archive.addAsManifestResource(new StringAsset(depsTxt.toString()), "wildfly-swarm-dependencies.txt");
+            this.archive.addAsManifestResource(new StringAsset(extraDepsTxt.toString()), "wildfly-swarm-extra-dependencies.txt");
+        }
     }
 
     protected void collectDependencies() throws Exception {
@@ -422,7 +431,7 @@ public class BuildTool {
 
 
     protected void analyzeModuleDependencies() throws IOException {
-        for ( ArtifactSpec each : this.bootstrappedArtifacts ) {
+        for (ArtifactSpec each : this.bootstrappedArtifacts) {
             analyzeModuleDependencies(each);
         }
     }
