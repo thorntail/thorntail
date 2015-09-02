@@ -11,8 +11,7 @@ import org.wildfly.swarm.config.logging.subsystem.rootLogger.Root;
 import org.wildfly.swarm.config.logging.subsystem.syslogHandler.SyslogHandler;
 import org.wildfly.swarm.container.Fraction;
 
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author Bob McWhirter
@@ -119,7 +118,7 @@ public class LoggingFraction implements Fraction {
      * @return This fraction.
      */
     public LoggingFraction formatter(String name, String pattern) {
-        this.logging.patternFormatters(new PatternFormatter(name).pattern(pattern));
+        this.logging.patternFormatter(new PatternFormatter(name).pattern(pattern));
         return this;
     }
 
@@ -145,11 +144,17 @@ public class LoggingFraction implements Fraction {
      * @return this fraction
      */
     public LoggingFraction customFormatter(String name, String module, String className, Properties properties) {
-        // TODO: CUSTOMFORMATTER, Y U NO USE PROPERTIES
-        this.logging.customFormatters(
+        Map formatterProperties = new HashMap<>();
+        final Enumeration<?> names = properties.propertyNames();
+        while (names.hasMoreElements()) {
+            final String nextElement = (String) names.nextElement();
+            formatterProperties.put(nextElement, properties.getProperty(nextElement));
+        }
+        this.logging.customFormatter(
                 new CustomFormatter(name)
                         .module(module)
-                        .attributeClass(className));
+                        .attributeClass(className)
+                        .properties(formatterProperties));
         return this;
     }
 
@@ -179,10 +184,10 @@ public class LoggingFraction implements Fraction {
      * @return This fraction
      */
     public LoggingFraction consoleHandler(String level, String formatter) {
-        this.logging.consoleHandlers(
+        this.logging.consoleHandler(
                 new ConsoleHandler(CONSOLE)
-                .level(level)
-                .formatter(formatter)
+                        .level(level)
+                        .formatter(formatter)
         );
         return this;
     }
@@ -205,11 +210,14 @@ public class LoggingFraction implements Fraction {
      * @return This fraction
      */
     public LoggingFraction fileHandler(String name, String path, String level, String formatter) {
-        this.logging.fileHandlers(
+        Map fileProperties = new HashMap<>();
+        fileProperties.put("path", path);
+        fileProperties.put("relative-to", "jboss.server.log.dir");
+        this.logging.fileHandler(
                 new FileHandler(name)
-                .level(level)
-                .formatter(formatter)
-                // TODO: FILEHANDLER, Y U NO USE PATH?
+                        .level(level)
+                        .formatter(formatter)
+                        .file(fileProperties)
         );
         return this;
     }
@@ -233,12 +241,19 @@ public class LoggingFraction implements Fraction {
      * @return this fraction
      */
     public LoggingFraction customHandler(String name, String module, String className, Properties properties, String formatter) {
-        this.logging.customHandlers(
+        Map handlerProperties = new HashMap<>();
+        final Enumeration<?> names = properties.propertyNames();
+        while (names.hasMoreElements()) {
+            final String nextElement = (String) names.nextElement();
+            handlerProperties.put(nextElement, properties.getProperty(nextElement));
+        }
+
+        this.logging.customHandler(
                 new CustomHandler(name)
                         .module(module)
                         .attributeClass(className)
                         .formatter(formatter)
-                // TODO: CUSTOMHANDLER, Y U NO USE PROPERTIES?
+                        .properties(handlerProperties)
         );
         return this;
     }
@@ -287,8 +302,9 @@ public class LoggingFraction implements Fraction {
      * @return this fraction
      */
     public LoggingFraction rootLogger(String level, String... handlers) {
-        this.logging.root( new Root().level(level) );
-        // TODO: Y U USE HANDLERS ON ROOT HERE?
+        this.logging.root(
+                new Root().level(level)
+                        .handlers(new ArrayList<>(Arrays.asList(handlers))) );
         return this;
     }
 
