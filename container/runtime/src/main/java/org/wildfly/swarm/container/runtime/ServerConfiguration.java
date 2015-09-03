@@ -17,14 +17,20 @@ public interface ServerConfiguration<T extends Fraction> {
 
     T defaultFraction();
 
-    List<ModelNode> getList(T fraction);
-
     default List<ServiceActivator> getServiceActivators(T fraction) {
         return Collections.emptyList();
     }
 
     default void prepareArchive(Archive a) {
 
+    }
+
+    default List<Archive> getImplicitDeployments(T fraction) {
+        return Collections.emptyList();
+    }
+
+    default List<ModelNode> getList(T fraction) {
+        return Collections.emptyList();
     }
 
     default boolean isIgnorable() {

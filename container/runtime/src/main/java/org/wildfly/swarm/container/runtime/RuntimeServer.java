@@ -1,5 +1,22 @@
 package org.wildfly.swarm.container.runtime;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.LogManager;
+
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
@@ -10,8 +27,14 @@ import org.jboss.dmr.ValueExpression;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.msc.service.*;
+import org.jboss.msc.service.ServiceActivator;
+import org.jboss.msc.service.ServiceActivatorContext;
+import org.jboss.msc.service.ServiceContainer;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceRegistryException;
+import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.vfs.TempFileProvider;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
@@ -22,13 +45,16 @@ import org.wildfly.swarm.container.Server;
 import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.logging.LogManager;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INET_ADDRESS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MULTICAST_ADDRESS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MULTICAST_PORT;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT_OFFSET;
 
 /**
  * @author Bob McWhirter
@@ -126,6 +152,23 @@ public class RuntimeServer implements Server {
 
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(this.configList, this.client, this.contentProvider, tempFileProvider);
+
+        List<Archive> implicitDeployments = new ArrayList<>();
+
+        OUTER:
+        for (ServerConfiguration eachConfig : this.configList) {
+            INNER:
+            for (Fraction eachFraction : config.fractions()) {
+                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+                    implicitDeployments.addAll(eachConfig.getImplicitDeployments( eachFraction ) );
+                    break INNER;
+                }
+            }
+        }
+
+        for (Archive each : implicitDeployments) {
+            this.deployer.deploy( each );
+        }
 
         return this.deployer;
     }
