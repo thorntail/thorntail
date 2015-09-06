@@ -7,11 +7,11 @@
   <dependencies>
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
+    <module name="org.wildfly.swarm.configuration"/>
 
     <module name="org.wildfly.swarm.logging"/>
 
     <module name="org.jboss.as.logging"/>
-    <module name="org.wildfly.config-lib"/>
   </dependencies>
 
 </module>

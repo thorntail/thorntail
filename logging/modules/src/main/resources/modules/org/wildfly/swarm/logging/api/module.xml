@@ -5,6 +5,6 @@
   </resources>
   <dependencies>
     <module name="org.wildfly.swarm.container"/>
-    <module name="org.wildfly.config-lib"/>
+    <module name="org.wildfly.swarm.configuration"/>
   </dependencies>
 </module>

@@ -43,11 +43,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>config-lib</artifactId>
-      <version>${version.config-api}</version>
-    </dependency>
-    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-bootstrap</artifactId>
     </dependency>
