@@ -69,10 +69,12 @@ public class MailConfiguration extends AbstractServerConfiguration<MailFraction>
 
     protected ModelNode addSmtpServer(SmtpServer smtpServer, Mail mail) {
 
-        MailSession mailSession = new MailSession(smtpServer.name().toLowerCase())
-                .jndiName(smtpServer.jndiName());
         Smtp smtp = new Smtp().outboundSocketBindingRef(smtpServer.outboundSocketBindingRef());
-        mailSession.smtp(smtp);
+
+        MailSession mailSession = new MailSession(smtpServer.name().toLowerCase())
+                .smtp(smtp)
+                .jndiName(smtpServer.jndiName());
+
         mail.mailSession(mailSession);
 
 
