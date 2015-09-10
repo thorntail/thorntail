@@ -187,7 +187,7 @@ public class LoggingFraction implements Fraction {
         this.logging.consoleHandler(
                 new ConsoleHandler(CONSOLE)
                         .level(level)
-                        .formatter(formatter)
+                        .namedFormatter(formatter)
         );
         return this;
     }
