@@ -53,7 +53,7 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         add.get(OP).set(ADD);
         list.add(add);
         try {
-            list.addAll(Marshaller.marshal(fraction.logger()));
+            list.addAll(Marshaller.marshal(fraction));
         } catch (Exception e) {
             System.err.println("Cannot configure Logging subsystem. " + e);
         }

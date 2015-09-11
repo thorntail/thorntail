@@ -18,7 +18,7 @@ import java.util.*;
  * @author Ken Finnigan
  * @author Lance Ball
  */
-public class LoggingFraction implements Fraction {
+public class LoggingFraction extends Logging implements Fraction {
 
     public static final String CONSOLE = "CONSOLE";
     public static final String PATTERN = "PATTERN";
@@ -29,16 +29,6 @@ public class LoggingFraction implements Fraction {
         public static final String DEBUG = "DEBUG";
         public static final String ERROR = "ERROR";
         public static final String INFO = "INFO";
-    }
-
-    private final Logging logging;
-
-    public LoggingFraction() {
-        logging = new Logging();
-    }
-
-    public Logging logger() {
-        return this.logging;
     }
 
     /**
@@ -118,7 +108,7 @@ public class LoggingFraction implements Fraction {
      * @return This fraction.
      */
     public LoggingFraction formatter(String name, String pattern) {
-        this.logging.patternFormatter(new PatternFormatter(name).pattern(pattern));
+        patternFormatter(new PatternFormatter(name).pattern(pattern));
         return this;
     }
 
@@ -150,11 +140,10 @@ public class LoggingFraction implements Fraction {
             final String nextElement = (String) names.nextElement();
             formatterProperties.put(nextElement, properties.getProperty(nextElement));
         }
-        this.logging.customFormatter(
-                new CustomFormatter(name)
+        customFormatter( new CustomFormatter(name)
                         .module(module)
                         .attributeClass(className)
-                        .properties(formatterProperties));
+                        .properties(formatterProperties) );
         return this;
     }
 
@@ -163,7 +152,7 @@ public class LoggingFraction implements Fraction {
      * @return The list of formatters
      */
     public List<PatternFormatter> patternFormatters() {
-        return this.logging.subresources().patternFormatters();
+        return subresources().patternFormatters();
     }
 
     /**
@@ -171,7 +160,7 @@ public class LoggingFraction implements Fraction {
      * @return The list of custom formatters
      */
     public List<CustomFormatter> customFormatters() {
-        return this.logging.subresources().customFormatters();
+        return subresources().customFormatters();
     }
 
     // ---------- HANDLERS ----------
@@ -184,11 +173,9 @@ public class LoggingFraction implements Fraction {
      * @return This fraction
      */
     public LoggingFraction consoleHandler(String level, String formatter) {
-        this.logging.consoleHandler(
-                new ConsoleHandler(CONSOLE)
+        consoleHandler( new ConsoleHandler(CONSOLE)
                         .level(level)
-                        .namedFormatter(formatter)
-        );
+                        .namedFormatter(formatter) );
         return this;
     }
 
@@ -197,7 +184,7 @@ public class LoggingFraction implements Fraction {
      * @return the list of handlers
      */
     public List<ConsoleHandler> consoleHandlers() {
-        return this.logging.subresources().consoleHandlers();
+        return subresources().consoleHandlers();
     }
 
     /**
@@ -213,12 +200,10 @@ public class LoggingFraction implements Fraction {
         Map fileProperties = new HashMap<>();
         fileProperties.put("path", path);
         fileProperties.put("relative-to", "jboss.server.log.dir");
-        this.logging.fileHandler(
-                new FileHandler(name)
+        fileHandler( new FileHandler(name)
                         .level(level)
                         .formatter(formatter)
-                        .file(fileProperties)
-        );
+                        .file(fileProperties) );
         return this;
     }
 
@@ -227,7 +212,7 @@ public class LoggingFraction implements Fraction {
      * @return the list of FileHandlers
      */
     public List<FileHandler> fileHandlers() {
-        return this.logging.subresources().fileHandlers();
+        return subresources().fileHandlers();
     }
 
     /**
@@ -248,13 +233,11 @@ public class LoggingFraction implements Fraction {
             handlerProperties.put(nextElement, properties.getProperty(nextElement));
         }
 
-        this.logging.customHandler(
-                new CustomHandler(name)
+        customHandler( new CustomHandler(name)
                         .module(module)
                         .attributeClass(className)
                         .formatter(formatter)
-                        .properties(handlerProperties)
-        );
+                        .properties(handlerProperties) );
         return this;
     }
 
@@ -263,7 +246,7 @@ public class LoggingFraction implements Fraction {
      * @return the list of handlers
      */
     public List<CustomHandler> customHandlers() {
-        return this.logging.subresources().customHandlers();
+        return subresources().customHandlers();
     }
 
     /**
@@ -271,7 +254,7 @@ public class LoggingFraction implements Fraction {
      * @return the list of handlers
      */
     public List<AsyncHandler> asyncHandlers() {
-        return this.logging.subresources().asyncHandlers();
+        return subresources().asyncHandlers();
     }
 
     /**
@@ -279,7 +262,7 @@ public class LoggingFraction implements Fraction {
      * @return the list of handlers
      */
     public List<SyslogHandler> syslogHandlers() {
-        return this.logging.subresources().syslogHandlers();
+        return subresources().syslogHandlers();
     }
 
     // TODO: Add methods for PeriodicRotatingFileHandler, PeriodicSizeRotatingFileHandler, SizeRotatingFileHandler
@@ -302,8 +285,7 @@ public class LoggingFraction implements Fraction {
      * @return this fraction
      */
     public LoggingFraction rootLogger(String level, String... handlers) {
-        this.logging.root(
-                new Root().level(level)
+        root( new Root().level(level)
                         .handlers(new ArrayList<>(Arrays.asList(handlers))) );
         return this;
     }
@@ -313,7 +295,7 @@ public class LoggingFraction implements Fraction {
      * @return the Root logger
      */
     public Root rootLogger() {
-        return this.logging.root();
+        return root();
     }
 
 }
