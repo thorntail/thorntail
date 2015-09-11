@@ -59,7 +59,7 @@
     <version.netty>4.0.26.Final</version.netty>
     <version.guava>14.0.1</version.guava>
 
-    <version.keycloak>1.4.0.Final</version.keycloak>
+    <version.keycloak>1.5.0.Final</version.keycloak>
     <version.h2>1.4.187</version.h2>
 
     <maven.min.version>3.2.1</maven.min.version>
