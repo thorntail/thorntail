@@ -1,6 +1,7 @@
 package org.wildfly.swarm.datasources;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.wildfly.swarm.config.datasources.subsystem.dataSource.DataSource;
 import org.wildfly.swarm.container.util.XmlWriter;
 
 import java.io.ByteArrayInputStream;
@@ -10,12 +11,13 @@ import java.io.StringWriter;
 
 /**
  * @author Bob McWhirter
+ * @author Lance Ball
  */
 public class DSXmlAsset implements Asset {
 
-    private final Datasource ds;
+    private final DataSource ds;
 
-    public DSXmlAsset(Datasource ds) {
+    public DSXmlAsset(DataSource ds) {
         this.ds = ds;
     }
 
@@ -35,14 +37,14 @@ public class DSXmlAsset implements Asset {
                     .attr("jndi-name", this.ds.jndiName())
                     .attr("enabled", "true")
                     .attr("use-java-context", "true")
-                    .attr("pool-name", this.ds.name());
+                    .attr("pool-name", this.ds.getKey());
 
             datasource.element("connection-url")
-                    .content(this.ds.connectionURL())
+                    .content(this.ds.connectionUrl())
                     .end();
 
             datasource.element("driver")
-                    .content(this.ds.driver())
+                    .content(this.ds.driverName())
                     .end();
 
             XmlWriter.Element security = datasource.element("security");
