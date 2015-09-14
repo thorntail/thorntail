@@ -12,7 +12,7 @@ import java.util.List;
 public class DatasourcesFraction extends Datasources implements Fraction {
     @Override
     public Datasources dataSource(DataSource value) {
-        value.jndiName("java:jboss/datasources/" + value.getKey());
+        if (value.jndiName() == null) value.jndiName("java:jboss/datasources/" + value.getKey());
         return super.dataSource(value);
     }
 }
