@@ -6,6 +6,10 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.apigen.invocation.Marshaller;
+import org.wildfly.swarm.config.mail.Mail;
+import org.wildfly.swarm.config.mail.subsystem.mailSession.MailSession;
+import org.wildfly.swarm.config.mail.subsystem.mailSession.server.Smtp;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.mail.MailFraction;
 import org.wildfly.swarm.mail.SmtpServer;
@@ -42,40 +46,43 @@ public class MailConfiguration extends AbstractServerConfiguration<MailFraction>
         node.get(OP).set(ADD);
         list.add(node);
 
-        node = new ModelNode();
-        node.get(OP_ADDR).set(smtpServerAddress.toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
+        Mail mail = new Mail();
+        List<ModelNode> socketBindings = addSmtpServers(fraction, mail);
 
-        addSmtpServers(fraction, list);
+        try {
+            list.addAll(Marshaller.marshal(mail));
+            list.addAll(socketBindings);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return list;
     }
 
-    protected void addSmtpServers(MailFraction fraction, List<ModelNode> list) {
+    protected List<ModelNode> addSmtpServers(MailFraction fraction, Mail mail) {
+        List<ModelNode> list = new ArrayList<>();
         for (SmtpServer each : fraction.smtpServers()) {
-            addSmtpServer(each, list);
+            list.add(addSmtpServer(each, mail));
         }
+        return list;
     }
 
-    protected void addSmtpServer(SmtpServer smtpServer, List<ModelNode> list) {
+    protected ModelNode addSmtpServer(SmtpServer smtpServer, Mail mail) {
+
+        Smtp smtp = new Smtp().outboundSocketBindingRef(smtpServer.outboundSocketBindingRef());
+
+        MailSession mailSession = new MailSession(smtpServer.name().toLowerCase())
+                .smtp(smtp)
+                .jndiName(smtpServer.jndiName());
+
+        mail.mailSession(mailSession);
+
+
         ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(smtpServerAddress.append("mail-session", smtpServer.name().toLowerCase()).toModelNode());
-        node.get(OP).set(ADD);
-        node.get("jndi-name").set(smtpServer.jndiName());
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(smtpServerAddress.append("mail-session", smtpServer.name().toLowerCase()).append("server", "smtp").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("outbound-socket-binding-ref").set(smtpServer.outboundSocketBindingRef());
-        list.add(node);
-
-        node = new ModelNode();
         node.get(OP_ADDR).set(PathAddress.pathAddress("socket-binding-group", "default-sockets").append("remote-destination-outbound-socket-binding", smtpServer.outboundSocketBindingRef()).toModelNode());
         node.get(OP).set(ADD);
         node.get("host").set(smtpServer.host());
         node.get("port").set(smtpServer.port());
-        list.add(node);
+        return node;
     }
 }

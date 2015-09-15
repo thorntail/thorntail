@@ -6,14 +6,13 @@ import java.util.function.Consumer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TestName;
+import org.wildfly.swarm.config.datasources.subsystem.dataSource.DataSource;
+import org.wildfly.swarm.config.datasources.subsystem.jdbcDriver.JdbcDriver;
 import org.wildfly.swarm.connector.ConnectorFraction;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.datasources.Datasource;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
-import org.wildfly.swarm.datasources.Driver;
 import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 import org.wildfly.swarm.jca.JCAFraction;
 import org.wildfly.swarm.jpa.JPAFraction;
@@ -68,15 +67,16 @@ public class FractionHandlingTest extends AbstractWildFlySwarmTestCase {
 
 //    @Test
     public void userSpecifiedFractionOverridesDependentFraction() throws Exception {
-        container.fraction(new DatasourcesFraction()
-                        .driver(new Driver("myDriver")
-                                .datasourceClassName("org.h2.Driver")
-                                .xaDatasourceClassName("org.h2.jdbcx.JdbcDataSource")
-                                .module("com.h2database.h2"))
-                        .datasource(new Datasource("MyDS")
-                                .driver("myDriver")
-                                .connectionURL("jdbc:myDriver:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE")
-                                .authentication("sa", "sa"))
+        container.fraction((Fraction) new DatasourcesFraction()
+                        .jdbcDriver(new JdbcDriver("myDriver")
+                                .driverDatasourceClassName("org.h2.Driver")
+                                .driverXaDatasourceClassName("org.h2.jdbcx.JdbcDataSource")
+                                .driverModuleName("com.h2database.h2"))
+                        .dataSource(new DataSource("MyDS")
+                                .driverName("myDriver")
+                                .connectionUrl("jdbc:myDriver:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE")
+                                .userName("sa")
+                                .password("sa"))
         );
 
         container.start();
@@ -86,31 +86,31 @@ public class FractionHandlingTest extends AbstractWildFlySwarmTestCase {
 
     private void verifyEmptyDataSourceFraction(DatasourcesFraction dsFraction) {
         assertThat(dsFraction).overridingErrorMessage("DataSourceFraction was null").isNotNull();
-        assertThat(dsFraction.datasources()).overridingErrorMessage("DataSources were specified").isEmpty();
-        assertThat(dsFraction.drivers()).overridingErrorMessage("Drivers were specified").isEmpty();
+        assertThat(dsFraction.subresources().dataSources()).overridingErrorMessage("DataSources were specified").isEmpty();
+        assertThat(dsFraction.subresources().jdbcDrivers()).overridingErrorMessage("Drivers were specified").isEmpty();
     }
 
     private void verifyValidDataSourceFraction(DatasourcesFraction dsFraction, String dsName, String driverName) {
         // Verify default DataSource Fraction
         assertThat(dsFraction).overridingErrorMessage("DataSourceFraction was null").isNotNull();
-        assertThat(dsFraction.datasources()).overridingErrorMessage("No DataSources specified").isNotEmpty();
-        assertThat(dsFraction.datasources().size()).overridingErrorMessage("More than one Datasource specified").isEqualTo(1);
-        assertThat(dsFraction.drivers()).overridingErrorMessage("No drivers specified").isNotEmpty();
-        assertThat(dsFraction.drivers().size()).overridingErrorMessage("More than one Driver specified").isEqualTo(1);
+        assertThat(dsFraction.subresources().dataSources()).overridingErrorMessage("No DataSources specified").isNotEmpty();
+        assertThat(dsFraction.subresources().dataSources().size()).overridingErrorMessage("More than one Datasource specified").isEqualTo(1);
+        assertThat(dsFraction.subresources().jdbcDrivers()).overridingErrorMessage("No drivers specified").isNotEmpty();
+        assertThat(dsFraction.subresources().jdbcDrivers().size()).overridingErrorMessage("More than one Driver specified").isEqualTo(1);
 
         // Verify DataSource
-        Datasource ds = dsFraction.datasources().get(0);
-        assertThat(ds.name()).overridingErrorMessage("DataSource name is not " + dsName).isEqualTo(dsName);
-        assertThat(ds.driver()).overridingErrorMessage("DataSource driver is not " + driverName).isEqualTo(driverName);
-        assertThat(ds.connectionURL()).isEqualTo("jdbc:" + driverName + ":mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
+        DataSource ds = dsFraction.subresources().dataSources().get(0);
+        assertThat(ds.getKey()).overridingErrorMessage("DataSource name is not " + dsName).isEqualTo(dsName);
+        assertThat(ds.driverName()).overridingErrorMessage("DataSource driver is not " + driverName).isEqualTo(driverName);
+        assertThat(ds.connectionUrl()).isEqualTo("jdbc:" + driverName + ":mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
         assertThat(ds.userName()).isEqualTo("sa");
         assertThat(ds.password()).isEqualTo("sa");
 
         // Verify Driver
-        Driver driver = dsFraction.drivers().get(0);
-        assertThat(driver.name()).overridingErrorMessage("Driver name is not " + driverName).isEqualTo(driverName);
-        assertThat(driver.datasourceClassName()).overridingErrorMessage("Driver datasource class name is not 'org.h2.Driver'").isEqualTo("org.h2.Driver");
-        assertThat(driver.xaDatasourceClassName()).overridingErrorMessage("Driver XA datasource class name is not 'org.h2.jdbcx.JdbcDataSource'").isEqualTo("org.h2.jdbcx.JdbcDataSource");
+        JdbcDriver driver = dsFraction.subresources().jdbcDrivers().get(0);
+        assertThat(driver.getKey()).overridingErrorMessage("Driver name is not " + driverName).isEqualTo(driverName);
+        assertThat(driver.driverDatasourceClassName()).overridingErrorMessage("Driver datasource class name is not 'org.h2.Driver'").isEqualTo("org.h2.Driver");
+        assertThat(driver.driverXaDatasourceClassName()).overridingErrorMessage("Driver XA datasource class name is not 'org.h2.jdbcx.JdbcDataSource'").isEqualTo("org.h2.jdbcx.JdbcDataSource");
     }
 
     private void verifyFractions(List<Fraction> installedFractions, Consumer<DatasourcesFraction> dsFractionVerifier) throws Exception {

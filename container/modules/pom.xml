@@ -54,6 +54,16 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.configuration</groupId>
+      <artifactId>wildfly-config-api</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.configuration</groupId>
+      <artifactId>generator</artifactId>
+      <version>0.2.0</version>
+    </dependency>
   </dependencies>
 
 </project>
