@@ -35,16 +35,14 @@ public class BeanValidationConfiguration extends AbstractServerConfiguration<Bea
     public List<ModelNode> getList(BeanValidationFraction fraction) {
 
         List<ModelNode> list = new ArrayList<>();
-        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "bean-validation"));
 
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(EXTENSION, "org.wildfly.extension.bean-validation");
         node.get(OP).set(ADD);
         list.add(node);
 
-        BeanValidation beanValidation = new BeanValidation();
         try {
-            list.addAll(Marshaller.marshal(beanValidation));
+            list.addAll(Marshaller.marshal(fraction));
         } catch (Exception e) {
             System.err.println("Unable to configure bean-validation " + e);
         }

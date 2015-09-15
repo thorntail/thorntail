@@ -1,3 +1,5 @@
 org.jboss.shrinkwrap:shrinkwrap-api
 org.jboss.shrinkwrap:shrinkwrap-spi
 org.jboss.shrinkwrap:shrinkwrap-impl-base
+org.wildfly.config:wildfly-config-api
+org.wildfly.config:generator
