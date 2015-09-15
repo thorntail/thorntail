@@ -7,6 +7,7 @@
     <module name="org.wildfly.swarm.bean-validation"/>
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
+    <module name="org.wildfly.swarm.configuration"/>
 
     <module name="org.wildfly.extension.bean-validation"/>
   </dependencies>
