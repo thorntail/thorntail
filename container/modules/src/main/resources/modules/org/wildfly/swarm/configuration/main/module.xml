@@ -6,15 +6,75 @@
   -->
 
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.configuration">
-    <resources>
-        <artifact name="org.wildfly.configuration:wildfly-config-api:0.2.1-SNAPSHOT"/>
-        <artifact name="org.wildfly.configuration:generator:0.2.0"/>
-        <artifact name="com.google.guava:guava:${version.guava}"/>
-    </resources>
+  <dependencies>
+    <!-- For when run with bonafide IDE classpath -->
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/config/bean"/>
+        <path name="org/wildfly/swarm/config/bean/validation"/>
+        <path name="org/wildfly/swarm/config/datasources"/>
+        <path name="org/wildfly/swarm/config/datasources/subsystem"/>
+        <path name="org/wildfly/swarm/config/datasources/subsystem/dataSource"/>
+        <path name="org/wildfly/swarm/config/datasources/subsystem/dataSource/connectionProperties"/>
+        <path name="org/wildfly/swarm/config/datasources/subsystem/jdbcDriver"/>
+        <path name="org/wildfly/swarm/config/datasources/subsystem/xaDataSource"/>
+        <path name="org/wildfly/swarm/config/datasources/subsystem/xaDataSource/xaDatasourceProperties"/>
+        <path name="org/wildfly/swarm/config/ejb3"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/cache"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/clusterPassivationStore"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/filePassivationStore"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/passivationStore"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/remotingProfile"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/remotingProfile/remotingEjbReceiver"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/remotingProfile/remotingEjbReceiver/channelCreationOptions"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/service"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/service/channelCreationOptions"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/service/databaseDataStore"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/service/fileDataStore"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/strictMaxBeanInstancePool"/>
+        <path name="org/wildfly/swarm/config/ejb3/subsystem/threadPool"/>
+        <path name="org/wildfly/swarm/config/io"/>
+        <path name="org/wildfly/swarm/config/io/subsystem"/>
+        <path name="org/wildfly/swarm/config/io/subsystem/bufferPool"/>
+        <path name="org/wildfly/swarm/config/io/subsystem/worker"/>
+        <path name="org/wildfly/swarm/config/logging"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/asyncHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/consoleHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/customFormatter"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/customHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/fileHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/logFile"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/logger"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/asyncHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/consoleHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/customFormatter"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/customHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/fileHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/logFile"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/logger"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/patternFormatter"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/periodicRotatingFileHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/periodicSizeRotatingFileHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/rootLogger"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/sizeRotatingFileHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/loggingProfile/syslogHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/patternFormatter"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/periodicRotatingFileHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/periodicSizeRotatingFileHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/rootLogger"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/sizeRotatingFileHandler"/>
+        <path name="org/wildfly/swarm/config/logging/subsystem/syslogHandler"/>
+        <path name="org/wildfly/swarm/config/mail"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/mailSession"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/mailSession/custom"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/mailSession/server"/>
+      </paths>
+    </system>
+    <module name="org.wildfly.swarm.configuration" slot="api" export="true" services="export"/>
+  </dependencies>
 
-    <dependencies>
-        <module name="org.wildfly.swarm.container"/>
-        <module name="org.jboss.as.controller"/>
-        <module name="org.jboss.jandex"/>
-    </dependencies>
 </module>
