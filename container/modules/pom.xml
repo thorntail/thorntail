@@ -22,10 +22,6 @@
 
   <packaging>jar</packaging>
 
-  <properties>
-    <config.api.version>0.2.1-SNAPSHOT</config.api.version>
-  </properties>
-
   <build>
     <resources>
       <resource>
@@ -61,12 +57,10 @@
     <dependency>
       <groupId>org.wildfly.configuration</groupId>
       <artifactId>wildfly-config-api</artifactId>
-      <version>${config.api.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.configuration</groupId>
       <artifactId>generator</artifactId>
-      <version>${config.api.version}</version>
     </dependency>
   </dependencies>
 

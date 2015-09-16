@@ -7,8 +7,8 @@
 
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.configuration" slot="api">
     <resources>
-        <artifact name="org.wildfly.configuration:wildfly-config-api:0.2.1-SNAPSHOT"/>
-        <artifact name="org.wildfly.configuration:generator:0.2.0"/>
+        <artifact name="org.wildfly.configuration:wildfly-config-api:${version.wildfly.config-api}"/>
+        <artifact name="org.wildfly.configuration:generator:${version.wildfly.config-api}"/>
         <artifact name="com.google.guava:guava:${version.guava}"/>
     </resources>
 

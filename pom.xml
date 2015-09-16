@@ -39,6 +39,7 @@
     <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha3</version.wildfly.swarm.fraction.plugin>
 
     <version.wildfly>10.0.0.Beta2</version.wildfly>
+    <version.wildfly.config-api>0.2.1</version.wildfly.config-api>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Beta1</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.org.arquillian>1.1.8.Final</version.org.arquillian>
@@ -140,6 +141,17 @@
   </dependencies>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.wildfly.configuration</groupId>
+        <artifactId>wildfly-config-api</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.configuration</groupId>
+        <artifactId>generator</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+
       <!-- Project Artifacts -->
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
