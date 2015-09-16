@@ -9,9 +9,9 @@ import java.util.List;
 /**
  * @author Bob McWhirter
  */
-public class DatasourcesFraction extends Datasources implements Fraction {
+public class DatasourcesFraction extends Datasources<DatasourcesFraction> implements Fraction {
     @Override
-    public Datasources dataSource(DataSource value) {
+    public DatasourcesFraction dataSource(DataSource value) {
         if (value.jndiName() == null) value.jndiName("java:jboss/datasources/" + value.getKey());
         return super.dataSource(value);
     }
