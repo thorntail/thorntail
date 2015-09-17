@@ -11,6 +11,7 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
 import org.wildfly.apigen.invocation.Marshaller;
 import org.wildfly.swarm.config.ejb3.subsystem.cache.Cache;
+import org.wildfly.swarm.config.ejb3.subsystem.service.Async;
 import org.wildfly.swarm.config.ejb3.subsystem.service.TimerService;
 import org.wildfly.swarm.config.ejb3.subsystem.service.fileDataStore.FileDataStore;
 import org.wildfly.swarm.config.ejb3.subsystem.strictMaxBeanInstancePool.StrictMaxBeanInstancePool;
@@ -60,15 +61,16 @@ public class EJBConfiguration extends AbstractServerConfiguration<EJBFraction> {
                         .timeout(5L)
                         .timeoutUnit("MINUTES"))
                 .cache(new Cache("simple"))
-                .timerService(new TimerService()
+                .async(new Async().threadPoolName("default"))
+                        .timerService(new TimerService()
                         .threadPoolName("default")
                         .defaultDataStore("default-file-store")
                         .fileDataStore(new FileDataStore("default-file-store")
-                            .path("timer-service-data")
-                            .relativeTo("jboss.server.data.dir")))
-                .threadPool(new ThreadPool("default")
-                        .maxThreads(10)
-                        .keepaliveTime(threadPoolSettings));
+                                .path("timer-service-data")
+                                .relativeTo("jboss.server.data.dir")))
+                        .threadPool(new ThreadPool("default")
+                                .maxThreads(10)
+                                .keepaliveTime(threadPoolSettings));
 
         return fraction;
     }
@@ -87,7 +89,6 @@ public class EJBConfiguration extends AbstractServerConfiguration<EJBFraction> {
         } catch (Exception e) {
             System.err.println("Cannot configure EJB subsystem. " + e);
         }
-
         return list;
     }
 }
