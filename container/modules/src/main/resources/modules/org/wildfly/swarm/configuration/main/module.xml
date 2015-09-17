@@ -19,6 +19,13 @@
         <path name="org/wildfly/swarm/config/datasources/subsystem/jdbcDriver"/>
         <path name="org/wildfly/swarm/config/datasources/subsystem/xaDataSource"/>
         <path name="org/wildfly/swarm/config/datasources/subsystem/xaDataSource/xaDatasourceProperties"/>
+        <path name="org/wildfly/swarm/config/ee"/>
+        <path name="org/wildfly/swarm/config/ee/subsystem"/>
+        <path name="org/wildfly/swarm/config/ee/subsystem/contextService"/>
+        <path name="org/wildfly/swarm/config/ee/subsystem/managedExecutorService"/>
+        <path name="org/wildfly/swarm/config/ee/subsystem/managedScheduledExecutorService"/>
+        <path name="org/wildfly/swarm/config/ee/subsystem/managedThreadFactory"/>
+        <path name="org/wildfly/swarm/config/ee/subsystem/service"/>
         <path name="org/wildfly/swarm/config/ejb3"/>
         <path name="org/wildfly/swarm/config/ejb3/subsystem"/>
         <path name="org/wildfly/swarm/config/ejb3/subsystem/cache"/>
