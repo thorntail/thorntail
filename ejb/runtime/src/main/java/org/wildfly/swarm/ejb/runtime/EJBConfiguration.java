@@ -1,12 +1,21 @@
 package org.wildfly.swarm.ejb.runtime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
+import org.wildfly.apigen.invocation.Marshaller;
+import org.wildfly.swarm.config.ejb3.subsystem.cache.Cache;
+import org.wildfly.swarm.config.ejb3.subsystem.service.Async;
+import org.wildfly.swarm.config.ejb3.subsystem.service.TimerService;
+import org.wildfly.swarm.config.ejb3.subsystem.service.fileDataStore.FileDataStore;
+import org.wildfly.swarm.config.ejb3.subsystem.strictMaxBeanInstancePool.StrictMaxBeanInstancePool;
+import org.wildfly.swarm.config.ejb3.subsystem.threadPool.ThreadPool;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.ejb.EJBFraction;
 
@@ -29,7 +38,41 @@ public class EJBConfiguration extends AbstractServerConfiguration<EJBFraction> {
 
     @Override
     public EJBFraction defaultFraction() {
-        return new EJBFraction();
+
+        Map threadPoolSettings = new HashMap<>();
+        threadPoolSettings.put("time", "100");
+        threadPoolSettings.put("unit", "MILLISECONDS");
+
+        EJBFraction fraction = new EJBFraction();
+        fraction.defaultStatefulBeanAccessTimeout(5000L)
+                .defaultSingletonBeanAccessTimeout(5000L)
+                .defaultSfsbCache("simple")
+                .defaultSecurityDomain("other")
+                .defaultMissingMethodPermissionsDenyAccess(true)
+                .logSystemExceptions(true)
+                .defaultResourceAdapterName(
+                        new ValueExpression("${ejb.resource-adapter-name:activemq-ra.rar}").resolveString())
+                .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("slsb-strict-max-pool")
+                        .maxPoolSize(20)
+                        .timeout(5L)
+                        .timeoutUnit("MINUTES"))
+                .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("mdb-strict-max-pool")
+                        .maxPoolSize(20)
+                        .timeout(5L)
+                        .timeoutUnit("MINUTES"))
+                .cache(new Cache("simple"))
+                .async(new Async().threadPoolName("default"))
+                        .timerService(new TimerService()
+                        .threadPoolName("default")
+                        .defaultDataStore("default-file-store")
+                        .fileDataStore(new FileDataStore("default-file-store")
+                                .path("timer-service-data")
+                                .relativeTo("jboss.server.data.dir")))
+                        .threadPool(new ThreadPool("default")
+                                .maxThreads(10)
+                                .keepaliveTime(threadPoolSettings));
+
+        return fraction;
     }
 
     @Override
@@ -41,83 +84,11 @@ public class EJBConfiguration extends AbstractServerConfiguration<EJBFraction> {
         node.get(OP).set(ADD);
         list.add(node);
 
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(OP).set(ADD);
-        node.get("default-stateful-bean-access-timeout").set(5000);
-        node.get("default-sfsb-cache").set("simple");
-        node.get("default-sfsb-passivation-disabled-cache").set("simple");
-        node.get("default-singleton-bean-access-timeout").set(5000);
-        node.get("default-security-domain").set("other");
-        node.get("default-missing-method-permissions-deny-access").set("true");
-        node.get("log-system-exceptions").set("true");
-
-        node.get("default-resource-adapter-name").set(new ValueExpression("${ejb.resource-adapter-name:activemq-ra.rar}"));
-        list.add(node);
-
-        setBeanPools(list);
-        setCache(list);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("service", "async").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("thread-pool-name").set("default");
-        list.add(node);
-
-        setTimerService(list);
-        setThreadPool(list);
-
+        try {
+            list.addAll(Marshaller.marshal(fraction));
+        } catch (Exception e) {
+            System.err.println("Cannot configure EJB subsystem. " + e);
+        }
         return list;
-    }
-
-    private void setBeanPools(List<ModelNode> list) {
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("strict-max-bean-instance-pool", "slsb-strict-max-pool").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("max-pool-size").set(20);
-        node.get("timeout").set(5);
-        node.get("timeout-unit").set("MINUTES");
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("strict-max-bean-instance-pool", "mdb-strict-max-pool").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("max-pool-size").set(20);
-        node.get("timeout").set(5);
-        node.get("timeout-unit").set("MINUTES");
-        list.add(node);
-    }
-
-    private void setCache(List<ModelNode> list) {
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("cache", "simple").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-    }
-
-    private void setThreadPool(List<ModelNode> list) {
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("thread-pool", "default").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("max-threads").set(10);
-        node.get("keepalive-time").get("time").set(100);
-        node.get("keepalive-time").get("unit").set("MILLISECONDS");
-        list.add(node);
-    }
-
-    private void setTimerService(List<ModelNode> list) {
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("service", "timer-service").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("thread-pool-name").set("default");
-        node.get("default-data-store").set("default-file-store");
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("service", "timer-service").append("file-data-store", "default-file-store").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("path").set("timer-service-data");
-        node.get("relative-to").set("jboss.server.data.dir");
-        list.add(node);
     }
 }
