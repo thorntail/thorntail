@@ -30,8 +30,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
  */
 public class EJBConfiguration extends AbstractServerConfiguration<EJBFraction> {
 
-    private PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "ejb3"));
-
     public EJBConfiguration() {
         super(EJBFraction.class);
     }

@@ -56,8 +56,11 @@
         <path name="org/wildfly/swarm/config/jca/subsystem/distributedWorkmanager/longRunningThreads"/>
         <path name="org/wildfly/swarm/config/jca/subsystem/distributedWorkmanager/shortRunningThreads"/>
         <path name="org/wildfly/swarm/config/jca/subsystem/tracer"/>
+        <path name="org/wildfly/swarm/config/jca/subsystem/workmanager"/>
         <path name="org/wildfly/swarm/config/jca/subsystem/workmanager/longRunningThreads"/>
         <path name="org/wildfly/swarm/config/jca/subsystem/workmanager/shortRunningThreads"/>
+        <path name="org/wildfly/swarm/config/jpa"/>
+        <path name="org/wildfly/swarm/config/jsf"/>
         <path name="org/wildfly/swarm/config/logging"/>
         <path name="org/wildfly/swarm/config/logging/subsystem"/>
         <path name="org/wildfly/swarm/config/logging/subsystem/asyncHandler"/>

@@ -1,16 +1,17 @@
 package org.wildfly.swarm.jpa;
 
-import org.wildfly.swarm.config.datasources.Datasources;
 import org.wildfly.swarm.config.datasources.subsystem.dataSource.DataSource;
 import org.wildfly.swarm.config.datasources.subsystem.jdbcDriver.JdbcDriver;
+import org.wildfly.swarm.config.jpa.Jpa;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 
 /**
  * @author Ken Finnigan
+ * @author Lance Ball
  */
-public class JPAFraction implements Fraction {
+public class JPAFraction extends Jpa<JPAFraction> implements Fraction {
 
     private String defaultDatasourceName;
     private boolean inhibitDefaultDatasource = false;
@@ -35,7 +36,7 @@ public class JPAFraction implements Fraction {
     @Override
     public void initialize(Container.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
-            final DatasourcesFraction datasources = (DatasourcesFraction) new DatasourcesFraction()
+            final DatasourcesFraction datasources = new DatasourcesFraction()
                     .jdbcDriver(new JdbcDriver("h2")
                             .driverName("h2")
                             .driverDatasourceClassName("org.h2.driver")
