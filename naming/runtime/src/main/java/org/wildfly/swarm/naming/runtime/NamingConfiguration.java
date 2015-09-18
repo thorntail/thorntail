@@ -6,6 +6,7 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.apigen.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.naming.NamingFraction;
 
@@ -17,6 +18,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 
 /**
  * @author Bob McWhirter
+ * @author Lance Ball
  */
 public class NamingConfiguration extends AbstractServerConfiguration<NamingFraction> {
 
@@ -33,17 +35,15 @@ public class NamingConfiguration extends AbstractServerConfiguration<NamingFract
     public List<ModelNode> getList(NamingFraction fraction) {
         List<ModelNode> list = new ArrayList<>();
 
-        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "naming"));
-
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.naming");
         node.get(OP).set(ADD);
         list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
+        try {
+            list.addAll(Marshaller.marshal(fraction));
+        } catch (Exception e) {
+            System.err.println("Cannot configure Naming subsystem. " + e);
+        }
 
         return list;
 
