@@ -95,6 +95,27 @@
         <path name="org/wildfly/swarm/config/mail/subsystem/mailSession"/>
         <path name="org/wildfly/swarm/config/mail/subsystem/mailSession/custom"/>
         <path name="org/wildfly/swarm/config/mail/subsystem/mailSession/server"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/naming"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/configuration"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/connector"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/connector/property"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/connector/security"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/connector/security/property"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/connector/security/saslPolicy"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/httpConnector"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/httpConnector/property"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/httpConnector/security"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/httpConnector/security/property"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/httpConnector/security/saslPolicy"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/localOutboundConnection"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/localOutboundConnection/property"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/outboundConnection"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/outboundConnection/property"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/remoteOutboundConnection"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/remoting/subsystem/remoteOutboundConnection/property"/>
+        <path name="org/wildfly/swarm/config/mail/subsystem/weld"/>
       </paths>
     </system>
     <module name="org.wildfly.swarm.configuration" slot="api" export="true" services="export"/>

@@ -6,6 +6,9 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.apigen.invocation.Marshaller;
+import org.wildfly.swarm.config.remoting.subsystem.configuration.Endpoint;
+import org.wildfly.swarm.config.remoting.subsystem.httpConnector.HttpConnector;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.remoting.RemotingFraction;
 
@@ -17,10 +20,9 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 
 /**
  * @author Ken Finnigan
+ * @author Lance Ball
  */
 public class RemotingConfiguration extends AbstractServerConfiguration<RemotingFraction> {
-
-    private PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "remoting"));
 
     public RemotingConfiguration() {
         super(RemotingFraction.class);
@@ -28,7 +30,12 @@ public class RemotingConfiguration extends AbstractServerConfiguration<RemotingF
 
     @Override
     public RemotingFraction defaultFraction() {
-        return new RemotingFraction();
+
+        RemotingFraction fraction = new RemotingFraction();
+        fraction.endpoint(new Endpoint())
+                .httpConnector(new HttpConnector("http-remoting-connector")
+                        .connectorRef("default"));
+        return fraction;
     }
 
     @Override
@@ -40,21 +47,11 @@ public class RemotingConfiguration extends AbstractServerConfiguration<RemotingF
         node.get(OP).set(ADD);
         list.add(node);
 
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("configuration", "endpoint").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("http-connector", "http-remoting-connector").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("connector-ref").set("default");
-        list.add(node);
+        try {
+            list.addAll(Marshaller.marshal(fraction));
+        } catch (Exception e) {
+            System.err.println("Cannot configure Remoting subsystem. " + e);
+        }
 
         return list;
     }
