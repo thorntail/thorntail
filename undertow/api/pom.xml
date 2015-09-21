@@ -32,6 +32,16 @@
       <artifactId>wildfly-swarm-undertow-modules</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
+      <version>${version.org.jboss.shrinkwrap.descriptor}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
+      <version>${version.org.jboss.shrinkwrap.descriptor}</version>
+    </dependency>
 
     <!-- Dependent APIs -->
     <dependency>

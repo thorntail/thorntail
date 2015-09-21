@@ -2,9 +2,9 @@
   <resources>
     <artifact name="org.wildfly.swarm:wildfly-swarm-undertow:${project.version}"/>
   </resources>
-
   <dependencies>
     <module name="org.wildfly.swarm.container"/>
     <module name="org.jboss.shrinkwrap"/>
+    <module name="org.jboss.shrinkwrap.descriptors"/>
   </dependencies>
 </module>
