@@ -4,6 +4,7 @@
   </resources>
   <dependencies>
     <module name="org.wildfly.swarm.container"/>
+    <module name="org.wildfly.swarm.configuration"/>
     <module name="org.jboss.shrinkwrap"/>
     <module name="org.jboss.shrinkwrap.descriptors"/>
   </dependencies>

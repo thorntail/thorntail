@@ -6,6 +6,15 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.apigen.invocation.Marshaller;
+import org.wildfly.swarm.config.undertow.subsystem.bufferCache.BufferCache;
+import org.wildfly.swarm.config.undertow.subsystem.configuration.Handler;
+import org.wildfly.swarm.config.undertow.subsystem.server.Server;
+import org.wildfly.swarm.config.undertow.subsystem.server.host.Host;
+import org.wildfly.swarm.config.undertow.subsystem.server.httpListener.HttpListener;
+import org.wildfly.swarm.config.undertow.subsystem.servletContainer.ServletContainer;
+import org.wildfly.swarm.config.undertow.subsystem.servletContainer.setting.Jsp;
+import org.wildfly.swarm.config.undertow.subsystem.servletContainer.setting.Websockets;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
@@ -18,6 +27,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 
 /**
  * @author Bob McWhirter
+ * @author Lance Ball
  */
 public class UndertowConfiguration extends AbstractServerConfiguration<UndertowFraction> {
 
@@ -27,7 +37,22 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
 
     @Override
     public UndertowFraction defaultFraction() {
-        return new UndertowFraction();
+
+        UndertowFraction fraction = new UndertowFraction();
+
+        fraction.server(new Server("default-server")
+                        .httpListener(new HttpListener("default").socketBinding("http"))
+                        .host(new Host("default-host")))
+
+                .bufferCache(new BufferCache("default"))
+
+                .servletContainer(new ServletContainer("default")
+                        .websockets(new Websockets())
+                        .jsp(new Jsp()))
+
+                .handler(new Handler());
+
+        return fraction;
     }
 
     @Override
@@ -41,53 +66,11 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
         node.get(OP).set(ADD);
         list.add(node);
 
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("server", "default-server").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("buffer-cache", "default").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("configuration", "handler").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("server", "default-server").append("http-listener", "default").toModelNode());
-        node.get(OP).set(ADD);
-        node.get(SOCKET_BINDING).set("http");
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("server", "default-server").append("host", "default-host").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("alias").setEmptyList().add("localhost");
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("servlet-container", "default").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("servlet-container", "default").append( "setting", "websockets" ).toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("servlet-container", "default").append( "setting", "jsp" ).toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
+        try {
+            list.addAll(Marshaller.marshal(fraction));
+        } catch (Exception e) {
+            System.err.println("Unable to configure Undertow subsystem. " + e);
+        }
 
         return list;
 
