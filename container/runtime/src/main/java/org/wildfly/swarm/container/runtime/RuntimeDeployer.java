@@ -1,6 +1,7 @@
 package org.wildfly.swarm.container.runtime;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -63,6 +64,14 @@ public class RuntimeDeployer implements Deployer {
             System.err.println(each.getKey() + " // " + each.getValue());
         }
         */
+
+        String dump = System.getProperty("swarm.export.deployment");
+        if (dump != null &&
+                !"false".equals(dump)) {
+            File out = new File(deployment.getName());
+            System.err.println("Dumping to " + out.getAbsolutePath());
+            deployment.as(ZipExporter.class).exportTo(out, true);
+        }
 
         VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(deployment.getName());
 
