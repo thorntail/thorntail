@@ -53,4 +53,10 @@ public class JPAFraction extends Jpa<JPAFraction> implements Fraction {
             this.defaultDatasourceName = "ExampleDS";
         }
     }
+
+    public static JPAFraction createDefaultFraction() {
+        return new JPAFraction()
+                .defaultExtendedPersistenceInheritance("DEEP");
+
+    }
 }

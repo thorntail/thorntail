@@ -30,7 +30,7 @@ public class IOConfiguration extends AbstractServerConfiguration<IOFraction> {
 
     @Override
     public IOFraction defaultFraction() {
-        return new IOFraction();
+        return IOFraction.createDefaultFraction();
     }
 
     @Override
@@ -41,9 +41,6 @@ public class IOConfiguration extends AbstractServerConfiguration<IOFraction> {
         node.get(OP_ADDR).set(EXTENSION, "org.wildfly.extension.io");
         node.get(OP).set(ADD);
         list.add(node);
-
-        fraction.worker(new Worker("default"))
-                .bufferPool(new BufferPool("default"));
 
         try {
             list.addAll(Marshaller.marshal(fraction));

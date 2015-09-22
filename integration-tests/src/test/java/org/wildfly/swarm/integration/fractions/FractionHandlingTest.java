@@ -67,7 +67,7 @@ public class FractionHandlingTest extends AbstractWildFlySwarmTestCase {
 
 //    @Test
     public void userSpecifiedFractionOverridesDependentFraction() throws Exception {
-        container.fraction((Fraction) new DatasourcesFraction()
+        container.fraction(new DatasourcesFraction()
                         .jdbcDriver(new JdbcDriver("myDriver")
                                 .driverDatasourceClassName("org.h2.Driver")
                                 .driverXaDatasourceClassName("org.h2.jdbcx.JdbcDataSource")
