@@ -30,6 +30,7 @@ import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceContainer;
+import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ValueService;
@@ -147,6 +148,12 @@ public class RuntimeServer implements Server {
 
 
         this.serviceContainer = this.container.start(list, this.contentProvider, activators);
+        for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
+            ServiceController<?> serviceController = this.serviceContainer.getService(serviceName);
+            if (serviceController.getStartException() != null) {
+                throw serviceController.getStartException();
+            }
+        }
         ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
