@@ -32,7 +32,6 @@ public class JBossDeploymentStructureAsset implements Asset{
 
 
     public void addModule(final String name, final String slot) {
-        System.out.println("TC: ADDING MODULE "+  name + " " + slot);
         final DependenciesType dependencies = this.descriptor
                 .getOrCreateDeployment()
                 .getOrCreateDependencies();
@@ -54,7 +53,7 @@ public class JBossDeploymentStructureAsset implements Asset{
     @Override
     public InputStream openStream() {
         String output = this.descriptor.exportAsString();
-        System.out.println("TC: JBDS " + output);
+
         return new ByteArrayInputStream(output.getBytes());
     }
 
