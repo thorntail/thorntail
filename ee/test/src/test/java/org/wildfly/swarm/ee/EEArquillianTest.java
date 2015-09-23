@@ -27,7 +27,7 @@ public class EEArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new EEFraction() );
+        return new Container().fraction( EEFraction.createDefaultFraction() );
     }
 
     @Test @RunAsClient

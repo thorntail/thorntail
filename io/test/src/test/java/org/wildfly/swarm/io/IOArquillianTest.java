@@ -27,7 +27,7 @@ public class IOArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new IOFraction() );
+        return new Container().fraction( IOFraction.createDefaultFraction() );
     }
 
     @Test @RunAsClient

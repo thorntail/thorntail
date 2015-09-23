@@ -11,7 +11,7 @@ public class JPAInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new JPAFraction() );
+        container.fraction( JPAFraction.createDefaultFraction() );
         container.start().stop();
     }
 }

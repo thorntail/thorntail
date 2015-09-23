@@ -27,7 +27,7 @@ public class JCAArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new JCAFraction() );
+        return new Container().fraction( JCAFraction.createDefaultFraction() );
     }
 
     @Test @RunAsClient
