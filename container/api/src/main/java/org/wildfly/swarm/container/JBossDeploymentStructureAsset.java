@@ -37,8 +37,9 @@ public class JBossDeploymentStructureAsset implements Asset{
                 .getOrCreateDependencies();
         final List<ModuleDependencyType> modules = dependencies.getAllModule();
         for (ModuleDependencyType each : modules) {
+            final String existingSlot = each.getSlot();
             if (name.equals(each.getName()) &&
-                    slot.equals(each.getSlot())) {
+                    slot.equals(existingSlot == null ? "main" : existingSlot)) {
 
                 //module exists
                 return;
