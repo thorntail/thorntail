@@ -11,7 +11,7 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
     String JBOSS_WEB_PATH = "WEB-INF/jboss-web.xml";
 
     default T setDefaultContextRoot() {
-        JBossWebAsset asset = findAsset();
+        JBossWebAsset asset = findJbossWebAsset();
         if (asset.isRootSet()) {
 
             return (T) this;
@@ -28,13 +28,13 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
     }
 
     default T setContextRoot(String contextRoot) {
-        findAsset().setContextRoot( contextRoot );
+        findJbossWebAsset().setContextRoot(contextRoot);
 
         return (T) this;
     }
 
 
-    default JBossWebAsset findAsset() {
+    default JBossWebAsset findJbossWebAsset() {
         final Node jbossWeb = this.get(JBOSS_WEB_PATH);
         Asset asset;
         if (jbossWeb == null) {

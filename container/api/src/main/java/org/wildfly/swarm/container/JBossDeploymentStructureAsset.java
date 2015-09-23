@@ -1,54 +1,62 @@
 package org.wildfly.swarm.container;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.descriptor.api.Descriptors;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DependenciesType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.JBossDeploymentStructureDescriptor;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ModuleDependencyType;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
 
 /**
  * @author Bob McWhirter
  */
 public class JBossDeploymentStructureAsset implements Asset{
 
-
-    private final static String JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>  \n" +
-                    "<jboss-deployment-structure>  \n" +
-                    "    <deployment>  \n" +
-                    "         <dependencies>  \n" +
-                    "              ${MODULES}\n" +
-                    "        </dependencies>  \n" +
-                    "    </deployment>  \n" +
-                    "</jboss-deployment-structure>\n";
-
-    private Set<String> modules = new HashSet<>();
-
     public JBossDeploymentStructureAsset() {
-
+        this.descriptor =
+                withTCCL(Descriptors.class.getClassLoader(),
+                         () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
     }
 
-    public void addModule(String name, String slot) {
-        this.modules.add( name + ":" + slot );
+    public JBossDeploymentStructureAsset(InputStream fromStream) {
+        this.descriptor =
+                withTCCL(Descriptors.class.getClassLoader(),
+                         () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
+                                 .fromStream(fromStream));
+    }
+
+
+    public void addModule(final String name, final String slot) {
+        System.out.println("TC: ADDING MODULE "+  name + " " + slot);
+        final DependenciesType dependencies = this.descriptor
+                .getOrCreateDeployment()
+                .getOrCreateDependencies();
+        final List<ModuleDependencyType> modules = dependencies.getAllModule();
+        for (ModuleDependencyType each : modules) {
+            if (name.equals(each.getName()) &&
+                    slot.equals(each.getSlot())) {
+
+                //module exists
+                return;
+            }
+        }
+
+        dependencies.createModule()
+                .name(name)
+                .slot(slot);
     }
 
     @Override
     public InputStream openStream() {
-        StringBuilder modules = new StringBuilder();
-        for ( String each : this.modules ) {
-            String[] parts = each.split(":");
-            modules.append( "              <module name=\"" + parts[0] + "\" slot=\"" + parts[1] + "\"/>\n");
-        }
-        String structureContents = JBOSS_DEPLOYMENT_STRUCTURE_CONTENTS.replace( "${MODULES}", modules.toString().trim() );
-
-        /*
-        System.err.println( "----" );
-        System.err.println( structureContents );
-        System.err.println( "----" );
-        */
-        return new ByteArrayInputStream( structureContents.getBytes() );
+        String output = this.descriptor.exportAsString();
+        System.out.println("TC: JBDS " + output);
+        return new ByteArrayInputStream(output.getBytes());
     }
+
+    private final JBossDeploymentStructureDescriptor descriptor;
 }
