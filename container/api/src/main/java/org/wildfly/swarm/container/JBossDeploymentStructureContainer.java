@@ -16,11 +16,12 @@ public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends
     }
 
     default T addModule(String name, String slot) {
+        String path = PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH;
         Node jbossDS = this.get(PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
         if (jbossDS == null) {
             jbossDS = this.get(SECONDARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
             if (jbossDS != null) {
-                this.delete(SECONDARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
+                path = SECONDARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH;
             }
         }
         Asset asset;
@@ -34,7 +35,7 @@ public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends
             }
         }
 
-        this.add(asset, PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
+        this.add(asset, path);
 
         ((JBossDeploymentStructureAsset)asset)
                 .addModule(name, slot);
