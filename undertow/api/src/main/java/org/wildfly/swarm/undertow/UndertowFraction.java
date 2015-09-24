@@ -18,5 +18,8 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         initContext.socketBinding(
                 new SocketBinding("http")
                         .port("${jboss.http.port:8080}"));
+        initContext.socketBinding(
+                new SocketBinding("https")
+                        .port("${jboss.https.port:8443}"));
     }
 }
