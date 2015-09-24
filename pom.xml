@@ -63,6 +63,16 @@
     <version.keycloak>1.5.0.Final</version.keycloak>
     <version.h2>1.4.187</version.h2>
 
+    <version.hawkular>0.4.1</version.hawkular>
+    <version.hawkular.metrics>0.5.0.Final</version.hawkular.metrics>
+    <version.hawkular.bus>0.4.0</version.hawkular.bus>
+    <version.hawkular.inventory>0.3.1</version.hawkular.inventory>
+
+    <version.jgrapht>0.9.1</version.jgrapht>
+    <version.metrics-core>3.1.0</version.metrics-core>
+    <version.okhttp>2.4.0</version.okhttp>
+    <version.okio>1.4.0</version.okio>
+
     <maven.min.version>3.2.1</maven.min.version>
 
     <!-- Surefire args -->
@@ -384,6 +394,7 @@
     <module>datasources</module>
     <module>ee</module>
     <module>ejb</module>
+    <module>hawkular</module>
     <module>hibernate-validator</module>
     <module>io</module>
     <module>jaxrs</module>
