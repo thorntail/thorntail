@@ -21,7 +21,7 @@
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
-    <!--<module>test</module>-->
+    <module>test</module>
   </modules>
 
 </project>
