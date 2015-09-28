@@ -230,6 +230,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-remoting</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-security</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -394,6 +399,7 @@
     <module>datasources</module>
     <module>ee</module>
     <module>ejb</module>
+    <module>ejb-remote</module>
     <module>hawkular</module>
     <module>hibernate-validator</module>
     <module>io</module>
