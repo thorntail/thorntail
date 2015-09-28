@@ -54,6 +54,7 @@ import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 public class Container {
 
     private Map<Class<? extends Fraction>, Fraction> fractions = new ConcurrentHashMap<>();
+    private Map<String, Fraction> fractionsBySimpleName = new ConcurrentHashMap<>();
 
     private List<Fraction> dependentFractions = new ArrayList<>();
 
@@ -171,6 +172,7 @@ public class Container {
     public Container fraction(Fraction fraction) {
         if ( fraction != null ) {
             this.fractions.put(fractionRoot(fraction.getClass()), fraction);
+            this.fractionsBySimpleName.put(fraction.simpleName(), fraction);
             fraction.initialize(new InitContext());
         }
         return this;
@@ -293,6 +295,10 @@ public class Container {
      * @throws Exception if an error occurs.
      */
     public Container start() throws Exception {
+        for (Fraction fraction : this.fractions.values()) {
+            fraction.postInitialize( new PostInitContext() );
+        }
+
         this.deployer = this.server.start(this);
         return this;
     }
@@ -387,6 +393,16 @@ public class Container {
 
         public void socketBinding(String groupName, SocketBinding binding) {
             Container.this.socketBinding(groupName, binding);
+        }
+    }
+
+    public class PostInitContext extends InitContext {
+        public boolean hasFraction(String simpleName) {
+            return false;
+        }
+
+        public Fraction fraction(String simpleName) {
+            return fractionsBySimpleName.get( simpleName );
         }
     }
 
