@@ -49,7 +49,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-undertow-modules</artifactId>
+      <artifactId>wildfly-swarm-naming-modules</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
