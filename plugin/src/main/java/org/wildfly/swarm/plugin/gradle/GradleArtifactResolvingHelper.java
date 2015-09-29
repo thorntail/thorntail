@@ -1,14 +1,5 @@
 package org.wildfly.swarm.plugin.gradle;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -21,8 +12,6 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -68,6 +57,12 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
             }
         }
         return null;
+    }
+
+    @Override
+    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
+        // TODO: determine if we need to implement this. Current usage of BuildTool doesn't need it for gradle
+        throw new UnsupportedOperationException("Not implemented");
     }
 
 

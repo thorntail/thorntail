@@ -13,6 +13,7 @@ import org.wildfly.swarm.tools.ArtifactSpec;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Bob McWhirter
@@ -69,5 +70,10 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     }
 
+    @Override
+    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
+        // TODO: determine if we need to implement this. Current usage of BuildTool doesn't need it for mvn
+        throw new UnsupportedOperationException("Not implemented");
+    }
 
 }

@@ -46,6 +46,8 @@ public class BuildTool {
 
     private boolean bundleDependencies = true;
 
+    private boolean resolveTransitiveDependencies = false;
+
     private final Set<ArtifactSpec> dependencies = new HashSet<>();
 
     private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
@@ -91,6 +93,10 @@ public class BuildTool {
         return this;
     }
 
+    public BuildTool resolveTransitiveDependencies(boolean resolveTransitiveDependencies) {
+        this.resolveTransitiveDependencies = resolveTransitiveDependencies;
+        return this;
+    }
     public BuildTool projectArtifact(String groupId, String artifactId, String version, String packaging, File file) {
         this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file));
         return this;
@@ -134,6 +140,7 @@ public class BuildTool {
     }
 
     public Archive build() throws Exception {
+        resolveDependencies();
         addWildflySwarmBootstrapJar();
         //addBootstrapJars();
         setupBootstrap();
@@ -277,15 +284,35 @@ public class BuildTool {
         return false;
     }
 
-    protected void gatherDependency(ArtifactSpec artifact) throws Exception {
-        ArtifactSpec originalArtifact = artifact;
-        if (artifact.file == null) {
-            artifact = this.resolver.resolve(artifact);
+    protected void resolveDependencies() throws Exception {
+        if (this.resolveTransitiveDependencies) {
+            Set<ArtifactSpec> newDeps = this.resolver.resolveAll(dependencies);
+            this.dependencies.clear();
+            this.dependencies.addAll(newDeps);
+        } else {
+            for (ArtifactSpec each : dependencies()) {
+                resolveArtifact(each);
+            }
+        }
+    }
+
+    protected ArtifactSpec resolveArtifact(ArtifactSpec spec) throws Exception {
+        if (spec.file == null) {
+            ArtifactSpec newArtifact = this.resolver.resolve(spec);
+
+            if (newArtifact == null) {
+                throw new BuildException("Unable to resolve artifact: " + spec);
+            }
+
+            spec.file = newArtifact.file;
         }
 
-        if (artifact == null) {
-            throw new BuildException("Unable to resolve artifact: " + originalArtifact);
-        }
+        return spec;
+}
+
+    protected void gatherDependency(ArtifactSpec artifact) throws Exception {
+        ArtifactSpec originalArtifact = artifact;
+        artifact = resolveArtifact(artifact);
 
         StringBuilder artifactPath = new StringBuilder("m2repo");
 
