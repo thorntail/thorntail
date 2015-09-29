@@ -87,10 +87,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
-  <prerequisites>
-    <maven>3.1.0</maven>
-  </prerequisites>
-
   <build>
     <plugins>
       <plugin>
