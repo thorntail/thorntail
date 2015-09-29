@@ -76,7 +76,7 @@ public class MavenArtifactUtil {
                 parseSettingsXml(settingsPath, settings);
             }
             Path localRepo = settings.getLocalRepository();
-            if (settings.getLocalRepository() == null) {
+            if (localRepo == null || localRepo.toString().trim().equals("")) {
                 Path repository = m2.resolve("repository");
                 settings.setLocalRepository(repository);
             }
