@@ -147,6 +147,12 @@
         <path name="org/wildfly/swarm/config/undertow/subsystem/servletContainer/mimeMapping"/>
         <path name="org/wildfly/swarm/config/undertow/subsystem/servletContainer/setting"/>
         <path name="org/wildfly/swarm/config/undertow/subsystem/servletContainer/welcomeFile"/>
+        <path name="org/wildfly/swarm/config/transactions"/>
+        <path name="org/wildfly/swarm/config/transactions/subsystem"/>
+        <path name="org/wildfly/swarm/config/transactions/subsystem/commitMarkableResource"/>
+        <path name="org/wildfly/swarm/config/transactions/subsystem/logStore"/>
+        <path name="org/wildfly/swarm/config/transactions/subsystem/logStore/transactions"/>
+        <path name="org/wildfly/swarm/config/transactions/subsystem/logStore/transactions/participants"/>
         <path name="org/wildfly/swarm/config/weld"/>
       </paths>
     </system>

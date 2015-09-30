@@ -28,7 +28,7 @@ public class TransactionsArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new TransactionsFraction() );
+        return new Container().fraction( TransactionsFraction.createDefaultFraction() );
     }
 
     @Test @RunAsClient

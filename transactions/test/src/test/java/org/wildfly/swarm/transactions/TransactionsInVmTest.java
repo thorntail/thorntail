@@ -13,7 +13,7 @@ public class TransactionsInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new TransactionsFraction() );
+        container.fraction( TransactionsFraction.createDefaultFraction() );
         container.start().stop();
     }
 }
