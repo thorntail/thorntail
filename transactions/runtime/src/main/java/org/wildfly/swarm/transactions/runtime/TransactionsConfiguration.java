@@ -1,11 +1,13 @@
 package org.wildfly.swarm.transactions.runtime;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.apigen.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.transactions.TransactionsFraction;
 
@@ -27,27 +29,25 @@ public class TransactionsConfiguration extends AbstractServerConfiguration<Trans
 
     @Override
     public TransactionsFraction defaultFraction() {
-        return new TransactionsFraction(4712, 4713);
+
+        return TransactionsFraction.createDefaultFraction();
     }
 
     @Override
     public List<ModelNode> getList(TransactionsFraction fraction) {
         List<ModelNode> list = new ArrayList<>();
 
-        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "transactions"));
-
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.transactions");
         node.get(OP).set(ADD);
         list.add(node);
 
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(OP).set(ADD);
-        node.get("socket-binding").set("txn-recovery-environment");
-        node.get("status-socket-binding").set("txn-status-manager");
-        node.get("process-id-uuid").set(true);
-        list.add(node);
+        try {
+            list.addAll(Marshaller.marshal(fraction));
+        } catch (Exception e) {
+            System.err.println("Unable to configure Transactions subsystem. " + e);
+            e.printStackTrace();
+        }
 
         node = new ModelNode();
         node.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement("socket-binding-group", "default-sockets")).append("socket-binding", "txn-recovery-environment").toModelNode());

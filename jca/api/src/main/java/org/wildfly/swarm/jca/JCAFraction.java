@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class JCAFraction extends Jca<JCAFraction> implements Fraction {
 
-    public JCAFraction() {
+    private JCAFraction() {
     }
 
     public static JCAFraction createDefaultFraction() {

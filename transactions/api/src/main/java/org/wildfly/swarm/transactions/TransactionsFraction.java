@@ -1,18 +1,24 @@
 package org.wildfly.swarm.transactions;
 
+import org.wildfly.swarm.config.transactions.Transactions;
 import org.wildfly.swarm.container.Fraction;
 
 /**
  * @author Bob McWhirter
  */
-public class TransactionsFraction implements Fraction {
+public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction {
 
     private int port;
 
     private int statusPort;
 
     public TransactionsFraction() {
+
         this(4712, 4713);
+        this.socketBinding("txn-recovery-environment")
+                .statusSocketBinding("txn-status-manager")
+                .processIdUuid(true);
+
     }
 
     public TransactionsFraction(int port, int statusPort) {
@@ -29,4 +35,7 @@ public class TransactionsFraction implements Fraction {
     }
 
 
+    public static TransactionsFraction createDefaultFraction() {
+        return new TransactionsFraction();
+    }
 }
