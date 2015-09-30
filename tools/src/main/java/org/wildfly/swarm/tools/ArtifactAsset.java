@@ -17,7 +17,10 @@ public class ArtifactAsset implements ProjectAsset {
 
     @Override
     public String getSimpleName() {
-        return this.spec.artifactId + "-" + this.spec.version + "." + this.spec.packaging;
+        final String version = this.spec.version;
+        return this.spec.artifactId
+                + (version == null || version.isEmpty() ? "" : "-" + version)
+                + "." + this.spec.packaging;
     }
 
     @Override
