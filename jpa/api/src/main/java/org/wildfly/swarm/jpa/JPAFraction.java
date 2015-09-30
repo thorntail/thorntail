@@ -13,7 +13,6 @@ import org.wildfly.swarm.datasources.DatasourcesFraction;
  */
 public class JPAFraction extends Jpa<JPAFraction> implements Fraction {
 
-    private String defaultDatasourceName;
     private boolean inhibitDefaultDatasource = false;
 
     public JPAFraction() {
@@ -22,15 +21,6 @@ public class JPAFraction extends Jpa<JPAFraction> implements Fraction {
     public JPAFraction inhibitDefaultDatasource() {
         this.inhibitDefaultDatasource = true;
         return this;
-    }
-
-    public JPAFraction defaultDatasourceName(String datasourceName) {
-        this.defaultDatasourceName = datasourceName;
-        return this;
-    }
-
-    public String defaultDatasourceName() {
-        return "java:jboss/datasources/" + this.defaultDatasourceName;
     }
 
     @Override
@@ -49,8 +39,8 @@ public class JPAFraction extends Jpa<JPAFraction> implements Fraction {
                             .driverName("h2"));
 
             initContext.fraction(datasources);
-
-            this.defaultDatasourceName = "ExampleDS";
+            System.err.println( "setting default Datasource to ExampleDS" );
+            defaultDatasource("jboss/datasources/ExampleDS");
         }
     }
 
