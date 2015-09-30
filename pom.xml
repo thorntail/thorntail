@@ -46,7 +46,7 @@
     <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
     <version.org.jboss.arquillian.drone>2.0.0.Alpha4</version.org.jboss.arquillian.drone>
     <version.org.arquillian.graphene>2.1.0.Alpha2</version.org.arquillian.graphene>
-    <version.org.projectodd.shrinkwrap.descriptors>2.0.0-alpha-7a</version.org.projectodd.shrinkwrap.descriptors>
+    <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-8</version.org.jboss.shrinkwrap.descriptors>
     <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
 
     <version.com.netflix.ribbon>2.1.0</version.com.netflix.ribbon>
@@ -290,21 +290,16 @@
         <version>${version.org.jboss.shrinkwrap}</version>
         <scope>compile</scope>
       </dependency>
-      <!--
-          Using a fork of descriptors (for now) that provides jboss-deployment-structure support
-          Fork located at https://github.com/projectodd/descriptors/tree/swarm-fork and deployed
-          to central.
-      -->
       <dependency>
-        <groupId>org.projectodd.shrinkwrap.descriptors</groupId>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
         <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
-        <version>${version.org.projectodd.shrinkwrap.descriptors}</version>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
         <scope>compile</scope>
       </dependency>
       <dependency>
-        <groupId>org.projectodd.shrinkwrap.descriptors</groupId>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
         <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
-        <version>${version.org.projectodd.shrinkwrap.descriptors}</version>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
         <scope>compile</scope>
       </dependency>
       <dependency>

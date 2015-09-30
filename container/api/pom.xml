@@ -50,11 +50,11 @@
       <artifactId>shrinkwrap-impl-base</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.projectodd.shrinkwrap.descriptors</groupId>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
       <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.projectodd.shrinkwrap.descriptors</groupId>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
       <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
     </dependency>
 
