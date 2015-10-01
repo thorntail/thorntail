@@ -6,7 +6,7 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.apigen.invocation.Marshaller;
+import org.wildfly.config.invocation.Marshaller;
 import org.wildfly.swarm.config.io.Io;
 import org.wildfly.swarm.config.io.subsystem.bufferPool.BufferPool;
 import org.wildfly.swarm.config.io.subsystem.worker.Worker;

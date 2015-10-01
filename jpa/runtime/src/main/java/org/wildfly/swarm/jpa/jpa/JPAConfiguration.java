@@ -1,7 +1,7 @@
 package org.wildfly.swarm.jpa.jpa;
 
 import org.jboss.dmr.ModelNode;
-import org.wildfly.apigen.invocation.Marshaller;
+import org.wildfly.config.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.jpa.JPAFraction;
 
