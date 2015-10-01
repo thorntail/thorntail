@@ -1,9 +1,7 @@
 package org.wildfly.swarm.ejb;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.ejb.Singleton;
-import javax.ejb.Stateless;
 
 /**
  * @author Bob McWhirter
