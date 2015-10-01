@@ -72,7 +72,7 @@
         </exclusion> 
         <exclusion> 
           <groupId>org.jboss.forge.roaster</groupId>
-          <artifactId>roaster-jdr</artifactId>
+          <artifactId>roaster-jdt</artifactId>
         </exclusion> 
         <exclusion> 
           <groupId>com.eclipsesource.minimal-json</groupId>
