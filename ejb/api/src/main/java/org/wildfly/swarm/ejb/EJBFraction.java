@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class EJBFraction extends Ejb3<EJBFraction> implements Fraction {
 
-    private EJBFraction() {
+    protected EJBFraction() {
 
     }
 
