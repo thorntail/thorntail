@@ -94,6 +94,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <reuseForks>false</reuseForks>
           <runOrder>alphabetical</runOrder>
           <systemPropertyVariables>
             <jboss.bind.address>127.0.0.1</jboss.bind.address>
