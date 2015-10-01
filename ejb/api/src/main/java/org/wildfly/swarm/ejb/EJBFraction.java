@@ -17,6 +17,11 @@ import java.util.Map;
  * @author Lance Ball
  */
 public class EJBFraction extends Ejb3<EJBFraction> implements Fraction {
+
+    private EJBFraction() {
+
+    }
+
     public static EJBFraction createDefaultFraction() {
 
         Map threadPoolSettings = new HashMap<>();

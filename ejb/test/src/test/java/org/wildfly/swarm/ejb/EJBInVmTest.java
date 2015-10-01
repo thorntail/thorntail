@@ -11,7 +11,7 @@ public class EJBInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new EJBFraction() );
+        container.fraction( EJBFraction.createDefaultFraction() );
         container.start().stop();
     }
 }
