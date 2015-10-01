@@ -3,10 +3,8 @@ package org.wildfly.swarm.naming.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.apigen.invocation.Marshaller;
+import org.wildfly.config.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.naming.NamingFraction;
 

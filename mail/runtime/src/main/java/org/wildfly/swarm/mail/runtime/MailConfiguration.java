@@ -6,7 +6,7 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.apigen.invocation.Marshaller;
+import org.wildfly.config.invocation.Marshaller;
 import org.wildfly.swarm.config.mail.Mail;
 import org.wildfly.swarm.config.mail.subsystem.mailSession.MailSession;
 import org.wildfly.swarm.config.mail.subsystem.mailSession.server.Smtp;
