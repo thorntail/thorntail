@@ -9,7 +9,6 @@
     <resources>
         <artifact name="org.wildfly.configuration:api:${version.wildfly.config-api}"/>
         <artifact name="org.wildfly.configuration:runtime:${version.wildfly.config-api}"/>
-        <artifact name="com.google.guava:guava:${version.guava}"/>
     </resources>
 
     <dependencies>
