@@ -68,19 +68,7 @@ public class Build {
         return this;
     }
 
-    private void validate() {
-        assert(this.source != null);
-        assert(this.outputDir != null);
-        assert(this.source.exists());
-        assert(this.source.isFile());
-        assert(this.source.canRead());
-        assert(this.outputDir.isDirectory());
-        assert(this.outputDir.canWrite());
-        assert(this.version != null);
-    }
-
     public void run() throws Exception {
-        validate();
         final String[] parts = this.source.getName().split("\\.(?=[^\\.]+$)");
         final String baseName = parts[0];
         final String type = parts[1] == null ? "jar" : parts[1];
@@ -91,11 +79,11 @@ public class Build {
         jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
         jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
-        ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
+        final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
                 .withMavenCentralRepo(true)
                 .withRemoteRepo(jbossPublic);
 
-        BuildTool tool = new BuildTool()
+        final BuildTool tool = new BuildTool()
                 .artifactResolvingHelper(new ShrinkwrapArtifactResolvingHelper(resolver))
                 .projectArtifact("", baseName, "", type, this.source)
                 .resolveTransitiveDependencies(true);
