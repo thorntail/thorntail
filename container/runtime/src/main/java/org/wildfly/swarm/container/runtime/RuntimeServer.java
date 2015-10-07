@@ -105,6 +105,10 @@ public class RuntimeServer implements Server {
 
         applyDefaults(config);
 
+        for (Fraction fraction : config.fractions() ) {
+            fraction.postInitialize( config.createPostInitContext() );
+        }
+
         List<ModelNode> list = getList(config);
 
         // float all <extension> up to the head of the list

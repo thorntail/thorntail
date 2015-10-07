@@ -295,10 +295,6 @@ public class Container {
      * @throws Exception if an error occurs.
      */
     public Container start() throws Exception {
-        for (Fraction fraction : this.fractions.values()) {
-            fraction.postInitialize( new PostInitContext() );
-        }
-
         this.deployer = this.server.start(this);
         return this;
     }
@@ -398,13 +394,14 @@ public class Container {
 
     public class PostInitContext extends InitContext {
         public boolean hasFraction(String simpleName) {
-            return false;
-        }
-
-        public Fraction fraction(String simpleName) {
-            return fractionsBySimpleName.get( simpleName );
+            return fractions().stream().anyMatch((f) -> f.simpleName().equals(simpleName));
         }
     }
+
+    public PostInitContext createPostInitContext() {
+        return new PostInitContext();
+    }
+
 
     protected Archive createDefaultDeployment() throws Exception {
         Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
