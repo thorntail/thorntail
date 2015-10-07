@@ -97,6 +97,10 @@ public class RuntimeServer implements Server {
 
     @Override
     public Deployer start(Container config) throws Exception {
+
+        UUID uuid = UUIDFactory.getUUID();
+        System.setProperty("jboss.server.management.uuid", uuid.toString());
+
         loadFractionConfigurations();
 
         applyDefaults(config);
