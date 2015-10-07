@@ -5,6 +5,8 @@ import org.wildfly.swarm.config.ee.subsystem.contextService.ContextService;
 import org.wildfly.swarm.config.ee.subsystem.managedExecutorService.ManagedExecutorService;
 import org.wildfly.swarm.config.ee.subsystem.managedScheduledExecutorService.ManagedScheduledExecutorService;
 import org.wildfly.swarm.config.ee.subsystem.managedThreadFactory.ManagedThreadFactory;
+import org.wildfly.swarm.config.ee.subsystem.service.DefaultBindings;
+import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -40,6 +42,18 @@ public class EEFraction extends Ee<EEFraction> implements Fraction {
                         .hungTaskThreshold(60000L)
                         .coreThreads(5)
                         .keepaliveTime(3000L));
+
         return fraction;
+    }
+
+    @Override
+    public void postInitialize(Container.PostInitContext initContext) {
+        if ( initContext.hasFraction( "Messaging" )) {
+            if ( this.defaultBindings() == null ) {
+                this.defaultBindings( new DefaultBindings() );
+            }
+            this.defaultBindings()
+                    .jmsConnectionFactory( "java:jboss/DefaultJMSConnectionFactory" );
+        }
     }
 }
