@@ -118,7 +118,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     protected void addQueues(MessagingServer server, List<ModelNode> list) {
         PathAddress serverAddress = this.address.append("server", server.name());
 
-        for (String each : server.topics()) {
+        for (String each : server.queues()) {
             ModelNode node = new ModelNode();
             node.get(OP_ADDR).set(serverAddress.append("jms-queue", each).toModelNode());
             node.get(OP).set(ADD);
