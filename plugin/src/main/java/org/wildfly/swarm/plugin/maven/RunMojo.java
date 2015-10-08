@@ -75,8 +75,12 @@ public class RunMojo extends AbstractMojo {
             cli.add(java.toString());
             cli.add("-classpath");
             cli.add(dependencies(false));
-            cli.add("-Dwildfly.swarm.app.path=" + Paths.get(this.projectBuildDir, this.project.getBuild().getFinalName()).toString());
 
+            String finalName = this.project.getBuild().getFinalName();
+            if ( ! finalName.endsWith( ".war" ) ) {
+                finalName = finalName + ".war";
+            }
+            cli.add("-Dwildfly.swarm.app.path=" + Paths.get(this.projectBuildDir, finalName).toString() );
             Properties runProps = runProperties();
 
             Enumeration<?> propNames = runProps.propertyNames();
@@ -162,7 +166,7 @@ public class RunMojo extends AbstractMojo {
         List<String> elements = new ArrayList<>();
         Set<Artifact> artifacts = this.project.getArtifacts();
         for (Artifact each : artifacts) {
-            if ( each.getGroupId().equals( "org.jboss.logmanager") && each.getArtifactId().equals("jboss-logmanager" ) ){
+            if (each.getGroupId().equals("org.jboss.logmanager") && each.getArtifactId().equals("jboss-logmanager")) {
                 continue;
             }
             elements.add(each.getFile().toString());
