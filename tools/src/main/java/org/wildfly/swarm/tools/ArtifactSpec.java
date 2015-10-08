@@ -15,7 +15,7 @@ public class ArtifactSpec {
     public final String classifier;
     public File file;
 
-    public boolean shouldGather = false;
+    public boolean shouldGather = true;
 
     public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
         this.scope = scope;

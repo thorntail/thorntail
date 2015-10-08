@@ -63,6 +63,8 @@ public class BuildTool {
 
     private Set<ArtifactSpec> bootstrappedArtifacts = new HashSet<>();
 
+    private Set<ArtifactSpec> coreSwarmArtifacts = new HashSet<>();
+
     private Set<String> bootstrappedModules = new HashSet<>();
 
     private Map<String, String> providedMappings = new HashMap<>();
@@ -97,6 +99,7 @@ public class BuildTool {
         this.resolveTransitiveDependencies = resolveTransitiveDependencies;
         return this;
     }
+
     public BuildTool projectArtifact(String groupId, String artifactId, String version, String packaging, File file) {
         this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file));
         return this;
@@ -142,13 +145,12 @@ public class BuildTool {
     public Archive build() throws Exception {
         resolveDependencies();
         addWildflySwarmBootstrapJar();
-        //addBootstrapJars();
         setupBootstrap();
-        setupApplication();
         createManifest();
         createWildflySwarmProperties();
-        createDependenciesTxt();
         collectDependencies();
+        setupApplication();
+        createDependenciesTxt();
         addAdditionnalModule();
         return this.archive;
     }
@@ -202,7 +204,7 @@ public class BuildTool {
 
         for (ArtifactSpec each : this.dependencies) {
             if (!this.bootstrappedArtifacts.contains(each)) {
-                if ( each.packaging.equals("jar" ) ) {
+                if (each.packaging.equals("jar") && each.shouldGather ) {
                     applicationArtifacts.add(each);
                 }
             }
@@ -308,10 +310,9 @@ public class BuildTool {
         }
 
         return spec;
-}
+    }
 
     protected void gatherDependency(ArtifactSpec artifact) throws Exception {
-        ArtifactSpec originalArtifact = artifact;
         artifact = resolveArtifact(artifact);
 
         StringBuilder artifactPath = new StringBuilder("m2repo");
@@ -435,10 +436,8 @@ public class BuildTool {
             if (each.scope.equals("compile")) {
                 if (each.packaging.equals("jar")) {
                     //this.dependencies.add(each.groupId + ":" + each.artifactId + ":" + each.version);
-                    each.shouldGather = true;
                     depsTxt.append(each.groupId).append(':').append(each.artifactId).append(':').append(each.version).append("\n");
                 } else {
-                    each.shouldGather = true;
                     extraDepsTxt.append(each.groupId).append(':').append(each.artifactId).append(':').append(each.packaging).append(":").append(each.version).append("\n");
                 }
             }
@@ -459,6 +458,7 @@ public class BuildTool {
 
     protected void analyzeModuleDependencies() throws IOException {
         for (ArtifactSpec each : this.bootstrappedArtifacts) {
+            this.coreSwarmArtifacts.add(each);
             analyzeModuleDependencies(each);
         }
     }
@@ -514,6 +514,16 @@ public class BuildTool {
 
     protected void gatherDependencies() throws Exception {
         this.dependencies.addAll(this.moduleDependencies);
+        this.coreSwarmArtifacts.addAll(this.moduleDependencies);
+
+        if (this.projectAsset.getSimpleName().endsWith(".war")) {
+            for (ArtifactSpec each : this.dependencies) {
+                if (!this.coreSwarmArtifacts.contains(each)) {
+                    each.shouldGather = false;
+                }
+            }
+        }
+
         for (ArtifactSpec each : this.dependencies) {
             if (each.shouldGather) {
                 gatherDependency(each);
