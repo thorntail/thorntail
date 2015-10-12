@@ -79,6 +79,7 @@ public class ApplicationModuleFinder implements ModuleFinder {
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("sun.jdk")));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
