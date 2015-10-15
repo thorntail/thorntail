@@ -1,7 +1,7 @@
 package org.wildfly.swarm.datasources;
 
-import org.wildfly.swarm.config.datasources.Datasources;
-import org.wildfly.swarm.config.datasources.subsystem.dataSource.DataSource;
+import org.wildfly.swarm.config.Datasources;
+import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.container.Fraction;
 
 /**

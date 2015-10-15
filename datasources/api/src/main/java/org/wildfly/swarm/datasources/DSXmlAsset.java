@@ -1,7 +1,7 @@
 package org.wildfly.swarm.datasources;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
-import org.wildfly.swarm.config.datasources.subsystem.dataSource.DataSource;
+import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.container.util.XmlWriter;
 
 import java.io.ByteArrayInputStream;

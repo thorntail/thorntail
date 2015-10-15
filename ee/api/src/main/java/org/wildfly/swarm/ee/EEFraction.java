@@ -1,11 +1,11 @@
 package org.wildfly.swarm.ee;
 
-import org.wildfly.swarm.config.ee.Ee;
-import org.wildfly.swarm.config.ee.subsystem.contextService.ContextService;
-import org.wildfly.swarm.config.ee.subsystem.managedExecutorService.ManagedExecutorService;
-import org.wildfly.swarm.config.ee.subsystem.managedScheduledExecutorService.ManagedScheduledExecutorService;
-import org.wildfly.swarm.config.ee.subsystem.managedThreadFactory.ManagedThreadFactory;
-import org.wildfly.swarm.config.ee.subsystem.service.DefaultBindings;
+import org.wildfly.swarm.config.Ee;
+import org.wildfly.swarm.config.ee.ContextService;
+import org.wildfly.swarm.config.ee.DefaultBindingsService;
+import org.wildfly.swarm.config.ee.ManagedExecutorService;
+import org.wildfly.swarm.config.ee.ManagedScheduledExecutorService;
+import org.wildfly.swarm.config.ee.ManagedThreadFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 
@@ -49,10 +49,10 @@ public class EEFraction extends Ee<EEFraction> implements Fraction {
     @Override
     public void postInitialize(Container.PostInitContext initContext) {
         if ( initContext.hasFraction( "Messaging" )) {
-            if ( this.defaultBindings() == null ) {
-                this.defaultBindings( new DefaultBindings() );
+            if ( this.defaultBindingsService() == null ) {
+                this.defaultBindingsService( new DefaultBindingsService() );
             }
-            this.defaultBindings()
+            this.defaultBindingsService()
                     .jmsConnectionFactory( "java:jboss/DefaultJMSConnectionFactory" );
         }
     }

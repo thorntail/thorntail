@@ -1,6 +1,6 @@
 package org.wildfly.swarm.undertow;
 
-import org.wildfly.swarm.config.undertow.Undertow;
+import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.SocketBinding;

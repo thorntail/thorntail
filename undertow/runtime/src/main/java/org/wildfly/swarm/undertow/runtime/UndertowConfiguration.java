@@ -2,14 +2,14 @@ package org.wildfly.swarm.undertow.runtime;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.config.invocation.Marshaller;
-import org.wildfly.swarm.config.undertow.subsystem.bufferCache.BufferCache;
-import org.wildfly.swarm.config.undertow.subsystem.configuration.Handler;
-import org.wildfly.swarm.config.undertow.subsystem.server.Server;
-import org.wildfly.swarm.config.undertow.subsystem.server.host.Host;
-import org.wildfly.swarm.config.undertow.subsystem.server.httpListener.HttpListener;
-import org.wildfly.swarm.config.undertow.subsystem.servletContainer.ServletContainer;
-import org.wildfly.swarm.config.undertow.subsystem.servletContainer.setting.Jsp;
-import org.wildfly.swarm.config.undertow.subsystem.servletContainer.setting.Websockets;
+import org.wildfly.swarm.config.undertow.BufferCache;
+import org.wildfly.swarm.config.undertow.HandlerConfiguration;
+import org.wildfly.swarm.config.undertow.Server;
+import org.wildfly.swarm.config.undertow.ServletContainer;
+import org.wildfly.swarm.config.undertow.server.Host;
+import org.wildfly.swarm.config.undertow.server.HttpListener;
+import org.wildfly.swarm.config.undertow.servlet_container.JspSetting;
+import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
@@ -40,10 +40,9 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
                 .bufferCache(new BufferCache("default"))
 
                 .servletContainer(new ServletContainer("default")
-                        .websockets(new Websockets())
-                        .jsp(new Jsp()))
-
-                .handler(new Handler());
+                        .websocketsSetting(new WebsocketsSetting())
+                        .jspSetting(new JspSetting()))
+                .handlerConfiguration(new HandlerConfiguration());
 
         return fraction;
     }

@@ -1,13 +1,13 @@
 package org.wildfly.swarm.jca;
 
-import org.wildfly.swarm.config.jca.Jca;
-import org.wildfly.swarm.config.jca.subsystem.archiveValidation.ArchiveValidation;
-import org.wildfly.swarm.config.jca.subsystem.beanValidation.BeanValidation;
-import org.wildfly.swarm.config.jca.subsystem.bootstrapContext.BootstrapContext;
-import org.wildfly.swarm.config.jca.subsystem.cachedConnectionManager.CachedConnectionManager;
-import org.wildfly.swarm.config.jca.subsystem.workmanager.Workmanager;
-import org.wildfly.swarm.config.jca.subsystem.workmanager.longRunningThreads.LongRunningThreads;
-import org.wildfly.swarm.config.jca.subsystem.workmanager.shortRunningThreads.ShortRunningThreads;
+import org.wildfly.swarm.config.Jca;
+import org.wildfly.swarm.config.jca.ArchiveValidation;
+import org.wildfly.swarm.config.jca.BeanValidation;
+import org.wildfly.swarm.config.jca.BootstrapContext;
+import org.wildfly.swarm.config.jca.CachedConnectionManager;
+import org.wildfly.swarm.config.jca.LongRunningThreads;
+import org.wildfly.swarm.config.jca.ShortRunningThreads;
+import org.wildfly.swarm.config.jca.Workmanager;
 import org.wildfly.swarm.container.Fraction;
 
 import java.util.HashMap;

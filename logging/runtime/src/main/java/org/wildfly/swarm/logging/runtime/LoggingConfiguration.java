@@ -57,6 +57,8 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         } catch (Exception e) {
             System.err.println("Cannot configure Logging subsystem. " + e);
         }
+
+        System.err.println( list );
         return list;
     }
 }

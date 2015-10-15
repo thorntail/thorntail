@@ -1,6 +1,6 @@
 package org.wildfly.swarm.jsf;
 
-import org.wildfly.swarm.config.jsf.Jsf;
+import org.wildfly.swarm.config.Jsf;
 import org.wildfly.swarm.container.Fraction;
 
 /**

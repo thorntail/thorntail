@@ -1,14 +1,14 @@
 package org.wildfly.swarm.logging;
 
-import org.wildfly.swarm.config.logging.Logging;
-import org.wildfly.swarm.config.logging.subsystem.asyncHandler.AsyncHandler;
-import org.wildfly.swarm.config.logging.subsystem.consoleHandler.ConsoleHandler;
-import org.wildfly.swarm.config.logging.subsystem.customFormatter.CustomFormatter;
-import org.wildfly.swarm.config.logging.subsystem.customHandler.CustomHandler;
-import org.wildfly.swarm.config.logging.subsystem.fileHandler.FileHandler;
-import org.wildfly.swarm.config.logging.subsystem.patternFormatter.PatternFormatter;
-import org.wildfly.swarm.config.logging.subsystem.rootLogger.Root;
-import org.wildfly.swarm.config.logging.subsystem.syslogHandler.SyslogHandler;
+import org.wildfly.swarm.config.Logging;
+import org.wildfly.swarm.config.logging.AsyncHandler;
+import org.wildfly.swarm.config.logging.ConsoleHandler;
+import org.wildfly.swarm.config.logging.CustomFormatter;
+import org.wildfly.swarm.config.logging.CustomHandler;
+import org.wildfly.swarm.config.logging.FileHandler;
+import org.wildfly.swarm.config.logging.PatternFormatter;
+import org.wildfly.swarm.config.logging.RootLogger;
+import org.wildfly.swarm.config.logging.SyslogHandler;
 import org.wildfly.swarm.container.Fraction;
 
 import java.util.*;
@@ -285,17 +285,9 @@ public class LoggingFraction extends Logging implements Fraction {
      * @return this fraction
      */
     public LoggingFraction rootLogger(String level, String... handlers) {
-        root( new Root().level(level)
+        rootLogger( new RootLogger().level(level)
                         .handlers(new ArrayList<>(Arrays.asList(handlers))) );
         return this;
-    }
-
-    /**
-     * Get the root logger for this fraction
-     * @return the Root logger
-     */
-    public Root rootLogger() {
-        return root();
     }
 
 }

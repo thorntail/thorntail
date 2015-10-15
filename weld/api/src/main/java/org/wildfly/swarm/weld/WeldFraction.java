@@ -1,6 +1,6 @@
 package org.wildfly.swarm.weld;
 
-import org.wildfly.swarm.config.weld.Weld;
+import org.wildfly.swarm.config.Weld;
 import org.wildfly.swarm.container.Fraction;
 
 /**

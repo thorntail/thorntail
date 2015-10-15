@@ -1,8 +1,8 @@
 package org.wildfly.swarm.io;
 
-import org.wildfly.swarm.config.io.Io;
-import org.wildfly.swarm.config.io.subsystem.bufferPool.BufferPool;
-import org.wildfly.swarm.config.io.subsystem.worker.Worker;
+import org.wildfly.swarm.config.Io;
+import org.wildfly.swarm.config.io.BufferPool;
+import org.wildfly.swarm.config.io.Worker;
 import org.wildfly.swarm.container.Fraction;
 
 /**

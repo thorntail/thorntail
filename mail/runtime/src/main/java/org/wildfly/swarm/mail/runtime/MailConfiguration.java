@@ -7,12 +7,11 @@ import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.config.invocation.Marshaller;
-import org.wildfly.swarm.config.mail.Mail;
-import org.wildfly.swarm.config.mail.subsystem.mailSession.MailSession;
-import org.wildfly.swarm.config.mail.subsystem.mailSession.server.Smtp;
+import org.wildfly.swarm.config.Mail;
+import org.wildfly.swarm.config.mail.MailSession;
+import org.wildfly.swarm.config.mail.mail_session.SmtpServer;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.mail.MailFraction;
-import org.wildfly.swarm.mail.SmtpServer;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
@@ -61,18 +60,19 @@ public class MailConfiguration extends AbstractServerConfiguration<MailFraction>
 
     protected List<ModelNode> addSmtpServers(MailFraction fraction, Mail mail) {
         List<ModelNode> list = new ArrayList<>();
-        for (SmtpServer each : fraction.smtpServers()) {
+        for (org.wildfly.swarm.mail.SmtpServer each : fraction.smtpServers()) {
             list.add(addSmtpServer(each, mail));
         }
+
         return list;
     }
 
-    protected ModelNode addSmtpServer(SmtpServer smtpServer, Mail mail) {
+    protected ModelNode addSmtpServer(org.wildfly.swarm.mail.SmtpServer smtpServer, Mail mail) {
 
-        Smtp smtp = new Smtp().outboundSocketBindingRef(smtpServer.outboundSocketBindingRef());
+        SmtpServer smtp = new SmtpServer().outboundSocketBindingRef(smtpServer.outboundSocketBindingRef());
 
         MailSession mailSession = new MailSession(smtpServer.name().toLowerCase())
-                .smtp(smtp)
+                .smtpServer(smtp)
                 .jndiName(smtpServer.jndiName());
 
         mail.mailSession(mailSession);

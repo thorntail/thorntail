@@ -1,6 +1,6 @@
 package org.wildfly.swarm.transactions;
 
-import org.wildfly.swarm.config.transactions.Transactions;
+import org.wildfly.swarm.config.Transactions;
 import org.wildfly.swarm.container.Fraction;
 
 /**

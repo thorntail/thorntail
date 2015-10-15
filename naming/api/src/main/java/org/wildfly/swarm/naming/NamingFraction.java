@@ -1,6 +1,6 @@
 package org.wildfly.swarm.naming;
 
-import org.wildfly.swarm.config.naming.Naming;
+import org.wildfly.swarm.config.Naming;
 import org.wildfly.swarm.container.Fraction;
 
 /**

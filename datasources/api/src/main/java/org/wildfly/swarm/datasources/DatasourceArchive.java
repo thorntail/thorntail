@@ -1,7 +1,7 @@
 package org.wildfly.swarm.datasources;
 
 import org.jboss.shrinkwrap.api.Assignable;
-import org.wildfly.swarm.config.datasources.subsystem.dataSource.DataSource;
+import org.wildfly.swarm.config.datasources.DataSource;
 
 /**
  * @author Bob McWhirter

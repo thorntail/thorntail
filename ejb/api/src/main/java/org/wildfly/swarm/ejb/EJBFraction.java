@@ -1,12 +1,12 @@
 package org.wildfly.swarm.ejb;
 
-import org.wildfly.swarm.config.ejb3.Ejb3;
-import org.wildfly.swarm.config.ejb3.subsystem.cache.Cache;
-import org.wildfly.swarm.config.ejb3.subsystem.service.Async;
-import org.wildfly.swarm.config.ejb3.subsystem.service.TimerService;
-import org.wildfly.swarm.config.ejb3.subsystem.service.fileDataStore.FileDataStore;
-import org.wildfly.swarm.config.ejb3.subsystem.strictMaxBeanInstancePool.StrictMaxBeanInstancePool;
-import org.wildfly.swarm.config.ejb3.subsystem.threadPool.ThreadPool;
+import org.wildfly.swarm.config.Ejb3;
+import org.wildfly.swarm.config.ejb3.AsyncService;
+import org.wildfly.swarm.config.ejb3.Cache;
+import org.wildfly.swarm.config.ejb3.StrictMaxBeanInstancePool;
+import org.wildfly.swarm.config.ejb3.ThreadPool;
+import org.wildfly.swarm.config.ejb3.TimerService;
+import org.wildfly.swarm.config.ejb3.service.FileDataStore;
 import org.wildfly.swarm.container.Fraction;
 
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class EJBFraction extends Ejb3<EJBFraction> implements Fraction {
                         .timeout(5L)
                         .timeoutUnit("MINUTES"))
                 .cache(new Cache("simple"))
-                .async(new Async().threadPoolName("default"))
+                .asyncService(new AsyncService().threadPoolName("default"))
                 .timerService(new TimerService()
                         .threadPoolName("default")
                         .defaultDataStore("default-file-store")

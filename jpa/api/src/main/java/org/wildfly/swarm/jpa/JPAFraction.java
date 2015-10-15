@@ -1,8 +1,8 @@
 package org.wildfly.swarm.jpa;
 
-import org.wildfly.swarm.config.datasources.subsystem.dataSource.DataSource;
-import org.wildfly.swarm.config.datasources.subsystem.jdbcDriver.JdbcDriver;
-import org.wildfly.swarm.config.jpa.Jpa;
+import org.wildfly.swarm.config.Jpa;
+import org.wildfly.swarm.config.datasources.DataSource;
+import org.wildfly.swarm.config.datasources.JdbcDriver;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.datasources.DatasourcesFraction;

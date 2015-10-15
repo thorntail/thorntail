@@ -3,13 +3,8 @@ package org.wildfly.swarm.io.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.config.invocation.Marshaller;
-import org.wildfly.swarm.config.io.Io;
-import org.wildfly.swarm.config.io.subsystem.bufferPool.BufferPool;
-import org.wildfly.swarm.config.io.subsystem.worker.Worker;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.io.IOFraction;
 
@@ -17,7 +12,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
 /**
  * @author Bob McWhirter
