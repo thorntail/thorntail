@@ -513,7 +513,7 @@ public class BuildTool {
     }
 
     protected void gatherDependencies() throws Exception {
-        this.dependencies.addAll(this.moduleDependencies);
+        //this.dependencies.addAll(this.moduleDependencies);
         this.coreSwarmArtifacts.addAll(this.moduleDependencies);
 
         if (this.projectAsset.getSimpleName().endsWith(".war")) {
@@ -525,6 +525,12 @@ public class BuildTool {
         }
 
         for (ArtifactSpec each : this.dependencies) {
+            if (each.shouldGather) {
+                gatherDependency(each);
+            }
+        }
+
+        for (ArtifactSpec each : this.coreSwarmArtifacts ) {
             if (each.shouldGather) {
                 gatherDependency(each);
             }

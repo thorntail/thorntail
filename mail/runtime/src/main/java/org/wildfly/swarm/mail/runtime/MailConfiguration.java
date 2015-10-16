@@ -6,10 +6,10 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.config.invocation.Marshaller;
 import org.wildfly.swarm.config.Mail;
 import org.wildfly.swarm.config.mail.MailSession;
 import org.wildfly.swarm.config.mail.mail_session.SmtpServer;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.mail.MailFraction;
 

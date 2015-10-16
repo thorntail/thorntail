@@ -55,28 +55,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.configuration</groupId>
-      <artifactId>api</artifactId>
-      <version>${version.wildfly.config-api}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.configuration</groupId>
-      <artifactId>runtime</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-controller</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.eclipsesource.minimal-json</groupId>
-          <artifactId>minimal-json</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss</groupId>
-          <artifactId>jandex</artifactId>
-        </exclusion>
-      </exclusions>
-      <version>${version.wildfly.config-api}</version>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>config-api</artifactId>
     </dependency>
   </dependencies>
 

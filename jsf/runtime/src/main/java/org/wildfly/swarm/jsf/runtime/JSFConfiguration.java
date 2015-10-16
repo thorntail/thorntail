@@ -1,7 +1,7 @@
 package org.wildfly.swarm.jsf.runtime;
 
 import org.jboss.dmr.ModelNode;
-import org.wildfly.config.invocation.Marshaller;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.jsf.JSFFraction;
 

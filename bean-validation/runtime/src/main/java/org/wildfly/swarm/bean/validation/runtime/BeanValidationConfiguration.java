@@ -1,8 +1,8 @@
 package org.wildfly.swarm.bean.validation.runtime;
 
 import org.jboss.dmr.ModelNode;
-import org.wildfly.config.invocation.Marshaller;
 import org.wildfly.swarm.bean.validation.BeanValidationFraction;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 
 import java.util.ArrayList;

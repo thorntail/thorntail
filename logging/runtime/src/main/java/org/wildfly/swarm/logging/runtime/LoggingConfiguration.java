@@ -1,7 +1,7 @@
 package org.wildfly.swarm.logging.runtime;
 
 import org.jboss.dmr.ModelNode;
-import org.wildfly.config.invocation.Marshaller;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.logging.LoggingFraction;
 
@@ -58,7 +58,6 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
             System.err.println("Cannot configure Logging subsystem. " + e);
         }
 
-        System.err.println( list );
         return list;
     }
 }

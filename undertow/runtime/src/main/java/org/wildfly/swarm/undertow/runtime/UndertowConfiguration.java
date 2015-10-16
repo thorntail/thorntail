@@ -1,7 +1,7 @@
 package org.wildfly.swarm.undertow.runtime;
 
 import org.jboss.dmr.ModelNode;
-import org.wildfly.config.invocation.Marshaller;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.config.undertow.BufferCache;
 import org.wildfly.swarm.config.undertow.HandlerConfiguration;
 import org.wildfly.swarm.config.undertow.Server;
