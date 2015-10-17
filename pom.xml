@@ -163,6 +163,7 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>config-api-runtime</artifactId>
+        <version>${version.wildfly.config-api}</version>
       </dependency>
 
       <!-- Project Artifacts -->
