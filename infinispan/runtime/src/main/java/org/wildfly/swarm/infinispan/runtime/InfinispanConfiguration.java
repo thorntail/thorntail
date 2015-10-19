@@ -25,7 +25,7 @@ public class InfinispanConfiguration extends AbstractServerConfiguration<Infinis
 
     @Override
     public InfinispanFraction defaultFraction() {
-        return new InfinispanFraction();
+        return InfinispanFraction.createDefaultFraction();
     }
 
     @Override

@@ -11,7 +11,7 @@ public class InfinispanInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new InfinispanFraction() );
+        container.fraction( InfinispanFraction.createDefaultFraction() );
         container.start().stop();
     }
 }

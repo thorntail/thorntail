@@ -27,7 +27,7 @@ public class InfinispanArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new InfinispanFraction() );
+        return new Container().fraction( InfinispanFraction.createDefaultFraction() );
     }
 
     @Test @RunAsClient
