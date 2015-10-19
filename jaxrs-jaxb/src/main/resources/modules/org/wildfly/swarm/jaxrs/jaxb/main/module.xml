@@ -1,0 +1,5 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.jaxrs.jaxb">
+  <dependencies>
+    <module name="org.jboss.resteasy.resteasy-jaxb-provider"/>
+  </dependencies>
+</module>
