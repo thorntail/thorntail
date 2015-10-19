@@ -13,6 +13,7 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -134,6 +135,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 this.project.getArtifact().getType(),
                 this.project.getArtifact().getFile());
 
+
         Set<Artifact> deps = this.project.getArtifacts();
         for (Artifact each : deps) {
             this.tool.dependency(each.getScope(), each.getGroupId(), each.getArtifactId(), each.getVersion(), each.getType(), each.getClassifier(), each.getFile());
@@ -143,12 +145,12 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         for (Resource each : resources) {
             this.tool.resourceDirectory(each.getDirectory());
         }
-        
-        
+
+
         if (additionalModules == null) {
             additionalModules = new String[] {"modules"};
         }
-        
+
         for (String additionalModule : additionalModules) {
             File source = new File(this.project.getBuild().getOutputDirectory() + File.separator + additionalModule);
             if (source.exists()) {

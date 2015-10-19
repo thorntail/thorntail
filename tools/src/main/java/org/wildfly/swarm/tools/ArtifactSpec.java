@@ -27,6 +27,10 @@ public class ArtifactSpec {
         this.file = file;
     }
 
+    public String getFileName() {
+        return this.artifactId + ( this.classifier == null ? "" : "-classifier" ) + "-" + this.version + "." + this.packaging;
+    }
+
     public int hashCode() {
         int parts = 5;
         return ((this.groupId.hashCode() / parts) +

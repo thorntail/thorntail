@@ -325,7 +325,7 @@ public class BuildTool {
 
         artifactPath.append('/').append(artifact.artifactId);
         artifactPath.append('/').append(artifact.version);
-        artifactPath.append('/').append(artifact.file.getName());
+        artifactPath.append('/').append(artifact.getFileName());
 
         this.archive.add(new FileAsset(artifact.file), artifactPath.toString());
     }
