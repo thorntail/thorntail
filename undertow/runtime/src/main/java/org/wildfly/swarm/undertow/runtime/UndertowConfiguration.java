@@ -1,22 +1,18 @@
 package org.wildfly.swarm.undertow.runtime;
 
-import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.config.undertow.BufferCache;
-import org.wildfly.swarm.config.undertow.HandlerConfiguration;
-import org.wildfly.swarm.config.undertow.Server;
-import org.wildfly.swarm.config.undertow.ServletContainer;
-import org.wildfly.swarm.config.undertow.server.Host;
-import org.wildfly.swarm.config.undertow.server.HttpListener;
-import org.wildfly.swarm.config.undertow.servlet_container.JspSetting;
-import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.undertow.UndertowFraction;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import io.undertow.Undertow;
+import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
+import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.undertow.UndertowFraction;
+
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * @author Bob McWhirter
@@ -30,21 +26,7 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
 
     @Override
     public UndertowFraction defaultFraction() {
-
-        UndertowFraction fraction = new UndertowFraction();
-
-        fraction.server(new Server("default-server")
-                        .httpListener(new HttpListener("default").socketBinding("http"))
-                        .host(new Host("default-host")))
-
-                .bufferCache(new BufferCache("default"))
-
-                .servletContainer(new ServletContainer("default")
-                        .websocketsSetting(new WebsocketsSetting())
-                        .jspSetting(new JspSetting()))
-                .handlerConfiguration(new HandlerConfiguration());
-
-        return fraction;
+        return UndertowFraction.createDefaultFraction();
     }
 
     @Override
