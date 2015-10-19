@@ -24,12 +24,21 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.wildfly.swarm.arquillian.adapter.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.PackageDetector;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.zip.ZipFile;
 
 public class Build {
 
@@ -68,6 +77,47 @@ public class Build {
         return this;
     }
 
+    private Map<String, Set<String>> fractionPackages() throws IOException {
+        final Properties fractionPackages = new Properties();
+        try (InputStream in = Build.class.getResourceAsStream("/org/wildfly/swarm/cli/fraction-packages.properties")) {
+            if (in == null) {
+                throw new RuntimeException("Failed to load fraction-packages.properties");
+            }
+            fractionPackages.load(in);
+        }
+
+        final Map<String, Set<String>> fractionMap = new HashMap<>();
+
+        for (Map.Entry prop : fractionPackages.entrySet()) {
+            Set<String> packages = new HashSet<>();
+            packages.addAll(Arrays.asList(((String) prop.getValue()).split(",")));
+            fractionMap.put((String)prop.getKey(), packages);
+        }
+
+        return fractionMap;
+    }
+
+    private Set<String> detectNeededFractions() throws IOException {
+        final Map<String, Set<String>> fractionPackages = fractionPackages();
+
+        return PackageDetector
+                .detectPackages(new ZipFile(this.source))
+                .stream()
+                // there's probably a better way to do this
+                .map(pkg -> {
+                    for (Map.Entry<String, Set<String>> entry : fractionPackages.entrySet()) {
+                        if (entry.getValue().contains(pkg)) {
+
+                            return entry.getKey();
+                        }
+                    }
+
+                    return null;
+                })
+                .filter(v -> v != null)
+                .collect(Collectors.toSet());
+    }
+
     public void run() throws Exception {
         final String[] parts = this.source.getName().split("\\.(?=[^\\.]+$)");
         final String baseName = parts[0];
@@ -88,11 +138,8 @@ public class Build {
                 .projectArtifact("", baseName, "", type, this.source)
                 .resolveTransitiveDependencies(true);
 
-        // assume wars are webby so the user doesn't have to specify the undertow fraction every time
-        if ("war".equals(type)) {
-            this.swarmDependencies.add("undertow");
-        }
-
+        this.swarmDependencies.addAll(detectNeededFractions());
+       
         for (String dep : this.swarmDependencies) {
             tool.dependency("compile", "org.wildfly.swarm", "wildfly-swarm-" + dep, this.version, "jar", null, null);
         }
