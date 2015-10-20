@@ -180,7 +180,7 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
             while (names.hasMoreElements()) {
                 String key = (String) names.nextElement();
-                if (key.startsWith("jboss") || key.startsWith("swarm") || key.startsWith("wildfly")) {
+                if (key.startsWith("jboss") || key.startsWith("swarm") || key.startsWith("wildfly") || key.startsWith( "maven" )) {
                     String value = System.getProperty(key);
                     cli.add("-D" + key + "=" + value);
                 }
@@ -188,6 +188,7 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
             cli.add("-jar");
             cli.add(executable.getAbsolutePath());
+
 
             this.process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]));
 
