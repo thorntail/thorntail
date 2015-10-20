@@ -47,8 +47,7 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
     private Process process;
 
-    private LatchedBridge stdout;
-
+    private IOBridge stdout;
     private IOBridge stderr;
 
     @Override
@@ -193,8 +192,8 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             this.process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]));
 
             CountDownLatch latch = new CountDownLatch(1);
-            this.stdout = new LatchedBridge("out", latch, process.getInputStream(), System.out);
-            this.stderr = new LatchedBridge("err", latch, process.getErrorStream(), System.err);
+            this.stdout = new IOBridge("out", latch, process.getInputStream(), System.out);
+            this.stderr = new IOBridge("err", latch, process.getErrorStream(), System.err);
 
             this.process.getOutputStream().close();
 
@@ -205,7 +204,16 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             HTTPContext context = new HTTPContext("localhost", 8080);
             context.add(new Servlet(ServletMethodExecutor.ARQUILLIAN_SERVLET_NAME, "/"));
             metaData.addContext(context);
-            latch.await();
+            latch.await( 2, TimeUnit.MINUTES );
+            if ( ! this.process.isAlive() ) {
+                throw new DeploymentException( "Process failed to start" );
+            }
+            if ( this.stdout.getError() != null ) {
+                throw new DeploymentException( "Error starting process", this.stdout.getError() );
+            }
+            if ( this.stderr.getError() != null ) {
+                throw new DeploymentException( "Error starting process", this.stderr.getError() );
+            }
             return metaData;
         } catch (Exception e) {
             throw new DeploymentException(e.getMessage(), e);
@@ -273,10 +281,19 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
         private final OutputStream out;
 
-        public IOBridge(String name, InputStream in, OutputStream out) {
+        private Exception error;
+
+        private final CountDownLatch latch;
+
+        public IOBridge(String name, CountDownLatch latch, InputStream in, OutputStream out) {
             this.name = name;
             this.in = in;
             this.out = out;
+            this.latch = latch;
+        }
+
+        public Exception getError() {
+            return this.error;
         }
 
         @Override
@@ -289,39 +306,21 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
                     processLine(line);
                 }
             } catch (IOException e) {
-                //e.printStackTrace();
+                this.error = e;
+                this.latch.countDown();
             }
         }
 
         protected void processLine(String line) throws IOException {
             out.write(line.getBytes());
             out.write('\n');
+            if (line.contains("WFLYSRV0010")) {
+                this.latch.countDown();
+            }
         }
 
         public void close() throws IOException {
             this.in.close();
-        }
-    }
-
-    private static class LatchedBridge extends IOBridge {
-
-        private final CountDownLatch latch;
-
-        public LatchedBridge(String name, CountDownLatch latch, InputStream in, OutputStream out) {
-            super(name, in, out);
-            this.latch = latch;
-        }
-
-        public CountDownLatch getLatch() {
-            return this.latch;
-        }
-
-        @Override
-        protected void processLine(String line) throws IOException {
-            super.processLine(line);
-            if (line.contains("WFLYSRV0010")) {
-                this.latch.countDown();
-            }
         }
     }
 }

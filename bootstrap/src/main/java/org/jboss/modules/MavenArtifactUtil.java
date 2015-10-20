@@ -289,6 +289,7 @@ public class MavenArtifactUtil {
         if (qualifier.startsWith("${") && qualifier.endsWith("}")) {
             qualifier = qualifier.substring(2, qualifier.length() - 1);
         }
+        System.err.println( "DEBUG resolve: " + qualifier );
         String[] split = qualifier.split(":");
         if (split.length < 3) {
             throw new IllegalArgumentException("Illegal artifact " + qualifier);
@@ -309,8 +310,10 @@ public class MavenArtifactUtil {
             String artifactRelativePath = "m2repo/" + relativeArtifactPath('/', groupId, artifactId, version);
             String jarPath = artifactRelativePath + classifier + "." + packaging;
 
+            System.err.println( "DEBUG resolve in classpath: " + jarPath );
             InputStream stream = MavenArtifactUtil.class.getClassLoader().getResourceAsStream(jarPath);
             if (stream != null) {
+                System.err.println( "DEBUG resolve in classpath success" );
                 return copyTempJar(artifactId + "-" + version, stream, packaging);
             }
 
@@ -318,9 +321,13 @@ public class MavenArtifactUtil {
             jarPath = artifactRelativePath + classifier + "." + packaging;
 
             Path fp = java.nio.file.Paths.get(localRepository.toString(), jarPath);
+            System.err.println( "DEBUG resolve in local fs: " + fp );
             if (Files.exists(fp)) {
+                System.err.println( "DEBUG resolve in local fs success" );
                 return fp.toFile();
             }
+
+            System.err.println( "DEBUG resolve going remote, expect no more debug statements" );
 
             List<String> remoteRepos = mavenSettings.getRemoteRepositories();
             if (remoteRepos.isEmpty()) {
