@@ -244,18 +244,13 @@ public class BuildTool {
 
     public boolean includeAsBootstrapJar(ArtifactSpec dependency) {
 
-        System.err.print( "include? " + dependency + " " );
-
         if ( dependency.scope.equals( "TEST" ) ) {
-            System.err.println( "false TEST" );
             return false;
         }
         if (dependency.groupId.equals("org.jboss.modules") && dependency.artifactId.equals("jboss-modules")) {
-            System.err.println( "false jboss-modules" );
             return false;
         }
 
-        System.err.println( !dependency.scope.equals("provided" ) );
         return !dependency.scope.equals("PROVIDED");
 
         //return true;
@@ -303,9 +298,7 @@ public class BuildTool {
     }
 
     protected void gatherDependency(ArtifactSpec artifact) throws Exception {
-        System.err.println( "gathering: " + artifact );
         if ( artifact.gathered ) {
-            System.err.println( "already gathered: " + artifact );
             return;
         }
         artifact = resolveArtifact(artifact);
@@ -467,7 +460,6 @@ public class BuildTool {
             return;
         }
 
-        System.err.println( "analyze modules within " + artifact.file );
         JarFile jar = new JarFile(artifact.file);
 
         Enumeration<JarEntry> entries = jar.entries();
@@ -477,7 +469,6 @@ public class BuildTool {
             String name = each.getName();
 
             if (name.startsWith("modules/") && name.endsWith("module.xml")) {
-                System.err.println( "analyze module.xml: " + name );
                 try (InputStream in = jar.getInputStream(each)) {
                     analyzeModuleDependencies(in);
                 }
