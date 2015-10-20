@@ -158,6 +158,8 @@ public class BuildTool {
     private void addWildflySwarmBootstrapJar() throws BuildException, IOException {
         ArtifactSpec artifact = findArtifact("org.wildfly.swarm", "wildfly-swarm-bootstrap", null, "jar", null);
 
+        this.bootstrappedArtifacts.add( artifact );
+
         if (!bootstrapJarShadesJBossModules(artifact.file)) {
             ArtifactSpec jbossModules = findArtifact("org.jboss.modules", "jboss-modules", null, "jar", null);
             expandArtifact(jbossModules.file);
@@ -203,8 +205,8 @@ public class BuildTool {
         Set<ArtifactSpec> applicationArtifacts = new HashSet<>();
 
         for (ArtifactSpec each : this.dependencies) {
-            if (!this.bootstrappedArtifacts.contains(each)) {
-                if (each.packaging.equals("jar") && each.shouldGather ) {
+            if (!this.bootstrappedArtifacts.contains(each) ) {
+                if (each.packaging.equals("jar") && each.shouldGather) {
                     applicationArtifacts.add(each);
                 }
             }
@@ -223,11 +225,13 @@ public class BuildTool {
             if (mapped != null) {
                 bootstrapTxt.append("module:").append(mapped).append("\n");
             } else {
-                gatherDependency(each);
-                if (each.classifier == null || each.classifier.equals("")) {
-                    bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version).append("\n");
-                } else {
-                    bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version + ":" + each.classifier).append("\n");
+                if (includeAsBootstrapJar(each)) {
+                    gatherDependency(each);
+                    if (each.classifier == null || each.classifier.equals("")) {
+                        bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version).append("\n");
+                    } else {
+                        bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version + ":" + each.classifier).append("\n");
+                    }
                 }
             }
         }
@@ -239,36 +243,22 @@ public class BuildTool {
 
 
     public boolean includeAsBootstrapJar(ArtifactSpec dependency) {
-        // TODO figure out a better more generic way
-        /*
-        if (dependency.groupId.equals("org.wildfly.swarm") && dependency.artifactId.equals("wildfly-swarm-bootstrap")) {
+
+        System.err.print( "include? " + dependency + " " );
+
+        if ( dependency.scope.equals( "TEST" ) ) {
+            System.err.println( "false TEST" );
             return false;
         }
-        */
-
-        /*
-        if (dependency.groupId.equals("org.jboss.shrinkwrap")) {
-            return true;
-        }
-
-        if (dependency.groupId.equals("org.ow2.asm")) {
-            return true;
-        }
-        */
-
-        /*
-        if (dependency.groupId.equals("org.jboss.msc") && dependency.artifactId.equals("jboss-msc")) {
-            return false;
-        }
-
         if (dependency.groupId.equals("org.jboss.modules") && dependency.artifactId.equals("jboss-modules")) {
+            System.err.println( "false jboss-modules" );
             return false;
         }
 
-        return !dependency.scope.equals("provided");
-        */
+        System.err.println( !dependency.scope.equals("provided" ) );
+        return !dependency.scope.equals("PROVIDED");
 
-        return false;
+        //return true;
     }
 
     protected boolean hasNonBootstrapMarker(ArtifactSpec spec) {
@@ -313,6 +303,11 @@ public class BuildTool {
     }
 
     protected void gatherDependency(ArtifactSpec artifact) throws Exception {
+        System.err.println( "gathering: " + artifact );
+        if ( artifact.gathered ) {
+            System.err.println( "already gathered: " + artifact );
+            return;
+        }
         artifact = resolveArtifact(artifact);
 
         StringBuilder artifactPath = new StringBuilder("m2repo");
@@ -328,6 +323,8 @@ public class BuildTool {
         artifactPath.append('/').append(artifact.getFileName());
 
         this.archive.add(new FileAsset(artifact.file), artifactPath.toString());
+
+        artifact.gathered = true;
     }
 
     private void createManifest() throws IOException {
@@ -470,6 +467,7 @@ public class BuildTool {
             return;
         }
 
+        System.err.println( "analyze modules within " + artifact.file );
         JarFile jar = new JarFile(artifact.file);
 
         Enumeration<JarEntry> entries = jar.entries();
@@ -479,6 +477,7 @@ public class BuildTool {
             String name = each.getName();
 
             if (name.startsWith("modules/") && name.endsWith("module.xml")) {
+                System.err.println( "analyze module.xml: " + name );
                 try (InputStream in = jar.getInputStream(each)) {
                     analyzeModuleDependencies(in);
                 }
@@ -530,7 +529,7 @@ public class BuildTool {
             }
         }
 
-        for (ArtifactSpec each : this.coreSwarmArtifacts ) {
+        for (ArtifactSpec each : this.coreSwarmArtifacts) {
             if (each.shouldGather) {
                 gatherDependency(each);
             }

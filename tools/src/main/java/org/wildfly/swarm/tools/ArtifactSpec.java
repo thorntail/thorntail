@@ -16,6 +16,7 @@ public class ArtifactSpec {
     public File file;
 
     public boolean shouldGather = true;
+    public boolean gathered = false;
 
     public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
         this.scope = scope;
@@ -28,7 +29,7 @@ public class ArtifactSpec {
     }
 
     public String getFileName() {
-        return this.artifactId + ( this.classifier == null ? "" : "-" + classifier ) + "-" + this.version + "." + this.packaging;
+        return this.artifactId + ( this.classifier == null || this.classifier.equals( "" ) ? "" : "-" + classifier ) + "-" + this.version + "." + this.packaging;
     }
 
     public int hashCode() {

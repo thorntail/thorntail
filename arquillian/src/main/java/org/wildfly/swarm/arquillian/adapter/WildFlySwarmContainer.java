@@ -168,7 +168,8 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
             File executable = File.createTempFile("arquillian", "-swarm.jar");
             wrapped.as(ZipExporter.class).exportTo(executable, true);
-            executable.deleteOnExit();
+            System.err.println( "exported to " + executable );
+            //executable.deleteOnExit();
 
             List<String> cli = new ArrayList<>();
 
