@@ -66,23 +66,32 @@ public class MavenArtifactUtil {
             Path m2 = java.nio.file.Paths.get(System.getProperty("user.home"), ".m2");
             Path settingsPath = m2.resolve("settings.xml");
 
+            System.err.println( "looking for settings.xml at " + settingsPath );
+
             if (Files.notExists(settingsPath)) {
+                System.err.println( "not found, looking via M2_HOME" );
                 String mavenHome = System.getenv("M2_HOME");
                 if (mavenHome != null) {
                     settingsPath = java.nio.file.Paths.get(mavenHome, "conf", "settings.xml");
+                    System.err.println( "found M2_HOME, checking " + settingsPath );
                 }
             }
             if (Files.exists(settingsPath)) {
+                System.err.println( "using " + settingsPath + " for settings.xml" );
                 parseSettingsXml(settingsPath, settings);
             }
             Path localRepo = settings.getLocalRepository();
+            System.err.println( "settings.xml specified localRepo as: " + localRepo );
             if (localRepo == null || localRepo.toString().trim().equals("")) {
                 Path repository = m2.resolve("repository");
                 settings.setLocalRepository(repository);
+                System.err.println( "using local repo at " + repository );
             }
 
             String localRepositoryPath = System.getProperty("maven.repo.local");
+            System.err.println( "property: " + localRepositoryPath );
             if (localRepositoryPath != null) {
+                System.err.println( "found maven.repo.local set, preferring that over all else" );
                 settings.setLocalRepository(java.nio.file.Paths.get(localRepositoryPath));
             }
             settings.resolveActiveSettings();
@@ -294,6 +303,7 @@ public class MavenArtifactUtil {
         if (qualifier.startsWith("${") && qualifier.endsWith("}")) {
             qualifier = qualifier.substring(2, qualifier.length() - 1);
         }
+        System.err.println( "DEBUG resolve: " + qualifier );
         String[] split = qualifier.split(":");
         if (split.length < 3) {
             throw new IllegalArgumentException("Illegal artifact " + qualifier);
@@ -314,8 +324,10 @@ public class MavenArtifactUtil {
             String artifactRelativePath = "m2repo/" + relativeArtifactPath('/', groupId, artifactId, version);
             String jarPath = artifactRelativePath + classifier + "." + packaging;
 
+            System.err.println( "DEBUG resolve in classpath: " + jarPath );
             InputStream stream = MavenArtifactUtil.class.getClassLoader().getResourceAsStream(jarPath);
             if (stream != null) {
+                System.err.println( "DEBUG resolve in classpath success" );
                 return copyTempJar(artifactId + "-" + version, stream, packaging);
             }
 
@@ -323,9 +335,13 @@ public class MavenArtifactUtil {
             jarPath = artifactRelativePath + classifier + "." + packaging;
 
             Path fp = java.nio.file.Paths.get(localRepository.toString(), jarPath);
+            System.err.println( "DEBUG resolve in local fs: " + fp );
             if (Files.exists(fp)) {
+                System.err.println( "DEBUG resolve in local fs success" );
                 return fp.toFile();
             }
+
+            System.err.println( "DEBUG resolve going remote, expect no more debug statements" );
 
             List<String> remoteRepos = mavenSettings.getRemoteRepositories();
             if (remoteRepos.isEmpty()) {
