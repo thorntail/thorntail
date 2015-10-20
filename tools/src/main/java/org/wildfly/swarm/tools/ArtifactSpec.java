@@ -28,7 +28,7 @@ public class ArtifactSpec {
     }
 
     public String getFileName() {
-        return this.artifactId + ( this.classifier == null ? "" : "-classifier" ) + "-" + this.version + "." + this.packaging;
+        return this.artifactId + ( this.classifier == null ? "" : "-" + classifier ) + "-" + this.version + "." + this.packaging;
     }
 
     public int hashCode() {
