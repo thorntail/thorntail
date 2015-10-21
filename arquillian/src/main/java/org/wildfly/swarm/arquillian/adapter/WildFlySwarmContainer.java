@@ -205,7 +205,7 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             HTTPContext context = new HTTPContext("localhost", 8080);
             context.add(new Servlet(ServletMethodExecutor.ARQUILLIAN_SERVLET_NAME, "/"));
             metaData.addContext(context);
-            latch.await( 2, TimeUnit.MINUTES );
+            latch.await(2, TimeUnit.MINUTES);
             if ( ! this.process.isAlive() ) {
                 throw new DeploymentException( "Process failed to start" );
             }

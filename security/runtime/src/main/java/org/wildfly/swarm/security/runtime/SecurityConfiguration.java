@@ -1,11 +1,14 @@
 package org.wildfly.swarm.security.runtime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
+import org.wildfly.swarm.config.security.SecurityDomain;
+import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;
+import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.security.SecurityFraction;
 
@@ -13,7 +16,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
 /**
  * @author Bob McWhirter
@@ -26,43 +28,40 @@ public class SecurityConfiguration extends AbstractServerConfiguration<SecurityF
 
     @Override
     public SecurityFraction defaultFraction() {
-        return new SecurityFraction();
+        return new SecurityFraction()
+                .securityDomain(new SecurityDomain("other")
+                        .classicAuthentication(new ClassicAuthentication()
+                                .loginModule(new LoginModule("RealmDirect")
+                                                .code("RealmDirect")
+                                                .flag("required")
+                                                .moduleOptions(new HashMap() {{
+                                                    put("password-stacking", "useFirstPass");
+                                                }})
+
+                                )));
     }
 
     @Override
     public List<ModelNode> getList(SecurityFraction fraction) {
+        if (fraction == null) {
+            fraction = defaultFraction();
+        }
+
         List<ModelNode> list = new ArrayList<>();
 
-        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "security"));
+        ModelNode address = new ModelNode();
 
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.security");
-        node.get(OP).set(ADD);
-        list.add(node);
+        address.setEmptyList();
 
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("security-domain", "other").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("cache-type").set("default");
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("security-domain", "other").append("authentication", "classic").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("security-domain", "other").append("authentication", "classic").append("login-module", "RealmDirect").toModelNode());
-        node.get(OP).set(ADD);
-        node.get("code").set("RealmDirect");
-        node.get("flag").set("required");
-        node.get("module-options").set("password-stacking", "useFirstPass");
-        list.add(node);
+        ModelNode add = new ModelNode();
+        add.get(OP_ADDR).set(address).add(EXTENSION, "org.jboss.as.security");
+        add.get(OP).set(ADD);
+        list.add(add);
+        try {
+            list.addAll(Marshaller.marshal(fraction));
+        } catch (Exception e) {
+            System.err.println("Cannot configure Security subsystem. " + e);
+        }
 
         return list;
     }
