@@ -7,7 +7,12 @@ import org.wildfly.swarm.config.ejb3.StrictMaxBeanInstancePool;
 import org.wildfly.swarm.config.ejb3.ThreadPool;
 import org.wildfly.swarm.config.ejb3.TimerService;
 import org.wildfly.swarm.config.ejb3.service.FileDataStore;
+import org.wildfly.swarm.config.security.SecurityDomain;
+import org.wildfly.swarm.config.security.security_domain.ClassicAuthorization;
+import org.wildfly.swarm.config.security.security_domain.authorization.PolicyModule;
+import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.security.SecurityFraction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +25,25 @@ public class EJBFraction extends Ejb3<EJBFraction> implements Fraction {
 
     protected EJBFraction() {
 
+    }
+
+    @Override
+    public void postInitialize(Container.PostInitContext initContext) {
+        SecurityFraction security = (SecurityFraction) initContext.fraction("security");
+
+        if (security != null) {
+            SecurityDomain ejbPolicy = security.subresources().securityDomains().stream().filter((e) -> e.getKey().equals("jboss-ejb-policy")).findFirst().orElse(null);
+            if (ejbPolicy == null) {
+                ejbPolicy = new SecurityDomain("jboss-ejb-policy")
+                        .classicAuthorization(new ClassicAuthorization()
+                                .policyModule(new PolicyModule("default")
+                                        .code("Delegating")
+                                        .flag("required")));
+                security.securityDomain( ejbPolicy );
+            }
+        }
+
+        System.err.println("found security: " + security);
     }
 
     public static EJBFraction createDefaultFraction() {

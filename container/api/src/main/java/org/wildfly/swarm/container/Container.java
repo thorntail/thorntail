@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -394,7 +395,13 @@ public class Container {
 
     public class PostInitContext extends InitContext {
         public boolean hasFraction(String simpleName) {
-            return fractions().stream().anyMatch((f) -> f.simpleName().equals(simpleName));
+            return fractions().stream().anyMatch((f) -> f.simpleName().equalsIgnoreCase(simpleName));
+        }
+
+        public Fraction fraction(String simpleName) {
+            System.err.println( simpleName + " vs " + fractions() );
+            Optional<Fraction> opt = fractions().stream().filter((f) -> f.simpleName().equalsIgnoreCase(simpleName)).findFirst();
+            return opt.orElse(null);
         }
     }
 
