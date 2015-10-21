@@ -413,7 +413,7 @@
     <module>tools</module>
     <module>plugin</module>
     <module>arquillian</module>
-    <module>cli</module>
+    <module>swarmtool</module>
 
     <!-- base -->
     <module>bootstrap</module>
