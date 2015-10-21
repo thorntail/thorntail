@@ -27,7 +27,7 @@ public class MessagingArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new MessagingFraction() );
+        return new Container().fraction( MessagingFraction.createDefaultFraction() );
     }
 
     @Test @RunAsClient

@@ -18,7 +18,7 @@ import java.util.*;
  * @author Ken Finnigan
  * @author Lance Ball
  */
-public class LoggingFraction extends Logging implements Fraction {
+public class LoggingFraction extends Logging<LoggingFraction> implements Fraction {
 
     public static final String CONSOLE = "CONSOLE";
     public static final String PATTERN = "PATTERN";

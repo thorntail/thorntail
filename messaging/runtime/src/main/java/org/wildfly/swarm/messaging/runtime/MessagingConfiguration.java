@@ -7,6 +7,7 @@ import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.messaging.MessagingFraction;
@@ -20,6 +21,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 
 /**
  * @author Bob McWhirter
+ * @author Lance Ball
  */
 public class MessagingConfiguration extends AbstractServerConfiguration<MessagingFraction> {
 
@@ -31,7 +33,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
 
     @Override
     public MessagingFraction defaultFraction() {
-        return new MessagingFraction();
+        return MessagingFraction.createDefaultFraction();
     }
 
     @Override
@@ -48,28 +50,17 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
         node.get(OP).set(ADD);
         list.add(node);
 
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        addServers(fraction, list);
+        try {
+            list.addAll(Marshaller.marshal(fraction));
+        } catch (Exception e) {
+            System.err.println("Cannot configure Logging subsystem. " + e);
+        }
 
         return list;
     }
 
-    protected void addServers(MessagingFraction fraction, List<ModelNode> list) {
-        List<MessagingServer> servers = fraction.servers();
-
-        for (MessagingServer each : servers) {
-            addServer(each, list);
-        }
-    }
-
     protected void addServer(MessagingServer server, List<ModelNode> list) {
         PathAddress serverAddress = this.address.append("server", server.name());
-
-
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(serverAddress.toModelNode());
         node.get(OP).set(ADD);
