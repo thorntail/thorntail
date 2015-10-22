@@ -1,27 +1,23 @@
 package org.wildfly.swarm.messaging;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.wildfly.swarm.config.MessagingActivemq;
+import org.wildfly.swarm.config.messaging_activemq.Server;
 import org.wildfly.swarm.container.Fraction;
 
 /**
  * @author Bob McWhirter
+ * @author Lance Ball
  */
-public class MessagingFraction implements Fraction {
+public class MessagingFraction extends MessagingActivemq<MessagingFraction> implements Fraction {
 
-    private List<MessagingServer> servers = new ArrayList<>();
+    private MessagingFraction() {}
 
-    public MessagingFraction() {
-
+    @Override
+    public MessagingFraction server(Server server) {
+        return super.server(server);
     }
 
-    public MessagingFraction server(MessagingServer server) {
-        this.servers.add(server);
-        return this;
-    }
-
-    public List<MessagingServer> servers() {
-        return this.servers;
+    public static MessagingFraction createDefaultFraction() {
+        return new MessagingFraction();
     }
 }
