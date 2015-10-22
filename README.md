@@ -135,4 +135,7 @@ The resulting `-swarm.jar` is fully self-contained and can be executed using a
     java -jar myapp-1.0-swarm.jar
 
 
+# Documentation
 
+For a more complete set of documentation, go to the [WildFly Swarm User's
+Guide](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/).
