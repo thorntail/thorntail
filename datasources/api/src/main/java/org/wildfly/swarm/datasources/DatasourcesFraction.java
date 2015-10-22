@@ -2,6 +2,7 @@ package org.wildfly.swarm.datasources;
 
 import org.wildfly.swarm.config.Datasources;
 import org.wildfly.swarm.config.datasources.DataSource;
+import org.wildfly.swarm.config.datasources.JdbcDriverConfigurator;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -12,5 +13,16 @@ public class DatasourcesFraction extends Datasources<DatasourcesFraction> implem
     public DatasourcesFraction dataSource(DataSource value) {
         if (value.jndiName() == null) value.jndiName("java:jboss/datasources/" + value.getKey());
         return super.dataSource(value);
+    }
+
+    public DatasourcesFraction jdbcDriver(String childKey, EnhancedJdbcDriverConfigurator config) {
+        JdbcDriver driver = new JdbcDriver(childKey);
+        config.configure(driver);
+        jdbcDriver( driver );
+        return this;
+    }
+
+    public interface EnhancedJdbcDriverConfigurator extends JdbcDriverConfigurator {
+
     }
 }
