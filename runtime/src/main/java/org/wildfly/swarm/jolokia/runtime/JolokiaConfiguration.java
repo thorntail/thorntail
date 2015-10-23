@@ -21,22 +21,19 @@ public class JolokiaConfiguration extends AbstractServerConfiguration<JolokiaFra
 
     @Override
     public JolokiaFraction defaultFraction() {
-        System.err.println( "create default fraction for Jolokia" );
+        System.err.println("create default fraction for Jolokia");
         return new JolokiaFraction();
     }
 
     @Override
-    public List<Archive> getImplicitDeployments(JolokiaFraction fraction) {
-        List<Archive> list =new ArrayList<>();
+    public List<Archive> getImplicitDeployments(JolokiaFraction fraction) throws Exception {
+        List<Archive> list = new ArrayList<>();
         JavaArchive war = null;
-        try {
-            war = Swarm.artifact("org.jolokia:jolokia-war:war:*");
-            war.as(WARArchive.class).setContextRoot( fraction.context() );
-            list.add(war);
-        } catch (Exception e) {
-            e.printStackTrace();
 
-        }
+        war = Swarm.artifact("org.jolokia:jolokia-war:war:*");
+        war.as(WARArchive.class).setContextRoot(fraction.context());
+        list.add(war);
+
         return list;
     }
 }
