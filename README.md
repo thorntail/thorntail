@@ -49,22 +49,6 @@ the `org.wildfly.swarm` Maven group-id:
 * weld
 * _and many more!_
 
-# Server Configuration
-
-## Defaults
-
-Each module above can provide a default configuration.   If you are satisfied
-with the default configuration, no changes to your project's source files are
-required.
-
-# Running the `-swarm.jar`
-
-The resulting `-swarm.jar` is fully self-contained and can be executed using a
-`java -jar ...` commandline such as:
-
-    java -jar myapp-1.0-swarm.jar
-
-
 # Documentation
 
 For a more complete set of documentation, go to the [WildFly Swarm User's
