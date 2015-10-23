@@ -1,12 +1,11 @@
 package org.wildfly.swarm.jca.runtime;
 
+import java.util.List;
+
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.jca.JCAFraction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Bob McWhirter
@@ -24,12 +23,7 @@ public class JCAConfiguration extends AbstractServerConfiguration<JCAFraction> {
     }
 
     @Override
-    public List<ModelNode> getList(JCAFraction fraction) {
-        try {
-            return Marshaller.marshal(fraction);
-        } catch (Exception e) {
-            System.err.println("Cannot configure JCA subsystem. " + e);
-        }
-        return new ArrayList<>();
+    public List<ModelNode> getList(JCAFraction fraction) throws Exception {
+        return Marshaller.marshal(fraction);
     }
 }

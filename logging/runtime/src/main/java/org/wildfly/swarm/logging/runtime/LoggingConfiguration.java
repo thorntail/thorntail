@@ -1,14 +1,17 @@
 package org.wildfly.swarm.logging.runtime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.logging.LoggingFraction;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * @author Bob McWhirter
@@ -23,12 +26,12 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
     @Override
     public LoggingFraction defaultFraction() {
         String prop = System.getProperty("swarm.logging");
-        if ( prop != null ) {
+        if (prop != null) {
             prop = prop.trim().toLowerCase();
 
-            if ( prop.equals("debug" ) ) {
+            if (prop.equals("debug")) {
                 return LoggingFraction.createDebugLoggingFraction();
-            } else if (prop.equals("trace" ) ) {
+            } else if (prop.equals("trace")) {
                 return LoggingFraction.createTraceLoggingFraction();
             }
         }
@@ -37,7 +40,7 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
     }
 
     @Override
-    public List<ModelNode> getList(LoggingFraction fraction) {
+    public List<ModelNode> getList(LoggingFraction fraction) throws Exception {
         if (fraction == null) {
             fraction = defaultFraction();
         }
@@ -52,11 +55,8 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         add.get(OP_ADDR).set(address).add(EXTENSION, "org.jboss.as.logging");
         add.get(OP).set(ADD);
         list.add(add);
-        try {
-            list.addAll(Marshaller.marshal(fraction));
-        } catch (Exception e) {
-            System.err.println("Cannot configure Logging subsystem. " + e);
-        }
+
+        list.addAll(Marshaller.marshal(fraction));
 
         return list;
     }

@@ -36,7 +36,7 @@ public class MailConfiguration extends AbstractServerConfiguration<MailFraction>
     }
 
     @Override
-    public List<ModelNode> getList(MailFraction fraction) {
+    public List<ModelNode> getList(MailFraction fraction) throws Exception {
 
         List<ModelNode> list = new ArrayList<>();
 
@@ -48,12 +48,8 @@ public class MailConfiguration extends AbstractServerConfiguration<MailFraction>
         Mail mail = new Mail();
         List<ModelNode> socketBindings = addSmtpServers(fraction, mail);
 
-        try {
-            list.addAll(Marshaller.marshal(mail));
-            list.addAll(socketBindings);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        list.addAll(Marshaller.marshal(mail));
+        list.addAll(socketBindings);
 
         return list;
     }

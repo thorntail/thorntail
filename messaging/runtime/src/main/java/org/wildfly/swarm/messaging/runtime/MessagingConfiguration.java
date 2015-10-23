@@ -1,5 +1,8 @@
 package org.wildfly.swarm.messaging.runtime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
@@ -9,10 +12,11 @@ import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.messaging.MessagingFraction;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
 /**
  * @author Bob McWhirter
@@ -37,7 +41,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     }
 
     @Override
-    public List<ModelNode> getList(MessagingFraction fraction) {
+    public List<ModelNode> getList(MessagingFraction fraction) throws Exception {
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode node = new ModelNode();
@@ -45,11 +49,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
         node.get(OP).set(ADD);
         list.add(node);
 
-        try {
-            list.addAll(Marshaller.marshal(fraction));
-        } catch (Exception e) {
-            System.err.println("Cannot configure Logging subsystem. " + e);
-        }
+        list.addAll(Marshaller.marshal(fraction));
 
         return list;
     }

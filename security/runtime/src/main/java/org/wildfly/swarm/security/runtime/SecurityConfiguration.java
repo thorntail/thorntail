@@ -42,7 +42,7 @@ public class SecurityConfiguration extends AbstractServerConfiguration<SecurityF
     }
 
     @Override
-    public List<ModelNode> getList(SecurityFraction fraction) {
+    public List<ModelNode> getList(SecurityFraction fraction) throws Exception {
         if (fraction == null) {
             fraction = defaultFraction();
         }
@@ -57,11 +57,8 @@ public class SecurityConfiguration extends AbstractServerConfiguration<SecurityF
         add.get(OP_ADDR).set(address).add(EXTENSION, "org.jboss.as.security");
         add.get(OP).set(ADD);
         list.add(add);
-        try {
-            list.addAll(Marshaller.marshal(fraction));
-        } catch (Exception e) {
-            System.err.println("Cannot configure Security subsystem. " + e);
-        }
+
+        list.addAll(Marshaller.marshal(fraction));
 
         return list;
     }

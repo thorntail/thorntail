@@ -1,5 +1,8 @@
 package org.wildfly.swarm.transactions.runtime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
@@ -7,10 +10,11 @@ import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.transactions.TransactionsFraction;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
 
 /**
  * @author Bob McWhirter
@@ -28,7 +32,7 @@ public class TransactionsConfiguration extends AbstractServerConfiguration<Trans
     }
 
     @Override
-    public List<ModelNode> getList(TransactionsFraction fraction) {
+    public List<ModelNode> getList(TransactionsFraction fraction) throws Exception {
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode node = new ModelNode();
@@ -36,12 +40,7 @@ public class TransactionsConfiguration extends AbstractServerConfiguration<Trans
         node.get(OP).set(ADD);
         list.add(node);
 
-        try {
-            list.addAll(Marshaller.marshal(fraction));
-        } catch (Exception e) {
-            System.err.println("Unable to configure Transactions subsystem. " + e);
-            e.printStackTrace();
-        }
+        list.addAll(Marshaller.marshal(fraction));
 
         node = new ModelNode();
         node.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement("socket-binding-group", "default-sockets")).append("socket-binding", "txn-recovery-environment").toModelNode());

@@ -24,15 +24,12 @@ public class DatasourcesConfiguration extends AbstractServerConfiguration<Dataso
     }
 
     @Override
-    public List<ModelNode> getList(DatasourcesFraction fraction) {
+    public List<ModelNode> getList(DatasourcesFraction fraction) throws Exception {
 
         List<ModelNode> list = new ArrayList<>();
 
-        try {
-            list.addAll(Marshaller.marshal(fraction));
-        } catch (Exception e) {
-            System.err.println("Cannot configure datasources subsystem");
-        }
+        list.addAll(Marshaller.marshal(fraction));
+
         return list;
     }
 

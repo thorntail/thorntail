@@ -12,7 +12,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
 /**
  * @author Lance Ball
@@ -29,18 +28,15 @@ public class InfinispanConfiguration extends AbstractServerConfiguration<Infinis
     }
 
     @Override
-    public List<ModelNode> getList(InfinispanFraction fraction) {
+    public List<ModelNode> getList(InfinispanFraction fraction) throws Exception {
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode node = new ModelNode();
         node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.clustering.infinispan");
         node.get(OP).set(ADD);
         list.add(node);
-        try {
-            list.addAll(Marshaller.marshal(fraction));
-        } catch (Exception e) {
-            System.err.println("Cannot configure Infinispan subsystem. " + e);
-        }
+
+        list.addAll(Marshaller.marshal(fraction));
 
         return list;
 

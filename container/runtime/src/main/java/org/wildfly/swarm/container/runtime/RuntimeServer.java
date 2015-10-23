@@ -297,7 +297,7 @@ public class RuntimeServer implements Server {
         }
     }
 
-    private List<ModelNode> getList(Container config) throws ModuleLoadException {
+    private List<ModelNode> getList(Container config) throws Exception {
         List<ModelNode> list = new ArrayList<>();
 
         configureInterfaces(config, list);
@@ -373,7 +373,7 @@ public class RuntimeServer implements Server {
         list.add(node);
     }
 
-    private void configureFractions(Container config, List<ModelNode> list) throws ModuleLoadException {
+    private void configureFractions(Container config, List<ModelNode> list) throws Exception {
 
         OUTER:
         for (ServerConfiguration eachConfig : this.configList) {

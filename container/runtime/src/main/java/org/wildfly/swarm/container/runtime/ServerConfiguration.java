@@ -25,11 +25,11 @@ public interface ServerConfiguration<T extends Fraction> {
 
     }
 
-    default List<Archive> getImplicitDeployments(T fraction) {
+    default List<Archive> getImplicitDeployments(T fraction) throws Exception {
         return Collections.emptyList();
     }
 
-    default List<ModelNode> getList(T fraction) {
+    default List<ModelNode> getList(T fraction) throws Exception {
         return Collections.emptyList();
     }
 

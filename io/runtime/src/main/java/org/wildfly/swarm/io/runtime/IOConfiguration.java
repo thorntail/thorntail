@@ -28,7 +28,7 @@ public class IOConfiguration extends AbstractServerConfiguration<IOFraction> {
     }
 
     @Override
-    public List<ModelNode> getList(IOFraction fraction) {
+    public List<ModelNode> getList(IOFraction fraction) throws Exception {
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode node = new ModelNode();
@@ -36,11 +36,7 @@ public class IOConfiguration extends AbstractServerConfiguration<IOFraction> {
         node.get(OP).set(ADD);
         list.add(node);
 
-        try {
-            list.addAll(Marshaller.marshal(fraction));
-        } catch (Exception e) {
-            System.err.println("Cannot configure IO subsystem " + e);
-        }
+        list.addAll(Marshaller.marshal(fraction));
 
         return list;
 

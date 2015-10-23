@@ -3,7 +3,6 @@ package org.wildfly.swarm.undertow.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.undertow.Undertow;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
@@ -30,7 +29,7 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
     }
 
     @Override
-    public List<ModelNode> getList(UndertowFraction fraction) {
+    public List<ModelNode> getList(UndertowFraction fraction) throws Exception {
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode node = new ModelNode();
@@ -38,11 +37,7 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
         node.get(OP).set(ADD);
         list.add(node);
 
-        try {
-            list.addAll(Marshaller.marshal(fraction));
-        } catch (Exception e) {
-            System.err.println("Unable to configure Undertow subsystem. " + e);
-        }
+        list.addAll(Marshaller.marshal(fraction));
 
         return list;
 
