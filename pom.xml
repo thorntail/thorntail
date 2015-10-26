@@ -455,6 +455,7 @@
     <module>remoting</module>
     <module>ribbon</module>
     <module>ribbon-secured</module>
+    <module>ribbon-webapp</module>
     <module>security</module>
     <module>transactions</module>
     <module>undertow</module>
