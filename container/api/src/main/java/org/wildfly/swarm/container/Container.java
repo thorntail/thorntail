@@ -169,16 +169,6 @@ public class Container {
      * @param fraction The fraction to add.
      * @return The container.
      */
-    public Container subsystem(Fraction fraction) {
-        return fraction(fraction);
-    }
-
-    /**
-     * Add a fraction to the container.
-     *
-     * @param fraction The fraction to add.
-     * @return The container.
-     */
     public Container fraction(Fraction fraction) {
         if ( fraction != null ) {
             this.fractions.put(fractionRoot(fraction.getClass()), fraction);
