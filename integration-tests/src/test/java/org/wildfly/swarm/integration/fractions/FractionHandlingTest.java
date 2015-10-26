@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.wildfly.swarm.config.datasources.DataSource;
-import org.wildfly.swarm.config.datasources.JdbcDriver;
+import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.connector.ConnectorFraction;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
@@ -68,7 +68,7 @@ public class FractionHandlingTest extends AbstractWildFlySwarmTestCase {
 //    @Test
     public void userSpecifiedFractionOverridesDependentFraction() throws Exception {
         container.fraction(new DatasourcesFraction()
-                        .jdbcDriver(new JdbcDriver("myDriver")
+                        .jdbcDriver(new JDBCDriver("myDriver")
                                 .driverDatasourceClassName("org.h2.Driver")
                                 .driverXaDatasourceClassName("org.h2.jdbcx.JdbcDataSource")
                                 .driverModuleName("com.h2database.h2"))
@@ -107,7 +107,7 @@ public class FractionHandlingTest extends AbstractWildFlySwarmTestCase {
         assertThat(ds.password()).isEqualTo("sa");
 
         // Verify Driver
-        JdbcDriver driver = dsFraction.subresources().jdbcDrivers().get(0);
+        JDBCDriver driver = dsFraction.subresources().jdbcDrivers().get(0);
         assertThat(driver.getKey()).overridingErrorMessage("Driver name is not " + driverName).isEqualTo(driverName);
         assertThat(driver.driverDatasourceClassName()).overridingErrorMessage("Driver datasource class name is not 'org.h2.Driver'").isEqualTo("org.h2.Driver");
         assertThat(driver.driverXaDatasourceClassName()).overridingErrorMessage("Driver XA datasource class name is not 'org.h2.jdbcx.JdbcDataSource'").isEqualTo("org.h2.jdbcx.JdbcDataSource");

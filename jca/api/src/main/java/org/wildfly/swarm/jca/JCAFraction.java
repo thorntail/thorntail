@@ -1,6 +1,6 @@
 package org.wildfly.swarm.jca;
 
-import org.wildfly.swarm.config.Jca;
+import org.wildfly.swarm.config.JCA;
 import org.wildfly.swarm.config.jca.ArchiveValidation;
 import org.wildfly.swarm.config.jca.BeanValidation;
 import org.wildfly.swarm.config.jca.BootstrapContext;
@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @author Bob McWhirter
  */
-public class JCAFraction extends Jca<JCAFraction> implements Fraction {
+public class JCAFraction extends JCA<JCAFraction> implements Fraction {
 
     private JCAFraction() {
     }

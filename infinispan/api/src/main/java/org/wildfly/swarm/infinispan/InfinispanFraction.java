@@ -21,7 +21,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         CacheContainer replicatedCache = new CacheContainer("server")
                 .defaultCache("default")
                 .aliases(Arrays.asList(new String[]{"singleton", "cluster"}))
-                .jgroupsTransport(new JgroupsTransport().lockTimeout(60000L))
+                .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
                 .replicatedCache(new ReplicatedCache("default")
                         .mode("SYNC")
                         .transactionComponent(
@@ -30,7 +30,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         // Web cache
         CacheContainer webCache = new CacheContainer("web")
                 .defaultCache("dist")
-                .jgroupsTransport(new JgroupsTransport().lockTimeout(60000L))
+                .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
                 .distributedCache(new DistributedCache("dist")
                         .mode("ASYNC")
                         .l1Lifespan(0L)
@@ -43,7 +43,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         CacheContainer ejbCache = new CacheContainer("ejb")
                 .defaultCache("dist")
                 .aliases(Arrays.asList(new String[]{"sfsb"}))
-                .jgroupsTransport(new JgroupsTransport().lockTimeout(60000L))
+                .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
                 .distributedCache(new DistributedCache("dist")
                         .mode("ASYNC")
                         .l1Lifespan(0l)
@@ -55,7 +55,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         // Hibernate cache
         CacheContainer hibernateCache = new CacheContainer("hibernate")
                 .defaultCache("local-query")
-                .jgroupsTransport(new JgroupsTransport().lockTimeout(60000L))
+                .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
                 .localCache(new LocalCache("local-query")
                         .evictionComponent(new EvictionComponent().maxEntries(10000L).strategy("LRU"))
                         .expirationComponent(new ExpirationComponent().maxIdle(100000L)))

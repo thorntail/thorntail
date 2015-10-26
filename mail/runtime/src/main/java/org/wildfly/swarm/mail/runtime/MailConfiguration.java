@@ -8,7 +8,7 @@ import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.config.Mail;
 import org.wildfly.swarm.config.mail.MailSession;
-import org.wildfly.swarm.config.mail.mail_session.SmtpServer;
+import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.mail.MailFraction;
@@ -65,7 +65,7 @@ public class MailConfiguration extends AbstractServerConfiguration<MailFraction>
 
     protected ModelNode addSmtpServer(org.wildfly.swarm.mail.SmtpServer smtpServer, Mail mail) {
 
-        SmtpServer smtp = new SmtpServer().outboundSocketBindingRef(smtpServer.outboundSocketBindingRef());
+        SMTPServer smtp = new SMTPServer().outboundSocketBindingRef(smtpServer.outboundSocketBindingRef());
 
         MailSession mailSession = new MailSession(smtpServer.name().toLowerCase())
                 .smtpServer(smtp)

@@ -1,6 +1,6 @@
 package org.wildfly.swarm.ee;
 
-import org.wildfly.swarm.config.Ee;
+import org.wildfly.swarm.config.EE;
 import org.wildfly.swarm.config.ee.ContextService;
 import org.wildfly.swarm.config.ee.DefaultBindingsService;
 import org.wildfly.swarm.config.ee.ManagedExecutorService;
@@ -12,7 +12,7 @@ import org.wildfly.swarm.container.Fraction;
 /**
  * @author Bob McWhirter
  */
-public class EEFraction extends Ee<EEFraction> implements Fraction {
+public class EEFraction extends EE<EEFraction> implements Fraction {
 
     public static final String CONCURRENCY_CONTEXT_DEFAULT = "java:jboss/ee/concurrency/context/default";
     public static final String CONCURRENCY_FACTORY_DEFAULT = "java:jboss/ee/concurrency/factory/default";

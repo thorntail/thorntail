@@ -1,6 +1,6 @@
 package org.wildfly.swarm.io;
 
-import org.wildfly.swarm.config.Io;
+import org.wildfly.swarm.config.IO;
 import org.wildfly.swarm.config.io.BufferPool;
 import org.wildfly.swarm.config.io.Worker;
 import org.wildfly.swarm.container.Fraction;
@@ -8,7 +8,7 @@ import org.wildfly.swarm.container.Fraction;
 /**
  * @author Bob McWhirter
  */
-public class IOFraction extends Io<IOFraction> implements Fraction {
+public class IOFraction extends IO<IOFraction> implements Fraction {
     public IOFraction() {
     }
 

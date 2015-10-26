@@ -2,7 +2,8 @@ package org.wildfly.swarm.datasources;
 
 import org.wildfly.swarm.config.Datasources;
 import org.wildfly.swarm.config.datasources.DataSource;
-import org.wildfly.swarm.config.datasources.JdbcDriverConfigurator;
+import org.wildfly.swarm.config.datasources.JDBCDriver;
+import org.wildfly.swarm.config.datasources.JDBCDriverConfigurator;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -22,7 +23,7 @@ public class DatasourcesFraction extends Datasources<DatasourcesFraction> implem
         return this;
     }
 
-    public interface EnhancedJdbcDriverConfigurator extends JdbcDriverConfigurator {
+    public interface EnhancedJdbcDriverConfigurator extends JDBCDriverConfigurator {
 
     }
 }

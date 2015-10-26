@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.config.remoting.EndpointConfiguration;
-import org.wildfly.swarm.config.remoting.HttpConnector;
+import org.wildfly.swarm.config.remoting.HTTPConnector;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.remoting.RemotingFraction;
@@ -30,7 +30,7 @@ public class RemotingConfiguration extends AbstractServerConfiguration<RemotingF
 
         RemotingFraction fraction = new RemotingFraction();
         fraction.endpointConfiguration(new EndpointConfiguration())
-                .httpConnector(new HttpConnector("http-remoting-connector")
+                .httpConnector(new HTTPConnector("http-remoting-connector")
                         .connectorRef("default"));
         return fraction;
     }

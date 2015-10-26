@@ -2,7 +2,7 @@ package org.wildfly.swarm.messaging;
 
 import java.util.Arrays;
 
-import org.wildfly.swarm.config.MessagingActivemq;
+import org.wildfly.swarm.config.MessagingActiveMQ;
 import org.wildfly.swarm.config.messaging_activemq.server.ConnectionFactory;
 import org.wildfly.swarm.config.messaging_activemq.server.PooledConnectionFactory;
 import org.wildfly.swarm.container.Fraction;
@@ -11,7 +11,7 @@ import org.wildfly.swarm.container.Fraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
-public class MessagingFraction extends MessagingActivemq<MessagingFraction> implements Fraction {
+public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> implements Fraction {
 
     private MessagingFraction() {
     }

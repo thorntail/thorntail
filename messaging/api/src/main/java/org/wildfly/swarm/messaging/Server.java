@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.wildfly.swarm.config.messaging_activemq.server.ConnectionFactory;
-import org.wildfly.swarm.config.messaging_activemq.server.JmsQueue;
-import org.wildfly.swarm.config.messaging_activemq.server.JmsQueueConfigurator;
-import org.wildfly.swarm.config.messaging_activemq.server.JmsTopic;
-import org.wildfly.swarm.config.messaging_activemq.server.JmsTopicConfigurator;
+import org.wildfly.swarm.config.messaging_activemq.server.JMSQueue;
+import org.wildfly.swarm.config.messaging_activemq.server.JMSQueueConfigurator;
+import org.wildfly.swarm.config.messaging_activemq.server.JMSTopic;
+import org.wildfly.swarm.config.messaging_activemq.server.JMSTopicConfigurator;
 import org.wildfly.swarm.config.messaging_activemq.server.PooledConnectionFactory;
 
 /**
@@ -44,8 +44,8 @@ public class Server extends org.wildfly.swarm.config.messaging_activemq.Server<S
     }
 
     @Override
-    public Server jmsQueue(String childKey, JmsQueueConfigurator config) {
-        JmsQueue queue = new JmsQueue(childKey);
+    public Server jmsQueue(String childKey, JMSQueueConfigurator config) {
+        JMSQueue queue = new JMSQueue(childKey);
         if ( config != null ) {
             config.configure(queue);
         }
@@ -58,8 +58,8 @@ public class Server extends org.wildfly.swarm.config.messaging_activemq.Server<S
     }
 
     @Override
-    public Server jmsTopic(String childKey, JmsTopicConfigurator config) {
-        JmsTopic topic = new JmsTopic(childKey);
+    public Server jmsTopic(String childKey, JMSTopicConfigurator config) {
+        JMSTopic topic = new JMSTopic(childKey);
         if( config != null ) {
             config.configure(topic);
         }
