@@ -411,6 +411,7 @@
   <modules>
     <!-- misc -->
     <module>fraction-list</module>
+    <module>archetype</module>
     <module>tools</module>
     <module>plugin</module>
     <module>arquillian</module>
