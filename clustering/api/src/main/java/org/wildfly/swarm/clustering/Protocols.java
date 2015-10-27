@@ -24,6 +24,10 @@ public class Protocols {
         return new Protocol( "PING" );
     }
 
+    public static Protocol KUBE_PING() {
+        return new Protocol( "openshift.KUBE_PING" );
+    }
+
     public static Protocol MERGE3() {
         return new Protocol( "MERGE3" );
     }

@@ -1,0 +1,10 @@
+<module xmlns="urn:jboss:module:1.3" name="org.openshift.ping">
+  <resources>
+    <artifact name="org.projectodd.openshift.ping:openshift-ping-common:${version.org.openshift.ping}"/>
+    <artifact name="org.projectodd.openshift.ping:openshift-ping-kube:${version.org.openshift.ping}"/>
+  </resources>
+
+  <dependencies>
+    <module name="org.jgroups"/>
+  </dependencies>
+</module>

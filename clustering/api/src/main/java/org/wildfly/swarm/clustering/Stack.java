@@ -54,10 +54,16 @@ public class Stack {
     }
 
     public static Stack defaultUDPStack() {
-        return new Stack("udp")
-                .transport(Transports.UDP("jgroups-udp"))
-                .protocol(Protocols.PING())
-                .protocol(Protocols.FD_SOCK("jgroups-udp-fd"))
+        Stack stack = new Stack("udp")
+                .transport(Transports.UDP("jgroups-udp"));
+
+        if (System.getenv("OPENSHIFT_BUILD_NAME") != null || System.getenv("OPENSHIFT_BUILD_REFERENCE") != null) {
+            stack.protocol(Protocols.KUBE_PING());
+        } else {
+            stack.protocol(Protocols.PING());
+        }
+
+        return stack.protocol(Protocols.FD_SOCK("jgroups-udp-fd"))
                 .protocol(Protocols.FD_ALL())
                 .protocol(Protocols.VERIFY_SUSPECT())
                 .protocol(Protocols.pbcast.NAKACK2())
