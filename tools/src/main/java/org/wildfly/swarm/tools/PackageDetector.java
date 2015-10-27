@@ -33,21 +33,26 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class PackageDetector {
-    public static Set<String> detectPackages(final ZipFile file) throws IOException {
+    public static Map<String, Set<String>> detectPackages(final ZipFile file) throws IOException {
         final PackageCollector visitor = new PackageCollector();
 
         return detectPackages(file, visitor);
     }
 
-    protected static Set<String> detectPackages(final ZipFile file,
+    protected static Map<String, Set<String>> detectPackages(final ZipFile file,
                                                 final PackageCollector visitor) throws IOException {
         final Enumeration<? extends ZipEntry> entries = file.entries();
         while (entries.hasMoreElements()) {
@@ -72,13 +77,17 @@ public class PackageDetector {
             }
         }
 
-        return visitor.packages();
+        return visitor.packageSources();
     }
 
     static class PackageCollector extends ClassVisitor {
 
         public Set<String> packages() {
-            return packages;
+            return Collections.unmodifiableSet(packages.keySet());
+        }
+
+        public Map<String, Set<String>> packageSources() {
+            return Collections.unmodifiableMap(packages);
         }
 
         public PackageCollector() {
@@ -92,6 +101,7 @@ public class PackageDetector {
                           final String signature,
                           final String superName,
                           final String[] interfaces) {
+            this.currentClass = name.replace('/', '.');
             addPackage(name);
 
             if (signature == null) {
@@ -345,7 +355,14 @@ public class PackageDetector {
                 if (pos > -1) {
                     name = name.substring(0, pos);
                 }
-                packages.add(name.replace('/', '.'));
+                name = name.replace('/', '.');
+
+                Set<String> sources = packages.get(name);
+                if (sources == null) {
+                    sources = new HashSet<>();
+                    packages.put(name, sources);
+                }
+                sources.add(this.currentClass);
             }
 
             return name;
@@ -414,7 +431,8 @@ public class PackageDetector {
             }
         }
 
-        private final Set<String> packages = new HashSet<>();
+        private String currentClass = null;
+        private final Map<String, Set<String>> packages = new HashMap<>();
 
         private final AnnotationVisitor ANNOTATION_VISITOR =
                 new AnnotationVisitor(Opcodes.ASM5) {
