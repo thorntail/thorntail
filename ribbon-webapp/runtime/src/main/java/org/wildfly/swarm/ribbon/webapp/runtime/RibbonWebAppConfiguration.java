@@ -28,7 +28,7 @@ public class RibbonWebAppConfiguration extends AbstractServerConfiguration<Ribbo
     @Override
     public List<Archive> getImplicitDeployments(RibbonWebAppFraction fraction) throws Exception {
         List<Archive> list = new ArrayList<>();
-        WARArchive war = ShrinkWrap.create(WARArchive.class);
+        WARArchive war = ShrinkWrap.create( WARArchive.class );
         war.addClass( RibbonToTheCurbSSEServlet.class );
         war.addModule("org.wildfly.swarm.ribbon");
         war.addAsResource(new ClassLoaderAsset("ribbon.js"), "js/ribbon.js");

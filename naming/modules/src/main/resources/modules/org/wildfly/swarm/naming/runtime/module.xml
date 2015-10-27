@@ -8,7 +8,7 @@
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
     <module name="org.wildfly.swarm.configuration"/>
-    
+
     <module name="org.jboss.as.naming"/>
   </dependencies>
 </module>
