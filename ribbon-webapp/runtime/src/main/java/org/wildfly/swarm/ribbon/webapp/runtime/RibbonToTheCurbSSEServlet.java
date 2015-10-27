@@ -1,4 +1,4 @@
-package org.wildfly.swarm.ribbon.webapp.servlet;
+package org.wildfly.swarm.ribbon.webapp.runtime;
 
 import java.io.IOException;
 import java.io.PrintWriter;

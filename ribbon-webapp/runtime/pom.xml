@@ -30,9 +30,8 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ribbon-webapp-servlet</artifactId>
+      <artifactId>wildfly-swarm-ribbon</artifactId>
       <version>${project.version}</version>
-      <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

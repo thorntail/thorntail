@@ -4,7 +4,6 @@
     <system export="true">
       <paths>
         <path name="org/wildfly/swarm/ribbon/webapp"/>
-        <path name="org/wildfly/swarm/ribbon/webapp/servlet"/>
       </paths>
     </system>
 

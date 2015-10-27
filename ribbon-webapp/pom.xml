@@ -23,7 +23,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>servlet</module>
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
