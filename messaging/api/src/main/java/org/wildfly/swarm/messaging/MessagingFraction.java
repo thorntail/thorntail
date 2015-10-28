@@ -41,6 +41,10 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
         return server(s);
     }
 
+    public MessagingFraction defaultServer() {
+        return defaultServer( (s)->{} );
+    }
+
     public MessagingFraction defaultServer(ServerConfigurator config) {
         server("default", (s) -> {
             s.enableInVm();
