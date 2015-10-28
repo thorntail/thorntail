@@ -47,7 +47,8 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
 
     @Override
     public MessagingFraction defaultFraction() {
-        return MessagingFraction.createDefaultFraction();
+        return MessagingFraction.createDefaultFraction()
+                .defaultServer((s)->{});
     }
 
     @Override
