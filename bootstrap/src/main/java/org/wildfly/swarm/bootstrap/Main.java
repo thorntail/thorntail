@@ -48,6 +48,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws Throwable {
+        System.setProperty("wildfly.swarm.version", VERSION);
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
 
         String mainClassName = null;
