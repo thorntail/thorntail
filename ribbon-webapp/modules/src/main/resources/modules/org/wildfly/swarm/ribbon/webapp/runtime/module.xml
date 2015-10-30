@@ -8,6 +8,8 @@
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
     <module name="org.wildfly.swarm.undertow"/>
+    <module name="org.wildfly.swarm.netflix.ribbon"/>
+    <module name="javax.servlet.api"/>
     <module name="org.jboss.shrinkwrap"/>
   </dependencies>
 </module>
