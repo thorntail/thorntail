@@ -63,6 +63,20 @@ import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
  */
 public class Container {
 
+    public static final String VERSION;
+
+    static {
+        InputStream in = Container.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
+        Properties props = new Properties();
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty("version", "unknown");
+    }
+
     private Map<Class<? extends Fraction>, Fraction> fractions = new ConcurrentHashMap<>();
     private Map<String, Fraction> fractionsBySimpleName = new ConcurrentHashMap<>();
 
@@ -105,6 +119,7 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container(boolean debugBootstrap) throws Exception {
+        System.setProperty("wildfly.swarm.version", VERSION);
         createServer(debugBootstrap);
         createShrinkWrapDomain();
     }

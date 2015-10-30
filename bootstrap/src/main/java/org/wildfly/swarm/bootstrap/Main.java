@@ -15,40 +15,22 @@
  */
 package org.wildfly.swarm.bootstrap;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Properties;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.Layout;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 /**
  * @author Bob McWhirter
  */
 public class Main {
 
-    public static final String VERSION;
-
-    static {
-        InputStream in = Main.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
-        Properties props = new Properties();
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        VERSION = props.getProperty("version", "unknown");
-    }
-
     public static void main(String[] args) throws Throwable {
-        System.setProperty("wildfly.swarm.version", VERSION);
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
 
         String mainClassName = null;
