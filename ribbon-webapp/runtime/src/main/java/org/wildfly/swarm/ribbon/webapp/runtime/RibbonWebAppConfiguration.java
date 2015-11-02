@@ -1,6 +1,5 @@
 package org.wildfly.swarm.ribbon.webapp.runtime;
 
-import com.netflix.ribbon.Ribbon;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
@@ -33,7 +32,8 @@ public class RibbonWebAppConfiguration extends AbstractServerConfiguration<Ribbo
         WARArchive war = ShrinkWrap.create( WARArchive.class );
         war.addClass( RibbonToTheCurbSSEServlet.class );
         war.addModule("org.wildfly.swarm.netflix.ribbon");
-        war.addAsResource(new ClassLoaderAsset("ribbon.js", this.getClass().getClassLoader()), "js/ribbon.js");
+        war.addAsWebResource(new ClassLoaderAsset("ribbon.js", this.getClass().getClassLoader()), "ribbon.js");
+        war.setContextRoot("/ribbon");
         war.as(RibbonArchive.class);
         list.add(war);
         return list;

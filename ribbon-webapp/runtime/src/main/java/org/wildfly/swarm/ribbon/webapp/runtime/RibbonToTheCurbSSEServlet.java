@@ -26,7 +26,7 @@ import org.wildfly.swarm.netflix.ribbon.RibbonTopologyListener;
 /**
  * @author Bob McWhirter
  */
-@WebServlet(urlPatterns = {"/system/ribbon/stream"}, asyncSupported = true)
+@WebServlet(urlPatterns = {"/system/stream"}, asyncSupported = true)
 public class RibbonToTheCurbSSEServlet extends HttpServlet {
 
     private RibbonTopology topology;
