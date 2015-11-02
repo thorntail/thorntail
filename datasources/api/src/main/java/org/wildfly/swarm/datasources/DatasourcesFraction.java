@@ -17,7 +17,7 @@ package org.wildfly.swarm.datasources;
 
 import org.wildfly.swarm.config.Datasources;
 import org.wildfly.swarm.config.datasources.DataSource;
-import org.wildfly.swarm.config.datasources.JDBCDriverConfigurator;
+import org.wildfly.swarm.config.datasources.JDBCDriverConsumer;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -30,14 +30,13 @@ public class DatasourcesFraction extends Datasources<DatasourcesFraction> implem
         return super.dataSource(value);
     }
 
-    public DatasourcesFraction jdbcDriver(String childKey, EnhancedJDBCDriverConfigurator config) {
-        JDBCDriver driver = new JDBCDriver(childKey);
-        config.configure(driver);
-        jdbcDriver( driver );
-        return this;
+    public DatasourcesFraction jdbcDriver(String childKey, JDBCDriverConsumer consumer) {
+        return super.jdbcDriver( childKey, (driver)->{
+            driver.driverName( childKey );
+            if ( consumer != null ) {
+                consumer.accept(driver);
+            }
+        });
     }
 
-    public interface EnhancedJDBCDriverConfigurator extends JDBCDriverConfigurator {
-
-    }
 }

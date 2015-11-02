@@ -64,10 +64,10 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
     @Override
     public void postInitialize(Container.PostInitContext initContext) {
         if ( initContext.hasFraction( "Messaging" )) {
-            if ( this.defaultBindingsService() == null ) {
+            if ( this.subresources().defaultBindingsService() == null ) {
                 this.defaultBindingsService( new DefaultBindingsService() );
             }
-            this.defaultBindingsService()
+            this.subresources().defaultBindingsService()
                     .jmsConnectionFactory( "java:jboss/DefaultJMSConnectionFactory" );
         }
     }

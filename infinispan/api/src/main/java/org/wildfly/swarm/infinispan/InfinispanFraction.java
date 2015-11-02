@@ -20,6 +20,7 @@ import org.wildfly.swarm.config.infinispan.CacheContainer;
 import org.wildfly.swarm.config.infinispan.cache_container.*;
 import org.wildfly.swarm.container.Fraction;
 
+import java.io.File;
 import java.util.Arrays;
 
 /**
@@ -33,60 +34,86 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
     public static InfinispanFraction createDefaultFraction() {
 
         // Default cache
-        CacheContainer replicatedCache = new CacheContainer("server")
+        CacheContainer<?> replicatedCache = new CacheContainer<>("server")
                 .defaultCache("default")
-                .aliases(Arrays.asList(new String[]{"singleton", "cluster"}))
-                .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
-                .replicatedCache(new ReplicatedCache("default")
-                        .mode("SYNC")
-                        .transactionComponent(
-                                new TransactionComponent().mode("BATCH")));
+                .alias("singleton")
+                .alias("cluster")
+                .jgroupsTransport((t) -> {
+                    t.lockTimeout(60000L);
+                })
+                .replicatedCache("default", (c) -> {
+                    c.mode("SYNC")
+                            .transactionComponent((t) -> {
+                                t.mode("BATCH");
+                            });
+                });
 
         // Web cache
-        CacheContainer webCache = new CacheContainer("web")
+        CacheContainer<?> webCache = new CacheContainer<>("web")
                 .defaultCache("dist")
-                .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
-                .distributedCache(new DistributedCache("dist")
-                        .mode("ASYNC")
-                        .l1Lifespan(0L)
-                        .owners(2)
-                        .lockingComponent(new LockingComponent().isolation("REPEATABLE_READ"))
-                        .transactionComponent(new TransactionComponent().mode("BATCH"))
-                        .fileStore(new FileStore()));
+                .jgroupsTransport((t) -> {
+                    t.lockTimeout(60000L);
+                })
+                .distributedCache("dist", (c) -> {
+                    c.mode("ASYNC")
+                            .l1Lifespan(0L)
+                            .owners(2)
+                            .lockingComponent(lc -> {
+                                lc.isolation("REPEATABLE_READ");
+                            })
+                            .transactionComponent(tc -> {
+                                tc.mode("BATCH");
+                            })
+                            .fileStore();
+                });
+
 
         // EJB cache
-        CacheContainer ejbCache = new CacheContainer("ejb")
+        CacheContainer<?> ejbCache = new CacheContainer<>("ejb")
                 .defaultCache("dist")
-                .aliases(Arrays.asList(new String[]{"sfsb"}))
-                .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
-                .distributedCache(new DistributedCache("dist")
-                        .mode("ASYNC")
-                        .l1Lifespan(0l)
-                        .owners(2)
-                        .lockingComponent(new LockingComponent().isolation("REPEATABLE_READ"))
-                        .transactionComponent(new TransactionComponent().mode("BATCH"))
-                        .fileStore(new FileStore()));
+                .alias("sfsb")
+                .jgroupsTransport(t -> {
+                    t.lockTimeout(60000L);
+                })
+                .distributedCache("dist", (c) -> {
+                    c.mode("ASYNC")
+                            .l1Lifespan(0l)
+                            .owners(2)
+                            .lockingComponent(lc -> lc.isolation("REPEATABLE_READ"))
+                            .transactionComponent(t -> t.mode("BATCH"))
+                            .fileStore();
+                });
 
         // Hibernate cache
-        CacheContainer hibernateCache = new CacheContainer("hibernate")
+        CacheContainer<?> hibernateCache = new CacheContainer<>("hibernate")
                 .defaultCache("local-query")
-                .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
-                .localCache(new LocalCache("local-query")
-                        .evictionComponent(new EvictionComponent().maxEntries(10000L).strategy("LRU"))
-                        .expirationComponent(new ExpirationComponent().maxIdle(100000L)))
-                .invalidationCache(new InvalidationCache("entity")
-                        .mode("SYNC")
-                        .transactionComponent(new TransactionComponent().mode("NON_XA"))
-                        .evictionComponent(new EvictionComponent().maxEntries(10000L).strategy("LRU"))
-                        .expirationComponent(new ExpirationComponent().maxIdle(100000L)))
-                .replicatedCache(new ReplicatedCache("timestamps").mode("ASYNC"));
+                .jgroupsTransport(t -> {
+                    t.lockTimeout(60000L);
+                })
+                .localCache("local-query", (c) -> {
+                    c.evictionComponent(ec ->
+                            ec.maxEntries(10000L).strategy("LRU")
+                    );
+                    c.expirationComponent(ec ->
+                            ec.maxIdle(100000L)
+                    );
+                })
+                .invalidationCache("entity", (c) -> {
+                    c.mode("SYNC")
+                            .transactionComponent(tc -> tc.mode("NON_XA"))
+                            .evictionComponent(ec -> ec.maxEntries(10000L).strategy("LRU"))
+                            .expirationComponent(ec -> ec.maxIdle(100000L));
+                })
+                .replicatedCache("timestamps", (c) -> {
+                    c.mode("ASYNC");
+                });
 
 
         InfinispanFraction fraction = new InfinispanFraction();
 
         return fraction.cacheContainer(replicatedCache)
-                        .cacheContainer(webCache)
-                        .cacheContainer(ejbCache)
-                        .cacheContainer(hibernateCache);
+                .cacheContainer(webCache)
+                .cacheContainer(ejbCache)
+                .cacheContainer(hibernateCache);
     }
 }

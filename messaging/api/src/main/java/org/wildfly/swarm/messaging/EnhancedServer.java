@@ -20,29 +20,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.wildfly.swarm.config.messaging_activemq.server.ConnectionFactory;
 import org.wildfly.swarm.config.messaging_activemq.server.JMSQueue;
-import org.wildfly.swarm.config.messaging_activemq.server.JMSQueueConfigurator;
+import org.wildfly.swarm.config.messaging_activemq.server.JMSQueueConsumer;
 import org.wildfly.swarm.config.messaging_activemq.server.JMSTopic;
-import org.wildfly.swarm.config.messaging_activemq.server.JMSTopicConfigurator;
+import org.wildfly.swarm.config.messaging_activemq.server.JMSTopicConsumer;
 import org.wildfly.swarm.config.messaging_activemq.server.PooledConnectionFactory;
 
 /**
  * @author Bob McWhirter
  */
-public class Server extends org.wildfly.swarm.config.messaging_activemq.Server<Server> {
+public class EnhancedServer extends org.wildfly.swarm.config.messaging_activemq.Server<EnhancedServer> {
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
-    public Server(String key) {
+    public EnhancedServer(String key) {
         super(key);
     }
 
-    public Server enableInVm() {
+    public EnhancedServer enableInVm() {
         int serverId = COUNTER.getAndIncrement();
 
-        inVmConnector( "in-vm", (c)->{
-            c.serverId( serverId );
+        inVmConnector("in-vm", (c) -> {
+            c.serverId(serverId);
         });
 
-        inVmAcceptor( "in-vm", (a)->{
+        inVmAcceptor("in-vm", (a) -> {
             a.serverId(serverId);
         });
 
@@ -59,30 +59,26 @@ public class Server extends org.wildfly.swarm.config.messaging_activemq.Server<S
     }
 
     @Override
-    public Server jmsQueue(String childKey, JMSQueueConfigurator config) {
-        JMSQueue queue = new JMSQueue(childKey);
-        if ( config != null ) {
-            config.configure(queue);
-        }
-        System.err.println( "queeu entries: " + queue.entries() );
-        if ( queue.entries() == null ) {
-            queue.entries( Arrays.asList( "java:/jms/queue/" + childKey ));
-        }
-        jmsQueue(queue);
-        return this;
+    public EnhancedServer jmsQueue(String childKey, JMSQueueConsumer config) {
+        return super.jmsQueue(childKey, (q) -> {
+            if (config != null) {
+                config.accept(q);
+            }
+            if (q.entries() == null || q.entries().isEmpty()) {
+                q.entry("java:/jms/queue/" + childKey);
+            }
+        });
     }
 
     @Override
-    public Server jmsTopic(String childKey, JMSTopicConfigurator config) {
-        JMSTopic topic = new JMSTopic(childKey);
-        if( config != null ) {
-            config.configure(topic);
-        }
-        System.err.println( "topic entries: " + topic.entries() );
-        if ( topic.entries() == null ) {
-            topic.entries( Arrays.asList( "java:/jms/topic/" + childKey ));
-        }
-        jmsTopic(topic);
-        return this;
+    public EnhancedServer jmsTopic(String childKey, JMSTopicConsumer config) {
+        return super.jmsTopic(childKey, (t) -> {
+            if (config != null) {
+                config.accept(t);
+            }
+            if (t.entries() == null || t.entries().isEmpty()) {
+                t.entry("java:/jms/topic/" + childKey);
+            }
+        });
     }
 }

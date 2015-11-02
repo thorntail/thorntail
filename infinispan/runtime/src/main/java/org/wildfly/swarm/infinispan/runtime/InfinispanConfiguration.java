@@ -54,6 +54,5 @@ public class InfinispanConfiguration extends AbstractServerConfiguration<Infinis
         list.addAll(Marshaller.marshal(fraction));
 
         return list;
-
     }
 }

@@ -15,11 +15,7 @@
  */
 package org.wildfly.swarm.messaging;
 
-import java.util.Arrays;
-
 import org.wildfly.swarm.config.MessagingActiveMQ;
-import org.wildfly.swarm.config.messaging_activemq.server.ConnectionFactory;
-import org.wildfly.swarm.config.messaging_activemq.server.PooledConnectionFactory;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -32,24 +28,24 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
     }
 
     public static MessagingFraction createDefaultFraction() {
-        return new MessagingFraction();
-    }
-
-    public MessagingFraction server(String childKey, ServerConfigurator config) {
-        Server s = new Server(childKey);
-        config.configure(s);
-        return server(s);
+        return new MessagingFraction().defaultServer();
     }
 
     public MessagingFraction defaultServer() {
-        return defaultServer( (s)->{} );
+        return defaultServer((s) -> {
+            s.enableInVm();
+        });
     }
 
-    public MessagingFraction defaultServer(ServerConfigurator config) {
-        server("default", (s) -> {
-            s.enableInVm();
-            config.configure(s);
+    public MessagingFraction server(String childKey, EnhancedServerConsumer consumer) {
+        return super.server( ()->{
+            EnhancedServer s = new EnhancedServer(childKey);
+            consumer.accept(s);
+            return s;
         });
-        return this;
+    }
+
+    public MessagingFraction defaultServer(EnhancedServerConsumer config) {
+        return server( "default", config );
     }
 }
