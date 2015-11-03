@@ -1,1 +1,1 @@
-org.wildfly.swarm.jgroups.ClusteringRuntimeModuleProvider
+org.wildfly.swarm.jgroups.JGroupsRuntimeModuleProvider

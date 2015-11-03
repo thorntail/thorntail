@@ -15,16 +15,18 @@
  */
 package org.wildfly.swarm.jgroups;
 
+import org.wildfly.swarm.container.RuntimeModuleProvider;
+
 /**
  * @author Bob McWhirter
  */
-public class Transports {
-
-    public static Transport TCP(String socketBinding) {
-        return new Transport("TCP", socketBinding);
+public class JGroupsRuntimeModuleProvider implements RuntimeModuleProvider {
+    public String getModuleName() {
+        return "org.wildfly.swarm.jgroups";
     }
 
-    public static Transport UDP(String socketBinding) {
-        return new Transport("UDP", socketBinding);
+    @Override
+    public String getSlotName() {
+        return "runtime";
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.jgroups;
 
+import org.wildfly.swarm.config.JGroups;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.SocketBinding;
@@ -25,65 +26,37 @@ import java.util.List;
 /**
  * @author Bob McWhirter
  */
-public class JGroupsFraction implements Fraction {
-
-    private List<Channel> channels = new ArrayList<Channel>();
-    private List<Stack> stacks = new ArrayList<Stack>();
-
-    private String defaultChannel;
-    private String defaultStack;
+public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fraction {
 
     public JGroupsFraction() {
     }
 
-    public JGroupsFraction channel(Channel channel) {
-        this.channels.add( channel );
-        return this;
-    }
 
-    public JGroupsFraction defaultChannel(Channel channel) {
-        this.channels.add( channel );
-        return defaultChannel( channel.name() );
-    }
-
-    public JGroupsFraction defaultChannel(String channel) {
-        this.defaultChannel = channel;
-        return this;
-    }
-
-    public Channel defaultChannel() {
-        return this.channels.stream()
-                .filter( (e)-> e.name().equals( this.defaultChannel ) )
-                .findFirst().orElse(null);
-    }
-
-    public List<Channel> channels() {
-        return this.channels;
-    }
-
-    public JGroupsFraction stack(Stack stack) {
-        this.stacks.add( stack );
-        return this;
-    }
-
-    public JGroupsFraction defaultStack(Stack stack) {
-        this.stacks.add( stack );
-        return defaultStack( stack.name() );
-    }
-
-    public JGroupsFraction defaultStack(String stack) {
-        this.defaultStack = stack;
-        return this;
-    }
-
-    public List<Stack> stacks() {
-        return this.stacks;
-    }
-
-    public Stack defaultStack() {
-        return this.stacks.stream()
-                .filter( (e)->e.name().equals( this.defaultStack ) )
-                .findFirst().orElse(null);
+    public static JGroupsFraction defaultFraction() {
+        return new JGroupsFraction()
+                .defaultChannel( "swarm-jgroups")
+                .stack( "udp", (s)->{
+                    s.transport( "UDP", (t)->{
+                        t.socketBinding("jgroups-udp");
+                    });
+                    s.protocol( "PING" );
+                    s.protocol( "FD_SOCK", (p)->{
+                        p.socketBinding( "jgroups-udp-fd" );
+                    });
+                    s.protocol( "FD_ALL" );
+                    s.protocol( "VERIFY_SUSPECT" );
+                    s.protocol( "pbcast.NAKACK2" );
+                    s.protocol( "UNICAST3" );
+                    s.protocol( "pbcast.STABLE" );
+                    s.protocol( "pbcast.GMS" );
+                    s.protocol( "UFC" );
+                    s.protocol( "MFC" );
+                    s.protocol( "FRAG2" );
+                    s.protocol( "RSVP" );
+                })
+                .channel( "swarm-jgroups", (c)->{
+                    c.stack( "udp" );
+                });
     }
 
     @Override

@@ -15,22 +15,18 @@
  */
 package org.wildfly.swarm.jgroups.runtime;
 
-import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.PathElement;
-import org.jboss.dmr.ModelNode;
-import org.jboss.dmr.ValueExpression;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.jgroups.Channel;
-import org.wildfly.swarm.jgroups.JGroupsFraction;
-import org.wildfly.swarm.jgroups.Protocol;
-import org.wildfly.swarm.jgroups.SocketBindingProtocol;
-import org.wildfly.swarm.jgroups.Stack;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.config.runtime.invocation.Marshaller;
+import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.jgroups.JGroupsFraction;
+
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * @author Bob McWhirter
@@ -43,13 +39,11 @@ public class JGroupsConfiguration extends AbstractServerConfiguration<JGroupsFra
 
     @Override
     public JGroupsFraction defaultFraction() {
-        return new JGroupsFraction()
-                .defaultChannel(new Channel("swarm-jgroups"))
-                .defaultStack(Stack.defaultUDPStack());
+        return JGroupsFraction.defaultFraction();
     }
 
     @Override
-    public List<ModelNode> getList(JGroupsFraction fraction) {
+    public List<ModelNode> getList(JGroupsFraction fraction) throws Exception {
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode node = new ModelNode();
@@ -57,133 +51,7 @@ public class JGroupsConfiguration extends AbstractServerConfiguration<JGroupsFra
         node.get(OP).set(ADD);
         list.add(node);
 
-        PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, "jgroups"));
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.toModelNode());
-        node.get(OP).set(ADD);
-        if (fraction.defaultChannel() != null) {
-            node.get("default-channel").set(fraction.defaultChannel().name());
-        }
-        if (fraction.defaultStack() != null) {
-            node.get("default-stack").set(fraction.defaultStack().name());
-        }
-        list.add(node);
-
-        for (Channel channel : fraction.channels()) {
-            node = new ModelNode();
-            node.get(OP_ADDR).set(address.append("channel", channel.name()).toModelNode());
-            node.get(OP).set(ADD);
-            list.add(node);
-        }
-
-        for (Stack stack : fraction.stacks()) {
-            PathAddress stackAddr = address.append("stack", stack.name());
-
-            node = new ModelNode();
-            node.get(OP_ADDR).set(stackAddr.toModelNode());
-            node.get(OP).set(ADD);
-            list.add(node);
-
-            node = new ModelNode();
-            node.get(OP_ADDR).set(stackAddr.append("transport", stack.transport().name()).toModelNode());
-            node.get(OP).set(ADD);
-            node.get("socket-binding").set(stack.transport().socketBinding());
-            for (Map.Entry<String, String> entry : stack.transport().properties().entrySet()) {
-                node.get(entry.getKey()).set(new ValueExpression(entry.getValue()));
-            }
-
-            list.add(node);
-
-            for (Protocol protocol : stack.protocols()) {
-                node = new ModelNode();
-                node.get(OP_ADDR).set(stackAddr.append("protocol", protocol.name()).toModelNode());
-                node.get(OP).set(ADD);
-                if (protocol instanceof SocketBindingProtocol) {
-                    node.get(SOCKET_BINDING).set(((SocketBindingProtocol) protocol).socketBinding());
-                }
-                for (Map.Entry<String, String> entry : protocol.properties().entrySet()) {
-                    node.get(entry.getKey()).set(new ValueExpression(entry.getValue()));
-                }
-                list.add(node);
-            }
-        }
-
-        /*
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("transport", "TCP").toModelNode());
-        node.get(OP).set(ADD);
-        node.get(SOCKET_BINDING).set("jgroups-tcp");
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "MPING").toModelNode());
-        node.get(OP).set(ADD);
-        node.get(SOCKET_BINDING).set("jgroups-mping");
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "MERGE3").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "FD_SOCK").toModelNode());
-        node.get(OP).set(ADD);
-        node.get(SOCKET_BINDING).set("jgroups-tcp-fd");
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "FD").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "VERIFY_SUSPECT").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "pbcast.NAKACK2").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "UNICAST3").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "pbcast.STABLE").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "pbcast.GMS").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "MFC").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "FRAG2").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(address.append("stack", "tcp").append("protocol", "RSVP").toModelNode());
-        node.get(OP).set(ADD);
-        list.add(node);
-
-*/
+        list.addAll(Marshaller.marshal( fraction ) );
 
         return list;
 
