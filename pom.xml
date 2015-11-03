@@ -438,6 +438,7 @@
     <module>io</module>
     <module>jaxrs</module>
     <module>jaxrs-jaxb</module>
+    <module>jaxrs-jsonp</module>
     <module>jaxrs-multipart</module>
     <module>jaxrs-weld</module>
     <module>jca</module>
