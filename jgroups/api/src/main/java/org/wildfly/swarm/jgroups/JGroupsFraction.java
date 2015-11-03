@@ -39,7 +39,13 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                     s.transport( "UDP", (t)->{
                         t.socketBinding("jgroups-udp");
                     });
-                    s.protocol( "PING" );
+                    if (System.getenv("OPENSHIFT_BUILD_NAME") != null ||
+                            System.getenv("OPENSHIFT_BUILD_REFERENCE") != null ||
+                            "openshift".equalsIgnoreCase(System.getProperty("wildfly.swarm.environment"))) {
+                        s.protocol( "openshift.KUBE_PING" );
+                    } else {
+                        s.protocol( "PING" );
+                    }
                     s.protocol( "FD_SOCK", (p)->{
                         p.socketBinding( "jgroups-udp-fd" );
                     });

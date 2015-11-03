@@ -5,6 +5,8 @@
   </resources>
 
   <dependencies>
+    <module name="io.undertow.core"/>
+    <module name="javax.api"/>
     <module name="org.jgroups"/>
   </dependencies>
 </module>
