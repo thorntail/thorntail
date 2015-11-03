@@ -40,7 +40,7 @@
 
 
     <version.wildfly>10.0.0.CR4</version.wildfly>
-    <version.wildfly.config-api>0.3.13</version.wildfly.config-api>
+    <version.wildfly.config-api>0.3.14-SNAPSHOT</version.wildfly.config-api>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.org.arquillian>1.1.8.Final</version.org.arquillian>
@@ -426,7 +426,6 @@
 
     <!-- fractions -->
     <module>bean-validation</module>
-    <module>clustering</module>
     <module>connector</module>
     <module>datasources</module>
     <module>ee</module>
@@ -442,6 +441,7 @@
     <module>jaxrs-multipart</module>
     <module>jaxrs-weld</module>
     <module>jca</module>
+    <module>jgroups</module>
     <module>jolokia</module>
     <module>jmx</module>
     <module>jpa</module>

@@ -36,6 +36,7 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -191,6 +192,10 @@ public class Container {
             fraction.initialize(new InitContext());
         }
         return this;
+    }
+
+    public Container fraction(Supplier<Fraction> supplier) {
+        return fraction( supplier.get() );
     }
 
     public List<Fraction> fractions() {

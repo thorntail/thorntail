@@ -15,7 +15,10 @@
  */
 package org.wildfly.swarm.messaging;
 
+import java.util.function.Consumer;
+
 import org.wildfly.swarm.config.MessagingActiveMQ;
+import org.wildfly.swarm.config.messaging_activemq.ServerConsumer;
 import org.wildfly.swarm.container.Fraction;
 
 /**

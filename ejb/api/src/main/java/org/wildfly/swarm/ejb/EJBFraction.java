@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.ejb;
 
-import org.wildfly.swarm.config.Ejb3;
+import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.ejb3.AsyncService;
 import org.wildfly.swarm.config.ejb3.Cache;
 import org.wildfly.swarm.config.ejb3.StrictMaxBeanInstancePool;
@@ -36,7 +36,7 @@ import java.util.Map;
  * @author Ken Finnigan
  * @author Lance Ball
  */
-public class EJBFraction extends Ejb3<EJBFraction> implements Fraction {
+public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
     protected EJBFraction() {
 

@@ -22,6 +22,11 @@
         <path name="org/wildfly/swarm/config/infinispan/cache_container"/>
         <path name="org/wildfly/swarm/config/io"/>
         <path name="org/wildfly/swarm/config/jca"/>
+        <path name="org/wildfly/swarm/config/jgroups"/>
+        <path name="org/wildfly/swarm/config/jgroups/channel"/>
+        <path name="org/wildfly/swarm/config/jgroups/stack"/>
+        <path name="org/wildfly/swarm/config/jgroups/stack/relay"/>
+        <path name="org/wildfly/swarm/config/jgroups/stack/transport"/>
         <path name="org/wildfly/swarm/config/logging"/>
         <path name="org/wildfly/swarm/config/mail"/>
         <path name="org/wildfly/swarm/config/mail/mail_session"/>
