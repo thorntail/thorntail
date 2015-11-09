@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.messaging;
 
-import java.util.function.Consumer;
-
 import org.wildfly.swarm.config.MessagingActiveMQ;
-import org.wildfly.swarm.config.messaging_activemq.ServerConsumer;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -35,9 +32,11 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
     }
 
     public MessagingFraction defaultServer() {
-        return defaultServer((s) -> {
-            s.enableInVm();
-        });
+        if (this.defaultServer == null) {
+            this.defaultServer = server("default", EnhancedServer::enableInVm);
+        }
+
+        return this.defaultServer;
     }
 
     public MessagingFraction server(String childKey, EnhancedServerConsumer consumer) {
@@ -48,7 +47,5 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
         });
     }
 
-    public MessagingFraction defaultServer(EnhancedServerConsumer config) {
-        return server( "default", config );
-    }
+    private MessagingFraction defaultServer = null;
 }
