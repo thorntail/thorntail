@@ -83,6 +83,11 @@ public class MavenArtifactUtil {
                 settings.setLocalRepository(java.nio.file.Paths.get(localRepositoryPath));
             }
             settings.resolveActiveSettings();
+
+            if ( ! settings.getRemoteRepositories().contains( "http://repository.jboss.org/nexus/content/groups/public/" ) ) {
+                settings.getRemoteRepositories().add( "http://repository.jboss.org/nexus/content/groups/public/" );
+            }
+            
             mavenSettings = settings;
             return mavenSettings;
         }
