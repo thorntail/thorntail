@@ -15,6 +15,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>wildfly-swarm-webservices-test</artifactId>
+
+    <name>WildFly Swarm: WebServices Test</name>
+    <description>WildFly Swarm: WebServices Test</description>
+
     <build>
         <plugins>
             <plugin>
