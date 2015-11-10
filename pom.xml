@@ -461,6 +461,7 @@
     <module>transactions</module>
     <module>undertow</module>
     <module>weld</module>
+    <module>webservices</module>
 
     <module>archaius</module>
     <module>guava</module>
