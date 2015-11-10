@@ -32,7 +32,7 @@ public class LogstashFraction implements Fraction {
     private String level = "INFO";
 
     public LogstashFraction() {
-        this("wildflySwarmNode", "${jboss.node.name}");
+        this("metaData", "wildflySwarmNode=${jboss.node.name}");
         hostname( "${logstash.host}" );
     }
 
