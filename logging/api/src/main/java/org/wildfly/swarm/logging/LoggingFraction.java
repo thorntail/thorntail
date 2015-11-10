@@ -36,13 +36,18 @@ import java.util.*;
 public class LoggingFraction extends Logging<LoggingFraction> implements Fraction {
 
     public static final String CONSOLE = "CONSOLE";
+
     public static final String PATTERN = "PATTERN";
+
     public static final String COLOR_PATTERN = "COLOR_PATTERN";
 
     public final class Level {
         public static final String TRACE = "TRACE";
+
         public static final String DEBUG = "DEBUG";
+
         public static final String ERROR = "ERROR";
+
         public static final String INFO = "INFO";
     }
 
@@ -118,7 +123,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
     /**
      * Add a new PatternFormatter to this Logger
      *
-     * @param name the name of the formatter
+     * @param name    the name of the formatter
      * @param pattern the pattern string
      * @return This fraction.
      */
@@ -130,8 +135,8 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
     /**
      * Add a CustomFormatter to this logger
      *
-     * @param name the name of the formatter
-     * @param module the module that the logging handler depends on
+     * @param name      the name of the formatter
+     * @param module    the module that the logging handler depends on
      * @param className the logging handler class to be used
      * @return This fraction.
      */
@@ -142,9 +147,9 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
     /**
      * Add a CustomFormatter to this logger
      *
-     * @param name the name of the formatter
-     * @param module the module that the logging handler depends on
-     * @param className the logging handler class to be used
+     * @param name       the name of the formatter
+     * @param module     the module that the logging handler depends on
+     * @param className  the logging handler class to be used
      * @param properties the properties
      * @return this fraction
      */
@@ -155,15 +160,16 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
             final String nextElement = (String) names.nextElement();
             formatterProperties.put(nextElement, properties.getProperty(nextElement));
         }
-        customFormatter( new CustomFormatter(name)
-                        .module(module)
-                        .attributeClass(className)
-                        .properties(formatterProperties) );
+        customFormatter(new CustomFormatter(name)
+                .module(module)
+                .attributeClass(className)
+                .properties(formatterProperties));
         return this;
     }
 
     /**
      * Get the list of PatternFormatter configurations
+     *
      * @return The list of formatters
      */
     public List<PatternFormatter> patternFormatters() {
@@ -172,6 +178,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
 
     /**
      * Get the list of CustomFormatter configurations
+     *
      * @return The list of custom formatters
      */
     public List<CustomFormatter> customFormatters() {
@@ -183,19 +190,20 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
     /**
      * Add a ConsoleHandler to the list of handlers for this logger.
      *
-     * @param level The logging level
+     * @param level     The logging level
      * @param formatter A pattern string for the console's formatter
      * @return This fraction
      */
     public LoggingFraction consoleHandler(String level, String formatter) {
-        consoleHandler( new ConsoleHandler(CONSOLE)
-                        .level(level)
-                        .namedFormatter(formatter) );
+        consoleHandler(new ConsoleHandler(CONSOLE)
+                .level(level)
+                .namedFormatter(formatter));
         return this;
     }
 
     /**
      * Get the list of ConsoleHandlers for this logger
+     *
      * @return the list of handlers
      */
     public List<ConsoleHandler> consoleHandlers() {
@@ -205,9 +213,9 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
     /**
      * Add a FileHandler to the list of handlers for this logger
      *
-     * @param name The name of the handler
-     * @param path The log file path
-     * @param level The logging level
+     * @param name      The name of the handler
+     * @param path      The log file path
+     * @param level     The logging level
      * @param formatter The pattern string for the formatter
      * @return This fraction
      */
@@ -215,15 +223,16 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
         Map fileProperties = new HashMap<>();
         fileProperties.put("path", path);
         fileProperties.put("relative-to", "jboss.server.log.dir");
-        fileHandler( new FileHandler(name)
-                        .level(level)
-                        .formatter(formatter)
-                        .file(fileProperties) );
+        fileHandler(new FileHandler(name)
+                .level(level)
+                .formatter(formatter)
+                .file(fileProperties));
         return this;
     }
 
     /**
      * Get the list of FileHandlers configured on this logger
+     *
      * @return the list of FileHandlers
      */
     public List<FileHandler> fileHandlers() {
@@ -233,11 +242,11 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
     /**
      * Add a CustomHandler to this logger
      *
-     * @param name the name of the handler
-     * @param module the module that the handler uses
-     * @param className the handler class name
+     * @param name       the name of the handler
+     * @param module     the module that the handler uses
+     * @param className  the handler class name
      * @param properties properties for the handler
-     * @param formatter a pattern string for the formatter
+     * @param formatter  a pattern string for the formatter
      * @return this fraction
      */
     public LoggingFraction customHandler(String name, String module, String className, Properties properties, String formatter) {
@@ -248,16 +257,17 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
             handlerProperties.put(nextElement, properties.getProperty(nextElement));
         }
 
-        customHandler( new CustomHandler(name)
-                        .module(module)
-                        .attributeClass(className)
-                        .formatter(formatter)
-                        .properties(handlerProperties) );
+        customHandler(new CustomHandler(name)
+                .module(module)
+                .attributeClass(className)
+                .formatter(formatter)
+                .properties(handlerProperties));
         return this;
     }
 
     /**
      * Get the list of CustomHandlers for this logger
+     *
      * @return the list of handlers
      */
     public List<CustomHandler> customHandlers() {
@@ -266,6 +276,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
 
     /**
      * Get the list of AsyncHandlers for this logger
+     *
      * @return the list of handlers
      */
     public List<AsyncHandler> asyncHandlers() {
@@ -274,6 +285,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
 
     /**
      * Get the list of SyslogHandlers for this logger
+     *
      * @return the list of handlers
      */
     public List<SyslogHandler> syslogHandlers() {
@@ -286,22 +298,14 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
 
     /**
      * Add a root logger to this fraction
-     * @param level the log level
-     * @return this fraction
-     */
-    public LoggingFraction rootLogger(String level) {
-        return rootLogger(level, null);
-    }
-
-    /**
-     * Add a root logger to this fraction
-     * @param level the log level
+     *
+     * @param level    the log level
      * @param handlers a list of handlers
      * @return this fraction
      */
     public LoggingFraction rootLogger(String level, String... handlers) {
-        rootLogger( new RootLogger().level(level)
-                        .handlers(new ArrayList<>(Arrays.asList(handlers))) );
+        rootLogger(new RootLogger().level(level)
+                .handlers(handlers));
         return this;
     }
 
