@@ -32,20 +32,35 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
     }
 
     public MessagingFraction defaultServer() {
-        if (this.defaultServer == null) {
-            this.defaultServer = server("default", EnhancedServer::enableInVm);
-        }
+        findOrCreateDefaultServer();
 
-        return this.defaultServer;
+        return this;
     }
 
-    public MessagingFraction server(String childKey, EnhancedServerConsumer consumer) {
-        return super.server( ()->{
-            EnhancedServer s = new EnhancedServer(childKey);
-            consumer.accept(s);
+    public MessagingFraction defaultServer(EnhancedServerConsumer config) {
+        config.accept(findOrCreateDefaultServer());
+
+        return this;
+    }
+
+    public MessagingFraction server(String childKey, EnhancedServerConsumer config) {
+        super.server(() -> {
+            final EnhancedServer s = new EnhancedServer(childKey);
+            config.accept(s);
+
             return s;
         });
+
+        return this;
     }
 
-    private MessagingFraction defaultServer = null;
+    private EnhancedServer findOrCreateDefaultServer() {
+        EnhancedServer server = (EnhancedServer) subresources().server("default");
+        if (server == null) {
+            server("default", EnhancedServer::enableInVm);
+        }
+
+        return (EnhancedServer) subresources().server("default");
+    }
 }
+
