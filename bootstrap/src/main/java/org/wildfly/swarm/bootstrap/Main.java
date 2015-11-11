@@ -17,11 +17,15 @@ package org.wildfly.swarm.bootstrap;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.Layout;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -30,9 +34,28 @@ import java.util.jar.Manifest;
  */
 public class Main {
 
-    public static void main(String[] args) throws Throwable {
-        System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+    public static final String DEFAULT_MAIN_CLASS_NAME = "org.wildfly.swarm.Swarm";
 
+    public static void main(String...args) throws Throwable {
+        new Main(args).run();
+    }
+
+    private final String[] args;
+
+    public Main(String...args) throws Throwable {
+        this.args = args;
+    }
+
+    public void run() throws Throwable {
+        setupBootModuleLoader();
+        invoke( getMainClass() );
+    }
+
+    public void setupBootModuleLoader() {
+        System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+    }
+
+    public String getMainClassName() throws IOException, URISyntaxException {
         String mainClassName = null;
         Manifest manifest = Layout.getInstance().getManifest();
 
@@ -41,13 +64,21 @@ public class Main {
         }
 
         if (mainClassName == null) {
-            mainClassName = "org.wildfly.swarm.Swarm";
+            mainClassName = DEFAULT_MAIN_CLASS_NAME;
         }
 
-        Module app = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create("swarm.application" ));
+        return mainClassName;
+    }
 
-        Class<?> mainClass = app.getClassLoader().loadClass(mainClassName);
+    public Class<?> getMainClass() throws IOException, URISyntaxException, ModuleLoadException, ClassNotFoundException {
+        String mainClassName = getMainClassName();
 
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+
+        return module.getClassLoader().loadClass(mainClassName);
+    }
+
+    public void invoke(Class<?> mainClass) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         final Method mainMethod = mainClass.getMethod("main", String[].class);
 
         final int modifiers = mainMethod.getModifiers();
@@ -55,14 +86,8 @@ public class Main {
             throw new NoSuchMethodException("Main method is not static for " + mainClass);
         }
 
-        try {
-            mainMethod.invoke(null, new Object[]{args});
-        } catch (Throwable e) {
-            while ( e != null ) {
-                e.printStackTrace();
-                e = e.getCause();
-            }
-        }
-
+        mainMethod.invoke(null, new Object[]{this.args});
     }
+
+
 }

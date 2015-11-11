@@ -1,40 +1,26 @@
-package org.wildfly.swarm.bootstrap;
+package org.wildfly.swarm.bootstrap.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.CodeSource;
-import java.util.Arrays;
 import java.util.jar.Attributes;
-import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
-import org.wildfly.swarm.bootstrap.util.Layout;
+import org.wildfly.swarm.bootstrap.AbstractBootstrapIntegrationTestCase;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Bob McWhirter
  */
-public class LayoutIT {
+public class LayoutIT extends AbstractBootstrapIntegrationTestCase {
 
     @Test
     public void testIsUberJar() throws Exception {
         JavaArchive archive = createBootstrapArchive();
-
-        archive.addAsManifestResource(EmptyAsset.INSTANCE, "wildfly-swarm.properties");
 
         ClassLoader cl = createClassLoader(archive);
         Class<?> layoutClass = cl.loadClass(Layout.class.getName());
@@ -82,35 +68,4 @@ public class LayoutIT {
         assertThat(fetchedManifest.getMainAttributes().get(new Attributes.Name("Wildfly-Swarm-Main-Class"))).isEqualTo("MyMainClass");
     }
 
-    protected ClassLoader createClassLoader(JavaArchive archive) throws IOException {
-        File tmpFile = export(archive);
-        return new URLClassLoader(new URL[]{tmpFile.toURI().toURL()}, null);
-    }
-
-    protected File export(JavaArchive archive) throws IOException {
-        File tmpFile = File.createTempFile("boostrap-archive", ".jar");
-        tmpFile.deleteOnExit();
-        tmpFile.delete();
-        archive.as(ZipExporter.class).exportTo(tmpFile);
-        return tmpFile;
-    }
-
-    protected JavaArchive createBootstrapArchive() throws IOException {
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
-        archive.as(ZipImporter.class).importFrom(new JarFile(findBootstrapJar()));
-        return archive;
-    }
-
-    protected File findBootstrapJar() {
-        Path targetDir = Paths.get("target");
-
-        File[] children = targetDir.toFile().listFiles();
-        for (File child : children) {
-            if (child.getName().startsWith("wildfly-swarm-bootstrap") && child.getName().endsWith(".jar") && !child.getName().endsWith("-sources.jar")) {
-                return child;
-            }
-        }
-
-        return null;
-    }
 }
