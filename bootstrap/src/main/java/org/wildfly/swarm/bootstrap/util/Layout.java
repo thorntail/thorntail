@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarFile;
@@ -37,9 +38,68 @@ import org.jboss.modules.ModuleLoadException;
  */
 public class Layout {
 
-    private static ClassLoader BOOTSTRAP_CLASSLOADER = null;
+    private static Layout INSTANCE;
 
-    public static boolean isFatJar() throws IOException {
+
+    private final Path root;
+
+    private final boolean uberJar;
+
+    private ClassLoader bootstrapClassLoader;
+
+    public static Layout getInstance() throws IOException, URISyntaxException {
+        if (INSTANCE == null) {
+            INSTANCE = new Layout(Layout.class.getProtectionDomain().getCodeSource());
+        }
+        return INSTANCE;
+    }
+
+    Layout(CodeSource codeSource) throws IOException, URISyntaxException {
+        this.root = determineRoot(codeSource);
+        this.uberJar = determineIfIsUberJar();
+    }
+
+    public Path getRoot() {
+        return this.root;
+    }
+
+    public boolean isUberJar() {
+        return this.uberJar;
+    }
+
+    public Manifest getManifest() throws IOException {
+        Path root = getRoot();
+        if (isUberJar()) {
+            try (JarFile jar = new JarFile(root.toFile())) {
+                ZipEntry entry = jar.getEntry("META-INF/MANIFEST.MF");
+                if (entry != null) {
+                    InputStream in = jar.getInputStream(entry);
+                    return new Manifest(in);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public synchronized ClassLoader getBootstrapClassLoader() throws ModuleLoadException {
+        if ( this.bootstrapClassLoader == null ) {
+            this.bootstrapClassLoader = determineBootstrapClassLoader();
+        }
+        return this.bootstrapClassLoader;
+    }
+
+
+    private Path determineRoot(CodeSource codeSource) throws IOException, URISyntaxException {
+        URL location = codeSource.getLocation();
+        if (location.getProtocol().equals("file")) {
+            return Paths.get(location.toURI());
+        }
+
+        throw new IOException("Unable to determine root");
+    }
+
+    private boolean determineIfIsUberJar() throws IOException {
         Path root = getRoot();
 
         if (Files.isRegularFile(root)) {
@@ -54,10 +114,10 @@ public class Layout {
                         }
 
                         Enumeration<String> names = (Enumeration<String>) props.propertyNames();
-                        while ( names.hasMoreElements() ) {
+                        while (names.hasMoreElements()) {
                             String name = names.nextElement();
                             String value = props.getProperty(name);
-                            if ( System.getProperty( name ) == null ) {
+                            if (System.getProperty(name) == null) {
                                 System.setProperty(name, value);
                             }
                         }
@@ -71,44 +131,14 @@ public class Layout {
     }
 
 
-    public static Path getRoot() throws IOException {
-        URL location = Layout.class.getProtectionDomain().getCodeSource().getLocation();
-        if (location.getProtocol().equals("file")) {
-            try {
-                return Paths.get(location.toURI());
-            } catch (URISyntaxException e) {
-                throw new IOException(e);
-            }
+    private ClassLoader determineBootstrapClassLoader() throws ModuleLoadException {
+        try {
+            return Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap")).getClassLoader();
+        } catch (ModuleLoadException e) {
+            return Layout.class.getClassLoader();
         }
-
-        throw new IOException("Unable to determine root");
     }
 
-    public static Manifest getManifest() throws IOException {
-        Path root = getRoot();
-        if (isFatJar()) {
-            try (JarFile jar = new JarFile(root.toFile())) {
-                ZipEntry entry = jar.getEntry("META-INF/MANIFEST.MF");
-                if (entry != null) {
-                    InputStream in = jar.getInputStream(entry);
-                    return new Manifest(in);
-                }
-            }
-        }
 
-        return null;
-    }
 
-    public synchronized static ClassLoader getBootstrapClassLoader() throws ModuleLoadException {
-        if (BOOTSTRAP_CLASSLOADER == null) {
-            try {
-                BOOTSTRAP_CLASSLOADER = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap")).getClassLoader();
-            } catch (ModuleLoadException e) {
-                BOOTSTRAP_CLASSLOADER = Layout.class.getClassLoader();
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        }
-        return BOOTSTRAP_CLASSLOADER;
-    }
 }

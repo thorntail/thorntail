@@ -59,18 +59,67 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-test-source</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>src/it/java</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+                <configuration>
+                  <testSourceDirectory>src/it/java</testSourceDirectory>
+                  <failIfNoTests>true</failIfNoTests>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>org.jboss.modules</groupId>
-            <artifactId>jboss-modules</artifactId>
-        </dependency>
+      <dependency>
+        <groupId>org.jboss.modules</groupId>
+        <artifactId>jboss-modules</artifactId>
+      </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.sql</groupId>
         <artifactId>jboss-javax-sql-api_7.0_spec</artifactId>
         <version>${version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-api</artifactId>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-spi</artifactId>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-impl-base</artifactId>
+        <scope>test</scope>
       </dependency>
     </dependencies>
 

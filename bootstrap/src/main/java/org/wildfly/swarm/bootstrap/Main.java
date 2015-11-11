@@ -34,7 +34,7 @@ public class Main {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
 
         String mainClassName = null;
-        Manifest manifest = Layout.getManifest();
+        Manifest manifest = Layout.getInstance().getManifest();
 
         if (manifest != null) {
             mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Wildfly-Swarm-Main-Class"));

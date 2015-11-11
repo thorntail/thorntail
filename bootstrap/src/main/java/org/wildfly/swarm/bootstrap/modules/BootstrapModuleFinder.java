@@ -19,6 +19,7 @@ import org.jboss.modules.*;
 import org.wildfly.swarm.bootstrap.util.Layout;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,20 +46,22 @@ public class BootstrapModuleFinder implements ModuleFinder {
         ModuleSpec.Builder builder = ModuleSpec.build(identifier);
 
         try {
-            if (Layout.isFatJar()) {
+            if (Layout.getInstance().isUberJar()) {
                 gatherJarsFromJar(builder);
             }
+
+            builder.addDependency(DependencySpec.createLocalDependencySpec());
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
+
+            return builder.create();
         } catch (IOException e) {
             throw new ModuleLoadException(e);
+        } catch (URISyntaxException e) {
+            throw new ModuleLoadException(e);
         }
-
-        builder.addDependency(DependencySpec.createLocalDependencySpec());
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
-
-        return builder.create();
     }
 
     protected void gatherJarsFromJar(ModuleSpec.Builder builder) throws IOException {

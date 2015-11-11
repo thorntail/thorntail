@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,7 +59,7 @@ public class ApplicationModuleFinder implements ModuleFinder {
         ModuleSpec.Builder builder = ModuleSpec.build(identifier);
 
         try {
-            if (Layout.isFatJar()) {
+            if (Layout.getInstance().isUberJar()) {
                 gatherJarsFromJar(builder);
             } else {
                 ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -87,6 +88,8 @@ public class ApplicationModuleFinder implements ModuleFinder {
                 }
             }
         } catch (IOException e) {
+            throw new ModuleLoadException(e);
+        } catch (URISyntaxException e) {
             throw new ModuleLoadException(e);
         }
 
