@@ -96,9 +96,9 @@ public class ApplicationModuleFinder implements ModuleFinder {
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.swarm.configuration")));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.swarm.configuration"), false, true));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("sun.jdk")));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("sun.jdk"), false, true));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -109,7 +109,7 @@ public class ApplicationModuleFinder implements ModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.wildfly.swarm.container", "api"), false));
+                        ModuleIdentifier.create("org.wildfly.swarm.container", "api"), true));
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
 

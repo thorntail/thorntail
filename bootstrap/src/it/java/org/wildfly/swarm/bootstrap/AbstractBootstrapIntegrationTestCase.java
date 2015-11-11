@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -39,15 +40,34 @@ public abstract class AbstractBootstrapIntegrationTestCase {
     protected JavaArchive createBootstrapArchive() throws IOException {
         return createBootstrapArchive(null);
     }
+
     protected JavaArchive createBootstrapArchive(String mainClassName) throws IOException {
+        return createBootstrapArchive(mainClassName, null);
+    }
+
+    protected JavaArchive createBootstrapArchive(String mainClassName, String appArtifact) throws IOException {
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
         archive.as(ZipImporter.class).importFrom(new JarFile(findBootstrapJar()));
-        archive.addAsManifestResource(EmptyAsset.INSTANCE, "wildfly-swarm.properties");
 
-        if (mainClassName != null  ) {
+
+        Properties props = new Properties();
+        if ( appArtifact != null ) {
+            props.put("wildfly.swarm.application.artifact", appArtifact);
+       }
+        ByteArrayOutputStream propsOut = new ByteArrayOutputStream();
+        props.store(propsOut, "");
+        propsOut.close();
+        archive.addAsManifestResource(new ByteArrayAsset(propsOut.toByteArray()), "wildfly-swarm.properties");
+
+        if ( appArtifact != null ) {
+            String conf = "path:" +appArtifact +"\n";
+            archive.addAsManifestResource( new ByteArrayAsset( conf.getBytes() ), "wildfly-swarm-application.conf");
+        }
+
+        if (mainClassName != null) {
             Manifest manifest = new Manifest();
             manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-            manifest.getMainAttributes().put(new Attributes.Name("Wildfly-Swarm-Main-Class"), mainClassName );
+            manifest.getMainAttributes().put(new Attributes.Name("Wildfly-Swarm-Main-Class"), mainClassName);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             manifest.write(out);
