@@ -57,8 +57,8 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         Configuration config = this.project.getConfigurations().detachedConfiguration();
 
-        DefaultExternalModuleDependency d = new DefaultExternalModuleDependency(spec.groupId, spec.artifactId, spec.version);
-        DefaultDependencyArtifact da = new DefaultDependencyArtifact(spec.artifactId, spec.packaging, spec.packaging, spec.classifier, null);
+        DefaultExternalModuleDependency d = new DefaultExternalModuleDependency(spec.groupId(), spec.artifactId(), spec.version());
+        DefaultDependencyArtifact da = new DefaultDependencyArtifact(spec.artifactId(), spec.type(), spec.type(), spec.classifier(), null);
         d.addArtifact(da);
         d.getExcludeRules().add(new DefaultExcludeRule());
         config.getDependencies().add(d);

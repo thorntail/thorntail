@@ -63,7 +63,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         ArtifactRequest request = new ArtifactRequest();
 
-        DefaultArtifact artifact = new DefaultArtifact(spec.groupId, spec.artifactId, spec.classifier, spec.packaging, spec.version);
+        DefaultArtifact artifact = new DefaultArtifact(spec.groupId(), spec.artifactId(), spec.classifier(), spec.type(), spec.version());
 
         request.setArtifact(artifact);
         request.setRepositories(this.remoteRepositories);

@@ -49,7 +49,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             if (spec.file != null) {
                 return spec;
             }
-            File file = this.resolver.resolve(spec.coordinates()).withoutTransitivity().asSingleFile();
+            File file = this.resolver.resolve(spec.mavenGav()).withoutTransitivity().asSingleFile();
             if (file == null) {
                 return null;
             }
@@ -67,7 +67,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
         final MavenResolvedArtifact[] artifacts;
         try {
             artifacts = this.resolver
-                    .resolve(specs.stream().map(ArtifactSpec::coordinates).collect(Collectors.toList()))
+                    .resolve(specs.stream().map(ArtifactSpec::mavenGav).collect(Collectors.toList()))
                     .withTransitivity()
                     .as(MavenResolvedArtifact.class);
         } finally {

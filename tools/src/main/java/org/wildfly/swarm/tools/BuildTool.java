@@ -47,6 +47,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 
 /**
  * @author Bob McWhirter
@@ -205,14 +206,15 @@ public class BuildTool {
             }
         }
 
-        StringBuilder bootstrapTxt = new StringBuilder();
+        WildFlySwarmBootstrapConf bootstrapConf = new WildFlySwarmBootstrapConf();
 
         for (ArtifactSpec each : this.bootstrappedArtifacts) {
-            bootstrapTxt.append(each.mscCoordinates()).append("\n");
+            bootstrapConf.addEntry( each );
             gatherDependency(each);
         }
 
-        this.archive.add(new StringAsset(bootstrapTxt.toString()), "META-INF/wildfly-swarm-bootstrap.conf");
+        System.err.println( "BOOTSTRAP: " + bootstrapConf );
+        this.archive.add(new StringAsset(bootstrapConf.toString()), WildFlySwarmBootstrapConf.CLASSPATH_LOCATION );
     }
 
     private void setupApplication() throws Exception {
@@ -221,7 +223,7 @@ public class BuildTool {
 
         for (ArtifactSpec each : this.dependencies) {
             if (!this.bootstrappedArtifacts.contains(each) ) {
-                if (each.packaging.equals("jar") && each.shouldGather) {
+                if (each.type().equals("jar") && each.shouldGather) {
                     applicationArtifacts.add(each);
                 }
             }
@@ -236,16 +238,16 @@ public class BuildTool {
         }
 
         for (ArtifactSpec each : applicationArtifacts) {
-            String mapped = this.providedMappings.get(each.groupId + ":" + each.artifactId);
+            String mapped = this.providedMappings.get(each.groupId() + ":" + each.artifactId());
             if (mapped != null) {
                 bootstrapTxt.append("module:").append(mapped).append("\n");
             } else {
                 if (includeAsBootstrapJar(each)) {
                     gatherDependency(each);
-                    if (each.classifier == null || each.classifier.equals("")) {
-                        bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version).append("\n");
+                    if (each.classifier() == null || each.classifier().equals("")) {
+                        bootstrapTxt.append("gav:").append(each.groupId() + ":" + each.artifactId() + ":" + each.version()).append("\n");
                     } else {
-                        bootstrapTxt.append("gav:").append(each.groupId + ":" + each.artifactId + ":" + each.version + ":" + each.classifier).append("\n");
+                        bootstrapTxt.append("gav:").append(each.groupId() + ":" + each.artifactId() + ":" + each.version() + ":" + each.classifier()).append("\n");
                     }
                 }
             }
@@ -262,7 +264,7 @@ public class BuildTool {
         if ( dependency.scope.equals( "TEST" ) ) {
             return false;
         }
-        if (dependency.groupId.equals("org.jboss.modules") && dependency.artifactId.equals("jboss-modules")) {
+        if (dependency.groupId().equals("org.jboss.modules") && dependency.artifactId().equals("jboss-modules")) {
             return false;
         }
 
@@ -318,17 +320,8 @@ public class BuildTool {
         }
         artifact = resolveArtifact(artifact);
 
-        StringBuilder artifactPath = new StringBuilder("m2repo");
-
-        String[] groupIdParts = artifact.groupId.split("\\.");
-
-        for (int i = 0; i < groupIdParts.length; ++i) {
-            artifactPath.append('/').append(groupIdParts[i]);
-        }
-
-        artifactPath.append('/').append(artifact.artifactId);
-        artifactPath.append('/').append(artifact.version);
-        artifactPath.append('/').append(artifact.getFileName());
+        StringBuilder artifactPath = new StringBuilder("m2repo/");
+        artifactPath.append( artifact.repoPath(true));
 
         this.archive.add(new FileAsset(artifact.file), artifactPath.toString());
 
@@ -379,13 +372,13 @@ public class BuildTool {
         Set<String> provided = new HashSet<>();
 
         for (ArtifactSpec each : this.dependencies) {
-            if (each.packaging.equals("jar")) {
+            if (each.type().equals("jar")) {
                 try (JarFile jar = new JarFile(each.file)) {
 
                     ZipEntry entry = jar.getEntry("provided-dependencies.txt");
                     if (entry != null) {
                         // add ourselves
-                        provided.add(each.groupId + ":" + each.artifactId);
+                        provided.add(each.groupId() + ":" + each.artifactId());
 
                         try (InputStream in = jar.getInputStream(entry)) {
                             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -435,15 +428,15 @@ public class BuildTool {
         StringBuilder extraDepsTxt = new StringBuilder();
 
         for (ArtifactSpec each : this.dependencies) {
-            if (provided.contains(each.groupId + ":" + each.artifactId)) {
+            if (provided.contains(each.groupId() + ":" + each.artifactId())) {
                 continue;
             }
             if (each.scope.equals("compile")) {
-                if (each.packaging.equals("jar")) {
+                if (each.type().equals("jar")) {
                     //this.dependencies.add(each.groupId + ":" + each.artifactId + ":" + each.version);
-                    depsTxt.append(each.groupId).append(':').append(each.artifactId).append(':').append(each.version).append("\n");
+                    depsTxt.append(each.groupId()).append(':').append(each.artifactId()).append(':').append(each.version()).append("\n");
                 } else {
-                    extraDepsTxt.append(each.groupId).append(':').append(each.artifactId).append(':').append(each.packaging).append(":").append(each.version).append("\n");
+                    extraDepsTxt.append(each.groupId()).append(':').append(each.artifactId()).append(':').append(each.type()).append(":").append(each.version()).append("\n");
                 }
             }
 
@@ -471,7 +464,7 @@ public class BuildTool {
     private static final Pattern ARTIFACT_PATTERN = Pattern.compile("<artifact name=\"([^\"]+)\".*");
 
     protected void analyzeModuleDependencies(ArtifactSpec artifact) throws IOException {
-        if (!artifact.packaging.equals("jar")) {
+        if (!artifact.type().equals("jar")) {
             return;
         }
 
@@ -551,23 +544,23 @@ public class BuildTool {
 
     public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier) {
         for (ArtifactSpec each : this.dependencies) {
-            if (groupId != null && !groupId.equals(each.groupId)) {
+            if (groupId != null && !groupId.equals(each.groupId())) {
                 continue;
             }
 
-            if (artifactId != null && !artifactId.equals(each.artifactId)) {
+            if (artifactId != null && !artifactId.equals(each.artifactId())) {
                 continue;
             }
 
-            if (version != null && !version.equals(each.version)) {
+            if (version != null && !version.equals(each.version())) {
                 continue;
             }
 
-            if (packaging != null && !packaging.equals(each.packaging)) {
+            if (packaging != null && !packaging.equals(each.type())) {
                 continue;
             }
 
-            if (classifier != null && !classifier.equals(each.classifier)) {
+            if (classifier != null && !classifier.equals(each.classifier())) {
                 continue;
             }
 
