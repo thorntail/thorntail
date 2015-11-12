@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -205,7 +206,9 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             cli.add(executable.getAbsolutePath());
 
 
-            this.process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]));
+            File workingDirectory = Files.createTempDirectory("arquillian").toFile();
+            workingDirectory.deleteOnExit();
+            this.process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]), new String[]{}, workingDirectory);
 
             CountDownLatch latch = new CountDownLatch(1);
             this.stdout = new IOBridge("out", latch, process.getInputStream(), System.out);

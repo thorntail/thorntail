@@ -17,6 +17,11 @@ package org.wildfly.swarm.undertow;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Bob McWhirter
@@ -46,6 +51,14 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
         }
 
         asset.staticContent( context, base );
+
+        Path webResources = Paths.get(System.getProperty("user.dir"), "src", "main", "webapp");
+        if (base != null ) {
+            webResources = webResources.resolve(base);
+        }
+        if (Files.exists(webResources)) {
+            as(ExplodedImporter.class).importDirectory(webResources.toFile());
+        }
 
         return (T) this;
     }

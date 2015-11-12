@@ -51,6 +51,7 @@ public class JAXRSTest {
     public static Archive createDeployment() throws Exception {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
         deployment.addResource(MyResource.class);
+        deployment.addAllDependencies();
         deployment.staticContent();
         return deployment;
     }
@@ -66,10 +67,7 @@ public class JAXRSTest {
     @Test
     public void testSimple() throws IOException {
         browser.navigate().to(contextRoot);
-        assertThat(browser.getPageSource()).contains("This is index.html.");
-
-        browser.navigate().to(contextRoot + "/static-content.txt");
-        assertThat(browser.getPageSource()).contains("This is static.");
+        assertThat(browser.getPageSource()).contains("Howdy at ");
     }
 
 }

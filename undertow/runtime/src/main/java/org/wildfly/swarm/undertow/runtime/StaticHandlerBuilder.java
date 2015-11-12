@@ -72,39 +72,7 @@ public class StaticHandlerBuilder implements HandlerBuilder {
 
                 HttpHandler cur = next;
 
-                if ( base != null ) {
-                    cur = new StaticResourceHandler(prefix, new ClassPathResourceManager(ClassLoader.getSystemClassLoader(), base), cur);
-                } else {
-                    cur = new StaticResourceHandler(prefix, new ClassPathResourceManager(ClassLoader.getSystemClassLoader()), cur);
-                }
-
-                try {
-                    Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap"));
-                    if ( base != null ) {
-                        cur = new StaticResourceHandler(prefix, new ClassPathResourceManager(module.getClassLoader(), base), cur);
-                    } else {
-                        cur = new StaticResourceHandler(prefix, new ClassPathResourceManager(module.getClassLoader()), cur);
-                    }
-                } catch (ModuleLoadException e) {
-                }
-
-                Path f = Paths.get(System.getProperty("user.dir"), "target", "classes");
-                if ( base != null ) {
-                    f = f.resolve(base);
-                }
-                if (Files.exists(f)) {
-                    cur = new StaticResourceHandler(prefix, new FileResourceManager(f.toFile(), 1024), cur);
-                }
-
-                f = Paths.get(System.getProperty("user.dir"), "src", "main", "webapp");
-                if ( base != null ) {
-                    f = f.resolve(base);
-                }
-                if (Files.exists(f)) {
-                    cur = new StaticResourceHandler(prefix, new FileResourceManager(f.toFile(), 1024), cur);
-                }
-
-                f = Paths.get(System.getProperty("user.dir"), "src", "main", "resources");
+                Path f = Paths.get(System.getProperty("user.dir"), "src", "main", "webapp");
                 if ( base != null ) {
                     f = f.resolve(base);
                 }
