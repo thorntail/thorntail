@@ -47,6 +47,8 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
+import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 
 /**
@@ -213,7 +215,6 @@ public class BuildTool {
             gatherDependency(each);
         }
 
-        System.err.println( "BOOTSTRAP: " + bootstrapConf );
         this.archive.add(new StringAsset(bootstrapConf.toString()), WildFlySwarmBootstrapConf.CLASSPATH_LOCATION );
     }
 
@@ -231,33 +232,28 @@ public class BuildTool {
 
         this.archive.add(this.projectAsset);
 
-        StringBuilder bootstrapTxt = new StringBuilder();
+        WildFlySwarmApplicationConf appConf = new WildFlySwarmApplicationConf();
 
         for (String each : this.bootstrappedModules) {
-            bootstrapTxt.append("module:").append(each).append("\n");
+            appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(each));
         }
 
         for (ArtifactSpec each : applicationArtifacts) {
             String mapped = this.providedMappings.get(each.groupId() + ":" + each.artifactId());
             if (mapped != null) {
-                bootstrapTxt.append("module:").append(mapped).append("\n");
+                appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(mapped));
             } else {
                 if (includeAsBootstrapJar(each)) {
                     gatherDependency(each);
-                    if (each.classifier() == null || each.classifier().equals("")) {
-                        bootstrapTxt.append("gav:").append(each.groupId() + ":" + each.artifactId() + ":" + each.version()).append("\n");
-                    } else {
-                        bootstrapTxt.append("gav:").append(each.groupId() + ":" + each.artifactId() + ":" + each.version() + ":" + each.classifier()).append("\n");
-                    }
+                    appConf.addEntry(new WildFlySwarmApplicationConf.GAVEntry(each));
                 }
             }
         }
 
-        bootstrapTxt.append("path:").append(this.projectAsset.getName()).append("\n");
-        this.archive.add(new StringAsset(bootstrapTxt.toString()), "META-INF/wildfly-swarm-application.conf");
+        appConf.addEntry( new WildFlySwarmApplicationConf.PathEntry( this.projectAsset.getName()));
+        this.archive.add(new StringAsset(appConf.toString()), WildFlySwarmApplicationConf.CLASSPATH_LOCATION );
 
     }
-
 
     public boolean includeAsBootstrapJar(ArtifactSpec dependency) {
 

@@ -1,5 +1,6 @@
 package org.wildfly.swarm.bootstrap.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,6 +111,19 @@ public class MavenArtifactDescriptorTest {
                 .classifier("redhat-1").build();
 
         assertThat( desc.repoPath(true) ).isEqualTo( "org/wildfly/swarm/fish/1.0/fish-1.0-redhat-1.jar" );
+    }
+
+    @Test
+    public void testFromMscGav() throws IOException {
+        MavenArtifactDescriptor desc = MavenArtifactDescriptor.fromMscGav( "org.wildfly.swarm:wildfly-swarm-container:1.0" );
+
+        assertThat( desc.groupId() ).isEqualTo( "org.wildfly.swarm" );
+        assertThat( desc.artifactId() ).isEqualTo( "wildfly-swarm-container" );
+        assertThat( desc.version() ).isEqualTo( "1.0" );
+        assertThat( desc.type() ).isEqualTo( "jar" );
+        assertThat( desc.classifier() ).isNull();
+
+        assertThat( desc.mscGav() ).isEqualTo( "org.wildfly.swarm:wildfly-swarm-container:1.0" );
     }
 
 }

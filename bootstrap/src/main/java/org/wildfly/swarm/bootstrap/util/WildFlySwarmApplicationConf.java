@@ -1,10 +1,13 @@
 package org.wildfly.swarm.bootstrap.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -32,14 +35,16 @@ public class WildFlySwarmApplicationConf {
 
     public static abstract class Entry {
 
-        abstract void apply(ModuleSpec.Builder builder) throws Exception ;
+        abstract void apply(ModuleSpec.Builder builder) throws Exception;
+
+        abstract void write(PrintWriter writer);
 
     }
 
     public static class ModuleEntry extends Entry {
         private final String name;
 
-        ModuleEntry(String name) {
+        public ModuleEntry(String name) {
             this.name = name;
         }
 
@@ -56,22 +61,35 @@ public class WildFlySwarmApplicationConf {
                             null,
                             ModuleIdentifier.create(this.name), false));
         }
+
+        @Override
+        void write(PrintWriter writer) {
+            writer.println("module:" + this.name);
+        }
+
+        public String getName() {
+            return this.name;
+        }
     }
 
     public static class GAVEntry extends Entry {
 
-        private final String gav;
+        private final MavenArtifactDescriptor descriptor;
 
-        GAVEntry(String gav) {
-            this.gav = gav;
+        public GAVEntry(MavenArtifactDescriptor descriptor) {
+            this.descriptor = descriptor;
+        }
+
+        public MavenArtifactDescriptor getDescriptor() {
+            return this.descriptor;
         }
 
         @Override
         void apply(ModuleSpec.Builder builder) throws IOException {
-            File artifact = MavenArtifactUtil.resolveJarArtifact(this.gav);
+            File artifact = MavenArtifactUtil.resolveJarArtifact(this.descriptor.mscGav());
 
             if (artifact == null) {
-                throw new IOException("Unable to locate artifact: " + this.gav);
+                throw new IOException("Unable to locate artifact: " + this.descriptor.mscGav());
             }
             builder.addResourceRoot(
                     ResourceLoaderSpec.createResourceLoaderSpec(
@@ -79,13 +97,18 @@ public class WildFlySwarmApplicationConf {
                     )
             );
         }
+
+        @Override
+        void write(PrintWriter writer) {
+            writer.println("gav:" + this.descriptor.mscGav());
+        }
     }
 
     public static class PathEntry extends Entry {
 
         private final String path;
 
-        PathEntry(String path) {
+        public PathEntry(String path) {
             this.path = path;
         }
 
@@ -118,12 +141,30 @@ public class WildFlySwarmApplicationConf {
                     )
             );
         }
+
+        @Override
+        void write(PrintWriter writer) {
+            writer.println("path:" + this.path);
+        }
+
+        public String getPath() {
+            return this.path;
+        }
     }
 
     private List<Entry> entries = new ArrayList<>();
 
+
+    public WildFlySwarmApplicationConf() {
+
+    }
+
     public WildFlySwarmApplicationConf(InputStream in) throws IOException {
         read(in);
+    }
+
+    public void addEntry(Entry entry) {
+        this.entries.add(entry);
     }
 
     public List<Entry> getEntries() {
@@ -132,7 +173,28 @@ public class WildFlySwarmApplicationConf {
 
     public void apply(ModuleSpec.Builder builder) throws Exception {
         for (Entry entry : this.entries) {
-            entry.apply( builder );
+            entry.apply(builder);
+        }
+    }
+
+    public void write(OutputStream out) {
+        PrintWriter writer = new PrintWriter(out);
+
+        for (Entry entry : this.entries) {
+            entry.write(writer);
+        }
+
+        writer.flush();
+    }
+
+    public String toString() {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            write(out);
+            out.close();
+            return new String(out.toByteArray());
+        } catch (IOException e) {
+            return "";
         }
     }
 
@@ -147,9 +209,9 @@ public class WildFlySwarmApplicationConf {
                     if (line.startsWith("module:")) {
                         line = line.substring(7).trim();
                         entry = new ModuleEntry(line);
-                    } else if (line.startsWith("mscGav:")) {
+                    } else if (line.startsWith("gav:")) {
                         line = line.substring(4).trim();
-                        entry = new GAVEntry(line);
+                        entry = new GAVEntry(MavenArtifactDescriptor.fromMscGav(line));
                     } else if (line.startsWith("path:")) {
                         line = line.substring(5).trim();
                         entry = new PathEntry(line);

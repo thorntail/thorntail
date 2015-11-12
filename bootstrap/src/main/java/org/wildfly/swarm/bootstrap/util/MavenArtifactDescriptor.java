@@ -1,6 +1,7 @@
 package org.wildfly.swarm.bootstrap.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -63,8 +64,21 @@ public class MavenArtifactDescriptor {
         return new Builder();
     }
 
+    public static MavenArtifactDescriptor fromMscGav(String gav) throws IOException {
+
+        String[] parts = gav.split(":");
+        if ( parts.length == 3 ) {
+            return new MavenArtifactDescriptor( parts[0], parts[1], parts[2] );
+        } else if (parts.length ==4) {
+            return new MavenArtifactDescriptor( parts[0], parts[1], "jar", parts[3], parts[2] );
+        } else {
+            throw new IOException("Invalid gav: " + gav );
+        }
+
+    }
+
     public MavenArtifactDescriptor(String groupId, String artifactId, String version) {
-        this(groupId, artifactId, version, "jar", null);
+        this(groupId, artifactId,  "jar", null, version);
     }
 
     public MavenArtifactDescriptor(String groupId, String artifactId, String type, String classifier, String version) {
@@ -115,7 +129,6 @@ public class MavenArtifactDescriptor {
     }
 
     public String mscGav() {
-        System.err.println( "classifier " + this.classifier + " // " + this.classifier == null );
         return this.groupId + ":" +
                 this.artifactId + ":" +
                 this.version +
