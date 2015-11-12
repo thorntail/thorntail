@@ -15,19 +15,18 @@
  */
 package org.wildfly.swarm.bootstrap;
 
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
-import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
-import org.wildfly.swarm.bootstrap.util.Layout;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
+
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
+import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
+import org.wildfly.swarm.bootstrap.util.Layout;
+import org.wildfly.swarm.bootstrap.util.UberJarManifest;
 
 /**
  * @author Bob McWhirter
@@ -36,19 +35,19 @@ public class Main {
 
     public static final String DEFAULT_MAIN_CLASS_NAME = "org.wildfly.swarm.Swarm";
 
-    public static void main(String...args) throws Throwable {
+    public static void main(String... args) throws Throwable {
         new Main(args).run();
     }
 
     private final String[] args;
 
-    public Main(String...args) throws Throwable {
+    public Main(String... args) throws Throwable {
         this.args = args;
     }
 
     public void run() throws Throwable {
         setupBootModuleLoader();
-        invoke( getMainClass() );
+        invoke(getMainClass());
     }
 
     public void setupBootModuleLoader() {
@@ -57,11 +56,9 @@ public class Main {
 
     public String getMainClassName() throws IOException, URISyntaxException {
         String mainClassName = null;
-        Manifest manifest = Layout.getInstance().getManifest();
+        UberJarManifest manifest = new UberJarManifest(Layout.getInstance().getManifest());
 
-        if (manifest != null) {
-            mainClassName = (String) manifest.getMainAttributes().get(new Attributes.Name("Wildfly-Swarm-Main-Class"));
-        }
+        mainClassName = manifest.getMainClassName();
 
         if (mainClassName == null) {
             mainClassName = DEFAULT_MAIN_CLASS_NAME;

@@ -325,19 +325,8 @@ public class BuildTool {
     }
 
     private void createManifest() throws IOException {
-        Manifest manifest = new Manifest();
-
-        Attributes attrs = manifest.getMainAttributes();
-        attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-        attrs.put(Attributes.Name.MAIN_CLASS, "org.wildfly.swarm.bootstrap.Main");
-        if (this.mainClass != null && !this.mainClass.equals("")) {
-            attrs.put(new Attributes.Name("Wildfly-Swarm-Main-Class"), this.mainClass);
-        }
-        //attrs.putValue("Application-Artifact", this.projectArtifact.file.getName());
-
-        ByteArrayOutputStream manifestBytes = new ByteArrayOutputStream();
-        manifest.write(manifestBytes);
-        this.archive.addAsManifestResource(new ByteArrayAsset(manifestBytes.toByteArray()), "MANIFEST.MF");
+        UberJarManifestAsset manifest = new UberJarManifestAsset(this.mainClass);
+        this.archive.add( manifest );
     }
 
     private void createWildflySwarmProperties() throws IOException {
@@ -457,8 +446,6 @@ public class BuildTool {
         }
     }
 
-    private static final Pattern ARTIFACT_PATTERN = Pattern.compile("<artifact name=\"([^\"]+)\".*");
-
     protected void analyzeModuleDependencies(ArtifactSpec artifact) throws IOException {
         if (!artifact.type().equals("jar")) {
             return;
@@ -481,33 +468,11 @@ public class BuildTool {
     }
 
     protected void analyzeModuleDependencies(InputStream moduleXml) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(moduleXml));
-
-        String line = null;
-
-        while ((line = reader.readLine()) != null) {
-            Matcher matcher = ARTIFACT_PATTERN.matcher(line.trim());
-            if (matcher.matches()) {
-                String parts[] = matcher.group(1).split(":");
-                String groupId = parts[0];
-                String artifactId = parts[1];
-                String version = parts[2];
-                String packaging = "jar";
-                String classifier = null;
-                if (parts.length > 3) {
-                    classifier = parts[3];
-                }
-                //this.dependencies.add(matcher.group(1));
-                ArtifactSpec dep = new ArtifactSpec("compile", groupId, artifactId, version, packaging, classifier, null);
-                dep.shouldGather = true;
-                this.moduleDependencies.add(dep);
-            }
-        }
-
+        ModuleAnalyzer analyzer = new ModuleAnalyzer(moduleXml);
+        this.moduleDependencies.addAll( analyzer.getDependencies() );
     }
 
     protected void gatherDependencies() throws Exception {
-        //this.dependencies.addAll(this.moduleDependencies);
         this.coreSwarmArtifacts.addAll(this.moduleDependencies);
 
         if (this.projectAsset.getSimpleName().endsWith(".war")) {

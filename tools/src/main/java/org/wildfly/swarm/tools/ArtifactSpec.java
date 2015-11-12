@@ -16,6 +16,7 @@
 package org.wildfly.swarm.tools;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 
@@ -25,13 +26,26 @@ import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public final String scope;
+
     public File file;
 
     public boolean shouldGather = true;
+
     public boolean gathered = false;
 
+    public static ArtifactSpec fromMscGav(String gav) throws IOException {
+        String[] parts = gav.split(":");
+        if (parts.length == 3) {
+            return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", null, null);
+        } else if (parts.length == 4) {
+            return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", parts[3], null);
+        } else {
+            throw new IOException("Invalid gav: " + gav);
+        }
+    }
+
     public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
-        super( groupId, artifactId, packaging, classifier, version );
+        super(groupId, artifactId, packaging, classifier, version);
         this.scope = scope;
         this.file = file;
     }
