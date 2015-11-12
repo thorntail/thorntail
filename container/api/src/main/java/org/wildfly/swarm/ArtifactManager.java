@@ -16,17 +16,16 @@
 package org.wildfly.swarm;
 
 import org.jboss.modules.MavenArtifactUtil;
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
+import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 import java.io.*;
 import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,40 +41,46 @@ import java.util.regex.Pattern;
  */
 public class ArtifactManager {
 
-    public static JavaArchive artifact(String gav) throws IOException, ModuleLoadException {
+    private WildFlySwarmDependenciesConf deps;
+
+    public ArtifactManager(WildFlySwarmDependenciesConf deps) {
+        this.deps = deps;
+    }
+
+    public ArtifactManager(InputStream in) throws IOException {
+        this.deps = new WildFlySwarmDependenciesConf(in);
+    }
+
+    public ArtifactManager() throws IOException {
+        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(WildFlySwarmDependenciesConf.CLASSPATH_LOCATION);
+        if ( in != null ) {
+            this.deps = new WildFlySwarmDependenciesConf(in);
+        }
+    }
+
+    public JavaArchive artifact(String gav) throws IOException, ModuleLoadException {
         File file = findFile(gav);
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class, file.getName());
         new ZipImporterImpl(archive).importFrom(file);
         return archive;
     }
 
-    public static JavaArchive artifact(String gav, String asName) throws IOException, ModuleLoadException {
+    public JavaArchive artifact(String gav, String asName) throws IOException, ModuleLoadException {
         File file = findFile(gav);
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class, asName);
         new ZipImporterImpl(archive).importFrom(file);
         return archive;
     }
 
-    public static List<JavaArchive> allArtifacts() throws IOException {
+    public List<JavaArchive> allArtifacts() throws IOException {
         List<JavaArchive> archives = new ArrayList<>();
 
-        InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-dependencies.txt");
-
-        if (depsTxt != null) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt))) {
-
-                String line = null;
-
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
-                    if (line.length() > 0) {
-                        File artifact = MavenArtifactUtil.resolveJarArtifact(line);
-
-                        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
-                        new ZipImporterImpl(archive).importFrom(artifact);
-                        archives.add(archive);
-                    }
-                }
+        if (this.deps != null ) {
+            for (MavenArtifactDescriptor each : this.deps.getPrimaryDependencies()) {
+                File artifact = MavenArtifactUtil.resolveJarArtifact(each.mscGav());
+                JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
+                new ZipImporterImpl(archive).importFrom(artifact);
+                archives.add(archive);
             }
         } else {
             String classpath = System.getProperty("java.class.path");
@@ -117,7 +122,7 @@ public class ArtifactManager {
         return archives;
     }
 
-    private static File findFile(String gav) throws IOException, ModuleLoadException {
+    private File findFile(String gav) throws IOException, ModuleLoadException {
 
         // groupId:artifactId
         // groupId:artifactId:version
@@ -156,7 +161,7 @@ public class ArtifactManager {
         }
 
         if (version == null) {
-            version = determineVersionViaDependenciesTxt(groupId, artifactId, packaging, classifier);
+            version = determineVersionViaDependenciesConf(groupId, artifactId, packaging, classifier);
         }
 
         if (version == null) {
@@ -172,61 +177,18 @@ public class ArtifactManager {
         return MavenArtifactUtil.resolveArtifact(groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : ":" + classifier), packaging);
     }
 
-    private static String determineVersionViaDependenciesTxt(String groupId, String artifactId, String packaging, String classifier) throws IOException {
-
-        if (packaging.equals("jar")) {
-            InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-dependencies.txt");
-
-            if (depsTxt != null) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt))) {
-
-                    String line = null;
-
-                    while ((line = reader.readLine()) != null) {
-                        line = line.trim();
-                        if (line.length() > 0) {
-                            String[] parts = line.split(":");
-                            if (parts.length >= 3) {
-                                if (parts[0].equals(groupId) && parts[1].equals(artifactId)) {
-                                    return parts[2];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        InputStream depsTxt = ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/wildfly-swarm-extra-dependencies.txt");
-
-        if (depsTxt != null) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(depsTxt))) {
-
-                String line = null;
-
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
-                    if (line.length() > 0) {
-                        String[] parts = line.split(":");
-                        if (parts.length == 4) {
-                            if (parts[0].equals(groupId) && parts[1].equals(artifactId) && parts[2].equals(packaging)) {
-                                return parts[3];
-                            }
-                        }
-                        if (parts.length == 5) {
-                            if (parts[0].equals(groupId) && parts[1].equals(artifactId) && parts[2].equals(packaging) && parts[4].equals(classifier)) {
-                                return parts[3];
-                            }
-                        }
-                    }
-                }
+    String determineVersionViaDependenciesConf(String groupId, String artifactId, String packaging, String classifier) throws IOException {
+        if ( this.deps != null ) {
+            MavenArtifactDescriptor found = this.deps.find( groupId, artifactId, packaging, classifier );
+            if ( found != null ) {
+                return found.version();
             }
         }
 
         return null;
     }
 
-    private static String determineVersionViaClasspath(String groupId, String artifactId, String packaging, String classifier) {
+    private String determineVersionViaClasspath(String groupId, String artifactId, String packaging, String classifier) {
 
         String regexp = ".*" + artifactId + "-(.+)" + (classifier.length() == 0 ? "" : "-" + classifier) + "." + packaging;
         Pattern pattern = Pattern.compile(regexp);

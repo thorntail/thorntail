@@ -65,12 +65,25 @@ public class MavenArtifactDescriptor {
     }
 
     public static MavenArtifactDescriptor fromMscGav(String gav) throws IOException {
-
         String[] parts = gav.split(":");
         if ( parts.length == 3 ) {
             return new MavenArtifactDescriptor( parts[0], parts[1], parts[2] );
         } else if (parts.length ==4) {
             return new MavenArtifactDescriptor( parts[0], parts[1], "jar", parts[3], parts[2] );
+        } else {
+            throw new IOException("Invalid gav: " + gav );
+        }
+    }
+
+    public static MavenArtifactDescriptor fromMavenGav(String gav) throws IOException {
+        String[] parts = gav.split(":");
+
+        if ( parts.length == 3 ) {
+            return new MavenArtifactDescriptor( parts[0], parts[1], parts[2] );
+        } else if (parts.length ==4 ) {
+            return new MavenArtifactDescriptor( parts[0], parts[1], parts[2], null, parts[3] );
+        } else if ( parts.length == 5 ) {
+            return new MavenArtifactDescriptor( parts[0], parts[1], parts[2], parts[3], parts[4] );
         } else {
             throw new IOException("Invalid gav: " + gav );
         }

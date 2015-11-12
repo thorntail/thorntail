@@ -34,6 +34,8 @@ import org.wildfly.swarm.container.Container;
  */
 public class Swarm {
 
+    public static ArtifactManager ARTIFACT_MANAGER;
+
     /** Main entry-point.
      *
      * @param args Ignored.
@@ -66,10 +68,16 @@ public class Swarm {
     }
 
     public static JavaArchive artifact(String gav) throws Exception {
-        return ArtifactManager.artifact( gav );
+        if ( ARTIFACT_MANAGER == null ) {
+            ARTIFACT_MANAGER = new ArtifactManager();
+        }
+        return ARTIFACT_MANAGER.artifact( gav );
     }
 
     public static List<JavaArchive> allArtifacts() throws Exception {
-        return ArtifactManager.allArtifacts();
+        if ( ARTIFACT_MANAGER == null ) {
+            ARTIFACT_MANAGER = new ArtifactManager();
+        }
+        return ARTIFACT_MANAGER.allArtifacts();
     }
 }

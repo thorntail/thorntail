@@ -50,6 +50,7 @@ import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 /**
  * @author Bob McWhirter
@@ -412,21 +413,21 @@ public class BuildTool {
         StringBuilder depsTxt = new StringBuilder();
         StringBuilder extraDepsTxt = new StringBuilder();
 
+        WildFlySwarmDependenciesConf depsConf = new WildFlySwarmDependenciesConf();
+
         for (ArtifactSpec each : this.dependencies) {
             if (provided.contains(each.groupId() + ":" + each.artifactId())) {
                 continue;
             }
             if (each.scope.equals("compile")) {
                 if (each.type().equals("jar")) {
-                    //this.dependencies.add(each.groupId + ":" + each.artifactId + ":" + each.version);
-                    depsTxt.append(each.groupId()).append(':').append(each.artifactId()).append(':').append(each.version()).append("\n");
+                    depsConf.addPrimaryDependency( each );
                 } else {
-                    extraDepsTxt.append(each.groupId()).append(':').append(each.artifactId()).append(':').append(each.type()).append(":").append(each.version()).append("\n");
+                    depsConf.addExtraDependency( each );
                 }
             }
 
-            this.archive.addAsManifestResource(new StringAsset(depsTxt.toString()), "wildfly-swarm-dependencies.txt");
-            this.archive.addAsManifestResource(new StringAsset(extraDepsTxt.toString()), "wildfly-swarm-extra-dependencies.txt");
+            this.archive.add(new StringAsset(depsConf.toString()), WildFlySwarmDependenciesConf.CLASSPATH_LOCATION );
         }
     }
 
