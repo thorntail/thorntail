@@ -19,6 +19,9 @@ import org.wildfly.swarm.config.Infinispan;
 import org.wildfly.swarm.config.infinispan.CacheContainer;
 import org.wildfly.swarm.container.Fraction;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author Lance Ball
  * @author Toby Crawley
@@ -30,6 +33,22 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
 
     public static InfinispanFraction createDefaultFraction() {
         return new InfinispanFraction().localDefaultFraction();
+    }
+
+        @Override
+    public InfinispanFraction cacheContainer(CacheContainer value) {
+        super.cacheContainer(enableResourceDefaults(value));
+
+        return this;
+    }
+
+    @Override
+    public InfinispanFraction cacheContainers(List<CacheContainer> value) {
+        super.cacheContainers(value.stream()
+                                      .map(InfinispanFraction::enableResourceDefaults)
+                                      .collect(Collectors.toList()));
+
+        return this;
     }
 
     private InfinispanFraction clusteredDefaultFraction() {
@@ -129,4 +148,62 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         return this;
     }
 
+    
+    // applies defaults to the cache-container, since infinispan applies these defaults at
+    // xml read time, instead of at model add time
+    // https://issues.jboss.org/browse/WFLY-5672
+    private static CacheContainer enableResourceDefaults(CacheContainer container) {
+        CacheContainer.CacheContainerResources containerResources = container.subresources();
+
+        // from https://github.com/wildfly/wildfly/tree/master/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ThreadPoolResourceDefinition.java#L71
+        if (containerResources.asyncOperationsThreadPool() == null) {
+            container.asyncOperationsThreadPool(p -> p.minThreads(25)
+                    .maxThreads(25)
+                    .queueLength(1000)
+                    .keepaliveTime(60000L));
+        }
+        if (containerResources.listenerThreadPool() == null) {
+            container.listenerThreadPool(p -> p.minThreads(1)
+                    .maxThreads(1)
+                    .queueLength(100000)
+                    .keepaliveTime(60000L));
+        }
+        if (containerResources.persistenceThreadPool() == null) {
+            container.persistenceThreadPool(p -> p.minThreads(1)
+                    .maxThreads(4)
+                    .queueLength(0)
+                    .keepaliveTime(60000L));
+        }
+        if (containerResources.remoteCommandThreadPool() == null) {
+            container.remoteCommandThreadPool(p -> p.minThreads(1)
+                    .maxThreads(200)
+                    .queueLength(0)
+                    .keepaliveTime(60000L));
+        }
+        if (containerResources.stateTransferThreadPool() == null) {
+            container.stateTransferThreadPool(p -> p.minThreads(1)
+                    .maxThreads(60)
+                    .queueLength(0)
+                    .keepaliveTime(60000L));
+        }
+        if (containerResources.transportThreadPool() == null) {
+            container.transportThreadPool(p -> p.minThreads(25)
+                    .maxThreads(25)
+                    .queueLength(100000)
+                    .keepaliveTime(60000L));
+        }
+
+        // from https://github.com/wildfly/wildfly/tree/master/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ScheduledThreadPoolResourceDefinition.java#L72
+        if (containerResources.expirationThreadPool() == null) {
+            container.expirationThreadPool(p -> p.maxThreads(1)
+                    .keepaliveTime(60000L));
+        }
+
+        if (containerResources.jgroupsTransport() == null &&
+                containerResources.noneTransport() == null) {
+            container.noneTransport();
+        }
+
+        return container;
+    }
 }
