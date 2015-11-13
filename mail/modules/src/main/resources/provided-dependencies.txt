@@ -1,1 +1,2 @@
 com.sun.mail:javax.mail
+javax.activation:activation

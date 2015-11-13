@@ -1,1 +1,2 @@
 javax.enterprise:cdi-api
+javax.inject:javax.inject
