@@ -16,7 +16,6 @@
 package org.wildfly.swarm.tools;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 
@@ -33,14 +32,16 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public boolean gathered = false;
 
-    public static ArtifactSpec fromMscGav(String gav) throws IOException {
+    public boolean bootstrapped = false;
+
+    public static ArtifactSpec fromMscGav(String gav) {
         String[] parts = gav.split(":");
         if (parts.length == 3) {
             return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", null, null);
         } else if (parts.length == 4) {
             return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", parts[3], null);
         } else {
-            throw new IOException("Invalid gav: " + gav);
+            throw new RuntimeException("Invalid gav: " + gav);
         }
     }
 

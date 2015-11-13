@@ -2,8 +2,6 @@ package org.wildfly.swarm.bootstrap.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Bob McWhirter
@@ -156,10 +154,10 @@ public class MavenArtifactDescriptor {
                 this.version;
     }
 
-    public String repoPath(boolean forClasspath) {
+    public String repoPath(boolean forJar) {
         char delim = File.separatorChar;
 
-        if (forClasspath) {
+        if (forJar) {
             delim = '/';
         }
 

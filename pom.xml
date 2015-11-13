@@ -125,6 +125,7 @@
           <systemPropertyVariables>
             <jboss.bind.address>127.0.0.1</jboss.bind.address>
             <maven.repo.local>${maven.repo.local}</maven.repo.local>
+            <project.version>${project.version}</project.version>
           </systemPropertyVariables>
         </configuration>
       </plugin>

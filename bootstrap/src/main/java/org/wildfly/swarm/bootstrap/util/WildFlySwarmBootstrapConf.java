@@ -37,6 +37,7 @@ public class WildFlySwarmBootstrapConf {
         this.entries.add( entry );
     }
 
+
     public void addEntry(String gav) throws IOException {
         String[] parts = gav.split(":");
 
@@ -55,8 +56,8 @@ public class WildFlySwarmBootstrapConf {
         this.entries.add(new MavenArtifactDescriptor(groupId, artifactId, type, classifier, version));
     }
 
-    public List<MavenArtifactDescriptor> getEntries() {
-        return Collections.unmodifiableList(this.entries);
+    public List<? extends MavenArtifactDescriptor> getEntries() {
+        return Collections.unmodifiableList( this.entries);
     }
 
     public WildFlySwarmBootstrapConf(InputStream in) throws IOException {

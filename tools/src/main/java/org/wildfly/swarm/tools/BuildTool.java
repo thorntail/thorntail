@@ -15,39 +15,24 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
-import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
@@ -67,26 +52,14 @@ public class BuildTool {
 
     private boolean resolveTransitiveDependencies = false;
 
-    private final Set<ArtifactSpec> dependencies = new HashSet<>();
 
-    private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
+    private DependencyManager dependencyManager = new DependencyManager();
 
     private final Set<String> resourceDirectories = new HashSet<>();
 
-    //private ArtifactSpec projectArtifact;
     private ProjectAsset projectAsset;
 
-    private ArtifactResolvingHelper resolver;
-
     private Properties properties = new Properties();
-
-    private Set<ArtifactSpec> bootstrappedArtifacts = new HashSet<>();
-
-    private Set<ArtifactSpec> coreSwarmArtifacts = new HashSet<>();
-
-    private Set<String> bootstrappedModules = new HashSet<>();
-
-    private Map<String, String> providedMappings = new HashMap<>();
 
     private Set<String> additionnalModules = new HashSet<>();
 
@@ -130,16 +103,8 @@ public class BuildTool {
     }
 
     public BuildTool dependency(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
-        this.dependencies.add(new ArtifactSpec(scope, groupId, artifactId, version, packaging, classifier, file));
+        this.dependencyManager.addDependency(new ArtifactSpec(scope, groupId, artifactId, version, packaging, classifier, file));
         return this;
-    }
-
-    public Set<ArtifactSpec> dependencies() {
-        return this.dependencies;
-    }
-
-    public Set<ArtifactSpec> moduleDependencies() {
-        return this.moduleDependencies;
     }
 
     public Set<String> additionnalModules() {
@@ -147,7 +112,7 @@ public class BuildTool {
     }
 
     public BuildTool artifactResolvingHelper(ArtifactResolvingHelper resolver) {
-        this.resolver = resolver;
+        this.dependencyManager.setArtifactResolvingHelper(resolver);
         return this;
     }
 
@@ -162,176 +127,38 @@ public class BuildTool {
     }
 
     public Archive build() throws Exception {
-        resolveDependencies();
+        analyzeDependencies();
         addWildflySwarmBootstrapJar();
-        setupBootstrap();
-        createManifest();
-        createWildflySwarmProperties();
-        collectDependencies();
-        setupApplication();
-        createDependenciesTxt();
-        addAdditionnalModule();
+        addWildFlyBootstrapConf();
+        addManifest();
+        addWildFlySwarmProperties();
+        addWildFlySwarmApplicationConf();
+        addWildFlySwarmDependenciesConf();
+        addAdditionnalModules();
+        populateUberJarMavenRepository();
         return this.archive;
     }
 
-    private void addWildflySwarmBootstrapJar() throws BuildException, IOException {
-        ArtifactSpec artifact = findArtifact("org.wildfly.swarm", "wildfly-swarm-bootstrap", null, "jar", null);
+    protected void analyzeDependencies() throws Exception {
+        this.dependencyManager.analyzeDependencies(this.resolveTransitiveDependencies);
+    }
 
-        this.bootstrappedArtifacts.add( artifact );
+    private void addWildflySwarmBootstrapJar() throws BuildException, IOException {
+        ArtifactSpec artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
 
         if (!bootstrapJarShadesJBossModules(artifact.file)) {
-            ArtifactSpec jbossModules = findArtifact("org.jboss.modules", "jboss-modules", null, "jar", null);
+            ArtifactSpec jbossModules = this.dependencyManager.findJBossModulesJar();
             expandArtifact(jbossModules.file);
         }
         expandArtifact(artifact.file);
     }
 
-
-    private void setupBootstrap() throws Exception {
-        for (ArtifactSpec each : this.dependencies) {
-            try (JarFile jar = new JarFile(each.file)) {
-                ZipEntry entry = jar.getEntry("wildfly-swarm-bootstrap.conf");
-                if (entry != null) {
-                    this.bootstrappedArtifacts.add(each);
-
-                    try (InputStream in = jar.getInputStream(entry)) {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                        String line = null;
-
-                        while ((line = reader.readLine()) != null) {
-                            line = line.trim();
-                            if (!line.isEmpty()) {
-                                this.bootstrappedModules.add(line);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        WildFlySwarmBootstrapConf bootstrapConf = new WildFlySwarmBootstrapConf();
-
-        for (ArtifactSpec each : this.bootstrappedArtifacts) {
-            bootstrapConf.addEntry( each );
-            gatherDependency(each);
-        }
-
-        this.archive.add(new StringAsset(bootstrapConf.toString()), WildFlySwarmBootstrapConf.CLASSPATH_LOCATION );
-    }
-
-    private void setupApplication() throws Exception {
-
-        Set<ArtifactSpec> applicationArtifacts = new HashSet<>();
-
-        for (ArtifactSpec each : this.dependencies) {
-            if (!this.bootstrappedArtifacts.contains(each) ) {
-                if (each.type().equals("jar") && each.shouldGather) {
-                    applicationArtifacts.add(each);
-                }
-            }
-        }
-
-        this.archive.add(this.projectAsset);
-
-        WildFlySwarmApplicationConf appConf = new WildFlySwarmApplicationConf();
-
-        for (String each : this.bootstrappedModules) {
-            appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(each));
-        }
-
-        for (ArtifactSpec each : applicationArtifacts) {
-            String mapped = this.providedMappings.get(each.groupId() + ":" + each.artifactId());
-            if (mapped != null) {
-                appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(mapped));
-            } else {
-                if (includeAsBootstrapJar(each)) {
-                    gatherDependency(each);
-                    appConf.addEntry(new WildFlySwarmApplicationConf.GAVEntry(each));
-                }
-            }
-        }
-
-        appConf.addEntry( new WildFlySwarmApplicationConf.PathEntry( this.projectAsset.getName()));
-        this.archive.add(new StringAsset(appConf.toString()), WildFlySwarmApplicationConf.CLASSPATH_LOCATION );
-
-    }
-
-    public boolean includeAsBootstrapJar(ArtifactSpec dependency) {
-
-        if ( dependency.scope.equals( "TEST" ) ) {
-            return false;
-        }
-        if (dependency.groupId().equals("org.jboss.modules") && dependency.artifactId().equals("jboss-modules")) {
-            return false;
-        }
-
-        return !dependency.scope.equals("PROVIDED");
-
-        //return true;
-    }
-
-    protected boolean hasNonBootstrapMarker(ArtifactSpec spec) {
-        if (spec.file != null) {
-
-            try (JarFile jar = new JarFile(spec.file)) {
-                ZipEntry entry = jar.getEntry("META-INF/wildfly-swarm-non-bootstrap.txt");
-                return (entry != null);
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
-
-        }
-
-        return false;
-    }
-
-    protected void resolveDependencies() throws Exception {
-        if (this.resolveTransitiveDependencies) {
-            Set<ArtifactSpec> newDeps = this.resolver.resolveAll(dependencies);
-            this.dependencies.clear();
-            this.dependencies.addAll(newDeps);
-        } else {
-            for (ArtifactSpec each : dependencies()) {
-                resolveArtifact(each);
-            }
-        }
-    }
-
-    protected ArtifactSpec resolveArtifact(ArtifactSpec spec) throws Exception {
-        if (spec.file == null) {
-            ArtifactSpec newArtifact = this.resolver.resolve(spec);
-
-            if (newArtifact == null) {
-                throw new BuildException("Unable to resolve artifact: " + spec);
-            }
-
-            spec.file = newArtifact.file;
-        }
-
-        return spec;
-    }
-
-    protected void gatherDependency(ArtifactSpec artifact) throws Exception {
-        if ( artifact.gathered ) {
-            return;
-        }
-        artifact = resolveArtifact(artifact);
-
-        StringBuilder artifactPath = new StringBuilder("m2repo/");
-        artifactPath.append( artifact.repoPath(true));
-
-        this.archive.add(new FileAsset(artifact.file), artifactPath.toString());
-
-        artifact.gathered = true;
-    }
-
-    private void createManifest() throws IOException {
+    private void addManifest() throws IOException {
         UberJarManifestAsset manifest = new UberJarManifestAsset(this.mainClass);
-        this.archive.add( manifest );
+        this.archive.add(manifest);
     }
 
-    private void createWildflySwarmProperties() throws IOException {
-
+    private void addWildFlySwarmProperties() throws IOException {
         Properties props = new Properties();
 
         Enumeration<?> propNames = this.properties.propertyNames();
@@ -341,9 +168,6 @@ public class BuildTool {
             String eachValue = this.properties.get(eachName).toString();
             props.put(eachName, eachValue);
         }
-        //props.putAll( this.properties );
-
-        //props.setProperty("wildfly.swarm.app.artifact", this.projectArtifact.artifactId + "-" + this.projectArtifact.version + "." + this.projectArtifact.packaging);
         props.setProperty("wildfly.swarm.app.artifact", this.projectAsset.getSimpleName());
         props.setProperty("wildfly.swarm.context.path", this.contextPath);
 
@@ -354,182 +178,30 @@ public class BuildTool {
     }
 
 
-    private void createDependenciesTxt() throws IOException {
-        Set<String> provided = new HashSet<>();
-
-        for (ArtifactSpec each : this.dependencies) {
-            if (each.type().equals("jar")) {
-                try (JarFile jar = new JarFile(each.file)) {
-
-                    ZipEntry entry = jar.getEntry("provided-dependencies.txt");
-                    if (entry != null) {
-                        // add ourselves
-                        provided.add(each.groupId() + ":" + each.artifactId());
-
-                        try (InputStream in = jar.getInputStream(entry)) {
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                            String line = null;
-
-                            // add everything mentioned in the file
-                            while ((line = reader.readLine()) != null) {
-                                line = line.trim();
-                                if (line.length() > 0) {
-                                    String[] parts = line.split("\\|");
-                                    if (parts.length > 1) {
-                                        this.providedMappings.put(parts[0], parts[1]);
-                                    }
-                                    provided.add(parts[0].trim());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        for (String each : this.resourceDirectories) {
-            Path providedDependencies = Paths.get(each, "provided-dependencies.txt");
-            if (Files.exists(providedDependencies)) {
-
-                try (InputStream in = new FileInputStream(providedDependencies.toFile())) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    String line = null;
-
-                    // add everything mentioned in the file
-                    while ((line = reader.readLine()) != null) {
-                        line = line.trim();
-                        if (line.length() > 0) {
-                            String[] parts = line.split("\\|");
-                            if (parts.length > 1) {
-                                this.providedMappings.put(parts[0], parts[1]);
-                            }
-                            provided.add(parts[0].trim());
-                        }
-                    }
-                }
-            }
-        }
-
-        StringBuilder depsTxt = new StringBuilder();
-        StringBuilder extraDepsTxt = new StringBuilder();
-
-        WildFlySwarmDependenciesConf depsConf = new WildFlySwarmDependenciesConf();
-
-        for (ArtifactSpec each : this.dependencies) {
-            if (provided.contains(each.groupId() + ":" + each.artifactId())) {
-                continue;
-            }
-            if (each.scope.equals("compile")) {
-                if (each.type().equals("jar")) {
-                    depsConf.addPrimaryDependency( each );
-                } else {
-                    depsConf.addExtraDependency( each );
-                }
-            }
-
-            this.archive.add(new StringAsset(depsConf.toString()), WildFlySwarmDependenciesConf.CLASSPATH_LOCATION );
-        }
-    }
-
-    protected void collectDependencies() throws Exception {
-        if (!this.bundleDependencies) {
-            return;
-        }
-        analyzeModuleDependencies();
-        gatherDependencies();
+    private void addWildFlyBootstrapConf() throws Exception {
+        WildFlySwarmBootstrapConf bootstrapConf = this.dependencyManager.getWildFlySwarmBootstrapConf();
+        this.archive.add(new StringAsset(bootstrapConf.toString()), WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
     }
 
 
-    protected void analyzeModuleDependencies() throws IOException {
-        for (ArtifactSpec each : this.bootstrappedArtifacts) {
-            this.coreSwarmArtifacts.add(each);
-            analyzeModuleDependencies(each);
-        }
+
+    private void addWildFlySwarmDependenciesConf() throws IOException {
+        WildFlySwarmDependenciesConf depsConf = this.dependencyManager.getWildFlySwarmDependenciesConf();
+        this.archive.add(new StringAsset(depsConf.toString()), WildFlySwarmDependenciesConf.CLASSPATH_LOCATION);
     }
 
-    protected void analyzeModuleDependencies(ArtifactSpec artifact) throws IOException {
-        if (!artifact.type().equals("jar")) {
-            return;
-        }
-
-        JarFile jar = new JarFile(artifact.file);
-
-        Enumeration<JarEntry> entries = jar.entries();
-
-        while (entries.hasMoreElements()) {
-            JarEntry each = entries.nextElement();
-            String name = each.getName();
-
-            if (name.startsWith("modules/") && name.endsWith("module.xml")) {
-                try (InputStream in = jar.getInputStream(each)) {
-                    analyzeModuleDependencies(in);
-                }
-            }
-        }
+    private void addWildFlySwarmApplicationConf() throws Exception {
+        WildFlySwarmApplicationConf appConf = this.dependencyManager.getWildFlySwarmApplicationConf(this.projectAsset);
+        this.archive.add(new StringAsset(appConf.toString()), WildFlySwarmApplicationConf.CLASSPATH_LOCATION);
+        this.archive.add(this.projectAsset);
     }
 
-    protected void analyzeModuleDependencies(InputStream moduleXml) throws IOException {
-        ModuleAnalyzer analyzer = new ModuleAnalyzer(moduleXml);
-        this.moduleDependencies.addAll( analyzer.getDependencies() );
-    }
-
-    protected void gatherDependencies() throws Exception {
-        this.coreSwarmArtifacts.addAll(this.moduleDependencies);
-
-        if (this.projectAsset.getSimpleName().endsWith(".war")) {
-            for (ArtifactSpec each : this.dependencies) {
-                if (!this.coreSwarmArtifacts.contains(each)) {
-                    each.shouldGather = false;
-                }
-            }
-        }
-
-        for (ArtifactSpec each : this.dependencies) {
-            if (each.shouldGather) {
-                gatherDependency(each);
-            }
-        }
-
-        for (ArtifactSpec each : this.coreSwarmArtifacts) {
-            if (each.shouldGather) {
-                gatherDependency(each);
-            }
-        }
-    }
 
     private File createJar(String baseName, Path dir) throws IOException {
         File out = new File(dir.toFile(), baseName + "-swarm.jar");
         ZipExporter exporter = this.archive.as(ZipExporter.class);
         exporter.exportTo(out, true);
         return out;
-    }
-
-    public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier) {
-        for (ArtifactSpec each : this.dependencies) {
-            if (groupId != null && !groupId.equals(each.groupId())) {
-                continue;
-            }
-
-            if (artifactId != null && !artifactId.equals(each.artifactId())) {
-                continue;
-            }
-
-            if (version != null && !version.equals(each.version())) {
-                continue;
-            }
-
-            if (packaging != null && !packaging.equals(each.type())) {
-                continue;
-            }
-
-            if (classifier != null && !classifier.equals(each.classifier())) {
-                continue;
-            }
-
-            return each;
-        }
-
-        return null;
     }
 
     public boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
@@ -564,10 +236,16 @@ public class BuildTool {
         }
     }
 
-    private void addAdditionnalModule() {
+    private void addAdditionnalModules() {
         for (String additionnalModule : additionnalModules) {
             File file = new File(additionnalModule);
             this.archive.addAsResource(file, "modules");
+        }
+    }
+
+    private void populateUberJarMavenRepository() throws Exception {
+        if ( this.bundleDependencies ) {
+            this.dependencyManager.populateUberJarMavenRepository( this.archive );
         }
     }
 }
