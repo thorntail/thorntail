@@ -17,6 +17,7 @@ package org.wildfly.swarm.infinispan;
 
 import org.wildfly.swarm.config.Infinispan;
 import org.wildfly.swarm.config.infinispan.CacheContainer;
+import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 
 import java.util.List;
@@ -32,10 +33,10 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
     }
 
     public static InfinispanFraction createDefaultFraction() {
-        return new InfinispanFraction().localDefaultFraction();
+        return new InfinispanFraction().markDefaultFraction();
     }
 
-        @Override
+    @Override
     public InfinispanFraction cacheContainer(CacheContainer value) {
         super.cacheContainer(enableResourceDefaults(value));
 
@@ -47,6 +48,23 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         super.cacheContainers(value.stream()
                                       .map(InfinispanFraction::enableResourceDefaults)
                                       .collect(Collectors.toList()));
+
+        return this;
+    }
+
+    @Override
+    public void postInitialize(Container.PostInitContext initContext) {
+        if (this.defaultFraction) {
+            if (initContext.hasFraction("jgroups")) {
+                clusteredDefaultFraction();
+            } else {
+                localDefaultFraction();
+            }
+        }
+    }
+
+    protected InfinispanFraction markDefaultFraction() {
+        this.defaultFraction = true;
 
         return this;
     }
@@ -206,4 +224,6 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
 
         return container;
     }
+
+    private boolean defaultFraction = false;
 }
