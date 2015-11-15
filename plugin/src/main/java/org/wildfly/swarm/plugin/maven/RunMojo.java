@@ -75,6 +75,9 @@ public class RunMojo extends AbstractMojo {
     @Parameter(alias = "environmentFile")
     private File environmentFile;
 
+    @Parameter(alias = "waitForProcess", defaultValue = "true")
+    private boolean waitForProcess;
+
     private String[] environment;
 
     @Override
@@ -94,14 +97,20 @@ public class RunMojo extends AbstractMojo {
                 getLog().error("env file not found " + environmentFile);
             }
         }
+        Process process = null;
         if (this.project.getPackaging().equals("war")) {
-            executeWar();
+            process = executeWar();
         } else if (this.project.getPackaging().equals("jar")) {
-            executeJar();
+            process = executeJar();
+        }
+        if(waitForProcess) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {}
         }
     }
 
-    protected void executeWar() throws MojoFailureException {
+    protected Process executeWar() throws MojoFailureException {
         Path java = findJava();
 
         try {
@@ -132,15 +141,13 @@ public class RunMojo extends AbstractMojo {
             new Thread(new IOBridge(process.getInputStream(), System.out)).start();
             new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
 
-            process.waitFor();
+            return process;
         } catch (IOException e) {
             throw new MojoFailureException("Error executing", e);
-        } catch (InterruptedException e) {
-            // ignore;
         }
     }
 
-    protected void executeJar() throws MojoFailureException {
+    protected Process executeJar() throws MojoFailureException {
         Path java = findJava();
 
         try {
@@ -171,13 +178,10 @@ public class RunMojo extends AbstractMojo {
             new Thread(new IOBridge(process.getInputStream(), System.out)).start();
             new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
 
-            process.waitFor();
+            return process;
         } catch (IOException e) {
             throw new MojoFailureException("Error executing", e);
-        } catch (InterruptedException e) {
-            // ignore;
         }
-
     }
 
     Properties runProperties() {
