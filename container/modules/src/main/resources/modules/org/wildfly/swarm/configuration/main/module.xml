@@ -30,6 +30,21 @@
         <path name="org/wildfly/swarm/config/logging"/>
         <path name="org/wildfly/swarm/config/mail"/>
         <path name="org/wildfly/swarm/config/mail/mail_session"/>
+        <path name="org/wildfly/swarm/config/management"/>
+        <path name="org/wildfly/swarm/config/management/access"/>
+        <path name="org/wildfly/swarm/config/management/access/constraint"/>
+        <path name="org/wildfly/swarm/config/management/access/constraint/application_classification/type"/>
+        <path name="org/wildfly/swarm/config/management/access/constraint/sensitivity_classification/type"/>
+        <path name="org/wildfly/swarm/config/management/access/constraint/type/classification"/>
+        <path name="org/wildfly/swarm/config/management/access/logger"/>
+        <path name="org/wildfly/swarm/config/management/access/role_mapping"/>
+        <path name="org/wildfly/swarm/config/management/access/syslog_handler"/>
+        <path name="org/wildfly/swarm/config/management/access/syslog_handler/protocol"/>
+        <path name="org/wildfly/swarm/config/management/security_realm"/>
+        <path name="org/wildfly/swarm/config/management/security_realm/authentication"/>
+        <path name="org/wildfly/swarm/config/management/security_realm/authorization"/>
+        <path name="org/wildfly/swarm/config/management/security_realm/server_identity"/>
+        <path name="org/wildfly/swarm/config/management/service"/>
         <path name="org/wildfly/swarm/config/messaging_activemq"/>
         <path name="org/wildfly/swarm/config/messaging_activemq/server"/>
         <path name="org/wildfly/swarm/config/messaging_activemq/server/ha_policy/replication_colocated"/>
@@ -56,6 +71,7 @@
         <path name="org/wildfly/swarm/config/undertow/server"/>
         <path name="org/wildfly/swarm/config/undertow/server/host"/>
         <path name="org/wildfly/swarm/config/undertow/servlet_container"/>
+        <path name="org/wildfly/swarm/config/webservices"/>
       </paths>
     </system>
     <module name="org.wildfly.swarm.configuration" slot="api" export="true" services="export"/>
