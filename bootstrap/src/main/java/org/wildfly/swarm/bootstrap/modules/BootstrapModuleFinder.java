@@ -21,6 +21,7 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 
 /**
  * Module-finder used only for loading the first set of jars when run in an fat-jar scenario.
@@ -48,6 +49,9 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
+            HashSet<String> paths = new HashSet<String>();
+            paths.add( "org/wildfly/swarm/bootstrap/util");
+            builder.addDependency(DependencySpec.createSystemDependencySpec( paths, true ) );
         } catch (IOException e) {
             throw new ModuleLoadException(e);
         } catch (URISyntaxException e) {

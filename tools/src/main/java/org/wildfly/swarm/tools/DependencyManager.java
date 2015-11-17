@@ -159,7 +159,9 @@ public class DependencyManager {
         WildFlySwarmBootstrapConf bootstrapConf = new WildFlySwarmBootstrapConf();
 
         for (ArtifactSpec each : this.bootstrapDependencies) {
-            bootstrapConf.addEntry(each);
+            if ( ! isExplodedBootstrap( each ) ) {
+                bootstrapConf.addEntry(each);
+            }
         }
 
         return bootstrapConf;
