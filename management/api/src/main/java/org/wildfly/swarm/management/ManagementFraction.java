@@ -17,6 +17,8 @@ package org.wildfly.swarm.management;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
+import org.wildfly.swarm.config.management.SecurityRealmConsumer;
+import org.wildfly.swarm.config.webservices.EndpointConfig;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.SocketBinding;
@@ -43,6 +45,14 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
             iface.httpUpgradeEnabled(true);
             iface.socketBinding( "management-http" );
             consumer.accept(iface);
+        });
+    }
+
+    public ManagementFraction securityRealm(String childKey, EnhancedSecurityRealm.Consumer consumer) {
+        return securityRealm( ()->{
+            EnhancedSecurityRealm realm = new EnhancedSecurityRealm(childKey);
+            consumer.accept(realm);
+            return realm;
         });
     }
 

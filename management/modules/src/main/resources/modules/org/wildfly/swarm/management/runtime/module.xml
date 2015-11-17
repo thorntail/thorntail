@@ -11,6 +11,8 @@
 
     <module name="org.wildfly.swarm.management"/>
 
+    <module name="org.jboss.as.domain-management"/>
+
   </dependencies>
 
 </module>
