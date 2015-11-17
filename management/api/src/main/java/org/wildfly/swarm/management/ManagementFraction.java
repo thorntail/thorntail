@@ -16,6 +16,7 @@
 package org.wildfly.swarm.management;
 
 import org.wildfly.swarm.config.ManagementCoreService;
+import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.SocketBinding;
@@ -29,8 +30,26 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
 
     }
 
+    @Override
+    public ManagementFraction httpInterfaceManagementInterface() {
+        return httpInterfaceManagementInterface( (iface)->{
+        });
+    }
+
+    @Override
+    public ManagementFraction httpInterfaceManagementInterface(HTTPInterfaceManagementInterfaceConsumer consumer) {
+        return super.httpInterfaceManagementInterface( (iface)->{
+            iface.consoleEnabled(false);
+            iface.httpUpgradeEnabled(true);
+            iface.socketBinding( "management-http" );
+            consumer.accept(iface);
+        });
+    }
+
     public static ManagementFraction createDefaultFraction() {
         ManagementFraction fraction = new ManagementFraction();
+
+        fraction.httpInterfaceManagementInterface();
 
         /*
         fraction

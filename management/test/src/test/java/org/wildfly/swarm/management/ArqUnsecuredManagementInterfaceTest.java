@@ -54,12 +54,7 @@ public class ArqUnsecuredManagementInterfaceTest implements ContainerFactory {
     @Override
     public Container newContainer(String... args) throws Exception {
         return new Container()
-                .fraction(ManagementFraction.createDefaultFraction()
-                        .httpInterfaceManagementInterface((iface) -> {
-                            iface.consoleEnabled(false);
-                            iface.httpUpgradeEnabled(true);
-                            iface.socketBinding("management-http");
-                        }));
+                .fraction(ManagementFraction.createDefaultFraction());
     }
 
     @Test
@@ -88,7 +83,7 @@ public class ArqUnsecuredManagementInterfaceTest implements ContainerFactory {
 
         // ===
 
-        response = client.execute(Operations.createOperation("read-resource", PathAddress.pathAddress(PathElement.pathElement("deployment","*")).toModelNode()));
+        response = client.execute(Operations.createOperation("read-resource", PathAddress.pathAddress(PathElement.pathElement("deployment", "*")).toModelNode()));
 
         assertThat(response.get("outcome").asString()).isEqualTo("success");
 
@@ -96,20 +91,20 @@ public class ArqUnsecuredManagementInterfaceTest implements ContainerFactory {
 
         assertThat(result).isNotNull();
         assertThat(result.isDefined()).isTrue();
-        assertThat( result.getType() ).isEqualTo(ModelType.LIST);
-        assertThat( result.asList()).hasSize(1);
+        assertThat(result.getType()).isEqualTo(ModelType.LIST);
+        assertThat(result.asList()).hasSize(1);
 
         ModelNode myapp = result.get(0);
 
-        assertThat( myapp ).isNotNull();
-        assertThat( myapp.isDefined() ).isTrue();
+        assertThat(myapp).isNotNull();
+        assertThat(myapp.isDefined()).isTrue();
 
-        ModelNode myappResult = myapp.get( "result" );
+        ModelNode myappResult = myapp.get("result");
 
-        assertThat( myappResult ).isNotNull();
-        assertThat( myappResult.isDefined() ).isTrue();
+        assertThat(myappResult).isNotNull();
+        assertThat(myappResult.isDefined()).isTrue();
 
-        assertThat( myappResult.get("name").asString()).isEqualTo( "myapp.jar" );
+        assertThat(myappResult.get("name").asString()).isEqualTo("myapp.jar");
 
 
     }
