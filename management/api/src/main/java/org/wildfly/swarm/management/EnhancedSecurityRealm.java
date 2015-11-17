@@ -27,4 +27,16 @@ public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> 
         });
     }
 
+    public EnhancedSecurityRealm inMemoryAuthorization() {
+        return inMemoryAuthorization( (authz)->{} );
+    }
+
+    public EnhancedSecurityRealm inMemoryAuthorization(InMemoryAuthorization.Consumer consumer) {
+        return plugInAuthorization( (plugin)->{
+            plugin.name( IN_MEMORY_PLUGIN_NAME );
+            InMemoryAuthorization authz = new InMemoryAuthorization(plugin);
+            consumer.accept( authz );
+        });
+    }
+
 }

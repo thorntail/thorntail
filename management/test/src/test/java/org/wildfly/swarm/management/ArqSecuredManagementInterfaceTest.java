@@ -65,8 +65,8 @@ public class ArqSecuredManagementInterfaceTest implements ContainerFactory {
                                     realm.inMemoryAuthentication( (authn)->{
                                         authn.add( "bob", "tacos!", true );
                                     });
-                                    realm.plugInAuthorization((plugin) -> {
-                                        plugin.name("swarm-in-memory");
+                                    realm.inMemoryAuthorization( (authz)->{
+                                        authz.add( "bob", "admin" );
                                     });
                                 })
                 );
@@ -81,6 +81,8 @@ public class ArqSecuredManagementInterfaceTest implements ContainerFactory {
         );
 
         ModelNode response = client.execute(Operations.createOperation("whoami"));
+
+        System.err.println( response );
 
         assertThat(response.get("outcome").asString()).isEqualTo("success");
 

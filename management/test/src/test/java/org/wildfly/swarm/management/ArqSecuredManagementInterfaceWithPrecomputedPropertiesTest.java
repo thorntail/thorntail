@@ -16,6 +16,7 @@
 package org.wildfly.swarm.management;
 
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -41,7 +42,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class ArqSecuredManagementInterfaceWithPropertiesTest implements ContainerFactory {
+public class ArqSecuredManagementInterfaceWithPrecomputedPropertiesTest implements ContainerFactory {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -61,8 +62,8 @@ public class ArqSecuredManagementInterfaceWithPropertiesTest implements Containe
                                 .securityRealm("ManagementRealm", (realm) -> {
                                     realm.inMemoryAuthentication( (authn)->{
                                         authn.add( new Properties() {{
-                                            put( "bob", "tacos!" );
-                                        }}, true );
+                                            put( "bob", "9b511b00aa7f2265621e38d2cf665f2f");
+                                        }});
                                     });
                                     realm.inMemoryAuthorization();
                                 })
