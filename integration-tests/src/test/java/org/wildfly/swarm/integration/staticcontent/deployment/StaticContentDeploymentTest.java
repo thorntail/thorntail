@@ -66,6 +66,21 @@ public class StaticContentDeploymentTest extends AbstractWildFlySwarmTestCase im
         }
     }
 
+    @Test
+    public void testStaticContentWithBase() throws Exception {
+        Container container = newContainer();
+        container.start();
+        try {
+            WARArchive deployment = ShrinkWrap.create(WARArchive.class);
+            deployment.staticContent("foo");
+            container.deploy(deployment);
+            assertContains("", "This is foo/index.html.");
+            assertContains("index.html", "This is foo/index.html.");
+        } finally {
+            container.stop();
+        }
+    }
+
     private void assertFileChangesReflected(String context) throws Exception {
         if (context.length() > 0 && !context.endsWith("/")) {
             context = context + "/";

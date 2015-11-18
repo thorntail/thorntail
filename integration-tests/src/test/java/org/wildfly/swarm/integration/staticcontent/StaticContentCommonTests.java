@@ -12,8 +12,6 @@ public interface StaticContentCommonTests {
         // Ensure index files are used
         assertContains(context, "This is index.html.");
         assertContains(context + "foo", "This is foo/index.html.");
-        // Ensure content under src/main/resources is NOT served up
-        assertNotFound(context + "faildex.html");
         // Ensure we don't serve up Java class files
         assertNotFound(context + "java/lang/Object.class");
         // And doubly ensure we don't serve up application class files

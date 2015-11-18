@@ -47,14 +47,17 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
 
     @Override
     public Archive create(Container container) throws Exception {
+        return archiveFromCurrentApp();
+    }
+
+    public static WARArchive archiveFromCurrentApp() throws Exception {
         WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
-        setup( archive );
+        setup(archive);
         archive.addModule("org.wildfly.swarm.undertow", "runtime");
-        archive.addAsServiceProvider("io.undertow.server.handlers.builder.HandlerBuilder", "org.wildfly.swarm.undertow.runtime.StaticHandlerBuilder");
         return archive;
     }
 
-    protected String determineName() {
+    protected static String determineName() {
         String prop = System.getProperty( "wildfly.swarm.app.path" );
         if ( prop != null ) {
             File file = new File( prop );
@@ -73,11 +76,11 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
         return UUID.randomUUID().toString() + ".war";
     }
 
-    protected void setup(DependenciesContainer<?> archive) throws Exception {
+    protected static void setup(DependenciesContainer<?> archive) throws Exception {
         boolean result = setupUsingAppPath(archive) || setupUsingAppArtifact(archive) || setupUsingMaven(archive);
     }
 
-    protected boolean setupUsingAppPath(DependenciesContainer<?> archive) throws IOException {
+    protected static boolean setupUsingAppPath(DependenciesContainer<?> archive) throws IOException {
         String appPath = System.getProperty("wildfly.swarm.app.path");
 
         if (appPath != null) {
@@ -101,7 +104,7 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
         return false;
     }
 
-    protected boolean setupUsingAppArtifact(DependenciesContainer<?> archive) throws IOException {
+    protected static boolean setupUsingAppArtifact(DependenciesContainer<?> archive) throws IOException {
         String appArtifact = System.getProperty("wildfly.swarm.app.artifact");
 
         if (appArtifact != null) {
@@ -115,7 +118,7 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
         return false;
     }
 
-    protected boolean setupUsingMaven(DependenciesContainer<?> archive) throws Exception {
+    protected static boolean setupUsingMaven(DependenciesContainer<?> archive) throws Exception {
         Path pwd = Paths.get(System.getProperty("user.dir"));
 
         final Path classes = pwd.resolve("target").resolve("classes");
@@ -153,7 +156,7 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
         return success;
     }
 
-    protected String convertSeparators(Path path) {
+    protected static String convertSeparators(Path path) {
         String convertedPath = path.toString();
 
         if (convertedPath.contains(File.separator)) {
