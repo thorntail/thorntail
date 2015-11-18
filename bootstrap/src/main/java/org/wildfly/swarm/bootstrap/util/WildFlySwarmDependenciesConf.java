@@ -91,6 +91,10 @@ public class WildFlySwarmDependenciesConf {
     }
 
     public MavenArtifactDescriptor find(String groupId, String artifactId, String packaging, String classifier) {
+        if ( classifier != null && classifier.trim().isEmpty() ) {
+            classifier = null;
+        }
+
         for (MavenArtifactDescriptor each : this.primaryDependencies) {
             if ( ! each.groupId().equals( groupId ) ) {
                 continue;
@@ -124,6 +128,7 @@ public class WildFlySwarmDependenciesConf {
             if ( ! each.type().equals( packaging ) ) {
                 continue;
             }
+
             if ( classifier == null && each.classifier() == null ) {
                 return each;
             }
