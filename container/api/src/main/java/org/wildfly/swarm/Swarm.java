@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -67,17 +68,22 @@ public class Swarm {
         container.deploy();
     }
 
-    public static JavaArchive artifact(String gav) throws Exception {
+    public static ArtifactManager artifactManager() throws IOException {
         if ( ARTIFACT_MANAGER == null ) {
             ARTIFACT_MANAGER = new ArtifactManager();
         }
-        return ARTIFACT_MANAGER.artifact( gav );
+        return ARTIFACT_MANAGER;
+    }
+
+    public static JavaArchive artifact(String gav) throws Exception {
+        return artifactManager().artifact( gav );
+    }
+
+    public static JavaArchive artifact(String gav, String asName) throws Exception {
+        return artifactManager().artifact( gav, asName );
     }
 
     public static List<JavaArchive> allArtifacts() throws Exception {
-        if ( ARTIFACT_MANAGER == null ) {
-            ARTIFACT_MANAGER = new ArtifactManager();
-        }
-        return ARTIFACT_MANAGER.allArtifacts();
+        return artifactManager().allArtifacts();
     }
 }
