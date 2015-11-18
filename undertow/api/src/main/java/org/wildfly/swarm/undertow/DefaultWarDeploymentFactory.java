@@ -132,6 +132,14 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     Path simple = classes.relativize(file);
                     archive.add(new FileAsset(file.toFile()), "WEB-INF/classes/" + convertSeparators(simple));
+                    // If the user's maven output is a jar then they may place
+                    // static content under src/main/resources, in which case
+                    // we need to hoist anything under WEB-INF out of there
+                    // and put it into the root of this archive instead of
+                    // under WEB-INF/classes/WEB-INF/foo
+                    if (simple.toString().contains("WEB-INF")) {
+                        archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
+                    }
                     return super.visitFile(file, attrs);
                 }
             });
