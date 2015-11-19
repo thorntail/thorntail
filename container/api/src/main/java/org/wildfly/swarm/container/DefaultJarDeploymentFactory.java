@@ -72,11 +72,11 @@ public class DefaultJarDeploymentFactory implements DefaultDeploymentFactory {
         return UUID.randomUUID().toString() + ".jar";
     }
 
-    protected void setup(DependenciesContainer<?> archive) throws Exception {
+    protected void setup(JARArchive archive) throws Exception {
         boolean result = setupUsingAppPath(archive) || setupUsingAppArtifact(archive) || setupUsingMaven(archive);
     }
 
-    protected boolean setupUsingAppPath(DependenciesContainer<?> archive) throws IOException {
+    protected boolean setupUsingAppPath(JARArchive archive) throws IOException {
         String appPath = System.getProperty("wildfly.swarm.app.path");
 
         if (appPath != null) {
@@ -100,7 +100,7 @@ public class DefaultJarDeploymentFactory implements DefaultDeploymentFactory {
         return false;
     }
 
-    protected boolean setupUsingAppArtifact(DependenciesContainer<?> archive) throws IOException {
+    protected boolean setupUsingAppArtifact(JARArchive archive) throws IOException {
         String appArtifact = System.getProperty("wildfly.swarm.app.artifact");
 
         if (appArtifact != null) {
@@ -114,7 +114,7 @@ public class DefaultJarDeploymentFactory implements DefaultDeploymentFactory {
         return false;
     }
 
-    protected boolean setupUsingMaven(DependenciesContainer<?> archive) throws Exception {
+    protected boolean setupUsingMaven(JARArchive archive) throws Exception {
         Path pwd = Paths.get(System.getProperty("user.dir"));
 
         final Path classes = pwd.resolve("target").resolve("classes");
@@ -133,7 +133,7 @@ public class DefaultJarDeploymentFactory implements DefaultDeploymentFactory {
             });
         }
 
-        archive.addAllDependencies();
+        //archive.addAllDependencies();
 
         return success;
     }
