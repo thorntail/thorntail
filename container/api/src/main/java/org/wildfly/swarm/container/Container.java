@@ -513,7 +513,8 @@ public class Container {
             }
         }
 
-        return "unknown";
+        // when in doubt, assume at least a .jar
+        return "jar";
     }
 
     public static boolean isFatJar() throws IOException {
