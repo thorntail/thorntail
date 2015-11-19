@@ -5,12 +5,10 @@ var ribbon = (function() {
     method: 'GET'
   };
 
-  function factory(services, keycloak) {
-
-    console.log('Initializing ribbon with ' + services);
+  function factory(keycloak) {
 
     function ajax( serviceName, path, settings ) {
-      var allServers = services[serviceName],
+      var allServers = topology[serviceName],
           deferredResult = deferred();
 
       console.log( "servers for [" + serviceName + "]", allServers );
@@ -130,10 +128,24 @@ var ribbon = (function() {
       });
     }
 
+    var sse = new EventSource( "/ribbon/system/stream" );
+    sse.addEventListener('topologyChange', function(message) {
+      console.log('Ribbon topology changed: ', message.data);
+    });
+
+    sse.onerror = function(e) {
+      console.log( "Ribbon topology SSE error", e );
+    };
+
+    sse.onopen = function() {
+      console.log( "Ribbon topology SEE opened" );
+    };
+
     return {
       ajax: ajax,
       postJSON: postJSON,
-      getJSON: getJSON
+      getJSON: getJSON,
+      topologyEvents: sse
     };
   }
 

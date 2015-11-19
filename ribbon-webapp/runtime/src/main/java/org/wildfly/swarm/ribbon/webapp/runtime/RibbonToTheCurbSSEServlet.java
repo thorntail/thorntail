@@ -61,6 +61,7 @@ public class RibbonToTheCurbSSEServlet extends HttpServlet {
             public void onChange(RibbonTopology topology) {
                 String json = topologyToJson();
                 synchronized (writeLock) {
+                    writer.write("event: topologyChange\n");
                     writer.write("data: " + json);
                     writer.flush();
                 }
@@ -109,6 +110,7 @@ public class RibbonToTheCurbSSEServlet extends HttpServlet {
 
         this.topology.addListener(topologyListener);
         String json = topologyToJson();
+        writer.write("event: topologyChange\n");
         writer.write("data: " + json);
         writer.flush();
 
