@@ -23,8 +23,7 @@ public class MessagingApplicationIT extends AbstractIntegrationTest {
     public void testIt() throws Exception {
         browser.navigate().to("http://localhost:8080/");
         assertThat(browser.getPageSource()).contains("Howdy!");
-        Log stdout = getLog("target/stdout.log");
+        Log stdout = getStdOutLog();
         assertThatLog( stdout ).hasLineContaining( "Hello!" );
-        //assertThat( lines.stream().filter( e->e.contains( "Hello!" ) ).count() ).isGreaterThan( 0 );
     }
 }
