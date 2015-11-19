@@ -49,6 +49,10 @@ the `org.wildfly.swarm` Maven group-id:
 * weld
 * _and many more!_
 
+# Issue Tracking
+
+Issue are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/secure/RapidBoard.jspa?rapidView=2972) (JIRA). Bug reports and feature requests are greatly appreciated.
+
 # Documentation
 
 For a more complete set of documentation, go to the [WildFly Swarm User's
