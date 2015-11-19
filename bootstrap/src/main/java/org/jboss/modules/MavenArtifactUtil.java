@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,6 +31,7 @@ import java.util.List;
 import org.jboss.modules.xml.MXParser;
 import org.jboss.modules.xml.XmlPullParser;
 import org.jboss.modules.xml.XmlPullParserException;
+import org.wildfly.swarm.bootstrap.util.Layout;
 
 import static org.jboss.modules.ModuleXmlParser.endOfDocument;
 import static org.jboss.modules.ModuleXmlParser.unexpectedContent;
@@ -87,7 +89,7 @@ public class MavenArtifactUtil {
             if ( ! settings.getRemoteRepositories().contains( "http://repository.jboss.org/nexus/content/groups/public/" ) ) {
                 settings.getRemoteRepositories().add( "http://repository.jboss.org/nexus/content/groups/public/" );
             }
-            
+
             mavenSettings = settings;
             return mavenSettings;
         }
@@ -320,6 +322,17 @@ public class MavenArtifactUtil {
             if (stream != null) {
                 return copyTempJar(artifactId + "-" + version, stream, packaging);
             }
+
+            /*
+            try {
+                if (Layout.getInstance().isUberJar() ) {
+                    System.err.println( "UBERJAR, not searching further for : " + qualifier + ":" + packaging );
+                    return null;
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            */
 
             artifactRelativePath = relativeArtifactPath(groupId, artifactId, version);
             jarPath = artifactRelativePath + classifier + "." + packaging;

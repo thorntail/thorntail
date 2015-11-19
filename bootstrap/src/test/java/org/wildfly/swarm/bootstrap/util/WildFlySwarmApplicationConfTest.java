@@ -30,7 +30,7 @@ public class WildFlySwarmApplicationConfTest {
 
         assertThat( lines ).hasSize(3);
         assertThat( lines ).contains( "gav:org.wildfly.swarm:fish:1.0" );
-        assertThat( lines ).contains( "module:com.mymodule");
+        assertThat( lines ).contains( "module:com.mymodule:main");
         assertThat( lines ).contains( "path:_bootstrap/myapp.war" );
 
         ByteArrayInputStream in = new ByteArrayInputStream( written.getBytes() );

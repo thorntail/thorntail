@@ -21,18 +21,30 @@ public class ModuleAnalyzer {
 
     private ModuleDescriptorImpl module;
 
-    public ModuleAnalyzer(InputStream in) {
+    public ModuleAnalyzer(InputStream in) throws IOException {
         NodeImporter importer = new XmlDomNodeImporterImpl();
         Node node = importer.importAsNode(in, true);
 
         String rootName = node.getName();
 
         if ( rootName.equals( "module" ) ) {
-            this.module = new ModuleDescriptorImpl( null, node );
+            this.module = new ModuleDescriptorImpl(null, node);
         }
+        in.close();
     }
 
-    public List<ArtifactSpec> getDependencies() throws IOException {
+    public String getName() {
+        return this.module.getName();
+    }
+
+    public String getSlot() {
+        if ( this.module.getSlot() == null ) {
+            return "main";
+        }
+        return this.module.getSlot();
+    }
+
+    public List<ArtifactSpec> getDependencies() {
         if ( this.module == null ) {
             return Collections.emptyList();
         }

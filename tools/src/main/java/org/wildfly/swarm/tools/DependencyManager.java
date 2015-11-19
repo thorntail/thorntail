@@ -73,7 +73,7 @@ public class DependencyManager {
         return this.providedGAVs;
     }
 
-    Map<String,String> getProvidedGAVToModuleMappings() {
+    Map<String, String> getProvidedGAVToModuleMappings() {
         return this.providedGAVToModuleMappings;
     }
 
@@ -113,7 +113,7 @@ public class DependencyManager {
     }
 
     protected boolean isBootstrapDependency(ArtifactSpec spec) {
-        if ( spec.file == null ) {
+        if (spec.file == null) {
             return false;
         }
         if (!spec.type().equals("jar")) {
@@ -159,7 +159,7 @@ public class DependencyManager {
         WildFlySwarmBootstrapConf bootstrapConf = new WildFlySwarmBootstrapConf();
 
         for (ArtifactSpec each : this.bootstrapDependencies) {
-            if ( ! isExplodedBootstrap( each ) ) {
+            if (!isExplodedBootstrap(each)) {
                 bootstrapConf.addEntry(each);
             }
         }
@@ -228,7 +228,7 @@ public class DependencyManager {
             return false;
         }
 
-        if ( isExplodedBootstrap( dependency ) ) {
+        if (isExplodedBootstrap(dependency)) {
             return false;
         }
 
@@ -239,7 +239,7 @@ public class DependencyManager {
         if (dependency.groupId().equals(JBOSS_MODULES_GROUP_ID) && dependency.artifactId().equals(JBOSS_MODULES_ARTIFACT_ID)) {
             return true;
         }
-        if (dependency.groupId().equals(WILDFLY_SWARM_GROUP_ID ) && dependency.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
+        if (dependency.groupId().equals(WILDFLY_SWARM_GROUP_ID) && dependency.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
             return true;
         }
         return false;
@@ -259,8 +259,8 @@ public class DependencyManager {
 
     }
 
-    protected static Stream<InputStream> findModuleXmls(File file) {
-        List<InputStream> xmls = new ArrayList<>();
+    protected static Stream<ModuleAnalyzer> findModuleXmls(File file) {
+        List<ModuleAnalyzer> analyzers = new ArrayList<>();
         try {
             JarFile jar = new JarFile(file);
             Enumeration<JarEntry> entries = jar.entries();
@@ -271,29 +271,24 @@ public class DependencyManager {
 
                 if (name.startsWith("modules/") && name.endsWith("module.xml")) {
                     InputStream in = jar.getInputStream(each);
-                    xmls.add(in);
+                    analyzers.add(new ModuleAnalyzer(in));
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return xmls.stream();
+        return analyzers.stream();
     }
 
-    protected void analyzeModuleDependencies(InputStream in) {
-        try {
-            ModuleAnalyzer analyzer = new ModuleAnalyzer(in);
-            this.moduleDependencies.addAll(analyzer.getDependencies());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    protected void analyzeModuleDependencies(ModuleAnalyzer analyzer) {
+        this.moduleDependencies.addAll(analyzer.getDependencies());
+        for (ArtifactSpec each : analyzer.getDependencies()) {
+            providedGAVToModuleMappings.put(
+                    each.groupId() + ":" + each.artifactId(),
+                    analyzer.getName() + ":" + analyzer.getSlot());
         }
+
     }
 
     protected void analyzeProvidedDependencies() {
@@ -303,7 +298,7 @@ public class DependencyManager {
     }
 
     protected void analyzeProvidedDependencies(ArtifactSpec spec) {
-        if ( spec.file == null ) {
+        if (spec.file == null) {
             return;
         }
         try (JarFile jar = new JarFile(spec.file)) {
@@ -313,8 +308,8 @@ public class DependencyManager {
                 // add ourselves
                 providedGAVs.add(spec.groupId() + ":" + spec.artifactId());
 
-                if ( spec.artifactId().endsWith( "-modules" ) ) {
-                    providedGAVs.add( spec.groupId() + ":" + spec.artifactId().substring( 0, spec.artifactId().length() - "-modules".length() ) );
+                if (spec.artifactId().endsWith("-modules")) {
+                    providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-modules".length()));
                 }
 
                 try (InputStream in = jar.getInputStream(entry)) {
@@ -391,30 +386,30 @@ public class DependencyManager {
 
     public void populateUberJarMavenRepository(Archive archive) throws Exception {
         for (ArtifactSpec dependency : this.dependencies) {
-            if ( ! this.bootstrapDependencies.contains(dependency) && ! this.moduleDependencies.contains(dependency) ) {
+            if (!this.bootstrapDependencies.contains(dependency) && !this.moduleDependencies.contains(dependency)) {
                 dependency.shouldGather = false;
             }
-            if ( includeAsBootstrapJar( dependency) ) {
+            if (includeAsBootstrapJar(dependency)) {
                 dependency.shouldGather = true;
             }
-            if ( isExplodedBootstrap( dependency ) ) {
+            if (isExplodedBootstrap(dependency)) {
                 dependency.shouldGather = false;
             }
-            if ( isProvidedDependency( dependency ) ) {
+            if (isProvidedDependency(dependency)) {
                 dependency.shouldGather = false;
             }
 
-            if ( dependency.shouldGather ) {
-                addArtifactToArchiveMavenRepository( archive, dependency );
+            if (dependency.shouldGather) {
+                addArtifactToArchiveMavenRepository(archive, dependency);
             }
         }
 
         for (ArtifactSpec dependency : this.moduleDependencies) {
-            addArtifactToArchiveMavenRepository( archive, dependency );
+            addArtifactToArchiveMavenRepository(archive, dependency);
         }
 
-        for ( ArtifactSpec dependency : this.bootstrapDependencies ) {
-            if ( ! isExplodedBootstrap(dependency) ) {
+        for (ArtifactSpec dependency : this.bootstrapDependencies) {
+            if (!isExplodedBootstrap(dependency)) {
                 addArtifactToArchiveMavenRepository(archive, dependency);
             }
         }

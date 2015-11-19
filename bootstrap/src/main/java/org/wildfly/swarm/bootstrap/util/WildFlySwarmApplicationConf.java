@@ -43,9 +43,16 @@ public class WildFlySwarmApplicationConf {
 
     public static class ModuleEntry extends Entry {
         private final String name;
+        private final String slot;
 
         public ModuleEntry(String name) {
-            this.name = name;
+            String[] parts = name.split(":");
+            this.name = parts[0];
+            if ( parts.length == 2 ) {
+                this.slot = parts[1];
+            } else {
+                this.slot = "main";
+            }
         }
 
         @Override
@@ -59,12 +66,12 @@ public class WildFlySwarmApplicationConf {
                             ClassFilters.acceptAll(),
                             ClassFilters.acceptAll(),
                             null,
-                            ModuleIdentifier.create(this.name), false));
+                            ModuleIdentifier.create(this.name, this.slot), false));
         }
 
         @Override
         void write(PrintWriter writer) {
-            writer.println("module:" + this.name);
+            writer.println("module:" + this.name + ":" + this.slot);
         }
 
         public String getName() {

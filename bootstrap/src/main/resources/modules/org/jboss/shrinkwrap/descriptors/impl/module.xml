@@ -10,8 +10,9 @@
     <artifact name="org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:${version.org.jboss.shrinkwrap.descriptors}"/>
     <artifact name="org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-javaee:${version.org.jboss.shrinkwrap.descriptors}"/>
     <artifact name="org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-jboss:${version.org.jboss.shrinkwrap.descriptors}"/>
-    <artifact name="org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-jboss:${version.org.jboss.shrinkwrap.descriptors}"/>
     <artifact name="org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-base:${version.org.jboss.shrinkwrap.descriptors}"/>
+    <artifact name="org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-javaee:${version.org.jboss.shrinkwrap.descriptors}"/>
+    <artifact name="org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-jboss:${version.org.jboss.shrinkwrap.descriptors}"/>
     <artifact name="org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-spi:${version.org.jboss.shrinkwrap.descriptors}"/>
   </resources>
   <dependencies>
