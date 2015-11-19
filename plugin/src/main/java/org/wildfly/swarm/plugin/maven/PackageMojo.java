@@ -145,14 +145,14 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         this.tool.projectArtifact(
                 this.project.getArtifact().getGroupId(),
                 this.project.getArtifact().getArtifactId(),
-                this.project.getArtifact().getVersion(),
+                this.project.getArtifact().getBaseVersion(),
                 this.project.getArtifact().getType(),
                 this.project.getArtifact().getFile());
 
 
         Set<Artifact> deps = this.project.getArtifacts();
         for (Artifact each : deps) {
-            this.tool.dependency(each.getScope(), each.getGroupId(), each.getArtifactId(), each.getVersion(), each.getType(), each.getClassifier(), each.getFile());
+            this.tool.dependency(each.getScope(), each.getGroupId(), each.getArtifactId(), each.getBaseVersion(), each.getType(), each.getClassifier(), each.getFile());
         }
 
         List<Resource> resources = this.project.getResources();
@@ -193,7 +193,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
             Artifact swarmJarArtifact = new DefaultArtifact(
                     primaryArtifact.getGroupId(),
                     primaryArtifact.getArtifactId(),
-                    primaryArtifact.getVersion(),
+                    primaryArtifact.getBaseVersion(),
                     primaryArtifact.getScope(),
                     "jar",
                     "swarm",
