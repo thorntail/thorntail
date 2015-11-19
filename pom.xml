@@ -529,6 +529,7 @@
     <module>servo</module>
 
     <module>integration-tests</module>
+    <module>integs</module>
   </modules>
 
   <distributionManagement>

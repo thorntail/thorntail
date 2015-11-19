@@ -18,14 +18,18 @@ package org.wildfly.swarm.plugin.maven;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -76,17 +80,27 @@ public class StartMojo extends AbstractMojo {
     @Parameter(alias = "environmentFile")
     private File environmentFile;
 
+    @Parameter(alias = "stdoutFile")
+    private File stdoutFile;
+
+    @Parameter(alias = "stderrFile")
+    private File stderrFile;
+
     boolean waitForProcess;
+
+    private IOBridge stdout;
+
+    private IOBridge stderr;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (this.properties == null) {
             this.properties = new Properties();
         }
-        if(this.environment == null) {
+        if (this.environment == null) {
             this.environment = new Properties();
         }
-        if(environmentFile != null) {
+        if (environmentFile != null) {
             Properties ef = new Properties();
             try {
                 Reader inStream = new FileReader(environmentFile);
@@ -108,10 +122,14 @@ public class StartMojo extends AbstractMojo {
         }
 
         getPluginContext().put("swarm-process", process);
-        if(waitForProcess) {
+        getPluginContext().put("swarm-io-stdout", this.stdout);
+        getPluginContext().put("swarm-io-stderr", this.stderr);
+
+        if (waitForProcess) {
             try {
                 process.waitFor();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
     }
 
@@ -125,10 +143,10 @@ public class StartMojo extends AbstractMojo {
             cli.add(dependencies(false));
 
             String finalName = this.project.getBuild().getFinalName();
-            if ( ! finalName.endsWith( ".war" ) ) {
+            if (!finalName.endsWith(".war")) {
                 finalName = finalName + ".war";
             }
-            cli.add("-Dwildfly.swarm.app.path=" + Paths.get(this.projectBuildDir, finalName).toString() );
+            cli.add("-Dwildfly.swarm.app.path=" + Paths.get(this.projectBuildDir, finalName).toString());
             Properties runProps = runProperties();
 
             Enumeration<?> propNames = runProps.propertyNames();
@@ -143,12 +161,21 @@ public class StartMojo extends AbstractMojo {
 
             Process process = Runtime.getRuntime().exec(cli.toArray(new String[0]), toStringArray(environment));
 
-            new Thread(new IOBridge(process.getInputStream(), System.out)).start();
-            new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
+            CountDownLatch latch = new CountDownLatch(1);
+
+            this.stdout = new IOBridge("stdout", latch, process.getInputStream(), System.out, this.stdoutFile);
+            this.stderr = new IOBridge("stderr", latch, process.getErrorStream(), System.err, this.stderrFile);
+
+            new Thread(stdout).start();
+            new Thread(stderr).start();
+
+            latch.await();
 
             return process;
         } catch (IOException e) {
             throw new MojoFailureException("Error executing", e);
+        } catch (InterruptedException e) {
+            throw new MojoFailureException("Error waiting for deployment", e);
         }
     }
 
@@ -180,25 +207,34 @@ public class StartMojo extends AbstractMojo {
 
             Process process = Runtime.getRuntime().exec(cli.toArray(new String[0]), toStringArray(environment));
 
-            new Thread(new IOBridge(process.getInputStream(), System.out)).start();
-            new Thread(new IOBridge(process.getErrorStream(), System.err)).start();
+            CountDownLatch latch = new CountDownLatch(1);
+
+            this.stdout = new IOBridge("stdout", latch, process.getInputStream(), System.out, this.stdoutFile);
+            this.stderr = new IOBridge("stderr", latch, process.getErrorStream(), System.err, this.stderrFile);
+
+            new Thread(stdout).start();
+            new Thread(stderr).start();
+
+            latch.await();
 
             return process;
         } catch (IOException e) {
             throw new MojoFailureException("Error executing", e);
+        } catch (InterruptedException e) {
+            throw new MojoFailureException("Error waiting for launch", e);
         }
     }
 
     private static String[] toStringArray(Properties env) {
         String[] esa = new String[env.size()];
         int i = 0;
-        for(Entry<Object, Object> e: env.entrySet()) {
+        for (Entry<Object, Object> e : env.entrySet()) {
             esa[i++] = e.getKey().toString() + '=' + e.getValue().toString();
         }
         return esa;
     }
 
-	Properties runProperties() {
+    Properties runProperties() {
         Properties props = new Properties();
         props.putAll(this.properties);
 
@@ -275,35 +311,6 @@ public class StartMojo extends AbstractMojo {
         }
 
         throw new MojoFailureException("Unable to determine java binary");
-    }
-
-
-    private static class IOBridge implements Runnable {
-
-        private final InputStream in;
-
-        private final OutputStream out;
-
-        public IOBridge(InputStream in, OutputStream out) {
-            this.in = in;
-            this.out = out;
-        }
-
-        @Override
-        public void run() {
-
-            byte[] buf = new byte[1024];
-            int len = -1;
-
-            try {
-                while ((len = this.in.read(buf)) >= 0) {
-                    out.write(buf, 0, len);
-                }
-            } catch (IOException e) {
-
-            }
-
-        }
     }
 
 }
