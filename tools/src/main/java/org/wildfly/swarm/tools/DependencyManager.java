@@ -313,6 +313,10 @@ public class DependencyManager {
                 // add ourselves
                 providedGAVs.add(spec.groupId() + ":" + spec.artifactId());
 
+                if ( spec.artifactId().endsWith( "-modules" ) ) {
+                    providedGAVs.add( spec.groupId() + ":" + spec.artifactId().substring( 0, spec.artifactId().length() - "-modules".length() ) );
+                }
+
                 try (InputStream in = jar.getInputStream(entry)) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                     String line = null;
