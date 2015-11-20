@@ -319,6 +319,7 @@ public class MavenArtifactUtil {
             String jarPath = artifactRelativePath + classifier + "." + packaging;
 
             InputStream stream = MavenArtifactUtil.class.getClassLoader().getResourceAsStream(jarPath);
+            System.err.println( "jar: " + jarPath );
             if (stream != null) {
                 return copyTempJar(artifactId + "-" + version, stream, packaging);
             }
@@ -338,6 +339,7 @@ public class MavenArtifactUtil {
             jarPath = artifactRelativePath + classifier + "." + packaging;
 
             Path fp = java.nio.file.Paths.get(localRepository.toString(), jarPath);
+            System.err.println( "repo-local:" + fp );
             if (Files.exists(fp)) {
                 return fp.toFile();
             }
