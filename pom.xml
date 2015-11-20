@@ -523,6 +523,7 @@
     <module>security</module>
     <module>transactions</module>
     <module>undertow</module>
+    <module>undertow-js</module>
     <module>weld</module>
     <module>webservices</module>
 
