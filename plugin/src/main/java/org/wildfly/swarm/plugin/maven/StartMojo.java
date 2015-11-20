@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -169,7 +170,16 @@ public class StartMojo extends AbstractMojo {
             new Thread(stdout).start();
             new Thread(stderr).start();
 
-            latch.await();
+            latch.await(2, TimeUnit.MINUTES);
+            if ( ! process.isAlive() ) {
+                throw new MojoFailureException( "Process failed to start" );
+            }
+            if ( this.stdout.getError() != null ) {
+                throw new MojoFailureException( "Error starting process", this.stdout.getError() );
+            }
+            if ( this.stderr.getError() != null ) {
+                throw new MojoFailureException( "Error starting process", this.stderr.getError() );
+            }
 
             return process;
         } catch (IOException e) {
@@ -215,7 +225,16 @@ public class StartMojo extends AbstractMojo {
             new Thread(stdout).start();
             new Thread(stderr).start();
 
-            latch.await();
+            latch.await(2, TimeUnit.MINUTES);
+            if ( ! process.isAlive() ) {
+                throw new MojoFailureException( "Process failed to start" );
+            }
+            if ( this.stdout.getError() != null ) {
+                throw new MojoFailureException( "Error starting process", this.stdout.getError() );
+            }
+            if ( this.stderr.getError() != null ) {
+                throw new MojoFailureException( "Error starting process", this.stderr.getError() );
+            }
 
             return process;
         } catch (IOException e) {
