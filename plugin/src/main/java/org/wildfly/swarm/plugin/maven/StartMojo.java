@@ -157,6 +157,15 @@ public class StartMojo extends AbstractMojo {
                 cli.add("-D" + name + "=" + runProps.getProperty(name));
             }
 
+            Enumeration<?> names = System.getProperties().propertyNames();
+            while (names.hasMoreElements()) {
+                String key = (String) names.nextElement();
+                if (key.startsWith("jboss") || key.startsWith("swarm") || key.startsWith("wildfly") || key.startsWith( "maven" )) {
+                    String value = System.getProperty(key);
+                    cli.add("-D" + key + "=" + value);
+                }
+            }
+
             cli.add("-Dwildfly.swarm.context.path=" + this.contextPath);
             cli.add("org.wildfly.swarm.Swarm");
 
@@ -205,7 +214,15 @@ public class StartMojo extends AbstractMojo {
             while (propNames.hasMoreElements()) {
                 String name = (String) propNames.nextElement();
                 cli.add("-D" + name + "=" + runProps.getProperty(name));
-                System.err.println(name + " = " + runProps.getProperty(name));
+            }
+
+            Enumeration<?> names = System.getProperties().propertyNames();
+            while (names.hasMoreElements()) {
+                String key = (String) names.nextElement();
+                if (key.startsWith("jboss") || key.startsWith("swarm") || key.startsWith("wildfly") || key.startsWith( "maven" )) {
+                    String value = System.getProperty(key);
+                    cli.add("-D" + key + "=" + value);
+                }
             }
 
             cli.add("-Dwildfly.swarm.context.path=" + this.contextPath);
