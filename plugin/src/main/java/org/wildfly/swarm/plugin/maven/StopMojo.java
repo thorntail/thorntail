@@ -33,7 +33,11 @@ public class StopMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         SwarmProcess process = (SwarmProcess) getPluginContext().get("swarm-process");
         if(process != null) {
-            process.stop( 10, TimeUnit.SECONDS );
+            try {
+                process.stop( 10, TimeUnit.SECONDS );
+            } catch (InterruptedException e) {
+                throw new MojoFailureException( "unable to stop process", e);
+            }
         }
 
     }

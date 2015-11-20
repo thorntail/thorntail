@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -41,9 +42,12 @@ public class SwarmExecutor {
 
     private Executable executable;
 
+    private Path workingDirectory;
+
     public SwarmExecutor() {
         this.stdout = System.out;
         this.stderr = System.err;
+        this.workingDirectory = Paths.get( System.getProperty( "user.dir" ) );
     }
 
     public SwarmExecutor withStdoutFile(Path stdoutFile) {
@@ -177,6 +181,11 @@ public class SwarmExecutor {
         return this;
     }
 
+    public SwarmExecutor withWorkingDirectory(Path workingDirectory) {
+        this.workingDirectory = workingDirectory;
+        return this;
+    }
+
     public SwarmProcess execute() throws IOException {
         if (this.executable == null) {
             throw new RuntimeException("An executable jar or a main-class must be specified");
@@ -199,7 +208,7 @@ public class SwarmExecutor {
         cli.addAll(this.executable.toArguments());
         cli.addAll(this.arguments);
 
-        Process process = Runtime.getRuntime().exec(cli.toArray(new String[0]), toStringArray(environment));
+        Process process = Runtime.getRuntime().exec(cli.toArray(new String[0]), toStringArray(environment), this.workingDirectory.toFile());
 
         return new SwarmProcess(
                 process,

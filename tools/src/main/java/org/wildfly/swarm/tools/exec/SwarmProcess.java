@@ -30,10 +30,10 @@ public class SwarmProcess {
     }
 
     public Exception getError() {
-        if ( this.stdout.getError() != null ) {
+        if (this.stdout.getError() != null) {
             return this.stdout.getError();
         }
-        if ( this.stderr.getError() != null ) {
+        if (this.stderr.getError() != null) {
             return this.stderr.getError();
         }
         return null;
@@ -71,18 +71,14 @@ public class SwarmProcess {
         this.latch.await(timeout, timeUnit);
     }
 
-    public int stop() {
-        return stop( 10, TimeUnit.SECONDS );
+    public int stop() throws InterruptedException {
+        return stop(10, TimeUnit.SECONDS);
     }
 
-    public int stop(long timeout, TimeUnit timeUnit) {
+    public int stop(long timeout, TimeUnit timeUnit) throws InterruptedException {
         this.process.destroy();
-        try {
-            if (!this.process.waitFor(timeout, timeUnit)) {
-                process.destroyForcibly();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Unable to destroy process", e);
+        if (!this.process.waitFor(timeout, timeUnit)) {
+            process.destroyForcibly();
         }
         try {
             this.stdout.close();
@@ -96,7 +92,7 @@ public class SwarmProcess {
             // ignore
         }
 
-        if ( ! process.isAlive() ) {
+        if (!process.isAlive()) {
             return process.exitValue();
         }
 

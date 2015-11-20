@@ -51,6 +51,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositorie
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.exec.SwarmExecutor;
+import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 /**
  * @author Bob McWhirter
@@ -61,10 +63,8 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
     private List<String> requestedMavenArtifacts;
 
-    private Process process;
+    private SwarmProcess process;
 
-    private IOBridge stdout;
-    private IOBridge stderr;
 
     @Override
     public Class<WildFlySwarmContainerConfiguration> getConfigurationClass() {
@@ -165,12 +165,10 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             }
         }
 
-        try {
+        SwarmExecutor executor = new SwarmExecutor();
+        executor.withDefaultSystemProperties();
 
-            Path java = findJava();
-            if (java == null) {
-                throw new DeploymentException("Unable to locate `java` binary");
-            }
+        try {
 
             Archive<?> wrapped = tool.build();
 
@@ -186,52 +184,29 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             wrapped.as(ZipExporter.class).exportTo(executable, true);
             executable.deleteOnExit();
 
-            List<String> cli = new ArrayList<>();
 
-            cli.add(java.toString());
-
-            cli.add("-Djava.net.preferIPv4Stack=true");
-
-            Enumeration<?> names = System.getProperties().propertyNames();
-
-            while (names.hasMoreElements()) {
-                String key = (String) names.nextElement();
-                if (key.startsWith("jboss") || key.startsWith("swarm") || key.startsWith("wildfly") || key.startsWith( "maven" )) {
-                    String value = System.getProperty(key);
-                    cli.add("-D" + key + "=" + value);
-                }
-            }
-
-            cli.add("-jar");
-            cli.add(executable.getAbsolutePath());
+            executor.withProperty( "java.net.preferIPv4Stack", "true" );
+            executor.withExecutableJar( executable.toPath() );
 
 
             File workingDirectory = Files.createTempDirectory("arquillian").toFile();
             workingDirectory.deleteOnExit();
-            this.process = Runtime.getRuntime().exec(cli.toArray(new String[cli.size()]), new String[]{}, workingDirectory);
+            executor.withWorkingDirectory( workingDirectory.toPath() );
 
-            CountDownLatch latch = new CountDownLatch(1);
-            this.stdout = new IOBridge("out", latch, process.getInputStream(), System.out);
-            this.stderr = new IOBridge("err", latch, process.getErrorStream(), System.err);
-
+            this.process = executor.execute();
             this.process.getOutputStream().close();
-
-            new Thread(stdout).start();
-            new Thread(stderr).start();
 
             ProtocolMetaData metaData = new ProtocolMetaData();
             HTTPContext context = new HTTPContext("localhost", 8080);
             context.add(new Servlet(ServletMethodExecutor.ARQUILLIAN_SERVLET_NAME, "/"));
             metaData.addContext(context);
-            latch.await(2, TimeUnit.MINUTES);
+
+            this.process.awaitDeploy( 2, TimeUnit.MINUTES );
             if ( ! this.process.isAlive() ) {
                 throw new DeploymentException( "Process failed to start" );
             }
-            if ( this.stdout.getError() != null ) {
-                throw new DeploymentException( "Error starting process", this.stdout.getError() );
-            }
-            if ( this.stderr.getError() != null ) {
-                throw new DeploymentException( "Error starting process", this.stderr.getError() );
+            if ( this.process.getError() != null ) {
+                throw new DeploymentException( "Error starting process", this.process.getError() );
             }
             return metaData;
         } catch (Exception e) {
@@ -242,24 +217,9 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
     @Override
     public void undeploy(Archive<?> archive) throws DeploymentException {
         try {
-            try {
-                this.stdout.close();
-            } catch (IOException e) {
-                // ignore
-            }
-            try {
-                this.stderr.close();
-            } catch (IOException e) {
-                // ignore
-            }
-
-            this.process.destroy();
-            this.process.waitFor(10, TimeUnit.SECONDS);
-            this.process.destroyForcibly();
-            this.process.waitFor(10, TimeUnit.SECONDS);
-
+            this.process.stop();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new DeploymentException( "Unable to stop process", e );
         }
     }
 
