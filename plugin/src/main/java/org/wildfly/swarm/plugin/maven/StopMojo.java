@@ -15,13 +15,13 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 /**
  * @author Thomas Meyer
@@ -31,28 +31,9 @@ public class StopMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        Process process = (Process) getPluginContext().get("swarm-process");
+        SwarmProcess process = (SwarmProcess) getPluginContext().get("swarm-process");
         if(process != null) {
-            process.destroy();
-            try {
-                if ( ! process.waitFor( 10, TimeUnit.SECONDS ) ) {
-                    process.destroyForcibly();
-                }
-            } catch (InterruptedException e) {
-                throw new MojoExecutionException( "Unable to destroy process", e );
-            }
-        }
-        try {
-            IOBridge stdout = (IOBridge) getPluginContext().get("swarm-io-stdout");
-            if (stdout != null) {
-                stdout.close();
-            }
-            IOBridge stderr = (IOBridge) getPluginContext().get("swarm-io-stderr");
-            if (stderr != null) {
-                stderr.close();
-            }
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error closing file stream", e);
+            process.stop( 10, TimeUnit.SECONDS );
         }
 
     }

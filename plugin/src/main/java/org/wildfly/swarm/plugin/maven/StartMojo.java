@@ -19,17 +19,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.artifact.Artifact;
@@ -41,6 +36,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.wildfly.swarm.tools.exec.SwarmExecutor;
+import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 /**
  * @author Bob McWhirter
@@ -89,10 +86,6 @@ public class StartMojo extends AbstractMojo {
 
     boolean waitForProcess;
 
-    private IOBridge stdout;
-
-    private IOBridge stderr;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (this.properties == null) {
@@ -113,7 +106,7 @@ public class StartMojo extends AbstractMojo {
             }
         }
 
-        Process process = null;
+        SwarmProcess process = null;
         if (this.project.getPackaging().equals("war")) {
             process = executeWar();
         } else if (this.project.getPackaging().equals("jar")) {
@@ -123,8 +116,6 @@ public class StartMojo extends AbstractMojo {
         }
 
         getPluginContext().put("swarm-process", process);
-        getPluginContext().put("swarm-io-stdout", this.stdout);
-        getPluginContext().put("swarm-io-stderr", this.stderr);
 
         if (waitForProcess) {
             try {
@@ -134,62 +125,38 @@ public class StartMojo extends AbstractMojo {
         }
     }
 
-    protected Process executeWar() throws MojoFailureException {
-        Path java = findJava();
+    protected SwarmProcess executeWar() throws MojoFailureException {
+
+        SwarmExecutor executor = new SwarmExecutor();
+        executor.withDefaultSystemProperties();
+        executor.withClassPathEntries( dependencies(false));
 
         try {
-            List<String> cli = new ArrayList<>();
-            cli.add(java.toString());
-            cli.add("-classpath");
-            cli.add(dependencies(false));
 
             String finalName = this.project.getBuild().getFinalName();
             if (!finalName.endsWith(".war")) {
                 finalName = finalName + ".war";
             }
-            cli.add("-Dwildfly.swarm.app.path=" + Paths.get(this.projectBuildDir, finalName).toString());
-            Properties runProps = runProperties();
+            executor.withProperty( "wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString() );
+            executor.withProperties( this.properties );
+            executor.withProperty( "wildfly.swarm.context.path", this.contextPath );
+            executor.withDefaultMainClass();
 
-            Enumeration<?> propNames = runProps.propertyNames();
+            executor.withEnvironment( this.environment );
 
-            while (propNames.hasMoreElements()) {
-                String name = (String) propNames.nextElement();
-                cli.add("-D" + name + "=" + runProps.getProperty(name));
-            }
+            executor.withStdoutFile( this.stdoutFile.toPath() );
+            executor.withStderrFile( this.stderrFile.toPath() );
 
-            Enumeration<?> names = System.getProperties().propertyNames();
-            while (names.hasMoreElements()) {
-                String key = (String) names.nextElement();
-                if (key.startsWith("jboss") || key.startsWith("swarm") || key.startsWith("wildfly") || key.startsWith( "maven" )) {
-                    String value = System.getProperty(key);
-                    cli.add("-D" + key + "=" + value);
-                }
-            }
+            SwarmProcess process = executor.execute();
 
-            cli.add("-Dwildfly.swarm.context.path=" + this.contextPath);
-            cli.add("org.wildfly.swarm.Swarm");
+            process.awaitDeploy( 2, TimeUnit.MINUTES );
 
-            Process process = Runtime.getRuntime().exec(cli.toArray(new String[0]), toStringArray(environment));
-
-            CountDownLatch latch = new CountDownLatch(1);
-
-            this.stdout = new IOBridge("stdout", latch, process.getInputStream(), System.out, this.stdoutFile);
-            this.stderr = new IOBridge("stderr", latch, process.getErrorStream(), System.err, this.stderrFile);
-
-            new Thread(stdout).start();
-            new Thread(stderr).start();
-
-            latch.await(2, TimeUnit.MINUTES);
             if ( ! process.isAlive() ) {
                 throw new MojoFailureException( "Process failed to start" );
             }
-            if ( this.stdout.getError() != null ) {
-                throw new MojoFailureException( "Error starting process", this.stdout.getError() );
+            if ( process.getError() != null ) {
+                throw new MojoFailureException( "Error starting process", process.getError() );
             }
-            if ( this.stderr.getError() != null ) {
-                throw new MojoFailureException( "Error starting process", this.stderr.getError() );
-            }
-
             return process;
         } catch (IOException e) {
             throw new MojoFailureException("Error executing", e);
@@ -198,61 +165,37 @@ public class StartMojo extends AbstractMojo {
         }
     }
 
-    protected Process executeJar() throws MojoFailureException {
-        Path java = findJava();
+    protected SwarmProcess executeJar() throws MojoFailureException {
+
+        SwarmExecutor executor = new SwarmExecutor();
+        executor.withDefaultSystemProperties();
 
         try {
-            List<String> cli = new ArrayList<>();
-            cli.add(java.toString());
-            cli.add("-classpath");
-            cli.add(dependencies(true));
+            executor.withClassPathEntries( dependencies(true) );
+            executor.withProperties(this.properties);
+            executor.withProperty( "wildfly.swarm.context.path", this.contextPath );
 
-            Properties runProps = runProperties();
-
-            Enumeration<?> propNames = runProps.propertyNames();
-
-            while (propNames.hasMoreElements()) {
-                String name = (String) propNames.nextElement();
-                cli.add("-D" + name + "=" + runProps.getProperty(name));
-            }
-
-            Enumeration<?> names = System.getProperties().propertyNames();
-            while (names.hasMoreElements()) {
-                String key = (String) names.nextElement();
-                if (key.startsWith("jboss") || key.startsWith("swarm") || key.startsWith("wildfly") || key.startsWith( "maven" )) {
-                    String value = System.getProperty(key);
-                    cli.add("-D" + key + "=" + value);
-                }
-            }
-
-            cli.add("-Dwildfly.swarm.context.path=" + this.contextPath);
             if (this.mainClass != null) {
-                cli.add(this.mainClass);
+                executor.withMainClass( this.mainClass );
             } else {
-                cli.add("org.wildfly.swarm.Swarm");
+                executor.withDefaultMainClass();
             }
 
-            Process process = Runtime.getRuntime().exec(cli.toArray(new String[0]), toStringArray(environment));
+            executor.withEnvironment( this.environment );
 
-            CountDownLatch latch = new CountDownLatch(1);
+            executor.withStdoutFile( this.stdoutFile.toPath() );
+            executor.withStderrFile( this.stderrFile.toPath() );
 
-            this.stdout = new IOBridge("stdout", latch, process.getInputStream(), System.out, this.stdoutFile);
-            this.stderr = new IOBridge("stderr", latch, process.getErrorStream(), System.err, this.stderrFile);
+            SwarmProcess process = executor.execute();
 
-            new Thread(stdout).start();
-            new Thread(stderr).start();
+            process.awaitDeploy( 2, TimeUnit.MINUTES );
 
-            latch.await(2, TimeUnit.MINUTES);
             if ( ! process.isAlive() ) {
                 throw new MojoFailureException( "Process failed to start" );
             }
-            if ( this.stdout.getError() != null ) {
-                throw new MojoFailureException( "Error starting process", this.stdout.getError() );
+            if ( process.getError() != null ) {
+                throw new MojoFailureException( "Error starting process", process.getError() );
             }
-            if ( this.stderr.getError() != null ) {
-                throw new MojoFailureException( "Error starting process", this.stderr.getError() );
-            }
-
             return process;
         } catch (IOException e) {
             throw new MojoFailureException("Error executing", e);
@@ -261,92 +204,21 @@ public class StartMojo extends AbstractMojo {
         }
     }
 
-    private static String[] toStringArray(Properties env) {
-        String[] esa = new String[env.size()];
-        int i = 0;
-        for (Entry<Object, Object> e : env.entrySet()) {
-            esa[i++] = e.getKey().toString() + '=' + e.getValue().toString();
-        }
-        return esa;
-    }
-
-    Properties runProperties() {
-        Properties props = new Properties();
-        props.putAll(this.properties);
-
-        Properties sysProps = System.getProperties();
-
-        Set<String> names = sysProps.stringPropertyNames();
-        for (String name : names) {
-            if (name.startsWith("jboss") || name.startsWith("wildfly") || name.startsWith("swarm")) {
-                props.put(name, sysProps.get(name));
-            }
-        }
-
-        return props;
-    }
-
-    String dependencies(boolean includeProjectArtifact) {
-        List<String> elements = new ArrayList<>();
+    List<Path> dependencies(boolean includeProjectArtifact) {
+        List<Path> elements = new ArrayList<>();
         Set<Artifact> artifacts = this.project.getArtifacts();
         for (Artifact each : artifacts) {
             if (each.getGroupId().equals("org.jboss.logmanager") && each.getArtifactId().equals("jboss-logmanager")) {
                 continue;
             }
-            elements.add(each.getFile().toString());
+            elements.add(each.getFile().toPath());
         }
 
         if (includeProjectArtifact) {
-            elements.add(this.project.getBuild().getOutputDirectory());
+            elements.add(Paths.get( this.project.getBuild().getOutputDirectory()) );
         }
 
-        StringBuilder cp = new StringBuilder();
-
-        Iterator<String> iter = elements.iterator();
-
-        while (iter.hasNext()) {
-            String element = iter.next();
-            cp.append(element);
-            if (iter.hasNext()) {
-                cp.append(File.pathSeparatorChar);
-            }
-        }
-
-        return cp.toString();
-    }
-
-    Path findBootstrap() throws MojoFailureException {
-
-        Set<Artifact> artifacts = this.project.getArtifacts();
-
-        for (Artifact each : artifacts) {
-            if (each.getGroupId().equals("org.wildfly.swarm") && each.getArtifactId().equals("wildfly-swarm-bootstrap") && each.getType().equals("jar")) {
-                return each.getFile().toPath();
-            }
-        }
-
-        return null;
-    }
-
-    Path findJava() throws MojoFailureException {
-        String javaHome = System.getProperty("java.home");
-        if (javaHome == null) {
-            throw new MojoFailureException("java.home not set, unable to locate java");
-        }
-
-        Path binDir = FileSystems.getDefault().getPath(javaHome, "bin");
-
-        Path java = binDir.resolve("java.exe");
-        if (java.toFile().exists()) {
-            return java;
-        }
-
-        java = binDir.resolve("java");
-        if (java.toFile().exists()) {
-            return java;
-        }
-
-        throw new MojoFailureException("Unable to determine java binary");
+        return elements;
     }
 
 }
