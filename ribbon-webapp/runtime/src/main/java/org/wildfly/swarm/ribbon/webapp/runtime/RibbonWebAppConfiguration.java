@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class RibbonWebAppConfiguration extends AbstractServerConfiguration<RibbonWebAppFraction> {
 
+    private static final String DEFAULT_CONTEXT = "/ribbon";
+
     public RibbonWebAppConfiguration() {
         super(RibbonWebAppFraction.class);
     }
@@ -28,12 +30,15 @@ public class RibbonWebAppConfiguration extends AbstractServerConfiguration<Ribbo
 
     @Override
     public List<Archive> getImplicitDeployments(RibbonWebAppFraction fraction) throws Exception {
+        String context = System.getProperty( "wildfly.swarm.ribbon.context.path" );
+        if (context == null) context = DEFAULT_CONTEXT;
+
         List<Archive> list = new ArrayList<>();
         WARArchive war = ShrinkWrap.create( WARArchive.class );
         war.addClass( RibbonToTheCurbSSEServlet.class );
         war.addModule("org.wildfly.swarm.netflix.ribbon");
         war.addAsWebResource(new ClassLoaderAsset("ribbon.js", this.getClass().getClassLoader()), "ribbon.js");
-        war.setContextRoot("/ribbon");
+        war.setContextRoot(context);
         war.as(RibbonArchive.class);
         list.add(war);
         return list;
