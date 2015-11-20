@@ -38,22 +38,13 @@
         <version>${project.version}</version>
         <executions>
           <execution>
+            <id>package</id>
+          </execution>
+          <execution>
             <id>start</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>start</goal>
-            </goals>
-            <configuration>
-              <stdoutFile>target/stdout.log</stdoutFile>
-              <stderrFile>target/stderr.log</stderrFile>
-            </configuration>
           </execution>
           <execution>
             <id>stop</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>

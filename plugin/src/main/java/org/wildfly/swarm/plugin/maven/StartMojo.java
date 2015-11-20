@@ -84,6 +84,9 @@ public class StartMojo extends AbstractMojo {
     @Parameter(alias = "stderrFile")
     private File stderrFile;
 
+    @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
+    private boolean useUberJar;
+
     boolean waitForProcess;
 
     @Override
@@ -107,7 +110,10 @@ public class StartMojo extends AbstractMojo {
         }
 
         SwarmProcess process = null;
-        if (this.project.getPackaging().equals("war")) {
+
+        if (this.useUberJar) {
+            process = executeUberJar();
+        } else if (this.project.getPackaging().equals("war")) {
             process = executeWar();
         } else if (this.project.getPackaging().equals("jar")) {
             process = executeJar();
@@ -125,11 +131,52 @@ public class StartMojo extends AbstractMojo {
         }
     }
 
+    protected SwarmProcess executeUberJar() throws MojoFailureException {
+        getLog().info( "Starting -swarm.jar" );
+
+        String finalName = this.project.getBuild().getFinalName();
+
+        if (finalName.endsWith(".war") || finalName.endsWith(".jar")) {
+            finalName = finalName.substring(0, finalName.length() - 4);
+        }
+
+        String uberJarName = finalName + "-swarm.jar";
+
+        Path uberJar = Paths.get(this.projectBuildDir, uberJarName);
+
+        try {
+            SwarmProcess process = new SwarmExecutor()
+                    .withDefaultSystemProperties()
+                    .withProperties(this.properties)
+                    .withEnvironment(this.environment)
+                    .withStdoutFile(this.stdoutFile.toPath())
+                    .withStderrFile(this.stderrFile.toPath())
+                    .withExecutableJar(uberJar)
+                    .execute();
+
+            process.awaitDeploy(2, TimeUnit.MINUTES);
+
+            if (!process.isAlive()) {
+                throw new MojoFailureException("Process failed to start");
+            }
+            if (process.getError() != null) {
+                throw new MojoFailureException("Error starting process", process.getError());
+            }
+
+            return process;
+        } catch (IOException e) {
+            throw new MojoFailureException("unable to execute uberjar", e);
+        } catch (InterruptedException e) {
+            throw new MojoFailureException("Error waiting for deployment", e);
+        }
+    }
+
     protected SwarmProcess executeWar() throws MojoFailureException {
+        getLog().info( "Starting .war" );
 
         SwarmExecutor executor = new SwarmExecutor();
         executor.withDefaultSystemProperties();
-        executor.withClassPathEntries( dependencies(false));
+        executor.withClassPathEntries(dependencies(false));
 
         try {
 
@@ -137,25 +184,25 @@ public class StartMojo extends AbstractMojo {
             if (!finalName.endsWith(".war")) {
                 finalName = finalName + ".war";
             }
-            executor.withProperty( "wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString() );
-            executor.withProperties( this.properties );
-            executor.withProperty( "wildfly.swarm.context.path", this.contextPath );
+            executor.withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString());
+            executor.withProperties(this.properties);
+            executor.withProperty("wildfly.swarm.context.path", this.contextPath);
             executor.withDefaultMainClass();
 
-            executor.withEnvironment( this.environment );
+            executor.withEnvironment(this.environment);
 
-            executor.withStdoutFile( this.stdoutFile.toPath() );
-            executor.withStderrFile( this.stderrFile.toPath() );
+            executor.withStdoutFile(this.stdoutFile.toPath());
+            executor.withStderrFile(this.stderrFile.toPath());
 
             SwarmProcess process = executor.execute();
 
-            process.awaitDeploy( 2, TimeUnit.MINUTES );
+            process.awaitDeploy(2, TimeUnit.MINUTES);
 
-            if ( ! process.isAlive() ) {
-                throw new MojoFailureException( "Process failed to start" );
+            if (!process.isAlive()) {
+                throw new MojoFailureException("Process failed to start");
             }
-            if ( process.getError() != null ) {
-                throw new MojoFailureException( "Error starting process", process.getError() );
+            if (process.getError() != null) {
+                throw new MojoFailureException("Error starting process", process.getError());
             }
             return process;
         } catch (IOException e) {
@@ -166,35 +213,36 @@ public class StartMojo extends AbstractMojo {
     }
 
     protected SwarmProcess executeJar() throws MojoFailureException {
+        getLog().info( "Starting .jar" );
 
         SwarmExecutor executor = new SwarmExecutor();
         executor.withDefaultSystemProperties();
 
         try {
-            executor.withClassPathEntries( dependencies(true) );
+            executor.withClassPathEntries(dependencies(true));
             executor.withProperties(this.properties);
-            executor.withProperty( "wildfly.swarm.context.path", this.contextPath );
+            executor.withProperty("wildfly.swarm.context.path", this.contextPath);
 
             if (this.mainClass != null) {
-                executor.withMainClass( this.mainClass );
+                executor.withMainClass(this.mainClass);
             } else {
                 executor.withDefaultMainClass();
             }
 
-            executor.withEnvironment( this.environment );
+            executor.withEnvironment(this.environment);
 
-            executor.withStdoutFile( this.stdoutFile.toPath() );
-            executor.withStderrFile( this.stderrFile.toPath() );
+            executor.withStdoutFile(this.stdoutFile.toPath());
+            executor.withStderrFile(this.stderrFile.toPath());
 
             SwarmProcess process = executor.execute();
 
-            process.awaitDeploy( 2, TimeUnit.MINUTES );
+            process.awaitDeploy(2, TimeUnit.MINUTES);
 
-            if ( ! process.isAlive() ) {
-                throw new MojoFailureException( "Process failed to start" );
+            if (!process.isAlive()) {
+                throw new MojoFailureException("Process failed to start");
             }
-            if ( process.getError() != null ) {
-                throw new MojoFailureException( "Error starting process", process.getError() );
+            if (process.getError() != null) {
+                throw new MojoFailureException("Error starting process", process.getError());
             }
             return process;
         } catch (IOException e) {
@@ -215,7 +263,7 @@ public class StartMojo extends AbstractMojo {
         }
 
         if (includeProjectArtifact) {
-            elements.add(Paths.get( this.project.getBuild().getOutputDirectory()) );
+            elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));
         }
 
         return elements;

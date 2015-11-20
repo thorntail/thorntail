@@ -535,7 +535,6 @@
     <module>servo</module>
 
     <module>integration-tests</module>
-    <module>integs</module>
   </modules>
 
   <distributionManagement>
@@ -550,6 +549,19 @@
   </distributionManagement>
 
   <profiles>
+    <profile>
+      <id>integs-plugin</id>
+      <modules>
+        <module>integs</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>integs-uberjar</id>
+      <modules>
+        <module>integs</module>
+      </modules>
+    </profile>
+
     <profile>
       <id>release</id>
       <build>

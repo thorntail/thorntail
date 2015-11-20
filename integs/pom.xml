@@ -53,4 +53,58 @@
     <module>messaging</module>
   </modules>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-plugin</artifactId>
+          <version>${project.version}</version>
+          <executions>
+            <execution>
+              <id>package</id>
+              <goals>
+                <goal>package</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>start</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <goal>start</goal>
+              </goals>
+              <configuration>
+                <stdoutFile>target/stdout.log</stdoutFile>
+                <stderrFile>target/stderr.log</stderrFile>
+              </configuration>
+            </execution>
+            <execution>
+              <id>stop</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>integs-plugin</id>
+      <properties>
+        <wildfly-swarm.useUberJar>false</wildfly-swarm.useUberJar>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>integs-uberjar</id>
+      <properties>
+        <wildfly-swarm.useUberJar>true</wildfly-swarm.useUberJar>
+      </properties>
+    </profile>
+  </profiles>
+
 </project>
