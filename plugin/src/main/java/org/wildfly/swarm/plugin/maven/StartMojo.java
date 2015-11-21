@@ -153,8 +153,8 @@ public class StartMojo extends AbstractMojo {
                     .withDebug(debugPort)
                     .withProperties(this.properties)
                     .withEnvironment(this.environment)
-                    .withStdoutFile(this.stdoutFile.toPath())
-                    .withStderrFile(this.stderrFile.toPath())
+                    .withStdoutFile(this.stdoutFile != null ? this.stdoutFile.toPath() : null)
+                    .withStderrFile(this.stderrFile != null ? this.stderrFile.toPath() : null)
                     .withExecutableJar(uberJar)
                     .execute();
 
@@ -196,8 +196,11 @@ public class StartMojo extends AbstractMojo {
 
             executor.withEnvironment(this.environment);
 
-            executor.withStdoutFile(this.stdoutFile.toPath());
-            executor.withStderrFile(this.stderrFile.toPath());
+            if(stdoutFile != null)
+                executor.withStdoutFile(this.stdoutFile.toPath());
+            if(stderrFile != null)
+                executor.withStderrFile(this.stderrFile.toPath());
+
 
             SwarmProcess process = executor.execute();
 
@@ -237,8 +240,10 @@ public class StartMojo extends AbstractMojo {
 
             executor.withEnvironment(this.environment);
 
-            executor.withStdoutFile(this.stdoutFile.toPath());
-            executor.withStderrFile(this.stderrFile.toPath());
+            if(stdoutFile != null)
+                executor.withStdoutFile(this.stdoutFile.toPath());
+            if(stderrFile != null)
+                executor.withStderrFile(this.stderrFile.toPath());
 
             SwarmProcess process = executor.execute();
 
