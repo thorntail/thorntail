@@ -2,14 +2,11 @@ package org.wildfly.swarm.tools.exec;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +41,8 @@ public class SwarmExecutor {
 
     private Path workingDirectory;
 
+    private Integer debugPort;
+
     public SwarmExecutor() {
         this.stdout = System.out;
         this.stderr = System.err;
@@ -57,6 +56,11 @@ public class SwarmExecutor {
 
     public SwarmExecutor withStderrFile(Path stderrFile) {
         this.stderrFile = stderrFile;
+        return this;
+    }
+
+    public SwarmExecutor withDebug(Integer port) {
+        this.debugPort = port;
         return this;
     }
 
@@ -194,6 +198,11 @@ public class SwarmExecutor {
         List<String> cli = new ArrayList<>();
 
         cli.add(getJava().toString());
+
+        if(debugPort != null) {
+            // see https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/conninv.html
+            cli.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=" + debugPort);
+        }
 
         for (String name : this.properties.keySet()) {
             cli.add("-D" + name + "=" + this.properties.get(name));

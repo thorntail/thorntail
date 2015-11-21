@@ -87,6 +87,9 @@ public class StartMojo extends AbstractMojo {
     @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
     private boolean useUberJar;
 
+    @Parameter(alias = "debug")
+    private Integer debugPort;
+
     boolean waitForProcess;
 
     @Override
@@ -147,6 +150,7 @@ public class StartMojo extends AbstractMojo {
         try {
             SwarmProcess process = new SwarmExecutor()
                     .withDefaultSystemProperties()
+                    .withDebug(debugPort)
                     .withProperties(this.properties)
                     .withEnvironment(this.environment)
                     .withStdoutFile(this.stdoutFile.toPath())
@@ -175,6 +179,7 @@ public class StartMojo extends AbstractMojo {
         getLog().info( "Starting .war" );
 
         SwarmExecutor executor = new SwarmExecutor();
+        executor.withDebug(debugPort);
         executor.withDefaultSystemProperties();
         executor.withClassPathEntries(dependencies(false));
 
@@ -217,6 +222,7 @@ public class StartMojo extends AbstractMojo {
 
         SwarmExecutor executor = new SwarmExecutor();
         executor.withDefaultSystemProperties();
+        executor.withDebug(debugPort);
 
         try {
             executor.withClassPathEntries(dependencies(true));
@@ -268,6 +274,5 @@ public class StartMojo extends AbstractMojo {
 
         return elements;
     }
-
 }
 
