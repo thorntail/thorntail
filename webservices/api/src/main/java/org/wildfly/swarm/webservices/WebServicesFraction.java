@@ -31,7 +31,11 @@ public class WebServicesFraction extends Webservices<WebServicesFraction> implem
     }
 
     public static WebServicesFraction createDefaultFraction() {
-        return new WebServicesFraction().wsdlHost(SOAP_HOST)
+        
+        String SoapHost = System.getProperty("jboss.bind.address", SOAP_HOST);
+        
+        return new WebServicesFraction()
+                .wsdlHost(SoapHost)
                 .endpointConfig(new EndpointConfig(STANDARD_ENDPOINT_CONFIG))
                 .endpointConfig(createRemoteEndpoint())
                 .clientConfig(new ClientConfig(STANDARD_CLIENT_CONFIG));
