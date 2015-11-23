@@ -550,19 +550,6 @@
 
   <profiles>
     <profile>
-      <id>integs-plugin</id>
-      <modules>
-        <module>integs</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>integs-uberjar</id>
-      <modules>
-        <module>integs</module>
-      </modules>
-    </profile>
-
-    <profile>
       <id>release</id>
       <build>
         <plugins>
