@@ -75,7 +75,7 @@
     <version.okhttp>2.4.0</version.okhttp>
     <version.okio>1.4.0</version.okio>
 
-    <version.org.openshift.ping>1.0.0.Beta5-swarm-2</version.org.openshift.ping>
+    <version.org.openshift.ping>1.0.0.Beta5-swarm-3</version.org.openshift.ping>
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
 
     <maven.min.version>3.2.1</maven.min.version>
