@@ -441,6 +441,13 @@
         <artifactId>jopt-simple</artifactId>
         <version>4.9</version>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian.graphene</groupId>
+        <artifactId>graphene-webdriver</artifactId>
+        <version>${version.org.arquillian.graphene}</version>
+        <type>pom</type>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
