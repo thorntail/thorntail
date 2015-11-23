@@ -60,6 +60,9 @@ public class ArtifactManager {
 
     public JavaArchive artifact(String gav) throws IOException, ModuleLoadException {
         File file = findFile(gav);
+        if (file == null) {
+            throw new RuntimeException("Artifact not found.");
+        }
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class, file.getName());
         new ZipImporterImpl(archive).importFrom(file);
         return archive;
@@ -156,7 +159,7 @@ public class ArtifactManager {
             classifier = parts[4];
         }
 
-        if (version.isEmpty() || version.equals("*")) {
+        if (version != null && (version.isEmpty() || version.equals("*"))) {
             version = null;
         }
 
