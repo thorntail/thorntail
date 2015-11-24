@@ -24,7 +24,7 @@ import java.util.List;
 public class SecurityConstraint {
 
     private final String urlPattern;
-    private String method;
+    private List<String> methods = new ArrayList<>();
     private List<String> roles = new ArrayList<>();
 
     public SecurityConstraint() {
@@ -40,12 +40,12 @@ public class SecurityConstraint {
     }
 
     public SecurityConstraint withMethod(String method) {
-        this.method = method;
+        this.methods.add(method);
         return this;
     }
 
-    public String method() {
-        return this.method;
+    public List<String> methods() {
+        return this.methods;
     }
 
     public SecurityConstraint withRole(String role) {

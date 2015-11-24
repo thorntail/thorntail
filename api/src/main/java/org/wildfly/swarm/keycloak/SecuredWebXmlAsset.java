@@ -75,8 +75,8 @@ public class SecuredWebXmlAsset implements NamedAsset {
 
                 XmlWriter.Element webResourceCollection = securityConstraint.element("web-resource-collection");
                 webResourceCollection.element("url-pattern").content(each.urlPattern()).end();
-                if (each.method() != null) {
-                    webResourceCollection.element("http-method").content(each.method()).end();
+                for (String eachMethod: each.methods()) {
+                    webResourceCollection.element("http-method").content(eachMethod).end();
                 }
                 webResourceCollection.end();
 
