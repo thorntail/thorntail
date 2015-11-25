@@ -80,13 +80,12 @@ public class SecuredWebXmlAsset implements NamedAsset {
                 }
                 webResourceCollection.end();
 
+                XmlWriter.Element authConstraint = securityConstraint.element("auth-constraint");
                 for (String eachRole : each.roles()) {
-                    XmlWriter.Element authConstraint = securityConstraint.element("auth-constraint");
                     authConstraint.element("role-name").content(eachRole).end();
-                    authConstraint.end();
-
                     allRoles.add(eachRole);
                 }
+                authConstraint.end();
 
                 securityConstraint.end();
             }

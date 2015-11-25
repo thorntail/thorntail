@@ -16,6 +16,7 @@
 package org.wildfly.swarm.keycloak;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,12 +45,22 @@ public class SecurityConstraint {
         return this;
     }
 
+    public SecurityConstraint withMethod(String... methods) {
+        this.methods.addAll(Arrays.asList(methods));
+        return this;
+    }
+
     public List<String> methods() {
         return this.methods;
     }
 
     public SecurityConstraint withRole(String role) {
         this.roles.add( role );
+        return this;
+    }
+
+    public SecurityConstraint withRole(String... roles) {
+        this.roles.addAll(Arrays.asList(roles));
         return this;
     }
 
