@@ -13,7 +13,7 @@ var ribbon = (function() {
 
       console.log( "servers for [" + serviceName + "]", allServers );
       if (!allServers || allServers.length < 1 ) {
-        return deferredResult.reject('No servers available');
+        return deferredResult.reject('No servers available').promise;
       }
 
       // ensure some default settings exist
@@ -34,11 +34,11 @@ var ribbon = (function() {
       if (!keycloak) {
         // If we're not authenticating, go ahead and make the request
         console.log( "not authenticating" );
-        return doRequest( settings );
+        return doRequest( settings ).promise;
       } else if (!keycloak.authenticated) {
         // But if we are authenticating...
         console.log("not authenticated");
-        return deferredResult.reject("Not authenticated");
+        return deferredResult.reject("Not authenticated").promise;
       } else {
         // Using keycloak, update token, and make the request
         console.log("authenticated");
@@ -58,7 +58,7 @@ var ribbon = (function() {
         });
       }
 
-      return deferredResult;
+      return deferredResult.promise;
     }
 
     function doRequest(settings) {
