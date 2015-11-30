@@ -27,6 +27,8 @@ var ribbon = (function() {
       // Set relevant headers
       if (settings.method === 'POST') {
         settings.headers['Content-Type'] = 'application/json';
+      } else if (!settings.method) {
+        settings.method = 'GET';
       }
 
       if (!keycloak) {
@@ -70,7 +72,8 @@ var ribbon = (function() {
       // set the state change handler and make the http request
       request.onreadystatechange = changeState(request, deferredResponse);
       request.open(settings.method, settings.url);
-      request.send(settings.data);
+      if (settings.data) request.send(settings.data);
+      else request.send();
 
       // return a deferred promise
       return deferredResponse;
@@ -118,6 +121,7 @@ var ribbon = (function() {
 
     function getJSON(serviceName, path, data) {
       return ajax( serviceName, path, {
+        method: 'GET',
         data: data
       });
     }
