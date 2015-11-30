@@ -3,7 +3,7 @@ var ribbon = (function() {
   var defaultSettings = {
     headers: {},
     method: 'GET'
-  };
+  }, topology = {};
 
   function factory(keycloak) {
 
@@ -19,6 +19,7 @@ var ribbon = (function() {
       // ensure some default settings exist
       settings = settings || defaultSettings;
       settings.headers = settings.headers || {};
+      path = path || '/';
 
       // TODO: Try other URLs if there is more than one server
       settings.url = '//' + allServers[0] + path;
@@ -93,7 +94,7 @@ var ribbon = (function() {
       }
 
       function processResponse(request, response) {
-        if (httpRequest.status === 200) {
+        if (request.status === 200) {
           response.resolve(JSON.parse(request.responseText));
           console.log('Response: ' + response.promise.value);
         } else {
@@ -115,14 +116,14 @@ var ribbon = (function() {
       }
     }
 
-    function getJSON(serviceName, url, data) {
-      return ajax( serviceName, url, {
+    function getJSON(serviceName, path, data) {
+      return ajax( serviceName, path, {
         data: data
       });
     }
 
-    function postJSON(serviceName, url, data) {
-      return ajax( serviceName, url, {
+    function postJSON(serviceName, path, data) {
+      return ajax( serviceName, path, {
         method: 'POST',
         data: data
       });
@@ -131,6 +132,7 @@ var ribbon = (function() {
     var sse = new EventSource( "/ribbon/system/stream" );
     sse.addEventListener('topologyChange', function(message) {
       console.log('Ribbon topology changed: ', message.data);
+      topology = JSON.parse(message.data);
     });
 
     sse.onerror = function(e) {
@@ -145,7 +147,8 @@ var ribbon = (function() {
       ajax: ajax,
       postJSON: postJSON,
       getJSON: getJSON,
-      topologyEvents: sse
+      topologyEvents: sse,
+      getTopology: function() { return topology; }
     };
   }
 
