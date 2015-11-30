@@ -26,7 +26,9 @@ import org.wildfly.swarm.container.Fraction;
 public class DatasourcesFraction extends Datasources<DatasourcesFraction> implements Fraction {
     @Override
     public DatasourcesFraction dataSource(DataSource value) {
-        if (value.jndiName() == null) value.jndiName("java:jboss/datasources/" + value.getKey());
+        if (value.jndiName() == null) {
+            value.jndiName("java:jboss/datasources/" + value.getKey());
+        }
         return super.dataSource(value);
     }
 

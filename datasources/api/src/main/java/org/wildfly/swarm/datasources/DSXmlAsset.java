@@ -81,6 +81,7 @@ public class DSXmlAsset implements Asset {
             datasources.end();
 
             out.close();
+
             return new ByteArrayInputStream( str.toString().getBytes() );
         } catch (IOException e) {
             throw new RuntimeException(e);

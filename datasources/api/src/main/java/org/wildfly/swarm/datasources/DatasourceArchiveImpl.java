@@ -18,6 +18,7 @@ package org.wildfly.swarm.datasources;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.wildfly.swarm.config.datasources.DataSource;
+import org.wildfly.swarm.config.datasources.DataSourceConsumer;
 
 /**
  * @author Bob McWhirter
@@ -32,8 +33,20 @@ public class DatasourceArchiveImpl extends AssignableBase<ArchiveBase<?>> implem
         super(archive);
     }
 
+
+    public DatasourceArchive dataSource(String key, DataSourceConsumer consumer) {
+        DataSource ds = new DataSource( key );
+        consumer.accept(ds);
+        dataSource(ds);
+        return this;
+    }
+
     @Override
-    public DatasourceArchive datasource(DataSource ds) {
+    public DatasourceArchive dataSource(DataSource ds) {
+        if (ds.jndiName() == null) {
+            ds.jndiName("java:jboss/datasources/" + ds.getKey());
+        }
+
         String name = ds.getKey() + "-ds.xml";
 
         getArchive().add( new DSXmlAsset( ds ), "META-INF/" + name );
