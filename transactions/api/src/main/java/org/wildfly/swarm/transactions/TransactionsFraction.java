@@ -16,41 +16,47 @@
 package org.wildfly.swarm.transactions;
 
 import org.wildfly.swarm.config.Transactions;
+import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.container.SocketBinding;
 
 /**
  * @author Bob McWhirter
  */
 public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction {
 
-    private int port;
+    private int port = 4712;
+    private int statusPort = 4713;
 
-    private int statusPort;
-
-    public TransactionsFraction() {
-
-        this(4712, 4713);
+    protected TransactionsFraction() {
         this.socketBinding("txn-recovery-environment")
                 .statusSocketBinding("txn-status-manager")
                 .processIdUuid(true);
-
     }
 
-    public TransactionsFraction(int port, int statusPort) {
+    @Override
+    public void initialize(Container.InitContext initContext) {
+
+        initContext.socketBinding(new SocketBinding("txn-recovery-environment")
+                .port(this.port));
+
+        initContext.socketBinding(new SocketBinding("txn-status-manager")
+                .port(this.statusPort));
+    }
+
+    public TransactionsFraction port(int port) {
         this.port = port;
+        return this;
+    }
+
+    public TransactionsFraction statusPort(int statusPort) {
         this.statusPort = statusPort;
+        return this;
     }
-
-    public int getPort() {
-        return this.port;
-    }
-
-    public int getStatusPort() {
-        return this.statusPort;
-    }
-
 
     public static TransactionsFraction createDefaultFraction() {
-        return new TransactionsFraction();
+        return new TransactionsFraction()
+                .socketBinding("txn-recovery-environment")
+                .statusSocketBinding("txn-status-manager");
     }
 }

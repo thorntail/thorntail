@@ -57,20 +57,6 @@ public class TransactionsConfiguration extends AbstractServerConfiguration<Trans
 
         list.addAll(Marshaller.marshal(fraction));
 
-        node = new ModelNode();
-        node.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement("socket-binding-group", "default-sockets")).append("socket-binding", "txn-recovery-environment").toModelNode());
-        node.get(OP).set(ADD);
-        node.get(PORT).set(fraction.getPort());
-        list.add(node);
-
-        node = new ModelNode();
-        node.get(OP_ADDR).set(PathAddress.pathAddress(PathElement.pathElement("socket-binding-group", "default-sockets")).append("socket-binding", "txn-status-manager").toModelNode());
-        node.get(OP).set(ADD);
-        node.get(PORT).set(fraction.getStatusPort());
-        list.add(node);
-
-
         return list;
-
     }
 }
