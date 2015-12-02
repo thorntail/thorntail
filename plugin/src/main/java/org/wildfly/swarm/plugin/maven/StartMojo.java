@@ -135,7 +135,7 @@ public class StartMojo extends AbstractMojo {
     }
 
     protected SwarmProcess executeUberJar() throws MojoFailureException {
-        getLog().info( "Starting -swarm.jar" );
+        getLog().info("Starting -swarm.jar");
 
         String finalName = this.project.getBuild().getFinalName();
 
@@ -153,6 +153,7 @@ public class StartMojo extends AbstractMojo {
                     .withDebug(debugPort)
                     .withProperties(this.properties)
                     .withEnvironment(this.environment)
+                    .withWorkingDirectory(this.project.getBasedir().toPath())
                     .withStdoutFile(this.stdoutFile != null ? this.stdoutFile.toPath() : null)
                     .withStderrFile(this.stderrFile != null ? this.stderrFile.toPath() : null)
                     .withExecutableJar(uberJar)
@@ -176,12 +177,12 @@ public class StartMojo extends AbstractMojo {
     }
 
     protected SwarmProcess executeWar() throws MojoFailureException {
-        getLog().info( "Starting .war" );
+        getLog().info("Starting .war");
 
-        SwarmExecutor executor = new SwarmExecutor();
-        executor.withDebug(debugPort);
-        executor.withDefaultSystemProperties();
-        executor.withClassPathEntries(dependencies(false));
+        SwarmExecutor executor = new SwarmExecutor()
+                .withDebug(debugPort)
+                .withDefaultSystemProperties()
+                .withClassPathEntries(dependencies(false));
 
         try {
 
@@ -189,16 +190,17 @@ public class StartMojo extends AbstractMojo {
             if (!finalName.endsWith(".war")) {
                 finalName = finalName + ".war";
             }
-            executor.withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString());
-            executor.withProperties(this.properties);
-            executor.withProperty("wildfly.swarm.context.path", this.contextPath);
-            executor.withDefaultMainClass();
+            executor.withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
+                    .withProperties(this.properties)
+                    .withProperty("wildfly.swarm.context.path", this.contextPath)
+                    .withEnvironment(this.environment)
+                    .withWorkingDirectory(this.project.getBasedir().toPath())
+                    .withDefaultMainClass();
 
-            executor.withEnvironment(this.environment);
 
-            if(stdoutFile != null)
+            if (stdoutFile != null)
                 executor.withStdoutFile(this.stdoutFile.toPath());
-            if(stderrFile != null)
+            if (stderrFile != null)
                 executor.withStderrFile(this.stderrFile.toPath());
 
 
@@ -221,16 +223,18 @@ public class StartMojo extends AbstractMojo {
     }
 
     protected SwarmProcess executeJar() throws MojoFailureException {
-        getLog().info( "Starting .jar" );
+        getLog().info("Starting .jar");
 
-        SwarmExecutor executor = new SwarmExecutor();
-        executor.withDefaultSystemProperties();
-        executor.withDebug(debugPort);
+        SwarmExecutor executor = new SwarmExecutor()
+                .withDefaultSystemProperties()
+                .withDebug(debugPort);
 
         try {
-            executor.withClassPathEntries(dependencies(true));
-            executor.withProperties(this.properties);
-            executor.withProperty("wildfly.swarm.context.path", this.contextPath);
+            executor.withClassPathEntries(dependencies(true))
+                    .withProperties(this.properties)
+                    .withProperty("wildfly.swarm.context.path", this.contextPath)
+                    .withEnvironment(this.environment)
+                    .withWorkingDirectory(this.project.getBasedir().toPath());
 
             if (this.mainClass != null) {
                 executor.withMainClass(this.mainClass);
@@ -238,11 +242,10 @@ public class StartMojo extends AbstractMojo {
                 executor.withDefaultMainClass();
             }
 
-            executor.withEnvironment(this.environment);
 
-            if(stdoutFile != null)
+            if (stdoutFile != null)
                 executor.withStdoutFile(this.stdoutFile.toPath());
-            if(stderrFile != null)
+            if (stderrFile != null)
                 executor.withStderrFile(this.stderrFile.toPath());
 
             SwarmProcess process = executor.execute();
