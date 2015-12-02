@@ -240,7 +240,17 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-msc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-arquillian</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-arquillian-daemon</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

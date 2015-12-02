@@ -15,29 +15,13 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
-import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
-import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
-import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
-import org.jboss.arquillian.protocol.servlet.ServletMethodExecutor;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
+import org.wildfly.swarm.arquillian.daemon.container.DaemonContainerConfigurationBase;
+import org.wildfly.swarm.arquillian.daemon.container.DaemonDeployableContainerBase;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -50,14 +34,24 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
+import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
+import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Bob McWhirter
+ * @author Toby Crawley
  */
-public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmContainerConfiguration> {
+public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonContainerConfigurationBase> {
 
     private Class<?> testClass;
 
@@ -67,25 +61,13 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
 
     @Override
-    public Class<WildFlySwarmContainerConfiguration> getConfigurationClass() {
-        return WildFlySwarmContainerConfiguration.class;
-    }
-
-    @Override
-    public void setup(WildFlySwarmContainerConfiguration config) {
+    public Class<DaemonContainerConfigurationBase> getConfigurationClass() {
+        return DaemonContainerConfigurationBase.class;
     }
 
     @Override
     public void start() throws LifecycleException {
-    }
-
-    @Override
-    public void stop() throws LifecycleException {
-    }
-
-    @Override
-    public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 3.0");
+        //disable start, since we call super.start() at deploy time
     }
 
     public void setTestClass(Class<?> testClass) {
@@ -119,18 +101,23 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
 
         /*
         System.err.println( ">>> CORE" );
+        System.err.println(" NAME: " + archive.getName());
         for (Map.Entry<ArchivePath, Node> each : archive.getContent().entrySet()) {
             System.err.println("-> " + each.getKey());
         }
         System.err.println( "<<< CORE" );
         */
 
-
         //System.err.println("is factory: " + isContainerFactory(this.testClass));
         if (isContainerFactory(this.testClass)) {
             archive.as(JavaArchive.class).addAsServiceProvider("org.wildfly.swarm.ContainerFactory", this.testClass.getName());
             archive.as(JavaArchive.class).addClass(this.testClass);
         }
+        archive.as(ServiceActivatorArchive.class)
+                .addServiceActivator(DaemonServiceActivator.class);
+        archive.as(JARArchive.class)
+                .addModule("org.wildfly.swarm.arquillian.daemon")
+                .addModule("org.jboss.msc");
 
         BuildTool tool = new BuildTool();
         tool.projectArchive(archive);
@@ -166,19 +153,18 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
         }
 
         SwarmExecutor executor = new SwarmExecutor();
-        executor.withDefaultSystemProperties();
+        executor.withDefaultSystemProperties();//.withDebug(8787);
 
         try {
 
             Archive<?> wrapped = tool.build();
 
-            /*
-            wrapped.as(ZipExporter.class).exportTo(new File("test.jar"), true);
+
+            /*wrapped.as(ZipExporter.class).exportTo(new File("test.jar"), true);
 
             for (Map.Entry<ArchivePath, Node> each : wrapped.getContent().entrySet()) {
                 System.err.println("-> " + each.getKey());
-            }
-            */
+            }*/
 
             File executable = File.createTempFile("arquillian", "-swarm.jar");
             wrapped.as(ZipExporter.class).exportTo(executable, true);
@@ -196,18 +182,22 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
             this.process = executor.execute();
             this.process.getOutputStream().close();
 
-            ProtocolMetaData metaData = new ProtocolMetaData();
-            HTTPContext context = new HTTPContext("localhost", 8080);
-            context.add(new Servlet(ServletMethodExecutor.ARQUILLIAN_SERVLET_NAME, "/"));
-            metaData.addContext(context);
-
             this.process.awaitDeploy( 2, TimeUnit.MINUTES );
+
             if ( ! this.process.isAlive() ) {
                 throw new DeploymentException( "Process failed to start" );
             }
             if ( this.process.getError() != null ) {
                 throw new DeploymentException( "Error starting process", this.process.getError() );
             }
+
+            // start wants to connect to the remote container, which isn't up until now, so
+            // we override start above and call it here instead
+            super.start();
+
+            ProtocolMetaData metaData = new ProtocolMetaData();
+            metaData.addContext(createDeploymentContext(archive.getId()));
+
             return metaData;
         } catch (Exception e) {
             throw new DeploymentException(e.getMessage(), e);
@@ -230,5 +220,4 @@ public class WildFlySwarmContainer implements DeployableContainer<WildFlySwarmCo
     @Override
     public void undeploy(Descriptor descriptor) throws DeploymentException {
     }
-
 }

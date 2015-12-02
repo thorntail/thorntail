@@ -15,16 +15,10 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
-import org.jboss.arquillian.core.spi.LoadableExtension;
+import org.wildfly.swarm.arquillian.daemon.container.DaemonContainerConfigurationBase;
 
 /**
  * @author Bob McWhirter
  */
-public class WildFlySwarmExtension implements LoadableExtension {
-    @Override
-    public void register(ExtensionBuilder builder) {
-        builder.service(DeployableContainer.class, WildFlySwarmContainer.class);
-        builder.observer(WildFlySwarmObserver.class);
-    }
+public class WildFlySwarmContainerConfiguration extends DaemonContainerConfigurationBase {
 }

@@ -15,19 +15,19 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import org.jboss.arquillian.container.spi.ConfigurationException;
-import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
+import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
+import org.jboss.arquillian.container.test.spi.client.protocol.Protocol;
+import org.jboss.arquillian.core.spi.LoadableExtension;
+import org.wildfly.swarm.arquillian.daemon.protocol.DaemonProtocol;
 
 /**
  * @author Bob McWhirter
  */
-public class WildFlySwarmContainerConfiguration implements ContainerConfiguration {
-
-    public WildFlySwarmContainerConfiguration() {
-
-    }
-
+public class WildFlySwarmExtension implements LoadableExtension {
     @Override
-    public void validate() throws ConfigurationException {
+    public void register(ExtensionBuilder builder) {
+        builder.service(Protocol.class, DaemonProtocol.class)
+                .service(DeployableContainer.class, WildFlySwarmContainer.class)
+                .observer(WildFlySwarmObserver.class);
     }
 }
