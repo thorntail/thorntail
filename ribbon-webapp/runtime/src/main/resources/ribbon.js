@@ -65,13 +65,14 @@ var ribbon = (function() {
       var request = new XMLHttpRequest(),
           deferredResponse = deferred();
 
+      // set the state change handler and open the http request
+      request.onreadystatechange = changeState(request, deferredResponse);
+      request.open(settings.method, settings.url);
+
       getHeaders(settings.headers).forEach(function(header) {
         request.setRequestHeader(header.field, header.value);
       });
 
-      // set the state change handler and make the http request
-      request.onreadystatechange = changeState(request, deferredResponse);
-      request.open(settings.method, settings.url);
       if (settings.data) request.send(settings.data);
       else request.send();
 
@@ -119,17 +120,18 @@ var ribbon = (function() {
       }
     }
 
-    function getJSON(serviceName, path, data) {
-      return ajax( serviceName, path, {
-        method: 'GET',
-        data: data
-      });
+    function getJSON(serviceName, path) {
+      return ajax( serviceName, path, { method: 'GET' });
     }
 
     function postJSON(serviceName, path, data) {
+      if (typeof path === 'object') {
+        data = path;
+        path = '/';
+      }
       return ajax( serviceName, path, {
         method: 'POST',
-        data: data
+        data: JSON.stringify(data)
       });
     }
 
