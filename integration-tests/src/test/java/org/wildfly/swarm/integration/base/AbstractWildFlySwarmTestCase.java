@@ -15,17 +15,17 @@
  */
 package org.wildfly.swarm.integration.base;
 
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.logging.LoggingFraction;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.logging.LoggingFraction;
-
 /**
  * @author Bob McWhirter
  */
-public abstract class AbstractWildFlySwarmTestCase {
+public abstract class AbstractWildFlySwarmTestCase implements TestConstants {
 
     protected Container newContainer() throws Exception {
         return newContainer(false);

@@ -99,12 +99,12 @@ public class StaticContentDeploymentTest extends AbstractWildFlySwarmTestCase im
     }
 
     public void assertContains(String path, String text) throws Exception {
-        assertThat(fetch("http://localhost:8080/" + path)).contains(text);
+        assertThat(fetch(DEFAULT_URL + path)).contains(text);
     }
 
     public void assertNotFound(String path) throws Exception {
         try {
-            fetch("http://localhost:8080/" + path);
+            fetch(DEFAULT_URL + path);
             fail("FileNotFoundException expected but content found for path " + path);
         } catch (Exception ex) {
             assertThat(ex).isInstanceOf(FileNotFoundException.class);

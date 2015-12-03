@@ -15,18 +15,10 @@
  */
 package org.wildfly.swarm.integration.ejb;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.ejb.EJB;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Ignore;
@@ -34,7 +26,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.wildfly.swarm.arquillian.adapter.ArtifactDependencies;
+import org.wildfly.swarm.integration.base.TestConstants;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
+
+import javax.ejb.EJB;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -43,9 +41,6 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(Arquillian.class)
 public class EJBTest {
-
-    @ArquillianResource
-    URL contextRoot;
 
     @Drone
     WebDriver browser;
@@ -72,7 +67,7 @@ public class EJBTest {
     @Test
     @RunAsClient
     public void testFromOutside() throws IOException {
-        browser.navigate().to(contextRoot);
+        browser.navigate().to(TestConstants.DEFAULT_URL);
 
         assertThat(browser.getPageSource()).contains("Howdy from EJB");
     }

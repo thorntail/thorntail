@@ -4,4 +4,11 @@
     <property name="browser">${browser}</property>
   </extension>
 
+  <container qualifier="daemon" default="true">
+    <configuration>
+      <property name="host">localhost</property>
+      <property name="port">12345</property>
+    </configuration>
+  </container>
+
 </arquillian>

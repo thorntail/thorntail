@@ -43,8 +43,10 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,7 +57,7 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
 
     private Class<?> testClass;
 
-    private List<String> requestedMavenArtifacts;
+    private Set<String> requestedMavenArtifacts;
 
     private SwarmProcess process;
 
@@ -75,7 +77,7 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     }
 
     public void setRequestedMavenArtifacts(List<String> artifacts) {
-        this.requestedMavenArtifacts = artifacts;
+        this.requestedMavenArtifacts = new HashSet<>(artifacts);
     }
 
     public boolean isContainerFactory(Class<?> cls) {
@@ -142,6 +144,8 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
                 tool.dependency(dep.getScope().name(), coord.getGroupId(), coord.getArtifactId(), coord.getVersion(), coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
             }
         } else {
+            // ensure that arq daemon is available
+            this.requestedMavenArtifacts.add("org.wildfly.swarm:wildfly-swarm-arquillian-daemon");
             for (String requestedDep : this.requestedMavenArtifacts) {
                 MavenResolvedArtifact[] deps = resolver.loadPomFromFile("pom.xml").resolve(requestedDep).withTransitivity().asResolvedArtifact();
 

@@ -39,7 +39,7 @@ public class JSFTest extends AbstractWildFlySwarmTestCase {
         deployment.staticContent();
         container.deploy(deployment);
 
-        String result = fetch("http://localhost:8080");
+        String result = fetch(DEFAULT_URL);
         assertThat(result).contains("This is static.");
     }
 

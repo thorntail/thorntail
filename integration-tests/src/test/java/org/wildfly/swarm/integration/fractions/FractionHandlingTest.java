@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.integration.fractions;
 
-import java.util.List;
-import java.util.function.Consumer;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,6 +31,9 @@ import org.wildfly.swarm.jpa.JPAFraction;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.naming.NamingFraction;
 import org.wildfly.swarm.transactions.TransactionsFraction;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 import static org.fest.assertions.Assertions.assertThat;
 
