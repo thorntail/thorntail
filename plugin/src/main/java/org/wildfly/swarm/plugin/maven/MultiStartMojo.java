@@ -110,43 +110,6 @@ public class MultiStartMojo extends AbstractMojo {
             }
         }
 
-        //System.err.println("collected: " + this.project.getCollectedProjects());
-
-        //System.err.println( "processes: " + this.processes );
-
-        /*
-        for (MavenProject each : this.project.getCollectedProjects()) {
-            Plugin plugin = each.getPlugin("org.wildfly.swarm:wildfly-swarm-plugin");
-            for (PluginExecution exec : plugin.getExecutions()) {
-                if (exec.getGoals().contains("start") ) {
-                    Xpp3Dom config = (Xpp3Dom) exec.getConfiguration();
-                    System.err.println("config: " + config.getClass() + " // " + config);
-                    System.err.println( "maven session: " + mavenSession );
-                    System.err.println( "maven session.proj: " + mavenSession.getCurrentProject() );
-                    System.err.println( "pluginManager: " + this.pluginManager );
-
-                    Xpp3Dom pdom = new Xpp3Dom("project");
-                    pdom.setValue( "${project}" );
-                    config.addChild( pdom );
-
-                    try {
-                        PluginDescriptor pluginDescriptor = this.pluginManager.loadPlugin(plugin, each.getRemotePluginRepositories(), this.repositorySystemSession);
-                        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo("start");
-                        MojoExecution mojoExecution = new MojoExecution( mojoDescriptor, config );
-                        //MojoExecution mojoExecution = new MojoExecution( plugin, "start", "start" );
-                        mavenSession.setCurrentProject( each );
-                        this.pluginManager.executeMojo(mavenSession, mojoExecution);
-                    } catch (Throwable t) {
-                        while ( t != null ) {
-                            t.printStackTrace();
-                            t = t.getCause();
-                        }
-                    }
-                }
-            }
-        }
-        */
-
         for (XmlPlexusConfiguration process : this.processes) {
             try {
                 start(process);
@@ -160,7 +123,7 @@ public class MultiStartMojo extends AbstractMojo {
         Plugin plugin = this.project.getPlugin("org.wildfly.swarm:wildfly-swarm-plugin");
 
         String groupId = process.getChild("groupId").getValue(this.project.getGroupId());
-        String artifactId = process.getChild("artifactId").getValue();
+        String artifactId = process.getChild("artifactId").getValue(this.project.getArtifactId());
         String executionId = process.getChild("executionId").getValue();
 
         MavenProject project = findProject(groupId, artifactId);
@@ -168,7 +131,9 @@ public class MultiStartMojo extends AbstractMojo {
         Xpp3Dom config = getConfiguration(project, executionId);
         Xpp3Dom processConfig = getProcessConfiguration(process);
 
+        Xpp3Dom globalConfig = getGlobalConfig();
         Xpp3Dom mergedConfig = Xpp3DomUtils.mergeXpp3Dom(processConfig, config);
+        mergedConfig = Xpp3DomUtils.mergeXpp3Dom(mergedConfig, globalConfig);
 
         PluginDescriptor pluginDescriptor = this.pluginManager.loadPlugin(plugin, project.getRemotePluginRepositories(), this.repositorySystemSession);
         MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo("start");
@@ -176,28 +141,53 @@ public class MultiStartMojo extends AbstractMojo {
         mavenSession.setCurrentProject(project);
         this.pluginManager.executeMojo(mavenSession, mojoExecution);
 
-        List<SwarmProcess> launched = (List<SwarmProcess>) mavenSession.getPluginContext( pluginDescriptor, project ).get("swarm-process" );
-
-        System.err.println( "launched: " + launched );
+        List<SwarmProcess> launched = (List<SwarmProcess>) mavenSession.getPluginContext(pluginDescriptor, project).get("swarm-process");
 
         List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
 
-        if ( procs == null ) {
+        if (procs == null) {
             procs = new ArrayList<>();
-            getPluginContext().put( "swarm-process", procs );
+            getPluginContext().put("swarm-process", procs);
         }
 
-        procs.addAll( launched );
+        procs.addAll(launched);
 
         mavenSession.setCurrentProject(this.project);
     }
 
     protected MavenProject findProject(String groupId, String artifactId) {
+        if (groupId.equals(this.project.getGroupId()) && artifactId.equals(this.project.getArtifactId())) {
+            return this.project;
+        }
         return this.project.getCollectedProjects()
                 .stream()
                 .filter(e -> (e.getGroupId().equals(groupId) && e.getArtifactId().equals(artifactId)))
                 .findFirst()
                 .orElse(null);
+    }
+
+    protected Xpp3Dom getGlobalConfig() {
+        Xpp3Dom config = new Xpp3Dom("configuration");
+
+        Xpp3Dom properties = new Xpp3Dom("properties");
+        config.addChild( properties );
+
+        for (String name : this.properties.stringPropertyNames()) {
+            Xpp3Dom prop = new Xpp3Dom(name);
+            prop.setValue( this.properties.getProperty( name ) );
+            properties.addChild( prop );
+        }
+
+        Xpp3Dom environment = new Xpp3Dom("environment");
+        config.addChild( environment );
+
+        for (String name : this.environment.stringPropertyNames() ) {
+            Xpp3Dom env = new Xpp3Dom(name);
+            env.setValue( this.environment.getProperty(name));
+            environment.addChild( env );
+        }
+
+        return config;
     }
 
     protected Xpp3Dom getConfiguration(MavenProject project, String executionId) {
@@ -233,6 +223,7 @@ public class MultiStartMojo extends AbstractMojo {
 
         return config;
     }
+
 
     protected Xpp3Dom convert(PlexusConfiguration config) {
 
