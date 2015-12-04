@@ -36,10 +36,10 @@ public class DaemonContainerConfigurationBase implements ContainerConfiguration 
     @Override
     public void validate() throws ConfigurationException {
         if (host == null || host.length() == 0) {
-            throw new ConfigurationException("host must be specified");
+            this.host = "localhost";
         }
         if (port == null || port.length() == 0) {
-            throw new ConfigurationException("port must be specified");
+            this.port = "12345";
         }
     }
 
