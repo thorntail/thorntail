@@ -126,7 +126,7 @@ public class Server {
                     @Override
                     public void initChannel(final SocketChannel channel) throws Exception {
                         final ChannelPipeline pipeline = channel.pipeline();
-                        resetPipeline(pipeline);
+                        setupPipeline(pipeline);
                     }
                 })
                 .childOption(ChannelOption.TCP_NODELAY, true)
@@ -260,17 +260,8 @@ public class Server {
          */
         @Override
         protected void channelRead0(final ChannelHandlerContext ctx, final String message) throws Exception {
-
-            log.info("Got command: " + message);
-
-
             // We want to catch any and all errors to to write out a proper response to the client
             try {
-
-                // Reset the pipeline for the next call
-                final ChannelPipeline pipeline = ctx.pipeline();
-                Server.this.resetPipeline(pipeline);
-
                 // Stop
                 if (WireProtocol.COMMAND_STOP.equals(message)) {
 
@@ -343,15 +334,7 @@ public class Server {
 
     }
 
-    private void resetPipeline(final ChannelPipeline pipeline) {
-        // Remove all we've added
-        for (final String handlerName : NAME_CHANNEL_HANDLERS) {
-            try {
-                pipeline.remove(handlerName);
-            } catch (final NoSuchElementException ignore) {
-            }
-        }
-
+    private void setupPipeline(final ChannelPipeline pipeline) {
         pipeline.addLast(NAME_CHANNEL_HANDLER_FRAME_DECODER,
                          new DelimiterBasedFrameDecoder(2000, Delimiters.lineDelimiter()));
         pipeline.addLast(NAME_CHANNEL_HANDLER_STRING_DECODER,
@@ -372,11 +355,6 @@ public class Server {
     private static final String NAME_CHANNEL_HANDLER_STRING_DECODER = "StringDecoder";
     private static final String NAME_CHANNEL_HANDLER_FRAME_DECODER = "FrameDecoder";
     private static final String NAME_CHANNEL_HANDLER_COMMAND = "CommandHandler";
-    private static final String[] NAME_CHANNEL_HANDLERS = {
-            NAME_CHANNEL_HANDLER_STRING_DECODER,
-            NAME_CHANNEL_HANDLER_FRAME_DECODER,
-            NAME_CHANNEL_HANDLER_COMMAND
-    };
 
     private final List<EventLoopGroup> eventLoopGroups = new ArrayList<>();
     private final InetSocketAddress bindAddress;
