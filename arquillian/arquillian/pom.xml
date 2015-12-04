@@ -68,6 +68,30 @@
       <artifactId>arquillian-container-test-impl-base</artifactId>
     </dependency>
 
+    <!-- For @Inject annotations -->
+    <dependency>
+      <groupId>org.jboss.arquillian.testenricher</groupId>
+      <artifactId>arquillian-testenricher-cdi</artifactId>
+    </dependency>
+
+    <!-- For @EJB annotations -->
+    <dependency>
+      <groupId>org.jboss.arquillian.testenricher</groupId>
+      <artifactId>arquillian-testenricher-ejb</artifactId>
+    </dependency>
+
+    <!-- For @Resource annotations -->
+    <dependency>
+      <groupId>org.jboss.arquillian.testenricher</groupId>
+      <artifactId>arquillian-testenricher-resource</artifactId>
+    </dependency>
+
+    <!-- For @ArquillianResource annotated InitialContext injection points -->
+    <dependency>
+      <groupId>org.jboss.arquillian.testenricher</groupId>
+      <artifactId>arquillian-testenricher-initialcontext</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.jboss.arquillian.config</groupId>
       <artifactId>arquillian-config-impl-base</artifactId>
