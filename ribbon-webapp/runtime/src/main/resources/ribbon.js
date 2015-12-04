@@ -1,24 +1,32 @@
 var ribbon = (function() {
 
-  var defaultSettings = {
+  var defaults = {
     headers: {},
-    method: 'GET'
+    method: 'GET',
+    keycloak: false,
+    keycloakUpdateInterval: 30,
+    context: '/ribbon'
   }, topology = {};
 
-  function factory(keycloak) {
+  function factory( options ) {
+    options = merge(defaults, options);
 
     function ajax( serviceName, path, settings ) {
       var allServers = topology[serviceName],
-          deferredResult = deferred();
+          deferredResult = deferred(),
+          keycloak = options.keycloak;
 
-      console.log( "servers for [" + serviceName + "]", allServers );
       if (!allServers || allServers.length < 1 ) {
         return deferredResult.reject('No servers available').promise;
       }
 
       // ensure some default settings exist
-      settings = settings || defaultSettings;
-      settings.headers = settings.headers || {};
+      settings = merge({
+        method: options.method,
+        headers: options.headers,
+        data: undefined
+      }, settings);
+
       path = path || '/';
 
       // TODO: Try other URLs if there is more than one server
@@ -27,33 +35,28 @@ var ribbon = (function() {
       // Set relevant headers
       if (settings.method === 'POST') {
         settings.headers['Content-Type'] = 'application/json';
-      } else if (!settings.method) {
-        settings.method = 'GET';
       }
 
       if (!keycloak) {
         // If we're not authenticating, go ahead and make the request
-        console.log( "not authenticating" );
         return doRequest( settings ).promise;
       } else if (!keycloak.authenticated) {
         // But if we are authenticating...
-        console.log("not authenticated");
         return deferredResult.reject("Not authenticated").promise;
       } else {
         // Using keycloak, update token, and make the request
-        console.log("authenticated");
         settings.headers.Authorization = 'Bearer ' + keycloak.token;
 
         // TODO: Make token update interval configurable
         keycloak.updateToken(30).success( function() {
-          console.log( "keycloak token refreshed" );
+          console.log( "ribbon.js: keycloak token refreshed" );
 
           // make the request
           doRequest( settings ).then( function(result) {
             deferredResult.resolve(result);
           });
         }).error( function(e) {
-          console.log( "Failed to update keycloak token. " + e );
+          console.log( "ribbon.js: Failed to update keycloak token. " + e );
           deferredResult.reject('Failed to update keycloak token. ' + e);
         });
       }
@@ -91,7 +94,7 @@ var ribbon = (function() {
             processResponse(request, deferredResponse);
             break;
           default:
-            console.log('Unexpected XMLHttpRequest state');
+            console.log('ribbon.js: Unexpected XMLHttpRequest state');
             deferred.reject('Unexpected XMLHttpRequst state');
           }
         };
@@ -100,9 +103,8 @@ var ribbon = (function() {
       function processResponse(request, response) {
         if (request.status === 200) {
           response.resolve(JSON.parse(request.responseText));
-          console.log('Response: ' + response.promise.value);
         } else {
-          response.reject('Bad request: ' + request.statusText);
+          response.reject('ribbon.js: Bad request: ' + request.statusText);
         }
       }
 
@@ -121,7 +123,7 @@ var ribbon = (function() {
     }
 
     function getJSON(serviceName, path) {
-      return ajax( serviceName, path, { method: 'GET' });
+      return ajax( serviceName, path );
     }
 
     function postJSON(serviceName, path, data) {
@@ -135,27 +137,45 @@ var ribbon = (function() {
       });
     }
 
-    var sse = new EventSource( "/ribbon/system/stream" );
+    var sse = new EventSource( options.context + "/system/stream" );
     sse.addEventListener('topologyChange', function(message) {
-      console.log('Ribbon topology changed: ', message.data);
+      console.log('ribbon.js: topology changed: ', message.data);
       topology = JSON.parse(message.data);
     });
 
     sse.onerror = function(e) {
-      console.log( "Ribbon topology SSE error", e );
+      console.log( "ribbon.js: topology SSE error", e );
     };
 
-    sse.onopen = function() {
-      console.log( "Ribbon topology SEE opened" );
-    };
+    function onTopologyChange(f) {
+      sse.addEventListener('topologyChange', function(message) {
+        f(message.data);
+      });
+    }
 
-    return {
+    var _ribbon = {
       ajax: ajax,
       postJSON: postJSON,
       getJSON: getJSON,
-      topologyEvents: sse,
-      getTopology: function() { return topology; }
+      onTopologyChange: onTopologyChange
     };
+
+    Object.defineProperty(_ribbon, 'topology', {
+      get: function() { return topology; },
+      enumerable: true
+    });
+    Object.freeze(_ribbon);
+    return _ribbon;
+  }
+
+  function merge(defaults, provided) {
+    var obj = {};
+    if (!provided) provided = {};
+    for (var key in defaults) {
+      if (defaults.hasOwnProperty(key))
+        obj[key] = provided[key] || defaults[key];
+    }
+    return obj;
   }
 
   function promises() {
