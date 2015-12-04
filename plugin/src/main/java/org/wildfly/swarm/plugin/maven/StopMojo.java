@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -31,15 +32,22 @@ public class StopMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        SwarmProcess process = (SwarmProcess) getPluginContext().get("swarm-process");
-        if(process != null) {
+        List<SwarmProcess> value = (List<SwarmProcess>) getPluginContext().get("swarm-process");
+
+        for (SwarmProcess each : value) {
+            stop(each);
+        }
+    }
+
+
+    protected void stop(SwarmProcess process) throws MojoFailureException {
+        if (process != null) {
             try {
-                process.stop( 10, TimeUnit.SECONDS );
+                process.stop(10, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                throw new MojoFailureException( "unable to stop process", e);
+                throw new MojoFailureException("unable to stop process", e);
             }
         }
-
     }
 }
 

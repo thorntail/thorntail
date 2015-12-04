@@ -49,51 +49,54 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 public class StartMojo extends AbstractMojo {
 
     @Component
-    protected MavenProject project;
+    public MavenProject project;
 
     @Parameter(defaultValue = "${project.build.directory}")
-    protected String projectBuildDir;
+    public String projectBuildDir;
 
     @Parameter(alias = "mainClass")
-    protected String mainClass;
+    public String mainClass;
 
     @Parameter(alias = "httpPort", defaultValue = "8080")
-    private int httpPort;
+    public int httpPort;
 
     @Parameter(alias = "portOffset", defaultValue = "0")
-    private int portOffset;
+    public int portOffset;
 
     @Parameter(alias = "bindAddress", defaultValue = "0.0.0.0")
-    private String bindAddress;
+    public String bindAddress;
 
     @Parameter(alias = "contextPath", defaultValue = "/")
-    private String contextPath;
+    public String contextPath;
 
     @Parameter(alias = "properties")
-    private Properties properties;
+    public Properties properties;
 
     @Parameter
-    private Properties environment;
+    public Properties environment;
 
     @Parameter(alias = "environmentFile")
-    private File environmentFile;
+    public File environmentFile;
 
     @Parameter(alias = "stdoutFile")
-    private File stdoutFile;
+    public File stdoutFile;
 
     @Parameter(alias = "stderrFile")
-    private File stderrFile;
+    public File stderrFile;
 
     @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
-    private boolean useUberJar;
+    public boolean useUberJar;
 
     @Parameter(alias = "debug")
-    private Integer debugPort;
+    public Integer debugPort;
 
     boolean waitForProcess;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if ( this.contextPath == null ) {
+            this.contextPath = "/";
+        }
         if (this.properties == null) {
             this.properties = new Properties();
         }
@@ -121,10 +124,15 @@ public class StartMojo extends AbstractMojo {
         } else if (this.project.getPackaging().equals("jar")) {
             process = executeJar();
         } else {
-            throw new MojoExecutionException("Unsupported packaging" + this.project.getPackaging());
+            throw new MojoExecutionException("Unsupported packaging: " + this.project.getPackaging());
         }
 
-        getPluginContext().put("swarm-process", process);
+        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
+        if ( procs == null ) {
+            procs = new ArrayList<>();
+            getPluginContext().put("swarm-process", procs);
+        }
+        procs.add( process );
 
         if (waitForProcess) {
             try {
