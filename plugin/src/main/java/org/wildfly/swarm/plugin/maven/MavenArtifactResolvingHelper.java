@@ -16,6 +16,7 @@
 package org.wildfly.swarm.plugin.maven;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.Authentication;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.impl.ArtifactResolver;
@@ -23,6 +24,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
@@ -48,6 +50,12 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     public void remoteRepository(ArtifactRepository repo) {
         RemoteRepository.Builder builder = new RemoteRepository.Builder(repo.getId(), "default", repo.getUrl());
+        final Authentication mavenAuth = repo.getAuthentication();
+        if (mavenAuth != null && mavenAuth.getUsername() != null && mavenAuth.getPassword() != null) {
+            builder.setAuthentication(new AuthenticationBuilder()
+                    .addUsername(mavenAuth.getUsername())
+                    .addPassword(mavenAuth.getPassword()).build());
+        }
         this.remoteRepositories.add(builder.build());
     }
 
