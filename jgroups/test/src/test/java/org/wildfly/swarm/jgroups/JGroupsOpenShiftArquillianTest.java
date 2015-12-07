@@ -24,17 +24,7 @@ public class JGroupsOpenShiftArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new JGroupsFraction()
-                .defaultChannel("swarm-jgroups")
-                .channel("swarm-jgroups", (c) -> {
-                    c.stack("udp");
-                })
-                .stack("udp", (s) -> {
-                    s.transport("UDP", (t) -> {
-                        t.socketBinding("jgroups-udp");
-                    });
-                    s.protocol("openshift.KUBE_PING");
-                }));
+        return new Container().fraction(JGroupsFraction.defaultOpenShiftFraction());
     }
 
     @Test

@@ -33,19 +33,25 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
 
 
     public static JGroupsFraction defaultFraction() {
+        boolean inOpenShift = System.getenv("OPENSHIFT_BUILD_NAME") != null ||
+                System.getenv("OPENSHIFT_BUILD_REFERENCE") != null ||
+                "openshift".equalsIgnoreCase(System.getProperty("wildfly.swarm.environment"));
+
+        if (inOpenShift) {
+            return defaultOpenShiftFraction();
+        }
+        return defaultMulticastFraction();
+    }
+
+    public static JGroupsFraction defaultMulticastFraction() {
         return new JGroupsFraction()
                 .defaultChannel( "swarm-jgroups")
                 .stack( "udp", (s)->{
                     s.transport( "UDP", (t)->{
                         t.socketBinding("jgroups-udp");
                     });
-                    if (System.getenv("OPENSHIFT_BUILD_NAME") != null ||
-                            System.getenv("OPENSHIFT_BUILD_REFERENCE") != null ||
-                            "openshift".equalsIgnoreCase(System.getProperty("wildfly.swarm.environment"))) {
-                        s.protocol( "openshift.KUBE_PING" );
-                    } else {
-                        s.protocol( "PING" );
-                    }
+                    s.protocol( "PING" );
+                    s.protocol( "MERGE3" );
                     s.protocol( "FD_SOCK", (p)->{
                         p.socketBinding( "jgroups-udp-fd" );
                     });
@@ -62,6 +68,34 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                 })
                 .channel( "swarm-jgroups", (c)->{
                     c.stack( "udp" );
+                });
+    }
+
+    public static JGroupsFraction defaultOpenShiftFraction() {
+        return new JGroupsFraction()
+                .defaultChannel( "swarm-jgroups")
+                .stack( "tcp", (s)->{
+                    s.transport( "TCP", (t)->{
+                        t.socketBinding( "jgroups-tcp" );
+                    });
+                    s.protocol( "openshift.KUBE_PING" );
+                    s.protocol( "MERGE3" );
+                    s.protocol( "FD_SOCK", (p)->{
+                        p.socketBinding( "jgroups-tcp-fd" );
+                    });
+                    s.protocol( "FD_ALL" );
+                    s.protocol( "VERIFY_SUSPECT" );
+                    s.protocol( "pbcast.NAKACK2" );
+                    s.protocol( "UNICAST3" );
+                    s.protocol( "pbcast.STABLE" );
+                    s.protocol( "pbcast.GMS" );
+                    s.protocol( "UFC" );
+                    s.protocol( "MFC" );
+                    s.protocol( "FRAG2" );
+                    s.protocol( "RSVP" );
+                })
+                .channel( "swarm-jgroups", (c)->{
+                    c.stack( "tcp" );
                 });
     }
 
