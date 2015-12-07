@@ -43,10 +43,9 @@ public class InfinispanArquillianTest {
     }
 
     @Test
-    public void testNothing() throws Exception {
+    public void testBasic() throws Exception {
         CacheContainer cacheContainer =
                 (CacheContainer) new InitialContext().lookup("java:jboss/infinispan/container/server");
-
         Cache cache = cacheContainer.getCache("default");
         cache.put("ham", "biscuit");
         assertEquals("biscuit", cache.get("ham"));
