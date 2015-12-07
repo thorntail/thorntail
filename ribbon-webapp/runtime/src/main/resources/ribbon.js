@@ -122,7 +122,15 @@ var ribbon = (function() {
       }
     }
 
-    function getJSON(serviceName, path) {
+    function getJSON(serviceName, path, data) {
+      //var _data = (typeof data === 'string') ? data : JSON.stringify(data);
+      var qs = '?';
+      for (var k in data) {
+        if (data.hasOwnProperty(k)) {
+          qs += k + '=' + data[k];
+        }
+      }
+      path = path + qs;
       return ajax( serviceName, path );
     }
 
@@ -131,9 +139,10 @@ var ribbon = (function() {
         data = path;
         path = '/';
       }
+      var _data = (typeof data === 'string') ? data : JSON.stringify(data);
       return ajax( serviceName, path, {
         method: 'POST',
-        data: JSON.stringify(data)
+        data: _data
       });
     }
 
@@ -332,9 +341,11 @@ var ribbon = (function() {
             });
         function resolve(value) {
           resolver(value);
+          return this;
         }
         function reject(cause) {
           rejecter(cause);
+          return this;
         }
         return {
           promise: p,
