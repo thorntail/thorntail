@@ -22,7 +22,7 @@
   <packaging>pom</packaging>
 
     <modules>
-      <module>arquillian</module>
+      <module>api</module>
       <module>daemon</module>
     </modules>
 
