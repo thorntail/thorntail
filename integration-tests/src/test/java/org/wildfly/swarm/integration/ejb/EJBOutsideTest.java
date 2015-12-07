@@ -21,7 +21,6 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
@@ -30,30 +29,30 @@ import org.wildfly.swarm.integration.base.TestConstants;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 import javax.ejb.EJB;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Ken Finnigan
  */
 @RunWith(Arquillian.class)
-public class EJBTest {
+public class EJBOutsideTest {
 
     @Drone
     WebDriver browser;
 
-    @EJB
     private GreeterEJB greeter;
 
     @Deployment
     public static Archive createDeployment() throws Exception {
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "ejb-test.war");
-        deployment.addResource(MyResource.class);
-        deployment.addClass(GreeterEJB.class);
-        return deployment;
+        return ShrinkWrap.create(JAXRSArchive.class, "ejb-test.war")
+                .addResource(MyResource.class)
+                .addClass(GreeterEJB.class);
     }
 
     @ArtifactDependencies
@@ -71,11 +70,4 @@ public class EJBTest {
 
         assertThat(browser.getPageSource()).contains("Howdy from EJB");
     }
-
-    @Ignore
-    @Test
-    public void testFromInside() {
-        assertThat(greeter.message()).isEqualTo("Howdy from EJB");
-    }
-
 }

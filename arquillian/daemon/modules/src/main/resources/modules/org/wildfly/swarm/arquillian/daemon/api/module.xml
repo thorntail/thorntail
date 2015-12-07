@@ -8,10 +8,13 @@
   </resources>
 
   <dependencies>
-    <module name="org.wildfly.swarm.container"/>
-    <module name="org.jboss.shrinkwrap"/>
     <module name="io.netty"/>
+    <module name="javax.annotation.api" export="true"/>
+    <module name="javax.ejb.api" export="true"/>
+    <module name="javax.enterprise.api" export="true"/>
     <module name="org.jboss.modules"/>
     <module name="org.jboss.msc"/>
+    <module name="org.jboss.shrinkwrap"/>
+    <module name="org.wildfly.swarm.container"/>
   </dependencies>
 </module>
