@@ -1,4 +1,4 @@
-package org.wildfly.swarm.arquillian.adapter;/*
+/*
  * Copyright 2015 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,8 @@ package org.wildfly.swarm.arquillian.adapter;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.wildfly.swarm.arquillian.adapter;
 
 import org.jboss.shrinkwrap.api.Archive;
 
