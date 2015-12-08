@@ -17,9 +17,7 @@ package org.wildfly.swarm.infinispan;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.arquillian.InVM;
 
-@InVM
 @RunWith(Arquillian.class)
-public class InfinispanInVmTest extends InfinispanTests {
+public class InfinispanRemoteTest extends InfinispanTests {
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,28 +18,21 @@ package org.wildfly.swarm.infinispan;
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.wildfly.swarm.container.JARArchive;
 
-import javax.annotation.Resource;
 import javax.naming.InitialContext;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Lance Ball
- */
-@RunWith(Arquillian.class)
-public class InfinispanArquillianTest {
+public class InfinispanTests {
     @Deployment
     public static Archive createDeployment() {
         return ShrinkWrap.create(JARArchive.class)
-                .addModule("org.infinispan");
+                .addModule("org.infinispan")
+                .addClass(InfinispanTests.class);
     }
 
     @Test
