@@ -152,7 +152,8 @@ public class Server {
         this.shutdownService = Executors.newSingleThreadExecutor();
 
         if (log.isLoggable(Level.INFO)) {
-            log.info("Server started on " + boundAddress.getHostName() + ":" + boundAddress.getPort());
+            log.info("Arquillian Daemon server started on " + boundAddress.getHostName() + ":" +
+                             boundAddress.getPort());
         }
 
     }
