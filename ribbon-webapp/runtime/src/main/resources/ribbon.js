@@ -39,7 +39,7 @@ var ribbon = (function() {
 
       if (!keycloak) {
         // If we're not authenticating, go ahead and make the request
-        return doRequest( settings ).promise;
+        return doRequest( settings );
       } else if (!keycloak.authenticated) {
         // But if we are authenticating...
         return deferredResult.reject("Not authenticated").promise;
@@ -350,7 +350,8 @@ var ribbon = (function() {
         return {
           promise: p,
           resolve: resolve,
-          reject: reject
+          reject: reject,
+          then: p.then
         };
       };
   return factory;
