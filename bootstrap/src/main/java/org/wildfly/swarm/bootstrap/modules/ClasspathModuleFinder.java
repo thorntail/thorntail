@@ -17,7 +17,9 @@ package org.wildfly.swarm.bootstrap.modules;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.jboss.modules.Environment;
 import org.jboss.modules.ModuleFinder;
@@ -40,22 +42,31 @@ public class ClasspathModuleFinder implements ModuleFinder {
 
         try {
             ClassLoader cl = Layout.getInstance().getBootstrapClassLoader();
-            InputStream in = cl.getResourceAsStream(path);
+            URL url = cl.getResource(path);
+            //InputStream in = cl.getResourceAsStream(path);
 
-            if (in == null && cl != ClasspathModuleFinder.class.getClassLoader()) {
-                in = ClasspathModuleFinder.class.getClassLoader().getResourceAsStream(path);
+            if (url == null && cl != ClasspathModuleFinder.class.getClassLoader()) {
+                url = ClasspathModuleFinder.class.getClassLoader().getResource(path);
             }
 
-            if (in == null) {
+            if (url == null) {
                 return null;
             }
+
+            //System.err.println( "ClasspathModuleFinder: " + identifier );
+
+            final URL base = new URL( url, "./" );
+
+            InputStream in = url.openStream();
 
             ModuleSpec moduleSpec = null;
             try {
                 moduleSpec = ModuleXmlParserBridge.parseModuleXml(new ModuleXmlParserBridge.ResourceRootFactoryBridge() {
                     @Override
                     public ResourceLoader createResourceLoader(final String rootPath, final String loaderPath, final String loaderName) throws IOException {
-                        return Environment.getModuleResourceLoader(rootPath, loaderPath, loaderName);
+                        //return Environment.getModuleResourceLoader(rootPath, loaderPath, loaderName);
+                        //return new NestedJarResourceLoader( base );
+                        return NestedJarResourceLoader.loaderFor( base, rootPath, loaderPath, loaderName );
                     }
                 }, "/", in, path.toString(), delegateLoader, identifier);
 
