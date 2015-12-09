@@ -67,9 +67,13 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         //System.err.println("is factory: " + isContainerFactory(this.testClass));
         if (isContainerFactory(this.testClass)) {
-            archive.as(JavaArchive.class).addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                                                               this.testClass.getName());
-            archive.as(JavaArchive.class).addClass(this.testClass);
+            archive.as(JavaArchive.class)
+                    .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
+                                          this.testClass.getName())
+                    .addClass(this.testClass)
+                    .as(JARArchive.class)
+                    .addModule("org.wildfly.swarm.container")
+                    .addModule("org.wildfly.swarm.configuration");
         }
         archive.as(ServiceActivatorArchive.class)
                 .addServiceActivator(DaemonServiceActivator.class);
