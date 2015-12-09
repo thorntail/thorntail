@@ -23,9 +23,8 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ThreadSetupAction;
-import org.jboss.security.SecurityContextAssociation;
 import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.adapters.undertow.UndertowHttpFacade;
+import org.keycloak.adapters.undertow.OIDCServletUndertowHttpFacade;
 
 /**
  * @author Bob McWhirter
@@ -39,7 +38,7 @@ public class SecurityContextServletExtension implements ServletExtension {
                 if (exchange == null) {
                     return null;
                 }
-                KeycloakSecurityContext c = exchange.getAttachment(UndertowHttpFacade.KEYCLOAK_SECURITY_CONTEXT_KEY);
+                KeycloakSecurityContext c = exchange.getAttachment(OIDCServletUndertowHttpFacade.KEYCLOAK_SECURITY_CONTEXT_KEY);
                 KeycloakSecurityContextAssociation.associate(c);
                 return new Handle() {
                     @Override
@@ -56,7 +55,7 @@ public class SecurityContextServletExtension implements ServletExtension {
                 return new HttpHandler() {
                     @Override
                     public void handleRequest(HttpServerExchange exchange) throws Exception {
-                        KeycloakSecurityContext c = exchange.getAttachment(UndertowHttpFacade.KEYCLOAK_SECURITY_CONTEXT_KEY);
+                        KeycloakSecurityContext c = exchange.getAttachment(OIDCServletUndertowHttpFacade.KEYCLOAK_SECURITY_CONTEXT_KEY);
                         if ( c != null ) {
                             KeycloakSecurityContextAssociation.associate(c);
                         }
