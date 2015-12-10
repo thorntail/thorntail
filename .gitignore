@@ -39,6 +39,7 @@ server.log
 hs_err_pid*.log
 # H2 databases produced by tests
 *.h2.db
+*.trace.db
 # JBoss transaction generated files
 PutObjectStoreDirHere
 # ignore mvn-rpmbuild repo
