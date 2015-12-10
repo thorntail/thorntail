@@ -28,8 +28,7 @@ import java.util.Map;
  * Keeps track of transfers, and can provide failure messages for
  * resources that aren't found in any repo.
  */
-public class FailureReportingTransferListener extends AbstractTransferListener implements CompleteableTransferListener {
-
+public class FailureReportingTransferListener extends AbstractTransferListener implements CompletableTransferListener {
     @Override
     public void transferSucceeded(final TransferEvent event) {
         this.transfers.remove(event.getResource());

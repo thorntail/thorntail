@@ -17,6 +17,6 @@ package org.wildfly.swarm.arquillian.adapter;
 
 import org.eclipse.aether.transfer.TransferListener;
 
-public interface CompleteableTransferListener extends TransferListener {
+public interface CompletableTransferListener extends TransferListener {
     void complete();
 }

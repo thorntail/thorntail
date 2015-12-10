@@ -91,20 +91,22 @@ public class UberjarSimpleContainer implements SimpleContainer {
         jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
         jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
-        ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
-                .withMavenCentralRepo(true)
-                .withRemoteRepo(jbossPublic);
 
-        tool.artifactResolvingHelper(new ShrinkwrapArtifactResolvingHelper(resolver));
+        final ShrinkwrapArtifactResolvingHelper resolvingHelper
+                = new ShrinkwrapArtifactResolvingHelper(Maven.configureResolver()
+                                                                .withMavenCentralRepo(true)
+                                                                .withRemoteRepo(jbossPublic));
+        tool.artifactResolvingHelper(resolvingHelper);
 
         boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;
 
         if (!hasRequestedArtifacts) {
-            MavenResolvedArtifact[] deps = resolver.loadPomFromFile("pom.xml")
-                    .importRuntimeAndTestDependencies()
-                    .resolve()
-                    .withTransitivity()
-                    .asResolvedArtifact();
+            final MavenResolvedArtifact[] deps =
+                    resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                            .importRuntimeAndTestDependencies()
+                            .resolve()
+                            .withTransitivity()
+                            .asResolvedArtifact());
 
             for (MavenResolvedArtifact dep : deps) {
                 MavenCoordinate coord = dep.getCoordinate();
@@ -116,10 +118,11 @@ public class UberjarSimpleContainer implements SimpleContainer {
             // ensure that arq daemon is available
             this.requestedMavenArtifacts.add("org.wildfly.swarm:wildfly-swarm-arquillian-daemon");
             for (String requestedDep : this.requestedMavenArtifacts) {
-                MavenResolvedArtifact[] deps = resolver.loadPomFromFile("pom.xml")
-                        .resolve(requestedDep)
-                        .withTransitivity()
-                        .asResolvedArtifact();
+                final MavenResolvedArtifact[] deps =
+                        resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                                .resolve(requestedDep)
+                                .withTransitivity()
+                                .asResolvedArtifact());
 
                 for (MavenResolvedArtifact dep : deps) {
                     MavenCoordinate coord = dep.getCoordinate();

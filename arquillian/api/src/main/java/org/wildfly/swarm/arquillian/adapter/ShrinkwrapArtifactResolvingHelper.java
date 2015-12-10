@@ -55,7 +55,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             }
             spec.file = file;
         } finally {
-            completeTransferListener();
+            resolutionComplete();
         }
 
         return spec;
@@ -64,15 +64,10 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     @Override
     public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs) {
         resetListeners();
-        final MavenResolvedArtifact[] artifacts;
-        try {
-            artifacts = this.resolver
-                    .resolve(specs.stream().map(ArtifactSpec::mavenGav).collect(Collectors.toList()))
-                    .withTransitivity()
-                    .as(MavenResolvedArtifact.class);
-        } finally {
-            completeTransferListener();
-        }
+        final MavenResolvedArtifact[] artifacts =
+                withResolver(r -> r.resolve(specs.stream().map(ArtifactSpec::mavenGav).collect(Collectors.toList()))
+                        .withTransitivity()
+                        .as(MavenResolvedArtifact.class));
 
         return Arrays.stream(artifacts).map(artifact -> {
             final MavenCoordinate coord = artifact.getCoordinate();
@@ -92,7 +87,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
         return this;
     }
 
-    public ShrinkwrapArtifactResolvingHelper transferListener(final CompleteableTransferListener l) {
+    public ShrinkwrapArtifactResolvingHelper transferListener(final CompletableTransferListener l) {
         this.transferListener = l;
 
         return this;
@@ -104,9 +99,18 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
         session.setTransferListener(this.transferListener);
     }
 
-    private void completeTransferListener() {
+    private void resolutionComplete() {
         if (this.transferListener != null) {
             this.transferListener.complete();
+        }
+    }
+
+    public MavenResolvedArtifact[] withResolver(ResolverAction action) {
+        resetListeners();
+        try {
+            return action.resolve(this.resolver);
+        } finally {
+            resolutionComplete();
         }
     }
 
@@ -123,6 +127,10 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     }
 
     private final ConfigurableMavenResolverSystem resolver;
-    private CompleteableTransferListener transferListener;
+    private CompletableTransferListener transferListener;
     private RepositoryListener repositoryListener;
+
+    public interface ResolverAction {
+        MavenResolvedArtifact[] resolve(ConfigurableMavenResolverSystem resolver);
+    }
 }
