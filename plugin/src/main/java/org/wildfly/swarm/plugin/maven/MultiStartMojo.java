@@ -21,9 +21,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
@@ -50,6 +51,7 @@ import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 /**
@@ -120,13 +122,31 @@ public class MultiStartMojo extends AbstractMojo {
     }
 
     protected void start(XmlPlexusConfiguration process) throws PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException, InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException {
-        Plugin plugin = this.project.getPlugin("org.wildfly.swarm:wildfly-swarm-plugin");
 
         String groupId = process.getChild("groupId").getValue(this.project.getGroupId());
         String artifactId = process.getChild("artifactId").getValue(this.project.getArtifactId());
         String executionId = process.getChild("executionId").getValue();
 
         MavenProject project = findProject(groupId, artifactId);
+
+        if (project != null) {
+            startProject(project, executionId, process);
+            return;
+        }
+
+        String classifier = process.getChild("classifier").getValue();
+        Artifact artifact = findArtifact(groupId, artifactId, classifier);
+
+        if ( artifact != null ) {
+            startArtifact(artifact, process);
+            return;
+        }
+
+        throw new MojoFailureException( "Unable to start process" );
+    }
+
+    protected void startProject(MavenProject project, String executionId, XmlPlexusConfiguration process) throws InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException, PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException {
+        Plugin plugin = this.project.getPlugin("org.wildfly.swarm:wildfly-swarm-plugin");
 
         Xpp3Dom config = getConfiguration(project, executionId);
         Xpp3Dom processConfig = getProcessConfiguration(process);
@@ -155,6 +175,45 @@ public class MultiStartMojo extends AbstractMojo {
         mavenSession.setCurrentProject(this.project);
     }
 
+    protected void startArtifact(Artifact artifact, XmlPlexusConfiguration process) throws InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException, PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException {
+        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
+
+        if (procs == null) {
+            procs = new ArrayList<>();
+            getPluginContext().put("swarm-process", procs);
+        }
+
+        SwarmExecutor executor = new SwarmExecutor();
+
+        executor.withExecutableJar( artifact.getFile().toPath() );
+
+        executor.withProperties( this.properties );
+        executor.withEnvironment( this.environment );
+
+        PlexusConfiguration props = process.getChild( "properties" );
+
+        for (PlexusConfiguration each : props.getChildren()) {
+            executor.withProperty( each.getName(), each.getValue() );
+        }
+
+
+        PlexusConfiguration env = process.getChild( "environment" );
+
+        for ( PlexusConfiguration each : env.getChildren()) {
+            executor.withEnvironment( each.getName(), each.getValue() );
+        }
+
+        try {
+            SwarmProcess launched = executor.execute();
+            launched.awaitDeploy( 30, TimeUnit.SECONDS );
+            procs.add(launched);
+        } catch (IOException e) {
+            throw new MojoFailureException("Unable to execute: " + artifact, e);
+        } catch (InterruptedException e) {
+            throw new MojoFailureException("Unable to execute: " + artifact, e);
+        }
+    }
+
     protected MavenProject findProject(String groupId, String artifactId) {
         if (groupId.equals(this.project.getGroupId()) && artifactId.equals(this.project.getArtifactId())) {
             return this.project;
@@ -164,6 +223,14 @@ public class MultiStartMojo extends AbstractMojo {
                 .filter(e -> (e.getGroupId().equals(groupId) && e.getArtifactId().equals(artifactId)))
                 .findFirst()
                 .orElse(null);
+    }
+
+    protected Artifact findArtifact(String groupId, String artifactId, String classifier) {
+        return this.project.getArtifacts()
+                .stream()
+                .filter( e->(e.getGroupId().equals( groupId ) && e.getArtifactId().equals( artifactId ) && e.getClassifier().equals( classifier ) ) )
+                .findFirst()
+                .orElseGet(null);
     }
 
     protected Xpp3Dom getGlobalConfig() {
