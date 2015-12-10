@@ -20,6 +20,8 @@ import org.jboss.modules.DependencySpec;
 import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleSpec;
+import org.jboss.modules.MoreResourceLoaders;
+import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
 import org.jboss.modules.filter.ClassFilters;
@@ -142,11 +144,18 @@ public class WildFlySwarmApplicationConf {
             try (InputStream artifactIn = getClass().getClassLoader().getResourceAsStream(this.path)) {
                 Files.copy(artifactIn, tmp, StandardCopyOption.REPLACE_EXISTING);
             }
-            builder.addResourceRoot(
-                    ResourceLoaderSpec.createResourceLoaderSpec(
-                            ResourceLoaders.createJarResourceLoader(tmp.getFileName().toString(), new JarFile(tmp.toFile()))
-                    )
-            );
+            final String jarName = tmp.getFileName().toString();
+            final JarFile jarFile = new JarFile(tmp.toFile());
+            final ResourceLoader jarLoader = ResourceLoaders.createJarResourceLoader(jarName,
+                                                                                     jarFile);
+            builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
+
+            if (".war".equals(ext)) {
+                final ResourceLoader warLoader = MoreResourceLoaders.createJarResourceLoader(jarName,
+                                                                                             jarFile,
+                                                                                             "WEB-INF/classes");
+                builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));
+            }
         }
 
         @Override
