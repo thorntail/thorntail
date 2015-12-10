@@ -17,11 +17,13 @@ package org.wildfly.swarm.infinispan;
 
 import org.wildfly.swarm.config.Infinispan;
 import org.wildfly.swarm.config.infinispan.CacheContainer;
+import org.wildfly.swarm.config.infinispan.cache_container.DistributedCache;
+import org.wildfly.swarm.config.infinispan.cache_container.LocalCache;
+import org.wildfly.swarm.config.infinispan.cache_container.ReplicatedCache;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lance Ball
@@ -37,22 +39,6 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
     }
 
     @Override
-    public InfinispanFraction cacheContainer(CacheContainer value) {
-        super.cacheContainer(enableResourceDefaults(value));
-
-        return this;
-    }
-
-    @Override
-    public InfinispanFraction cacheContainers(List<CacheContainer> value) {
-        super.cacheContainers(value.stream()
-                                      .map(InfinispanFraction::enableResourceDefaults)
-                                      .collect(Collectors.toList()));
-
-        return this;
-    }
-
-    @Override
     public void postInitialize(Container.PostInitContext initContext) {
         if (this.defaultFraction) {
             if (initContext.hasFraction("jgroups")) {
@@ -61,6 +47,15 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
                 localDefaultFraction();
             }
         }
+    }
+
+    public void applyResourceDefaults() {
+        subresources().cacheContainers().forEach(cc -> {
+            enableResourceDefaults(cc);
+            cc.subresources().distributedCaches().forEach(InfinispanFraction::enableResourceDefaults);
+            cc.subresources().localCaches().forEach(InfinispanFraction::enableResourceDefaults);
+            cc.subresources().replicatedCaches().forEach(InfinispanFraction::enableResourceDefaults);
+        });
     }
 
     protected InfinispanFraction markDefaultFraction() {
@@ -173,7 +168,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
     private static CacheContainer enableResourceDefaults(CacheContainer container) {
         CacheContainer.CacheContainerResources containerResources = container.subresources();
 
-        // from https://github.com/wildfly/wildfly/tree/master/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ThreadPoolResourceDefinition.java#L71
+        // from https://github.com/wildfly/wildfly/tree/10.0.0.CR4/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ThreadPoolResourceDefinition.java#L71
         if (containerResources.asyncOperationsThreadPool() == null) {
             container.asyncOperationsThreadPool(p -> p.minThreads(25)
                     .maxThreads(25)
@@ -211,7 +206,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
                     .keepaliveTime(60000L));
         }
 
-        // from https://github.com/wildfly/wildfly/tree/master/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ScheduledThreadPoolResourceDefinition.java#L72
+        // from https://github.com/wildfly/wildfly/tree/10.0.0.CR4/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ScheduledThreadPoolResourceDefinition.java#L72
         if (containerResources.expirationThreadPool() == null) {
             container.expirationThreadPool(p -> p.maxThreads(1)
                     .keepaliveTime(60000L));
@@ -222,7 +217,164 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
             container.noneTransport();
         }
 
+
         return container;
+    }
+
+    private static LocalCache enableResourceDefaults(LocalCache cache) {
+        // from https://github.com/wildfly/wildfly/tree/10.0.0.CR4/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ScheduledThreadPoolResourceDefinition.java#L346-L361
+        LocalCache.LocalCacheResources cacheResources = cache.subresources();
+        if (cacheResources.evictionComponent() == null) {
+            cache.evictionComponent(c -> c.maxEntries(-1L)
+                    .strategy("NONE"));
+        }
+
+        if (cacheResources.expirationComponent() == null) {
+            cache.expirationComponent(c -> c.interval(60000L)
+                    .lifespan(-1L)
+                    .maxIdle(-1L));
+        }
+
+        if (cacheResources.lockingComponent() == null) {
+            cache.lockingComponent(c -> c.acquireTimeout(15000L)
+                    .concurrencyLevel(1000)
+                    .isolation("READ_COMMITTED")
+                    .striping(false));
+        }
+
+        if (cacheResources.transactionComponent() == null) {
+            cache.transactionComponent(c -> c.locking("PESSIMISTIC")
+                    .mode("NONE")
+                    .stopTimeout(10000L));
+        }
+
+        if (cacheResources.binaryJdbcStore() == null
+                && cacheResources.customStore() == null
+                && cacheResources.fileStore() == null
+                && cacheResources.mixedJdbcStore() == null
+                && cacheResources.noneStore() == null
+                && cacheResources.remoteStore() == null
+                && cacheResources.stringJdbcStore() == null) {
+            cache.noneStore();
+        }
+
+        return cache;
+    }
+
+    private static DistributedCache enableResourceDefaults(DistributedCache cache) {
+        // from https://github.com/wildfly/wildfly/tree/10.0.0.CR4/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ScheduledThreadPoolResourceDefinition.java#L346-L377
+        DistributedCache.DistributedCacheResources cacheResources = cache.subresources();
+        if (cacheResources.evictionComponent() == null) {
+            cache.evictionComponent(c -> c.maxEntries(-1L)
+                    .strategy("NONE"));
+        }
+
+        if (cacheResources.expirationComponent() == null) {
+            cache.expirationComponent(c -> c.interval(60000L)
+                    .lifespan(-1L)
+                    .maxIdle(-1L));
+        }
+
+        if (cacheResources.lockingComponent() == null) {
+            cache.lockingComponent(c -> c.acquireTimeout(15000L)
+                    .concurrencyLevel(1000)
+                    .isolation("READ_COMMITTED")
+                    .striping(false));
+        }
+
+        if (cacheResources.transactionComponent() == null) {
+            cache.transactionComponent(c -> c.locking("PESSIMISTIC")
+                    .mode("NONE")
+                    .stopTimeout(10000L));
+        }
+
+        if (cacheResources.binaryJdbcStore() == null
+                && cacheResources.customStore() == null
+                && cacheResources.fileStore() == null
+                && cacheResources.mixedJdbcStore() == null
+                && cacheResources.noneStore() == null
+                && cacheResources.remoteStore() == null
+                && cacheResources.stringJdbcStore() == null) {
+            cache.noneStore();
+        }
+
+        if (cacheResources.partitionHandlingComponent() == null) {
+            cache.partitionHandlingComponent(c -> c.enabled(true));
+        }
+
+        if (cacheResources.stateTransferComponent() == null) {
+            cache.stateTransferComponent(c -> c.chunkSize(512)
+                    .timeout(TimeUnit.MINUTES.toMillis(4)));
+        }
+
+        if (cacheResources.backupForComponent() == null) {
+            cache.backupForComponent(c -> c.remoteCache("___defaultcache")
+                    .remoteSite(null));
+        }
+
+        if (cacheResources.backupsComponent() == null) {
+            cache.backupsComponent();
+        }
+
+        return cache;
+    }
+
+    private static ReplicatedCache enableResourceDefaults(ReplicatedCache cache) {
+        // from https://github.com/wildfly/wildfly/tree/10.0.0.CR4/clustering/infinispan/extension/src/main/java/org/jboss/as/clustering/infinispan/subsystem/ScheduledThreadPoolResourceDefinition.java#L346-L377
+        ReplicatedCache.ReplicatedCacheResources cacheResources = cache.subresources();
+        if (cacheResources.evictionComponent() == null) {
+            cache.evictionComponent(c -> c.maxEntries(-1L)
+                    .strategy("NONE"));
+        }
+
+        if (cacheResources.expirationComponent() == null) {
+            cache.expirationComponent(c -> c.interval(60000L)
+                    .lifespan(-1L)
+                    .maxIdle(-1L));
+        }
+
+        if (cacheResources.lockingComponent() == null) {
+            cache.lockingComponent(c -> c.acquireTimeout(15000L)
+                    .concurrencyLevel(1000)
+                    .isolation("READ_COMMITTED")
+                    .striping(false));
+        }
+
+        if (cacheResources.transactionComponent() == null) {
+            cache.transactionComponent(c -> c.locking("PESSIMISTIC")
+                    .mode("NONE")
+                    .stopTimeout(10000L));
+        }
+
+        if (cacheResources.binaryJdbcStore() == null
+                && cacheResources.customStore() == null
+                && cacheResources.fileStore() == null
+                && cacheResources.mixedJdbcStore() == null
+                && cacheResources.noneStore() == null
+                && cacheResources.remoteStore() == null
+                && cacheResources.stringJdbcStore() == null) {
+            cache.noneStore();
+        }
+
+        if (cacheResources.partitionHandlingComponent() == null) {
+            cache.partitionHandlingComponent(c -> c.enabled(true));
+        }
+
+        if (cacheResources.stateTransferComponent() == null) {
+            cache.stateTransferComponent(c -> c.chunkSize(512)
+                    .timeout(TimeUnit.MINUTES.toMillis(4)));
+        }
+
+        if (cacheResources.backupForComponent() == null) {
+            cache.backupForComponent(c -> c.remoteCache("___defaultcache")
+                    .remoteSite(null));
+        }
+
+        if (cacheResources.backupsComponent() == null) {
+            cache.backupsComponent();
+        }
+
+        return cache;
     }
 
     private boolean defaultFraction = false;
