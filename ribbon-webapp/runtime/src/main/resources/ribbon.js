@@ -37,12 +37,9 @@ var ribbon = (function() {
         settings.headers['Content-Type'] = 'application/json';
       }
 
-      if (!keycloak) {
+      if (!keycloak || !keycloak.authenticated) {
         // If we're not authenticating, go ahead and make the request
         return doRequest( settings );
-      } else if (!keycloak.authenticated) {
-        // But if we are authenticating...
-        return deferredResult.reject("Not authenticated").promise;
       } else {
         // Using keycloak, update token, and make the request
         settings.headers.Authorization = 'Bearer ' + keycloak.token;
