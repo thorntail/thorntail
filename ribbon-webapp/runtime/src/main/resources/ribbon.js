@@ -130,6 +130,9 @@ var ribbon = (function() {
           qs += k + '=' + data[k];
         }
       }
+      if ( typeof(path) == 'undefined' ) {
+        path = '/';
+      }
       path = path + qs;
       return ajax( serviceName, path );
     }
