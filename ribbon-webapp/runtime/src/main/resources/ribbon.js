@@ -41,12 +41,12 @@ var ribbon = (function() {
         // If we're not authenticating, go ahead and make the request
         return doRequest( settings );
       } else {
-        // Using keycloak, update token, and make the request
-        settings.headers.Authorization = 'Bearer ' + keycloak.token;
-
         // TODO: Make token update interval configurable
         keycloak.updateToken(30).success( function() {
           console.log( "ribbon.js: keycloak token refreshed" );
+
+          // Using keycloak, update token, and make the request
+          settings.headers.Authorization = 'Bearer ' + keycloak.token;
 
           // make the request
           doRequest( settings ).then( function(result) {
