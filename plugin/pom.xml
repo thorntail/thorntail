@@ -113,6 +113,10 @@
         <artifactId>plexus-utils</artifactId>
         <version>3.0.21</version>
       </dependency>
+      <dependency>
+        <groupId>org.eclipse.aether</groupId>
+        <artifactId>aether-util</artifactId>
+      </dependency>
     </dependencies>
 
 </project>
