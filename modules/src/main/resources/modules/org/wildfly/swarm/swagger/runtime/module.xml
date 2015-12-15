@@ -1,0 +1,22 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.swagger" slot="runtime">
+    <resources>
+      <artifact name="org.wildfly.swarm:wildfly-swarm-swagger-runtime:${project.version}"/>
+      <artifact name="io.swagger:swagger-jaxrs:${version.io.swagger}"/>
+        <artifact name="io.swagger:swagger-core:${version.io.swagger}"/>
+        <artifact name="io.swagger:swagger-models:${version.io.swagger}"/>
+        <artifact name="io.swagger:swagger-annotations:${version.io.swagger}"/>
+        <artifact name="com.google.guava:guava:${version.guava}"/>
+        <artifact name="org.reflections:reflections:${version.reflections}"/>
+        <artifact name="org.slf4j:slf4j-api:${version.slf4j}"/>
+    </resources>
+
+    <dependencies>
+        <module name="org.wildfly.swarm.swagger"/>
+        <module name="org.wildfly.swarm.container"/>
+        <module name="org.wildfly.swarm.container" slot="runtime"/>
+        <module name="org.wildfly.swarm.configuration"/>
+        <module name="org.wildfly.swarm.jaxrs"/>
+        <module name="javax.ws.rs.api"/>
+        <module name="org.jboss.shrinkwrap"/>
+    </dependencies>
+</module>

@@ -1,0 +1,10 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.swagger" slot="api">
+    <resources>
+        <artifact name="org.wildfly.swarm:wildfly-swarm-swagger:${project.version}"/>
+    </resources>
+
+    <dependencies>
+        <module name="org.wildfly.swarm.container"/>
+        <module name="org.wildfly.swarm.configuration"/>
+    </dependencies>
+</module>
