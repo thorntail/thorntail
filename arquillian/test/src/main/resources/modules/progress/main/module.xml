@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<module xmlns="urn:jboss:module:1.3" name="progress">
+  <resources>
+    <artifact name="progress:progress:1.0.2"/>
+  </resources>
+</module>

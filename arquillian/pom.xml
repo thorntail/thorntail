@@ -24,6 +24,7 @@
     <modules>
       <module>api</module>
       <module>daemon</module>
+      <module>test</module>
     </modules>
 
 </project>
