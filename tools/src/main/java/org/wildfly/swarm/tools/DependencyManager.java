@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -83,6 +84,15 @@ public class DependencyManager {
 
     public void addDependency(ArtifactSpec dep) {
         this.dependencies.add(dep);
+    }
+
+    public void addAdditionalModule(Path module) {
+        try {
+            analyzeModuleDependencies(new ModuleAnalyzer(module));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     protected void analyzeDependencies(boolean resolveTransitive) throws Exception {

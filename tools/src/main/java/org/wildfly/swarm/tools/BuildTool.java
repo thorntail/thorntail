@@ -18,6 +18,7 @@ package org.wildfly.swarm.tools;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -247,7 +248,12 @@ public class BuildTool {
 
     private void addAdditionalModules() throws IOException {
         for (String additionalModule : additionalModules) {
-            this.archive.addAsResource(new File(additionalModule), "modules");
+            final File moduleDir = new File(additionalModule);
+            this.archive.addAsResource(moduleDir, "modules");
+            Files.find(moduleDir.toPath(), 20,
+                       (p, __) -> p.getFileName().toString().equals("module.xml"))
+                    .forEach(p -> this.dependencyManager.addAdditionalModule(p));
+
         }
     }
 

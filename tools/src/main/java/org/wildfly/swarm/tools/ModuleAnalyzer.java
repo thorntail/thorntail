@@ -1,7 +1,10 @@
 package org.wildfly.swarm.tools;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +23,14 @@ import org.jboss.shrinkwrap.descriptor.spi.node.dom.XmlDomNodeImporterImpl;
 public class ModuleAnalyzer {
 
     private ModuleDescriptorImpl module;
+
+    public ModuleAnalyzer(File f) throws IOException {
+        this(new FileInputStream(f));
+    }
+
+    public ModuleAnalyzer(Path p) throws IOException {
+        this(p.toFile());
+    }
 
     public ModuleAnalyzer(InputStream in) throws IOException {
         NodeImporter importer = new XmlDomNodeImporterImpl();
