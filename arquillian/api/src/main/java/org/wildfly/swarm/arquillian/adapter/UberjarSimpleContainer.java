@@ -157,7 +157,18 @@ public class UberjarSimpleContainer implements SimpleContainer {
         }
 
         SwarmExecutor executor = new SwarmExecutor();
-        executor.withDefaultSystemProperties();//.withDebug(8787);
+        executor.withDefaultSystemProperties();
+
+        final String debug = System.getProperty("swarm.arquillian.debug");
+        if (debug != null &&
+                !"false".equals(debug)) {
+            int port = 8787;
+            try {
+                port = Integer.parseInt(debug);
+            } catch (NumberFormatException ignored) {}
+
+            executor.withDebug(port);
+        }
 
         Archive<?> wrapped = tool.build();
 
