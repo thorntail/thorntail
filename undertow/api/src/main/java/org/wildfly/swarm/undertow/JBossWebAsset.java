@@ -48,6 +48,10 @@ public class JBossWebAsset implements Asset{
         rootSet = true;
     }
 
+    public String getContextRoot() {
+        return this.descriptor.getContextRoot();
+    }
+
     public boolean isRootSet() {
         return rootSet;
     }

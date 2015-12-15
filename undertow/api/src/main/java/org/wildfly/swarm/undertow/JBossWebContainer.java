@@ -48,6 +48,10 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
         return (T) this;
     }
 
+    default String getContextRoot() {
+        return findJbossWebAsset().getContextRoot();
+    }
+
 
     default JBossWebAsset findJbossWebAsset() {
         final Node jbossWeb = this.get(JBOSS_WEB_PATH);

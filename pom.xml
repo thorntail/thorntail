@@ -544,6 +544,7 @@
     <module>ribbon-secured</module>
     <module>ribbon-webapp</module>
     <module>security</module>
+    <module>swagger</module>
     <module>transactions</module>
     <module>undertow</module>
     <module>undertow-js</module>
