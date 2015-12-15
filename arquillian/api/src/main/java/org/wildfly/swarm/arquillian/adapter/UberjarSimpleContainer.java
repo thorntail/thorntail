@@ -138,10 +138,15 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         Archive<?> wrapped = tool.build();
 
+        final String dump = System.getProperty("swarm.export.swarmjar");
+        if (dump != null &&
+                !"false".equals(dump)) {
+            final File out = new File(wrapped.getName());
+            System.err.println("Dumping swarmjar to " + out.getAbsolutePath());
+            wrapped.as(ZipExporter.class).exportTo(out, true);
+        }
 
-        /*wrapped.as(ZipExporter.class).exportTo(new File("test.jar"), true);
-
-            for (Map.Entry<ArchivePath, Node> each : wrapped.getContent().entrySet()) {
+        /* for (Map.Entry<ArchivePath, Node> each : wrapped.getContent().entrySet()) {
                 System.err.println("-> " + each.getKey());
             }*/
 
