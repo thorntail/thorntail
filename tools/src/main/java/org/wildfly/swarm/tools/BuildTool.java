@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
@@ -61,7 +62,7 @@ public class BuildTool {
 
     private Properties properties = new Properties();
 
-    private Set<String> additionnalModules = new HashSet<>();
+    private Set<String> additionalModules = new HashSet<>();
 
     public BuildTool() {
         this.archive = ShrinkWrap.create(JavaArchive.class);
@@ -107,8 +108,16 @@ public class BuildTool {
         return this;
     }
 
-    public Set<String> additionnalModules() {
-        return this.additionnalModules;
+    public BuildTool additionalModule(String module) {
+        this.additionalModules.add(module);
+
+        return this;
+    }
+
+    public BuildTool additionalModules(Collection<String> modules) {
+        this.additionalModules.addAll(modules);
+
+        return this;
     }
 
     public BuildTool artifactResolvingHelper(ArtifactResolvingHelper resolver) {
@@ -134,7 +143,7 @@ public class BuildTool {
         addWildFlySwarmProperties();
         addWildFlySwarmApplicationConf();
         addWildFlySwarmDependenciesConf();
-        addAdditionnalModules();
+        addAdditionalModules();
         populateUberJarMavenRepository();
         return this.archive;
     }
@@ -236,10 +245,9 @@ public class BuildTool {
         }
     }
 
-    private void addAdditionnalModules() {
-        for (String additionnalModule : additionnalModules) {
-            File file = new File(additionnalModule);
-            this.archive.addAsResource(file, "modules");
+    private void addAdditionalModules() throws IOException {
+        for (String additionalModule : additionalModules) {
+            this.archive.addAsResource(new File(additionalModule), "modules");
         }
     }
 

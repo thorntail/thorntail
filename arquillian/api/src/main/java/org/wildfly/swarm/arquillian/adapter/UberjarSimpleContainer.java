@@ -36,8 +36,11 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Toby Crawley
@@ -81,8 +84,15 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .addModule("org.wildfly.swarm.arquillian.daemon")
                 .addModule("org.jboss.msc");
 
-        BuildTool tool = new BuildTool();
-        tool.projectArchive(archive);
+        BuildTool tool = new BuildTool()
+                .projectArchive(archive);
+
+        final String additionalModules = System.getProperty("swarm.build.modules");
+        if (additionalModules != null) {
+            tool.additionalModules(Stream.of(additionalModules.split(":"))
+                                          .map(m -> new File(m).getAbsolutePath())
+                                           .collect(Collectors.toList()));
+        }
 
         MavenRemoteRepository jbossPublic =
                 MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
@@ -92,10 +102,23 @@ public class UberjarSimpleContainer implements SimpleContainer {
         jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
 
-        final ShrinkwrapArtifactResolvingHelper resolvingHelper
-                = new ShrinkwrapArtifactResolvingHelper(Maven.configureResolver()
-                                                                .withMavenCentralRepo(true)
-                                                                .withRemoteRepo(jbossPublic));
+        final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
+                .withMavenCentralRepo(true)
+                .withRemoteRepo(jbossPublic);
+
+        final String additionalRepos = System.getProperty("swarm.build.repos");
+        if (additionalRepos != null) {
+            Arrays.asList(additionalRepos.split(","))
+                    .forEach(r -> {
+                        MavenRemoteRepository repo =
+                                MavenRemoteRepositories.createRemoteRepository(r, r, "default");
+                        repo.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
+                        repo.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
+                        resolver.withRemoteRepo(repo);
+                    });
+        }
+
+        final ShrinkwrapArtifactResolvingHelper resolvingHelper = new ShrinkwrapArtifactResolvingHelper(resolver);
         tool.artifactResolvingHelper(resolvingHelper);
 
         boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;

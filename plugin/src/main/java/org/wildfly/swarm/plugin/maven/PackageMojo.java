@@ -168,7 +168,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
         for (String additionalModule : additionalModules) {
             File source = new File(this.project.getBuild().getOutputDirectory() + File.separator + additionalModule);
             if (source.exists()) {
-                this.tool.additionnalModules().add(source.getAbsolutePath());
+                this.tool.additionalModule(source.getAbsolutePath());
             }
         }
 
