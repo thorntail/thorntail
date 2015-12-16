@@ -68,7 +68,7 @@ public class StartMojo extends AbstractMojo {
     @Parameter(defaultValue = "${repositorySystemSession}")
     protected DefaultRepositorySystemSession repositorySystemSession;
 
-    @Component
+    @Inject
     protected RepositorySystem repositorySystem;
 
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}")

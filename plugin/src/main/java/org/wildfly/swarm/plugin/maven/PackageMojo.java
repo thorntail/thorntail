@@ -70,7 +70,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     @Parameter(defaultValue = "${repositorySystemSession}")
     protected DefaultRepositorySystemSession repositorySystemSession;
 
-    @Component
+    @Inject
     protected RepositorySystem repositorySystem;
 
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
