@@ -42,6 +42,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
 import org.wildfly.swarm.swarmtool.Analyzer;
@@ -68,7 +69,7 @@ public class StartMojo extends AbstractMojo {
     protected DefaultRepositorySystemSession repositorySystemSession;
 
     @Component
-    protected DefaultRepositorySystem repositorySystem;
+    protected RepositorySystem repositorySystem;
 
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
     protected List<ArtifactRepository> remoteRepositories;

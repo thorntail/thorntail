@@ -15,7 +15,11 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
@@ -38,11 +42,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.bouncycastle.util.Pack;
 import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
-import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.swarmtool.Analyzer;
 import org.wildfly.swarm.tools.BuildTool;
 
@@ -69,7 +71,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     protected DefaultRepositorySystemSession repositorySystemSession;
 
     @Component
-    protected DefaultRepositorySystem repositorySystem;
+    protected RepositorySystem repositorySystem;
 
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
     protected List<ArtifactRepository> remoteRepositories;
