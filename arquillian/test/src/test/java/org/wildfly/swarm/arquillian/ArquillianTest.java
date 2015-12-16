@@ -16,27 +16,65 @@
 package org.wildfly.swarm.arquillian;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.container.JARArchive;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
-public class ArquillianRemoteTest {
+public class ArquillianTest {
+    @ArquillianResource
+    URL url;
+
+    @ArquillianResource
+    URI uri;
+
+    static final URI EXPECTED_URI;
+    static final URL EXPECTED_URL;
+
+    static {
+        try {
+            EXPECTED_URI = new URI("http://127.0.0.1:8080/");
+            EXPECTED_URL = EXPECTED_URI.toURL();
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Deployment
     public static Archive createDeployment() {
         return ShrinkWrap.create(JARArchive.class)
                 .addModule("progress")
-                .addClass(ArquillianRemoteTest.class);
+                .addClass(ArquillianTest.class);
     }
 
     @Test
-    public void testBasic() throws Exception {
+    @RunAsClient
+    public void testOutside() throws Exception{
+        // confirm the resource injectors work
+        assertEquals(EXPECTED_URL, url);
+        assertEquals(EXPECTED_URI, uri);
+    }
+
+    @Test
+    public void testInside() throws Exception {
         // confirm we can load a custom module from a custom repo
-        assertNotNull(ArquillianRemoteTest.class.getClassLoader().getResource("progress/bar.clj"));
+        assertNotNull(ArquillianTest.class.getClassLoader().getResource("progress/bar.clj"));
+
+        // confirm the resource injectors work
+        assertEquals(EXPECTED_URL, url);
+        assertEquals(EXPECTED_URI, uri);
     }
 }

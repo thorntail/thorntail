@@ -15,28 +15,17 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.test.impl.enricher.resource.URIResourceProvider;
 import org.jboss.arquillian.container.test.impl.enricher.resource.URLResourceProvider;
-import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
-import org.jboss.arquillian.container.test.spi.client.protocol.Protocol;
-import org.jboss.arquillian.core.spi.LoadableExtension;
+import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
 import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
-import org.wildfly.swarm.arquillian.daemon.protocol.DaemonProtocol;
 import org.wildfly.swarm.arquillian.resources.SwarmURIResourceProvider;
 import org.wildfly.swarm.arquillian.resources.SwarmURLResourceProvider;
 
-/**
- * @author Bob McWhirter
- */
-public class WildFlySwarmExtension implements LoadableExtension {
+public class WildFlySwarmRemoteExtension implements RemoteLoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
-        builder.service(Protocol.class, DaemonProtocol.class)
-                .service(AuxiliaryArchiveAppender.class, WildFlySwarmDeploymentAppender.class)
-                .service(DeployableContainer.class, WildFlySwarmContainer.class)
-                .override(ResourceProvider.class, URLResourceProvider.class, SwarmURLResourceProvider.class)
-                .override(ResourceProvider.class, URIResourceProvider.class, SwarmURIResourceProvider.class)
-                .observer(WildFlySwarmObserver.class);
+        builder.override(ResourceProvider.class, URLResourceProvider.class, SwarmURLResourceProvider.class)
+                .override(ResourceProvider.class, URIResourceProvider.class, SwarmURIResourceProvider.class);
     }
 }
