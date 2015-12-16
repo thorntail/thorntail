@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.dmr.ModelNode;
+import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
+import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
@@ -41,6 +43,11 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
     @Override
     public UndertowFraction defaultFraction() {
         return UndertowFraction.createDefaultFraction();
+    }
+
+    @Override
+    public void prepareArchive(Archive a) {
+        a.as(JARArchive.class).addModule( "javax.xml.bind.api");
     }
 
     @Override
