@@ -29,18 +29,8 @@ public class WildFlySwarmDeploymentAppender extends CachedAuxilliaryArchiveAppen
         return ShrinkWrap.create(JavaArchive.class)
                 .addPackages(
                         true,
-//                        "org.jboss.arquillian.core",
-//                        "org.jboss.arquillian.container.spi",
-//                        "org.jboss.arquillian.container.impl",
-//                        "org.jboss.arquillian.container.test.api",
                         "org.jboss.arquillian.container.test.spi",
-                        "org.wildfly.swarm.arquillian.resources"
-//                        "org.jboss.arquillian.container.test.impl",
-//                        "org.jboss.arquillian.config",
-//                        "org.jboss.arquillian.test",
-//                        "org.jboss.shrinkwrap.api",
-//                        "org.jboss.shrinkwrap.descriptor.api"
-                )
+                        "org.wildfly.swarm.arquillian.resources")
                 .addClass(WildFlySwarmRemoteExtension.class)
                 .addAsServiceProvider(RemoteLoadableExtension.class, WildFlySwarmRemoteExtension.class)
                 .addAsServiceProvider(ExtensionLoader.class, RemoteExtensionLoader.class);
