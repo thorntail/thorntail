@@ -38,8 +38,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.bouncycastle.util.Pack;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.impl.ArtifactResolver;
+import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.swarmtool.Analyzer;
 import org.wildfly.swarm.tools.BuildTool;
 
 /**
@@ -63,6 +67,9 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
     @Parameter(defaultValue = "${repositorySystemSession}")
     protected DefaultRepositorySystemSession repositorySystemSession;
+
+    @Component
+    protected DefaultRepositorySystem repositorySystem;
 
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
     protected List<ArtifactRepository> remoteRepositories;
@@ -98,6 +105,20 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
     private String propertiesFile;
 
     private BuildTool tool;
+
+    private static String VERSION;
+
+    static {
+        Properties props = new Properties();
+        try (InputStream propStream = PackageMojo.class.getClassLoader()
+                .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties")) {
+            props.load(propStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty("version");
+    }
 
     protected Properties loadProperties(File file) throws MojoFailureException {
         Properties props = new Properties();
@@ -150,9 +171,25 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 this.project.getArtifact().getFile());
 
 
+        boolean configured = false;
         Set<Artifact> deps = this.project.getArtifacts();
         for (Artifact each : deps) {
             this.tool.dependency(each.getScope(), each.getGroupId(), each.getArtifactId(), each.getBaseVersion(), each.getType(), each.getClassifier(), each.getFile());
+            if ( each.getGroupId().equals("org.wildfly.swarm" ) ) {
+                configured = true;
+            }
+        }
+
+        if ( ! configured && this.project.getPackaging().equals( "war" ) ) {
+            try {
+                Set<String> detected = new Analyzer(this.project.getArtifact().getFile()).detectNeededFractions();
+                for (String fraction : detected) {
+                    this.tool.dependency( "compile", "org.wildfly.swarm", "wildfly-swarm-" + fraction, VERSION, "jar", null, null);
+                }
+                this.tool.resolveTransitiveDependencies(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         List<Resource> resources = this.project.getResources();
@@ -177,7 +214,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 .mainClass(this.mainClass)
                 .contextPath(this.contextPath);
 
-        MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystemSession);
+        MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystem, this.repositorySystemSession);
         for (ArtifactRepository each : this.remoteRepositories) {
             resolvingHelper.remoteRepository(each);
         }

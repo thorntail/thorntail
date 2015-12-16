@@ -15,35 +15,54 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.Authentication;
+import org.apache.maven.repository.internal.DefaultArtifactDescriptorReader;
+import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.CollectResult;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.ArtifactResolver;
+import org.eclipse.aether.impl.DefaultServiceLocator;
+import org.eclipse.aether.internal.impl.DefaultDependencyCollector;
+import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Bob McWhirter
  */
 public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
+
     private ArtifactResolver resolver;
+
+    protected final RepositorySystem system;
+
     protected RepositorySystemSession session;
+
     protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
 
 
-    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystemSession session) {
+    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystem system, RepositorySystemSession session) {
         this.resolver = resolver;
+        this.system = system;
         this.session = session;
         this.remoteRepositories.add(new RemoteRepository.Builder("jboss-public-repository-group", "default", "http://repository.jboss.org/nexus/content/groups/public/").build());
     }
@@ -60,7 +79,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     public void remoteRepository(RemoteRepository repo) {
-        this.remoteRepositories.add( repo );
+        this.remoteRepositories.add(repo);
     }
 
     @Override
@@ -84,7 +103,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 return spec;
             }
         } catch (ArtifactResolutionException e) {
-            System.err.println( "ERR " + e );
+            System.err.println("ERR " + e);
             e.printStackTrace();
             return null;
         }
@@ -95,8 +114,43 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     @Override
     public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
-        // TODO: determine if we need to implement this. Current usage of BuildTool doesn't need it for mvn
-        throw new UnsupportedOperationException("Not implemented");
+        Set<ArtifactSpec> resolved = new HashSet<>();
+
+        CollectRequest request = new CollectRequest();
+        request.setRepositories(this.remoteRepositories);
+
+        for (ArtifactSpec spec : specs) {
+            DefaultArtifact artifact = new DefaultArtifact(spec.groupId(), spec.artifactId(), spec.classifier(), spec.type(), spec.version());
+            Dependency dependency = new Dependency(artifact, "compile");
+            request.addDependency(dependency);
+        }
+
+        CollectResult result = this.system.collectDependencies(this.session, request);
+
+        PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
+        result.getRoot().accept(gen);
+
+        List<DependencyNode> nodes = gen.getNodes();
+
+        for (DependencyNode node : nodes) {
+            Artifact each = node.getArtifact();
+
+
+            ArtifactSpec spec = new ArtifactSpec("compile",
+                    each.getGroupId(),
+                    each.getArtifactId(),
+                    each.getVersion(),
+                    each.getExtension(),
+                    each.getClassifier(),
+                    each.getFile());
+
+            spec = resolve( spec );
+            if ( spec != null ) {
+                resolved.add( spec );
+            }
+        }
+
+        return resolved;
     }
 
 }

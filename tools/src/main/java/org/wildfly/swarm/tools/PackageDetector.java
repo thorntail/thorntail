@@ -30,6 +30,7 @@ import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,14 +47,26 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class PackageDetector {
-    public static Map<String, Set<String>> detectPackages(final ZipFile file) throws IOException {
+    public static Map<String, Set<String>> detectPackages(final File file) throws IOException {
         final PackageCollector visitor = new PackageCollector();
 
         return detectPackages(file, visitor);
     }
 
-    protected static Map<String, Set<String>> detectPackages(final ZipFile file,
-                                                final PackageCollector visitor) throws IOException {
+    protected static Map<String, Set<String>> detectPackages(final File file,
+                                                             final PackageCollector visitor) throws IOException {
+        if (file.isDirectory()) {
+            return detectPackagesInDir(file, visitor);
+        } else if ( file.getName().endsWith( ".jar" ) || file.getName().endsWith( ".war" ) ) {
+            return detectPackagesInZip(new ZipFile(file), visitor);
+        } else {
+            System.err.println( "Ignoring scanning of unknown file type: " + file.getName() );
+            return Collections.emptyMap();
+        }
+    }
+
+    protected static Map<String, Set<String>> detectPackagesInZip(final ZipFile file,
+                                                                  final PackageCollector visitor) throws IOException {
         final Enumeration<? extends ZipEntry> entries = file.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
@@ -69,11 +82,30 @@ public class PackageDetector {
                     IOUtils.copy(in, out);
                 }
 
-                detectPackages(new ZipFile(jarFile), visitor);
+                detectPackagesInZip(new ZipFile(jarFile), visitor);
             } else if (name.endsWith(".class")) {
                 try (InputStream in = file.getInputStream(entry)) {
                     new ClassReader(in).accept(visitor, 0);
                 }
+            }
+        }
+
+        return visitor.packageSources();
+    }
+
+    protected static Map<String, Set<String>> detectPackagesInDir(final File dir,
+                                                                  final PackageCollector visitor) throws IOException {
+        final File[] entries = dir.listFiles();
+        for (File entry : entries) {
+            String name = entry.getName();
+
+
+            if ( name.endsWith( ".class" ) ) {
+                try (InputStream in = new FileInputStream(entry)) {
+                    new ClassReader(in).accept(visitor, 0);
+                }
+            } else {
+                detectPackages( entry, visitor );
             }
         }
 
@@ -125,7 +157,7 @@ public class PackageDetector {
                 public void visit(final String __,
                                   final Object value) {
                     if (value instanceof Type) {
-                        addType((Type)value);
+                        addType((Type) value);
                     }
                 }
 
@@ -168,7 +200,7 @@ public class PackageDetector {
                                        final String signature,
                                        final Object value) {
             if (value instanceof Type) {
-                addType((Type)value);
+                addType((Type) value);
             }
 
             if (signature != null) {
@@ -348,7 +380,6 @@ public class PackageDetector {
         }
 
 
-
         private String addPackage(String name) {
             if (name != null) {
                 final int pos = name.lastIndexOf('/');
@@ -423,15 +454,16 @@ public class PackageDetector {
 
         void addConstant(final Object constant) {
             if (constant instanceof Type) {
-                addType((Type)constant);
+                addType((Type) constant);
             } else if (constant instanceof Handle) {
-                Handle handle = (Handle)constant;
+                Handle handle = (Handle) constant;
                 addInternalType(handle.getOwner());
                 addMethodTypes(handle.getDesc());
             }
         }
 
         private String currentClass = null;
+
         private final Map<String, Set<String>> packages = new HashMap<>();
 
         private final AnnotationVisitor ANNOTATION_VISITOR =
@@ -440,7 +472,7 @@ public class PackageDetector {
                     public void visit(final String __,
                                       final Object value) {
                         if (value instanceof Type) {
-                            addType((Type)value);
+                            addType((Type) value);
                         }
                     }
 

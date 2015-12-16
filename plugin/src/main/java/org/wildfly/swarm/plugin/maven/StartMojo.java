@@ -18,16 +18,21 @@ package org.wildfly.swarm.plugin.maven;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -36,6 +41,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.impl.ArtifactResolver;
+import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
+import org.wildfly.swarm.swarmtool.Analyzer;
+import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -53,6 +63,18 @@ public class StartMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project.build.directory}")
     public String projectBuildDir;
+
+    @Parameter(defaultValue = "${repositorySystemSession}")
+    protected DefaultRepositorySystemSession repositorySystemSession;
+
+    @Component
+    protected DefaultRepositorySystem repositorySystem;
+
+    @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
+    protected List<ArtifactRepository> remoteRepositories;
+
+    @Inject
+    private ArtifactResolver resolver;
 
     @Parameter(alias = "mainClass")
     public String mainClass;
@@ -91,6 +113,20 @@ public class StartMojo extends AbstractMojo {
     public Integer debugPort;
 
     boolean waitForProcess;
+
+    private static String VERSION;
+
+    static {
+        Properties props = new Properties();
+        try (InputStream propStream = PackageMojo.class.getClassLoader()
+                .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties")) {
+            props.load(propStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty("version");
+    }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -275,6 +311,9 @@ public class StartMojo extends AbstractMojo {
     }
 
     List<Path> dependencies(boolean includeProjectArtifact) {
+
+        boolean configured = false;
+
         List<Path> elements = new ArrayList<>();
         Set<Artifact> artifacts = this.project.getArtifacts();
         for (Artifact each : artifacts) {
@@ -282,10 +321,55 @@ public class StartMojo extends AbstractMojo {
                 continue;
             }
             elements.add(each.getFile().toPath());
+            if ( each.getGroupId().equals( "org.wildfly.swarm" ) ) {
+                configured = true;
+            }
         }
 
         if (includeProjectArtifact) {
             elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));
+        }
+
+        if ( ! configured && this.project.getPackaging().equals( "war" ) ) {
+            Analyzer analyzer = new Analyzer( new File( this.project.getBuild().getOutputDirectory()) );
+            try {
+
+                MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystem, this.repositorySystemSession);
+                for (ArtifactRepository each : this.remoteRepositories) {
+                    resolvingHelper.remoteRepository(each);
+                }
+                Set<String> fractions = analyzer.detectNeededFractions();
+
+                for (Artifact artifact : this.project.getArtifacts()) {
+                    Analyzer a2 = new Analyzer( artifact.getFile() );
+                    fractions.addAll( a2.detectNeededFractions() );
+                }
+
+                Set<ArtifactSpec> dependencies = new HashSet<>();
+
+                for (String fraction : fractions) {
+                    //public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
+                    dependencies.add( new ArtifactSpec(
+                            "compile",
+                            "org.wildfly.swarm",
+                            "wildfly-swarm-" + fraction,
+                            VERSION,
+                            "jar",
+                            null,
+                            null
+                    ));
+
+                }
+
+                Set<ArtifactSpec> resolved = resolvingHelper.resolveAll(dependencies);
+                for ( ArtifactSpec each : resolved ) {
+                    elements.add( each.file.toPath() );
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return elements;
