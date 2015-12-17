@@ -7,6 +7,7 @@
         <artifact name="io.swagger:swagger-annotations:${version.io.swagger}"/>
         <artifact name="com.google.guava:guava:${version.guava}"/>
         <artifact name="org.reflections:reflections:${version.reflections}"/>
+        <artifact name="org.javassist:javassist:${version.javassist}"/>
         <artifact name="org.slf4j:slf4j-api:${version.slf4j}"/>
     </resources>
 

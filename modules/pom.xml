@@ -27,6 +27,7 @@
     <version.reflections>0.9.10</version.reflections>
     <version.slf4j>1.6.3</version.slf4j>
     <version.guava>18.0</version.guava>
+    <version.javassist>3.18.2-GA</version.javassist>
   </properties>
 
   <build>
@@ -95,6 +96,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${version.slf4j}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>${version.javassist}</version>
     </dependency>
   </dependencies>
 

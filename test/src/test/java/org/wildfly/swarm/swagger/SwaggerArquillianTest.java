@@ -22,6 +22,7 @@ public class SwaggerArquillianTest implements ContainerFactory {
     @Deployment(testable = false)
     public static Archive createDeployment() {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
+        deployment.addResource(Resource.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
         return deployment;
     }
@@ -35,5 +36,4 @@ public class SwaggerArquillianTest implements ContainerFactory {
     public void testNothing() {
 
     }
-
 }
