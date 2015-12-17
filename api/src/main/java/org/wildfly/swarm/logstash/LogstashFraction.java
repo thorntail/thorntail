@@ -18,6 +18,7 @@ package org.wildfly.swarm.logstash;
 import java.util.Properties;
 
 import org.wildfly.swarm.config.logging.CustomHandler;
+import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.logging.LoggingFraction;
@@ -30,7 +31,7 @@ public class LogstashFraction implements Fraction {
     private Properties handlerProperties = new Properties();
     private Properties formatterProperties = new Properties();
 
-    private String level = "INFO";
+    private Level level;
 
     public LogstashFraction() {
         this("metaData", "wildflySwarmNode=${jboss.node.name}");
@@ -41,7 +42,7 @@ public class LogstashFraction implements Fraction {
         this.formatterProperties.put(nodeKey, nodeValue);
     }
 
-    public LogstashFraction level(String level) {
+    public LogstashFraction level(Level level) {
         this.level = level;
         return this;
     }
