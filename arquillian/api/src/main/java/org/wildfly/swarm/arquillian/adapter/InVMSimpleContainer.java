@@ -33,10 +33,9 @@ public class InVMSimpleContainer implements SimpleContainer {
     @Override
     public void start(Archive<?> archive) throws Exception {
         archive.as(ServiceActivatorArchive.class)
-                .addServiceActivator(DaemonServiceActivator.class);
-        archive.as(JARArchive.class)
-                .addModule("org.wildfly.swarm.arquillian.daemon")
-                .addModule("org.jboss.msc");
+                .addServiceActivator(DaemonServiceActivator.class)
+                .as(JARArchive.class)
+                .addModule("org.wildfly.swarm.arquillian.daemon");
 
         System.setProperty("wildfly.swarm.app.artifact", archive.getName());
 
