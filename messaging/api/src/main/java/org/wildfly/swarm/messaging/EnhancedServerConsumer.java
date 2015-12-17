@@ -1,6 +1,6 @@
 package org.wildfly.swarm.messaging;
 
-import org.wildfly.swarm.config.messaging_activemq.ServerConsumer;
+import org.wildfly.swarm.config.messaging.activemq.ServerConsumer;
 
 /**
  * @author Bob McWhirter

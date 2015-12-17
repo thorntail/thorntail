@@ -18,17 +18,15 @@ package org.wildfly.swarm.messaging;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.wildfly.swarm.config.messaging_activemq.server.ConnectionFactory;
-import org.wildfly.swarm.config.messaging_activemq.server.JMSQueue;
-import org.wildfly.swarm.config.messaging_activemq.server.JMSQueueConsumer;
-import org.wildfly.swarm.config.messaging_activemq.server.JMSTopic;
-import org.wildfly.swarm.config.messaging_activemq.server.JMSTopicConsumer;
-import org.wildfly.swarm.config.messaging_activemq.server.PooledConnectionFactory;
+import org.wildfly.swarm.config.messaging.activemq.server.ConnectionFactory;
+import org.wildfly.swarm.config.messaging.activemq.server.JMSQueueConsumer;
+import org.wildfly.swarm.config.messaging.activemq.server.JMSTopicConsumer;
+import org.wildfly.swarm.config.messaging.activemq.server.PooledConnectionFactory;
 
 /**
  * @author Bob McWhirter
  */
-public class EnhancedServer extends org.wildfly.swarm.config.messaging_activemq.Server<EnhancedServer> {
+public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.Server<EnhancedServer> {
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
     public EnhancedServer(String key) {

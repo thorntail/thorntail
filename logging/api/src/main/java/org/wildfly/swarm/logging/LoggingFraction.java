@@ -21,6 +21,7 @@ import org.wildfly.swarm.config.logging.ConsoleHandler;
 import org.wildfly.swarm.config.logging.CustomFormatter;
 import org.wildfly.swarm.config.logging.CustomHandler;
 import org.wildfly.swarm.config.logging.FileHandler;
+import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.config.logging.PatternFormatter;
 import org.wildfly.swarm.config.logging.RootLogger;
 import org.wildfly.swarm.config.logging.SyslogHandler;
@@ -41,15 +42,6 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
 
     public static final String COLOR_PATTERN = "COLOR_PATTERN";
 
-    public final class Level {
-        public static final String TRACE = "TRACE";
-
-        public static final String DEBUG = "DEBUG";
-
-        public static final String ERROR = "ERROR";
-
-        public static final String INFO = "INFO";
-    }
 
     /**
      * Create a default TRACE logging fraction.
@@ -92,7 +84,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      *
      * @return The fully-configured fraction.
      */
-    public static LoggingFraction createDefaultLoggingFraction(String level) {
+    public static LoggingFraction createDefaultLoggingFraction(Level level) {
         return new LoggingFraction()
                 .defaultColorFormatter()
                 .consoleHandler(level, COLOR_PATTERN)
@@ -194,7 +186,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @param formatter A pattern string for the console's formatter
      * @return This fraction
      */
-    public LoggingFraction consoleHandler(String level, String formatter) {
+    public LoggingFraction consoleHandler(Level level, String formatter) {
         consoleHandler(new ConsoleHandler(CONSOLE)
                 .level(level)
                 .namedFormatter(formatter));
@@ -303,7 +295,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @param handlers a list of handlers
      * @return this fraction
      */
-    public LoggingFraction rootLogger(String level, String... handlers) {
+    public LoggingFraction rootLogger(Level level, String... handlers) {
         rootLogger(new RootLogger().level(level)
                 .handlers(handlers));
         return this;
