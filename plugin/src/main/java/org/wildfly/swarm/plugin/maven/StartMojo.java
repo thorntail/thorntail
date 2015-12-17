@@ -313,8 +313,6 @@ public class StartMojo extends AbstractMojo {
 
     List<Path> dependencies(boolean includeProjectArtifact) {
 
-        boolean configured = false;
-
         List<Path> elements = new ArrayList<>();
         Set<Artifact> artifacts = this.project.getArtifacts();
         for (Artifact each : artifacts) {
@@ -322,55 +320,10 @@ public class StartMojo extends AbstractMojo {
                 continue;
             }
             elements.add(each.getFile().toPath());
-            if ( each.getGroupId().equals( "org.wildfly.swarm" ) ) {
-                configured = true;
-            }
         }
 
         if (includeProjectArtifact) {
             elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));
-        }
-
-        if ( ! configured && this.project.getPackaging().equals( "war" ) ) {
-            Analyzer analyzer = new Analyzer( new File( this.project.getBuild().getOutputDirectory()) );
-            try {
-
-                MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystem, this.repositorySystemSession);
-                for (ArtifactRepository each : this.remoteRepositories) {
-                    resolvingHelper.remoteRepository(each);
-                }
-                Set<String> fractions = analyzer.detectNeededFractions();
-
-                for (Artifact artifact : this.project.getArtifacts()) {
-                    Analyzer a2 = new Analyzer( artifact.getFile() );
-                    fractions.addAll( a2.detectNeededFractions() );
-                }
-
-                Set<ArtifactSpec> dependencies = new HashSet<>();
-
-                for (String fraction : fractions) {
-                    //public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
-                    dependencies.add( new ArtifactSpec(
-                            "compile",
-                            "org.wildfly.swarm",
-                            "wildfly-swarm-" + fraction,
-                            VERSION,
-                            "jar",
-                            null,
-                            null
-                    ));
-
-                }
-
-                Set<ArtifactSpec> resolved = resolvingHelper.resolveAll(dependencies);
-                for ( ArtifactSpec each : resolved ) {
-                    elements.add( each.file.toPath() );
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         return elements;

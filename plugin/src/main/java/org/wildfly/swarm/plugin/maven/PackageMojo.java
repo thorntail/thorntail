@@ -173,25 +173,9 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 this.project.getArtifact().getFile());
 
 
-        boolean configured = false;
         Set<Artifact> deps = this.project.getArtifacts();
         for (Artifact each : deps) {
             this.tool.dependency(each.getScope(), each.getGroupId(), each.getArtifactId(), each.getBaseVersion(), each.getType(), each.getClassifier(), each.getFile());
-            if ( each.getGroupId().equals("org.wildfly.swarm" ) ) {
-                configured = true;
-            }
-        }
-
-        if ( ! configured && this.project.getPackaging().equals( "war" ) ) {
-            try {
-                Set<String> detected = new Analyzer(this.project.getArtifact().getFile()).detectNeededFractions();
-                for (String fraction : detected) {
-                    this.tool.dependency( "compile", "org.wildfly.swarm", "wildfly-swarm-" + fraction, VERSION, "jar", null, null);
-                }
-                this.tool.resolveTransitiveDependencies(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         List<Resource> resources = this.project.getResources();
