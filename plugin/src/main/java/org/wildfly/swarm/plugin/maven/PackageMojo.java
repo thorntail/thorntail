@@ -43,9 +43,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactResolver;
-import org.wildfly.swarm.swarmtool.Analyzer;
 import org.wildfly.swarm.tools.BuildTool;
 
 /**
@@ -69,9 +67,6 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
 
     @Parameter(defaultValue = "${repositorySystemSession}")
     protected DefaultRepositorySystemSession repositorySystemSession;
-
-    @Inject
-    protected RepositorySystem repositorySystem;
 
     @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
     protected List<ArtifactRepository> remoteRepositories;
@@ -200,7 +195,7 @@ public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
                 .mainClass(this.mainClass)
                 .contextPath(this.contextPath);
 
-        MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystem, this.repositorySystemSession);
+        MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystemSession);
         for (ArtifactRepository each : this.remoteRepositories) {
             resolvingHelper.remoteRepository(each);
         }

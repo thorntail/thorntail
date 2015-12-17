@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.Authentication;
-import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -48,16 +47,13 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     private ArtifactResolver resolver;
 
-    protected final RepositorySystem system;
-
     protected RepositorySystemSession session;
 
     protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
 
 
-    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystem system, RepositorySystemSession session) {
+    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystemSession session) {
         this.resolver = resolver;
-        this.system = system;
         this.session = session;
         this.remoteRepositories.add(new RemoteRepository.Builder("jboss-public-repository-group", "default", "http://repository.jboss.org/nexus/content/groups/public/").build());
     }
@@ -109,6 +105,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     @Override
     public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
+        /*
         Set<ArtifactSpec> resolved = new HashSet<>();
 
         CollectRequest request = new CollectRequest();
@@ -146,6 +143,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
 
         return resolved;
+        */
+        throw new RuntimeException( "resolveAll() not implemented" );
     }
 
 }
