@@ -21,13 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
@@ -67,7 +64,7 @@ public class RuntimeDeployer implements Deployer {
     }
 
     @Override
-    public void deploy(Archive deployment) throws IOException {
+    public void deploy(Archive<?> deployment) throws IOException {
 
         for (ServerConfiguration each : this.configurations) {
             each.prepareArchive(deployment);

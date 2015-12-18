@@ -32,6 +32,7 @@ public class DatasourcesFraction extends Datasources<DatasourcesFraction> implem
         return super.dataSource(value);
     }
 
+    @SuppressWarnings("unchecked")
     public DatasourcesFraction jdbcDriver(String childKey, JDBCDriverConsumer consumer) {
         return super.jdbcDriver( childKey, (driver)->{
             driver.driverName( childKey );

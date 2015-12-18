@@ -22,6 +22,7 @@ import org.wildfly.swarm.config.ejb3.StrictMaxBeanInstancePool;
 import org.wildfly.swarm.config.ejb3.ThreadPool;
 import org.wildfly.swarm.config.ejb3.TimerService;
 import org.wildfly.swarm.config.ejb3.service.FileDataStore;
+import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
 import org.wildfly.swarm.config.security.security_domain.ClassicAuthorization;
 import org.wildfly.swarm.config.security.security_domain.authorization.PolicyModule;
@@ -53,7 +54,7 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
                         .classicAuthorization(new ClassicAuthorization()
                                 .policyModule(new PolicyModule("default")
                                         .code("Delegating")
-                                        .flag("required")));
+                                        .flag(Flag.REQUIRED)));
                 security.securityDomain( ejbPolicy );
             }
         }
@@ -63,7 +64,7 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
     public static EJBFraction createDefaultFraction() {
 
-        Map threadPoolSettings = new HashMap<>();
+        Map<Object,Object> threadPoolSettings = new HashMap<>();
         threadPoolSettings.put("time", "100");
         threadPoolSettings.put("unit", "MILLISECONDS");
 
@@ -78,11 +79,11 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
                 .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("slsb-strict-max-pool")
                         .maxPoolSize(20)
                         .timeout(5L)
-                        .timeoutUnit("MINUTES"))
+                        .timeoutUnit(StrictMaxBeanInstancePool.TimeoutUnit.MINUTES))
                 .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("mdb-strict-max-pool")
                         .maxPoolSize(20)
                         .timeout(5L)
-                        .timeoutUnit("MINUTES"))
+                        .timeoutUnit(StrictMaxBeanInstancePool.TimeoutUnit.MINUTES))
                 .cache(new Cache("simple"))
                 .asyncService(new AsyncService().threadPoolName("default"))
                 .timerService(new TimerService()

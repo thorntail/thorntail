@@ -36,7 +36,7 @@ public interface ServerConfiguration<T extends Fraction> {
         return Collections.emptyList();
     }
 
-    default void prepareArchive(Archive a) {
+    default void prepareArchive(Archive<?> a) {
 
     }
 

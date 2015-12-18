@@ -34,6 +34,7 @@ public class DatasourceArchiveImpl extends AssignableBase<ArchiveBase<?>> implem
     }
 
 
+    @SuppressWarnings("unchecked")
     public DatasourceArchive dataSource(String key, DataSourceConsumer consumer) {
         DataSource ds = new DataSource( key );
         consumer.accept(ds);

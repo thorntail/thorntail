@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
     String JBOSS_WEB_PATH = "WEB-INF/jboss-web.xml";
 
+    @SuppressWarnings("unchecked")
     default T setDefaultContextRoot() {
         JBossWebAsset asset = findJbossWebAsset();
         if (asset.isRootSet()) {
@@ -42,6 +43,7 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     default T setContextRoot(String contextRoot) {
         findJbossWebAsset().setContextRoot(contextRoot);
 

@@ -61,7 +61,7 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
 
     public static JPAFraction createDefaultFraction() {
         return new JPAFraction()
-                .defaultExtendedPersistenceInheritance("DEEP");
+                .defaultExtendedPersistenceInheritance(DefaultExtendedPersistenceInheritance.DEEP);
 
     }
 }

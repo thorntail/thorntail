@@ -21,6 +21,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Bob McWhirter
  */
+@SuppressWarnings("unchecked")
 public class DependencyManagerTest {
 
     private ArtifactSpec BOOTSTRAP_JAR;

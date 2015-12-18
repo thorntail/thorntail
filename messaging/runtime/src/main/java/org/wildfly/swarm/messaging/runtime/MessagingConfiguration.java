@@ -52,7 +52,7 @@ public class MessagingConfiguration extends AbstractServerConfiguration<Messagin
     }
 
     @Override
-    public void prepareArchive(Archive a) {
+    public void prepareArchive(Archive<?> a) {
         a.as(JARArchive.class).addModule("javax.jms.api");
     }
 

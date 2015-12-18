@@ -342,7 +342,7 @@ public class Container {
      * @see #start()
      * @see #deploy(Archive)
      */
-    public Container start(Archive deployment) throws Exception {
+    public Container start(Archive<?> deployment) throws Exception {
         return start().deploy(deployment);
     }
 
@@ -371,7 +371,7 @@ public class Container {
      * @return The container.
      * @throws Exception if an error occurs.
      */
-    public Container deploy(Archive deployment) throws Exception {
+    public Container deploy(Archive<?> deployment) throws Exception {
         this.deployer.deploy(deployment);
         return this;
     }

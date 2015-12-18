@@ -27,6 +27,7 @@ import javax.naming.InitialContext;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings({"unchecked", "unused"})
 public class InfinispanTests {
     @Deployment
     public static Archive createDeployment() {

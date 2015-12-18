@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
+import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
 import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;
 import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
@@ -47,11 +48,11 @@ public class SecurityConfiguration extends AbstractServerConfiguration<SecurityF
                 .securityDomain(new SecurityDomain("other")
                         .classicAuthentication(new ClassicAuthentication()
                                 .loginModule(new LoginModule("RealmDirect")
-                                                .code("RealmDirect")
-                                                .flag("required")
-                                                .moduleOptions(new HashMap() {{
-                                                    put("password-stacking", "useFirstPass");
-                                                }})
+                                        .code("RealmDirect")
+                                        .flag(Flag.REQUIRED)
+                                        .moduleOptions(new HashMap<Object,Object>() {{
+                                            put("password-stacking", "useFirstPass");
+                                        }})
 
                                 )));
     }

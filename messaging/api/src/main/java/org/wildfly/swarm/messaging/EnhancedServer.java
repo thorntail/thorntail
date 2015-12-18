@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.messaging;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.wildfly.swarm.config.messaging.activemq.server.ConnectionFactory;
@@ -33,29 +33,27 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         super(key);
     }
 
+    @SuppressWarnings("unchecked")
     public EnhancedServer enableInVm() {
         int serverId = COUNTER.getAndIncrement();
 
-        inVmConnector("in-vm", (c) -> {
-            c.serverId(serverId);
-        });
+        inVmConnector("in-vm", (c) -> c.serverId(serverId));
 
-        inVmAcceptor("in-vm", (a) -> {
-            a.serverId(serverId);
-        });
+        inVmAcceptor("in-vm", (a) -> a.serverId(serverId));
 
         connectionFactory(new ConnectionFactory("InVmConnectionFactory")
-                .connectors(Arrays.asList("in-vm"))
-                .entries(Arrays.asList("java:/ConnectionFactory")));
+                .connectors(Collections.singletonList("in-vm"))
+                .entries(Collections.singletonList("java:/ConnectionFactory")));
 
         pooledConnectionFactory(new PooledConnectionFactory("activemq-ra")
-                .entries(Arrays.asList("java:jboss/DefaultJMSConnectionFactory"))
-                .connectors(Arrays.asList("in-vm"))
+                .entries(Collections.singletonList("java:jboss/DefaultJMSConnectionFactory"))
+                .connectors(Collections.singletonList("in-vm"))
                 .transaction("xa"));
 
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public EnhancedServer jmsQueue(String childKey, JMSQueueConsumer config) {
         return super.jmsQueue(childKey, (q) -> {
@@ -68,6 +66,7 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         });
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public EnhancedServer jmsTopic(String childKey, JMSTopicConsumer config) {
         return super.jmsTopic(childKey, (t) -> {

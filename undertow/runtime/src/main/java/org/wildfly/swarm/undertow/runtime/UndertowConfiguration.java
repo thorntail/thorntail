@@ -46,7 +46,7 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
     }
 
     @Override
-    public void prepareArchive(Archive a) {
+    public void prepareArchive(Archive<?> a) {
         a.as(JARArchive.class).addModule( "javax.xml.bind.api");
     }
 

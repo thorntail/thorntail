@@ -36,6 +36,7 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
         });
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ManagementFraction httpInterfaceManagementInterface(HTTPInterfaceManagementInterfaceConsumer consumer) {
         return super.httpInterfaceManagementInterface( (iface)->{
@@ -58,47 +59,6 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
         ManagementFraction fraction = new ManagementFraction();
 
         fraction.httpInterfaceManagementInterface();
-
-        /*
-        fraction
-                .securityRealm("ManagementRealm", (realm) -> {
-                    realm.localAuthentication((authn) -> {
-                        authn.skipGroupLoading(true);
-                        authn.defaultUser("$local");
-                    });
-                    realm.propertiesAuthentication((authn) -> {
-                        authn.path("mgmt-users.properties");
-                        authn.relativeTo("jboss.server.config.dir");
-                    });
-                    realm.mapGroupsToRoles(false);
-                    realm.propertiesAuthorization((authz)->{
-                        authz.path( "mgmt-groups.properties");
-                        authz.relativeTo( "jboss.server.config.dir");
-                    });
-                })
-                .securityRealm("ApplicationRealm", (realm) -> {
-                    realm.localAuthentication((authn) -> {
-                        authn.skipGroupLoading(true);
-                        authn.defaultUser("$local");
-                    });
-                    realm.propertiesAuthentication( (authn)->{
-                        authn.path( "application-users.properties" );
-                        //authn.relativeTo( "jboss.server.config.dir" );
-                    });
-                    realm.propertiesAuthorization( (authz)->{
-                        authz.path( "application-roles.properties" );
-                        //authz.relativeTo( "jboss.server.config.dir" );
-                    });
-                })
-
-                .authorizationAccess( (authz)->{
-                    authz.roleMapping( "SuperUser", (map)->{
-                        map.include( "default", (incl)->{
-                            incl.name( "$local");
-                        });
-                    });
-                });
-                */
 
         return fraction;
     }

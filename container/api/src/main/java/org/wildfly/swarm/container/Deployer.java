@@ -23,5 +23,5 @@ import org.jboss.shrinkwrap.api.Archive;
  * @author Bob McWhirter
  */
 public interface Deployer {
-    void deploy(Archive deployment) throws IOException;
+    void deploy(Archive<?> deployment) throws IOException;
 }

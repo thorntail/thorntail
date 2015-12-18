@@ -25,6 +25,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -70,12 +71,7 @@ public final class ReflectionHelper {
     public static Constructor<?> getConstructor(final Class<?> clazz, final Class<?>... argumentTypes)
             throws NoSuchMethodException {
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Constructor<?>>() {
-                @Override
-                public Constructor<?> run() throws NoSuchMethodException {
-                    return clazz.getConstructor(argumentTypes);
-                }
-            });
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Constructor<?>>) () -> clazz.getConstructor(argumentTypes));
         }
         // Unwrap
         catch (final PrivilegedActionException pae) {
@@ -96,6 +92,7 @@ public final class ReflectionHelper {
         }
     }
 
+    @SuppressWarnings({"unused", "unchecked"})
     public static <T> Constructor<T> getAssignableConstructor(final Class<T> clazz, final Class<?>... argumentTypes) throws NoSuchMethodException {
         for (Constructor constructor: clazz.getDeclaredConstructors()) {
             if (constructor.getParameterTypes().length != argumentTypes.length) {
@@ -115,6 +112,7 @@ public final class ReflectionHelper {
         throw new NoSuchMethodException("There is no constructor in class " + clazz.getName() + " with arguments " + Arrays.toString(argumentTypes));
     }
 
+    @SuppressWarnings("unused")
     public static boolean hasConstructor(final Class<?> clazz, final Class<?>... argumentTypes) {
         try {
             clazz.getDeclaredConstructor(argumentTypes);
@@ -137,6 +135,7 @@ public final class ReflectionHelper {
      * @author <a href="mailto:aslak@conduct.no">Aslak Knutsen</a>
      * @author <a href="mailto:andrew.rubinger@jboss.org">ALR</a>
      */
+    @SuppressWarnings("unused")
     public static <T> T newInstance(final String className, final Class<?>[] argumentTypes, final Object[] arguments,
                                     final Class<T> expectedType) {
         if (className == null) {
@@ -168,6 +167,7 @@ public final class ReflectionHelper {
         }
     }
 
+    @SuppressWarnings("unused")
     public static boolean isClassPresent(String name) {
         try {
             ClassLoader classLoader = getThreadContextClassLoader();
@@ -178,87 +178,76 @@ public final class ReflectionHelper {
         }
     }
 
+    @SuppressWarnings("unused")
     public static List<Field> getFields(final Class<?> source) {
-        return AccessController.doPrivileged(new PrivilegedAction<List<Field>>() {
-            @Override
-            public List<Field> run() {
-                List<Field> foundFields = new ArrayList<Field>();
-                Class<?> nextSource = source;
-                while (nextSource != Object.class) {
-                    for (Field field : nextSource.getDeclaredFields()) {
-                        foundFields.add(field);
-                    }
-                    nextSource = nextSource.getSuperclass();
-                }
-                return foundFields;
+        return AccessController.doPrivileged((PrivilegedAction<List<Field>>) () -> {
+            List<Field> foundFields = new ArrayList<>();
+            Class<?> nextSource = source;
+            while (nextSource != Object.class) {
+                Collections.addAll(foundFields, nextSource.getDeclaredFields());
+                nextSource = nextSource.getSuperclass();
             }
+            return foundFields;
         });
     }
 
+    @SuppressWarnings("unused")
     public static List<Field> getFieldsWithAnnotation(final Class<?> source, final Class<? extends Annotation> annotationClass) {
-        List<Field> declaredAccessableFields = AccessController.doPrivileged(new PrivilegedAction<List<Field>>() {
-            @Override
-            public List<Field> run() {
-                List<Field> foundFields = new ArrayList<Field>();
-                Class<?> nextSource = source;
-                while (nextSource != Object.class) {
-                    for (Field field : nextSource.getDeclaredFields()) {
-                        if (field.isAnnotationPresent(annotationClass)) {
-                            if (!field.isAccessible()) {
-                                field.setAccessible(true);
-                            }
-                            foundFields.add(field);
+        List<Field> declaredAccessableFields = AccessController.doPrivileged((PrivilegedAction<List<Field>>) () -> {
+            List<Field> foundFields = new ArrayList<>();
+            Class<?> nextSource = source;
+            while (nextSource != Object.class) {
+                for (Field field : nextSource.getDeclaredFields()) {
+                    if (field.isAnnotationPresent(annotationClass)) {
+                        if (!field.isAccessible()) {
+                            field.setAccessible(true);
                         }
+                        foundFields.add(field);
                     }
-                    nextSource = nextSource.getSuperclass();
                 }
-                return foundFields;
+                nextSource = nextSource.getSuperclass();
             }
+            return foundFields;
         });
         return declaredAccessableFields;
     }
 
+    @SuppressWarnings("unused")
     public static List<Field> getFieldsWithAnnotatedAnnotation(final Class<?> source, final Class<? extends Annotation> annotationClass) {
-        List<Field> declaredAccessableFields = AccessController.doPrivileged(new PrivilegedAction<List<Field>>() {
-            @Override
-            public List<Field> run() {
-                List<Field> foundFields = new ArrayList<Field>();
-                Class<?> nextSource = source;
-                while (nextSource != Object.class) {
-                    for (Field field : nextSource.getDeclaredFields()) {
-                        for (Annotation annotation : field.getAnnotations()) {
-                            if (annotation.annotationType().isAnnotationPresent(annotationClass)) {
-                                if (!field.isAccessible()) {
-                                    field.setAccessible(true);
-                                }
-                                foundFields.add(field);
-                                break;
+        List<Field> declaredAccessableFields = AccessController.doPrivileged((PrivilegedAction<List<Field>>) () -> {
+            List<Field> foundFields = new ArrayList<>();
+            Class<?> nextSource = source;
+            while (nextSource != Object.class) {
+                for (Field field : nextSource.getDeclaredFields()) {
+                    for (Annotation annotation : field.getAnnotations()) {
+                        if (annotation.annotationType().isAnnotationPresent(annotationClass)) {
+                            if (!field.isAccessible()) {
+                                field.setAccessible(true);
                             }
+                            foundFields.add(field);
+                            break;
                         }
                     }
-                    nextSource = nextSource.getSuperclass();
                 }
-                return foundFields;
+                nextSource = nextSource.getSuperclass();
             }
+            return foundFields;
         });
         return declaredAccessableFields;
     }
 
     public static List<Method> getMethodsWithAnnotation(final Class<?> source, final Class<? extends Annotation> annotationClass) {
-        List<Method> declaredAccessableMethods = AccessController.doPrivileged(new PrivilegedAction<List<Method>>() {
-            @Override
-            public List<Method> run() {
-                List<Method> foundMethods = new ArrayList<Method>();
-                for (Method method : source.getDeclaredMethods()) {
-                    if (method.isAnnotationPresent(annotationClass)) {
-                        if (!method.isAccessible()) {
-                            method.setAccessible(true);
-                        }
-                        foundMethods.add(method);
+        List<Method> declaredAccessableMethods = AccessController.doPrivileged((PrivilegedAction<List<Method>>) () -> {
+            List<Method> foundMethods = new ArrayList<>();
+            for (Method method : source.getDeclaredMethods()) {
+                if (method.isAnnotationPresent(annotationClass)) {
+                    if (!method.isAccessible()) {
+                        method.setAccessible(true);
                     }
+                    foundMethods.add(method);
                 }
-                return foundMethods;
             }
+            return foundMethods;
         });
         return declaredAccessableMethods;
     }

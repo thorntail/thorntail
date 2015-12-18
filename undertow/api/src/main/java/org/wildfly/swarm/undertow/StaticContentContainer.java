@@ -41,6 +41,7 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
         return staticContent("");
     }
 
+    @SuppressWarnings("unchecked")
     default T staticContent(String base) {
         as(WARArchive.class).addModule("org.wildfly.swarm.undertow", "runtime");
 
@@ -55,7 +56,7 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
         }
 
         Node node = get("WEB-INF/undertow-external-mounts.conf");
-        UndertowExternalMountsAsset asset = null;
+        UndertowExternalMountsAsset asset;
         if ( node == null ) {
             asset = new UndertowExternalMountsAsset();
             add(asset, "WEB-INF/undertow-external-mounts.conf");
@@ -83,6 +84,7 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     default T mergeIgnoringDuplicates(Archive<?> source, String base, Filter<ArchivePath> filter) {
         if (!base.startsWith("/")) {
             base = "/" + base;

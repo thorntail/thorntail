@@ -80,6 +80,7 @@
 
     <version.jruby-maven-plugin>1.1.3</version.jruby-maven-plugin>
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
+    <version.maven-archetype-plugin>2.2</version.maven-archetype-plugin>
     <version.maven.plugin.api>3.2.5</version.maven.plugin.api>
 
     <version.gradle>2.4</version.gradle>
@@ -193,6 +194,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
           <version>${version.maven-plugin-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <version>${version.maven-archetype-plugin}</version>
         </plugin>
         <plugin>
           <artifactId>maven-javadoc-plugin</artifactId>
