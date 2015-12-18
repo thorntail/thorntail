@@ -50,7 +50,6 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-plugin-plugin</artifactId>
-              <version>3.4</version>
               <executions>
                 <execution>
                   <id>default-descriptor</id>
@@ -69,49 +68,41 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
-        <version>3.2.5</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
-        <version>3.4</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.2.5</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.gradle</groupId>
         <artifactId>gradle-core</artifactId>
-        <version>2.4</version>
         <scope>provided</scope>
       </dependency>
      <dependency>
         <groupId>org.gradle</groupId>
         <artifactId>gradle-base-services</artifactId>
-        <version>2.4</version>
         <scope>provided</scope>
       </dependency>
      <dependency>
         <groupId>org.gradle</groupId>
         <artifactId>gradle-plugins</artifactId>
-        <version>1.12</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy</artifactId>
-        <version>2.4.3</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.0.21</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.aether</groupId>
