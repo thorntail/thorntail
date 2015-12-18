@@ -55,6 +55,14 @@
                       <include>org.jboss.modules:jboss-modules:*:*</include>
                     </includes>
                   </artifactSet>
+                  <filters>
+                    <filter>
+                      <artifact>org.jboss.modules:jboss-modules</artifact>
+                      <excludes>
+                        <exclude>org/jboss/modules/MavenArtifactUtil.class</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
                 </configuration>
               </execution>
             </executions>

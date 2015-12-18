@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -49,7 +48,6 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomUtils;
-import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -63,24 +61,12 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class MultiStartMojo extends AbstractSwarmMojo {
 
-    @Parameter(alias = "properties")
-    private Properties properties;
-
-    @Parameter
-    private Properties environment;
-
-    @Parameter(alias = "environmentFile")
-    private File environmentFile;
-
     @Parameter(alias = "processes")
     private List<XmlPlexusConfiguration> processes;
 
     //  ----------------------------------------
     @Parameter(defaultValue = "${session}")
     private MavenSession mavenSession;
-
-    @Parameter(defaultValue = "${repositorySystemSession}")
-    protected DefaultRepositorySystemSession repositorySystemSession;
 
     @Component
     private BuildPluginManager pluginManager;
