@@ -17,9 +17,13 @@ package org.wildfly.swarm.infinispan;
 
 import org.wildfly.swarm.config.Infinispan;
 import org.wildfly.swarm.config.infinispan.CacheContainer;
+import org.wildfly.swarm.config.infinispan.Mode;
 import org.wildfly.swarm.config.infinispan.cache_container.DistributedCache;
+import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.LocalCache;
+import org.wildfly.swarm.config.infinispan.cache_container.LockingComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.ReplicatedCache;
+import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 
@@ -71,18 +75,18 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
                                .alias("cluster")
                                .jgroupsTransport(t -> t.lockTimeout(60000L))
                                .replicatedCache("default",
-                                                c -> c.mode("SYNC")
-                                                        .transactionComponent(t -> t.mode("BATCH"))));
+                                                c -> c.mode(Mode.SYNC)
+                                                        .transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH))));
 
         cacheContainer("web",
                        cc -> cc.defaultCache("dist")
                                .jgroupsTransport(t -> t.lockTimeout(60000L))
                                .distributedCache("dist",
-                                                 c -> c.mode("ASYNC")
+                                                 c -> c.mode(Mode.ASYNC)
                                                          .l1Lifespan(0L)
                                                          .owners(2)
-                                                         .lockingComponent(lc -> lc.isolation("REPEATABLE_READ"))
-                                                         .transactionComponent(tc -> tc.mode("BATCH"))
+                                                         .lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                         .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
                                                          .fileStore()));
 
         cacheContainer("ejb",
@@ -90,25 +94,25 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
                                .alias("sfsb")
                                .jgroupsTransport(t -> t.lockTimeout(60000L))
                                .distributedCache("dist",
-                                                 c -> c.mode("ASYNC")
+                                                 c -> c.mode(Mode.ASYNC)
                                                          .l1Lifespan(0L)
                                                          .owners(2)
-                                                         .lockingComponent(lc -> lc.isolation("REPEATABLE_READ"))
-                                                         .transactionComponent(t -> t.mode("BATCH"))
+                                                         .lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                         .transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH))
                                                          .fileStore()));
 
         cacheContainer("hibernate",
                        cc -> cc.defaultCache("local-query")
                                .jgroupsTransport(t -> t.lockTimeout(60000L))
                                .localCache("local-query",
-                                           c -> c.evictionComponent(ec -> ec.maxEntries(10000L).strategy("LRU"))
+                                           c -> c.evictionComponent(ec -> ec.maxEntries(10000L).strategy(EvictionComponent.Strategy.LRU))
                                                    .expirationComponent(ec -> ec.maxIdle(100000L)))
                                .invalidationCache("entity",
-                                                  c -> c.mode("SYNC")
-                                                          .transactionComponent(tc -> tc.mode("NON_XA"))
-                                                          .evictionComponent(ec -> ec.maxEntries(10000L).strategy("LRU"))
+                                                  c -> c.mode(Mode.SYNC)
+                                                          .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.NON_XA))
+                                                          .evictionComponent(ec -> ec.maxEntries(10000L).strategy(EvictionComponent.Strategy.LRU))
                                                           .expirationComponent(ec -> ec.maxIdle(100000L)))
-                               .replicatedCache("timestamps", c -> c.mode("ASYNC")));
+                               .replicatedCache("timestamps", c -> c.mode(Mode.ASYNC)));
 
         return this;
     }
@@ -116,45 +120,45 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
     private InfinispanFraction localDefaultFraction() {
         cacheContainer("server",
                        cc -> cc.defaultCache("default")
-                               .localCache("default", c -> c.transactionComponent(t -> t.mode("BATCH")))
+                               .localCache("default", c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH)))
                                .remoteCommandThreadPool());
 
         cacheContainer("web",
                        cc -> cc.defaultCache("passivation")
                                .localCache("passivation",
-                                           c -> c.lockingComponent(lc -> lc.isolation("REPEATABLE_READ"))
-                                                   .transactionComponent(tc -> tc.mode("BATCH"))
+                                           c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                   .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
                                                    .fileStore(fs -> fs.passivation(true).purge(false)))
                                .localCache("persistent",
-                                           c -> c.lockingComponent(lc -> lc.isolation("REPEATABLE_READ"))
-                                                   .transactionComponent(tc -> tc.mode("BATCH"))
+                                           c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                   .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
                                                    .fileStore(fs -> fs.passivation(false).purge(false))));
 
         cacheContainer("ejb",
                        cc -> cc.alias("sfsb")
                                .defaultCache("passivation")
                                .localCache("passivation",
-                                           c -> c.lockingComponent(lc -> lc.isolation("REPEATABLE_READ"))
-                                                   .transactionComponent(tc -> tc.mode("BATCH"))
+                                           c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                   .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
                                                    .fileStore(fs -> fs.passivation(true).purge(false)))
                                .localCache("persistent",
-                                           c -> c.lockingComponent(lc -> lc.isolation("REPEATABLE_READ"))
-                                                   .transactionComponent(tc -> tc.mode("BATCH"))
+                                           c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                   .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
                                                    .fileStore(fs -> fs.passivation(false).purge(false))));
 
         cacheContainer("hibernate",
                        cc -> cc.defaultCache("local-query")
                                .localCache("entity",
-                                           c -> c.transactionComponent(t -> t.mode("NON_XA"))
-                                                   .evictionComponent(e -> e.strategy("LRU").maxEntries(10000L))
+                                           c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
+                                                   .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
                                                    .expirationComponent(e -> e.maxIdle(100000L)))
                                .localCache("immutable-entity",
-                                           c -> c.transactionComponent(t -> t.mode("NON_XA"))
-                                                   .evictionComponent(e -> e.strategy("LRU").maxEntries(10000L))
+                                           c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
+                                                   .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
                                                    .expirationComponent(e -> e.maxIdle(100000L)))
                                .localCache("local-query",
-                                           c -> c.transactionComponent(t -> t.mode("NON_XA"))
-                                                   .evictionComponent(e -> e.strategy("LRU").maxEntries(10000L))
+                                           c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
+                                                   .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
                                                    .expirationComponent(e -> e.maxIdle(100000L)))
                                .localCache("timestamps"));
 
@@ -226,7 +230,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         LocalCache.LocalCacheResources cacheResources = cache.subresources();
         if (cacheResources.evictionComponent() == null) {
             cache.evictionComponent(c -> c.maxEntries(-1L)
-                    .strategy("NONE"));
+                    .strategy(EvictionComponent.Strategy.NONE));
         }
 
         if (cacheResources.expirationComponent() == null) {
@@ -238,13 +242,13 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         if (cacheResources.lockingComponent() == null) {
             cache.lockingComponent(c -> c.acquireTimeout(15000L)
                     .concurrencyLevel(1000)
-                    .isolation("READ_COMMITTED")
+                    .isolation(LockingComponent.Isolation.READ_COMMITTED)
                     .striping(false));
         }
 
         if (cacheResources.transactionComponent() == null) {
-            cache.transactionComponent(c -> c.locking("PESSIMISTIC")
-                    .mode("NONE")
+            cache.transactionComponent(c -> c.locking(TransactionComponent.Locking.PESSIMISTIC)
+                    .mode(TransactionComponent.Mode.NONE)
                     .stopTimeout(10000L));
         }
 
@@ -266,7 +270,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         DistributedCache.DistributedCacheResources cacheResources = cache.subresources();
         if (cacheResources.evictionComponent() == null) {
             cache.evictionComponent(c -> c.maxEntries(-1L)
-                    .strategy("NONE"));
+                    .strategy(EvictionComponent.Strategy.NONE));
         }
 
         if (cacheResources.expirationComponent() == null) {
@@ -278,13 +282,13 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         if (cacheResources.lockingComponent() == null) {
             cache.lockingComponent(c -> c.acquireTimeout(15000L)
                     .concurrencyLevel(1000)
-                    .isolation("READ_COMMITTED")
+                    .isolation(LockingComponent.Isolation.READ_COMMITTED)
                     .striping(false));
         }
 
         if (cacheResources.transactionComponent() == null) {
-            cache.transactionComponent(c -> c.locking("PESSIMISTIC")
-                    .mode("NONE")
+            cache.transactionComponent(c -> c.locking(TransactionComponent.Locking.PESSIMISTIC)
+                    .mode(TransactionComponent.Mode.NONE)
                     .stopTimeout(10000L));
         }
 
@@ -324,7 +328,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         ReplicatedCache.ReplicatedCacheResources cacheResources = cache.subresources();
         if (cacheResources.evictionComponent() == null) {
             cache.evictionComponent(c -> c.maxEntries(-1L)
-                    .strategy("NONE"));
+                    .strategy(EvictionComponent.Strategy.NONE));
         }
 
         if (cacheResources.expirationComponent() == null) {
@@ -336,13 +340,13 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         if (cacheResources.lockingComponent() == null) {
             cache.lockingComponent(c -> c.acquireTimeout(15000L)
                     .concurrencyLevel(1000)
-                    .isolation("READ_COMMITTED")
+                    .isolation(LockingComponent.Isolation.READ_COMMITTED)
                     .striping(false));
         }
 
         if (cacheResources.transactionComponent() == null) {
-            cache.transactionComponent(c -> c.locking("PESSIMISTIC")
-                    .mode("NONE")
+            cache.transactionComponent(c -> c.locking(TransactionComponent.Locking.PESSIMISTIC)
+                    .mode(TransactionComponent.Mode.NONE)
                     .stopTimeout(10000L));
         }
 
