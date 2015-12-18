@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -113,9 +114,8 @@ public class Layout {
                             System.setProperty("wildfly.swarm.app.artifact", props.getProperty("wildfly.swarm.app.artifact"));
                         }
 
-                        Enumeration<String> names = (Enumeration<String>) props.propertyNames();
-                        while (names.hasMoreElements()) {
-                            String name = names.nextElement();
+                        Set<String> names = props.stringPropertyNames();
+                        for ( String name: names ) {
                             String value = props.getProperty(name);
                             if (System.getProperty(name) == null) {
                                 System.setProperty(name, value);

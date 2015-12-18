@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -62,6 +61,7 @@ import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
+@SuppressWarnings("unused")
 public class Container {
 
     public static final String VERSION;
@@ -210,6 +210,7 @@ public class Container {
         fraction(defaultFraction);
     }
 
+    @SuppressWarnings("unchecked")
     private Class<? extends Fraction> fractionRoot(Class<? extends Fraction> fractionClass) {
         Class<? extends Fraction> fractionRoot = fractionClass;
         boolean rootFound = false;
@@ -485,7 +486,7 @@ public class Container {
 
         if (Files.exists(Paths.get("pom.xml"))) {
             try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("pom.xml").toFile()))) {
-                String line = null;
+                String line;
 
                 while ((line = in.readLine()) != null) {
                     line = line.trim();
@@ -500,7 +501,7 @@ public class Container {
 
         if (Files.exists(Paths.get("Mavenfile"))) {
             try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("Mavenfile").toFile()))) {
-                String line = null;
+                String line;
 
                 while ((line = in.readLine()) != null) {
                     line = line.trim();
@@ -541,9 +542,8 @@ public class Container {
                             System.setProperty("wildfly.swarm.app.artifact", props.getProperty("wildfly.swarm.app.artifact"));
                         }
 
-                        Enumeration<String> names = (Enumeration<String>) props.propertyNames();
-                        while (names.hasMoreElements()) {
-                            String name = names.nextElement();
+                        Set<String> names = props.stringPropertyNames();
+                        for( String name: names ) {
                             String value = props.getProperty(name);
                             if (System.getProperty(name) == null) {
                                 System.setProperty(name, value);

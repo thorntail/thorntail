@@ -27,6 +27,7 @@ import java.util.List;
  */
 public interface DependenciesContainer<T extends Archive<T>> extends LibraryContainer<T>, Archive<T> {
 
+    @SuppressWarnings("unchecked")
     default T addAllDependencies() throws Exception {
         List<JavaArchive> artifacts = Swarm.allArtifacts();
         addAsLibraries( artifacts );

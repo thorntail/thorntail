@@ -46,11 +46,12 @@ public class JBossDeploymentStructureAsset implements Asset{
     }
 
 
+    @SuppressWarnings("unchecked")
     public void addModule(final String name, final String slot) {
         final DependenciesType dependencies = this.descriptor
                 .getOrCreateDeployment()
                 .getOrCreateDependencies();
-        final List<ModuleDependencyType> modules = dependencies.getAllModule();
+        final List<ModuleDependencyType<DependenciesType<?>>> modules = dependencies.getAllModule();
         for (ModuleDependencyType each : modules) {
             final String existingSlot = each.getSlot();
             if (name.equals(each.getName()) &&

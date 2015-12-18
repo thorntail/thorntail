@@ -17,8 +17,6 @@ package org.wildfly.swarm.management;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
-import org.wildfly.swarm.config.management.SecurityRealmConsumer;
-import org.wildfly.swarm.config.webservices.EndpointConfig;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.SocketBinding;

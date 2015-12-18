@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 /**
  * @author Bob McWhirter
  */
+@SuppressWarnings("unchecked")
 public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends Archive<T> {
     String PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH = "META-INF/jboss-deployment-structure.xml";
     String SECONDARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH = "WEB-INF/jboss-deployment-structure.xml";

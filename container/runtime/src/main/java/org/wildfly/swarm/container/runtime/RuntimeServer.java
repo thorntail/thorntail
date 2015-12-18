@@ -43,11 +43,10 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceActivator;
-import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceContainer;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
-import org.jboss.msc.service.ServiceRegistryException;
+import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
@@ -76,6 +75,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.POR
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
+@SuppressWarnings("unused")
 public class RuntimeServer implements Server {
 
     private SelfContainedContainer container = new SelfContainedContainer();
@@ -88,10 +88,11 @@ public class RuntimeServer implements Server {
 
     private RuntimeDeployer deployer;
 
-    private Map<Class<? extends Fraction>, ServerConfiguration> configByFractionType = new ConcurrentHashMap();
+    private Map<Class<? extends Fraction>, ServerConfiguration> configByFractionType = new ConcurrentHashMap<>();
 
     private List<ServerConfiguration> configList = new ArrayList<>();
 
+    @SuppressWarnings("unused")
     public RuntimeServer() {
         try {
             Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
@@ -110,6 +111,7 @@ public class RuntimeServer implements Server {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Deployer start(Container config) throws Exception {
 
@@ -142,26 +144,21 @@ public class RuntimeServer implements Server {
         ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
         TempFileProvider tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor);
         List<ServiceActivator> activators = new ArrayList<>();
-        activators.add(new ServiceActivator() {
-            @Override
-            public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
-                context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<Object>(tempFileProvider)))
-                        .install();
-                // Provide the main command line args as a value service
-                context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<Object>(config.getArgs())))
+        activators.add(context -> {
+            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<>(tempFileProvider)))
                     .install();
-            }
+            // Provide the main command line args as a value service
+            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(config.getArgs())))
+                .install();
         });
 
-        OUTER:
         for (ServerConfiguration eachConfig : this.configList) {
             boolean found = false;
-            INNER:
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
                     found = true;
                     activators.addAll(eachConfig.getServiceActivators(eachFraction));
-                    break INNER;
+                    break;
                 }
             }
             if (!found && !eachConfig.isIgnorable()) {
@@ -173,8 +170,9 @@ public class RuntimeServer implements Server {
         this.serviceContainer = this.container.start(list, this.contentProvider, activators);
         for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
             ServiceController<?> serviceController = this.serviceContainer.getService(serviceName);
-            if (serviceController.getStartException() != null) {
-                throw serviceController.getStartException();
+            StartException exception = serviceController.getStartException();
+            if (exception!= null) {
+                throw exception;
             }
         }
         ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
@@ -185,13 +183,11 @@ public class RuntimeServer implements Server {
 
         List<Archive> implicitDeployments = new ArrayList<>();
 
-        OUTER:
         for (ServerConfiguration eachConfig : this.configList) {
-            INNER:
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
                     implicitDeployments.addAll(eachConfig.getImplicitDeployments( eachFraction ) );
-                    break INNER;
+                    break;
                 }
             }
         }
@@ -229,12 +225,7 @@ public class RuntimeServer implements Server {
     public void stop() throws Exception {
 
         final CountDownLatch latch = new CountDownLatch(1);
-        this.serviceContainer.addTerminateListener(new ServiceContainer.TerminateListener() {
-            @Override
-            public void handleTermination(Info info) {
-                latch.countDown();
-            }
-        });
+        this.serviceContainer.addTerminateListener(info -> latch.countDown());
         this.serviceContainer.shutdown();
 
         latch.await();
@@ -289,6 +280,7 @@ public class RuntimeServer implements Server {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void loadFractionConfigurations() throws Exception {
         Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
         ServiceLoader<RuntimeModuleProvider> providerLoader = m1.loadService(RuntimeModuleProvider.class);
@@ -388,17 +380,16 @@ public class RuntimeServer implements Server {
         list.add(node);
     }
 
+    @SuppressWarnings("unchecked")
     private void configureFractions(Container config, List<ModelNode> list) throws Exception {
 
-        OUTER:
         for (ServerConfiguration eachConfig : this.configList) {
             boolean found = false;
-            INNER:
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
                     found = true;
                     list.addAll(eachConfig.getList(eachFraction));
-                    break INNER;
+                    break;
                 }
             }
             if (!found && !eachConfig.isIgnorable()) {
@@ -406,21 +397,5 @@ public class RuntimeServer implements Server {
             }
 
         }
-        /*
-        for (Fraction fraction : config.fractions()) {
-            ServerConfiguration serverConfig = this.configByFractionType.get(fraction.getClass());
-            if (serverConfig != null) {
-                list.addAll(serverConfig.getList(fraction));
-            } else {
-                for (Class<? extends Fraction> fractionClass : this.configByFractionType.keySet()) {
-                    if (fraction.getClass().isAssignableFrom(fractionClass)) {
-                        list.addAll(this.configByFractionType.get(fractionClass).getList(fraction));
-                        break;
-                    }
-                }
-            }
-        }
-        */
     }
-
 }

@@ -2,9 +2,7 @@ package org.wildfly.swarm.tools;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletionService;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -16,7 +14,6 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -213,7 +210,7 @@ public class DependencyManagerTest {
 
         Map<ArchivePath, Node> content = archive.getContent();
 
-        List<String> jars = content.keySet().stream().map((e) -> e.get()).filter((e) -> e.endsWith(".jar")).collect(Collectors.toList());
+        List<String> jars = content.keySet().stream().map(ArchivePath::get).filter((e) -> e.endsWith(".jar")).collect(Collectors.toList());
 
         assertThat(jars).hasSize(5);
         assertThat(jars).contains("/m2repo/" + BOOTSTRAP_EMPTY_A.repoPath(true));
@@ -257,7 +254,7 @@ public class DependencyManagerTest {
 
         Map<ArchivePath, Node> content = archive.getContent();
 
-        List<String> jars = content.keySet().stream().map((e) -> e.get()).filter((e) -> e.endsWith(".jar")).collect(Collectors.toList());
+        List<String> jars = content.keySet().stream().map(ArchivePath::get).filter((e) -> e.endsWith(".jar")).collect(Collectors.toList());
 
         assertThat(jars).hasSize(6);
         assertThat(jars).contains("/m2repo/" + BOOTSTRAP_EMPTY_A.repoPath(true));
