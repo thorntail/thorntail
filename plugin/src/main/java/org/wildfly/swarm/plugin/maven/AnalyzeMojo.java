@@ -47,7 +47,7 @@ public class AnalyzeMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}")
     protected String projectBuildDir;
 
-    @Component
+    @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
     private Path dir;

@@ -28,20 +28,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.impl.ArtifactResolver;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -52,46 +44,7 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 @Mojo(name = "start",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class StartMojo extends AbstractMojo {
-
-    @Component
-    public MavenProject project;
-
-    @Parameter(defaultValue = "${project.build.directory}")
-    public String projectBuildDir;
-
-    @Parameter(defaultValue = "${repositorySystemSession}")
-    protected DefaultRepositorySystemSession repositorySystemSession;
-
-    @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
-    protected List<ArtifactRepository> remoteRepositories;
-
-    @Inject
-    private ArtifactResolver resolver;
-
-    @Parameter(alias = "mainClass")
-    public String mainClass;
-
-    @Parameter(alias = "httpPort", defaultValue = "8080")
-    public int httpPort;
-
-    @Parameter(alias = "portOffset", defaultValue = "0")
-    public int portOffset;
-
-    @Parameter(alias = "bindAddress", defaultValue = "0.0.0.0")
-    public String bindAddress;
-
-    @Parameter(alias = "contextPath", defaultValue = "/")
-    public String contextPath;
-
-    @Parameter(alias = "properties")
-    public Properties properties;
-
-    @Parameter
-    public Properties environment;
-
-    @Parameter(alias = "environmentFile")
-    public File environmentFile;
+public class StartMojo extends AbstractSwarmMojo {
 
     @Parameter(alias = "stdoutFile")
     public File stdoutFile;
@@ -107,7 +60,8 @@ public class StartMojo extends AbstractMojo {
 
     boolean waitForProcess;
 
-    private static String VERSION;
+    @SuppressWarnings("unused")
+    private final static String VERSION;
 
     static {
         Properties props = new Properties();
@@ -121,6 +75,7 @@ public class StartMojo extends AbstractMojo {
         VERSION = props.getProperty("version");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if ( this.contextPath == null ) {
@@ -144,7 +99,7 @@ public class StartMojo extends AbstractMojo {
             }
         }
 
-        SwarmProcess process = null;
+        SwarmProcess process;
 
         if (this.useUberJar) {
             process = executeUberJar();
@@ -167,10 +122,12 @@ public class StartMojo extends AbstractMojo {
             try {
                 process.waitFor();
             } catch (InterruptedException e) {
+                throw new MojoExecutionException( "Error waiting for process to start", e );
             }
         }
     }
 
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     protected SwarmProcess executeUberJar() throws MojoFailureException {
         getLog().info("Starting -swarm.jar");
 
@@ -213,6 +170,7 @@ public class StartMojo extends AbstractMojo {
         }
     }
 
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     protected SwarmProcess executeWar() throws MojoFailureException {
         getLog().info("Starting .war");
 
@@ -259,6 +217,7 @@ public class StartMojo extends AbstractMojo {
         }
     }
 
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     protected SwarmProcess executeJar() throws MojoFailureException {
         getLog().info("Starting .jar");
 

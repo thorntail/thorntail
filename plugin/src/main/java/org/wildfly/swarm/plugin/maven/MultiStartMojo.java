@@ -28,7 +28,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.MojoExecution;
@@ -62,10 +61,7 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
         aggregator = true,
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class MultiStartMojo extends AbstractMojo {
-
-    @Component
-    protected MavenProject project;
+public class MultiStartMojo extends AbstractSwarmMojo {
 
     @Parameter(alias = "properties")
     private Properties properties;
@@ -145,6 +141,7 @@ public class MultiStartMojo extends AbstractMojo {
         throw new MojoFailureException( "Unable to start process" );
     }
 
+    @SuppressWarnings("unchecked")
     protected void startProject(MavenProject project, String executionId, XmlPlexusConfiguration process) throws InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException, PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException {
         Plugin plugin = this.project.getPlugin("org.wildfly.swarm:wildfly-swarm-plugin");
 
@@ -175,6 +172,7 @@ public class MultiStartMojo extends AbstractMojo {
         mavenSession.setCurrentProject(this.project);
     }
 
+    @SuppressWarnings("unchecked")
     protected void startArtifact(Artifact artifact, XmlPlexusConfiguration process) throws InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException, PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException {
         List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
 
@@ -207,9 +205,7 @@ public class MultiStartMojo extends AbstractMojo {
             SwarmProcess launched = executor.execute();
             launched.awaitDeploy( 30, TimeUnit.SECONDS );
             procs.add(launched);
-        } catch (IOException e) {
-            throw new MojoFailureException("Unable to execute: " + artifact, e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new MojoFailureException("Unable to execute: " + artifact, e);
         }
     }
@@ -274,7 +270,13 @@ public class MultiStartMojo extends AbstractMojo {
             }
         }
 
-        Xpp3Dom config = (Xpp3Dom) execution.getConfiguration();
+        Xpp3Dom config;
+
+        if ( execution == null ) {
+            config = new Xpp3Dom( "configuration" );
+        } else {
+            config = (Xpp3Dom) execution.getConfiguration();
+        }
         Xpp3Dom pdom = new Xpp3Dom("project");
         pdom.setValue("${project}");
         config.addChild(pdom);

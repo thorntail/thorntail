@@ -56,50 +56,7 @@ import org.wildfly.swarm.tools.BuildTool;
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME,
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME
 )
-public class PackageMojo extends AbstractMojo { //extends AbstractSwarmMojo {
-
-
-    @Component
-    protected MavenProject project;
-
-    @Parameter(defaultValue = "${project.build.directory}")
-    protected String projectBuildDir;
-
-    @Parameter(defaultValue = "${repositorySystemSession}")
-    protected DefaultRepositorySystemSession repositorySystemSession;
-
-    @Parameter(defaultValue = "${project.remoteArtifactRepositories}")
-    protected List<ArtifactRepository> remoteRepositories;
-
-    @Inject
-    private ArtifactResolver resolver;
-
-    @Parameter(alias = "modules")
-    private String[] additionalModules;
-
-    @Parameter(alias = "bundleDependencies", defaultValue = "true")
-    private boolean bundleDependencies;
-
-    @Parameter(alias = "mainClass")
-    private String mainClass;
-
-    @Parameter(alias = "httpPort")
-    private Integer httpPort;
-
-    @Parameter(alias = "portOffset")
-    private Integer portOffset;
-
-    @Parameter(alias = "bindAddress")
-    private String bindAddress;
-
-    @Parameter(alias = "contextPath", defaultValue = "/")
-    private String contextPath;
-
-    @Parameter(alias = "properties")
-    private Properties properties;
-
-    @Parameter(alias = "propertiesFile")
-    private String propertiesFile;
+public class PackageMojo extends AbstractSwarmMojo {
 
     private BuildTool tool;
 

@@ -30,6 +30,7 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 @Mojo(name = "stop")
 public class StopMojo extends AbstractMojo {
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         List<SwarmProcess> value = (List<SwarmProcess>) getPluginContext().get("swarm-process");
