@@ -419,7 +419,6 @@ public class Container {
         }
 
         public Fraction fraction(String simpleName) {
-            System.err.println( simpleName + " vs " + fractions() );
             Optional<Fraction> opt = fractions().stream().filter((f) -> f.simpleName().equalsIgnoreCase(simpleName)).findFirst();
             return opt.orElse(null);
         }

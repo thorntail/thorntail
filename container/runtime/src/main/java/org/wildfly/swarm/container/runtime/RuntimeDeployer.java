@@ -110,6 +110,7 @@ public class RuntimeDeployer implements Deployer {
 
         System.setProperty("wildfly.swarm.current.deployment", deployment.getName());
         ModelNode result = client.execute(deploymentAdd);
+        // TODO handle a non-success result
     }
 
     void stop() {

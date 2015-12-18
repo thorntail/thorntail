@@ -109,7 +109,6 @@ public class ArtifactManager {
                             Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
                                 @Override
                                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                    //System.err.println(  basePath.relativize(file).toString() );
                                     archive.add(new FileAsset(file.toFile()), basePath.relativize(file).toString());
                                     return FileVisitResult.CONTINUE;
                                 }
@@ -174,8 +173,6 @@ public class ArtifactManager {
         if (version == null) {
             throw new RuntimeException("Unable to determine version number from 2-part GAV.  Try three!");
         }
-
-        System.err.println( "found version: " + version );
 
         return MavenArtifactUtil.resolveArtifact(groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : ":" + classifier), packaging);
     }
