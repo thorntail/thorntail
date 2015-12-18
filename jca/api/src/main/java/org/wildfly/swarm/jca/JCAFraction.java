@@ -37,7 +37,7 @@ public class JCAFraction extends JCA<JCAFraction> implements Fraction {
     }
 
     public static JCAFraction createDefaultFraction() {
-        Map keepAlive = new HashMap<>();
+        Map<Object,Object> keepAlive = new HashMap<>();
         keepAlive.put("time", "10");
         keepAlive.put("unit", "SECONDS");
         JCAFraction fraction = new JCAFraction();

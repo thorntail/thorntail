@@ -34,6 +34,7 @@ import java.util.*;
  * @author Ken Finnigan
  * @author Lance Ball
  */
+@SuppressWarnings("unused")
 public class LoggingFraction extends Logging<LoggingFraction> implements Fraction {
 
     public static final String CONSOLE = "CONSOLE";
@@ -146,7 +147,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return this fraction
      */
     public LoggingFraction customFormatter(String name, String module, String className, Properties properties) {
-        Map formatterProperties = new HashMap<>();
+        Map<Object,Object> formatterProperties = new HashMap<>();
         final Enumeration<?> names = properties.propertyNames();
         while (names.hasMoreElements()) {
             final String nextElement = (String) names.nextElement();
@@ -211,8 +212,8 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @param formatter The pattern string for the formatter
      * @return This fraction
      */
-    public LoggingFraction fileHandler(String name, String path, String level, String formatter) {
-        Map fileProperties = new HashMap<>();
+    public LoggingFraction fileHandler(String name, String path, Level level, String formatter) {
+        Map<Object,Object> fileProperties = new HashMap<>();
         fileProperties.put("path", path);
         fileProperties.put("relative-to", "jboss.server.log.dir");
         fileHandler(new FileHandler(name)
@@ -242,7 +243,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return this fraction
      */
     public LoggingFraction customHandler(String name, String module, String className, Properties properties, String formatter) {
-        Map handlerProperties = new HashMap<>();
+        Map<Object,Object> handlerProperties = new HashMap<>();
         final Enumeration<?> names = properties.propertyNames();
         while (names.hasMoreElements()) {
             final String nextElement = (String) names.nextElement();
