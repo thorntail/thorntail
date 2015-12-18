@@ -28,7 +28,7 @@ public class SwaggerConfiguration extends AbstractServerConfiguration<SwaggerFra
     }
 
     @Override
-    public void prepareArchive(Archive a) {
+    public void prepareArchive(Archive<?> a) {
         Map<ArchivePath, Node> map = a.getContent();
         HashSet<String> paths = new HashSet<>();
         for (Map.Entry<ArchivePath, Node> entry : map.entrySet()) {
