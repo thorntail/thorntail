@@ -43,7 +43,7 @@ public class KeycloakConfiguration extends AbstractServerConfiguration<KeycloakF
     }
 
     @Override
-    public void prepareArchive(Archive a) {
+    public void prepareArchive(Archive<?> a) {
         a.as(JARArchive.class).addModule( "org.keycloak.keycloak-core" );
     }
 
