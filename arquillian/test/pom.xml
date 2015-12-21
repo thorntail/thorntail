@@ -51,6 +51,10 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-msc</artifactId>
       <scope>test</scope>
     </dependency>

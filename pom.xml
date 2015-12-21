@@ -40,7 +40,7 @@
 
 
     <version.wildfly>10.0.0.CR4</version.wildfly>
-    <version.wildfly.config-api>0.3.18</version.wildfly.config-api>
+    <version.wildfly.config-api>0.3.21</version.wildfly.config-api>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.org.arquillian>1.1.8.Final</version.org.arquillian>
@@ -295,6 +295,12 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>config-api-runtime</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>config-api-modules</artifactId>
         <version>${version.wildfly.config-api}</version>
       </dependency>
 
