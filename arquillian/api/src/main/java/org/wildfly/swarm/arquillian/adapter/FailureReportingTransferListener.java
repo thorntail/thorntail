@@ -31,16 +31,16 @@ import java.util.Map;
 public class FailureReportingTransferListener extends AbstractTransferListener implements CompletableTransferListener {
     @Override
     public void transferSucceeded(final TransferEvent event) {
-        this.transfers.remove(event.getResource());
+        this.transfers.remove(event.getResource().getResourceName());
     }
 
     @Override
     public void transferFailed(final TransferEvent event) {
-        final TransferResource resource = event.getResource();
-        List<TransferEvent> events = this.transfers.get(resource);
+        final String resourceName = event.getResource().getResourceName();
+        List<TransferEvent> events = this.transfers.get(resourceName);
         if (events == null) {
             events = new ArrayList<>();
-            this.transfers.put(resource, events);
+            this.transfers.put(resourceName, events);
         }
         events.add(event);
     }
@@ -59,14 +59,14 @@ public class FailureReportingTransferListener extends AbstractTransferListener i
 
     public String failuresAsString() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<TransferResource, List<TransferEvent>> entry : this.transfers.entrySet()) {
-            TransferResource resource = entry.getKey();
+        for (Map.Entry<String, List<TransferEvent>> entry : this.transfers.entrySet()) {
+            final String resourceName = entry.getKey();
             for (TransferEvent event : entry.getValue()) {
                 sb.append("Failed")
                         .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " uploading " : " downloading ")
-                        .append(resource.getResourceName())
+                        .append(resourceName)
                         .append(event.getRequestType() == TransferEvent.RequestType.PUT ? " into " : " from ")
-                        .append(resource.getRepositoryUrl()).append(". ");
+                        .append(event.getResource().getRepositoryUrl()).append(". ");
                 if (event.getException() != null) {
                     sb.append("Reason: \n").append(event.getException());
                 }
@@ -77,5 +77,5 @@ public class FailureReportingTransferListener extends AbstractTransferListener i
         return sb.toString();
     }
 
-    private final Map<TransferResource, List<TransferEvent>> transfers = new HashMap<>();
+    private final Map<String, List<TransferEvent>> transfers = new HashMap<>();
 }
