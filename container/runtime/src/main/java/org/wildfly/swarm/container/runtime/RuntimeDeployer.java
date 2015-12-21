@@ -30,6 +30,7 @@ import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.container.Deployer;
+import org.wildfly.swarm.container.Fraction;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CONTENT;
@@ -48,13 +49,13 @@ public class RuntimeDeployer implements Deployer {
 
     private final SimpleContentProvider contentProvider;
 
-    private final List<ServerConfiguration> configurations;
+    private final List<ServerConfiguration<Fraction>> configurations;
 
     private final TempFileProvider tempFileProvider;
 
     private final List<Closeable> mountPoints = new ArrayList<>();
 
-    public RuntimeDeployer(List<ServerConfiguration> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
+    public RuntimeDeployer(List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
         this.configurations = configurations;
         this.client = client;
         this.contentProvider = contentProvider;

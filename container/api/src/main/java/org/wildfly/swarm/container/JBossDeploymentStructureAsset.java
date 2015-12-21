@@ -18,6 +18,7 @@ package org.wildfly.swarm.container;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DependenciesType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DeploymentType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.JBossDeploymentStructureDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ModuleDependencyType;
 
@@ -45,13 +46,11 @@ public class JBossDeploymentStructureAsset implements Asset{
                                  .fromStream(fromStream));
     }
 
-
-    @SuppressWarnings("unchecked")
     public void addModule(final String name, final String slot) {
-        final DependenciesType dependencies = this.descriptor
+        DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>> dependencies = this.descriptor
                 .getOrCreateDeployment()
                 .getOrCreateDependencies();
-        final List<ModuleDependencyType<DependenciesType<?>>> modules = dependencies.getAllModule();
+        List<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> modules = dependencies.getAllModule();
         for (ModuleDependencyType each : modules) {
             final String existingSlot = each.getSlot();
             if (name.equals(each.getName()) &&

@@ -90,7 +90,7 @@ public class RuntimeServer implements Server {
 
     private Map<Class<? extends Fraction>, ServerConfiguration> configByFractionType = new ConcurrentHashMap<>();
 
-    private List<ServerConfiguration> configList = new ArrayList<>();
+    private List<ServerConfiguration<Fraction>> configList = new ArrayList<>();
 
     @SuppressWarnings("unused")
     public RuntimeServer() {
@@ -111,7 +111,6 @@ public class RuntimeServer implements Server {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Deployer start(Container config) throws Exception {
 
@@ -152,7 +151,7 @@ public class RuntimeServer implements Server {
                 .install();
         });
 
-        for (ServerConfiguration eachConfig : this.configList) {
+        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
             boolean found = false;
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
@@ -183,7 +182,7 @@ public class RuntimeServer implements Server {
 
         List<Archive> implicitDeployments = new ArrayList<>();
 
-        for (ServerConfiguration eachConfig : this.configList) {
+        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
                     implicitDeployments.addAll(eachConfig.getImplicitDeployments( eachFraction ) );
@@ -380,10 +379,8 @@ public class RuntimeServer implements Server {
         list.add(node);
     }
 
-    @SuppressWarnings("unchecked")
     private void configureFractions(Container config, List<ModelNode> list) throws Exception {
-
-        for (ServerConfiguration eachConfig : this.configList) {
+        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
             boolean found = false;
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
@@ -395,7 +392,6 @@ public class RuntimeServer implements Server {
             if (!found && !eachConfig.isIgnorable()) {
                 System.err.println("*** unable to find fraction for: " + eachConfig.getType());
             }
-
         }
     }
 }

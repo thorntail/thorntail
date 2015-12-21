@@ -22,7 +22,6 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 /**
  * @author Bob McWhirter
  */
-@SuppressWarnings("unchecked")
 public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends Archive<T> {
     String PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH = "META-INF/jboss-deployment-structure.xml";
     String SECONDARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH = "WEB-INF/jboss-deployment-structure.xml";
@@ -31,6 +30,7 @@ public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends
         return addModule( name, "main" );
     }
 
+    @SuppressWarnings("unchecked")
     default T addModule(String name, String slot) {
         String path = PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH;
         Node jbossDS = this.get(PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
