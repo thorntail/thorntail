@@ -213,6 +213,7 @@ public class BuildTool {
 
     private File createJar(String baseName, Path dir) throws IOException {
         File out = new File(dir.toFile(), baseName + "-swarm.jar");
+        out.getParentFile().mkdirs();
         ZipExporter exporter = this.archive.as(ZipExporter.class);
         exporter.exportTo(out, true);
         return out;
