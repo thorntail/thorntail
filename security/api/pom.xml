@@ -30,7 +30,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-security-modules</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- provided dependencies -->

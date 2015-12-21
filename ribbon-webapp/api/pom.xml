@@ -30,7 +30,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-ribbon-webapp-modules</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -39,7 +38,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-ribbon</artifactId>
-      <version>${project.version}</version>
     </dependency>
   </dependencies>
 
