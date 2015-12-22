@@ -19,20 +19,18 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eclipse.aether.impl.ArtifactResolver;
 import org.wildfly.swarm.tools.BuildTool;
 
+import javax.inject.Inject;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
@@ -50,46 +48,18 @@ import java.util.Set;
 )
 public class PackageMojo extends AbstractSwarmMojo {
 
-    private BuildTool tool;
+    @Inject
+    protected ArtifactResolver resolver;
 
-    private static String VERSION;
+    @Parameter(alias = "modules")
+    protected String[] additionalModules;
 
-    static {
-        Properties props = new Properties();
-        try (InputStream propStream = PackageMojo.class.getClassLoader()
-                .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties")) {
-            props.load(propStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        VERSION = props.getProperty("version");
-    }
-
-    protected Properties loadProperties(File file) throws MojoFailureException {
-        Properties props = new Properties();
-        try (InputStream in = new FileInputStream(file)) {
-            props.load(in);
-        } catch (FileNotFoundException e) {
-            throw new MojoFailureException("No such file: " + file, e);
-        } catch (IOException e) {
-            throw new MojoFailureException("Error reading file: " + file, e);
-        }
-
-        return props;
-    }
+    @Parameter(alias = "bundleDependencies", defaultValue = "true")
+    protected boolean bundleDependencies;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
-        if (this.properties == null) {
-            this.properties = new Properties();
-        }
-
-        if (propertiesFile != null) {
-            File propsFile = new File(this.propertiesFile);
-            this.properties.putAll(loadProperties(propsFile));
-        }
+        initProperties();
 
         if ( this.httpPort != null ) {
             getLog().warn( "<httpPort> is deprecated, please use <jboss.http.port> within <properties>");
@@ -107,9 +77,9 @@ public class PackageMojo extends AbstractSwarmMojo {
         }
 
 
-        this.tool = new BuildTool();
+        final BuildTool tool = new BuildTool();
 
-        this.tool.projectArtifact(
+        tool.projectArtifact(
                 this.project.getArtifact().getGroupId(),
                 this.project.getArtifact().getArtifactId(),
                 this.project.getArtifact().getBaseVersion(),
@@ -119,12 +89,12 @@ public class PackageMojo extends AbstractSwarmMojo {
 
         Set<Artifact> deps = this.project.getArtifacts();
         for (Artifact each : deps) {
-            this.tool.dependency(each.getScope(), each.getGroupId(), each.getArtifactId(), each.getBaseVersion(), each.getType(), each.getClassifier(), each.getFile());
+            tool.dependency(each.getScope(), each.getGroupId(), each.getArtifactId(), each.getBaseVersion(), each.getType(), each.getClassifier(), each.getFile());
         }
 
         List<Resource> resources = this.project.getResources();
         for (Resource each : resources) {
-            this.tool.resourceDirectory(each.getDirectory());
+            tool.resourceDirectory(each.getDirectory());
         }
 
 
@@ -135,25 +105,23 @@ public class PackageMojo extends AbstractSwarmMojo {
         for (String additionalModule : additionalModules) {
             File source = new File(this.project.getBuild().getOutputDirectory() + File.separator + additionalModule);
             if (source.exists()) {
-                this.tool.additionalModule(source.getAbsolutePath());
+                tool.additionalModule(source.getAbsolutePath());
             }
         }
 
-        this.tool
+        tool
                 .properties(this.properties)
                 .mainClass(this.mainClass)
                 .contextPath(this.contextPath)
                 .bundleDependencies(this.bundleDependencies);
 
         MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystemSession);
-        for (ArtifactRepository each : this.remoteRepositories) {
-            resolvingHelper.remoteRepository(each);
-        }
+        this.remoteRepositories.forEach(resolvingHelper::remoteRepository);
 
-        this.tool.artifactResolvingHelper(resolvingHelper);
+        tool.artifactResolvingHelper(resolvingHelper);
 
         try {
-            File jar = this.tool.build(this.project.getBuild().getFinalName(), Paths.get( this.projectBuildDir ));
+            File jar = tool.build(this.project.getBuild().getFinalName(), Paths.get(this.projectBuildDir ));
 
             Artifact primaryArtifact = this.project.getArtifact();
 

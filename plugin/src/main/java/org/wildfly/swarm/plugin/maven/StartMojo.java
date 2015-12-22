@@ -15,19 +15,6 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -36,6 +23,15 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Bob McWhirter
@@ -60,46 +56,13 @@ public class StartMojo extends AbstractSwarmMojo {
 
     boolean waitForProcess;
 
-    @SuppressWarnings("unused")
-    private final static String VERSION;
-
-    static {
-        Properties props = new Properties();
-        try (InputStream propStream = PackageMojo.class.getClassLoader()
-                .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties")) {
-            props.load(propStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        VERSION = props.getProperty("version");
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if ( this.contextPath == null ) {
-            this.contextPath = "/";
-        }
-        if (this.properties == null) {
-            this.properties = new Properties();
-        }
-        if (this.environment == null) {
-            this.environment = new Properties();
-        }
-        if (environmentFile != null) {
-            Properties ef = new Properties();
-            try {
-                Reader inStream = new FileReader(environmentFile);
-                ef.load(inStream);
-                inStream.close();
-                this.environment.putAll(ef);
-            } catch (IOException e) {
-                getLog().error("env file not found or not parsable " + environmentFile);
-            }
-        }
+        initProperties();
+        initEnvironment();
 
-        SwarmProcess process;
+        final SwarmProcess process;
 
         if (this.useUberJar) {
             process = executeUberJar();

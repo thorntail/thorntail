@@ -1,21 +1,26 @@
 package org.wildfly.swarm.plugin.maven;
 
-import java.util.List;
-import java.util.Properties;
-
-import javax.inject.Inject;
-
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.impl.ArtifactResolver;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Bob McWhirter
  */
 public abstract class AbstractSwarmMojo extends AbstractMojo {
+
+    protected static String VERSION;
 
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
@@ -28,15 +33,6 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project.build.directory}")
     protected String projectBuildDir;
-
-    @Inject
-    protected ArtifactResolver resolver;
-
-    @Parameter(alias = "modules")
-    protected String[] additionalModules;
-
-    @Parameter(alias = "bundleDependencies", defaultValue = "true")
-    protected boolean bundleDependencies;
 
     @Parameter(alias = "mainClass")
     protected String mainClass;
@@ -65,4 +61,58 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "environmentFile")
     protected String environmentFile;
 
+    protected void initProperties() throws MojoFailureException {
+        if (this.properties == null) {
+            this.properties = new Properties();
+        }
+        if (this.propertiesFile != null) {
+            this.properties.putAll(loadProperties(this.propertiesFile));
+        }
+    }
+
+    protected void initEnvironment() throws MojoFailureException {
+        if (this.environment == null) {
+            this.environment = new Properties();
+        }
+        if (this.environmentFile != null) {
+            this.environment.putAll(loadProperties(this.environmentFile));
+        }
+    }
+
+    protected static Properties loadProperties(final InputStream in) throws IOException {
+        final Properties props = new Properties();
+        try {
+            props.load(in);
+        } finally {
+            in.close();
+        }
+
+        return props;
+    }
+
+    protected static Properties loadProperties(final String file) throws MojoFailureException {
+        return loadProperties(new File(file));
+    }
+
+    protected static Properties loadProperties(final File file) throws MojoFailureException {
+        try {
+
+            return loadProperties(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            throw new MojoFailureException("No such file: " + file, e);
+        } catch (IOException e) {
+            throw new MojoFailureException("Error reading file: " + file, e);
+        }
+    }
+
+    static {
+        try {
+            VERSION = loadProperties(PackageMojo.class
+                                             .getClassLoader()
+                                             .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties"))
+                    .getProperty("version");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

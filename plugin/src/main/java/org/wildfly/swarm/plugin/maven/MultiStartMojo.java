@@ -15,14 +15,6 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
@@ -51,6 +43,11 @@ import org.codehaus.plexus.util.xml.Xpp3DomUtils;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Bob McWhirter
  * @author Ken Finnigan
@@ -62,37 +59,19 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 public class MultiStartMojo extends AbstractSwarmMojo {
 
     @Parameter(alias = "processes")
-    private List<XmlPlexusConfiguration> processes;
+    protected List<XmlPlexusConfiguration> processes;
 
     //  ----------------------------------------
-    @Parameter(defaultValue = "${session}")
-    private MavenSession mavenSession;
+    @Parameter(defaultValue = "${session}", readonly = true)
+    protected MavenSession mavenSession;
 
     @Component
-    private BuildPluginManager pluginManager;
-
-    @Parameter(defaultValue = "${mojoExecution}")
-    private MojoExecution mojoExecution;
+    protected BuildPluginManager pluginManager;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (this.properties == null) {
-            this.properties = new Properties();
-        }
-        if (this.environment == null) {
-            this.environment = new Properties();
-        }
-        if (environmentFile != null) {
-            Properties ef = new Properties();
-            try {
-                Reader inStream = new FileReader(environmentFile);
-                ef.load(inStream);
-                inStream.close();
-                this.environment.putAll(ef);
-            } catch (IOException e) {
-                getLog().error("env file not found or not parsable " + environmentFile);
-            }
-        }
+        initProperties();
+        initEnvironment();
 
         for (XmlPlexusConfiguration process : this.processes) {
             try {
