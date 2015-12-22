@@ -29,7 +29,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
-      <version>4.0.26.Final</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -39,7 +38,6 @@
     <dependency>
       <groupId>org.jboss.msc</groupId>
       <artifactId>jboss-msc</artifactId>
-      <version>1.2.6.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>

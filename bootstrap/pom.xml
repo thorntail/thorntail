@@ -78,7 +78,6 @@
       <dependency>
         <groupId>org.jboss.spec.javax.sql</groupId>
         <artifactId>jboss-javax-sql-api_7.0_spec</artifactId>
-        <version>${version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
