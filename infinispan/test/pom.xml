@@ -45,7 +45,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-infinispan-modules</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>

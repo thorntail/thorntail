@@ -30,19 +30,16 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-jca-modules</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-connector</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-transactions</artifactId>
-      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

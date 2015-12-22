@@ -30,14 +30,12 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-jgroups-modules</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-jmx</artifactId>
-      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

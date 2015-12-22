@@ -87,6 +87,8 @@
     <version.gradle.plugins>1.12</version.gradle.plugins>
     <version.groovy>2.4.3</version.groovy>
 
+    <version.jolokia>1.3.1</version.jolokia>
+
     <maven.min.version>3.2.1</maven.min.version>
 
     <!-- Surefire args -->
@@ -333,6 +335,12 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-arquillian-daemon-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-bean-validation</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -346,6 +354,7 @@
         <artifactId>wildfly-swarm-bean-validation-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-bootstrap</artifactId>
@@ -396,7 +405,7 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-runtime</artifactId>
+        <artifactId>wildfly-swarm-datasources-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -601,9 +610,37 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jmx-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jmx-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-jolokia</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jolokia-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jolokia-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jolokia</groupId>
+        <artifactId>jolokia-war</artifactId>
+        <version>${version.jolokia}</version>
+        <type>war</type>
+      </dependency>
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-jpa</artifactId>
@@ -611,7 +648,28 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jpa-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jpa-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-jsf</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jsf-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-jsf-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -953,6 +1011,17 @@
         <type>zip</type>
         <version>${version.keycloak}</version>
         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-core</artifactId>
+        <version>${version.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-undertow-adapter</artifactId>
+        <version>${version.keycloak}</version>
       </dependency>
 
       <dependency>

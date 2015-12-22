@@ -30,12 +30,10 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-ee-modules</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>wildfly-swarm-naming</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Provided APIs -->
