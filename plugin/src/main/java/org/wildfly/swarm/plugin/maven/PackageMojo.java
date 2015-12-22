@@ -15,6 +15,19 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wildfly.swarm.tools.BuildTool;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,27 +37,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.inject.Inject;
-
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.handler.ArtifactHandler;
-import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.model.Resource;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.impl.ArtifactResolver;
-import org.wildfly.swarm.tools.BuildTool;
 
 /**
  * @author Bob McWhirter
@@ -150,7 +142,8 @@ public class PackageMojo extends AbstractSwarmMojo {
         this.tool
                 .properties(this.properties)
                 .mainClass(this.mainClass)
-                .contextPath(this.contextPath);
+                .contextPath(this.contextPath)
+                .bundleDependencies(this.bundleDependencies);
 
         MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystemSession);
         for (ArtifactRepository each : this.remoteRepositories) {
