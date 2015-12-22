@@ -37,15 +37,6 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "mainClass")
     protected String mainClass;
 
-    @Parameter(alias = "httpPort")
-    protected Integer httpPort;
-
-    @Parameter(alias = "portOffset")
-    protected Integer portOffset;
-
-    @Parameter(alias = "bindAddress")
-    protected String bindAddress;
-
     @Parameter(alias = "contextPath", defaultValue = "/")
     protected String contextPath;
 

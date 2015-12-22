@@ -61,22 +61,6 @@ public class PackageMojo extends AbstractSwarmMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         initProperties();
 
-        if ( this.httpPort != null ) {
-            getLog().warn( "<httpPort> is deprecated, please use <jboss.http.port> within <properties>");
-            this.properties.setProperty( "jboss.http.port", this.httpPort.toString() );
-        }
-
-        if ( this.portOffset != null ) {
-            getLog().warn( "<portOffset> is deprecated, please use <jboss.port.offset> within <properties>" );
-            this.properties.setProperty( "jboss.port.offset", this.portOffset.toString() );
-        }
-
-        if ( this.bindAddress != null ) {
-            getLog().warn( "<bindAddress> is deprecated, please use <jboss.bind.address> within <properties>" );
-            this.properties.setProperty( "jboss.bind.address", this.bindAddress );
-        }
-
-
         final BuildTool tool = new BuildTool();
 
         tool.projectArtifact(
