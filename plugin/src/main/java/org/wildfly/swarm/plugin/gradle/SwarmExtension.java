@@ -25,9 +25,6 @@ import java.util.Properties;
  */
 public class SwarmExtension {
     private String mainClass;
-    private Integer httpPort;
-    private Integer portOffset;
-    private String bindAddress;
     private Boolean bundleDependencies;
 
     private Properties properties = new Properties();
@@ -54,21 +51,6 @@ public class SwarmExtension {
 
     public String getMainClassName() {
         return this.mainClass;
-    }
-
-    public void setHttpPort(Integer httpPort) {
-        System.err.println( "'httpPort' is deprecated, please use 'jboss.http.port' within 'properties'");
-        this.properties.setProperty( "jboss.http.port", httpPort.toString());
-    }
-
-    public void setPortOffset(Integer portOffset) {
-        System.err.println( "'portOffset' is deprecated, please use 'jboss.port.offset' within 'properties'");
-        this.properties.setProperty( "jboss.port.offset", portOffset.toString());
-    }
-
-    public void setBindAddress(String bindAddress) {
-        System.err.println( "'bindAddress' is deprecated, please use 'jboss.bind.address' within 'properties'");
-        this.properties.setProperty( "jboss.bind.address", bindAddress.toString());
     }
 
     public Boolean getBundleDependencies() {
