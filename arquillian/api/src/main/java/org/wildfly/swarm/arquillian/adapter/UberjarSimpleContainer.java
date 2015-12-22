@@ -85,7 +85,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .addModule("org.jboss.msc");
 
         BuildTool tool = new BuildTool()
-                .projectArchive(archive);
+                .projectArchive(archive)
+                .bundleDependencies(false);
 
         final String additionalModules = System.getProperty("swarm.build.modules");
         if (additionalModules != null) {
