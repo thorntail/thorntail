@@ -76,11 +76,6 @@ public class PackageTask extends DefaultTask {
 
         this.tool.properties( ext.getProperties() );
 
-        String contextPath = ext.getContextPath();
-        if(contextPath != null) {
-            this.tool.contextPath(contextPath);
-        }
-
         Boolean bundleDependencies = ext.getBundleDependencies();
         if(bundleDependencies != null) {
             this.tool.bundleDependencies(bundleDependencies);

@@ -150,7 +150,6 @@ public class StartMojo extends AbstractSwarmMojo {
             }
             executor.withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
                     .withProperties(this.properties)
-                    .withProperty("wildfly.swarm.context.path", this.contextPath)
                     .withEnvironment(this.environment)
                     .withWorkingDirectory(this.project.getBasedir().toPath())
                     .withDefaultMainClass();
@@ -191,7 +190,6 @@ public class StartMojo extends AbstractSwarmMojo {
         try {
             executor.withClassPathEntries(dependencies(true))
                     .withProperties(this.properties)
-                    .withProperty("wildfly.swarm.context.path", this.contextPath)
                     .withEnvironment(this.environment)
                     .withWorkingDirectory(this.project.getBasedir().toPath());
 

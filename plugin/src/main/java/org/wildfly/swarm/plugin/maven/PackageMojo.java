@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -96,7 +95,6 @@ public class PackageMojo extends AbstractSwarmMojo {
         tool
                 .properties(this.properties)
                 .mainClass(this.mainClass)
-                .contextPath(this.contextPath)
                 .bundleDependencies(this.bundleDependencies);
 
         MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver, this.repositorySystemSession);

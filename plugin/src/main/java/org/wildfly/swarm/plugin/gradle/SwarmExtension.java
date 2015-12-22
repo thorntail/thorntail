@@ -28,7 +28,6 @@ public class SwarmExtension {
     private Integer httpPort;
     private Integer portOffset;
     private String bindAddress;
-    private String contextPath;
     private Boolean bundleDependencies;
 
     private Properties properties = new Properties();
@@ -70,14 +69,6 @@ public class SwarmExtension {
     public void setBindAddress(String bindAddress) {
         System.err.println( "'bindAddress' is deprecated, please use 'jboss.bind.address' within 'properties'");
         this.properties.setProperty( "jboss.bind.address", bindAddress.toString());
-    }
-
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
     }
 
     public Boolean getBundleDependencies() {

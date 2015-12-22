@@ -37,9 +37,6 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "mainClass")
     protected String mainClass;
 
-    @Parameter(alias = "contextPath", defaultValue = "/")
-    protected String contextPath;
-
     @Parameter(alias = "properties")
     protected Properties properties;
 
