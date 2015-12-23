@@ -51,6 +51,7 @@ import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.vfs.TempFileProvider;
+import org.wildfly.swarm.bootstrap.BootstrapLogger;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -92,6 +93,8 @@ public class RuntimeServer implements Server {
 
     private List<ServerConfiguration<Fraction>> configList = new ArrayList<>();
 
+    private boolean debug = false;
+
     @SuppressWarnings("unused")
     public RuntimeServer() {
         try {
@@ -109,6 +112,11 @@ public class RuntimeServer implements Server {
         } catch (ModuleLoadException e) {
             System.err.println( "[WARN] logging not available, logging will not be configured" );
         }
+    }
+
+    @Override
+    public void debug(boolean debug) {
+        this.debug = debug;
     }
 
     @Override
@@ -130,7 +138,8 @@ public class RuntimeServer implements Server {
         // float all <extension> up to the head of the list
         list.sort(new ExtensionOpPriorityComparator());
 
-        //System.err.println( list );
+            //System.err.println( list );
+        BootstrapLogger.logger( "runtime" ).info( list.toString() );
 
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
 
@@ -179,6 +188,7 @@ public class RuntimeServer implements Server {
 
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(this.configList, this.client, this.contentProvider, tempFileProvider);
+        this.deployer.debug( this.debug );
 
         List<Archive> implicitDeployments = new ArrayList<>();
 

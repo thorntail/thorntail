@@ -21,10 +21,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
@@ -56,13 +59,17 @@ public class RuntimeDeployer implements Deployer {
 
     private final List<Closeable> mountPoints = new ArrayList<>();
 
+    private boolean debug = false;
+
     public RuntimeDeployer(List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
         this.configurations = configurations;
         this.client = client;
         this.contentProvider = contentProvider;
         this.tempFileProvider = tempFileProvider;
-        //this.executor = Executors.newSingleThreadScheduledExecutor();
-        //this.tempFileProvider = TempFileProvider.create("wildfly-swarm", this.executor);
+    }
+
+    public void debug(boolean debug) {
+        this.debug = debug;
     }
 
     @Override
@@ -72,12 +79,12 @@ public class RuntimeDeployer implements Deployer {
             each.prepareArchive(deployment);
         }
 
-        /*
-        Map<ArchivePath, Node> c = deployment.getContent();
-        for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
-            System.err.println(each.getKey() + " // " + each.getValue());
+        if (this.debug) {
+            Map<ArchivePath, Node> c = deployment.getContent();
+            for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
+                System.err.println(each.getKey() + " // " + each.getValue());
+            }
         }
-        */
 
         String dump = System.getProperty("swarm.export.deployment");
         if (dump != null &&
@@ -92,9 +99,8 @@ public class RuntimeDeployer implements Deployer {
         try (InputStream in = deployment.as(ZipExporter.class).exportAsInputStream()) {
             Closeable closeable = VFS.mountZipExpanded(in, deployment.getName(), mountPoint, tempFileProvider);
             this.mountPoints.add(closeable);
-            //System.err.println( "mount: " + mountPoint + " // " + mountPoint.getPhysicalFile() );
         } catch (IOException e) {
-            throw new DeploymentException( deployment, e);
+            throw new DeploymentException(deployment, e);
         }
 
         byte[] hash = this.contentProvider.addContent(mountPoint);
@@ -118,13 +124,11 @@ public class RuntimeDeployer implements Deployer {
                 return;
             }
 
-            ModelNode description = result.get("failure-description" );
-            throw new DeploymentException( deployment, description.asString() );
+            ModelNode description = result.get("failure-description");
+            throw new DeploymentException(deployment, description.asString());
         } catch (IOException e) {
-            throw new DeploymentException( deployment, e );
+            throw new DeploymentException(deployment, e);
         }
-
-        // TODO handle a non-success result
     }
 
     void stop() {

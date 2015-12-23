@@ -155,6 +155,7 @@ public class Container {
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.RuntimeServer");
         try {
             this.server = (Server) serverClass.newInstance();
+            this.server.debug( debugBootstrap );
         } catch (Throwable t) {
             t.printStackTrace();
         }

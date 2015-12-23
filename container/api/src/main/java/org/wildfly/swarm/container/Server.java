@@ -25,6 +25,8 @@ public interface Server {
     Deployer start(Container config) throws Exception;
     void stop() throws Exception;
 
+    void debug(boolean debug);
+
     Set<Class<? extends Fraction>> getFractionTypes();
     Fraction createDefaultFor(Class<? extends Fraction> fractionClazz);
 }
