@@ -10,7 +10,6 @@
   <dependencies>
     <module name="io.netty"/>
     <module name="javax.annotation.api" export="true"/>
-    <module name="javax.ejb.api" export="true" optional="true"/>
     <module name="javax.enterprise.api" export="true"/>
     <module name="org.jboss.modules"/>
     <module name="org.jboss.msc"/>
