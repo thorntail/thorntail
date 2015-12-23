@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-swagger-parent</artifactId>
+    <artifactId>swagger-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-swagger-runtime</artifactId>
+  <artifactId>swagger-runtime</artifactId>
 
   <name>WildFly Swarm: Swagger Runtime</name>
   <description>WildFly Swarm: Swagger Runtime</description>
@@ -25,15 +25,15 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-swagger</artifactId>
+      <artifactId>swagger</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-runtime</artifactId>
+      <artifactId>container-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jaxrs-runtime</artifactId>
+      <artifactId>jaxrs-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
 

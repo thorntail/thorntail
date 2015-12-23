@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-swagger-parent</artifactId>
+    <artifactId>swagger-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-swagger</artifactId>
+  <artifactId>swagger</artifactId>
 
   <name>WildFly Swarm: Swagger API</name>
   <description>WildFly Swarm: Swagger API</description>
@@ -25,11 +25,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-swagger-modules</artifactId>
+      <artifactId>swagger-modules</artifactId>
     </dependency>
 
     <!-- Dependent APIs -->

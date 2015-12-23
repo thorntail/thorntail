@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-swagger-parent</artifactId>
+    <artifactId>swagger-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-swagger-test</artifactId>
+  <artifactId>swagger-test</artifactId>
 
   <name>WildFly Swarm: Swagger Test</name>
   <description>WildFly Swarm: Swagger Test</description>
@@ -41,15 +41,15 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-swagger</artifactId>
+      <artifactId>swagger</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-swagger-modules</artifactId>
+      <artifactId>swagger-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
