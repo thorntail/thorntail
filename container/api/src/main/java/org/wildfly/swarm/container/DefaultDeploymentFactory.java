@@ -27,6 +27,6 @@ public interface DefaultDeploymentFactory {
 
     int getPriority();
     String getType();
-    Archive create(Container container) throws IOException, ModuleLoadException, Exception;
+    Archive create(Container container) throws Exception;
 
 }

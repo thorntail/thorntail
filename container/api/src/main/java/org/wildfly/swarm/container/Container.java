@@ -354,11 +354,10 @@ public class Container {
      * @return The container.
      * @throws Exception if an error occurs.
      */
-    public Container deploy() throws Exception {
+    public Container deploy() throws DeploymentException {
         Archive deployment = createDefaultDeployment();
         if (deployment == null) {
-            System.err.println("[WARN] Unable to create default deployment");
-            return this;
+            throw new DeploymentException( "Unable to create default deployment" );
         } else {
             return deploy(deployment);
         }
@@ -371,7 +370,7 @@ public class Container {
      * @return The container.
      * @throws Exception if an error occurs.
      */
-    public Container deploy(Archive<?> deployment) throws Exception {
+    public Container deploy(Archive<?> deployment) throws DeploymentException {
         this.deployer.deploy(deployment);
         return this;
     }
@@ -429,41 +428,45 @@ public class Container {
     }
 
 
-    protected Archive createDefaultDeployment() throws Exception {
-        Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-        ServiceLoader<DefaultDeploymentFactory> providerLoader = m1.loadService(DefaultDeploymentFactory.class);
+    protected Archive createDefaultDeployment() throws DeploymentException {
+        try {
+            Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            ServiceLoader<DefaultDeploymentFactory> providerLoader = m1.loadService(DefaultDeploymentFactory.class);
 
-        Iterator<DefaultDeploymentFactory> providerIter = providerLoader.iterator();
+            Iterator<DefaultDeploymentFactory> providerIter = providerLoader.iterator();
 
-        if (!providerIter.hasNext()) {
-            providerLoader = ServiceLoader.load(DefaultDeploymentFactory.class, ClassLoader.getSystemClassLoader());
-            providerIter = providerLoader.iterator();
-        }
+            if (!providerIter.hasNext()) {
+                providerLoader = ServiceLoader.load(DefaultDeploymentFactory.class, ClassLoader.getSystemClassLoader());
+                providerIter = providerLoader.iterator();
+            }
 
-        Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
+            Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
 
-        while (providerIter.hasNext()) {
-            DefaultDeploymentFactory factory = providerIter.next();
-            DefaultDeploymentFactory current = factories.get(factory.getType());
-            if (current == null) {
-                factories.put(factory.getType(), factory);
-            } else {
-                // if this one is high priority than the previously-seen
-                // factory, replace it.
-                if (factory.getPriority() > current.getPriority()) {
+            while (providerIter.hasNext()) {
+                DefaultDeploymentFactory factory = providerIter.next();
+                DefaultDeploymentFactory current = factories.get(factory.getType());
+                if (current == null) {
                     factories.put(factory.getType(), factory);
+                } else {
+                    // if this one is high priority than the previously-seen
+                    // factory, replace it.
+                    if (factory.getPriority() > current.getPriority()) {
+                        factories.put(factory.getType(), factory);
+                    }
                 }
             }
+
+            String type = determineDeploymentType();
+            DefaultDeploymentFactory factory = factories.get(type);
+
+            if (factory != null) {
+                return factory.create(this);
+            }
+
+            return null;
+        } catch (Exception e) {
+            throw new DeploymentException( e);
         }
-
-        String type = determineDeploymentType();
-        DefaultDeploymentFactory factory = factories.get(type);
-
-        if (factory != null) {
-            return factory.create(this);
-        }
-
-        return null;
     }
 
     protected String determineDeploymentType() throws IOException {

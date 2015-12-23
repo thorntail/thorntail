@@ -30,6 +30,7 @@ import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.container.Deployer;
+import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Fraction;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -65,7 +66,7 @@ public class RuntimeDeployer implements Deployer {
     }
 
     @Override
-    public void deploy(Archive<?> deployment) throws IOException {
+    public void deploy(Archive<?> deployment) throws DeploymentException {
 
         for (ServerConfiguration each : this.configurations) {
             each.prepareArchive(deployment);
@@ -92,6 +93,8 @@ public class RuntimeDeployer implements Deployer {
             Closeable closeable = VFS.mountZipExpanded(in, deployment.getName(), mountPoint, tempFileProvider);
             this.mountPoints.add(closeable);
             //System.err.println( "mount: " + mountPoint + " // " + mountPoint.getPhysicalFile() );
+        } catch (IOException e) {
+            throw new DeploymentException( deployment, e);
         }
 
         byte[] hash = this.contentProvider.addContent(mountPoint);
@@ -107,7 +110,20 @@ public class RuntimeDeployer implements Deployer {
         content.get(HASH).set(hash);
 
         System.setProperty("wildfly.swarm.current.deployment", deployment.getName());
-        ModelNode result = client.execute(deploymentAdd);
+        try {
+            ModelNode result = client.execute(deploymentAdd);
+
+            ModelNode outcome = result.get("outcome");
+            if (outcome.asString().equals("success")) {
+                return;
+            }
+
+            ModelNode description = result.get("failure-description" );
+            throw new DeploymentException( deployment, description.asString() );
+        } catch (IOException e) {
+            throw new DeploymentException( deployment, e );
+        }
+
         // TODO handle a non-success result
     }
 
