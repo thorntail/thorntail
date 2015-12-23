@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.tools;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -46,5 +50,10 @@ public class ArtifactAsset implements ProjectAsset {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Archive<?> getArchive() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, spec.file);
     }
 }

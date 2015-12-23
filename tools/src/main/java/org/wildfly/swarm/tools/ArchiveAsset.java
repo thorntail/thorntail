@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.io.InputStream;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 

@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.io.File;
-
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+
+import java.io.File;
 
 /**
  * @author Bob McWhirter
@@ -49,6 +49,18 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
         super(groupId, artifactId, packaging, classifier, version);
         this.scope = scope;
         this.file = file;
+    }
+
+    public String jarName() {
+        String classifier = classifier();
+        if (classifier != null &&
+                classifier.length() > 0) {
+            classifier = "-" + classifier;
+        } else {
+            classifier = "";
+        }
+
+        return String.format("%s-%s%s.%s", artifactId(), version(), classifier, type());
     }
 
     public String toString() {

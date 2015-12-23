@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.tools;
 
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
 
 /**
@@ -23,6 +24,8 @@ import org.jboss.shrinkwrap.api.asset.NamedAsset;
 public interface ProjectAsset extends NamedAsset {
 
     String getSimpleName();
+
+    Archive<?> getArchive();
 
     default String getName()  {
         return "_bootstrap/" + getSimpleName();

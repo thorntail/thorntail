@@ -15,9 +15,23 @@
  */
 package org.wildfly.swarm.tools;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -27,17 +41,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
+import java.util.stream.Collectors;
 
 /**
  * @author Bob McWhirter
@@ -130,6 +134,7 @@ public class BuildTool {
 
     public Archive build() throws Exception {
         analyzeDependencies();
+        removeSwarmDependencies();
         addWildflySwarmBootstrapJar();
         addWildFlyBootstrapConf();
         addManifest();
@@ -138,11 +143,44 @@ public class BuildTool {
         addWildFlySwarmDependenciesConf();
         addAdditionalModules();
         populateUberJarMavenRepository();
+
         return this.archive;
     }
 
     protected void analyzeDependencies() throws Exception {
         this.dependencyManager.analyzeDependencies(this.resolveTransitiveDependencies);
+    }
+
+    protected static final String WEB_INF_LIB = "/WEB-INF/lib/";
+
+    protected static final String SWARM_ARTIFACT_MARKER = "/META-INF/maven/org.wildfly.swarm";
+
+    protected boolean nodeIsSwarmArtifact(Node node) {
+        try (final InputStream in = node.getAsset().openStream()) {
+
+            return ShrinkWrap.create(ZipImporter.class)
+                    .importFrom(in)
+                    .as(JavaArchive.class)
+                    .contains(SWARM_ARTIFACT_MARKER);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected boolean nodeIsInJarList(Node node, Set<String> jarList) {
+        return jarList.contains(node.getPath().get().substring(WEB_INF_LIB.length()));
+    }
+
+    protected void removeSwarmDependencies() {
+        final Archive<?> archive = this.projectAsset.getArchive();
+        final Set<String> moduleJars = this.dependencyManager.getModuleDependencies().stream()
+                .map(ArtifactSpec::jarName)
+                .collect(Collectors.toSet());
+
+        archive.getContent().values().stream()
+                .filter(node -> node.getPath().get().startsWith(WEB_INF_LIB))
+                .filter(node -> nodeIsInJarList(node, moduleJars) || nodeIsSwarmArtifact(node))
+                .forEach(node -> archive.delete(node.getPath()));
     }
 
     private void addWildflySwarmBootstrapJar() throws BuildException, IOException {
