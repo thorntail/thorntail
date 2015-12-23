@@ -6,7 +6,7 @@ applications as *uber jars*, with just enough of the
 WildFly application server wrapped around it to support
 each application's use-case.
 
-> Note: WildFly Swarm requires Maven 3.1.x or higher for building your application.
+> Note: WildFly Swarm requires Maven 3.2.5 or higher for building your application.
 
 > Note: WildFly Swarm requires JDK 8 or higher for building your application
 > or for building WildFly Swarm itself.
