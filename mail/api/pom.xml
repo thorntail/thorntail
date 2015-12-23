@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-mail-parent</artifactId>
+    <artifactId>mail-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-mail</artifactId>
+  <artifactId>mail</artifactId>
 
   <name>WildFly Swarm: Mail API</name>
   <description>WildFly Swarm: Mail API</description>
@@ -25,21 +25,21 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-mail-modules</artifactId>
+      <artifactId>mail-modules</artifactId>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-logging</artifactId>
+      <artifactId>logging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-naming</artifactId>
+      <artifactId>naming</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

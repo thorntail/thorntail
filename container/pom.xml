@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-container-parent</artifactId>
+  <artifactId>container-parent</artifactId>
 
   <name>WildFly Swarm: Container</name>
   <description>WildFly Swarm: Container</description>

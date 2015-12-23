@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-weld-parent</artifactId>
+    <artifactId>weld-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-weld</artifactId>
+  <artifactId>weld</artifactId>
 
   <name>WildFly Swarm: Weld API</name>
   <description>WildFly Swarm: Weld API</description>
@@ -25,25 +25,25 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-weld-modules</artifactId>
+      <artifactId>weld-modules</artifactId>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-transactions</artifactId>
+      <artifactId>transactions</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-bean-validation</artifactId>
+      <artifactId>bean-validation</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ee</artifactId>
+      <artifactId>ee</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

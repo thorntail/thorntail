@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.infinispan;
 
+import javax.naming.InitialContext;
+
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -22,8 +24,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.wildfly.swarm.container.JARArchive;
-
-import javax.naming.InitialContext;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,4 +44,5 @@ public class InfinispanTests {
         cache.put("ham", "biscuit");
         assertEquals("biscuit", cache.get("ham"));
     }
+
 }

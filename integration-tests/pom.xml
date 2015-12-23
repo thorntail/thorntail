@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-integration-tests</artifactId>
+  <artifactId>integration-tests</artifactId>
 
   <name>WildFly Swarm: Integration Tests</name>
   <description>WildFly Swarm: Integration Tests</description>
@@ -27,40 +27,40 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-connector</artifactId>
+      <artifactId>connector</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ejb</artifactId>
+      <artifactId>ejb</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jaxrs</artifactId>
+      <artifactId>jaxrs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jca</artifactId>
+      <artifactId>jca</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jpa</artifactId>
+      <artifactId>jpa</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-mail</artifactId>
+      <artifactId>mail</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-weld</artifactId>
+      <artifactId>weld</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-undertow</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

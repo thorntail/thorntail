@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-connector-parent</artifactId>
+  <artifactId>connector-parent</artifactId>
 
   <name>WildFly Swarm: Connector</name>
   <description>WildFly Swarm: Connector</description>

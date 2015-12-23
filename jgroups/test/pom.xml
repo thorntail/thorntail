@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-jgroups-parent</artifactId>
+    <artifactId>jgroups-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-jgroups-test</artifactId>
+  <artifactId>jgroups-test</artifactId>
 
   <name>WildFly Swarm: JGroups Test</name>
   <description>WildFly Swarm: JGroups Test</description>
@@ -41,21 +41,43 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jgroups</artifactId>
+      <artifactId>jgroups</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jgroups-modules</artifactId>
+      <artifactId>jgroups-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <!-- for build ordering -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jgroups-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jmx-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc-runtime</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

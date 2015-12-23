@@ -149,7 +149,7 @@ public class BuildTool {
         ArtifactSpec artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
 
         if ( artifact == null ) {
-            throw new BuildException( "Unable to load wildfly-swarm-bootstrap; check your dependencies" );
+            throw new BuildException( "Unable to load org.wildfly.swarm:bootstrap; check your dependencies" );
         }
 
         if (!bootstrapJarShadesJBossModules(artifact.file)) {

@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-infinispan-parent</artifactId>
+    <artifactId>infinispan-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-infinispan-modules</artifactId>
+  <artifactId>infinispan-modules</artifactId>
 
   <name>WildFly Swarm: Infinispan Modules</name>
   <description>WildFly Swarm: Infinispan Modules</description>
@@ -40,11 +40,15 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-bootstrap</artifactId>
+      <artifactId>bootstrap</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-modules</artifactId>
+      <artifactId>container-modules</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jmx-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

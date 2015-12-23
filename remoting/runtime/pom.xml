@@ -4,13 +4,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-remoting-parent</artifactId>
+    <artifactId>remoting-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-remoting-runtime</artifactId>
+  <artifactId>remoting-runtime</artifactId>
 
   <name>WildFly Swarm: Remoting Runtime</name>
   <description>WildFly Swarm: Remoting Runtime</description>
@@ -20,11 +20,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-remoting</artifactId>
+      <artifactId>remoting</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-runtime</artifactId>
+      <artifactId>container-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

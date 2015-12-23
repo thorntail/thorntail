@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-io-parent</artifactId>
+    <artifactId>io-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-io-runtime</artifactId>
+  <artifactId>io-runtime</artifactId>
 
   <name>WildFly Swarm: IO Runtime</name>
   <description>WildFly Swarm: IO Runtime</description>
@@ -25,11 +25,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-io</artifactId>
+      <artifactId>io</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-runtime</artifactId>
+      <artifactId>container-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

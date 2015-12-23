@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-jaxrs-parent</artifactId>
+    <artifactId>jaxrs-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-jaxrs-modules</artifactId>
+  <artifactId>jaxrs-modules</artifactId>
 
   <name>WildFly Swarm: JAX-RS Modules</name>
   <description>WildFly Swarm: JAX-RS Modules</description>
@@ -40,23 +40,23 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-bootstrap</artifactId>
+      <artifactId>bootstrap</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-modules</artifactId>
+      <artifactId>container-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-undertow-modules</artifactId>
+      <artifactId>undertow-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-naming-modules</artifactId>
+      <artifactId>naming-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-security-modules</artifactId>
+      <artifactId>security-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

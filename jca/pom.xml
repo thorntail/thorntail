@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-jca-parent</artifactId>
+  <artifactId>jca-parent</artifactId>
 
   <name>WildFly Swarm: JCA</name>
   <description>WildFly Swarm: JCA</description>

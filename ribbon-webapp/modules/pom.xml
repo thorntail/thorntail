@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-ribbon-webapp-parent</artifactId>
+    <artifactId>ribbon-webapp-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-ribbon-webapp-modules</artifactId>
+  <artifactId>ribbon-webapp-modules</artifactId>
 
   <name>WildFly Swarm: Ribbon Web App Modules</name>
   <description>WildFly Swarm: Ribbon Web App Modules</description>
@@ -40,19 +40,19 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-bootstrap</artifactId>
+      <artifactId>bootstrap</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-modules</artifactId>
+      <artifactId>container-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-undertow-modules</artifactId>
+      <artifactId>undertow-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ribbon-modules</artifactId>
+      <artifactId>ribbon-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

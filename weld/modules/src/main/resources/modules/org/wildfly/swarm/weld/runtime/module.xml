@@ -1,6 +1,6 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.weld" slot="runtime">
   <resources>
-    <artifact name="org.wildfly.swarm:wildfly-swarm-weld-runtime:${project.version}"/>
+    <artifact name="org.wildfly.swarm:weld-runtime:${project.version}"/>
   </resources>
 
   <dependencies>

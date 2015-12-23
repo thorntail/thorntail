@@ -82,7 +82,7 @@ public abstract class AbstractBootstrapIntegrationTestCase {
 
         File[] children = targetDir.toFile().listFiles();
         for (File child : children) {
-            if (child.getName().startsWith("wildfly-swarm-bootstrap") && child.getName().endsWith(".jar") && !child.getName().endsWith("-sources.jar")) {
+            if (child.getName().startsWith("bootstrap") && child.getName().endsWith(".jar") && !child.getName().endsWith("-sources.jar")) {
                 return child;
             }
         }

@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-jpa-parent</artifactId>
+    <artifactId>jpa-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-jpa</artifactId>
+  <artifactId>jpa</artifactId>
 
   <name>WildFly Swarm: JPA API</name>
   <description>WildFly Swarm: JPA API</description>
@@ -25,21 +25,21 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jpa-modules</artifactId>
+      <artifactId>jpa-modules</artifactId>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-datasources</artifactId>
+      <artifactId>datasources</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ee</artifactId>
+      <artifactId>ee</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

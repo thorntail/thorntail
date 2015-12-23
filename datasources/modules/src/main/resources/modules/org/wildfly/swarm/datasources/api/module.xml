@@ -1,6 +1,6 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.datasources" slot="api">
   <resources>
-    <artifact name="org.wildfly.swarm:wildfly-swarm-datasources:${project.version}"/>
+    <artifact name="org.wildfly.swarm:datasources:${project.version}"/>
   </resources>
 
   <dependencies>

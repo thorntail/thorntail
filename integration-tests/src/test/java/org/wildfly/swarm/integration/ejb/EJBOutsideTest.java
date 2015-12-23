@@ -58,8 +58,8 @@ public class EJBOutsideTest {
     @ArtifactDependencies
     public static List<String> appDependencies() {
         return Arrays.asList(
-                "org.wildfly.swarm:wildfly-swarm-ejb",
-                "org.wildfly.swarm:wildfly-swarm-jaxrs"
+                "org.wildfly.swarm:ejb",
+                "org.wildfly.swarm:jaxrs"
         );
     }
 

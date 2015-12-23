@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-messaging-parent</artifactId>
+    <artifactId>messaging-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-messaging-runtime</artifactId>
+  <artifactId>messaging-runtime</artifactId>
 
   <name>WildFly Swarm: Messaging Runtime</name>
   <description>WildFly Swarm: Messaging Runtime</description>
@@ -25,20 +25,20 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-messaging</artifactId>
+      <artifactId>messaging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-runtime</artifactId>
+      <artifactId>container-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-naming-runtime</artifactId>
+      <artifactId>naming-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-security-runtime</artifactId>
+      <artifactId>security-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

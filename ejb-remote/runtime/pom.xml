@@ -4,13 +4,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-ejb-remote-parent</artifactId>
+    <artifactId>ejb-remote-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-ejb-remote-runtime</artifactId>
+  <artifactId>ejb-remote-runtime</artifactId>
 
   <name>WildFly Swarm: EJB Remote Runtime</name>
   <description>WildFly Swarm: EJB Remote Runtime</description>
@@ -20,23 +20,23 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ejb-remote</artifactId>
+      <artifactId>ejb-remote</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-runtime</artifactId>
+      <artifactId>container-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-io-runtime</artifactId>
+      <artifactId>io-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-remoting-runtime</artifactId>
+      <artifactId>remoting-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-undertow-runtime</artifactId>
+      <artifactId>undertow-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

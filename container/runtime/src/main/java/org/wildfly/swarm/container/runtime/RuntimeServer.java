@@ -107,7 +107,7 @@ public class RuntimeServer implements Server {
                 Thread.currentThread().setContextClassLoader(originalCl);
             }
         } catch (ModuleLoadException e) {
-            System.err.println( "[WARN] wildfly-swarm-logging not available, logging will not be configured" );
+            System.err.println( "[WARN] logging not available, logging will not be configured" );
         }
     }
 

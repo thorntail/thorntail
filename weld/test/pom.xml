@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-weld-parent</artifactId>
+    <artifactId>weld-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-weld-test</artifactId>
+  <artifactId>weld-test</artifactId>
 
   <name>WildFly Swarm: Weld Test</name>
   <description>WildFly Swarm: Weld Test</description>
@@ -41,15 +41,15 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-weld</artifactId>
+      <artifactId>weld</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-weld-modules</artifactId>
+      <artifactId>weld-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-datasources-parent</artifactId>
+    <artifactId>datasources-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-datasources</artifactId>
+  <artifactId>datasources</artifactId>
 
   <name>WildFly Swarm: Datasources API</name>
   <description>WildFly Swarm: Datasources API</description>
@@ -25,25 +25,25 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-datasources-modules</artifactId>
+      <artifactId>datasources-modules</artifactId>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jca</artifactId>
+      <artifactId>jca</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-logging</artifactId>
+      <artifactId>logging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-security</artifactId>
+      <artifactId>security</artifactId>
     </dependency>
   </dependencies>
 

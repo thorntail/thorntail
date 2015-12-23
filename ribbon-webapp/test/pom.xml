@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-ribbon-webapp-parent</artifactId>
+    <artifactId>ribbon-webapp-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-ribbon-webapp-test</artifactId>
+  <artifactId>ribbon-webapp-test</artifactId>
 
   <name>WildFly Swarm: Ribbon Web App Test</name>
   <description>WildFly Swarm: Ribbon Web App Test</description>
@@ -41,15 +41,15 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ribbon-webapp</artifactId>
+      <artifactId>ribbon-webapp</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ribbon-webapp-modules</artifactId>
+      <artifactId>ribbon-webapp-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

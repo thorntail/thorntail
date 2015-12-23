@@ -53,9 +53,9 @@ public class ClasspathModuleFinder implements ModuleFinder {
                 return null;
             }
 
-            //System.err.println( "ClasspathModuleFinder: " + identifier );
-
             final URL base = new URL( url, "./" );
+
+            //System.err.println( "ClasspathModuleFinder: " + identifier + " > " + base );
 
             InputStream in = url.openStream();
 

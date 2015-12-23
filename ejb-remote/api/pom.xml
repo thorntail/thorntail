@@ -4,13 +4,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-ejb-remote-parent</artifactId>
+    <artifactId>ejb-remote-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-ejb-remote</artifactId>
+  <artifactId>ejb-remote</artifactId>
 
   <name>WildFly Swarm: EJB Remote API</name>
   <description>WildFly Swarm: EJB Remote API</description>
@@ -20,25 +20,25 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ejb-remote-modules</artifactId>
+      <artifactId>ejb-remote-modules</artifactId>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ejb</artifactId>
+      <artifactId>ejb</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-remoting</artifactId>
+      <artifactId>remoting</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-undertow</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
 
   </dependencies>

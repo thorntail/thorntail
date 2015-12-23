@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-jca-parent</artifactId>
+    <artifactId>jca-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-jca-runtime</artifactId>
+  <artifactId>jca-runtime</artifactId>
 
   <name>WildFly Swarm: JCA Runtime</name>
   <description>WildFly Swarm: JCA Runtime</description>
@@ -25,20 +25,20 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jca</artifactId>
+      <artifactId>jca</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-runtime</artifactId>
+      <artifactId>container-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-connector-runtime</artifactId>
+      <artifactId>connector-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-transactions-runtime</artifactId>
+      <artifactId>transactions-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

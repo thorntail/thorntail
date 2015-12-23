@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-msc-parent</artifactId>
+    <artifactId>msc-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-msc</artifactId>
+  <artifactId>msc</artifactId>
 
   <name>WildFly Swarm: MSC API</name>
   <description>WildFly Swarm: MSC API</description>
@@ -25,11 +25,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-msc-modules</artifactId>
+      <artifactId>msc-modules</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

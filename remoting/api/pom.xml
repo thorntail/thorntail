@@ -4,13 +4,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-remoting-parent</artifactId>
+    <artifactId>remoting-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-remoting</artifactId>
+  <artifactId>remoting</artifactId>
 
   <name>WildFly Swarm: Remoting API</name>
   <description>WildFly Swarm: Remoting API</description>
@@ -20,21 +20,21 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-remoting-modules</artifactId>
+      <artifactId>remoting-modules</artifactId>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-io</artifactId>
+      <artifactId>io</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-naming</artifactId>
+      <artifactId>naming</artifactId>
     </dependency>
   </dependencies>
 

@@ -4,13 +4,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-jaxrs-jsonp</artifactId>
+  <artifactId>jaxrs-jsonp</artifactId>
 
   <name>WildFly Swarm: JAX-RS + JSON-P</name>
   <description>WildFly Swarm: JAX-RS + JSON-P</description>
@@ -36,7 +36,7 @@
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jaxrs</artifactId>
+      <artifactId>jaxrs</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

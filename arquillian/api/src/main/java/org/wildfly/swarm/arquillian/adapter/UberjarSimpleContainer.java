@@ -140,7 +140,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
             }
         } else {
             // ensure that arq daemon is available
-            this.requestedMavenArtifacts.add("org.wildfly.swarm:wildfly-swarm-arquillian-daemon");
+            this.requestedMavenArtifacts.add("org.wildfly.swarm:arquillian-daemon");
             for (String requestedDep : this.requestedMavenArtifacts) {
                 final MavenResolvedArtifact[] deps =
                         resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")

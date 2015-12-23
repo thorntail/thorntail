@@ -45,6 +45,9 @@ public class ModuleAnalyzer {
     }
 
     public String getName() {
+        if ( this.module == null ) {
+            return "UNKNOWN";
+        }
         return this.module.getName();
     }
 

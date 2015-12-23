@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-security-parent</artifactId>
+    <artifactId>security-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-security</artifactId>
+  <artifactId>security</artifactId>
 
   <name>WildFly Swarm: Security API</name>
   <description>WildFly Swarm: Security API</description>
@@ -25,11 +25,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-security-modules</artifactId>
+      <artifactId>security-modules</artifactId>
     </dependency>
 
     <!-- provided dependencies -->

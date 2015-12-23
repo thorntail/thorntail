@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-datasources-parent</artifactId>
+    <artifactId>datasources-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-datasources-runtime</artifactId>
+  <artifactId>datasources-runtime</artifactId>
 
   <name>WildFly Swarm: Datasources Runtime</name>
   <description>WildFly Swarm: Datasources Runtime</description>
@@ -25,25 +25,25 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-datasources</artifactId>
+      <artifactId>datasources</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-runtime</artifactId>
+      <artifactId>container-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-jca-runtime</artifactId>
+      <artifactId>jca-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-logging-runtime</artifactId>
+      <artifactId>logging-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-security-runtime</artifactId>
+      <artifactId>security-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

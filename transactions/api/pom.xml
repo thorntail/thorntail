@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-transactions-parent</artifactId>
+    <artifactId>transactions-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-transactions</artifactId>
+  <artifactId>transactions</artifactId>
 
   <name>WildFly Swarm: Transactions API</name>
   <description>WildFly Swarm: Transactions API</description>
@@ -25,17 +25,17 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-transactions-modules</artifactId>
+      <artifactId>transactions-modules</artifactId>
     </dependency>
 
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-naming</artifactId>
+      <artifactId>naming</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

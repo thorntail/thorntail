@@ -9,12 +9,12 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-infinispan-parent</artifactId>
+    <artifactId>infinispan-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>wildfly-swarm-infinispan-test</artifactId>
+  <artifactId>infinispan-test</artifactId>
 
   <name>WildFly Swarm: Infinispan Test</name>
   <description>WildFly Swarm: Infinispan Test</description>
@@ -40,11 +40,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-infinispan</artifactId>
+      <artifactId>infinispan</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-infinispan-modules</artifactId>
+      <artifactId>infinispan-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>
@@ -52,18 +52,33 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-msc</artifactId>
+      <artifactId>infinispan-runtime</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-naming</artifactId>
+      <artifactId>msc</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>naming</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>naming-runtime</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>

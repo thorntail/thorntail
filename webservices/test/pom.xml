@@ -8,13 +8,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>wildfly-swarm-webservices-parent</artifactId>
+        <artifactId>webservices-parent</artifactId>
         <groupId>org.wildfly.swarm</groupId>
         <version>1.0.0.Alpha6-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wildfly-swarm-webservices-test</artifactId>
+    <artifactId>webservices-test</artifactId>
 
     <name>WildFly Swarm: WebServices Test</name>
     <description>WildFly Swarm: WebServices Test</description>
@@ -38,15 +38,15 @@
     <dependencies>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>wildfly-swarm-webservices</artifactId>
+            <artifactId>webservices</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>wildfly-swarm-webservices-modules</artifactId>
+            <artifactId>webservices-modules</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>wildfly-swarm-undertow</artifactId>
+            <artifactId>undertow</artifactId>
         </dependency>
     </dependencies>
 

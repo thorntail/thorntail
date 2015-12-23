@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-undertow-parent</artifactId>
+    <artifactId>undertow-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-undertow</artifactId>
+  <artifactId>undertow</artifactId>
 
   <name>WildFly Swarm: Undertow API</name>
   <description>WildFly Swarm: Undertow API</description>
@@ -25,11 +25,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-undertow-modules</artifactId>
+      <artifactId>undertow-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap.descriptors</groupId>
@@ -43,15 +43,15 @@
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-logging</artifactId>
+      <artifactId>logging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-io</artifactId>
+      <artifactId>io</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ee</artifactId>
+      <artifactId>ee</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

@@ -35,7 +35,7 @@ public class StaticContentWarSubdirTest {
     @ArtifactDependencies
     public static List<String> appDependencies() {
         return Arrays.asList(
-                "org.wildfly.swarm:wildfly-swarm-undertow"
+                "org.wildfly.swarm:undertow"
         );
     }
 

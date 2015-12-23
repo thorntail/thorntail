@@ -7,7 +7,7 @@
 
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.container" slot="api">
   <resources>
-    <artifact name="org.wildfly.swarm:wildfly-swarm-container:${project.version}"/>
+    <artifact name="org.wildfly.swarm:container:${project.version}"/>
   </resources>
   <dependencies>
     <module name="org.jboss.modules"/>

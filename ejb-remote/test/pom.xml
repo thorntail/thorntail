@@ -4,13 +4,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-ejb-remote-parent</artifactId>
+    <artifactId>ejb-remote-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-ejb-remote-test</artifactId>
+  <artifactId>ejb-remote-test</artifactId>
 
   <name>WildFly Swarm: EJB Remote Test</name>
   <description>WildFly Swarm: EJB Remote Test</description>
@@ -36,15 +36,15 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ejb-remote</artifactId>
+      <artifactId>ejb-remote</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ejb-remote-modules</artifactId>
+      <artifactId>ejb-remote-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-arquillian</artifactId>
+      <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

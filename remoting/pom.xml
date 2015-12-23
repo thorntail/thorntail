@@ -4,13 +4,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-remoting-parent</artifactId>
+  <artifactId>remoting-parent</artifactId>
 
   <name>WildFly Swarm: Remoting</name>
   <description>WildFly Swarm: Remoting</description>

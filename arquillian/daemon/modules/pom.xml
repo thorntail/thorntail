@@ -9,12 +9,12 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-arquillian-daemon-parent</artifactId>
+    <artifactId>arquillian-daemon-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>wildfly-swarm-arquillian-daemon-modules</artifactId>
+  <artifactId>arquillian-daemon-modules</artifactId>
 
   <name>WildFly Swarm: Arquillian Daemon Modules</name>
   <description>WildFly Swarm: Arquillian Daemon Modules</description>
@@ -39,11 +39,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-bootstrap</artifactId>
+      <artifactId>bootstrap</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-modules</artifactId>
+      <artifactId>container-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly</groupId>

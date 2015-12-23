@@ -48,7 +48,7 @@ public class DependencyManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        BOOTSTRAP_JAR = ArtifactSpec.fromMscGav("org.wildfly.swarm:wildfly-swarm-bootstrap:1.0");
+        BOOTSTRAP_JAR = ArtifactSpec.fromMscGav("org.wildfly.swarm:bootstrap:1.0");
 
         BOOTSTRAP_EMPTY_A = ArtifactSpec.fromMscGav("test:bootstrap-empty-A:1.0");
 

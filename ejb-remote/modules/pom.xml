@@ -4,13 +4,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-ejb-remote-parent</artifactId>
+    <artifactId>ejb-remote-parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-ejb-remote-modules</artifactId>
+  <artifactId>ejb-remote-modules</artifactId>
 
   <name>WildFly Swarm: EJB Remote Modules</name>
   <description>WildFly Swarm: EJB Remote Modules</description>
@@ -35,23 +35,23 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-bootstrap</artifactId>
+      <artifactId>bootstrap</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-container-modules</artifactId>
+      <artifactId>container-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-ejb-modules</artifactId>
+      <artifactId>ejb-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-undertow-modules</artifactId>
+      <artifactId>undertow-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-remoting-modules</artifactId>
+      <artifactId>remoting-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

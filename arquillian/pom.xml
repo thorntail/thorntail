@@ -9,12 +9,12 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>wildfly-swarm-arquillian-parent</artifactId>
+  <artifactId>arquillian-parent</artifactId>
 
   <name>WildFly Swarm: Arquillian Parent</name>
   <description>WildFly Swarm: Arquillian Parent</description>

@@ -31,7 +31,7 @@ public class DependencyManager {
 
     public static final String WILDFLY_SWARM_GROUP_ID = "org.wildfly.swarm";
 
-    public static final String WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID = "wildfly-swarm-bootstrap";
+    public static final String WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID = "bootstrap";
 
     public static final String JBOSS_MODULES_GROUP_ID = "org.jboss.modules";
 
@@ -293,6 +293,7 @@ public class DependencyManager {
 
     protected void analyzeModuleDependencies(ModuleAnalyzer analyzer) {
         this.moduleDependencies.addAll(analyzer.getDependencies());
+
         for (ArtifactSpec each : analyzer.getDependencies()) {
             providedGAVToModuleMappings.put(
                     each.groupId() + ":" + each.artifactId(),

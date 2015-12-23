@@ -55,7 +55,7 @@ public class JAXRSTest {
     @ArtifactDependencies
     public static List<String> appDependencies() {
         return Arrays.asList(
-                "org.wildfly.swarm:wildfly-swarm-jaxrs"
+                "org.wildfly.swarm:jaxrs"
         );
     }
 
