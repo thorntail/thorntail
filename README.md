@@ -49,6 +49,16 @@ the `org.wildfly.swarm` Maven group-id:
 * weld
 * _and many more!_
 
+# How To Build WildFly Swarm Itself
+
+WildFly Swarm attempts to be a well-behaved Maven project. To install to your local repository for usage:
+
+    mvn install
+
+If you're running short on time:
+
+    mvn install -DskipTests
+
 # Issue Tracking
 
 Issue are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/secure/RapidBoard.jspa?rapidView=2972) (JIRA). Bug reports and feature requests are greatly appreciated.
