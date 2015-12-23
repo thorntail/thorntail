@@ -42,6 +42,10 @@ public class ServiceActivatorAsset implements Asset {
         this.activators.add( cls.getName() );
     }
 
+    public boolean containsServiceActivator(String className) {
+        return this.activators.contains( className );
+    }
+
     @Override
     public InputStream openStream() {
         StringBuilder builder = new StringBuilder();

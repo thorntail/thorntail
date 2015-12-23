@@ -72,6 +72,10 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
         return this;
     }
 
+    public boolean containsServiceActivator(String className) {
+        return this.asset.containsServiceActivator( className );
+    }
+
 }
 
 
