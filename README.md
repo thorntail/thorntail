@@ -8,6 +8,9 @@ each application's use-case.
 
 > Note: WildFly Swarm requires Maven 3.1.x or higher for building your application.
 
+> Note: WildFly Swarm requires JDK 8 or higher for building your application
+> or for building WildFly Swarm itself.
+
 # Project Configuration
 
 In a normal WAR-based maven `pom.xml`, simply add the following
