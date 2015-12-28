@@ -29,6 +29,7 @@ import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ModuleXmlParserBridge;
 import org.jboss.modules.ResourceLoader;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.Layout;
 
 /**
@@ -36,9 +37,15 @@ import org.wildfly.swarm.bootstrap.util.Layout;
  */
 public class ClasspathModuleFinder implements ModuleFinder {
 
+    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.classpath" );
+
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
         final String path = "modules/" + identifier.getName().replace('.', '/') + "/" + identifier.getSlot() + "/module.xml";
+
+        if ( LOG.isTraceEnabled() ) {
+            LOG.trace( "attempt:" + identifier );
+        }
 
         try {
             ClassLoader cl = Layout.getInstance().getBootstrapClassLoader();
@@ -50,12 +57,19 @@ public class ClasspathModuleFinder implements ModuleFinder {
             }
 
             if (url == null) {
+                if ( LOG.isTraceEnabled() ) {
+                    LOG.trace( "not found: " + identifier );
+                }
                 return null;
             }
 
             final URL base = new URL( url, "./" );
 
             //System.err.println( "ClasspathModuleFinder: " + identifier + " > " + base );
+
+            if ( LOG.isTraceEnabled() ) {
+                LOG.trace( "base of " + identifier + ": " + base );
+            }
 
             InputStream in = url.openStream();
 

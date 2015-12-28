@@ -16,6 +16,7 @@
 package org.wildfly.swarm.bootstrap.modules;
 
 import org.jboss.modules.*;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.Layout;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 
@@ -30,6 +31,7 @@ import java.util.HashSet;
  */
 public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
 
+    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.bootstrap" );
     public static final String MODULE_NAME = "org.wildfly.swarm.bootstrap";
 
     public BootstrapModuleFinder() {
@@ -39,6 +41,9 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
 
+        if ( LOG.isDebugEnabled() ) {
+            LOG.debug( "Loading module" );
+        }
         try {
             if (Layout.getInstance().isUberJar()) {
                 handleWildFlySwarmBootstrapConf(builder);
@@ -61,6 +66,9 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
     }
 
     protected void handleWildFlySwarmBootstrapConf(ModuleSpec.Builder builder) throws IOException {
+        if ( LOG.isDebugEnabled() ) {
+            LOG.debug( "Loading conf from " + WildFlySwarmBootstrapConf.CLASSPATH_LOCATION );
+        }
         InputStream bootstrapTxt = getClass().getClassLoader().getResourceAsStream(WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
 
         if (bootstrapTxt != null) {

@@ -31,6 +31,7 @@ import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.filter.ClassFilters;
 import org.jboss.modules.filter.PathFilters;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.Layout;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 
@@ -41,6 +42,7 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
  */
 public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
+    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.application" );
     public final static String MODULE_NAME = "swarm.application";
 
     public ApplicationModuleFinder() {
@@ -52,8 +54,14 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
         try {
             if (Layout.getInstance().isUberJar()) {
+                if ( LOG.isDebugEnabled() ) {
+                    LOG.debug("Loading as uberjar");
+                }
                 handleWildFlySwarmApplicationConf(builder);
             } else {
+                if ( LOG.isDebugEnabled() ) {
+                    LOG.debug("Loading as non-ubjerjar");
+                }
                 ClassLoader cl = ClassLoader.getSystemClassLoader();
                 Enumeration<URL> results = cl.getResources("wildfly-swarm-bootstrap.conf");
 
