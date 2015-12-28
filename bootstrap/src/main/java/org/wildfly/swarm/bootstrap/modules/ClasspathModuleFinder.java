@@ -39,6 +39,10 @@ public class ClasspathModuleFinder implements ModuleFinder {
 
     private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.classpath" );
 
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
         final String path = "modules/" + identifier.getName().replace('.', '/') + "/" + identifier.getSlot() + "/module.xml";

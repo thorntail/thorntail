@@ -24,6 +24,10 @@ public abstract class AbstractSingleModuleFinder implements ModuleFinder {
         this.moduleSlot = moduleSlot;
     }
 
+    public String toString() {
+        return getClass().getSimpleName() + "(" + this.moduleName + ":" + this.moduleSlot + ")";
+    }
+
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
         if ( ! identifier.getName().equals( this.moduleName ) || ! identifier.getSlot().equals( this.moduleSlot ) ) {
