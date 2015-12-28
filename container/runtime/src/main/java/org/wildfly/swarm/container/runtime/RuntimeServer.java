@@ -51,7 +51,7 @@ import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.vfs.TempFileProvider;
-import org.wildfly.swarm.bootstrap.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -95,6 +95,8 @@ public class RuntimeServer implements Server {
 
     private boolean debug = false;
 
+    private BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.runtime.server" );
+
     @SuppressWarnings("unused")
     public RuntimeServer() {
         try {
@@ -104,8 +106,10 @@ public class RuntimeServer implements Server {
             try {
                 Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
                 System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
+                System.setProperty("org.jboss.logmanager.configurator", LoggingConfigurator.class.getName());
                 //force logging init
                 LogManager.getLogManager();
+                BootstrapLogger.setBackingLoggerManager( new JBossLoggingManager() );
             } finally {
                 Thread.currentThread().setContextClassLoader(originalCl);
             }
@@ -138,8 +142,10 @@ public class RuntimeServer implements Server {
         // float all <extension> up to the head of the list
         list.sort(new ExtensionOpPriorityComparator());
 
-            //System.err.println( list );
-        BootstrapLogger.logger( "runtime" ).info( list.toString() );
+
+        if ( LOG.isDebugEnabled() ) {
+            LOG.debug(list);
+        }
 
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
 

@@ -32,6 +32,12 @@
       <artifactId>wildfly-server</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-logging</artifactId>
+      <scope>provided</scope>
+    </dependency>
 <!--
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>

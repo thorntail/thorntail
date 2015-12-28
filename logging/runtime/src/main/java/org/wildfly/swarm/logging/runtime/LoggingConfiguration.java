@@ -19,9 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.logging.InitialBackingLogger;
+import org.wildfly.swarm.bootstrap.logging.InitialLoggerManager;
+import org.wildfly.swarm.bootstrap.logging.LevelNode;
+import org.wildfly.swarm.config.Logging;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.logging.LoggingFraction;
+import org.wildfly.swarm.config.logging.Level;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
@@ -60,6 +66,10 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
             fraction = defaultFraction();
         }
 
+        LevelNode root = InitialLoggerManager.INSTANCE.getRoot();
+
+        apply(root, fraction);
+
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode address = new ModelNode();
@@ -74,5 +84,16 @@ public class LoggingConfiguration extends AbstractServerConfiguration<LoggingFra
         list.addAll(Marshaller.marshal(fraction));
 
         return list;
+    }
+
+    private void apply(LevelNode node, LoggingFraction fraction) {
+        if (!node.getName().equals("")) {
+            fraction.logger(node.getName(), (l) -> {
+                l.level(Level.valueOf(node.getLevel().toString()));
+            });
+        }
+        for (LevelNode each : node.getChildren()) {
+            apply( each, fraction );
+        }
     }
 }
