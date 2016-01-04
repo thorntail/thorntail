@@ -155,7 +155,6 @@ public class RuntimeServer implements Server {
 
         UUID grist = java.util.UUID.randomUUID();
         String tmpDir = System.getProperty("java.io.tmpdir");
-        System.err.println("tmpDir: " + tmpDir);
         Path gristedTmp = Paths.get(tmpDir).resolve("wildfly-swarm-" + grist);
         System.setProperty("jboss.server.temp.dir", gristedTmp.toString());
 
@@ -285,8 +284,6 @@ public class RuntimeServer implements Server {
 
         Set<String> groupNames = config.socketBindings().keySet();
 
-        System.err.println( "SB: " + config.socketBindings() );
-
         for (String each : groupNames) {
             List<SocketBinding> bindings = config.socketBindings().get(each);
 
@@ -300,7 +297,6 @@ public class RuntimeServer implements Server {
             }
         }
 
-        System.err.println( "OBSB: " + config.outboundSocketBindings() );
         groupNames = config.outboundSocketBindings().keySet();
 
         for (String each : groupNames) {

@@ -220,7 +220,7 @@ public class DependencyManager {
             if (providedGAVs.contains(each.groupId() + ":" + each.artifactId())) {
                 continue;
             }
-            if (each.scope.equals("compile")) {
+            if (each.scope.equalsIgnoreCase("compile")) {
                 if (each.type().equals("jar")) {
                     depsConf.addPrimaryDependency(each);
                 } else {

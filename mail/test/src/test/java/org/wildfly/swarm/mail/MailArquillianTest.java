@@ -56,7 +56,7 @@ public class MailArquillianTest implements ContainerFactory {
     public void testIt() throws NamingException {
         InitialContext context = new InitialContext();
 
-        Object session = context.lookup("java:jboss/mail/default");
+        Object session = context.lookup("java:jboss/mail/Default");
         assertThat( session ).isNotNull();
         assertThat( session ).isInstanceOf(Session.class);
     }

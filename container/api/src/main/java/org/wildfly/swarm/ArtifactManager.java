@@ -171,7 +171,7 @@ public class ArtifactManager {
         }
 
         if (version == null) {
-            throw new RuntimeException("Unable to determine version number from 2-part GAV.  Try three!");
+            throw new RuntimeException("Unable to determine version number from GAV: " + gav );
         }
 
         return MavenArtifactUtil.resolveArtifact(groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : ":" + classifier), packaging);
@@ -197,6 +197,7 @@ public class ArtifactManager {
         String[] elements = classpath.split(File.pathSeparator);
 
         for (int i = 0; i < elements.length; ++i) {
+            System.err.println( "test: " + elements[i] );
             Matcher matcher = pattern.matcher(elements[i]);
             if (matcher.matches()) {
                 return matcher.group(1);

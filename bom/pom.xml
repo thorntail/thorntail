@@ -64,6 +64,7 @@
     <version.keycloak>1.7.0.Final</version.keycloak>
     <version.h2>1.4.187</version.h2>
 
+<!--
     <version.hawkular>0.9.0.Final</version.hawkular>
     <version.hawkular.cmdgw>0.8.0.Final</version.hawkular.cmdgw>
     <version.hawkular.metrics>0.5.0.Final</version.hawkular.metrics>
@@ -74,6 +75,15 @@
     <version.metrics-core>3.1.0</version.metrics-core>
     <version.okhttp>2.4.0</version.okhttp>
     <version.okio>1.4.0</version.okio>
+    <version.hawkular>1.0.0.Beta8</version.hawkular>
+-->
+
+    <version.hawkular-agent>0.15.1.Final</version.hawkular-agent>
+    <version.hawkular-accounts>2.0.9.Final</version.hawkular-accounts>
+    <version.hawkular-nest>0.3.1.Final</version.hawkular-nest>
+    <version.hawkular-bus>0.3.1.Final</version.hawkular-bus>
+    <version.hawkular-embedded-cassandra>0.3.1.Final</version.hawkular-embedded-cassandra>
+    <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
 
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
@@ -366,6 +376,69 @@
       </dependency>
 
       <dependency>
+        <groupId>org.hawkular.agent</groupId>
+        <artifactId>hawkular-wildfly-agent-feature-pack</artifactId>
+        <version>${version.hawkular-agent}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hawkular.accounts</groupId>
+        <artifactId>hawkular-accounts-feature-pack</artifactId>
+        <version>${version.hawkular-accounts}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hawkular.commons</groupId>
+        <artifactId>hawkular-nest-feature-pack</artifactId>
+        <version>${version.hawkular-nest}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hawkular.commons</groupId>
+        <artifactId>hawkular-bus-feature-pack</artifactId>
+        <version>${version.hawkular-bus}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hawkular.accounts</groupId>
+        <artifactId>hawkular-accounts</artifactId>
+        <version>${version.hawkular-accounts}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.hawkular.accounts</groupId>
+        <artifactId>hawkular-accounts-events-backend</artifactId>
+        <version>${version.hawkular-accounts}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.hawkular.commons</groupId>
+        <artifactId>hawkular-commons-embedded-cassandra-ear</artifactId>
+        <version>${version.hawkular-embedded-cassandra}</version>
+        <type>ear</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hawkular-server</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hawkular-server-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hawkular-server-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>hibernate-validator</artifactId>
         <version>${project.version}</version>
@@ -566,6 +639,12 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak-runtime</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak.secretstore</groupId>
+        <artifactId>secret-store</artifactId>
+        <version>${version.keycloak-secretstore}</version>
+        <type>war</type>
       </dependency>
 
       <dependency>

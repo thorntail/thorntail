@@ -55,7 +55,7 @@ public class MailFraction extends Mail<MailFraction> implements Fraction {
 
     public static MailFraction defaultFraction() {
         return new MailFraction()
-                .mailSession( "default", (session)->{
+                .mailSession( "Default", (session)->{
                     session.smtpServer( (server)->{
                         server.host( "localhost" );
                         server.port( "25" );
@@ -65,14 +65,10 @@ public class MailFraction extends Mail<MailFraction> implements Fraction {
 
     @Override
     public void postInitialize(Container.PostInitContext initContext) {
-        System.err.println( "postInit" );
         for (MailSession session : subresources().mailSessions()) {
-            System.err.println( "session: " + session );
             SMTPServer server = session.subresources().smtpServer();
-            System.err.println( "server: " + server );
             if ( server != null && server instanceof EnhancedSMTPServer ) {
                 OutboundSocketBinding socketBinding = ((EnhancedSMTPServer) server).outboundSocketBinding();
-                System.err.println( "Out: " + socketBinding );
                 if ( socketBinding != null ) {
                     initContext.outboundSocketBinding( socketBinding );
                 }

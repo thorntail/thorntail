@@ -91,7 +91,7 @@ public class ArtifactManagerTest {
             manager.artifact(String.format("%s:%s", ARTIFACT_INVALID_GROUP_ID, ARTIFACT_INVALID_ARTIFACT_ID));
             fail("RuntimeException should have been thrown");
         } catch (RuntimeException e) {
-            assertThat(e).hasMessage("Unable to determine version number from 2-part GAV.  Try three!");
+            assertThat(e.getMessage()).contains( "Unable to determine version number from GAV" );
         }
     }
 
