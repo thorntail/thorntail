@@ -23,7 +23,7 @@
   <packaging>jar</packaging>
 
   <properties>
-    <version.io.swagger>1.5.5-SNAPSHOT</version.io.swagger>
+    <version.io.swagger>1.5.5</version.io.swagger>
     <version.reflections>0.9.10</version.reflections>
     <version.slf4j>1.6.3</version.slf4j>
     <version.guava>18.0</version.guava>
