@@ -21,9 +21,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -35,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Bob McWhirter
@@ -137,33 +136,14 @@ public class StartMojo extends AbstractSwarmMojo {
     protected SwarmExecutor warExecutor() throws MojoFailureException {
         getLog().info("Starting .war");
 
-        final File moduleJar = new File(this.projectBuildDir, "swarm-module-overrides.jar");
-        final JavaArchive moduleArchive = ShrinkWrap.create(JavaArchive.class);
-
-        boolean modulesAdded = false;
-        for (String additionalModule : this.additionalModules) {
-            final File moduleDir = new File(this.project.getBuild().getOutputDirectory(), additionalModule);
-            if (moduleDir.exists()) {
-                moduleArchive.addAsResource(moduleDir, "modules");
-                modulesAdded = true;
-            }
-        }
-
-        final SwarmExecutor executor = new SwarmExecutor();
-
-        if (modulesAdded) {
-            moduleArchive.as(ZipExporter.class)
-                    .exportTo(moduleJar, true);
-
-            executor.withClasspathEntry(moduleJar.toPath());
-        }
-
         String finalName = this.project.getBuild().getFinalName();
         if (!finalName.endsWith(".war")) {
             finalName = finalName + ".war";
         }
 
-        return executor.withClassPathEntries(dependencies(false))
+        return new SwarmExecutor()
+                .withModules(expandModules())
+                .withClassPathEntries(dependencies(false))
                 .withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
                 .withDefaultMainClass();
     }
@@ -173,6 +153,7 @@ public class StartMojo extends AbstractSwarmMojo {
         getLog().info("Starting .jar");
 
         final SwarmExecutor executor = new SwarmExecutor()
+                .withModules(expandModules())
                 .withClassPathEntries(dependencies(true));
 
         if (this.mainClass != null) {
@@ -200,6 +181,12 @@ public class StartMojo extends AbstractSwarmMojo {
         }
 
         return elements;
+    }
+
+    List<Path> expandModules() {
+        return Stream.of(this.additionalModules)
+                .map(m -> Paths.get(this.project.getBuild().getOutputDirectory(), m))
+                .collect(Collectors.toList());
     }
 }
 

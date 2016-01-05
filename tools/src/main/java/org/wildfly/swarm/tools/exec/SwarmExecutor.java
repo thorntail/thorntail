@@ -1,5 +1,9 @@
 package org.wildfly.swarm.tools.exec;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -152,6 +156,32 @@ public class SwarmExecutor {
             throw new RuntimeException("Cannot use a classpath with an executable jar");
         }
         this.classpath.addAll( entries );
+        return this;
+    }
+
+    public SwarmExecutor withModules(final List<Path> moduleDirs) {
+        if (this.executable != null && this.executable instanceof ExecutableJar) {
+            throw new RuntimeException("Cannot use modules with an executable jar");
+        }
+        final File moduleJar = new File(System.getProperty("java.io.tmpdir"),
+                                        "swarm-module-overrides.jar");
+        final JavaArchive moduleArchive = ShrinkWrap.create(JavaArchive.class);
+
+        boolean modulesAdded = false;
+        for (Path moduleDir : moduleDirs) {
+            if (moduleDir.toFile().exists()) {
+                moduleArchive.addAsResource(moduleDir.toFile(), "modules");
+                modulesAdded = true;
+            }
+        }
+
+        if (modulesAdded) {
+            moduleArchive.as(ZipExporter.class)
+                    .exportTo(moduleJar, true);
+
+            withClasspathEntry(moduleJar.toPath());
+        }
+
         return this;
     }
 
