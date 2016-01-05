@@ -18,8 +18,8 @@
   <artifactId>bom-fractions</artifactId>
   <version>1.0.0.Alpha6-SNAPSHOT</version>
 
-  <name>WildFly Swarm - Fractions : BOM</name>
-  <description>WildFly Swarm - Fractions, Bill of materials</description>
+  <name>WildFly Swarm: BOM for Fractions</name>
+  <description>WildFly Swarm: BOM for Fractions</description>
 
   <packaging>pom</packaging>
 
