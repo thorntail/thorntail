@@ -65,16 +65,42 @@ public class StartMojo extends AbstractSwarmMojo {
         initProperties();
         initEnvironment();
 
-        final SwarmProcess process;
+        final SwarmExecutor executor;
 
         if (this.useUberJar) {
-            process = executeUberJar();
+            executor = uberJarExecutor();
         } else if (this.project.getPackaging().equals("war")) {
-            process = executeWar();
+            executor = warExecutor();
         } else if (this.project.getPackaging().equals("jar")) {
-            process = executeJar();
+            executor = jarExecutor();
         } else {
             throw new MojoExecutionException("Unsupported packaging: " + this.project.getPackaging());
+        }
+
+        final SwarmProcess process;
+        try {
+            process = executor.withDebug(debugPort)
+                    .withDefaultSystemProperties()
+                    .withProperties(this.properties)
+                    .withStdoutFile(this.stdoutFile != null ? this.stdoutFile.toPath() : null)
+                    .withStderrFile(this.stderrFile != null ? this.stderrFile.toPath() : null)
+                    .withEnvironment(this.environment)
+                    .withWorkingDirectory(this.project.getBasedir().toPath())
+                    .execute();
+
+            process.awaitDeploy(2, TimeUnit.MINUTES);
+
+            if (!process.isAlive()) {
+                throw new MojoFailureException("Process failed to start");
+            }
+            if (process.getError() != null) {
+                throw new MojoFailureException("Error starting process", process.getError());
+            }
+
+        } catch (IOException e) {
+            throw new MojoFailureException("unable to execute", e);
+        } catch (InterruptedException e) {
+            throw new MojoFailureException("Error waiting for deployment", e);
         }
 
         List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
@@ -94,7 +120,7 @@ public class StartMojo extends AbstractSwarmMojo {
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    protected SwarmProcess executeUberJar() throws MojoFailureException {
+    protected SwarmExecutor uberJarExecutor() throws MojoFailureException {
         getLog().info("Starting -swarm.jar");
 
         String finalName = this.project.getBuild().getFinalName();
@@ -103,41 +129,12 @@ public class StartMojo extends AbstractSwarmMojo {
             finalName = finalName.substring(0, finalName.length() - 4);
         }
 
-        String uberJarName = finalName + "-swarm.jar";
-
-        Path uberJar = Paths.get(this.projectBuildDir, uberJarName);
-
-        try {
-            SwarmProcess process = new SwarmExecutor()
-                    .withDefaultSystemProperties()
-                    .withDebug(debugPort)
-                    .withProperties(this.properties)
-                    .withEnvironment(this.environment)
-                    .withWorkingDirectory(this.project.getBasedir().toPath())
-                    .withStdoutFile(this.stdoutFile != null ? this.stdoutFile.toPath() : null)
-                    .withStderrFile(this.stderrFile != null ? this.stderrFile.toPath() : null)
-                    .withExecutableJar(uberJar)
-                    .execute();
-
-            process.awaitDeploy(2, TimeUnit.MINUTES);
-
-            if (!process.isAlive()) {
-                throw new MojoFailureException("Process failed to start");
-            }
-            if (process.getError() != null) {
-                throw new MojoFailureException("Error starting process", process.getError());
-            }
-
-            return process;
-        } catch (IOException e) {
-            throw new MojoFailureException("unable to execute uberjar", e);
-        } catch (InterruptedException e) {
-            throw new MojoFailureException("Error waiting for deployment", e);
-        }
+        return new SwarmExecutor()
+                .withExecutableJar(Paths.get(this.projectBuildDir, finalName + "-swarm.jar"));
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    protected SwarmProcess executeWar() throws MojoFailureException {
+    protected SwarmExecutor warExecutor() throws MojoFailureException {
         getLog().info("Starting .war");
 
         final File moduleJar = new File(this.projectBuildDir, "swarm-module-overrides.jar");
@@ -152,9 +149,7 @@ public class StartMojo extends AbstractSwarmMojo {
             }
         }
 
-        final SwarmExecutor executor = new SwarmExecutor()
-                .withDebug(debugPort)
-                .withDefaultSystemProperties();
+        final SwarmExecutor executor = new SwarmExecutor();
 
         if (modulesAdded) {
             moduleArchive.as(ZipExporter.class)
@@ -163,86 +158,30 @@ public class StartMojo extends AbstractSwarmMojo {
             executor.withClasspathEntry(moduleJar.toPath());
         }
 
-        try {
-
-            String finalName = this.project.getBuild().getFinalName();
-            if (!finalName.endsWith(".war")) {
-                finalName = finalName + ".war";
-            }
-            executor.withClassPathEntries(dependencies(false))
-                    .withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
-                    .withProperties(this.properties)
-                    .withEnvironment(this.environment)
-                    .withWorkingDirectory(this.project.getBasedir().toPath())
-                    .withDefaultMainClass();
-
-
-            if (stdoutFile != null)
-                executor.withStdoutFile(this.stdoutFile.toPath());
-            if (stderrFile != null)
-                executor.withStderrFile(this.stderrFile.toPath());
-
-
-            SwarmProcess process = executor.execute();
-
-            process.awaitDeploy(2, TimeUnit.MINUTES);
-
-            if (!process.isAlive()) {
-                throw new MojoFailureException("Process failed to start");
-            }
-            if (process.getError() != null) {
-                throw new MojoFailureException("Error starting process", process.getError());
-            }
-            return process;
-        } catch (IOException e) {
-            throw new MojoFailureException("Error executing", e);
-        } catch (InterruptedException e) {
-            throw new MojoFailureException("Error waiting for deployment", e);
+        String finalName = this.project.getBuild().getFinalName();
+        if (!finalName.endsWith(".war")) {
+            finalName = finalName + ".war";
         }
+
+        return executor.withClassPathEntries(dependencies(false))
+                .withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
+                .withDefaultMainClass();
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    protected SwarmProcess executeJar() throws MojoFailureException {
+    protected SwarmExecutor jarExecutor() throws MojoFailureException {
         getLog().info("Starting .jar");
 
-        SwarmExecutor executor = new SwarmExecutor()
-                .withDefaultSystemProperties()
-                .withDebug(debugPort);
+        final SwarmExecutor executor = new SwarmExecutor()
+                .withClassPathEntries(dependencies(true));
 
-        try {
-            executor.withClassPathEntries(dependencies(true))
-                    .withProperties(this.properties)
-                    .withEnvironment(this.environment)
-                    .withWorkingDirectory(this.project.getBasedir().toPath());
-
-            if (this.mainClass != null) {
-                executor.withMainClass(this.mainClass);
-            } else {
-                executor.withDefaultMainClass();
-            }
-
-
-            if (stdoutFile != null)
-                executor.withStdoutFile(this.stdoutFile.toPath());
-            if (stderrFile != null)
-                executor.withStderrFile(this.stderrFile.toPath());
-
-            SwarmProcess process = executor.execute();
-
-            process.awaitDeploy(2, TimeUnit.MINUTES);
-
-            if (!process.isAlive()) {
-                throw new MojoFailureException("Process failed to start");
-            }
-            if (process.getError() != null) {
-                throw new MojoFailureException("Error starting process", process.getError());
-            }
-            return process;
-        } catch (IOException e) {
-            throw new MojoFailureException("Error executing", e);
-        } catch (InterruptedException e) {
-            throw new MojoFailureException("Error waiting for launch", e);
+        if (this.mainClass != null) {
+            executor.withMainClass(this.mainClass);
+        } else {
+            executor.withDefaultMainClass();
         }
+
+        return executor;
     }
 
     List<Path> dependencies(boolean includeProjectArtifact) {
