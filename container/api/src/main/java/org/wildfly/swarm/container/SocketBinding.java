@@ -18,20 +18,14 @@ package org.wildfly.swarm.container;
 /**
  * @author Bob McWhirter
  */
-public class SocketBinding {
-
-    private final String name;
+public class SocketBinding extends BaseSocketBinding {
 
     private String portExpression;
     private String multicastAddress;
     private String multicastPortExpression;
 
     public SocketBinding(String name) {
-        this.name = name;
-    }
-
-    public String name() {
-        return this.name;
+        super( name );
     }
 
     public SocketBinding port(int port) {

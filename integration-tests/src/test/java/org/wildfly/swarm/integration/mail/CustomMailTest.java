@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.integration.mail;
 
+import java.io.IOException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.shrinkwrap.api.Archive;
@@ -23,10 +25,7 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 import org.wildfly.swarm.mail.MailFraction;
-import org.wildfly.swarm.mail.SmtpServer;
 import org.wildfly.swarm.undertow.WARArchive;
-
-import java.io.IOException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -40,9 +39,10 @@ public class CustomMailTest extends AbstractWildFlySwarmTestCase implements Cont
     public Container newContainer(String... args) throws Exception {
         return new Container()
                 .fraction(new MailFraction()
-                        .smtpServer(new SmtpServer("Default")
-                                .host("localhost")
-                                .port("25")));
+                        .smtpServer("Default", (smtp)->{
+                                smtp.host("localhost");
+                                smtp.port("25");
+                        }));
     }
 
     @Deployment

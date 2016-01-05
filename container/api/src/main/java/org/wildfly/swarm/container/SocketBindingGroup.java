@@ -32,6 +32,7 @@ public class SocketBindingGroup {
     private final String portOffsetExpression;
 
     private List<SocketBinding> socketBindings = new ArrayList<>();
+    private List<OutboundSocketBinding> outboundSocketBindings = new ArrayList<>();
 
     public SocketBindingGroup(String name, String defaultInterface, String portOffsetExpression) {
         this.name = name;
@@ -58,6 +59,15 @@ public class SocketBindingGroup {
 
     public List<SocketBinding> socketBindings() {
         return this.socketBindings;
+    }
+
+    public SocketBindingGroup outboundSocketBinding(OutboundSocketBinding binding) {
+        this.outboundSocketBindings.add( binding );
+        return this;
+    }
+
+    public List<OutboundSocketBinding> outboundSocketBindings() {
+        return this.outboundSocketBindings;
     }
 }
 

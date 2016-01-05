@@ -15,28 +15,68 @@
  */
 package org.wildfly.swarm.mail;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.wildfly.swarm.config.Mail;
+import org.wildfly.swarm.config.mail.MailSession;
+import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
+import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.container.OutboundSocketBinding;
 
 /**
  * @author Ken Finnigan
  */
-public class MailFraction implements Fraction {
-
-    private List<SmtpServer> smtpServers = new ArrayList<>();
+public class MailFraction extends Mail<MailFraction> implements Fraction {
 
     public MailFraction() {
     }
 
-    public MailFraction smtpServer(SmtpServer mailServer) {
-        this.smtpServers.add(mailServer);
-        return this;
+
+    public MailFraction mailSession(String key, EnhancedMailSessionConsumer consumer) {
+        EnhancedMailSession session = new EnhancedMailSession( key );
+        return super.mailSession( ()->{
+            if ( consumer != null ) {
+                consumer.accept( session );
+                if ( session.jndiName() == null ) {
+                    session.jndiName( "java:jboss/mail/" + key );
+                }
+            }
+            return session;
+        });
     }
 
-    public List<SmtpServer> smtpServers() {
-        return this.smtpServers;
+    public MailFraction smtpServer(String key, EnhancedSMTPServerConsumer consumer) {
+        return this.mailSession( key, (session)->{
+            session.smtpServer( consumer );
+        });
     }
 
+    public static MailFraction defaultFraction() {
+        return new MailFraction()
+                .mailSession( "default", (session)->{
+                    session.smtpServer( (server)->{
+                        server.host( "localhost" );
+                        server.port( "25" );
+                    });
+                });
+    }
+
+    @Override
+    public void postInitialize(Container.PostInitContext initContext) {
+        System.err.println( "postInit" );
+        for (MailSession session : subresources().mailSessions()) {
+            System.err.println( "session: " + session );
+            SMTPServer server = session.subresources().smtpServer();
+            System.err.println( "server: " + server );
+            if ( server != null && server instanceof EnhancedSMTPServer ) {
+                OutboundSocketBinding socketBinding = ((EnhancedSMTPServer) server).outboundSocketBinding();
+                System.err.println( "Out: " + socketBinding );
+                if ( socketBinding != null ) {
+                    initContext.outboundSocketBinding( socketBinding );
+                }
+            }
+        }
+    }
 }

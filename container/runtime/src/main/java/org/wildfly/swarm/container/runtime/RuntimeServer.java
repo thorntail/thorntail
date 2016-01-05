@@ -56,6 +56,7 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.Interface;
+import org.wildfly.swarm.container.OutboundSocketBinding;
 import org.wildfly.swarm.container.RuntimeModuleProvider;
 import org.wildfly.swarm.container.Server;
 import org.wildfly.swarm.container.SocketBinding;
@@ -64,6 +65,7 @@ import org.wildfly.swarm.container.SocketBindingGroup;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HOST;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INET_ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MULTICAST_ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MULTICAST_PORT;
@@ -95,7 +97,7 @@ public class RuntimeServer implements Server {
 
     private boolean debug = false;
 
-    private BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.runtime.server" );
+    private BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.runtime.server");
 
     @SuppressWarnings("unused")
     public RuntimeServer() {
@@ -109,12 +111,12 @@ public class RuntimeServer implements Server {
                 System.setProperty("org.jboss.logmanager.configurator", LoggingConfigurator.class.getName());
                 //force logging init
                 LogManager.getLogManager();
-                BootstrapLogger.setBackingLoggerManager( new JBossLoggingManager() );
+                BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());
             } finally {
                 Thread.currentThread().setContextClassLoader(originalCl);
             }
         } catch (ModuleLoadException e) {
-            System.err.println( "[WARN] logging not available, logging will not be configured" );
+            System.err.println("[WARN] logging not available, logging will not be configured");
         }
     }
 
@@ -133,9 +135,11 @@ public class RuntimeServer implements Server {
 
         applyDefaults(config);
 
-        for (Fraction fraction : config.fractions() ) {
-            fraction.postInitialize( config.createPostInitContext() );
+        for (Fraction fraction : config.fractions()) {
+            fraction.postInitialize(config.createPostInitContext());
         }
+
+        applySocketBindingGroupDefaults(config);
 
         List<ModelNode> list = getList(config);
 
@@ -143,7 +147,7 @@ public class RuntimeServer implements Server {
         list.sort(new ExtensionOpPriorityComparator());
 
 
-        if ( LOG.isDebugEnabled() ) {
+        if (LOG.isDebugEnabled()) {
             LOG.debug(list);
         }
 
@@ -151,9 +155,9 @@ public class RuntimeServer implements Server {
 
         UUID grist = java.util.UUID.randomUUID();
         String tmpDir = System.getProperty("java.io.tmpdir");
-        System.err.println( "tmpDir: " + tmpDir );
+        System.err.println("tmpDir: " + tmpDir);
         Path gristedTmp = Paths.get(tmpDir).resolve("wildfly-swarm-" + grist);
-        System.setProperty( "jboss.server.temp.dir", gristedTmp.toString() );
+        System.setProperty("jboss.server.temp.dir", gristedTmp.toString());
 
         ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
         TempFileProvider tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor);
@@ -163,7 +167,7 @@ public class RuntimeServer implements Server {
                     .install();
             // Provide the main command line args as a value service
             context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(config.getArgs())))
-                .install();
+                    .install();
         });
 
         for (ServerConfiguration<Fraction> eachConfig : this.configList) {
@@ -185,7 +189,7 @@ public class RuntimeServer implements Server {
         for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
             ServiceController<?> serviceController = this.serviceContainer.getService(serviceName);
             StartException exception = serviceController.getStartException();
-            if (exception!= null) {
+            if (exception != null) {
                 throw exception;
             }
         }
@@ -194,21 +198,21 @@ public class RuntimeServer implements Server {
 
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(this.configList, this.client, this.contentProvider, tempFileProvider);
-        this.deployer.debug( this.debug );
+        this.deployer.debug(this.debug);
 
         List<Archive> implicitDeployments = new ArrayList<>();
 
         for (ServerConfiguration<Fraction> eachConfig : this.configList) {
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-                    implicitDeployments.addAll(eachConfig.getImplicitDeployments( eachFraction ) );
+                    implicitDeployments.addAll(eachConfig.getImplicitDeployments(eachFraction));
                     break;
                 }
             }
         }
 
         for (Archive each : implicitDeployments) {
-            this.deployer.deploy( each );
+            this.deployer.deploy(each);
         }
 
         return this.deployer;
@@ -264,7 +268,6 @@ public class RuntimeServer implements Server {
     private void applyDefaults(Container config) throws Exception {
         config.applyFractionDefaults(this);
         applyInterfaceDefaults(config);
-        applySocketBindingGroupDefaults(config);
     }
 
     private void applyInterfaceDefaults(Container config) {
@@ -282,8 +285,11 @@ public class RuntimeServer implements Server {
 
         Set<String> groupNames = config.socketBindings().keySet();
 
+        System.err.println( "SB: " + config.socketBindings() );
+
         for (String each : groupNames) {
             List<SocketBinding> bindings = config.socketBindings().get(each);
+
             SocketBindingGroup group = config.getSocketBindingGroup(each);
             if (group == null) {
                 throw new RuntimeException("No socket-binding-group for '" + each + "'");
@@ -291,6 +297,22 @@ public class RuntimeServer implements Server {
 
             for (SocketBinding binding : bindings) {
                 group.socketBinding(binding);
+            }
+        }
+
+        System.err.println( "OBSB: " + config.outboundSocketBindings() );
+        groupNames = config.outboundSocketBindings().keySet();
+
+        for (String each : groupNames) {
+            List<OutboundSocketBinding> bindings = config.outboundSocketBindings().get(each);
+
+            SocketBindingGroup group = config.getSocketBindingGroup(each);
+            if (group == null) {
+                throw new RuntimeException("No socket-binding-group for '" + each + "'");
+            }
+
+            for (OutboundSocketBinding binding : bindings) {
+                group.outboundSocketBinding(binding);
             }
         }
     }
@@ -371,9 +393,15 @@ public class RuntimeServer implements Server {
     }
 
     private void configureSocketBindings(PathAddress address, SocketBindingGroup group, List<ModelNode> list) {
-        List<SocketBinding> bindings = group.socketBindings();
+        List<SocketBinding> socketBindings = group.socketBindings();
 
-        for (SocketBinding each : bindings) {
+        for (SocketBinding each : socketBindings) {
+            configureSocketBinding(address, each, list);
+        }
+
+        List<OutboundSocketBinding> outboundSocketBindings = group.outboundSocketBindings();
+
+        for (OutboundSocketBinding each : outboundSocketBindings) {
             configureSocketBinding(address, each, list);
         }
     }
@@ -391,6 +419,18 @@ public class RuntimeServer implements Server {
         if (binding.multicastPortExpression() != null) {
             node.get(MULTICAST_PORT).set(new ValueExpression(binding.multicastPortExpression()));
         }
+
+        list.add(node);
+    }
+
+    private void configureSocketBinding(PathAddress address, OutboundSocketBinding binding, List<ModelNode> list) {
+
+        ModelNode node = new ModelNode();
+
+        node.get(OP_ADDR).set(address.append("remote-destination-outbound-socket-binding", binding.name()).toModelNode());
+        node.get(OP).set(ADD);
+        node.get(HOST).set(new ValueExpression(binding.remoteHostExpression()));
+        node.get(PORT).set(new ValueExpression(binding.remotePortExpression()));
 
         list.add(node);
     }

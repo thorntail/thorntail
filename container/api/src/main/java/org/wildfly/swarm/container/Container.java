@@ -88,6 +88,7 @@ public class Container {
     private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
 
     private Map<String, List<SocketBinding>> socketBindings = new HashMap<>();
+    private Map<String, List<OutboundSocketBinding>> outboundSocketBindings = new HashMap<>();
 
     private List<Interface> interfaces = new ArrayList<>();
 
@@ -310,6 +311,34 @@ public class Container {
         list.add(binding);
     }
 
+    public Map<String, List<OutboundSocketBinding>> outboundSocketBindings() {
+        return this.outboundSocketBindings;
+    }
+
+
+    void outboundSocketBinding(OutboundSocketBinding binding) {
+        outboundSocketBinding("default-sockets", binding);
+    }
+
+    void outboundSocketBinding(String groupName, OutboundSocketBinding binding) {
+        List<OutboundSocketBinding> list = this.outboundSocketBindings.get(groupName);
+
+        if (list == null) {
+            list = new ArrayList<>();
+            this.outboundSocketBindings.put(groupName, list);
+        }
+
+        for (OutboundSocketBinding each : list) {
+            if (each.name().equals(binding.name())) {
+                throw new RuntimeException("Outbound socket binding '" + binding.name() + "' already configured for '" + each.remoteHostExpression() + ":" + each.remotePortExpression() + "'");
+            }
+        }
+
+        list.add(binding);
+
+        System.err.println( "added: " + this.outboundSocketBindings );
+    }
+
     /**
      * Start the container.
      *
@@ -410,6 +439,14 @@ public class Container {
 
         public void socketBinding(String groupName, SocketBinding binding) {
             Container.this.socketBinding(groupName, binding);
+        }
+
+        public void outboundSocketBinding(OutboundSocketBinding binding) {
+            outboundSocketBinding("default-sockets", binding);
+        }
+
+        public void outboundSocketBinding(String groupName, OutboundSocketBinding binding) {
+            Container.this.outboundSocketBinding(groupName, binding);
         }
     }
 

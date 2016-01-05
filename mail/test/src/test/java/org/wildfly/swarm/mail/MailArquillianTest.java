@@ -15,8 +15,12 @@
  */
 package org.wildfly.swarm.mail;
 
+import javax.mail.Session;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.fest.assertions.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -27,27 +31,34 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.JARArchive;
 
+import static org.fest.assertions.Assertions.*;
+
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
 public class MailArquillianTest implements ContainerFactory {
 
-    @Deployment(testable = false)
+    @Deployment
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
+        deployment.addPackage(Assertions.class.getPackage());
         return deployment;
     }
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new MailFraction() );
+        return new Container().fraction( MailFraction.defaultFraction() );
     }
 
-    @Test @RunAsClient
-    public void testNothing() {
+    @Test
+    public void testIt() throws NamingException {
+        InitialContext context = new InitialContext();
 
+        Object session = context.lookup("java:jboss/mail/default");
+        assertThat( session ).isNotNull();
+        assertThat( session ).isInstanceOf(Session.class);
     }
 
 }
