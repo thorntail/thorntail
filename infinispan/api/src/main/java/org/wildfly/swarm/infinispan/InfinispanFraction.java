@@ -274,6 +274,30 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
             cache.noneStore();
         }
 
+        if (cacheResources.binaryJdbcStore() != null) {
+            cacheResources.binaryJdbcStore().throughWrite();
+        }
+
+        if (cacheResources.customStore() != null) {
+            cacheResources.customStore().throughWrite();
+        }
+
+        if (cacheResources.fileStore() != null) {
+            cacheResources.fileStore().throughWrite();
+        }
+
+        if (cacheResources.mixedJdbcStore() != null) {
+            cacheResources.mixedJdbcStore().throughWrite();
+        }
+
+        if (cacheResources.remoteStore() != null) {
+            cacheResources.remoteStore().throughWrite();
+        }
+
+        if (cacheResources.stringJdbcStore() != null) {
+            cacheResources.stringJdbcStore().throughWrite();
+        }
+
         return cache;
     }
 
@@ -312,6 +336,30 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
                 && cacheResources.remoteStore() == null
                 && cacheResources.stringJdbcStore() == null) {
             cache.noneStore();
+        }
+
+        if (cacheResources.binaryJdbcStore() != null) {
+            cacheResources.binaryJdbcStore().throughWrite();
+        }
+
+        if (cacheResources.customStore() != null) {
+            cacheResources.customStore().throughWrite();
+        }
+
+        if (cacheResources.fileStore() != null) {
+            cacheResources.fileStore().throughWrite();
+        }
+
+        if (cacheResources.mixedJdbcStore() != null) {
+            cacheResources.mixedJdbcStore().throughWrite();
+        }
+
+        if (cacheResources.remoteStore() != null) {
+            cacheResources.remoteStore().throughWrite();
+        }
+
+        if (cacheResources.stringJdbcStore() != null) {
+            cacheResources.stringJdbcStore().throughWrite();
         }
 
         if (cacheResources.partitionHandlingComponent() == null) {
@@ -370,6 +418,30 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
                 && cacheResources.remoteStore() == null
                 && cacheResources.stringJdbcStore() == null) {
             cache.noneStore();
+        }
+
+        if (cacheResources.binaryJdbcStore() != null) {
+            cacheResources.binaryJdbcStore().throughWrite();
+        }
+
+        if (cacheResources.customStore() != null) {
+            cacheResources.customStore().throughWrite();
+        }
+
+        if (cacheResources.fileStore() != null) {
+            cacheResources.fileStore().throughWrite();
+        }
+
+        if (cacheResources.mixedJdbcStore() != null) {
+            cacheResources.mixedJdbcStore().throughWrite();
+        }
+
+        if (cacheResources.remoteStore() != null) {
+            cacheResources.remoteStore().throughWrite();
+        }
+
+        if (cacheResources.stringJdbcStore() != null) {
+            cacheResources.stringJdbcStore().throughWrite();
         }
 
         if (cacheResources.partitionHandlingComponent() == null) {
