@@ -21,6 +21,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -137,10 +140,28 @@ public class StartMojo extends AbstractSwarmMojo {
     protected SwarmProcess executeWar() throws MojoFailureException {
         getLog().info("Starting .war");
 
-        SwarmExecutor executor = new SwarmExecutor()
+        final File moduleJar = new File(this.projectBuildDir, "swarm-module-overrides.jar");
+        final JavaArchive moduleArchive = ShrinkWrap.create(JavaArchive.class);
+
+        boolean modulesAdded = false;
+        for (String additionalModule : this.additionalModules) {
+            final File moduleDir = new File(this.project.getBuild().getOutputDirectory(), additionalModule);
+            if (moduleDir.exists()) {
+                moduleArchive.addAsResource(moduleDir, "modules");
+                modulesAdded = true;
+            }
+        }
+
+        final SwarmExecutor executor = new SwarmExecutor()
                 .withDebug(debugPort)
-                .withDefaultSystemProperties()
-                .withClassPathEntries(dependencies(false));
+                .withDefaultSystemProperties();
+
+        if (modulesAdded) {
+            moduleArchive.as(ZipExporter.class)
+                    .exportTo(moduleJar, true);
+
+            executor.withClasspathEntry(moduleJar.toPath());
+        }
 
         try {
 
@@ -148,7 +169,8 @@ public class StartMojo extends AbstractSwarmMojo {
             if (!finalName.endsWith(".war")) {
                 finalName = finalName + ".war";
             }
-            executor.withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
+            executor.withClassPathEntries(dependencies(false))
+                    .withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
                     .withProperties(this.properties)
                     .withEnvironment(this.environment)
                     .withWorkingDirectory(this.project.getBasedir().toPath())

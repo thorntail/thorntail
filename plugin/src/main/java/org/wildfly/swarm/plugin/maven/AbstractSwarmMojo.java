@@ -49,6 +49,15 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "environmentFile")
     protected String environmentFile;
 
+    @Parameter(alias = "modules")
+    protected String[] additionalModules;
+
+    AbstractSwarmMojo() {
+        if (this.additionalModules == null) {
+            this.additionalModules = new String[] {"modules"};
+        }
+    }
+
     protected void initProperties() throws MojoFailureException {
         if (this.properties == null) {
             this.properties = new Properties();

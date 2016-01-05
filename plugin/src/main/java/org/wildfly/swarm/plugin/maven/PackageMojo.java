@@ -50,9 +50,6 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Inject
     protected ArtifactResolver resolver;
 
-    @Parameter(alias = "modules")
-    protected String[] additionalModules;
-
     @Parameter(alias = "bundleDependencies", defaultValue = "true")
     protected boolean bundleDependencies;
 
@@ -80,13 +77,8 @@ public class PackageMojo extends AbstractSwarmMojo {
             tool.resourceDirectory(each.getDirectory());
         }
 
-
-        if (additionalModules == null) {
-            additionalModules = new String[] {"modules"};
-        }
-
         for (String additionalModule : additionalModules) {
-            File source = new File(this.project.getBuild().getOutputDirectory() + File.separator + additionalModule);
+            File source = new File(this.project.getBuild().getOutputDirectory(), additionalModule);
             if (source.exists()) {
                 tool.additionalModule(source.getAbsolutePath());
             }
