@@ -1,0 +1,3 @@
+implementingClassName=org.wildfly.swarm.swagger.SwaggerArchiveImpl
+extension=.war
+archiveFormat=ZIP

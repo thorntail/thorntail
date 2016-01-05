@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 /**
@@ -24,6 +23,7 @@ public class SwaggerArquillianTest implements ContainerFactory {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
         deployment.addResource(Resource.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
+        //deployment.as(SwaggerArchive.class);
         return deployment;
     }
 

@@ -31,8 +31,10 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>swagger-modules</artifactId>
     </dependency>
-
-    <!-- Dependent APIs -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
