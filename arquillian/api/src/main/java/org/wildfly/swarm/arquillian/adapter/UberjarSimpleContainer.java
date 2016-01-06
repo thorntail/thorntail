@@ -46,6 +46,9 @@ import java.util.stream.Stream;
  * @author Toby Crawley
  */
 public class UberjarSimpleContainer implements SimpleContainer {
+
+    private int timeout;
+
     public UberjarSimpleContainer(Class<?> testClass) {
         this.testClass = testClass;
     }

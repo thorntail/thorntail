@@ -56,6 +56,8 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
     private BufferedReader reader;
     private PrintWriter writer;
 
+    private int timeout = 10;
+
     @Override
     public void setup(final CONFIGTYPE configuration) {
         final String remoteHost = configuration.getHost();
@@ -64,13 +66,17 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
         this.remoteAddress = address;
     }
 
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
     @Override
     public void start() throws LifecycleException {
         // Open up remote resources
         try {
 
             final long startTime = System.currentTimeMillis();
-            final int secondsToWait = 10;
+            final int secondsToWait = this.timeout;
             final long acceptableTime = startTime + 1000 * secondsToWait; // 10 seconds from now
             Socket socket = null;
             while (true) {

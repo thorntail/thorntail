@@ -21,6 +21,7 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaD
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.wildfly.swarm.arquillian.InVM;
+import org.wildfly.swarm.arquillian.StartupTimeout;
 import org.wildfly.swarm.arquillian.daemon.container.DaemonContainerConfigurationBase;
 import org.wildfly.swarm.arquillian.daemon.container.DaemonDeployableContainerBase;
 
@@ -57,6 +58,12 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
+        StartupTimeout startupTimeout = this.testClass.getAnnotation(StartupTimeout.class);
+        if ( startupTimeout != null ) {
+            setTimeout( startupTimeout.value() );
+        }
+
+
         if (this.testClass.getAnnotation(InVM.class) != null) {
             this.delegateContainer = new InVMSimpleContainer(this.testClass);
         } else {

@@ -42,4 +42,5 @@ public interface SimpleContainer {
 
         return cls.getSuperclass() != null && isContainerFactory(cls.getSuperclass());
     }
+
 }
