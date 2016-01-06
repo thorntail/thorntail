@@ -78,6 +78,7 @@
     <version.hawkular>1.0.0.Beta8</version.hawkular>
 -->
 
+    <version.hawkular>1.0.0.Alpha8</version.hawkular>
     <version.hawkular-agent>0.15.1.Final</version.hawkular-agent>
     <version.hawkular-accounts>2.0.9.Final</version.hawkular-accounts>
     <version.hawkular-nest>0.3.1.Final</version.hawkular-nest>
@@ -402,6 +403,12 @@
         <version>${version.hawkular-bus}</version>
         <type>zip</type>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hawkular</groupId>
+        <artifactId>hawkular-console</artifactId>
+        <version>${version.hawkular}</version>
+        <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.hawkular.accounts</groupId>
