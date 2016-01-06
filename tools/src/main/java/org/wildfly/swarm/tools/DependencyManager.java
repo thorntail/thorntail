@@ -106,20 +106,46 @@ public class DependencyManager {
             }
         }
 
+        scanModulesDependencies();
         scanBootstrapDependencies();
         analyzeModuleDependencies();
         analyzeProvidedDependencies();
     }
 
+    protected void scanModulesDependencies() {
+        this.dependencies.stream()
+                .filter(this::isModulesDependency)
+                .forEach(e -> {
+                    this.bootstrapDependencies.add(e);
+                });
+    }
+
     protected void scanBootstrapDependencies() {
         this.dependencies.stream()
                 .filter(this::isBootstrapDependency)
-                .map(e -> {
-                    this.bootstrapDependencies.add(e);
-                    return e;
-                })
                 .map(spec -> spec.file)
                 .forEach(this::scanBootstrapDependency);
+    }
+
+    protected boolean isModulesDependency(ArtifactSpec spec) {
+        if (spec.file == null) {
+            return false;
+        }
+        if (!spec.type().equals("jar")) {
+            return false;
+        }
+        try (JarFile jar = new JarFile(spec.file)) {
+            ZipEntry entry = jar.getEntry("wildfly-swarm-modules.conf");
+            if (entry != null) {
+                return true;
+            }
+        } catch (IOException e) {
+        }
+
+        if (spec.groupId().equals(WILDFLY_SWARM_GROUP_ID) && spec.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
+            return true;
+        }
+        return false;
     }
 
     protected boolean isBootstrapDependency(ArtifactSpec spec) {

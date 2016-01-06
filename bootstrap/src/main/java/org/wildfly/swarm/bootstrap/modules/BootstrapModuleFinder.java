@@ -41,8 +41,8 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
 
-        if ( LOG.isDebugEnabled() ) {
-            LOG.debug( "Loading module" );
+        if ( LOG.isTraceEnabled() ) {
+            LOG.trace( "Loading module" );
         }
         try {
             if (Layout.getInstance().isUberJar()) {
@@ -66,8 +66,8 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
     }
 
     protected void handleWildFlySwarmBootstrapConf(ModuleSpec.Builder builder) throws IOException {
-        if ( LOG.isDebugEnabled() ) {
-            LOG.debug( "Loading conf from " + WildFlySwarmBootstrapConf.CLASSPATH_LOCATION );
+        if ( LOG.isTraceEnabled() ) {
+            LOG.trace( "Loading conf from " + WildFlySwarmBootstrapConf.CLASSPATH_LOCATION );
         }
         InputStream bootstrapTxt = getClass().getClassLoader().getResourceAsStream(WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
 

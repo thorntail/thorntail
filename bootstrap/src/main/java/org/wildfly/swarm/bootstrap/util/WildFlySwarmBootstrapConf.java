@@ -17,14 +17,16 @@ import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 
 /**
  * @author Bob McWhirter
  */
 public class WildFlySwarmBootstrapConf {
 
-    public final static String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-bootstrap.conf";
+    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.bootstrap" );
 
+    public final static String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-bootstrap.conf";
 
     private List<MavenArtifactDescriptor> entries = new ArrayList<>();
 
@@ -113,6 +115,11 @@ public class WildFlySwarmBootstrapConf {
         if (artifact == null) {
             throw new IOException("Unable to locate artifact: " + entry.mscGav());
         }
+
+        if ( LOG.isTraceEnabled() ) {
+            LOG.trace( "adding bootstrap artifact: " + artifact.getAbsolutePath() );
+        }
+
         builder.addResourceRoot(
                 ResourceLoaderSpec.createResourceLoaderSpec(
                         ResourceLoaders.createJarResourceLoader(artifact.getName(), new JarFile(artifact))

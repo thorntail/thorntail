@@ -26,9 +26,9 @@ public class DependencyManagerTest {
 
     private ArtifactSpec BOOTSTRAP_JAR;
 
-    private ArtifactSpec BOOTSTRAP_EMPTY_A;
+    private ArtifactSpec MODULES_EMPTY_A;
 
-    private ArtifactSpec BOOTSTRAP_EMPTY_B;
+    private ArtifactSpec MODULES_EMPTY_B;
 
     private ArtifactSpec BOOTSTRAP_CONF;
 
@@ -50,9 +50,9 @@ public class DependencyManagerTest {
     public void setUp() throws Exception {
         BOOTSTRAP_JAR = ArtifactSpec.fromMscGav("org.wildfly.swarm:bootstrap:1.0");
 
-        BOOTSTRAP_EMPTY_A = ArtifactSpec.fromMscGav("test:bootstrap-empty-A:1.0");
+        MODULES_EMPTY_A = ArtifactSpec.fromMscGav("test:modules-empty-A:1.0");
 
-        BOOTSTRAP_EMPTY_B = ArtifactSpec.fromMscGav("test:bootstrap-empty-B:1.0");
+        MODULES_EMPTY_B = ArtifactSpec.fromMscGav("test:modules-empty-B:1.0");
 
         BOOTSTRAP_CONF = ArtifactSpec.fromMscGav("test:bootstrap-conf:1.0");
 
@@ -80,11 +80,11 @@ public class DependencyManagerTest {
             archive.add(EmptyAsset.INSTANCE, "nothing");
         });
 
-        resolver.add(BOOTSTRAP_EMPTY_A, (archive) -> {
+        resolver.add(MODULES_EMPTY_A, (archive) -> {
             archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-bootstrap.conf");
         });
 
-        resolver.add(BOOTSTRAP_EMPTY_B, (archive) -> {
+        resolver.add(MODULES_EMPTY_B, (archive) -> {
             archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-bootstrap.conf");
         });
 
@@ -96,12 +96,12 @@ public class DependencyManagerTest {
         });
 
         resolver.add(MODULES_A, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-bootstrap.conf");
+            archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-modules.conf");
             archive.add(new ClassLoaderAsset("module.xml"), "modules/org/jboss/as/webservices/main/module.xml");
         });
 
         resolver.add(PROVIDED_A, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-bootstrap.conf");
+            archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-modules.conf");
             archive.add(new StringAsset(
                     "com.sun.mail:javax.mail\n" +
                             "org.keycloak:keycloak-core|org.keycloak.keycloak-core-module"
@@ -159,14 +159,14 @@ public class DependencyManagerTest {
     public void analyzeDependenciesWithBootstrapJarAndBootstrapConf() throws Exception {
         manager.addDependency(BOOTSTRAP_JAR);
         manager.addDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
-        manager.addDependency(BOOTSTRAP_EMPTY_A);
-        manager.addDependency(BOOTSTRAP_EMPTY_B);
+        manager.addDependency(MODULES_EMPTY_A);
+        manager.addDependency(MODULES_EMPTY_B);
         manager.analyzeDependencies(false);
         assertThat(manager.getDependencies()).hasSize(4);
-        assertThat(manager.getBootstrapDependencies()).hasSize(3);
+        assertThat(manager.getBootstrapDependencies()).hasSize(1);
         assertThat(manager.getBootstrapDependencies()).contains(BOOTSTRAP_JAR);
-        assertThat(manager.getBootstrapDependencies()).contains(BOOTSTRAP_EMPTY_A);
-        assertThat(manager.getBootstrapDependencies()).contains(BOOTSTRAP_EMPTY_B);
+        //assertThat(manager.getBootstrapDependencies()).contains(MODULES_EMPTY_A);
+        //assertThat(manager.getBootstrapDependencies()).contains(MODULES_EMPTY_B);
         assertThat(manager.getBootstrapModules()).isEmpty();
     }
 
@@ -176,9 +176,8 @@ public class DependencyManagerTest {
         manager.addDependency(BOOTSTRAP_CONF);
         manager.analyzeDependencies(false);
         assertThat(manager.getDependencies()).hasSize(2);
-        assertThat(manager.getBootstrapDependencies()).hasSize(2);
+        assertThat(manager.getBootstrapDependencies()).hasSize(1);
         assertThat(manager.getBootstrapDependencies()).contains(BOOTSTRAP_JAR);
-        assertThat(manager.getBootstrapDependencies()).contains(BOOTSTRAP_CONF);
         assertThat(manager.getBootstrapModules()).hasSize(2);
         assertThat(manager.getBootstrapModules()).contains("com.module1");
         assertThat(manager.getBootstrapModules()).contains("com.module2");
@@ -201,7 +200,7 @@ public class DependencyManagerTest {
     public void populateUberJarMavenRepository() throws Exception {
         manager.addDependency(BOOTSTRAP_JAR);
         manager.addDependency(BOOTSTRAP_CONF);
-        manager.addDependency(BOOTSTRAP_EMPTY_A);
+        manager.addDependency(MODULES_EMPTY_A);
         manager.addDependency(MODULES_A);
         manager.analyzeDependencies(false);
 
@@ -214,7 +213,7 @@ public class DependencyManagerTest {
         List<String> jars = content.keySet().stream().map(ArchivePath::get).filter((e) -> e.endsWith(".jar")).collect(Collectors.toList());
 
         assertThat(jars).hasSize(5);
-        assertThat(jars).contains("/m2repo/" + BOOTSTRAP_EMPTY_A.repoPath(true));
+        assertThat(jars).contains("/m2repo/" + MODULES_EMPTY_A.repoPath(true));
         assertThat(jars).contains("/m2repo/" + BOOTSTRAP_CONF.repoPath(true));
         assertThat(jars).contains("/m2repo/" + MODULES_A.repoPath(true));
         assertThat(jars).contains("/m2repo/" + CXF.repoPath(true));
@@ -241,7 +240,7 @@ public class DependencyManagerTest {
     public void populateUberJarMavenRepositoryAvoidingProvided() throws Exception {
         manager.addDependency(BOOTSTRAP_JAR);
         manager.addDependency(BOOTSTRAP_CONF);
-        manager.addDependency(BOOTSTRAP_EMPTY_A);
+        manager.addDependency(MODULES_EMPTY_A);
         manager.addDependency(MODULES_A);
         manager.addDependency(PROVIDED_A);
         manager.addDependency(COM_SUN_MAIL);
@@ -258,7 +257,7 @@ public class DependencyManagerTest {
         List<String> jars = content.keySet().stream().map(ArchivePath::get).filter((e) -> e.endsWith(".jar")).collect(Collectors.toList());
 
         assertThat(jars).hasSize(6);
-        assertThat(jars).contains("/m2repo/" + BOOTSTRAP_EMPTY_A.repoPath(true));
+        assertThat(jars).contains("/m2repo/" + MODULES_EMPTY_A.repoPath(true));
         assertThat(jars).contains("/m2repo/" + BOOTSTRAP_CONF.repoPath(true));
         assertThat(jars).contains("/m2repo/" + MODULES_A.repoPath(true));
         assertThat(jars).contains("/m2repo/" + CXF.repoPath(true));

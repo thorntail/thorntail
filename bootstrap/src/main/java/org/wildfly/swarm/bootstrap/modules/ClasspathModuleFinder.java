@@ -53,8 +53,12 @@ public class ClasspathModuleFinder implements ModuleFinder {
 
         try {
             ClassLoader cl = Layout.getInstance().getBootstrapClassLoader();
+            if ( LOG.isTraceEnabled() ) {
+                LOG.trace("classloader: " + cl);
+                LOG.trace("path: " + path);
+            }
+
             URL url = cl.getResource(path);
-            //InputStream in = cl.getResourceAsStream(path);
 
             if (url == null && cl != ClasspathModuleFinder.class.getClassLoader()) {
                 url = ClasspathModuleFinder.class.getClassLoader().getResource(path);
@@ -68,8 +72,6 @@ public class ClasspathModuleFinder implements ModuleFinder {
             }
 
             final URL base = new URL( url, "./" );
-
-            //System.err.println( "ClasspathModuleFinder: " + identifier + " > " + base );
 
             if ( LOG.isTraceEnabled() ) {
                 LOG.trace( "base of " + identifier + ": " + base );

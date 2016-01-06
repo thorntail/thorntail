@@ -197,7 +197,6 @@ public class ArtifactManager {
         String[] elements = classpath.split(File.pathSeparator);
 
         for (int i = 0; i < elements.length; ++i) {
-            System.err.println( "test: " + elements[i] );
             Matcher matcher = pattern.matcher(elements[i]);
             if (matcher.matches()) {
                 return matcher.group(1);
