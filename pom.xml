@@ -270,6 +270,7 @@
     <module>hibernate-validator</module>
     <module>infinispan</module>
     <module>io</module>
+    <module>jackson</module>
     <module>jaxrs</module>
     <module>jaxrs-jaxb</module>
     <module>jaxrs-jsonp</module>
