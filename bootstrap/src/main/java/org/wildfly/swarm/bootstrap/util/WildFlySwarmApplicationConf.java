@@ -17,15 +17,15 @@ import java.util.List;
 import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
-import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleSpec;
-import org.jboss.modules.MoreResourceLoaders;
 import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
 import org.jboss.modules.filter.ClassFilters;
 import org.jboss.modules.filter.PathFilters;
+import org.jboss.modules.maven.MavenResolver;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 
 /**
  * @author Bob McWhirter
@@ -95,7 +95,7 @@ public class WildFlySwarmApplicationConf {
 
         @Override
         void apply(ModuleSpec.Builder builder) throws IOException {
-            File artifact = MavenArtifactUtil.resolveJarArtifact(this.descriptor.mscGav());
+            File artifact = MavenResolvers.get().resolveJarArtifact(this.descriptor.mscCoordinates());
 
             if (artifact == null) {
                 throw new IOException("Unable to locate artifact: " + this.descriptor.mscGav());
@@ -151,7 +151,7 @@ public class WildFlySwarmApplicationConf {
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
 
             if (".war".equals(ext)) {
-                final ResourceLoader warLoader = MoreResourceLoaders.createJarResourceLoader(jarName,
+                final ResourceLoader warLoader = ResourceLoaders.createJarResourceLoader(jarName,
                                                                                              jarFile,
                                                                                              "WEB-INF/classes");
                 builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));

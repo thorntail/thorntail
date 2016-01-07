@@ -13,11 +13,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarFile;
 
-import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 
 /**
  * @author Bob McWhirter
@@ -111,7 +111,7 @@ public class WildFlySwarmBootstrapConf {
     }
 
     void apply(ModuleSpec.Builder builder, MavenArtifactDescriptor entry) throws IOException {
-        File artifact = MavenArtifactUtil.resolveJarArtifact(entry.mscGav());
+        File artifact = MavenResolvers.get().resolveJarArtifact(entry.mscCoordinates());
         if (artifact == null) {
             throw new IOException("Unable to locate artifact: " + entry.mscGav());
         }

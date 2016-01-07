@@ -37,13 +37,13 @@
   </licenses>
 
   <properties>
-    <version.wildfly>10.0.0.CR4</version.wildfly>
+    <version.wildfly>10.0.0.CR5</version.wildfly>
     <version.wildfly.config-api>0.3.23</version.wildfly.config-api>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
-    <version.org.arquillian>1.1.8.Final</version.org.arquillian>
+    <version.org.arquillian>1.1.9.Final</version.org.arquillian>
     <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
     <version.org.jboss.arquillian.drone>2.0.0.Alpha4</version.org.jboss.arquillian.drone>
     <version.org.arquillian.graphene>2.1.0.Alpha2</version.org.arquillian.graphene>
@@ -55,7 +55,7 @@
     <version.com.netflix.hystrix>1.4.3</version.com.netflix.hystrix>
     <version.com.netflix.commons>0.1.1</version.com.netflix.commons>
     <version.com.netflix.servo>0.9.2</version.com.netflix.servo>
-    <version.commons-configuration>1.8:</version.commons-configuration>
+    <version.commons-configuration>1.8</version.commons-configuration>
     <version.rxjava>1.0.9</version.rxjava>
     <version.rxnetty>0.4.9</version.rxnetty>
     <version.netty>4.0.26.Final</version.netty>

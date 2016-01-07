@@ -57,6 +57,7 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
             HashSet<String> paths = new HashSet<String>();
             paths.add( "org/wildfly/swarm/bootstrap/logging");
             paths.add( "org/wildfly/swarm/bootstrap/util");
+            paths.add( "org/wildfly/swarm/bootstrap/modules");
             builder.addDependency(DependencySpec.createSystemDependencySpec( paths, true ) );
         } catch (IOException e) {
             throw new ModuleLoadException(e);

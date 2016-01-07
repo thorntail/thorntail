@@ -54,12 +54,14 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
     }
 
     public void applyResourceDefaults() {
+        /*
         subresources().cacheContainers().forEach(cc -> {
             enableResourceDefaults(cc);
             cc.subresources().distributedCaches().forEach(InfinispanFraction::enableResourceDefaults);
             cc.subresources().localCaches().forEach(InfinispanFraction::enableResourceDefaults);
             cc.subresources().replicatedCaches().forEach(InfinispanFraction::enableResourceDefaults);
         });
+        */
     }
 
     protected InfinispanFraction markDefaultFraction() {
@@ -177,7 +179,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         return this;
     }
 
-    
+
     // applies defaults to the cache-container, since infinispan applies these defaults at
     // xml read time, instead of at model add time
     // https://issues.jboss.org/browse/WFLY-5672

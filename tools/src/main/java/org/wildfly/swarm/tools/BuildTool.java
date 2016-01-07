@@ -297,6 +297,8 @@ public class BuildTool {
     private void populateUberJarMavenRepository() throws Exception {
         if ( this.bundleDependencies ) {
             this.dependencyManager.populateUberJarMavenRepository( this.archive );
+        } else {
+            this.dependencyManager.populateUserMavenRepository();
         }
     }
 }

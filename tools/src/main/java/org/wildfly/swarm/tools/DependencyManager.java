@@ -452,6 +452,15 @@ public class DependencyManager {
         }
     }
 
+    public void populateUserMavenRepository() throws Exception {
+        for (ArtifactSpec each : this.dependencies) {
+            resolveArtifact( each );
+        }
+        for (ArtifactSpec each : this.moduleDependencies) {
+            resolveArtifact( each );
+        }
+    }
+
     public void addArtifactToArchiveMavenRepository(Archive archive, ArtifactSpec artifact) throws Exception {
 
         if (artifact.gathered) {

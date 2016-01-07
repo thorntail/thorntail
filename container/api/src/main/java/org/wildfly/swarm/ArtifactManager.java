@@ -15,12 +15,13 @@
  */
 package org.wildfly.swarm;
 
-import org.jboss.modules.MavenArtifactUtil;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.maven.ArtifactCoordinates;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
@@ -53,7 +54,7 @@ public class ArtifactManager {
 
     public ArtifactManager() throws IOException {
         InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(WildFlySwarmDependenciesConf.CLASSPATH_LOCATION);
-        if ( in != null ) {
+        if (in != null) {
             this.deps = new WildFlySwarmDependenciesConf(in);
         }
     }
@@ -78,9 +79,9 @@ public class ArtifactManager {
     public List<JavaArchive> allArtifacts() throws IOException {
         List<JavaArchive> archives = new ArrayList<>();
 
-        if (this.deps != null ) {
+        if (this.deps != null) {
             for (MavenArtifactDescriptor each : this.deps.getPrimaryDependencies()) {
-                File artifact = MavenArtifactUtil.resolveJarArtifact(each.mscGav());
+                File artifact = MavenResolvers.get().resolveJarArtifact(each.mscCoordinates());
                 JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
                 new ZipImporterImpl(archive).importFrom(artifact);
                 archives.add(archive);
@@ -171,16 +172,21 @@ public class ArtifactManager {
         }
 
         if (version == null) {
-            throw new RuntimeException("Unable to determine version number from GAV: " + gav );
+            throw new RuntimeException("Unable to determine version number from GAV: " + gav);
         }
 
-        return MavenArtifactUtil.resolveArtifact(groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : ":" + classifier), packaging);
+        return MavenResolvers.get().resolveArtifact(
+                new ArtifactCoordinates(
+                        groupId,
+                        artifactId,
+                        version,
+                        classifier == null ? "" : classifier), packaging);
     }
 
     String determineVersionViaDependenciesConf(String groupId, String artifactId, String packaging, String classifier) throws IOException {
-        if ( this.deps != null ) {
-            MavenArtifactDescriptor found = this.deps.find( groupId, artifactId, packaging, classifier );
-            if ( found != null ) {
+        if (this.deps != null) {
+            MavenArtifactDescriptor found = this.deps.find(groupId, artifactId, packaging, classifier);
+            if (found != null) {
                 return found.version();
             }
         }

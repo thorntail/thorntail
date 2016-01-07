@@ -25,6 +25,7 @@ import java.net.URL;
 public class SwarmURIResourceProvider extends SwarmURLResourceProvider {
     @Override
     public Object lookup(ArquillianResource resource, Annotation... qualifiers) {
+
         Object object = super.lookup(resource, qualifiers);
         if (object == null) {
             return null;

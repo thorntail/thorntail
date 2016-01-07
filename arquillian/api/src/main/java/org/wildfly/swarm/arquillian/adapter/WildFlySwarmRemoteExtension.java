@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import org.jboss.arquillian.container.test.impl.enricher.resource.URIResourceProvider;
-import org.jboss.arquillian.container.test.impl.enricher.resource.URLResourceProvider;
+import org.jboss.arquillian.container.test.impl.enricher.resource.ContainerURIResourceProvider;
+import org.jboss.arquillian.container.test.impl.enricher.resource.ContainerURLResourceProvider;
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
 import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 import org.wildfly.swarm.arquillian.resources.SwarmURIResourceProvider;
@@ -25,7 +25,7 @@ import org.wildfly.swarm.arquillian.resources.SwarmURLResourceProvider;
 public class WildFlySwarmRemoteExtension implements RemoteLoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
-        builder.override(ResourceProvider.class, URLResourceProvider.class, SwarmURLResourceProvider.class)
-                .override(ResourceProvider.class, URIResourceProvider.class, SwarmURIResourceProvider.class);
+        builder.override(ResourceProvider.class, ContainerURLResourceProvider.class, SwarmURLResourceProvider.class)
+                .override(ResourceProvider.class, ContainerURIResourceProvider.class, SwarmURIResourceProvider.class);
     }
 }

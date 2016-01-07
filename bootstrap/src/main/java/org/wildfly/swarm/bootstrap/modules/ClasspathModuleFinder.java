@@ -17,18 +17,17 @@ package org.wildfly.swarm.bootstrap.modules;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.jboss.modules.Environment;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
-import org.jboss.modules.ModuleXmlParserBridge;
 import org.jboss.modules.ResourceLoader;
+import org.jboss.modules.maven.MavenResolver;
+import org.jboss.modules.xml.ModuleXmlParser;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.Layout;
 
@@ -81,14 +80,14 @@ public class ClasspathModuleFinder implements ModuleFinder {
 
             ModuleSpec moduleSpec = null;
             try {
-                moduleSpec = ModuleXmlParserBridge.parseModuleXml(new ModuleXmlParserBridge.ResourceRootFactoryBridge() {
-                    @Override
-                    public ResourceLoader createResourceLoader(final String rootPath, final String loaderPath, final String loaderName) throws IOException {
-                        //return Environment.getModuleResourceLoader(rootPath, loaderPath, loaderName);
-                        //return new NestedJarResourceLoader( base );
-                        return NestedJarResourceLoader.loaderFor( base, rootPath, loaderPath, loaderName );
-                    }
-                }, "/", in, path.toString(), delegateLoader, identifier);
+                moduleSpec = ModuleXmlParser.parseModuleXml(
+                        ( rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor( base, rootPath, loaderPath, loaderName ),
+                        MavenResolvers.get(),
+                        "/",
+                        in,
+                        path.toString(),
+                        delegateLoader,
+                        identifier);
 
             } catch (IOException e) {
                 throw new ModuleLoadException(e);

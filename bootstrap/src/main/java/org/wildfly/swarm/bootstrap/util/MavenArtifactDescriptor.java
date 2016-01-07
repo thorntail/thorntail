@@ -3,6 +3,8 @@ package org.wildfly.swarm.bootstrap.util;
 import java.io.File;
 import java.io.IOException;
 
+import org.jboss.modules.maven.ArtifactCoordinates;
+
 /**
  * @author Bob McWhirter
  */
@@ -144,6 +146,14 @@ public class MavenArtifactDescriptor {
                 this.artifactId + ":" +
                 this.version +
                 (this.classifier == null ? "" : ":" + this.classifier);
+    }
+
+    public ArtifactCoordinates mscCoordinates() {
+        return new ArtifactCoordinates( this.groupId,
+                this.artifactId,
+                this.version,
+                this.classifier == null ? "" : this.classifier );
+
     }
 
     public String mavenGav() {
