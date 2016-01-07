@@ -1,0 +1,8 @@
+com.fasterxml.jackson.core:jackson-core
+com.fasterxml.jackson.core:jackson-annotations
+com.fasterxml.jackson.core:jackson-databind
+com.fasterxml.jackson.datatype:jackson-datatype-joda
+com.fasterxml.jackson.datatype:jackson-datatype-guava
+com.fasterxml.jackson.dataformat:jackson-dataformat-yaml
+com.fasterxml.jackson.dataformat:jackson-dataformat-xml
+com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider
