@@ -259,6 +259,7 @@
     <module>management</module>
 
     <!-- fractions -->
+    <module>batch-jberet</module>
     <module>bean-validation</module>
     <module>connector</module>
     <module>datasources</module>

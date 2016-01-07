@@ -226,6 +226,22 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>batch-jberet</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>batch-jberet-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>batch-jberet-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation</artifactId>
         <version>${project.version}</version>
       </dependency>
