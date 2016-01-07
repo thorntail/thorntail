@@ -14,7 +14,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class SwaggerArchiveTest {
 
-    //@Test
+    @Test
     public void testRegister() {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.war");
         archive.as(SwaggerArchive.class).register("com.tester.resource");

@@ -57,6 +57,13 @@
       <artifactId>jaxrs</artifactId>
     </dependency>
 
+    <!-- TODO: It is unclear to me why we must specify the version here, but not for other wf-swarm dependencies like jaxrs above -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jackson</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-jaxrs</artifactId>

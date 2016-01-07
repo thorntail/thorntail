@@ -16,7 +16,7 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
     public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.runtime.SwaggerActivator";
     private List<String> packageNames = new ArrayList<>();
 
-    protected SwaggerArchiveImpl(ArchiveBase<?> archive) {
+    public SwaggerArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
     }
 
