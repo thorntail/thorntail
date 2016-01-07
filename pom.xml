@@ -37,7 +37,7 @@
   </licenses>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha5</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha6</version.wildfly.swarm.fraction.plugin>
 
     <version.jruby-maven-plugin>1.1.3</version.jruby-maven-plugin>
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
