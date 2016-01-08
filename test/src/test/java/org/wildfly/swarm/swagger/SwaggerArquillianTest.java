@@ -34,11 +34,12 @@ import org.wildfly.swarm.jaxrs.JAXRSArchive;
 public class SwaggerArquillianTest implements ContainerFactory {
 
     @Deployment(testable = false)
-    public static Archive createDeployment() {
+    public static Archive createDeployment() throws Exception {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
         deployment.addResource(Resource.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
-        //deployment.as(SwaggerArchive.class);
+        deployment.as(SwaggerArchive.class);
+        deployment.addAllDependencies();
         return deployment;
     }
 
