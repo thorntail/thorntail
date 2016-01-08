@@ -21,6 +21,7 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.keycloak.KeycloakFraction;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 /**
  * @author Bob McWhirter
  */
+@Configuration
 public class KeycloakConfiguration extends AbstractServerConfiguration<KeycloakFraction> {
 
     public KeycloakConfiguration() {
