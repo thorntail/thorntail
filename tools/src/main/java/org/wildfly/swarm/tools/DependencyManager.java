@@ -131,20 +131,27 @@ public class DependencyManager {
         if (spec.file == null) {
             return false;
         }
+
         if (!spec.type().equals("jar")) {
             return false;
-        }
-        try (JarFile jar = new JarFile(spec.file)) {
-            ZipEntry entry = jar.getEntry("wildfly-swarm-modules.conf");
-            if (entry != null) {
-                return true;
-            }
-        } catch (IOException e) {
         }
 
         if (spec.groupId().equals(WILDFLY_SWARM_GROUP_ID) && spec.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
             return true;
         }
+
+        try (JarFile jar = new JarFile(spec.file)) {
+            Enumeration<JarEntry> entries = jar.entries();
+            while ( entries.hasMoreElements() ) {
+                String name = entries.nextElement().getName();
+                if ( name.startsWith( "modules/" ) && name.endsWith( "module.xml" ) ) {
+                    return true;
+                }
+
+            }
+        } catch (IOException e) {
+        }
+
         return false;
     }
 

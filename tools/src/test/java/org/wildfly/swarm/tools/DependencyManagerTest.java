@@ -96,12 +96,11 @@ public class DependencyManagerTest {
         });
 
         resolver.add(MODULES_A, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-modules.conf");
             archive.add(new ClassLoaderAsset("module.xml"), "modules/org/jboss/as/webservices/main/module.xml");
         });
 
         resolver.add(PROVIDED_A, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-modules.conf");
+            archive.add(new ClassLoaderAsset("keycloak-core-module.xml"), "modules/org/keyclaok/keycloak-core-module/main/module.xml" );
             archive.add(new StringAsset(
                     "com.sun.mail:javax.mail\n" +
                             "org.keycloak:keycloak-core|org.keycloak.keycloak-core-module"
