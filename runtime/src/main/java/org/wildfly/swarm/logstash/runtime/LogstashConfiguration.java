@@ -41,9 +41,4 @@ public class LogstashConfiguration extends AbstractServerConfiguration<LogstashF
         return (LogstashFraction) LogstashFraction.createDefaultLogstashFraction(false);
     }
 
-    @Override
-    public List<ModelNode> getList(LogstashFraction fraction) {
-        return Collections.emptyList();
-    }
-
 }
