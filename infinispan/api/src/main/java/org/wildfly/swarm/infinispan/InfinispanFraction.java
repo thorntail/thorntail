@@ -53,17 +53,6 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         }
     }
 
-    public void applyResourceDefaults() {
-        /*
-        subresources().cacheContainers().forEach(cc -> {
-            enableResourceDefaults(cc);
-            cc.subresources().distributedCaches().forEach(InfinispanFraction::enableResourceDefaults);
-            cc.subresources().localCaches().forEach(InfinispanFraction::enableResourceDefaults);
-            cc.subresources().replicatedCaches().forEach(InfinispanFraction::enableResourceDefaults);
-        });
-        */
-    }
-
     protected InfinispanFraction markDefaultFraction() {
         this.defaultFraction = true;
 

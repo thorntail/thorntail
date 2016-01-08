@@ -36,13 +36,4 @@ public class EJBRemoteConfiguration extends AbstractServerConfiguration<EJBRemot
         return true;
     }
 
-    @Override
-    public EJBRemoteFraction defaultFraction() {
-        return new EJBRemoteFraction();
-    }
-
-    @Override
-    public List<ModelNode> getList(EJBRemoteFraction fraction) {
-        return Collections.emptyList();
-    }
 }

@@ -284,8 +284,6 @@ public class RuntimeServer implements Server {
 
         Set<String> groupNames = config.socketBindings().keySet();
 
-        System.err.println( "SB: " + config.socketBindings() );
-
         for (String each : groupNames) {
             List<SocketBinding> bindings = config.socketBindings().get(each);
 

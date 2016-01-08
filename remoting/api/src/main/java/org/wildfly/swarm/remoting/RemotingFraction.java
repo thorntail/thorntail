@@ -16,10 +16,20 @@
 package org.wildfly.swarm.remoting;
 
 import org.wildfly.swarm.config.Remoting;
+import org.wildfly.swarm.config.remoting.EndpointConfiguration;
+import org.wildfly.swarm.config.remoting.HTTPConnector;
 import org.wildfly.swarm.container.Fraction;
 
 /**
  * @author Ken Finnigan
  */
 public class RemotingFraction extends Remoting<RemotingFraction> implements Fraction {
+
+    public static RemotingFraction defaultFraction() {
+        RemotingFraction fraction = new RemotingFraction();
+        fraction.endpointConfiguration(new EndpointConfiguration())
+                .httpConnector(new HTTPConnector("http-remoting-connector")
+                        .connectorRef("default"));
+        return fraction;
+    }
 }

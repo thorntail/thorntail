@@ -19,35 +19,22 @@
 
 package org.wildfly.swarm.batch.jberet.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.as.controller.client.helpers.Operations;
-import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.batch.jberet.BatchFraction;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-public class BatchConfiguration extends AbstractServerConfiguration<BatchFraction> {
+public class BatchConfiguration extends MarshallingServerConfiguration<BatchFraction> {
+    public static final String EXTENSION_MODULE = "org.wildfly.extension.batch.jberet";
+
     public BatchConfiguration() {
-        super(BatchFraction.class);
+        super(BatchFraction.class, EXTENSION_MODULE);
     }
 
     @Override
     public BatchFraction defaultFraction() {
+        System.err.println( "creating batch default fraction" );
         return BatchFraction.createDefaultFraction();
-    }
-
-    @Override
-    public List<ModelNode> getList(final BatchFraction fraction) throws Exception {
-        final List<ModelNode> list = new ArrayList<>();
-        list.add(Operations.createAddOperation(Operations.createAddress(EXTENSION, "org.wildfly.extension.batch.jberet")));
-        list.addAll(Marshaller.marshal(fraction));
-        return list;
     }
 }

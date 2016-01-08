@@ -15,46 +15,19 @@
  */
 package org.wildfly.swarm.naming.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.naming.NamingFraction;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * @author Bob McWhirter
  * @author Lance Ball
  */
-public class NamingConfiguration extends AbstractServerConfiguration<NamingFraction> {
+public class NamingConfiguration extends MarshallingServerConfiguration<NamingFraction> {
+
+    public static final String MODULE_EXTENSION = "org.jboss.as.naming";
 
     public NamingConfiguration() {
-        super(NamingFraction.class);
+        super(NamingFraction.class, MODULE_EXTENSION);
     }
 
-    @Override
-    public NamingFraction defaultFraction() {
-        return new NamingFraction();
-    }
-
-    @Override
-    public List<ModelNode> getList(NamingFraction fraction) throws Exception {
-        List<ModelNode> list = new ArrayList<>();
-
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.naming");
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        list.addAll(Marshaller.marshal(fraction));
-
-        return list;
-
-    }
 }

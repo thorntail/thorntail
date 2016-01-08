@@ -15,43 +15,22 @@
  */
 package org.wildfly.swarm.infinispan.runtime;
 
-import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 
 /**
  * @author Lance Ball
  */
-public class InfinispanConfiguration extends AbstractServerConfiguration<InfinispanFraction> {
+public class InfinispanConfiguration extends MarshallingServerConfiguration<InfinispanFraction> {
+
+    public static final String EXTENSION_MODULE = "org.jboss.as.clustering.infinispan";
 
     public InfinispanConfiguration() {
-        super(InfinispanFraction.class);
+        super(InfinispanFraction.class, EXTENSION_MODULE);
     }
 
     @Override
     public InfinispanFraction defaultFraction() {
         return InfinispanFraction.createDefaultFraction();
-    }
-
-    @Override
-    public List<ModelNode> getList(InfinispanFraction fraction) throws Exception {
-        fraction.applyResourceDefaults();
-
-        List<ModelNode> list = new ArrayList<>();
-
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.clustering.infinispan");
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        list.addAll(Marshaller.marshal(fraction));
-
-        return list;
     }
 }

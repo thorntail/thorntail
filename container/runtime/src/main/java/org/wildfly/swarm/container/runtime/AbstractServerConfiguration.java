@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.container.runtime;
 
+import java.util.List;
+
+import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -33,4 +36,12 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
         return this.type;
     }
 
+    @Override
+    public T defaultFraction() {
+        try {
+            return getType().newInstance();
+        } catch (InstantiationException|IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

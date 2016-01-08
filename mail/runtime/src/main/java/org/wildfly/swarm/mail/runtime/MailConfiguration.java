@@ -15,48 +15,22 @@
  */
 package org.wildfly.swarm.mail.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.PathElement;
-import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.mail.MailFraction;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
 /**
  * @author Ken Finnigan
  */
-public class MailConfiguration extends AbstractServerConfiguration<MailFraction> {
+public class MailConfiguration extends MarshallingServerConfiguration<MailFraction> {
+
+    public static final String EXTENSION_MODULE = "org.jboss.as.mail";
 
     public MailConfiguration() {
-        super(MailFraction.class);
+        super(MailFraction.class, EXTENSION_MODULE);
     }
 
     @Override
     public MailFraction defaultFraction() {
         return MailFraction.defaultFraction();
-    }
-
-    @Override
-    public List<ModelNode> getList(MailFraction fraction) throws Exception {
-
-        List<ModelNode> list = new ArrayList<>();
-
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.mail");
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        list.addAll( Marshaller.marshal( fraction ) );
-
-        return list;
     }
 }

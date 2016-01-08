@@ -29,7 +29,10 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 /**
  * @author Bob McWhirter
  */
+// @TODO make this use config-api
 public class JMXConfiguration extends AbstractServerConfiguration<JMXFraction> {
+
+    public static final String EXTENSION_MODULE = "org.jboss.as.jmx";
 
     public JMXConfiguration() {
         super(JMXFraction.class);
@@ -45,7 +48,7 @@ public class JMXConfiguration extends AbstractServerConfiguration<JMXFraction> {
         List<ModelNode> list = new ArrayList<>();
 
         ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(EXTENSION, "org.jboss.as.jmx");
+        node.get(OP_ADDR).set(EXTENSION, EXTENSION_MODULE );
         node.get(OP).set(ADD);
         list.add(node);
 

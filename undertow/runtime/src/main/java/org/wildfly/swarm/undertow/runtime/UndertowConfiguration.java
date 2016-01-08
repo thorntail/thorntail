@@ -15,29 +15,21 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.container.JARArchive;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.undertow.UndertowFraction;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * @author Bob McWhirter
  * @author Lance Ball
  */
-public class UndertowConfiguration extends AbstractServerConfiguration<UndertowFraction> {
+public class UndertowConfiguration extends MarshallingServerConfiguration<UndertowFraction> {
+
+    public static final String EXTENSION_MODULE = "org.wildfly.extension.undertow";
 
     public UndertowConfiguration() {
-        super(UndertowFraction.class);
+        super(UndertowFraction.class, EXTENSION_MODULE);
     }
 
     @Override
@@ -50,18 +42,4 @@ public class UndertowConfiguration extends AbstractServerConfiguration<UndertowF
         a.as(JARArchive.class).addModule( "javax.xml.bind.api");
     }
 
-    @Override
-    public List<ModelNode> getList(UndertowFraction fraction) throws Exception {
-        List<ModelNode> list = new ArrayList<>();
-
-        ModelNode node = new ModelNode();
-        node.get(OP_ADDR).set(EXTENSION, "org.wildfly.extension.undertow");
-        node.get(OP).set(ADD);
-        list.add(node);
-
-        list.addAll(Marshaller.marshal(fraction));
-
-        return list;
-
-    }
 }

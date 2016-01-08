@@ -15,19 +15,14 @@
  */
 package org.wildfly.swarm.management.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.management.ManagementFraction;
 
 /**
  * @author Bob McWhirter
  * @author Lance Ball
  */
-public class ManagementConfiguration extends AbstractServerConfiguration<ManagementFraction> {
+public class ManagementConfiguration extends MarshallingServerConfiguration<ManagementFraction> {
 
     public ManagementConfiguration() {
         super(ManagementFraction.class);
@@ -36,16 +31,5 @@ public class ManagementConfiguration extends AbstractServerConfiguration<Managem
     @Override
     public ManagementFraction defaultFraction() {
         return ManagementFraction.createDefaultFraction();
-    }
-
-    @Override
-    public List<ModelNode> getList(ManagementFraction fraction) throws Exception {
-        if (fraction == null) {
-            fraction = defaultFraction();
-        }
-
-        List<ModelNode> list = new ArrayList<>();
-        list.addAll(Marshaller.marshal(fraction));
-        return list;
     }
 }
