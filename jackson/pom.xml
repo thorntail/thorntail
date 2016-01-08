@@ -77,6 +77,10 @@
 
     <!-- Pull in the jackson dependencies required for main -->
     <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
       <version>${version.swagger.jackson}</version>

@@ -7,6 +7,11 @@
     <artifact name="com.fasterxml.jackson.datatype:jackson-datatype-guava:${version.swagger.jackson}"/>
     <artifact name="com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version.swagger.jackson}"/>
     <artifact name="com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version.swagger.jackson}"/>
+    <artifact name="com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:${version.swagger.jackson}"/>
     <artifact name="com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${version.swagger.jackson}"/>
   </resources>
+  <dependencies>
+    <module name="javax.ws.rs.api"/>
+  </dependencies>
+
 </module>
