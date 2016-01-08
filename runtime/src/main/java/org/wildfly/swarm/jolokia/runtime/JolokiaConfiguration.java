@@ -22,12 +22,14 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.jolokia.JolokiaFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration
 public class JolokiaConfiguration extends AbstractServerConfiguration<JolokiaFraction> {
 
     public JolokiaConfiguration() {
