@@ -15,11 +15,14 @@
  */
 package org.wildfly.swarm.container.runtime;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -57,7 +60,6 @@ import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.OutboundSocketBinding;
-import org.wildfly.swarm.container.RuntimeModuleProvider;
 import org.wildfly.swarm.container.Server;
 import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
@@ -316,23 +318,29 @@ public class RuntimeServer implements Server {
     @SuppressWarnings("unchecked")
     private void loadFractionConfigurations() throws Exception {
         Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-        ServiceLoader<RuntimeModuleProvider> providerLoader = m1.loadService(RuntimeModuleProvider.class);
 
-        Iterator<RuntimeModuleProvider> providerIter = providerLoader.iterator();
-
-        if (!providerIter.hasNext()) {
-            providerLoader = ServiceLoader.load(RuntimeModuleProvider.class, ClassLoader.getSystemClassLoader());
-            providerIter = providerLoader.iterator();
+        Enumeration<URL> bootstraps = m1.getClassLoader().getResources("wildfly-swarm-bootstrap.conf");
+        if ( ! bootstraps.hasMoreElements() ) {
+            bootstraps = ClassLoader.getSystemClassLoader().getResources( "wildfly-swarm-bootstrap.conf" );
         }
 
-        while (providerIter.hasNext()) {
-            RuntimeModuleProvider provider = providerIter.next();
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(provider.getModuleName(), provider.getSlotName()));
-            ServiceLoader<ServerConfiguration> configLoaders = module.loadService(ServerConfiguration.class);
+        while ( bootstraps.hasMoreElements() ) {
+            URL each = bootstraps.nextElement();
+            try ( BufferedReader reader = new BufferedReader( new InputStreamReader(each.openStream()) ) ) {
+                String line;
+                while ( ( line = reader.readLine() ) != null ) {
+                    line = line.trim();
+                    if ( line.isEmpty() ) {
+                        continue;
+                    }
+                    Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "runtime") );
+                    ServiceLoader<ServerConfiguration> configLoaders = module.loadService(ServerConfiguration.class);
 
-            for (ServerConfiguration serverConfig : configLoaders) {
-                this.configByFractionType.put(serverConfig.getType(), serverConfig);
-                this.configList.add(serverConfig);
+                    for (ServerConfiguration serverConfig : configLoaders) {
+                        this.configByFractionType.put(serverConfig.getType(), serverConfig);
+                        this.configList.add(serverConfig);
+                    }
+                }
             }
         }
     }
