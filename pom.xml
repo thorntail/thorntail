@@ -243,8 +243,8 @@
   </pluginRepositories>
 
   <modules>
+    <module>bom</module>
     <module>build/bom</module>
-    <module>bom-fractions</module>
 
     <!-- misc -->
     <module>fraction-list</module>

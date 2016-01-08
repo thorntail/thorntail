@@ -205,14 +205,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>archaius</artifactId>
+        <artifactId>bom</artifactId>
         <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>arquillian</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian-daemon</artifactId>
@@ -226,11 +224,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>batch-jberet</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -240,11 +233,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>bean-validation</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation-modules</artifactId>
@@ -262,11 +250,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>connector</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector-modules</artifactId>
@@ -296,11 +279,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>datasources</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -310,11 +288,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ee</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee-modules</artifactId>
@@ -328,11 +301,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ejb</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -342,11 +310,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ejb-remote</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote-modules</artifactId>
@@ -370,17 +333,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>guava</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>hawkular</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>hawkular-modules</artifactId>
@@ -462,27 +414,11 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>hystrix</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.netflix.hystrix</groupId>
         <artifactId>hystrix-core</artifactId>
         <version>${version.com.netflix.hystrix}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>infinispan</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan-modules</artifactId>
@@ -496,11 +432,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>io</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>io-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -512,11 +443,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jaxrs</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -525,32 +451,7 @@
         <artifactId>jaxrs-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jaxrs-jaxb</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jaxrs-jsonp</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jaxrs-multipart</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jaxrs-weld</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jca</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca-modules</artifactId>
@@ -564,11 +465,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jgroups</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -580,11 +476,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jmx</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -594,11 +485,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jolokia</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jolokia-modules</artifactId>
@@ -618,11 +504,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jpa</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -634,11 +515,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jsf</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -648,11 +524,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>keycloak</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak-modules</artifactId>
@@ -688,11 +559,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>logging</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -702,11 +568,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>logstash</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logstash-modules</artifactId>
@@ -726,11 +587,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>mail</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -740,11 +596,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>management</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-modules</artifactId>
@@ -758,11 +609,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>messaging</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -772,11 +618,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>msc</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc-modules</artifactId>
@@ -790,11 +631,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>naming</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -806,11 +642,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>remoting</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -820,11 +651,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-modules</artifactId>
@@ -856,17 +682,6 @@
         <version>${version.com.netflix.ribbon}</version>
       </dependency>
 
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-secured</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-secured-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured-modules</artifactId>
@@ -880,11 +695,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-webapp</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-webapp-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -895,19 +705,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>rxjava</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
         <groupId>io.reactivex</groupId>
         <artifactId>rxjava</artifactId>
         <version>${version.rxjava}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>rxnetty</artifactId>
-        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.reactivex</groupId>
@@ -927,11 +727,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>security</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>security-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -941,17 +736,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>servo</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>swagger</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-modules</artifactId>
@@ -965,11 +749,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>transactions</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -979,11 +758,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>undertow</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow-modules</artifactId>
@@ -997,11 +771,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>webservices</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1011,11 +780,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>weld</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>weld-modules</artifactId>

@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <version>19</version>
-    <relativePath/>
-  </parent>
-
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>bom-fractions</artifactId>
+  <artifactId>bom</artifactId>
   <version>1.0.0.Alpha6-SNAPSHOT</version>
 
   <name>WildFly Swarm: BOM for Fractions</name>
@@ -40,17 +33,28 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>arquillian</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>archaius</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>batch-jberet</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>container</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -75,6 +79,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>guava</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>hawkular</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -85,7 +94,17 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hystrix</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>io</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -165,6 +184,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>management</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -195,12 +219,37 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>ribbon-secured-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-webapp</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>rxjava</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>rxnetty</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>security</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>servo</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>swagger</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
