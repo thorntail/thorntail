@@ -36,7 +36,6 @@ public class JolokiaConfiguration extends AbstractServerConfiguration<JolokiaFra
 
     @Override
     public JolokiaFraction defaultFraction() {
-        System.err.println("create default fraction for Jolokia");
         return new JolokiaFraction();
     }
 
