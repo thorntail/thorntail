@@ -20,11 +20,13 @@ import java.util.List;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.logstash.LogstashFraction;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration
 public class LogstashConfiguration extends AbstractServerConfiguration<LogstashFraction> {
 
     public LogstashConfiguration() {
