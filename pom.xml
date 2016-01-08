@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
@@ -9,9 +9,9 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>bom</artifactId>
+    <artifactId>build-bom</artifactId>
     <version>1.0.0.Alpha6-SNAPSHOT</version>
-    <relativePath>bom/</relativePath>
+    <relativePath>build/bom/</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -243,7 +243,8 @@
   </pluginRepositories>
 
   <modules>
-    <module>bom</module>
+    <module>build/bom</module>
+
     <!-- misc -->
     <module>fraction-list</module>
     <module>archetype</module>
