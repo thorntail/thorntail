@@ -17,6 +17,7 @@ package org.wildfly.swarm.messaging.runtime;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.messaging.MessagingFraction;
 
@@ -24,6 +25,7 @@ import org.wildfly.swarm.messaging.MessagingFraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
+@Configuration
 public class MessagingConfiguration extends MarshallingServerConfiguration<MessagingFraction> {
 
     public static final String EXTENSION_MODULE = "org.wildfly.extension.messaging-activemq";

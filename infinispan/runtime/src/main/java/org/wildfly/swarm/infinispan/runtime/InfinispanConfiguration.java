@@ -15,12 +15,14 @@
  */
 package org.wildfly.swarm.infinispan.runtime;
 
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
 
 /**
  * @author Lance Ball
  */
+@Configuration
 public class InfinispanConfiguration extends MarshallingServerConfiguration<InfinispanFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.clustering.infinispan";

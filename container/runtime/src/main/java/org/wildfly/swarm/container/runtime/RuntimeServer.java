@@ -16,6 +16,7 @@
 package org.wildfly.swarm.container.runtime;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Path;
@@ -23,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -42,9 +44,16 @@ import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.Index;
+import org.jboss.jandex.Indexer;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.Resource;
+import org.jboss.modules.filter.PathFilters;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceContainer;
 import org.jboss.msc.service.ServiceController;
@@ -320,29 +329,61 @@ public class RuntimeServer implements Server {
         Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
 
         Enumeration<URL> bootstraps = m1.getClassLoader().getResources("wildfly-swarm-bootstrap.conf");
-        if ( ! bootstraps.hasMoreElements() ) {
-            bootstraps = ClassLoader.getSystemClassLoader().getResources( "wildfly-swarm-bootstrap.conf" );
+        if (!bootstraps.hasMoreElements()) {
+            bootstraps = ClassLoader.getSystemClassLoader().getResources("wildfly-swarm-bootstrap.conf");
         }
 
-        while ( bootstraps.hasMoreElements() ) {
+        while (bootstraps.hasMoreElements()) {
             URL each = bootstraps.nextElement();
-            try ( BufferedReader reader = new BufferedReader( new InputStreamReader(each.openStream()) ) ) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(each.openStream()))) {
                 String line;
-                while ( ( line = reader.readLine() ) != null ) {
+                while ((line = reader.readLine()) != null) {
                     line = line.trim();
-                    if ( line.isEmpty() ) {
+                    if (line.isEmpty()) {
                         continue;
                     }
-                    Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "runtime") );
-                    ServiceLoader<ServerConfiguration> configLoaders = module.loadService(ServerConfiguration.class);
+                    Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "runtime"));
+                    List<AnnotationInstance> found = tryToFindConfiguration(module);
 
-                    for (ServerConfiguration serverConfig : configLoaders) {
-                        this.configByFractionType.put(serverConfig.getType(), serverConfig);
-                        this.configList.add(serverConfig);
+                    for (AnnotationInstance eachAnno : found) {
+                        Class<?> cls = module.getClassLoader().loadClass(eachAnno.target().asClass().name().toString());
+                        if (! this.configList.stream().anyMatch((e) -> e.getClass().equals(cls))) {
+                            ServerConfiguration serverConfig = (ServerConfiguration) cls.newInstance();
+                            //System.err.println("from " + module.getIdentifier() + " ADD: " + serverConfig);
+                            this.configByFractionType.put(serverConfig.getType(), serverConfig);
+                            this.configList.add(serverConfig);
+
+                        }
                     }
                 }
             }
         }
+    }
+
+    protected List<AnnotationInstance> tryToFindConfiguration(Module module) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException {
+
+        Indexer indexer = new Indexer();
+
+        Iterator<Resource> resources = module.iterateResources(PathFilters.acceptAll());
+
+        while (resources.hasNext()) {
+            Resource each = resources.next();
+
+
+            if (each.getName().endsWith(".class")) {
+                try {
+                    ClassInfo clsInfo = indexer.index(each.openStream());
+                } catch (IOException e) {
+                    //System.err.println("error: " + each.getName() + ": " + e.getMessage());
+                }
+            }
+        }
+
+        Index index = indexer.complete();
+
+        List<AnnotationInstance> found = index.getAnnotations(DotName.createSimple(Configuration.class.getName()));
+
+        return found;
     }
 
     private List<ModelNode> getList(Container config) throws Exception {

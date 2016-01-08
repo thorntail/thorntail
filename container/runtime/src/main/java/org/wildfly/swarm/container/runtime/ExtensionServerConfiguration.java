@@ -14,7 +14,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 /**
  * @author Bob McWhirter
  */
-public class ExtensionServerConfiguration<T extends Fraction> extends AbstractServerConfiguration<T> {
+public abstract class ExtensionServerConfiguration<T extends Fraction> extends AbstractServerConfiguration<T> {
 
     private final String extensionModuleName;
 

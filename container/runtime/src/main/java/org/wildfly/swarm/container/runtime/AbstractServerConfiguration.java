@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.container.runtime;
 
-import java.util.List;
-
-import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.Fraction;
 
 /**

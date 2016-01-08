@@ -15,12 +15,14 @@
  */
 package org.wildfly.swarm.jgroups.runtime;
 
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jgroups.JGroupsFraction;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration
 public class JGroupsConfiguration extends MarshallingServerConfiguration<JGroupsFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.clustering.jgroups";

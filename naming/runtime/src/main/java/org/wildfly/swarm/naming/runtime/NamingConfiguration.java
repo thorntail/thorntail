@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.naming.runtime;
 
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.naming.NamingFraction;
 
@@ -22,6 +23,7 @@ import org.wildfly.swarm.naming.NamingFraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
+@Configuration
 public class NamingConfiguration extends MarshallingServerConfiguration<NamingFraction> {
 
     public static final String MODULE_EXTENSION = "org.jboss.as.naming";

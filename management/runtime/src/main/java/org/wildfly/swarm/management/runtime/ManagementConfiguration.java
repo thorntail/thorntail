@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.management.runtime;
 
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.management.ManagementFraction;
 
@@ -22,6 +23,7 @@ import org.wildfly.swarm.management.ManagementFraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
+@Configuration
 public class ManagementConfiguration extends MarshallingServerConfiguration<ManagementFraction> {
 
     public ManagementConfiguration() {

@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.remoting.runtime;
 
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.remoting.RemotingFraction;
 
@@ -22,6 +23,7 @@ import org.wildfly.swarm.remoting.RemotingFraction;
  * @author Ken Finnigan
  * @author Lance Ball
  */
+@Configuration
 public class RemotingConfiguration extends MarshallingServerConfiguration<RemotingFraction> {
 
     public static final String MODULE_EXTENSION = "org.jboss.as.remoting";

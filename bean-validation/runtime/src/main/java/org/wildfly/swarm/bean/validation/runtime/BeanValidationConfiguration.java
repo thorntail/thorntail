@@ -16,11 +16,13 @@
 package org.wildfly.swarm.bean.validation.runtime;
 
 import org.wildfly.swarm.bean.validation.BeanValidationFraction;
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration
 public class BeanValidationConfiguration extends MarshallingServerConfiguration<BeanValidationFraction> {
     public static final String EXTENSION_MODULE = "org.wildfly.extension.bean-validation";
 

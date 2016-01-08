@@ -11,7 +11,6 @@ import org.wildfly.swarm.container.Fraction;
  */
 public abstract class MarshallingServerConfiguration<T extends Fraction> extends ExtensionServerConfiguration<T> {
 
-
     protected MarshallingServerConfiguration(Class<T> fractionClass) {
         super( fractionClass, null );
     }

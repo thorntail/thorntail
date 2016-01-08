@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.jpa.jpa;
 
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jpa.JPAFraction;
 
@@ -22,6 +23,7 @@ import org.wildfly.swarm.jpa.JPAFraction;
  * @author Ken Finnigan
  * @author Lance Ball
  */
+@Configuration
 public class JPAConfiguration extends MarshallingServerConfiguration<JPAFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.jpa";

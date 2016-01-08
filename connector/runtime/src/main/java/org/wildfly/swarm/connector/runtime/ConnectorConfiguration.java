@@ -16,11 +16,13 @@
 package org.wildfly.swarm.connector.runtime;
 
 import org.wildfly.swarm.connector.ConnectorFraction;
+import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.ExtensionServerConfiguration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration
 public class ConnectorConfiguration extends ExtensionServerConfiguration<ConnectorFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.connector";
