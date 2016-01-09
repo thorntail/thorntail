@@ -1,6 +1,5 @@
 package org.wildfly.swarm.bootstrap.modules;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import org.jboss.modules.maven.MavenResolver;
 
 /**
