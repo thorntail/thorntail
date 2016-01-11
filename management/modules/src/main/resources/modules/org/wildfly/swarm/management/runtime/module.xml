@@ -13,6 +13,8 @@
 
     <module name="org.jboss.as.domain-management"/>
 
+    <module name="org.jboss.as.domain-http-interface"/>
+
   </dependencies>
 
 </module>
