@@ -15,14 +15,12 @@
  */
 package org.wildfly.swarm.ejb.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.ejb.EJBFraction;
 
 /**
  * @author Ken Finnigan
  */
-@Configuration
 public class EJBConfiguration extends MarshallingServerConfiguration<EJBFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.ejb3";

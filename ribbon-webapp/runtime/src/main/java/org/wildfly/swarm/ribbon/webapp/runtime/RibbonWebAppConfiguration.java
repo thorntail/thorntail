@@ -4,7 +4,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.netflix.ribbon.RibbonArchive;
 import org.wildfly.swarm.ribbon.webapp.RibbonWebAppFraction;
 import org.wildfly.swarm.undertow.WARArchive;
@@ -16,7 +15,6 @@ import java.util.List;
 /**
  * @author Lance Ball
  */
-@Configuration
 public class RibbonWebAppConfiguration extends AbstractServerConfiguration<RibbonWebAppFraction> {
 
     private static final String DEFAULT_CONTEXT = "/ribbon";

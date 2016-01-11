@@ -16,13 +16,11 @@
 package org.wildfly.swarm.msc.runtime;
 
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.msc.MSCFraction;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration
 public class MSCConfiguration extends AbstractServerConfiguration<MSCFraction> {
 
     public MSCConfiguration() {

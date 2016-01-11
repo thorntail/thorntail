@@ -20,7 +20,6 @@ import java.util.List;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.bootstrap.logging.InitialLoggerManager;
 import org.wildfly.swarm.bootstrap.logging.LevelNode;
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.config.logging.Level;
@@ -29,7 +28,6 @@ import org.wildfly.swarm.config.logging.Level;
  * @author Bob McWhirter
  * @author Lance Ball
  */
-@Configuration
 public class LoggingConfiguration extends MarshallingServerConfiguration<LoggingFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.logging";

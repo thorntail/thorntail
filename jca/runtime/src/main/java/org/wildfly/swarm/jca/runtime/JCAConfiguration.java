@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.jca.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jca.JCAFraction;
 
@@ -23,7 +22,6 @@ import org.wildfly.swarm.jca.JCAFraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
-@Configuration
 public class JCAConfiguration extends MarshallingServerConfiguration<JCAFraction> {
 
     public JCAConfiguration() {

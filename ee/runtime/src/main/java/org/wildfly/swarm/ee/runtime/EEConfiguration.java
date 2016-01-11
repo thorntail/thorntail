@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.ee.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.ee.EEFraction;
 
@@ -23,7 +22,6 @@ import org.wildfly.swarm.ee.EEFraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
-@Configuration
 public class EEConfiguration extends MarshallingServerConfiguration<EEFraction> {
 
     public static String EXTENSION_MODULE = "org.jboss.as.ee";

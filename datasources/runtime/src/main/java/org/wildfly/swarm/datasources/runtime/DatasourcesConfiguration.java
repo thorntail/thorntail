@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.datasources.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 
@@ -23,7 +22,6 @@ import org.wildfly.swarm.datasources.DatasourcesFraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
-@Configuration
 public class DatasourcesConfiguration extends MarshallingServerConfiguration<DatasourcesFraction> {
 
     public DatasourcesConfiguration() {

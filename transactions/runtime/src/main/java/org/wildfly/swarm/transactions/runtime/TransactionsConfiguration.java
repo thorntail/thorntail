@@ -15,14 +15,12 @@
  */
 package org.wildfly.swarm.transactions.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.transactions.TransactionsFraction;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration
 public class TransactionsConfiguration extends MarshallingServerConfiguration<TransactionsFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.transactions";

@@ -18,6 +18,7 @@ package org.wildfly.swarm.container.runtime;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +28,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,7 +44,6 @@ import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
-import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
@@ -343,13 +342,12 @@ public class RuntimeServer implements Server {
                         continue;
                     }
                     Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "runtime"));
-                    List<AnnotationInstance> found = tryToFindConfiguration(module);
 
-                    for (AnnotationInstance eachAnno : found) {
-                        Class<?> cls = module.getClassLoader().loadClass(eachAnno.target().asClass().name().toString());
+                    List<Class<? extends ServerConfiguration>> serverConfigs = findServerConfigurationImpls(module);
+
+                    for (Class<? extends ServerConfiguration> cls : serverConfigs) {
                         if (! this.configList.stream().anyMatch((e) -> e.getClass().equals(cls))) {
                             ServerConfiguration serverConfig = (ServerConfiguration) cls.newInstance();
-                            //System.err.println("from " + module.getIdentifier() + " ADD: " + serverConfig);
                             this.configByFractionType.put(serverConfig.getType(), serverConfig);
                             this.configList.add(serverConfig);
 
@@ -360,7 +358,7 @@ public class RuntimeServer implements Server {
         }
     }
 
-    protected List<AnnotationInstance> tryToFindConfiguration(Module module) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException {
+    protected List<Class<? extends ServerConfiguration>> findServerConfigurationImpls(Module module) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException {
 
         Indexer indexer = new Indexer();
 
@@ -381,9 +379,29 @@ public class RuntimeServer implements Server {
 
         Index index = indexer.complete();
 
-        List<AnnotationInstance> found = index.getAnnotations(DotName.createSimple(Configuration.class.getName()));
+        Set<ClassInfo> infos = index.getAllKnownImplementors(DotName.createSimple(ServerConfiguration.class.getName()));
 
-        return found;
+        List<Class<? extends  ServerConfiguration>>  impls = new ArrayList<>();
+
+        for (ClassInfo info : infos) {
+            try {
+                Class<? extends ServerConfiguration> cls = (Class<? extends ServerConfiguration>) module.getClassLoader().loadClass( info.name().toString() );
+
+                if (! Modifier.isAbstract( cls.getModifiers() ) ) {
+                    impls.add( cls );
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        return impls;
+
+        //List<AnnotationInstance> found = index.getAnnotations(DotName.createSimple(Configuration.class.getName()));
+
+        //return found;
     }
 
     private List<ModelNode> getList(Container config) throws Exception {

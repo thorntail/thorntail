@@ -19,7 +19,6 @@ import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.jmx.JMXFraction;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
  * @author Bob McWhirter
  */
 // @TODO make this use config-api
-@Configuration
 public class JMXConfiguration extends AbstractServerConfiguration<JMXFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.jmx";

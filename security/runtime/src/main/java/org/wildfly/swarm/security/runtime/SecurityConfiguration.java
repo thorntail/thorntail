@@ -26,7 +26,6 @@ import org.wildfly.swarm.config.security.SecurityDomain;
 import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;
 import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.security.SecurityFraction;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -37,7 +36,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 /**
  * @author Bob McWhirter
  */
-@Configuration
 public class SecurityConfiguration extends AbstractServerConfiguration<SecurityFraction> {
 
     public SecurityConfiguration() {

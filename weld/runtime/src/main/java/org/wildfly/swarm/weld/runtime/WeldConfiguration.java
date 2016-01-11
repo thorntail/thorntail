@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.weld.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.weld.WeldFraction;
 
@@ -23,7 +22,6 @@ import org.wildfly.swarm.weld.WeldFraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
-@Configuration
 public class WeldConfiguration extends MarshallingServerConfiguration<WeldFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.weld";

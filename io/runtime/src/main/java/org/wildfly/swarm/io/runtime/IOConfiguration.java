@@ -15,14 +15,12 @@
  */
 package org.wildfly.swarm.io.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.io.IOFraction;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration
 public class IOConfiguration extends MarshallingServerConfiguration<IOFraction> {
 
     public static final String EXTENSION_MODULE = "org.wildfly.extension.io";

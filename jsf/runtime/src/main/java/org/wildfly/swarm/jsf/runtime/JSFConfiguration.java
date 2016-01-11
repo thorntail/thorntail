@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.jsf.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jsf.JSFFraction;
 
@@ -23,7 +22,6 @@ import org.wildfly.swarm.jsf.JSFFraction;
  * @author Ken Finnigan
  * @author Lance Ball
  */
-@Configuration
 public class JSFConfiguration extends MarshallingServerConfiguration<JSFFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.jsf";

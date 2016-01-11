@@ -6,11 +6,9 @@
 
 package org.wildfly.swarm.webservices.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.webservices.WebServicesFraction;
 
-@Configuration
 public class WebServicesConfiguration extends MarshallingServerConfiguration<WebServicesFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.webservices";

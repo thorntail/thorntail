@@ -20,13 +20,11 @@
 package org.wildfly.swarm.batch.jberet.runtime;
 
 import org.wildfly.swarm.batch.jberet.BatchFraction;
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@Configuration
 public class BatchConfiguration extends MarshallingServerConfiguration<BatchFraction> {
     public static final String EXTENSION_MODULE = "org.wildfly.extension.batch.jberet";
 
