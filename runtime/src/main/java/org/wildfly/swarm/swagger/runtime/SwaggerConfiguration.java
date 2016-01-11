@@ -4,7 +4,6 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.swagger.SwaggerFraction;
 
@@ -14,7 +13,6 @@ import java.util.List;
 /**
  * @author Lance Ball
  */
-@Configuration
 public class SwaggerConfiguration extends AbstractServerConfiguration<SwaggerFraction> {
 
     public SwaggerConfiguration() {
