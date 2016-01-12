@@ -16,13 +16,24 @@
 package org.wildfly.swarm.ribbon.webapp;
 
 import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.netflix.ribbon.IdentityExternalAddressMapper;
 
 /**
  * @author Lance Ball
  */
 public class RibbonWebAppFraction implements Fraction {
 
+    private Class externalAddressMapper = IdentityExternalAddressMapper.class;
+
     public RibbonWebAppFraction() {
+    }
+
+    public Class externalAddressMapper() {
+        return externalAddressMapper;
+    }
+
+    public void externalAddressMapper(Class externalAddressMapper) {
+        this.externalAddressMapper = externalAddressMapper;
     }
 
 }

@@ -18,6 +18,7 @@ package org.wildfly.swarm.ribbon.webapp.runtime;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.netflix.ribbon.RibbonArchive;
 import org.wildfly.swarm.ribbon.webapp.RibbonWebAppFraction;
@@ -50,6 +51,7 @@ public class RibbonWebAppConfiguration extends AbstractServerConfiguration<Ribbo
 
         List<Archive> list = new ArrayList<>();
         WARArchive war = ShrinkWrap.create( WARArchive.class, "ribbon-webapp.war" );
+        war.addAsWebInfResource(new StringAsset(getWebXml(fraction)), "web.xml");
         war.addClass( RibbonToTheCurbSSEServlet.class );
         war.addModule("org.wildfly.swarm.netflix.ribbon");
         war.addAsWebResource(new ClassLoaderAsset("ribbon.js", this.getClass().getClassLoader()), "ribbon.js");
@@ -57,6 +59,20 @@ public class RibbonWebAppConfiguration extends AbstractServerConfiguration<Ribbo
         war.as(RibbonArchive.class);
         list.add(war);
         return list;
+    }
+
+    protected String getWebXml(RibbonWebAppFraction fraction) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                "    xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+                "                        http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
+                "    version=\"3.0\">" +
+                "    <context-param>" +
+                "        <param-name>externalAddressMapper</param-name>" +
+                "        <param-value>" + fraction.externalAddressMapper().getName() + "</param-value>" +
+                "    </context-param>" +
+                "</web-app>";
     }
 
 }

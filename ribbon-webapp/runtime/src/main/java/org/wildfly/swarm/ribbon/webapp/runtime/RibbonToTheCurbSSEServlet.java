@@ -34,6 +34,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.wildfly.swarm.netflix.ribbon.RibbonExternalAddressMapper;
+import org.wildfly.swarm.netflix.ribbon.RibbonServer;
 import org.wildfly.swarm.netflix.ribbon.RibbonTopology;
 import org.wildfly.swarm.netflix.ribbon.RibbonTopologyListener;
 
@@ -45,6 +47,7 @@ import org.wildfly.swarm.netflix.ribbon.RibbonTopologyListener;
 public class RibbonToTheCurbSSEServlet extends HttpServlet {
 
     private RibbonTopology topology;
+    private RibbonExternalAddressMapper externalAddressMapper;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -57,6 +60,13 @@ public class RibbonToTheCurbSSEServlet extends HttpServlet {
         } catch (NamingException e) {
             e.printStackTrace();
             throw new ServletException();
+        }
+        try {
+            Class clazz = Class.forName(config.getServletContext().getInitParameter("externalAddressMapper"));
+            this.externalAddressMapper = (RibbonExternalAddressMapper) clazz.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServletException(e);
         }
     }
 
@@ -74,7 +84,7 @@ public class RibbonToTheCurbSSEServlet extends HttpServlet {
         RibbonTopologyListener topologyListener = new RibbonTopologyListener() {
             @Override
             public void onChange(RibbonTopology topology) {
-                String json = topologyToJson();
+                String json = topologyToJson(req.getServerPort());
                 synchronized (writeLock) {
                     writer.write("event: topologyChange\n");
                     writer.write("data: " + json);
@@ -124,7 +134,7 @@ public class RibbonToTheCurbSSEServlet extends HttpServlet {
 
 
         this.topology.addListener(topologyListener);
-        String json = topologyToJson();
+        String json = topologyToJson(req.getServerPort());
         writer.write("event: topologyChange\n");
         writer.write("data: " + json);
         writer.flush();
@@ -133,12 +143,12 @@ public class RibbonToTheCurbSSEServlet extends HttpServlet {
 
     }
 
-    protected String topologyToJson() {
+    protected String topologyToJson(int externalPort) {
         StringBuilder json = new StringBuilder();
 
         json.append("{");
 
-        Map<String, List<String>> map = this.topology.asMap();
+        Map<String, List<RibbonServer>> map = this.topology.asMap();
 
         Set<String> keys = map.keySet();
         Iterator<String> keyIter = keys.iterator();
@@ -146,10 +156,11 @@ public class RibbonToTheCurbSSEServlet extends HttpServlet {
         while (keyIter.hasNext()) {
             String key = keyIter.next();
             json.append("  ").append('"').append(key).append('"').append(": [");
-            List<String> list = map.get(key);
-            Iterator<String> listIter = list.iterator();
+            List<RibbonServer> list = map.get(key);
+            Iterator<RibbonServer> listIter = list.iterator();
             while (listIter.hasNext()) {
-                String server = listIter.next();
+                RibbonServer server = listIter.next();
+                server = this.externalAddressMapper.toExternal(server, externalPort);
                 json.append("    ").append('"').append(server).append('"');
                 if (listIter.hasNext()) {
                     json.append(", ");
