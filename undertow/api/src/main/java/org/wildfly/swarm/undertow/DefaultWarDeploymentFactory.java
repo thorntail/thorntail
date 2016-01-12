@@ -18,22 +18,22 @@ package org.wildfly.swarm.undertow;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.DefaultDeploymentFactory;
 import org.wildfly.swarm.container.DependenciesContainer;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.UUID;
 
 /**
  * @author Bob McWhirter
  */
-public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
+public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
     public int getPriority() {
@@ -51,74 +51,21 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
     }
 
     public static WARArchive archiveFromCurrentApp() throws Exception {
-        WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
-        setup(archive);
+        final WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
+        final DefaultDeploymentFactory factory = new DefaultWarDeploymentFactory();
+        factory.setup(archive);
         archive.addModule("org.wildfly.swarm.undertow", "runtime");
+
         return archive;
     }
 
     protected static String determineName() {
-        String prop = System.getProperty( "wildfly.swarm.app.path" );
-        if ( prop != null ) {
-            File file = new File( prop );
-            String name = file.getName();
-            if ( name.endsWith( ".war" ) ) {
-                return name;
-            }
-            return name + ".war";
-        }
-
-        prop = System.getProperty( "wildfly.swarm.app.artifact" );
-        if ( prop != null ) {
-            return prop;
-        }
-
-        return UUID.randomUUID().toString() + ".war";
+       return DefaultDeploymentFactory.determineName(".war");
     }
 
-    protected static void setup(DependenciesContainer<?> archive) throws Exception {
-        boolean result = setupUsingAppPath(archive) || setupUsingAppArtifact(archive) || setupUsingMaven(archive);
-    }
+    public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {
+        final DependenciesContainer<?> archive = (DependenciesContainer<?>)givenArchive;
 
-    protected static boolean setupUsingAppPath(DependenciesContainer<?> archive) throws IOException {
-        String appPath = System.getProperty("wildfly.swarm.app.path");
-
-        if (appPath != null) {
-            final Path path = Paths.get(System.getProperty("wildfly.swarm.app.path"));
-            if (Files.isDirectory(path)) {
-                Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        Path simple = path.relativize(file);
-                        archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
-                        return super.visitFile(file, attrs);
-                    }
-                });
-            } else {
-                ZipImporterImpl importer = new ZipImporterImpl(archive);
-                importer.importFrom(new File(System.getProperty("wildfly.swarm.app.path")));
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    protected static boolean setupUsingAppArtifact(DependenciesContainer<?> archive) throws IOException {
-        String appArtifact = System.getProperty("wildfly.swarm.app.artifact");
-
-        if (appArtifact != null) {
-            try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
-                ZipImporterImpl importer = new ZipImporterImpl(archive);
-                importer.importFrom(in);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    protected static boolean setupUsingMaven(DependenciesContainer<?> archive) throws Exception {
         Path pwd = Paths.get(System.getProperty("user.dir"));
 
         final Path classes = pwd.resolve("target").resolve("classes");
@@ -163,16 +110,5 @@ public class DefaultWarDeploymentFactory implements DefaultDeploymentFactory {
 
         return success;
     }
-
-    protected static String convertSeparators(Path path) {
-        String convertedPath = path.toString();
-
-        if (convertedPath.contains(File.separator)) {
-            convertedPath = convertedPath.replace(File.separator, "/");
-        }
-
-        return convertedPath;
-    }
-
 
 }

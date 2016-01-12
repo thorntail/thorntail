@@ -35,7 +35,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
     public static JGroupsFraction defaultFraction() {
         boolean inOpenShift = System.getenv("OPENSHIFT_BUILD_NAME") != null ||
                 System.getenv("OPENSHIFT_BUILD_REFERENCE") != null ||
-                "openshift".equalsIgnoreCase(System.getProperty("wildfly.swarm.environment"));
+                "openshift".equalsIgnoreCase(System.getProperty("swarm.environment"));
 
         if (inOpenShift) {
             return defaultOpenShiftFraction();

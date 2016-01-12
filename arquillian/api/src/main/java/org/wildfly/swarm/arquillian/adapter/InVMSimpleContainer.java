@@ -18,6 +18,7 @@ package org.wildfly.swarm.arquillian.adapter;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
@@ -37,7 +38,7 @@ public class InVMSimpleContainer implements SimpleContainer {
                 .as(JARArchive.class)
                 .addModule("org.wildfly.swarm.arquillian.daemon");
 
-        System.setProperty("wildfly.swarm.app.artifact", archive.getName());
+        System.setProperty(CommonProperties.APP_ARTIFACT, archive.getName());
 
         if (isContainerFactory(this.testClass)) {
             archive.as(JARArchive.class)

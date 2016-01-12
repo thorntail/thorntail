@@ -32,6 +32,7 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
 
 public class DaemonServiceActivator implements ServiceActivator {
 
@@ -53,9 +54,9 @@ public class DaemonServiceActivator implements ServiceActivator {
         @Override
         public void start(StartContext context) throws StartException {
             try {
-                final String artifactName = System.getProperty("wildfly.swarm.app.artifact");
+                final String artifactName = System.getProperty(CommonProperties.APP_ARTIFACT);
                 if (artifactName == null) {
-                    throw new StartException("Failed to find artifact name under wildfly.swarm.app.artifact");
+                    throw new StartException("Failed to find artifact name under " + CommonProperties.APP_ARTIFACT);
                 }
 
                 final ModuleLoader serviceLoader = this.serviceLoader.getValue();

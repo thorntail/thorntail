@@ -17,6 +17,7 @@ package org.wildfly.swarm.arquillian.resources;
 
 import org.jboss.arquillian.container.test.impl.enricher.resource.OperatesOnDeploymentAwareProvider;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
 
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
@@ -46,7 +47,7 @@ public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider 
             port = Integer.parseInt(portString);
         }
 
-        String contextPath = System.getProperty("wildfly.swarm.context.path");
+        String contextPath = System.getProperty(CommonProperties.CONTEXT_PATH);
         if (contextPath == null) {
             contextPath = "/";
         }

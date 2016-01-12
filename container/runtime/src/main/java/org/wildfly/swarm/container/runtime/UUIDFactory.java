@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.container.runtime;
 
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
+
 import java.util.UUID;
 
 /**
@@ -25,7 +27,7 @@ public class UUIDFactory {
     public static UUID getUUID() {
 
 
-        String swarmNodeId = System.getProperty( "swarm.node.id");
+        String swarmNodeId = System.getProperty(CommonProperties.NODE_ID);
         String jbossNodeName = System.getProperty( "jboss.node.name" );
 
         String uuidInput = null;

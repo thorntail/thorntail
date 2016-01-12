@@ -33,6 +33,7 @@ import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Fraction;
@@ -87,7 +88,7 @@ public class RuntimeDeployer implements Deployer {
             }
         }
 
-        String dump = System.getProperty("swarm.export.deployment");
+        String dump = System.getProperty(CommonProperties.EXPORT_DEPLOYMENT);
         if (dump != null &&
                 !"false".equals(dump)) {
             File out = new File(deployment.getName());
@@ -116,8 +117,9 @@ public class RuntimeDeployer implements Deployer {
         ModelNode content = deploymentAdd.get(CONTENT).add();
         content.get(HASH).set(hash);
 
-        BootstrapLogger.logger( "org.wildfly.swarm.runtime.deployer" ).info( "deploying " + deployment.getName() );
-        System.setProperty("wildfly.swarm.current.deployment", deployment.getName());
+        BootstrapLogger.logger( "org.wildfly.swarm.runtime.deployer" )
+                .info( "deploying " + deployment.getName() );
+        System.setProperty(CommonProperties.CURRENT_DEPLOYMENT, deployment.getName());
         try {
             ModelNode result = client.execute(deploymentAdd);
 

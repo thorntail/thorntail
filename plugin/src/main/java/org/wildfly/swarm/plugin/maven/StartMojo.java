@@ -21,6 +21,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -144,7 +145,8 @@ public class StartMojo extends AbstractSwarmMojo {
         return new SwarmExecutor()
                 .withModules(expandModules())
                 .withClassPathEntries(dependencies(false))
-                .withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
+                .withProperty(CommonProperties.APP_PATH,
+                              Paths.get(this.projectBuildDir, finalName).toString())
                 .withDefaultMainClass();
     }
 

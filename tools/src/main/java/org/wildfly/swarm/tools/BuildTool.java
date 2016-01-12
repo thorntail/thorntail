@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
@@ -212,9 +213,9 @@ public class BuildTool {
             String eachValue = this.properties.get(eachName).toString();
             props.put(eachName, eachValue);
         }
-        props.setProperty("wildfly.swarm.app.artifact", this.projectAsset.getSimpleName());
-        if (System.getProperty("wildfly.swarm.context.path") == null) {
-            props.setProperty("wildfly.swarm.context.path", "/");
+        props.setProperty(CommonProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
+        if (System.getProperty(CommonProperties.CONTEXT_PATH) == null) {
+            props.setProperty(CommonProperties.CONTEXT_PATH, "/");
         }
 
         ByteArrayOutputStream propsBytes = new ByteArrayOutputStream();

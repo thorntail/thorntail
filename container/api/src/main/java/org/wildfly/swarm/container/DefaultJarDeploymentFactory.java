@@ -15,6 +15,12 @@
  */
 package org.wildfly.swarm.container;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,15 +32,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.UUID;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
-
 /**
  * @author Bob McWhirter
  */
-public class DefaultJarDeploymentFactory implements DefaultDeploymentFactory {
+public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
     public int getPriority() {
@@ -54,67 +55,11 @@ public class DefaultJarDeploymentFactory implements DefaultDeploymentFactory {
     }
 
     protected String determineName() {
-        String prop = System.getProperty( "wildfly.swarm.app.path" );
-        if ( prop != null ) {
-            File file = new File( prop );
-            String name = file.getName();
-            if ( name.endsWith( ".jar" ) ) {
-                return name;
-            }
-            return name + ".jar";
-        }
-
-        prop = System.getProperty( "wildfly.swarm.app.artifact" );
-        if ( prop != null ) {
-            return prop;
-        }
-
-        return UUID.randomUUID().toString() + ".jar";
+        return DefaultDeploymentFactory.determineName(".jar");
     }
 
-    protected void setup(JARArchive archive) throws Exception {
-        boolean result = setupUsingAppPath(archive) || setupUsingAppArtifact(archive) || setupUsingMaven(archive);
-    }
-
-    protected boolean setupUsingAppPath(JARArchive archive) throws IOException {
-        String appPath = System.getProperty("wildfly.swarm.app.path");
-
-        if (appPath != null) {
-            final Path path = Paths.get(System.getProperty("wildfly.swarm.app.path"));
-            if (Files.isDirectory(path)) {
-                Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        Path simple = path.relativize(file);
-                        archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
-                        return super.visitFile(file, attrs);
-                    }
-                });
-            } else {
-                ZipImporterImpl importer = new ZipImporterImpl(archive);
-                importer.importFrom(new File(System.getProperty("wildfly.swarm.app.path")));
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    protected boolean setupUsingAppArtifact(JARArchive archive) throws IOException {
-        String appArtifact = System.getProperty("wildfly.swarm.app.artifact");
-
-        if (appArtifact != null) {
-            try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
-                ZipImporterImpl importer = new ZipImporterImpl(archive);
-                importer.importFrom(in);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    protected boolean setupUsingMaven(JARArchive archive) throws Exception {
+    @Override
+    public boolean setupUsingMaven(Archive<?> archive) throws Exception {
         Path pwd = Paths.get(System.getProperty("user.dir"));
 
         final Path classes = pwd.resolve("target").resolve("classes");
@@ -138,15 +83,7 @@ public class DefaultJarDeploymentFactory implements DefaultDeploymentFactory {
         return success;
     }
 
-    protected String convertSeparators(Path path) {
-        String convertedPath = path.toString();
 
-        if (convertedPath.contains(File.separator)) {
-            convertedPath = convertedPath.replace(File.separator, "/");
-        }
-
-        return convertedPath;
-    }
 
 
 }

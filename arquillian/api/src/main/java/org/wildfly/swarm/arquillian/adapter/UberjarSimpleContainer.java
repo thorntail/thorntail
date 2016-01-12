@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositorie
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.tools.BuildTool;
@@ -91,7 +92,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .projectArchive(archive)
                 .bundleDependencies(false);
 
-        final String additionalModules = System.getProperty("swarm.build.modules");
+        final String additionalModules = System.getProperty(CommonProperties.BUILD_MODULES);
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
                                           .map(m -> new File(m).getAbsolutePath())
@@ -110,7 +111,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .withMavenCentralRepo(true)
                 .withRemoteRepo(jbossPublic);
 
-        final String additionalRepos = System.getProperty("swarm.build.repos");
+        final String additionalRepos = System.getProperty(CommonProperties.BUILD_REPOS);
         if (additionalRepos != null) {
             Arrays.asList(additionalRepos.split(","))
                     .forEach(r -> {
@@ -163,7 +164,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         SwarmExecutor executor = new SwarmExecutor();
         executor.withDefaultSystemProperties();
 
-        final String debug = System.getProperty("swarm.arquillian.debug");
+        final String debug = System.getProperty(CommonProperties.ARQUILLIAN_DEBUG);
         if (debug != null &&
                 !"false".equals(debug)) {
             int port = 8787;
@@ -176,7 +177,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         Archive<?> wrapped = tool.build();
 
-        final String dump = System.getProperty("swarm.export.swarmjar");
+        final String dump = System.getProperty(CommonProperties.EXPORT_UBERJAR);
         if (dump != null &&
                 !"false".equals(dump)) {
             final File out = new File(wrapped.getName());

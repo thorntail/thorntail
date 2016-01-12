@@ -110,8 +110,9 @@ public class Layout {
                     try (InputStream in = jar.getInputStream(propsEntry)) {
                         Properties props = new Properties();
                         props.load(in);
-                        if (props.containsKey("wildfly.swarm.app.artifact")) {
-                            System.setProperty("wildfly.swarm.app.artifact", props.getProperty("wildfly.swarm.app.artifact"));
+                        if (props.containsKey(CommonProperties.APP_ARTIFACT)) {
+                            System.setProperty(CommonProperties.APP_ARTIFACT,
+                                               props.getProperty(CommonProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();

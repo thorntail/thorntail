@@ -45,7 +45,7 @@ public class RibbonWebAppConfiguration extends AbstractServerConfiguration<Ribbo
 
     @Override
     public List<Archive> getImplicitDeployments(RibbonWebAppFraction fraction) throws Exception {
-        String context = System.getProperty( "wildfly.swarm.ribbon.context.path" );
+        String context = System.getProperty( "swarm.ribbon.context.path" );
         if (context == null) context = DEFAULT_CONTEXT;
 
         List<Archive> list = new ArrayList<>();
