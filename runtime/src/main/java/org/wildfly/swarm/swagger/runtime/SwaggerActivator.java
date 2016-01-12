@@ -39,7 +39,7 @@ public class SwaggerActivator implements ServiceActivator {
         if (in == null) {
             return;
         }
-        String apiVersion = System.getProperty("wildfly.swarm.swagger.api.version", "1.0.0");
+        String apiVersion = System.getProperty("swarm.swagger.api.version", "1.0.0");
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 
