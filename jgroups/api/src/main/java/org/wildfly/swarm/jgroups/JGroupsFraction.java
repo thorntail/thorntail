@@ -17,6 +17,7 @@ package org.wildfly.swarm.jgroups;
 
 import org.wildfly.swarm.config.JGroups;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.Environment;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.SocketBinding;
 
@@ -33,11 +34,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
 
 
     public static JGroupsFraction defaultFraction() {
-        boolean inOpenShift = System.getenv("OPENSHIFT_BUILD_NAME") != null ||
-                System.getenv("OPENSHIFT_BUILD_REFERENCE") != null ||
-                "openshift".equalsIgnoreCase(System.getProperty("swarm.environment"));
-
-        if (inOpenShift) {
+        if (Environment.openshift()) {
             return defaultOpenShiftFraction();
         }
         return defaultMulticastFraction();
@@ -89,7 +86,6 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                     s.protocol( "UNICAST3" );
                     s.protocol( "pbcast.STABLE" );
                     s.protocol( "pbcast.GMS" );
-                    s.protocol( "UFC" );
                     s.protocol( "MFC" );
                     s.protocol( "FRAG2" );
                     s.protocol( "RSVP" );
