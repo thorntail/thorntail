@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.transactions.runtime;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.transactions.TransactionsFraction;
 
@@ -34,4 +36,8 @@ public class TransactionsConfiguration extends MarshallingServerConfiguration<Tr
         return TransactionsFraction.createDefaultFraction();
     }
 
+    @Override
+    public void prepareArchive(Archive<?> a) {
+        a.as(JARArchive.class).addModule( "org.jboss.jts");
+    }
 }
