@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
+import org.wildfly.swarm.bootstrap.util.CommonProperties;
 import org.wildfly.swarm.container.JARArchive;
 
 /**
@@ -57,7 +58,7 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
         InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
         if ( keycloakJson == null ) {
 
-            String appArtifact = System.getProperty("wildfly.swarm.app.artifact");
+            String appArtifact = System.getProperty(CommonProperties.APP_ARTIFACT);
 
             if (appArtifact != null) {
                 try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
