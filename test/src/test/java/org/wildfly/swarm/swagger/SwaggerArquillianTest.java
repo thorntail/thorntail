@@ -37,8 +37,6 @@ public class SwaggerArquillianTest implements ContainerFactory {
     public static Archive createDeployment() throws Exception {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
         deployment.addResource(Resource.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
-        deployment.as(SwaggerArchive.class);
         deployment.addAllDependencies();
         return deployment;
     }

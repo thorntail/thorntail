@@ -22,6 +22,8 @@ import org.junit.Test;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 
+import java.util.Scanner;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
@@ -30,16 +32,44 @@ import static org.fest.assertions.Assertions.assertThat;
 public class SwaggerArchiveTest {
 
     @Test
-    public void testRegister() {
+    public void testSwaggerArchive() {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.war");
-        archive.as(SwaggerArchive.class).register("com.tester.resource");
+        SwaggerArchive swaggerArchive = archive.as(SwaggerArchive.class);
 
         Asset asset = archive.get(SwaggerArchive.SWAGGER_CONFIGURATION_PATH).getAsset();
-
         assertThat(asset).isNotNull();
-        assertThat(asset).isInstanceOf(StringAsset.class);
-        assertThat(((StringAsset) asset).getSource().trim()).isEqualTo("com.tester.resource");
+        assertThat(asset).isInstanceOf(SwaggerConfigurationAsset.class);
 
-        assertThat( archive.as(ServiceActivatorArchive.class).containsServiceActivator( SwaggerArchiveImpl.SERVICE_ACTIVATOR_CLASS_NAME )).isTrue();
+        assertThat(archive.as(ServiceActivatorArchive.class).containsServiceActivator( SwaggerArchiveImpl.SERVICE_ACTIVATOR_CLASS_NAME )).isTrue();
+    }
+
+    @Test
+    public void testSwaggerConfiguration() {
+        JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.war");
+
+        archive.as(SwaggerArchive.class)
+                .setResourcePackages("com.tester.resource", "com.tester.other.resource")
+                .setTitle("My Application API")
+                .setLicenseUrl("http://myapplication.com/license.txt")
+                .setLicense("Use at will")
+                .setContextRoot("/tacos")
+                .setDescription("This is a description of my API")
+                .setHost("api.myapplication.com")
+                .setContact("help@myapplication.com")
+                .setPrettyPrint(true)
+                .setSchemes("http", "https")
+                .setTermsOfServiceUrl("http://myapplication.com/tos.txt")
+                .setVersion("1.0");
+
+
+
+        Asset asset = archive.get(SwaggerArchive.SWAGGER_CONFIGURATION_PATH).getAsset();
+        assertThat(asset).isNotNull();
+        assertThat(asset).isInstanceOf(SwaggerConfigurationAsset.class);
+
+        SwaggerConfig config = new SwaggerConfig(asset.openStream());
+        assertThat(config.get(SwaggerConfig.Key.VERSION)).isEqualTo("1.0");
+        assertThat(config.get(SwaggerConfig.Key.TERMS_OF_SERVICE_URL)).isEqualTo("http://myapplication.com/tos.txt");
+        assertThat(config.get(SwaggerConfig.Key.PACKAGES)).isEqualTo("com.tester.resource,com.tester.other.resource");
     }
 }

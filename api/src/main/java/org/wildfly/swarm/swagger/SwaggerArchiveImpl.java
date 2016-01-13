@@ -15,51 +15,113 @@
  */
 package org.wildfly.swarm.swagger;
 
-import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Lance Ball
  */
 public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implements SwaggerArchive {
+
     public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.runtime.SwaggerActivator";
-    private List<String> packageNames = new ArrayList<>();
+    private SwaggerConfigurationAsset configurationAsset;
 
     public SwaggerArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
-    }
 
-    @Override
-    public SwaggerArchive register(String... packages) {
-        for(String name : packages) packageNames.add(name);
-        return doRegister();
-    }
+        Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
+        if ( node != null ) {
+            Asset asset = node.getAsset();
+            if (asset instanceof SwaggerConfigurationAsset) {
+                this.configurationAsset = (SwaggerConfigurationAsset) asset;
+            } else {
+                this.configurationAsset = new SwaggerConfigurationAsset(asset.openStream());
+            }
+        } else {
+            this.configurationAsset = new SwaggerConfigurationAsset();
+            getArchive().add(this.configurationAsset, SWAGGER_CONFIGURATION_PATH);
+        }
 
-    private SwaggerArchive doRegister() {
         if (!as(ServiceActivatorArchive.class).containsServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME)) {
             as(ServiceActivatorArchive.class).addServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME);
             as(JARArchive.class).addModule("org.wildfly.swarm.swagger", "runtime");
         }
+    }
 
-        StringBuffer buf = new StringBuffer();
-        List<String> names = getPackageNames();
-        for (String name : names) {
-            buf.append(name).append("\n");
-        }
-
-
-        as(JARArchive.class).add(new StringAsset(buf.toString()), SWAGGER_CONFIGURATION_PATH);
+    @Override
+    public SwaggerArchive setResourcePackages(String... packages) {
+        configurationAsset.register(packages);
         return this;
-
     }
 
-    public List<String> getPackageNames() {
-        return packageNames;
+    @Override
+    public SwaggerArchive setTitle(String title) {
+        configurationAsset.setTitle(title);
+        return this;
     }
+
+    @Override
+    public SwaggerArchive setDescription(String description) {
+        configurationAsset.setDescription(description);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setTermsOfServiceUrl(String url) {
+        configurationAsset.setTermsOfServiceUrl(url);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setContact(String contact) {
+        configurationAsset.setContact(contact);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setLicense(String license) {
+        configurationAsset.setLicense(license);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setLicenseUrl(String licenseUrl) {
+        configurationAsset.setLicenseUrl(licenseUrl);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setVersion(String version) {
+        configurationAsset.setVersion(version);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setSchemes(String... schemes) {
+        configurationAsset.setSchemes(schemes);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setHost(String host) {
+        configurationAsset.setHost(host);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setContextRoot(String root) {
+        configurationAsset.setContextRoot(root);
+        return this;
+    }
+
+    @Override
+    public SwaggerArchive setPrettyPrint(boolean prettyPrint) {
+        configurationAsset.setPrettyPrint(prettyPrint);
+        return this;
+    }
+
 }

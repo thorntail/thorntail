@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
+import org.wildfly.swarm.swagger.SwaggerArchive;
 import org.wildfly.swarm.swagger.SwaggerFraction;
 
 import java.util.Collections;
@@ -42,12 +43,19 @@ public class SwaggerConfiguration extends AbstractServerConfiguration<SwaggerFra
 
     @Override
     public void prepareArchive(Archive<?> a) {
-        JAXRSArchive deployment = a.as(JAXRSArchive.class);
-        JARArchive archive = a.as(JARArchive.class);
+
         try {
-            archive.addModule("io.swagger");
+            JARArchive jarArchive = a.as(JARArchive.class);
+            jarArchive.addModule("io.swagger");
+
+            JAXRSArchive deployment = a.as(JAXRSArchive.class);
             deployment.addResource(io.swagger.jaxrs.listing.ApiListingResource.class);
             deployment.addResource(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+
+            // Set only required configuration option for swagger
+            SwaggerArchive swaggerArchive = jarArchive.as(SwaggerArchive.class);
+            swaggerArchive.setContextRoot(deployment.getContextRoot());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
