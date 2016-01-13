@@ -80,7 +80,6 @@ public class StartMojo extends AbstractSwarmMojo {
         final SwarmProcess process;
         try {
             process = executor.withDebug(debugPort)
-                    .withDefaultSystemProperties()
                     .withProperties(this.properties)
                     .withStdoutFile(this.stdoutFile != null ? this.stdoutFile.toPath() : null)
                     .withStderrFile(this.stderrFile != null ? this.stderrFile.toPath() : null)
