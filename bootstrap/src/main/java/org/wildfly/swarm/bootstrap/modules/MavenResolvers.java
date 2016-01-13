@@ -27,7 +27,10 @@ public class MavenResolvers {
 
     static {
         INSTANCE.addResolver( new UberJarMavenResolver() );
-        INSTANCE.addResolver( MavenResolver.createDefaultResolver() );
+        if ( System.getProperty( "swarm.bundled.dependencies" ) == null ) {
+            System.err.println( "Dependencies not bundled, will resolve from local M2REPO");
+            INSTANCE.addResolver( MavenResolver.createDefaultResolver() );
+        }
     }
 
     public synchronized static MavenResolver get() {
