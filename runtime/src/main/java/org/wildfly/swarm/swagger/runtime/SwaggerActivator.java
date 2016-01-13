@@ -22,10 +22,7 @@ import org.jboss.msc.service.ServiceRegistryException;
 import org.wildfly.swarm.swagger.SwaggerArchive;
 import org.wildfly.swarm.swagger.SwaggerConfig;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * @author Lance Ball
@@ -34,7 +31,6 @@ public class SwaggerActivator implements ServiceActivator {
     @Override
     public void activate(ServiceActivatorContext serviceActivatorContext) throws ServiceRegistryException {
 
-        System.err.println("IN SERVICE ACTIVATOR");
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(SwaggerArchive.SWAGGER_CONFIGURATION_PATH);
 
         if (in == null) {
