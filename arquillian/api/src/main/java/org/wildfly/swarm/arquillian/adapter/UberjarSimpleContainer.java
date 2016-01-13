@@ -164,15 +164,15 @@ public class UberjarSimpleContainer implements SimpleContainer {
         SwarmExecutor executor = new SwarmExecutor();
         executor.withDefaultSystemProperties();
 
-        final String debug = System.getProperty(CommonProperties.ARQUILLIAN_DEBUG);
+        final String debug = System.getProperty(CommonProperties.DEBUG_PORT);
         if (debug != null &&
                 !"false".equals(debug)) {
-            int port = 8787;
             try {
-                port = Integer.parseInt(debug);
-            } catch (NumberFormatException ignored) {}
-
-            executor.withDebug(port);
+                executor.withDebug(Integer.parseInt(debug));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", CommonProperties.DEBUG_PORT, debug),
+                                                   e);
+            }
         }
 
         Archive<?> wrapped = tool.build();

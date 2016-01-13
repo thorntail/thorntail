@@ -32,7 +32,7 @@ public class CommonProperties {
     public static final String BUILD_REPOS = "swarm.build.repos";
 
     //public
-    public static final String ARQUILLIAN_DEBUG = "swarm.arquillian.debug";
+    public static final String DEBUG_PORT = "swarm.debug.port";
 
     //public
     public static final String EXPORT_UBERJAR = "swarm.export.uberjar";
