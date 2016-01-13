@@ -54,7 +54,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
     public boolean useUberJar;
 
-    @Parameter(alias = "debug")
+    @Parameter(alias = "debug", property = "swarm.debug.port")
     public Integer debugPort;
 
     boolean waitForProcess;
