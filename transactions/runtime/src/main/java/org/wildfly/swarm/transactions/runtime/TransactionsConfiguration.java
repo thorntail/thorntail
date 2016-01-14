@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package org.wildfly.swarm.transactions.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.transactions.TransactionsFraction;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration
 public class TransactionsConfiguration extends MarshallingServerConfiguration<TransactionsFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.transactions";
@@ -36,4 +36,8 @@ public class TransactionsConfiguration extends MarshallingServerConfiguration<Tr
         return TransactionsFraction.createDefaultFraction();
     }
 
+    @Override
+    public void prepareArchive(Archive<?> a) {
+        a.as(JARArchive.class).addModule( "org.jboss.jts");
+    }
 }

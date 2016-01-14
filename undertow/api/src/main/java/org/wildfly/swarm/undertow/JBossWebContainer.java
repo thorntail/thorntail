@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,7 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
             return (T) this;
         }
 
-        String contextRoot = System.getProperty( "wildfly.swarm.context.path" );
-        if ( contextRoot == null ){
-            contextRoot = "/";
-        }
-
-        setContextRoot(contextRoot);
+        setContextRoot(System.getProperty(UndertowProperties.CONTEXT_PATH, "/"));
 
         return (T) this;
     }

@@ -1,5 +1,5 @@
-/*
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+/**
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.tools.BuildTool;
@@ -91,7 +93,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .projectArchive(archive)
                 .bundleDependencies(false);
 
-        final String additionalModules = System.getProperty("swarm.build.modules");
+        final String additionalModules = System.getProperty(SwarmProperties.BUILD_MODULES);
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
                                           .map(m -> new File(m).getAbsolutePath())
@@ -110,8 +112,11 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .withMavenCentralRepo(true)
                 .withRemoteRepo(jbossPublic);
 
-        final String additionalRepos = System.getProperty("swarm.build.repos");
+        final SwarmExecutor executor = new SwarmExecutor().withDefaultSystemProperties();
+
+        final String additionalRepos = System.getProperty(SwarmProperties.BUILD_REPOS);
         if (additionalRepos != null) {
+            executor.withProperty("remote.maven.repo", additionalRepos);
             Arrays.asList(additionalRepos.split(","))
                     .forEach(r -> {
                         MavenRemoteRepository repo =
@@ -160,23 +165,20 @@ public class UberjarSimpleContainer implements SimpleContainer {
             }
         }
 
-        SwarmExecutor executor = new SwarmExecutor();
-        executor.withDefaultSystemProperties();
-
-        final String debug = System.getProperty("swarm.arquillian.debug");
+        final String debug = System.getProperty(BootstrapProperties.DEBUG_PORT);
         if (debug != null &&
                 !"false".equals(debug)) {
-            int port = 8787;
             try {
-                port = Integer.parseInt(debug);
-            } catch (NumberFormatException ignored) {}
-
-            executor.withDebug(port);
+                executor.withDebug(Integer.parseInt(debug));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", BootstrapProperties.DEBUG_PORT, debug),
+                                                   e);
+            }
         }
 
         Archive<?> wrapped = tool.build();
 
-        final String dump = System.getProperty("swarm.export.swarmjar");
+        final String dump = System.getProperty(SwarmProperties.EXPORT_UBERJAR);
         if (dump != null &&
                 !"false".equals(dump)) {
             final File out = new File(wrapped.getName());

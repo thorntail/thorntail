@@ -1,5 +1,5 @@
-/*
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+/**
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class ArquillianTest {
     @Deployment
     public static Archive createDeployment() {
         return ShrinkWrap.create(JARArchive.class)
-                //.addModule("progress")
+                .addModule("progress")
                 .addClass(ArquillianTest.class);
     }
 
@@ -71,8 +71,7 @@ public class ArquillianTest {
     @Test
     public void testInside() throws Exception {
         // confirm we can load a custom module from a custom repo
-        // (once we have SWARM-225)
-       // assertNotNull(ArquillianTest.class.getClassLoader().getResource("progress/bar.clj"));
+        assertNotNull(ArquillianTest.class.getClassLoader().getResource("progress/bar.clj"));
 
         // confirm the resource injectors work
         assertEquals(EXPECTED_URL, url);

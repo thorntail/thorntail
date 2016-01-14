@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,14 @@
  */
 package org.wildfly.swarm.container.runtime;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -24,8 +32,31 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
 
     private final Class<T> type;
 
+    private List<DeploymentSpec> deployments = new ArrayList<>();
+
     public AbstractServerConfiguration(Class<T> type) {
         this.type = type;
+    }
+
+    protected DeploymentSpec deployment(String gav) {
+        DeploymentSpec spec = new DeploymentSpec(gav);
+        this.deployments.add( spec );
+        return spec;
+    }
+
+    @Override
+    public List<Archive> getImplicitDeployments(T fraction) throws Exception {
+        if (this.deployments.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Archive> archives = new ArrayList<>();
+
+        for (DeploymentSpec deployment : this.deployments) {
+            archives.add( deployment.toArchive( fraction ) );
+        }
+
+        return archives;
     }
 
     @Override
@@ -37,8 +68,48 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
     public T defaultFraction() {
         try {
             return getType().newInstance();
-        } catch (InstantiationException|IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public class DeploymentSpec {
+        private final String gav;
+
+        private String asName;
+
+        private BiConsumer<T, Archive<?>> config;
+
+        public DeploymentSpec(String gav) {
+            this.gav = gav;
+        }
+
+        public DeploymentSpec as(String asName) {
+            this.asName = asName;
+            return this;
+        }
+
+        public DeploymentSpec configure(BiConsumer<T, Archive<?>> config) {
+            this.config = config;
+            return this;
+        }
+
+        Archive<?> toArchive(T fraction) throws Exception {
+            Archive<?> archive;
+
+            if ( this.asName == null ) {
+                archive = Swarm.artifact( this.gav );
+            } else {
+                archive = Swarm.artifact( this.gav, asName );
+            }
+
+            if ( this.config != null ) {
+                this.config.accept( fraction, archive );
+            }
+
+            return archive;
+        }
+
+    }
+
 }

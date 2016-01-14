@@ -1,5 +1,5 @@
-/*
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+/**
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.wildfly.swarm.arquillian.adapter;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
@@ -37,7 +38,7 @@ public class InVMSimpleContainer implements SimpleContainer {
                 .as(JARArchive.class)
                 .addModule("org.wildfly.swarm.arquillian.daemon");
 
-        System.setProperty("wildfly.swarm.app.artifact", archive.getName());
+        System.setProperty(BootstrapProperties.APP_ARTIFACT, archive.getName());
 
         if (isContainerFactory(this.testClass)) {
             archive.as(JARArchive.class)

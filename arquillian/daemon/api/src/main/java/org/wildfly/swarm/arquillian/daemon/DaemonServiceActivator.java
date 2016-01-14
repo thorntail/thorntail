@@ -1,5 +1,5 @@
-/*
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+/**
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.arquillian.daemon;
 
-import org.wildfly.swarm.arquillian.daemon.server.Server;
-import org.wildfly.swarm.arquillian.daemon.server.ServerLifecycleException;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
@@ -32,6 +30,9 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.swarm.arquillian.daemon.server.Server;
+import org.wildfly.swarm.arquillian.daemon.server.ServerLifecycleException;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 public class DaemonServiceActivator implements ServiceActivator {
 
@@ -53,9 +54,9 @@ public class DaemonServiceActivator implements ServiceActivator {
         @Override
         public void start(StartContext context) throws StartException {
             try {
-                final String artifactName = System.getProperty("wildfly.swarm.app.artifact");
+                final String artifactName = System.getProperty(BootstrapProperties.APP_ARTIFACT);
                 if (artifactName == null) {
-                    throw new StartException("Failed to find artifact name under wildfly.swarm.app.artifact");
+                    throw new StartException("Failed to find artifact name under " + BootstrapProperties.APP_ARTIFACT);
                 }
 
                 final ModuleLoader serviceLoader = this.serviceLoader.getValue();

@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,15 @@
  */
 package org.wildfly.swarm.jmx;
 
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.config.JMX;
 import org.wildfly.swarm.container.Fraction;
 
 /**
  * @author Bob McWhirter
  */
-public class JMXFraction implements Fraction {
+public class JMXFraction extends JMX<JMXFraction> implements Fraction {
 
     public JMXFraction() {
     }
 
-    @Override
-    public void initialize(Container.InitContext initContext) {
-
-    }
 }

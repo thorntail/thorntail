@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.ejb;
 
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.ejb3.AsyncService;
 import org.wildfly.swarm.config.ejb3.Cache;
@@ -75,7 +76,7 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
                 .defaultSecurityDomain("other")
                 .defaultMissingMethodPermissionsDenyAccess(true)
                 .logSystemExceptions(true)
-                .defaultResourceAdapterName("${ejb.resource-adapter-name:activemq-ra.rar}")
+                .defaultResourceAdapterName(SwarmProperties.propertyVar("$ejb.resource-adapter-name", "activemq-ra.rar"))
                 .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("slsb-strict-max-pool")
                         .maxPoolSize(20)
                         .timeout(5L)

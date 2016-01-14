@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.wildfly.swarm.msc;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
@@ -41,7 +42,12 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
         if ( getArchive().getName().endsWith( ".war" ) ) {
             Node node = getArchive().get("WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName());
             if ( node != null ) {
-                this.asset = (ServiceActivatorAsset) node.getAsset();
+                Asset maybeCorrect = node.getAsset();
+                if(maybeCorrect instanceof ServiceActivatorAsset) {
+                    this.asset = (ServiceActivatorAsset) maybeCorrect;
+                } else {
+                    this.asset = new ServiceActivatorAsset(maybeCorrect.openStream());
+                }
             } else {
                 this.asset = new ServiceActivatorAsset();
                 getArchive().add( this.asset, "WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName() );

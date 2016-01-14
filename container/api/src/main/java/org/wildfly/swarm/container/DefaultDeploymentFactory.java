@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,105 @@
  */
 package org.wildfly.swarm.container;
 
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.UUID;
 
 /**
  * @author Bob McWhirter
  */
-public interface DefaultDeploymentFactory {
+public abstract class DefaultDeploymentFactory {
 
-    int getPriority();
-    String getType();
-    Archive create(Container container) throws Exception;
+    public abstract int getPriority();
+    public abstract String getType();
+    public abstract Archive create(Container container) throws Exception;
 
+    protected static String determineName(final String suffix) {
+        String prop = System.getProperty(BootstrapProperties.APP_PATH);
+        if (prop != null) {
+            final File file = new File(prop);
+            final String name = file.getName();
+            if (name.endsWith(suffix)) {
+
+                return name;
+            }
+
+            return name + suffix;
+        }
+
+        prop = System.getProperty(BootstrapProperties.APP_ARTIFACT);
+        if (prop != null) {
+            return prop;
+        }
+
+        return UUID.randomUUID().toString() + suffix;
+    }
+
+    protected String convertSeparators(Path path) {
+        String convertedPath = path.toString();
+
+        if (convertedPath.contains(File.separator)) {
+            convertedPath = convertedPath.replace(File.separator, "/");
+        }
+
+        return convertedPath;
+    }
+
+    public boolean setup(Archive<?> archive) throws Exception {
+        return setupUsingAppPath(archive) ||
+                setupUsingAppArtifact(archive) ||
+                setupUsingMaven(archive);
+    }
+
+    protected boolean setupUsingAppPath(Archive<?> archive) throws IOException {
+        final String appPath = System.getProperty(BootstrapProperties.APP_PATH);
+
+        if (appPath != null) {
+            final Path path = Paths.get(appPath);
+            if (Files.isDirectory(path)) {
+                Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Path simple = path.relativize(file);
+                        archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
+                        return super.visitFile(file, attrs);
+                    }
+                });
+            } else {
+                archive.as(ZipImporter.class)
+                        .importFrom(path.toFile());
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    protected boolean setupUsingAppArtifact(Archive<?> archive) throws IOException {
+        final String appArtifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
+
+        if (appArtifact != null) {
+            try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
+                archive.as(ZipImporter.class)
+                        .importFrom(in);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    protected abstract boolean setupUsingMaven(Archive<?> archive) throws Exception;
 }

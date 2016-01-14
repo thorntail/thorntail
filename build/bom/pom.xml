@@ -38,7 +38,7 @@
 
   <properties>
     <version.wildfly>10.0.0.CR5</version.wildfly>
-    <version.wildfly.config-api>0.3.23</version.wildfly.config-api>
+    <version.wildfly.config-api>0.3.25</version.wildfly.config-api>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
@@ -61,7 +61,7 @@
     <version.netty>4.0.26.Final</version.netty>
     <version.guava>14.0.1</version.guava>
 
-    <version.keycloak>1.7.0.Final</version.keycloak>
+    <version.keycloak>1.8.0.CR1</version.keycloak>
     <version.h2>1.4.187</version.h2>
 
 <!--
@@ -859,7 +859,31 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-spi</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-base</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-javaee</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
         <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
         <version>${version.org.jboss.shrinkwrap.descriptors}</version>
         <scope>compile</scope>
       </dependency>

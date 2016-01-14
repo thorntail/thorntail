@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  */
 package org.wildfly.swarm.infinispan.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
 
 /**
  * @author Lance Ball
  */
-@Configuration
 public class InfinispanConfiguration extends MarshallingServerConfiguration<InfinispanFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.clustering.infinispan";

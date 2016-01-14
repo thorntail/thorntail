@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
@@ -212,9 +213,10 @@ public class BuildTool {
             String eachValue = this.properties.get(eachName).toString();
             props.put(eachName, eachValue);
         }
-        props.setProperty("wildfly.swarm.app.artifact", this.projectAsset.getSimpleName());
-        if (System.getProperty("wildfly.swarm.context.path") == null) {
-            props.setProperty("wildfly.swarm.context.path", "/");
+        props.setProperty(BootstrapProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
+
+        if ( this.bundleDependencies ) {
+            props.setProperty(BootstrapProperties.BUNDLED_DEPENDENCIES, "true");
         }
 
         ByteArrayOutputStream propsBytes = new ByteArrayOutputStream();

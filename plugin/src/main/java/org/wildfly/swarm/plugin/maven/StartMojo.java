@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -53,7 +54,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
     public boolean useUberJar;
 
-    @Parameter(alias = "debug")
+    @Parameter(alias = "debug", property = BootstrapProperties.DEBUG_PORT)
     public Integer debugPort;
 
     boolean waitForProcess;
@@ -61,7 +62,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @SuppressWarnings("unchecked")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        initProperties();
+        initProperties(true);
         initEnvironment();
 
         final SwarmExecutor executor;
@@ -79,7 +80,6 @@ public class StartMojo extends AbstractSwarmMojo {
         final SwarmProcess process;
         try {
             process = executor.withDebug(debugPort)
-                    .withDefaultSystemProperties()
                     .withProperties(this.properties)
                     .withStdoutFile(this.stdoutFile != null ? this.stdoutFile.toPath() : null)
                     .withStderrFile(this.stderrFile != null ? this.stderrFile.toPath() : null)
@@ -144,7 +144,8 @@ public class StartMojo extends AbstractSwarmMojo {
         return new SwarmExecutor()
                 .withModules(expandModules())
                 .withClassPathEntries(dependencies(false))
-                .withProperty("wildfly.swarm.app.path", Paths.get(this.projectBuildDir, finalName).toString())
+                .withProperty(BootstrapProperties.APP_PATH,
+                              Paths.get(this.projectBuildDir, finalName).toString())
                 .withDefaultMainClass();
     }
 

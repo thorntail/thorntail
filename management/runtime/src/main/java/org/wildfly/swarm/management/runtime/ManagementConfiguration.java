@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.management.runtime;
 
-import org.wildfly.swarm.container.runtime.Configuration;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.management.ManagementFraction;
 
@@ -23,7 +22,6 @@ import org.wildfly.swarm.management.ManagementFraction;
  * @author Bob McWhirter
  * @author Lance Ball
  */
-@Configuration
 public class ManagementConfiguration extends MarshallingServerConfiguration<ManagementFraction> {
 
     public ManagementConfiguration() {

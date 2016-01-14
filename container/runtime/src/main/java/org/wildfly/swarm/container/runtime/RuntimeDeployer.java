@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Fraction;
@@ -87,7 +88,7 @@ public class RuntimeDeployer implements Deployer {
             }
         }
 
-        String dump = System.getProperty("swarm.export.deployment");
+        String dump = System.getProperty(SwarmProperties.EXPORT_DEPLOYMENT);
         if (dump != null &&
                 !"false".equals(dump)) {
             File out = new File(deployment.getName());
@@ -116,8 +117,9 @@ public class RuntimeDeployer implements Deployer {
         ModelNode content = deploymentAdd.get(CONTENT).add();
         content.get(HASH).set(hash);
 
-        BootstrapLogger.logger( "org.wildfly.swarm.runtime.deployer" ).info( "deploying " + deployment.getName() );
-        System.setProperty("wildfly.swarm.current.deployment", deployment.getName());
+        BootstrapLogger.logger( "org.wildfly.swarm.runtime.deployer" )
+                .info( "deploying " + deployment.getName() );
+        System.setProperty(SwarmProperties.CURRENT_DEPLOYMENT, deployment.getName());
         try {
             ModelNode result = client.execute(deploymentAdd);
 

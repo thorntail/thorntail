@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Red Hat, Inc, and individual contributors.
+ * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,8 @@ import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
+import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
  * A WildFly-Swarm container.
@@ -121,7 +123,7 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container(boolean debugBootstrap) throws Exception {
-        System.setProperty("wildfly.swarm.version", VERSION);
+        System.setProperty(SwarmProperties.VERSION, VERSION);
         createServer(debugBootstrap);
         createShrinkWrapDomain();
     }
@@ -508,7 +510,7 @@ public class Container {
     }
 
     protected String determineDeploymentType() throws IOException {
-        String artifact = System.getProperty("wildfly.swarm.app.path");
+        String artifact = System.getProperty(BootstrapProperties.APP_PATH);
         if (artifact != null) {
             int dotLoc = artifact.lastIndexOf('.');
             if (dotLoc >= 0) {
@@ -516,7 +518,7 @@ public class Container {
             }
         }
 
-        artifact = System.getProperty("wildfly.swarm.app.artifact");
+        artifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
         if (artifact != null) {
             int dotLoc = artifact.lastIndexOf('.');
             if (dotLoc >= 0) {
@@ -578,8 +580,9 @@ public class Container {
                     try (InputStream in = jar.getInputStream(propsEntry)) {
                         Properties props = new Properties();
                         props.load(in);
-                        if (props.containsKey("wildfly.swarm.app.artifact")) {
-                            System.setProperty("wildfly.swarm.app.artifact", props.getProperty("wildfly.swarm.app.artifact"));
+                        if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
+                            System.setProperty(BootstrapProperties.APP_ARTIFACT,
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
