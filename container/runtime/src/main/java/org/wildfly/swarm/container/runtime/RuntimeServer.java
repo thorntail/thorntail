@@ -63,6 +63,7 @@ import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.vfs.TempFileProvider;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -281,14 +282,16 @@ public class RuntimeServer implements Server {
 
     private void applyInterfaceDefaults(Container config) {
         if (config.ifaces().isEmpty()) {
-            config.iface("public", "${jboss.bind.address:0.0.0.0}");
+            config.iface("public",
+                         SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
         }
     }
 
     private void applySocketBindingGroupDefaults(Container config) {
         if (config.socketBindingGroups().isEmpty()) {
             config.socketBindingGroup(
-                    new SocketBindingGroup("default-sockets", "public", "${jboss.socket.binding.port-offset:0}")
+                    new SocketBindingGroup("default-sockets", "public",
+                                           SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
             );
         }
 

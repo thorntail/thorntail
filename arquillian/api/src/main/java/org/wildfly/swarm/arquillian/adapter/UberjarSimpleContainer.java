@@ -27,8 +27,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
-import org.wildfly.swarm.bootstrap.util.CommonProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.tools.BuildTool;
@@ -92,7 +93,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .projectArchive(archive)
                 .bundleDependencies(false);
 
-        final String additionalModules = System.getProperty(CommonProperties.BUILD_MODULES);
+        final String additionalModules = System.getProperty(SwarmProperties.BUILD_MODULES);
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
                                           .map(m -> new File(m).getAbsolutePath())
@@ -111,7 +112,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .withMavenCentralRepo(true)
                 .withRemoteRepo(jbossPublic);
 
-        final String additionalRepos = System.getProperty(CommonProperties.BUILD_REPOS);
+        final String additionalRepos = System.getProperty(SwarmProperties.BUILD_REPOS);
         if (additionalRepos != null) {
             Arrays.asList(additionalRepos.split(","))
                     .forEach(r -> {
@@ -164,20 +165,20 @@ public class UberjarSimpleContainer implements SimpleContainer {
         SwarmExecutor executor = new SwarmExecutor();
         executor.withDefaultSystemProperties();
 
-        final String debug = System.getProperty(CommonProperties.DEBUG_PORT);
+        final String debug = System.getProperty(BootstrapProperties.DEBUG_PORT);
         if (debug != null &&
                 !"false".equals(debug)) {
             try {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", CommonProperties.DEBUG_PORT, debug),
+                throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", BootstrapProperties.DEBUG_PORT, debug),
                                                    e);
             }
         }
 
         Archive<?> wrapped = tool.build();
 
-        final String dump = System.getProperty(CommonProperties.EXPORT_UBERJAR);
+        final String dump = System.getProperty(SwarmProperties.EXPORT_UBERJAR);
         if (dump != null &&
                 !"false".equals(dump)) {
             final File out = new File(wrapped.getName());

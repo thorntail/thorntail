@@ -1,5 +1,5 @@
-/**
- * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
+/*
+ * Copyright 2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container;
+package org.wildfly.swarm.jgroups;
 
-import org.wildfly.swarm.SwarmProperties;
+public class JGroupsProperties {
 
-public class Environment {
-
-    public static boolean openshift() {
-        return System.getenv("OPENSHIFT_BUILD_NAME") != null ||
-                System.getenv("OPENSHIFT_BUILD_REFERENCE") != null ||
-                "openshift".equalsIgnoreCase(System.getProperty(SwarmProperties.ENVIRONMENT));
-    }
+    //public
+    public static final String DEFAULT_MULTICAST_ADDRESS = "swarm.default.multicast.address";
 }

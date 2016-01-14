@@ -21,7 +21,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.wildfly.swarm.bootstrap.util.CommonProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -54,7 +54,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
     public boolean useUberJar;
 
-    @Parameter(alias = "debug", property = CommonProperties.DEBUG_PORT)
+    @Parameter(alias = "debug", property = BootstrapProperties.DEBUG_PORT)
     public Integer debugPort;
 
     boolean waitForProcess;
@@ -144,7 +144,7 @@ public class StartMojo extends AbstractSwarmMojo {
         return new SwarmExecutor()
                 .withModules(expandModules())
                 .withClassPathEntries(dependencies(false))
-                .withProperty(CommonProperties.APP_PATH,
+                .withProperty(BootstrapProperties.APP_PATH,
                               Paths.get(this.projectBuildDir, finalName).toString())
                 .withDefaultMainClass();
     }

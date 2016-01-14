@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
-import org.wildfly.swarm.bootstrap.util.CommonProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
@@ -213,13 +213,10 @@ public class BuildTool {
             String eachValue = this.properties.get(eachName).toString();
             props.put(eachName, eachValue);
         }
-        props.setProperty(CommonProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
-        if (System.getProperty(CommonProperties.CONTEXT_PATH) == null) {
-            props.setProperty(CommonProperties.CONTEXT_PATH, "/");
-        }
+        props.setProperty(BootstrapProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
 
         if ( this.bundleDependencies ) {
-            props.setProperty( "swarm.bundled.dependencies", "true" );
+            props.setProperty(BootstrapProperties.BUNDLED_DEPENDENCIES, "true");
         }
 
         ByteArrayOutputStream propsBytes = new ByteArrayOutputStream();

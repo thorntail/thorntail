@@ -20,7 +20,7 @@ import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.wildfly.swarm.bootstrap.util.CommonProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,7 +67,7 @@ public abstract class AbstractBootstrapIntegrationTestCase {
 
         Properties props = new Properties();
         if ( appArtifact != null ) {
-            props.put(CommonProperties.APP_ARTIFACT, appArtifact);
+            props.put(BootstrapProperties.APP_ARTIFACT, appArtifact);
        }
         ByteArrayOutputStream propsOut = new ByteArrayOutputStream();
         props.store(propsOut, "");

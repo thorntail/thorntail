@@ -18,7 +18,6 @@ package org.wildfly.swarm.undertow;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
-import org.wildfly.swarm.bootstrap.util.CommonProperties;
 
 /**
  * @author Bob McWhirter
@@ -34,12 +33,7 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
             return (T) this;
         }
 
-        String contextRoot = System.getProperty(CommonProperties.CONTEXT_PATH);
-        if ( contextRoot == null ){
-            contextRoot = "/";
-        }
-
-        setContextRoot(contextRoot);
+        setContextRoot(System.getProperty(UndertowProperties.CONTEXT_PATH, "/"));
 
         return (T) this;
     }

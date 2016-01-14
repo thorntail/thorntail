@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.netflix.ribbon.RibbonArchive;
+import org.wildfly.swarm.ribbon.webapp.RibbonProperties;
 import org.wildfly.swarm.ribbon.webapp.RibbonWebAppFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 
@@ -46,7 +47,7 @@ public class RibbonWebAppConfiguration extends AbstractServerConfiguration<Ribbo
 
     @Override
     public List<Archive> getImplicitDeployments(RibbonWebAppFraction fraction) throws Exception {
-        String context = System.getProperty( "swarm.ribbon.context.path" );
+        String context = System.getProperty(RibbonProperties.CONTEXT_PATH);
         if (context == null) context = DEFAULT_CONTEXT;
 
         List<Archive> list = new ArrayList<>();

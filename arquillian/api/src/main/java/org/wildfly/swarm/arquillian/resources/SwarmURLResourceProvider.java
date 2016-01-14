@@ -17,7 +17,7 @@ package org.wildfly.swarm.arquillian.resources;
 
 import org.jboss.arquillian.container.test.impl.enricher.resource.OperatesOnDeploymentAwareProvider;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.wildfly.swarm.bootstrap.util.CommonProperties;
+import org.wildfly.swarm.SwarmProperties;
 
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
@@ -36,18 +36,19 @@ public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider 
 
         // first cut - try to get the data from the sysprops
         // this will fail if the user sets any of these via code
-        String host = System.getProperty("jboss.bind.address");
+        String host = System.getProperty(SwarmProperties.BIND_ADDRESS);
         if (host == null || host.equals("0.0.0.0")) {
             host = "localhost";
         }
 
         int port = 8080;
-        final String portString = System.getProperty("jboss.http.port");
+
+        final String portString = System.getProperty("swarm.http.port");
         if (portString != null) {
             port = Integer.parseInt(portString);
         }
 
-        String contextPath = System.getProperty(CommonProperties.CONTEXT_PATH);
+        String contextPath = System.getProperty("swarm.context.path");
         if (contextPath == null) {
             contextPath = "/";
         }

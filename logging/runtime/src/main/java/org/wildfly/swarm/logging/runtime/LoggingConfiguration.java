@@ -15,14 +15,15 @@
  */
 package org.wildfly.swarm.logging.runtime;
 
-import java.util.List;
-
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.bootstrap.logging.InitialLoggerManager;
 import org.wildfly.swarm.bootstrap.logging.LevelNode;
+import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.logging.LoggingFraction;
-import org.wildfly.swarm.config.logging.Level;
+import org.wildfly.swarm.logging.LoggingProperties;
+
+import java.util.List;
 
 /**
  * @author Bob McWhirter
@@ -38,7 +39,7 @@ public class LoggingConfiguration extends MarshallingServerConfiguration<Logging
 
     @Override
     public LoggingFraction defaultFraction() {
-        String prop = System.getProperty("swarm.logging");
+        String prop = System.getProperty(LoggingProperties.LOGGING);
         if (prop != null) {
             prop = prop.trim().toLowerCase();
 

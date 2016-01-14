@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.undertow;
 
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.undertow.BufferCache;
 import org.wildfly.swarm.config.undertow.HandlerConfiguration;
@@ -57,9 +58,9 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     public void initialize(Container.InitContext initContext) {
         initContext.socketBinding(
                 new SocketBinding("http")
-                        .port("${jboss.http.port:8080}"));
+                        .port(SwarmProperties.propertyVar(UndertowProperties.HTTP_PORT, "8080")));
         initContext.socketBinding(
                 new SocketBinding("https")
-                        .port("${jboss.https.port:8443}"));
+                        .port(SwarmProperties.propertyVar(UndertowProperties.HTTPS_PORT, "8443")));
     }
 }

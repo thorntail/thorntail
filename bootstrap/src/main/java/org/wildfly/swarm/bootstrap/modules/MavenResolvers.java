@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import org.jboss.modules.maven.MavenResolver;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
  * @author Bob McWhirter
@@ -27,7 +27,7 @@ public class MavenResolvers {
 
     static {
         INSTANCE.addResolver( new UberJarMavenResolver() );
-        if ( System.getProperty( "swarm.bundled.dependencies" ) == null ) {
+        if ( System.getProperty(BootstrapProperties.BUNDLED_DEPENDENCIES) == null ) {
             System.err.println( "Dependencies not bundled, will resolve from local M2REPO");
             INSTANCE.addResolver( MavenResolver.createDefaultResolver() );
         }

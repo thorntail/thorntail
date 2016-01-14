@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.management;
 
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
 import org.wildfly.swarm.container.Container;
@@ -67,10 +68,10 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
     public void initialize(Container.InitContext initContext) {
         initContext.socketBinding(
                 new SocketBinding("management-http")
-                        .port("${jboss.management.http.port:9990}"));
+                        .port(SwarmProperties.propertyVar(ManagementProperties.HTTP_PORT, "9990")));
         initContext.socketBinding(
                 new SocketBinding("management-https")
-                        .port("${jboss.management.https.port:9993}"));
+                        .port(SwarmProperties.propertyVar(ManagementProperties.HTTPS_PORT, "9993")));
     }
 
 }

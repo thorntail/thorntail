@@ -54,7 +54,8 @@ import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
-import org.wildfly.swarm.bootstrap.util.CommonProperties;
+import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
  * A WildFly-Swarm container.
@@ -122,7 +123,7 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container(boolean debugBootstrap) throws Exception {
-        System.setProperty(CommonProperties.VERSION, VERSION);
+        System.setProperty(SwarmProperties.VERSION, VERSION);
         createServer(debugBootstrap);
         createShrinkWrapDomain();
     }
@@ -509,7 +510,7 @@ public class Container {
     }
 
     protected String determineDeploymentType() throws IOException {
-        String artifact = System.getProperty(CommonProperties.APP_PATH);
+        String artifact = System.getProperty(BootstrapProperties.APP_PATH);
         if (artifact != null) {
             int dotLoc = artifact.lastIndexOf('.');
             if (dotLoc >= 0) {
@@ -517,7 +518,7 @@ public class Container {
             }
         }
 
-        artifact = System.getProperty(CommonProperties.APP_ARTIFACT);
+        artifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
         if (artifact != null) {
             int dotLoc = artifact.lastIndexOf('.');
             if (dotLoc >= 0) {
@@ -579,9 +580,9 @@ public class Container {
                     try (InputStream in = jar.getInputStream(propsEntry)) {
                         Properties props = new Properties();
                         props.load(in);
-                        if (props.containsKey(CommonProperties.APP_ARTIFACT)) {
-                            System.setProperty(CommonProperties.APP_ARTIFACT,
-                                               props.getProperty(CommonProperties.APP_ARTIFACT));
+                        if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
+                            System.setProperty(BootstrapProperties.APP_ARTIFACT,
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();

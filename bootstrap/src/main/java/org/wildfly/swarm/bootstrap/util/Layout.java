@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.bootstrap.util;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -23,16 +27,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
 
 /**
  * @author Bob McWhirter
@@ -110,9 +109,9 @@ public class Layout {
                     try (InputStream in = jar.getInputStream(propsEntry)) {
                         Properties props = new Properties();
                         props.load(in);
-                        if (props.containsKey(CommonProperties.APP_ARTIFACT)) {
-                            System.setProperty(CommonProperties.APP_ARTIFACT,
-                                               props.getProperty(CommonProperties.APP_ARTIFACT));
+                        if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
+                            System.setProperty(BootstrapProperties.APP_ARTIFACT,
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();

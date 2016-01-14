@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.bootstrap.util;
+package org.wildfly.swarm;
 
-public class CommonProperties {
+public class SwarmProperties {
     public static final String VERSION = "swarm.version";
-
-    public static final String APP_PATH = "swarm.app.path";
-
-    public static final String APP_ARTIFACT = "swarm.app.artifact";
 
     //public
     public static final String EXPORT_DEPLOYMENT = "swarm.export.deployment";
@@ -32,17 +28,30 @@ public class CommonProperties {
     public static final String BUILD_REPOS = "swarm.build.repos";
 
     //public
-    public static final String DEBUG_PORT = "swarm.debug.port";
-
-    //public
     public static final String EXPORT_UBERJAR = "swarm.export.uberjar";
-
-    //public
-    public static final String CONTEXT_PATH = "swarm.context.path";
 
     public static final String CURRENT_DEPLOYMENT = "swarm.current.deployment";
 
     //public
     public static final String NODE_ID = "swarm.node.id";
+
+    //public
+    public static final String PORT_OFFSET = "swarm.port.offset";
+
+    //public
+    public static final String BIND_ADDRESS = "swarm.bind.address";
+
+    //public
+    public static final String ENVIRONMENT = "swarm.environment";
+
+
+    public static String propertyVar(final String prop) {
+        return String.format("${%s}", prop);
+    }
+
+    public static String propertyVar(final String prop, final String defaultValue) {
+        return String.format("${%s:%s}", prop, defaultValue);
+    }
+
 }
 

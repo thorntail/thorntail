@@ -93,7 +93,7 @@
           <runOrder>alphabetical</runOrder>
           <failIfNoTests>false</failIfNoTests>
           <systemPropertyVariables>
-            <jboss.bind.address>127.0.0.1</jboss.bind.address>
+            <swarm.bind.address>127.0.0.1</swarm.bind.address>
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
         </configuration>

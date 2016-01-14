@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.webservices;
 
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.Webservices;
 import org.wildfly.swarm.config.webservices.ClientConfig;
 import org.wildfly.swarm.config.webservices.EndpointConfig;
@@ -41,7 +42,7 @@ public class WebServicesFraction extends Webservices<WebServicesFraction> implem
 
     public static WebServicesFraction createDefaultFraction() {
         
-        String SoapHost = System.getProperty("jboss.bind.address", SOAP_HOST);
+        String SoapHost = System.getProperty(SwarmProperties.BIND_ADDRESS, SOAP_HOST);
         
         return new WebServicesFraction()
                 .wsdlHost(SoapHost)

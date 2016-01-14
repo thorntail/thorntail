@@ -18,7 +18,7 @@ package org.wildfly.swarm.container;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.wildfly.swarm.bootstrap.util.CommonProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,7 @@ public abstract class DefaultDeploymentFactory {
     public abstract Archive create(Container container) throws Exception;
 
     protected static String determineName(final String suffix) {
-        String prop = System.getProperty(CommonProperties.APP_PATH);
+        String prop = System.getProperty(BootstrapProperties.APP_PATH);
         if (prop != null) {
             final File file = new File(prop);
             final String name = file.getName();
@@ -53,7 +53,7 @@ public abstract class DefaultDeploymentFactory {
             return name + suffix;
         }
 
-        prop = System.getProperty(CommonProperties.APP_ARTIFACT);
+        prop = System.getProperty(BootstrapProperties.APP_ARTIFACT);
         if (prop != null) {
             return prop;
         }
@@ -78,7 +78,7 @@ public abstract class DefaultDeploymentFactory {
     }
 
     protected boolean setupUsingAppPath(Archive<?> archive) throws IOException {
-        final String appPath = System.getProperty(CommonProperties.APP_PATH);
+        final String appPath = System.getProperty(BootstrapProperties.APP_PATH);
 
         if (appPath != null) {
             final Path path = Paths.get(appPath);
@@ -102,7 +102,7 @@ public abstract class DefaultDeploymentFactory {
     }
 
     protected boolean setupUsingAppArtifact(Archive<?> archive) throws IOException {
-        final String appArtifact = System.getProperty(CommonProperties.APP_ARTIFACT);
+        final String appArtifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
 
         if (appArtifact != null) {
             try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {

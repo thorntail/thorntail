@@ -15,14 +15,12 @@
  */
 package org.wildfly.swarm.jgroups;
 
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.JGroups;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Environment;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.SocketBinding;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Bob McWhirter
@@ -100,7 +98,8 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
         initContext.socketBinding(
                 new SocketBinding("jgroups-udp")
                         .port(55200)
-                        .multicastAddress("${jboss.default.multicast.address:230.0.0.4}")
+                        .multicastAddress(SwarmProperties.propertyVar(JGroupsProperties.DEFAULT_MULTICAST_ADDRESS,
+                                                                      "230.0.0.4"))
                         .multicastPort(45688));
 
         initContext.socketBinding(
@@ -110,7 +109,8 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
         initContext.socketBinding(
                 new SocketBinding("jgroups-mping")
                         .port(0)
-                        .multicastAddress("${jboss.default.multicast.address:230.0.0.4}")
+                        .multicastAddress(SwarmProperties.propertyVar(JGroupsProperties.DEFAULT_MULTICAST_ADDRESS,
+                                                                      "230.0.0.4"))
                         .multicastPort(45700));
 
         initContext.socketBinding(
