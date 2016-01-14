@@ -20,6 +20,7 @@ import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -74,7 +75,7 @@ public class Layout {
 
         if (isUberJar()) {
             if(isUnpackedUberJar()) {
-                Path mani = root.resolveSibling(mfName);
+                Path mani = root.resolve(mfName);
                 InputStream in = new FileInputStream(mani.toFile());
                 return new Manifest(in);
             } else {
@@ -127,7 +128,7 @@ public class Layout {
                 }
             }
         } else {
-            Path props = root.resolveSibling(wfsprops);
+            Path props = root.resolve(wfsprops);
             InputStream in = new FileInputStream(props.toFile());
             setupProperties(in);
             this.uberJar = true;
