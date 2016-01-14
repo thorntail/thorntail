@@ -15,8 +15,16 @@
  */
 package org.wildfly.swarm.datasources.runtime;
 
+import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
+import org.wildfly.swarm.container.runtime.AbstractParserFactory;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
+
+import javax.xml.namespace.QName;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -28,4 +36,8 @@ public class DatasourcesConfiguration extends MarshallingServerConfiguration<Dat
         super(DatasourcesFraction.class);
     }
 
+    @Override
+       public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+           return AbstractParserFactory.mapParserNamespaces(new DatasourceParserFactory());
+       }
 }

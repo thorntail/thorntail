@@ -46,6 +46,12 @@
       <artifactId>security</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-jaxrs</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Provided APIs -->
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>

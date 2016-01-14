@@ -25,5 +25,10 @@
     <module name="org.jboss.as.self-contained"/>
     <module name="org.jboss.as.logging"/>
     <module name="org.jboss.shrinkwrap"/>
+
+    <!-- the following have been added to support xml parsing -->
+    <module name="javax.api" export="true"/>
+    <module name="org.jboss.staxmapper" export="true"/>
+    <module name="org.jboss.as.logging" export="true"/>
   </dependencies>
 </module>

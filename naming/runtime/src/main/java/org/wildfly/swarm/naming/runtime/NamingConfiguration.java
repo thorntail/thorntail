@@ -15,8 +15,16 @@
  */
 package org.wildfly.swarm.naming.runtime;
 
+import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
+import org.wildfly.swarm.container.runtime.AbstractParserFactory;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.naming.NamingFraction;
+
+import javax.xml.namespace.QName;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -30,4 +38,8 @@ public class NamingConfiguration extends MarshallingServerConfiguration<NamingFr
         super(NamingFraction.class, MODULE_EXTENSION);
     }
 
+    @Override
+      public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+          return AbstractParserFactory.mapParserNamespaces(new NamingParserFactory());
+      }
 }

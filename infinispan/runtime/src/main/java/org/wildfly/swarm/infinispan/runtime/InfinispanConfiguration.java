@@ -33,4 +33,5 @@ public class InfinispanConfiguration extends MarshallingServerConfiguration<Infi
     public InfinispanFraction defaultFraction() {
         return InfinispanFraction.createDefaultFraction();
     }
+
 }

@@ -16,14 +16,19 @@
 package org.wildfly.swarm.logging.runtime;
 
 import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.bootstrap.logging.InitialLoggerManager;
 import org.wildfly.swarm.bootstrap.logging.LevelNode;
 import org.wildfly.swarm.config.logging.Level;
+import org.wildfly.swarm.container.runtime.AbstractParserFactory;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.logging.LoggingProperties;
 
+import javax.xml.namespace.QName;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -75,5 +80,10 @@ public class LoggingConfiguration extends MarshallingServerConfiguration<Logging
         for (LevelNode each : node.getChildren()) {
             apply( each, fraction );
         }
+    }
+
+    @Override
+    public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+        return AbstractParserFactory.mapParserNamespaces(new LoggingParserFactory());
     }
 }
