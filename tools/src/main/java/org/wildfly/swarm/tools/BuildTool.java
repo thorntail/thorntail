@@ -92,12 +92,12 @@ public class BuildTool {
     }
 
     public BuildTool projectArtifact(String groupId, String artifactId, String version, String packaging, File file) {
-        this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file));
+        this.projectAsset = new SwarmDepsFilteredAsset(new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file)));
         return this;
     }
 
     public BuildTool projectArchive(Archive archive) {
-        this.projectAsset = new ArchiveAsset(archive);
+        this.projectAsset = new SwarmDepsFilteredAsset(new ArchiveAsset(archive));
         return this;
     }
 
@@ -135,7 +135,6 @@ public class BuildTool {
 
     public Archive build() throws Exception {
         analyzeDependencies();
-        removeSwarmDependencies();
         addWildflySwarmBootstrapJar();
         addWildFlyBootstrapConf();
         addManifest();
@@ -143,6 +142,7 @@ public class BuildTool {
         addWildFlySwarmApplicationConf();
         addWildFlySwarmDependenciesConf();
         addAdditionalModules();
+        addProjectAsset();
         populateUberJarMavenRepository();
 
         return this.archive;
@@ -152,36 +152,8 @@ public class BuildTool {
         this.dependencyManager.analyzeDependencies(this.resolveTransitiveDependencies);
     }
 
-    protected static final String WEB_INF_LIB = "/WEB-INF/lib/";
-
-    protected static final String SWARM_ARTIFACT_MARKER = "/META-INF/maven/org.wildfly.swarm";
-
-    protected boolean nodeIsSwarmArtifact(Node node) {
-        try (final InputStream in = node.getAsset().openStream()) {
-
-            return ShrinkWrap.create(ZipImporter.class)
-                    .importFrom(in)
-                    .as(JavaArchive.class)
-                    .contains(SWARM_ARTIFACT_MARKER);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected boolean nodeIsInJarList(Node node, Set<String> jarList) {
-        return jarList.contains(node.getPath().get().substring(WEB_INF_LIB.length()));
-    }
-
-    protected void removeSwarmDependencies() {
-        final Archive<?> archive = this.projectAsset.getArchive();
-        final Set<String> moduleJars = this.dependencyManager.getModuleDependencies().stream()
-                .map(ArtifactSpec::jarName)
-                .collect(Collectors.toSet());
-
-        archive.getContent().values().stream()
-                .filter(node -> node.getPath().get().startsWith(WEB_INF_LIB))
-                .filter(node -> nodeIsInJarList(node, moduleJars) || nodeIsSwarmArtifact(node))
-                .forEach(node -> archive.delete(node.getPath()));
+    private void addProjectAsset() {
+        this.archive.add(this.projectAsset);
     }
 
     private void addWildflySwarmBootstrapJar() throws BuildException, IOException {
@@ -231,8 +203,6 @@ public class BuildTool {
         this.archive.add(new StringAsset(bootstrapConf.toString()), WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
     }
 
-
-
     private void addWildFlySwarmDependenciesConf() throws IOException {
         WildFlySwarmDependenciesConf depsConf = this.dependencyManager.getWildFlySwarmDependenciesConf();
         this.archive.add(new StringAsset(depsConf.toString()), WildFlySwarmDependenciesConf.CLASSPATH_LOCATION);
@@ -241,7 +211,6 @@ public class BuildTool {
     private void addWildFlySwarmApplicationConf() throws Exception {
         WildFlySwarmApplicationConf appConf = this.dependencyManager.getWildFlySwarmApplicationConf(this.projectAsset);
         this.archive.add(new StringAsset(appConf.toString()), WildFlySwarmApplicationConf.CLASSPATH_LOCATION);
-        this.archive.add(this.projectAsset);
     }
 
 
@@ -301,6 +270,47 @@ public class BuildTool {
             this.dependencyManager.populateUberJarMavenRepository( this.archive );
         } else {
             this.dependencyManager.populateUserMavenRepository();
+        }
+    }
+
+    private class SwarmDepsFilteredAsset extends FilteredProjectAsset {
+
+        SwarmDepsFilteredAsset(ProjectAsset delegate) {
+            super(delegate);
+        }
+
+        @Override
+        protected Archive<?> filter(Archive<?> archive) {
+            final Set<String> moduleJars = dependencyManager.getModuleDependencies().stream()
+                    .map(ArtifactSpec::jarName)
+                    .collect(Collectors.toSet());
+
+            archive.getContent().values().stream()
+                    .filter(node -> node.getPath().get().startsWith(WEB_INF_LIB))
+                    .filter(node -> nodeIsInJarList(node, moduleJars) || nodeIsSwarmArtifact(node))
+                    .forEach(node -> archive.delete(node.getPath()));
+
+            return archive;
+        }
+
+        protected static final String WEB_INF_LIB = "/WEB-INF/lib/";
+
+        protected static final String SWARM_ARTIFACT_MARKER = "/META-INF/maven/org.wildfly.swarm";
+
+        protected boolean nodeIsSwarmArtifact(Node node) {
+            try (final InputStream in = node.getAsset().openStream()) {
+
+                return ShrinkWrap.create(ZipImporter.class)
+                        .importFrom(in)
+                        .as(JavaArchive.class)
+                        .contains(SWARM_ARTIFACT_MARKER);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        protected boolean nodeIsInJarList(Node node, Set<String> jarList) {
+            return jarList.contains(node.getPath().get().substring(WEB_INF_LIB.length()));
         }
     }
 }
