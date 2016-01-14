@@ -73,7 +73,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
     }
 
-    protected void initProperties() throws MojoFailureException {
+    protected void initProperties(final boolean withMaven) throws MojoFailureException {
         if (this.properties == null) {
             this.properties = new Properties();
         }
@@ -86,7 +86,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
             if (key.startsWith("jboss.") ||
                     key.startsWith("swarm.") ||
                     key.startsWith("wildfly.") ||
-                    key.startsWith("maven.") ||
+                    (withMaven && key.startsWith("maven.")) ||
                     this.properties.containsKey(key)) {
                 this.properties.put(key, System.getProperty(key));
             }

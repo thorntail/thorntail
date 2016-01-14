@@ -62,7 +62,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @SuppressWarnings("unchecked")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        initProperties();
+        initProperties(true);
         initEnvironment();
 
         final SwarmExecutor executor;

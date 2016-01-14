@@ -55,7 +55,7 @@ public class PackageMojo extends AbstractSwarmMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        initProperties();
+        initProperties(false);
 
         final BuildTool tool = new BuildTool();
 

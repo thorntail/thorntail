@@ -70,7 +70,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        initProperties();
+        initProperties(true);
         initEnvironment();
 
         for (XmlPlexusConfiguration process : this.processes) {
