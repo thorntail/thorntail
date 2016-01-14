@@ -112,8 +112,11 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .withMavenCentralRepo(true)
                 .withRemoteRepo(jbossPublic);
 
+        final SwarmExecutor executor = new SwarmExecutor().withDefaultSystemProperties();
+
         final String additionalRepos = System.getProperty(SwarmProperties.BUILD_REPOS);
         if (additionalRepos != null) {
+            executor.withProperty("remote.maven.repo", additionalRepos);
             Arrays.asList(additionalRepos.split(","))
                     .forEach(r -> {
                         MavenRemoteRepository repo =
@@ -161,9 +164,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 }
             }
         }
-
-        SwarmExecutor executor = new SwarmExecutor();
-        executor.withDefaultSystemProperties();
 
         final String debug = System.getProperty(BootstrapProperties.DEBUG_PORT);
         if (debug != null &&
