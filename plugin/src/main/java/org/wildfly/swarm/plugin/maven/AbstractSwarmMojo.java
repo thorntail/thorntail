@@ -80,12 +80,13 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         if (this.propertiesFile != null) {
             this.properties.putAll(loadProperties(this.propertiesFile));
         }
-        // copy any jboss.*, swarm.*, or wildfly.* sysprops from System, along with anything that shadows
-        // a specified property
+        // copy any jboss.*, swarm.*, maven.*, or wildfly.* sysprops from System,
+        // along with anything that shadows a specified property
         System.getProperties().stringPropertyNames().forEach(key -> {
             if (key.startsWith("jboss.") ||
                     key.startsWith("swarm.") ||
                     key.startsWith("wildfly.") ||
+                    key.startsWith("maven.") ||
                     this.properties.containsKey(key)) {
                 this.properties.put(key, System.getProperty(key));
             }
