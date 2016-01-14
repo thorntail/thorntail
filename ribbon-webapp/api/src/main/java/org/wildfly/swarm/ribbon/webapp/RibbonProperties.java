@@ -16,5 +16,6 @@
 package org.wildfly.swarm.ribbon.webapp;
 
 public class RibbonProperties {
+    //public
     public final static String CONTEXT_PATH = "swarm.ribbon.context.path";
 }

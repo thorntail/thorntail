@@ -16,5 +16,6 @@
 package org.wildfly.swarm.logging;
 
 public class LoggingProperties {
+    //public
     public static final String LOGGING = "swarm.logging";
 }
