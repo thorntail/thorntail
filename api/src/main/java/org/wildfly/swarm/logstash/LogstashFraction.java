@@ -17,6 +17,7 @@ package org.wildfly.swarm.logstash;
 
 import java.util.Properties;
 
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.logging.CustomHandler;
 import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.container.Container;
@@ -35,7 +36,7 @@ public class LogstashFraction implements Fraction {
 
     public LogstashFraction() {
         this("metaData", "wildflySwarmNode=${jboss.node.name}");
-        hostname( "${logstash.host}" );
+        hostname(SwarmProperties.propertyVar("logstash.host"));
     }
 
     public LogstashFraction(String nodeKey, String nodeValue) {
@@ -48,12 +49,12 @@ public class LogstashFraction implements Fraction {
     }
 
     public LogstashFraction hostname(String hostname) {
-        this.handlerProperties.put("hostname", "${swarm.logstash.hostname:" + hostname + "}");
+        this.handlerProperties.put("hostname", SwarmProperties.propertyVar(LogstashProperties.HOSTNAME, hostname));
         return this;
     }
 
     public LogstashFraction port(String port) {
-        this.handlerProperties.put("port", "${swarm.logstash.port:" + port + "}");
+        this.handlerProperties.put("port", SwarmProperties.propertyVar(LogstashProperties.PORT, port));
         return this;
     }
 
@@ -85,8 +86,8 @@ public class LogstashFraction implements Fraction {
     }
 
     public static Fraction createDefaultLogstashFraction(boolean loggingFractionIfNoLogstash) {
-        String hostname = System.getProperty( "swarm.logstash.hostname" );
-        String port = System.getProperty("swarm.logstash.port");
+        String hostname = System.getProperty(LogstashProperties.HOSTNAME);
+        String port = System.getProperty(LogstashProperties.PORT);
 
         if ( hostname != null && port != null ) {
             return new LogstashFraction()
