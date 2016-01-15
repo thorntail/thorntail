@@ -17,6 +17,14 @@
   <packaging>pom</packaging>
 
   <url>http://wildfly-swarm.io/</url>
+  <developers>
+    <developer>
+      <id>wildfly-swarm.io</id>
+      <name>WildFly Swarm Community</name>
+      <organization>WildFly Swarm</organization>
+      <organizationUrl>http://wildfly-swarm.io/</organizationUrl>
+    </developer>
+  </developers>
   <scm>
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
