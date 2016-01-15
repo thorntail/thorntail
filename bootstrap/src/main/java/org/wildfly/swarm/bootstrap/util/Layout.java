@@ -20,6 +20,7 @@ import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -43,7 +44,8 @@ public class Layout {
 
     private final Path root;
 
-    private final boolean uberJar;
+    private boolean uberJar;
+    private boolean unpackedUberJar;
 
     private ClassLoader bootstrapClassLoader;
 
@@ -56,7 +58,7 @@ public class Layout {
 
     Layout(CodeSource codeSource) throws IOException, URISyntaxException {
         this.root = determineRoot(codeSource);
-        this.uberJar = determineIfIsUberJar();
+        determineIfIsUberJar();
     }
 
     public Path getRoot() {
@@ -69,17 +71,29 @@ public class Layout {
 
     public Manifest getManifest() throws IOException {
         Path root = getRoot();
+        String mfName = "META-INF/MANIFEST.MF";
+
         if (isUberJar()) {
-            try (JarFile jar = new JarFile(root.toFile())) {
-                ZipEntry entry = jar.getEntry("META-INF/MANIFEST.MF");
-                if (entry != null) {
-                    InputStream in = jar.getInputStream(entry);
-                    return new Manifest(in);
+            if(isUnpackedUberJar()) {
+                Path mani = root.resolve(mfName);
+                InputStream in = new FileInputStream(mani.toFile());
+                return new Manifest(in);
+            } else {
+                try (JarFile jar = new JarFile(root.toFile())) {
+                    ZipEntry entry = jar.getEntry(mfName);
+                    if (entry != null) {
+                        InputStream in = jar.getInputStream(entry);
+                        return new Manifest(in);
+                    }
                 }
             }
         }
 
         return null;
+    }
+
+    private boolean isUnpackedUberJar() {
+        return this.unpackedUberJar;
     }
 
     public synchronized ClassLoader getBootstrapClassLoader() throws ModuleLoadException {
@@ -99,37 +113,49 @@ public class Layout {
         throw new IOException("Unable to determine root");
     }
 
-    private boolean determineIfIsUberJar() throws IOException {
+    private void determineIfIsUberJar() throws IOException {
         Path root = getRoot();
+        String wfsprops = "META-INF/wildfly-swarm.properties";
 
         if (Files.isRegularFile(root)) {
             try (JarFile jar = new JarFile(root.toFile())) {
-                ZipEntry propsEntry = jar.getEntry("META-INF/wildfly-swarm.properties");
+                ZipEntry propsEntry = jar.getEntry(wfsprops);
                 if (propsEntry != null) {
-                    try (InputStream in = jar.getInputStream(propsEntry)) {
-                        Properties props = new Properties();
-                        props.load(in);
-                        if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
-                            System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
-                        }
+                    InputStream in = jar.getInputStream(propsEntry);
+                    setupProperties(in);
+                    this.uberJar = true;
+                    this.unpackedUberJar = false;
+                }
+            }
+        } else {
+            Path props = root.resolve(wfsprops);
+            if ( Files.exists( props ) ) {
+                InputStream in = new FileInputStream(props.toFile());
+                setupProperties(in);
+                this.uberJar = true;
+                this.unpackedUberJar = true;
+            }
+        }
+    }
 
-                        Set<String> names = props.stringPropertyNames();
-                        for ( String name: names ) {
-                            String value = props.getProperty(name);
-                            if (System.getProperty(name) == null) {
-                                System.setProperty(name, value);
-                            }
-                        }
-                    }
-                    return true;
+
+    private void setupProperties(InputStream inps) throws IOException{
+        try (InputStream in = inps) {
+            Properties props = new Properties();
+            props.load(in);
+            if (props.containsKey("wildfly.swarm.app.artifact")) {
+                System.setProperty("wildfly.swarm.app.artifact", props.getProperty("wildfly.swarm.app.artifact"));
+            }
+
+            Set<String> names = props.stringPropertyNames();
+            for ( String name: names ) {
+                String value = props.getProperty(name);
+                if (System.getProperty(name) == null) {
+                    System.setProperty(name, value);
                 }
             }
         }
-
-        return false;
     }
-
 
     private ClassLoader determineBootstrapClassLoader() throws ModuleLoadException {
         try {
@@ -138,7 +164,4 @@ public class Layout {
             return Layout.class.getClassLoader();
         }
     }
-
-
-
 }
