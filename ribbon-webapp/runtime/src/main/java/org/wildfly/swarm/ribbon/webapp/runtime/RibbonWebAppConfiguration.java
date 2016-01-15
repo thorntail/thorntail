@@ -54,7 +54,7 @@ public class RibbonWebAppConfiguration extends AbstractServerConfiguration<Ribbo
         WARArchive war = ShrinkWrap.create( WARArchive.class, "ribbon-webapp.war" );
         war.addAsWebInfResource(new StringAsset(getWebXml(fraction)), "web.xml");
         war.addClass( RibbonToTheCurbSSEServlet.class );
-        war.addClass(fraction.externalAddressMapper());
+        war.addModule("swarm.application");
         war.addModule("org.wildfly.swarm.netflix.ribbon");
         war.addAsWebResource(new ClassLoaderAsset("ribbon.js", this.getClass().getClassLoader()), "ribbon.js");
         war.setContextRoot(context);
