@@ -129,10 +129,12 @@ public class Layout {
             }
         } else {
             Path props = root.resolve(wfsprops);
-            InputStream in = new FileInputStream(props.toFile());
-            setupProperties(in);
-            this.uberJar = true;
-            this.unpackedUberJar = true;
+            if ( Files.exists( props ) ) {
+                InputStream in = new FileInputStream(props.toFile());
+                setupProperties(in);
+                this.uberJar = true;
+                this.unpackedUberJar = true;
+            }
         }
     }
 
