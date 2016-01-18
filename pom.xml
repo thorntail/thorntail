@@ -140,6 +140,7 @@
           <pushChanges>false</pushChanges>
           <preparationGoals>clean install</preparationGoals>
           <localCheckout>true</localCheckout>
+          <arguments>-DskipTests</arguments>
         </configuration>
       </plugin>
       <plugin>
