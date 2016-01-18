@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm</artifactId>
+    <version>1.0.0.Alpha7-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.wildfly.swarm.servers</groupId>
+  <artifactId>servers-parent</artifactId>
+
+  <name>WildFly Swarm Servers: Parent</name>
+  <description>WildFly Swarm Servers: Parent</description>
+
+  <packaging>pom</packaging>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-plugin</artifactId>
+          <version>${project.version}</version>
+          <executions>
+            <execution>
+              <id>package</id>
+              <goals>
+                <goal>package</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>start</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <goal>start</goal>
+              </goals>
+              <configuration>
+                <stdoutFile>target/stdout.log</stdoutFile>
+                <stderrFile>target/stderr.log</stderrFile>
+              </configuration>
+            </execution>
+            <execution>
+              <id>stop</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <testSourceDirectory>src/it/java</testSourceDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>arquillian</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.graphene</groupId>
+      <artifactId>graphene-webdriver</artifactId>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <modules>
+    <module>hawkular</module>
+    <module>keycloak</module>
+  </modules>
+
+  <profiles>
+    <profile>
+      <id>uberjar</id>
+      <properties>
+        <wildfly-swarm.useUberJar>true</wildfly-swarm.useUberJar>
+      </properties>
+    </profile>
+  </profiles>
+</project>

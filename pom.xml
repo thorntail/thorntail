@@ -1193,6 +1193,8 @@
     <module>rxnetty</module>
     <module>servo</module>
 
+    <module>servers</module>
+
     <module>integration-tests</module>
   </modules>
 
