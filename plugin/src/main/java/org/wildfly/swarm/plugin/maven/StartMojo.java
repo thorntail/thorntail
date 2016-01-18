@@ -172,7 +172,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
         final SwarmExecutor executor = new SwarmExecutor()
                 .withModules(expandModules())
-                .withClassPathEntries(dependencies(true, a -> true));
+                .withClassPathEntries(dependencies(true));
 
         if (this.mainClass != null) {
             executor.withMainClass(this.mainClass);
@@ -181,6 +181,10 @@ public class StartMojo extends AbstractSwarmMojo {
         }
 
         return executor;
+    }
+
+    List<Path> dependencies(boolean includeProjectArtifact) {
+        return dependencies(includeProjectArtifact, null);
     }
 
     List<Path> dependencies(boolean includeProjectArtifact, Predicate<Artifact> filter) {
@@ -192,7 +196,7 @@ public class StartMojo extends AbstractSwarmMojo {
                 continue;
             }
 
-            if (filter.test(each)) {
+            if (filter == null || filter.test(each)) {
                 elements.add(each.getFile().toPath());
             }
         }
