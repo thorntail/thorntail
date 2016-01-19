@@ -55,3 +55,4 @@ testsuite-core/standalone/cli_output
 tmp
 log
 *.log
+embedded-cassandra.log*
