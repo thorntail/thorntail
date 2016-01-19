@@ -16,7 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>parent</artifactId>
-  <version>1.0.0.Alpha7</version>
+  <version>1.0.0.Alpha7-SNAPSHOT</version>
 
   <name>WildFly Swarm: Build BOM</name>
   <description>WildFly Swarm: Build BOM</description>
@@ -27,7 +27,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
-    <tag>1.0.0.Alpha7</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <licenses>
