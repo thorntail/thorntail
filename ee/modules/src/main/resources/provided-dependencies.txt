@@ -1,2 +1,4 @@
 org.jboss.spec.javax.enterprise.concurrent:jboss-concurrency-api_1.0_spec
 org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.2_spec
+org.jboss.spec.javax.el:jboss-el-api_3.0_spec
+org.glassfish:javax.el-impl
