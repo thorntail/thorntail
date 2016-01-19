@@ -44,7 +44,7 @@ public class WildFlySwarmDependenciesConfTest {
 
         String written = new String(out.toByteArray());
 
-        String[] lines = written.split("\n");
+        String[] lines = written.split("(\\r)?(\\n)");
 
         assertThat(lines).hasSize(3);
 
