@@ -41,7 +41,7 @@ public class WildFlySwarmApplicationConfTest {
 
         String written = new String( out.toByteArray() );
 
-        String[] lines = written.split("\n");
+        String[] lines = written.split("(\\r)?(\\n)");
 
         assertThat( lines ).hasSize(3);
         assertThat( lines ).contains( "gav:org.wildfly.swarm:fish:1.0" );

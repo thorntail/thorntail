@@ -42,7 +42,7 @@ public class WildFlySwarmBootstrapConfTest {
 
         String contents = new String(out.toByteArray());
 
-        String[] lines = contents.split("\n");
+        String[] lines = contents.split("(\\r)?(\\n)");
 
         assertThat(lines).hasSize(3);
 
@@ -85,7 +85,7 @@ public class WildFlySwarmBootstrapConfTest {
 
         String written = new String( out.toByteArray() );
 
-        String[] lines = written.split( "\n" );
+        String[] lines = written.split( "(\\r)?(\\n)" );
 
         assertThat(lines).hasSize(3);
 
