@@ -92,7 +92,9 @@ public class PackageTask extends DefaultTask {
             String groupId = parts[0];
             String artifactId = parts[1];
             String version = parts[2];
-            this.tool.dependency("compile", groupId, artifactId, version, each.getExtension(), each.getClassifier(), each.getFile());
+            this.tool.dependency("compile", groupId, artifactId, version, each.getExtension(),
+                                 each.getClassifier(), each.getFile(),
+                                 dep.getParents().isEmpty());
         }
 
         for (ResolvedDependency each : dep.getChildren()) {

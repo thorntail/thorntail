@@ -15,6 +15,12 @@
  */
 package org.wildfly.swarm.tools;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -30,14 +36,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 /**
  * @author Bob McWhirter
@@ -99,6 +100,17 @@ public class DependencyManager {
 
     public void addDependency(ArtifactSpec dep) {
         this.dependencies.add(dep);
+    }
+
+    public Set<ArtifactSpec> getNonSwarmDependencies() {
+        try {
+            return this.resolver.resolveAll(this.dependencies.stream()
+                                                    .filter(a -> a.topLevel)
+                                                    .filter(a -> !WILDFLY_SWARM_GROUP_ID.equals(a.groupId()))
+                                                    .collect(Collectors.toSet()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void addAdditionalModule(Path module) {

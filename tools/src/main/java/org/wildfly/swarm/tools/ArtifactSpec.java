@@ -28,6 +28,8 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public File file;
 
+    public final boolean topLevel;
+
     public boolean shouldGather = true;
 
     public boolean gathered = false;
@@ -45,10 +47,22 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
         }
     }
 
-    public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
+    public ArtifactSpec(final String scope,
+                        final String groupId,
+                        final String artifactId,
+                        final String version,
+                        final String packaging,
+                        final String classifier,
+                        final File file,
+                        final boolean topLevel) {
         super(groupId, artifactId, packaging, classifier, version);
         this.scope = scope;
         this.file = file;
+        this.topLevel = topLevel;
+    }
+
+    public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
+        this(scope, groupId, artifactId, version, packaging, classifier, file, false);
     }
 
     public String jarName() {

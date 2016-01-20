@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
+import org.jboss.shrinkwrap.resolver.impl.maven.ResolveStageBaseImpl;
 import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
@@ -39,6 +40,7 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -133,6 +135,15 @@ public class UberjarSimpleContainer implements SimpleContainer {
         boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;
 
         if (!hasRequestedArtifacts) {
+            final List<String> topLevelDeps =
+                    ((ResolveStageBaseImpl) resolver.loadPomFromFile("pom.xml")
+                            .importRuntimeAndTestDependencies())
+                            .getMavenWorkingSession()
+                            .getDependenciesForResolution()
+                            .stream()
+                            .map(d -> gav(d.getGroupId(), d.getArtifactId(), d.getVersion()))
+                            .collect(Collectors.toList());
+
             final MavenResolvedArtifact[] deps =
                     resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
                             .importRuntimeAndTestDependencies()
@@ -144,7 +155,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 MavenCoordinate coord = dep.getCoordinate();
                 tool.dependency(dep.getScope().name(), coord.getGroupId(),
                                 coord.getArtifactId(), coord.getVersion(),
-                                coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                                coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile(),
+                                topLevelDeps.contains(gav(coord)));
             }
         } else {
             // ensure that arq daemon is available
@@ -160,7 +172,9 @@ public class UberjarSimpleContainer implements SimpleContainer {
                     MavenCoordinate coord = dep.getCoordinate();
                     tool.dependency(dep.getScope().name(), coord.getGroupId(),
                                     coord.getArtifactId(), coord.getVersion(),
-                                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile(),
+                                    this.requestedMavenArtifacts.contains(gav(coord)) ||
+                                            this.requestedMavenArtifacts.contains(ga(coord)));
                 }
             }
         }
@@ -219,6 +233,18 @@ public class UberjarSimpleContainer implements SimpleContainer {
     @Override
     public void stop() throws Exception {
         this.process.stop();
+    }
+
+    private String ga(final MavenCoordinate coord) {
+        return String.format("%s:%s", coord.getGroupId(), coord.getArtifactId());
+    }
+
+    private String gav(final MavenCoordinate coord) {
+        return gav(coord.getGroupId(), coord.getArtifactId(), coord.getVersion());
+    }
+
+    private String gav(final String group, final String artifact, final String version) {
+        return String.format("%s:%s:%s", group, artifact, version);
     }
 
     private final Class<?> testClass;

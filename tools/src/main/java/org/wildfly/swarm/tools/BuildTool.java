@@ -35,14 +35,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 /**
  * @author Bob McWhirter
@@ -101,8 +104,10 @@ public class BuildTool {
         return this;
     }
 
-    public BuildTool dependency(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
-        this.dependencyManager.addDependency(new ArtifactSpec(scope, groupId, artifactId, version, packaging, classifier, file));
+    public BuildTool dependency(String scope, String groupId, String artifactId, String version,
+                                String packaging, String classifier, File file, boolean topLevel) {
+        this.dependencyManager.addDependency(new ArtifactSpec(scope, groupId, artifactId, version,
+                                                              packaging, classifier, file, topLevel));
         return this;
     }
 
@@ -281,37 +286,88 @@ public class BuildTool {
 
         @Override
         protected Archive<?> filter(Archive<?> archive) {
-            final Set<String> moduleJars = dependencyManager.getModuleDependencies().stream()
-                    .map(ArtifactSpec::jarName)
-                    .collect(Collectors.toSet());
+            final Set<ArtifactSpec> moduleSpecs = dependencyManager.getModuleDependencies();
+            final Set<ArtifactSpec> nonSwarmSpecs = dependencyManager.getNonSwarmDependencies();
 
             archive.getContent().values().stream()
                     .filter(node -> node.getPath().get().startsWith(WEB_INF_LIB))
-                    .filter(node -> nodeIsInJarList(node, moduleJars) || nodeIsSwarmArtifact(node))
+                    .filter(node -> !nodeIsInArtifactList(node, nonSwarmSpecs, false)
+                                    && (nodeIsInArtifactList(node, moduleSpecs, true)
+                                        || nodeIsSwarmArtifact(node)))
                     .forEach(node -> archive.delete(node.getPath()));
 
             return archive;
         }
 
-        protected static final String WEB_INF_LIB = "/WEB-INF/lib/";
+    }
 
-        protected static final String SWARM_ARTIFACT_MARKER = "/META-INF/maven/org.wildfly.swarm";
+    protected static final String WEB_INF_LIB = "/WEB-INF/lib/";
 
-        protected boolean nodeIsSwarmArtifact(Node node) {
-            try (final InputStream in = node.getAsset().openStream()) {
+    protected static final Pattern POM_PROPERTIES =
+            Pattern.compile("/META-INF/maven/([^/]+/){2}pom.properties");
 
-                return ShrinkWrap.create(ZipImporter.class)
-                        .importFrom(in)
-                        .as(JavaArchive.class)
-                        .contains(SWARM_ARTIFACT_MARKER);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+    protected boolean nodeIsSwarmArtifact(final Node node) {
+        return matchProperty(extractPomProperties(node), "groupId", DependencyManager.WILDFLY_SWARM_GROUP_ID);
+    }
+
+    protected List<Properties> extractPomProperties(final Node node) {
+        final List<Properties> properties = new ArrayList<>();
+
+        try (final InputStream in = node.getAsset().openStream()) {
+            ShrinkWrap.create(ZipImporter.class)
+                    .importFrom(in)
+                    .as(JavaArchive.class)
+                    .getContent(p -> POM_PROPERTIES.matcher(p.get()).matches())
+                    .values()
+                    .forEach(propNode -> {
+                        final Properties props = new Properties();
+                        try (final InputStream in2 = propNode.getAsset().openStream()) {
+                            props.load(in2);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        properties.add(props);
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return properties;
+    }
+
+    protected boolean matchProperty(final List<Properties> properties, final String property, final String expected) {
+        return properties.stream()
+                .map(p -> expected.equals(p.getProperty(property)))
+                .reduce((found, match) -> found || match)
+                .orElse(false);
+    }
+
+    protected boolean nodeIsInArtifactList(final Node node,
+                                           final Collection<ArtifactSpec> artifactList,
+                                           final boolean exact) {
+        final List<Properties> poms = extractPomProperties(node);
+        final String jarName = node.getPath().get().substring(WEB_INF_LIB.length());
+        boolean found = false;
+        final Iterator<ArtifactSpec> specs = artifactList.iterator();
+
+        while (!found && specs.hasNext()) {
+            final ArtifactSpec spec = specs.next();
+            if (!poms.isEmpty()) {
+                found = matchProperty(poms, "groupId", spec.groupId())
+                        && matchProperty(poms, "artifactId", spec.artifactId())
+                        && (!exact || matchProperty(poms, "version", spec.version()));
+            } else {
+                // no pom, try to match by file name
+                if (exact) {
+                        found = jarName.equals(String.format("%s-%s.%s", spec.artifactId(), spec.version(), spec.type()));
+                } else {
+                    found = jarName.matches("^" + spec.artifactId() + "-\\d.*\\." + spec.type());
+                }
             }
         }
 
-        protected boolean nodeIsInJarList(Node node, Set<String> jarList) {
-            return jarList.contains(node.getPath().get().substring(WEB_INF_LIB.length()));
-        }
+        return found;
     }
 }
 

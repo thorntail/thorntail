@@ -63,6 +63,11 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
 
     @Override
     public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs) {
+        if (specs.isEmpty()) {
+
+            return specs;
+        }
+
         resetListeners();
         final MavenResolvedArtifact[] artifacts =
                 withResolver(r -> r.resolve(specs.stream().map(ArtifactSpec::mavenGav).collect(Collectors.toList()))

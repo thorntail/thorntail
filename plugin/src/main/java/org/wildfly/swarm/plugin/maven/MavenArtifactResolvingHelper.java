@@ -15,20 +15,15 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.Authentication;
+import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.Dependency;
-import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
@@ -39,21 +34,28 @@ import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * @author Bob McWhirter
  */
 public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
 
-    private ArtifactResolver resolver;
+    final private ArtifactResolver resolver;
 
-    protected RepositorySystemSession session;
+    final protected RepositorySystemSession session;
 
-    protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
+    final protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
 
+    final private RepositorySystem system;
 
-    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystemSession session) {
+    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystem system, RepositorySystemSession session) {
         this.resolver = resolver;
+        this.system = system;
         this.session = session;
         this.remoteRepositories.add(new RemoteRepository.Builder("jboss-public-repository-group", "default", "http://repository.jboss.org/nexus/content/groups/public/").build());
     }
@@ -105,46 +107,42 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     @Override
     public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
-        /*
-        Set<ArtifactSpec> resolved = new HashSet<>();
+        if (specs.isEmpty()) {
 
-        CollectRequest request = new CollectRequest();
+            return specs;
+        }
+
+        final CollectRequest request = new CollectRequest();
         request.setRepositories(this.remoteRepositories);
 
-        for (ArtifactSpec spec : specs) {
-            DefaultArtifact artifact = new DefaultArtifact(spec.groupId(), spec.artifactId(), spec.classifier(), spec.type(), spec.version());
-            Dependency dependency = new Dependency(artifact, "compile");
-            request.addDependency(dependency);
-        }
+        specs.forEach(spec -> request
+                .addDependency(new Dependency(new DefaultArtifact(spec.groupId(),
+                                                                  spec.artifactId(),
+                                                                  spec.classifier(),
+                                                                  spec.type(),
+                                                                  spec.version()),
+                                              "compile")));
 
         CollectResult result = this.system.collectDependencies(this.session, request);
 
         PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
         result.getRoot().accept(gen);
 
-        List<DependencyNode> nodes = gen.getNodes();
+        return gen.getNodes().stream()
+                .map(node -> {
+                    Artifact artifact = node.getArtifact();
 
-        for (DependencyNode node : nodes) {
-            Artifact each = node.getArtifact();
-
-
-            ArtifactSpec spec = new ArtifactSpec("compile",
-                    each.getGroupId(),
-                    each.getArtifactId(),
-                    each.getVersion(),
-                    each.getExtension(),
-                    each.getClassifier(),
-                    each.getFile());
-
-            spec = resolve( spec );
-            if ( spec != null ) {
-                resolved.add( spec );
-            }
-        }
-
-        return resolved;
-        */
-        throw new RuntimeException( "resolveAll() not implemented" );
+                    return new ArtifactSpec("compile",
+                                            artifact.getGroupId(),
+                                            artifact.getArtifactId(),
+                                            artifact.getVersion(),
+                                            artifact.getExtension(),
+                                            artifact.getClassifier(),
+                                            null);
+                })
+                .map(this::resolve)
+                .filter(x -> x != null)
+                .collect(Collectors.toSet());
     }
 
 }
