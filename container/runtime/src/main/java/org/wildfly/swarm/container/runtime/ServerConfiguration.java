@@ -21,7 +21,14 @@ import java.util.List;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.container.Fraction;
+
+import javax.xml.namespace.QName;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -48,8 +55,13 @@ public interface ServerConfiguration<T extends Fraction> {
         return Collections.emptyList();
     }
 
+    default Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+        return Optional.empty();
+    }
+
     default boolean isIgnorable() {
         return false;
     }
 
+    default Optional<ModelNode> getExtension() { return Optional.empty(); }
 }

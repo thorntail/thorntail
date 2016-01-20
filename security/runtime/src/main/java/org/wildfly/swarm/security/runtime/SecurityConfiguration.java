@@ -15,31 +15,33 @@
  */
 package org.wildfly.swarm.security.runtime;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
 import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;
 import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.container.runtime.AbstractParserFactory;
+import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.security.SecurityFraction;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Bob McWhirter
  */
-public class SecurityConfiguration extends AbstractServerConfiguration<SecurityFraction> {
+public class SecurityConfiguration extends MarshallingServerConfiguration<SecurityFraction> {
+
+    public final static String EXTENSION_NAME = "org.jboss.as.security";
 
     public SecurityConfiguration() {
-        super(SecurityFraction.class);
+        super(SecurityFraction.class, EXTENSION_NAME);
     }
 
     @Override
@@ -69,13 +71,13 @@ public class SecurityConfiguration extends AbstractServerConfiguration<SecurityF
 
         address.setEmptyList();
 
-        ModelNode add = new ModelNode();
-        add.get(OP_ADDR).set(address).add(EXTENSION, "org.jboss.as.security");
-        add.get(OP).set(ADD);
-        list.add(add);
-
         list.addAll(Marshaller.marshal(fraction));
 
         return list;
+    }
+
+    @Override
+    public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+        return AbstractParserFactory.mapParserNamespaces(new SecurityParserFactory());
     }
 }

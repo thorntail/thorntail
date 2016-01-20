@@ -15,8 +15,16 @@
  */
 package org.wildfly.swarm.jaxrs.runtime;
 
+import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
+import org.wildfly.swarm.container.runtime.AbstractParserFactory;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jaxrs.JAXRSFraction;
+
+import javax.xml.namespace.QName;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -27,5 +35,10 @@ public class JAXRSConfiguration extends MarshallingServerConfiguration<JAXRSFrac
 
     public JAXRSConfiguration() {
         super(JAXRSFraction.class, EXTENSION_MODULE);
+    }
+
+    @Override
+    public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+        return AbstractParserFactory.mapParserNamespaces(new JAXRSParserFactory());
     }
 }

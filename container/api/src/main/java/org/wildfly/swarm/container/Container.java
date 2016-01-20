@@ -105,13 +105,16 @@ public class Container {
      */
     private String[] args;
 
+    // server configuration xml
+    private URL xmlConfig;
+
     /**
      * Construct a new, un-started container.
      *
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container() throws Exception {
-        this(false);
+        this(false, null);
     }
 
     /**
@@ -124,7 +127,16 @@ public class Container {
      */
     public Container(boolean debugBootstrap) throws Exception {
         System.setProperty(SwarmProperties.VERSION, VERSION);
-        createServer(debugBootstrap);
+        createServer(debugBootstrap, null);
+        createShrinkWrapDomain();
+    }
+
+    public Container(boolean debugBootstrap, URL xmlConfig) throws Exception {
+
+        this.xmlConfig = xmlConfig;
+
+        System.setProperty(SwarmProperties.VERSION, VERSION);
+        createServer(debugBootstrap, xmlConfig);
         createShrinkWrapDomain();
     }
 
@@ -147,7 +159,7 @@ public class Container {
         }
     }
 
-    private void createServer(boolean debugBootstrap) throws Exception {
+    private void createServer(boolean debugBootstrap, URL xmlConfig) throws Exception {
         if (System.getProperty("boot.module.loader") == null) {
             System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
         }
@@ -158,7 +170,8 @@ public class Container {
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.RuntimeServer");
         try {
             this.server = (Server) serverClass.newInstance();
-            this.server.debug( debugBootstrap );
+            if(this.xmlConfig !=null)
+                this.server.setXmlConfig(this.xmlConfig);
         } catch (Throwable t) {
             t.printStackTrace();
         }

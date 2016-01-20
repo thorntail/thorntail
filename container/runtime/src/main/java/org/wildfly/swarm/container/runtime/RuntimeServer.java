@@ -26,8 +26,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,6 +63,7 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.vfs.TempFileProvider;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.SwarmProperties;
@@ -72,6 +75,8 @@ import org.wildfly.swarm.container.OutboundSocketBinding;
 import org.wildfly.swarm.container.Server;
 import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
+
+import javax.xml.namespace.QName;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
@@ -106,9 +111,14 @@ public class RuntimeServer implements Server {
 
     private List<ServerConfiguration<Fraction>> configList = new ArrayList<>();
 
-    private boolean debug = false;
+    // optional XML config
+    private Optional<URL> xmlConfig = Optional.empty();
 
     private BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.runtime.server");
+
+    // TODO : still needed or merge error?
+    private boolean debug;
+
 
     @SuppressWarnings("unused")
     public RuntimeServer() {
@@ -132,6 +142,13 @@ public class RuntimeServer implements Server {
     }
 
     @Override
+    public void setXmlConfig(URL xmlConfig) {
+        if(null==xmlConfig)
+            throw new IllegalArgumentException("Invalid XML config");
+        this.xmlConfig = Optional.of(xmlConfig);
+    }
+
+
     public void debug(boolean debug) {
         this.debug = debug;
     }
@@ -150,16 +167,19 @@ public class RuntimeServer implements Server {
             fraction.postInitialize(config.createPostInitContext());
         }
 
-        applySocketBindingGroupDefaults(config);
+        if(!xmlConfig.isPresent())
+            applySocketBindingGroupDefaults(config);
 
-        List<ModelNode> list = getList(config);
+        LinkedList<ModelNode> bootstrapOperations = new LinkedList<>();
 
-        // float all <extension> up to the head of the list
-        list.sort(new ExtensionOpPriorityComparator());
+        // the extensions
+        getExtensions(config, bootstrapOperations);
 
+        // the subsystem configurations
+        getList(config, bootstrapOperations);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(list);
+            LOG.debug(bootstrapOperations);
         }
 
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
@@ -195,7 +215,7 @@ public class RuntimeServer implements Server {
         }
 
 
-        this.serviceContainer = this.container.start(list, this.contentProvider, activators);
+        this.serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
         for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
             ServiceController<?> serviceController = this.serviceContainer.getService(serviceName);
             StartException exception = serviceController.getStartException();
@@ -277,7 +297,9 @@ public class RuntimeServer implements Server {
 
     private void applyDefaults(Container config) throws Exception {
         config.applyFractionDefaults(this);
-        applyInterfaceDefaults(config);
+        if(!xmlConfig.isPresent()) {
+            applyInterfaceDefaults(config);
+        }
     }
 
     private void applyInterfaceDefaults(Container config) {
@@ -407,15 +429,32 @@ public class RuntimeServer implements Server {
         //return found;
     }
 
-    private List<ModelNode> getList(Container config) throws Exception {
-        List<ModelNode> list = new ArrayList<>();
+    private void getExtensions(Container container, List<ModelNode> list) throws Exception {
 
-        configureInterfaces(config, list);
-        configureSocketBindingGroups(config, list);
+        FractionProcessor<List<ModelNode>> consumer = (context, cfg, fraction) -> {
+            try {
+                Optional<ModelNode> extension = cfg.getExtension();
+                extension.map(modelNode -> list.add(modelNode));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
 
-        configureFractions(config, list);
+        visitFractions(container, list, consumer);
 
-        return list;
+    }
+
+
+    private void getList(Container config, List<ModelNode> list) throws Exception {
+
+        if(xmlConfig.isPresent()) {
+            configureFractionsFromXML(config, list);
+        }
+        else {
+            configureInterfaces(config, list);
+            configureSocketBindingGroups(config, list);
+            configureFractions(config, list);
+        }
     }
 
     private void configureInterfaces(Container config, List<ModelNode> list) {
@@ -501,6 +540,34 @@ public class RuntimeServer implements Server {
         list.add(node);
     }
 
+    @SuppressWarnings("unchecked")
+       private void configureFractionsFromXML(Container container, List<ModelNode> operationList) throws Exception {
+
+           StandaloneXmlParser parser = new StandaloneXmlParser();
+
+           FractionProcessor<StandaloneXmlParser> consumer = (p, cfg, fraction) -> {
+               try {
+                   if(cfg.getSubsystemParsers().isPresent())
+                   {
+                       Map<QName, XMLElementReader<List<ModelNode>>> fractionParsers =
+                               (Map<QName, XMLElementReader<List<ModelNode>>>) cfg.getSubsystemParsers().get();
+
+                       fractionParsers.forEach(p::addDelegate);
+                   }
+               } catch (Exception e) {
+                   throw new RuntimeException(e);
+               }
+           };
+
+           // collect parsers
+           visitFractions(container, parser, consumer);
+
+           // parse the configurations
+           List<ModelNode> parseResult = parser.parse(xmlConfig.get());
+           operationList.addAll(parseResult);
+
+       }
+
     private void configureFractions(Container config, List<ModelNode> list) throws Exception {
         for (ServerConfiguration<Fraction> eachConfig : this.configList) {
             boolean found = false;
@@ -516,4 +583,34 @@ public class RuntimeServer implements Server {
             }
         }
     }
+
+    /**
+         * Wraps common iteration pattern over fraction and server configurations
+         * @param container
+         * @param context processing context (i.e. accumulator)
+         * @param fn a {@link org.wildfly.swarm.container.runtime.RuntimeServer.FractionProcessor} instance
+         */
+        private <T> void visitFractions(Container container, T context, FractionProcessor<T> fn) {
+            OUTER:
+            for (ServerConfiguration eachConfig : this.configList) {
+                boolean found = false;
+                INNER:
+                for (Fraction eachFraction : container.fractions()) {
+                    if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+                        found = true;
+                        fn.accept(context, eachConfig, eachFraction);
+                        break INNER;
+                    }
+                }
+                if (!found && !eachConfig.isIgnorable()) {
+                    System.err.println("*** unable to find fraction for: " + eachConfig.getType());
+                }
+
+            }
+        }
+
+        @FunctionalInterface
+        interface FractionProcessor<T> {
+            void accept(T t, ServerConfiguration config, Fraction fraction);
+        }
 }

@@ -17,6 +17,7 @@ package org.wildfly.swarm.container.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.Fraction;
@@ -42,28 +43,20 @@ public abstract class ExtensionServerConfiguration<T extends Fraction> extends A
         return this.extensionModuleName;
     }
 
-    protected ModelNode getExtensionNode() {
+    @Override
+    public Optional<ModelNode> getExtension() {
         if ( this.extensionModuleName != null ) {
             ModelNode node = new ModelNode();
             node.get(OP_ADDR).set(EXTENSION, this.extensionModuleName);
             node.get(OP).set(ADD);
-            return node;
+            return Optional.of(node);
         }
 
-        return null;
-    }
-
-    protected void addExtensionNode(List<ModelNode> list)  {
-        ModelNode node = getExtensionNode();
-        if ( node != null ) {
-            list.add( node );
-        }
+        return Optional.empty();
     }
 
     @Override
     public List<ModelNode> getList(T fraction) throws Exception {
-        List<ModelNode> list = new ArrayList<>();
-        addExtensionNode( list );
-        return list;
+        return new ArrayList<>();
     }
 }
