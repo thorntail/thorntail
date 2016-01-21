@@ -32,7 +32,7 @@
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
-    <version.org.arquillian>1.1.9.Final</version.org.arquillian>
+    <version.org.arquillian>1.1.10.Final</version.org.arquillian>
     <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
     <version.org.jboss.arquillian.drone>2.0.0.Alpha4</version.org.jboss.arquillian.drone>
     <version.org.arquillian.graphene>2.1.0.Alpha2</version.org.arquillian.graphene>
@@ -1046,31 +1046,15 @@
         <scope>import</scope>
       </dependency>
 
+      <!--
+          Something brings in 3.2.1, which breaks ShrinkWrap's resolver.
+      -->
       <dependency>
-        <groupId>org.eclipse.aether</groupId>
-        <artifactId>aether-api</artifactId>
-        <version>0.9.0.M3</version>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>3.2.5</version>
       </dependency>
-      <dependency>
-        <groupId>org.eclipse.aether</groupId>
-        <artifactId>aether-impl</artifactId>
-        <version>0.9.0.M3</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.aether</groupId>
-        <artifactId>aether-spi</artifactId>
-        <version>0.9.0.M3</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.aether</groupId>
-        <artifactId>aether-util</artifactId>
-        <version>0.9.0.M3</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.aether</groupId>
-        <artifactId>aether-connector-wagon</artifactId>
-        <version>0.9.0.M2</version>
-      </dependency>
+      
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-all</artifactId>

@@ -21,13 +21,14 @@ import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.impl.maven.ConfigurableMavenWorkingSessionImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionImpl;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
 import java.io.File;
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -122,11 +123,11 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     private DefaultRepositorySystemSession session() {
         final MavenWorkingSession session = ((MavenWorkingSessionContainer) this.resolver).getMavenWorkingSession();
         try {
-            final Field innerSession = MavenWorkingSessionImpl.class.getDeclaredField("session");
+            final Method innerSession = ConfigurableMavenWorkingSessionImpl.class.getDeclaredMethod("getSession");
             innerSession.setAccessible(true);
 
-            return (DefaultRepositorySystemSession)innerSession.get(session);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return (DefaultRepositorySystemSession)innerSession.invoke(session);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException("Failed to access maven session", e);
         }
     }
