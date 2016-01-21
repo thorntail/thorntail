@@ -98,8 +98,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
         final String additionalModules = System.getProperty(SwarmProperties.BUILD_MODULES);
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
-                                          .map(m -> new File(m).getAbsolutePath())
-                                           .collect(Collectors.toList()));
+                    .map(File::new)
+                    .filter(File::exists)
+                    .map(File::getAbsolutePath)
+                    .collect(Collectors.toList()));
         }
 
         MavenRemoteRepository jbossPublic =
