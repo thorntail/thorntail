@@ -16,13 +16,14 @@
 package org.wildfly.swarm.tools.exec;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
@@ -30,12 +31,12 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author Bob McWhirter
  */
-public class IOBridge implements Runnable {
+public class IOBridge implements Runnable, Closeable{
 
     private final InputStream in;
-    private final OutputStream out;
+    private final PrintStream out;
 
-    private FileOutputStream fileOut;
+    private BufferedWriter fileOut;
 
     private Exception error;
 
@@ -43,10 +44,10 @@ public class IOBridge implements Runnable {
 
     public IOBridge(CountDownLatch latch, InputStream in, OutputStream out, Path file) throws IOException {
         this.in = in;
-        this.out = out;
+        this.out = (out instanceof PrintStream ? (PrintStream) out : new PrintStream(out));
         if ( file != null ) {
             Files.createDirectories( file.getParent() );
-            this.fileOut = new FileOutputStream( file.toFile() );
+            this.fileOut = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
         }
         this.latch = latch;
     }
@@ -71,23 +72,26 @@ public class IOBridge implements Runnable {
     }
 
     protected void processLine(String line) throws IOException {
-        out.write(line.getBytes());
-        out.write('\n');
+        out.println(line);
         out.flush();
         if ( this.fileOut != null ) {
-            this.fileOut.write(line.getBytes());
-            this.fileOut.write('\n');
-            this.fileOut.flush();
+            fileOut.write(line);
+            fileOut.newLine();
+            fileOut.flush();
         }
         if (line.contains("WFLYSRV0010")) {
             this.latch.countDown();
         }
     }
 
+    @Override
     public void close() throws IOException {
-        this.in.close();
-        if ( this.fileOut != null ) {
-            this.fileOut.close();
+        try {
+            this.in.close();
+        } finally {
+            if ( this.fileOut != null ) {
+                this.fileOut.close();
+            }
         }
     }
 }
