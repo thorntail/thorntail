@@ -832,17 +832,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-webapp-modules</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-webapp-runtime</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>io.reactivex</groupId>
         <artifactId>rxjava</artifactId>
         <version>${version.rxjava}</version>
@@ -882,6 +871,54 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-webapp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-webapp-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-webapp-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-jgroups</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-jgroups-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-jgroups-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -1162,7 +1199,6 @@
     <module>remoting</module>
     <module>ribbon</module>
     <module>ribbon-secured</module>
-    <module>ribbon-webapp</module>
     <module>security</module>
     <module>swagger</module>
     <module>transactions</module>
@@ -1177,6 +1213,10 @@
     <module>rxjava</module>
     <module>rxnetty</module>
     <module>servo</module>
+
+    <module>topology</module>
+    <module>topology-jgroups</module>
+    <module>topology-webapp</module>
 
     <module>servers</module>
 

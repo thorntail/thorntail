@@ -75,6 +75,10 @@ public class ServiceActivatorAsset implements Asset {
         }
 
         return new ByteArrayInputStream( builder.toString().getBytes() );
+    }
+
+    public String toString() {
+        return this.activators.toString();
 
     }
 }
