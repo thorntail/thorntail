@@ -92,7 +92,7 @@ public class RuntimeDeployer implements Deployer {
         if (dump != null &&
                 !"false".equals(dump)) {
             File out = new File(deployment.getName());
-            System.err.println("Dumping to " + out.getAbsolutePath());
+            System.err.println("Exporting deployment to " + out.getAbsolutePath());
             deployment.as(ZipExporter.class).exportTo(out, true);
         }
 
