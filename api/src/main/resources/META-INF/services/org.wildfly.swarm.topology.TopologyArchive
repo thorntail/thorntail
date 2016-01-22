@@ -1,0 +1,3 @@
+implementingClassName=org.wildfly.swarm.topology.TopologyArchiveImpl
+extension=.jar
+archiveFormat=ZIP
