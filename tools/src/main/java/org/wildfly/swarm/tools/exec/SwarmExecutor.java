@@ -262,21 +262,16 @@ public class SwarmExecutor {
         cli.addAll(this.executable.toArguments());
         cli.addAll(this.arguments);
 
-        Process process = Runtime.getRuntime().exec(cli.toArray(new String[0]), toStringArray(environment), this.workingDirectory.toFile());
+
+        final ProcessBuilder processBuilder = new ProcessBuilder(cli)
+                .directory(this.workingDirectory.toFile());
+        processBuilder.environment().putAll(environment);
+        Process process = processBuilder.start();
 
         return new SwarmProcess(
                 process,
                 this.stdout, this.stdoutFile,
                 this.stderr, this.stderrFile);
-    }
-
-    private static String[] toStringArray(Map<String, String> env) {
-        String[] esa = new String[env.size()];
-        int i = 0;
-        for (Map.Entry<String, String> e : env.entrySet()) {
-            esa[i++] = e.getKey().toString() + '=' + e.getValue().toString();
-        }
-        return esa;
     }
 
 }
