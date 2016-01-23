@@ -53,7 +53,9 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     final private RepositorySystem system;
 
-    public MavenArtifactResolvingHelper(ArtifactResolver resolver, RepositorySystem system, RepositorySystemSession session) {
+    public MavenArtifactResolvingHelper(ArtifactResolver resolver,
+                                        RepositorySystem system,
+                                        RepositorySystemSession session) {
         this.resolver = resolver;
         this.system = system;
         this.session = session;
@@ -78,6 +80,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     @Override
     public ArtifactSpec resolve(ArtifactSpec spec) {
         if (spec.file != null) {
+
             return spec;
         }
 
@@ -129,10 +132,11 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         result.getRoot().accept(gen);
 
         return gen.getNodes().stream()
+                .filter(node -> !"system".equals(node.getDependency().getScope()))
                 .map(node -> {
-                    Artifact artifact = node.getArtifact();
+                    final Artifact artifact = node.getArtifact();
 
-                    return new ArtifactSpec("compile",
+                    return new ArtifactSpec(node.getDependency().getScope(),
                                             artifact.getGroupId(),
                                             artifact.getArtifactId(),
                                             artifact.getVersion(),
