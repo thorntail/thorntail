@@ -67,7 +67,7 @@ If you're running short on time:
 
 # Issue Tracking
 
-Issue are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/secure/RapidBoard.jspa?rapidView=2972) (JIRA). Bug reports and feature requests are greatly appreciated.
+Issues are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/secure/RapidBoard.jspa?rapidView=2972) (JIRA). Bug reports and feature requests are greatly appreciated.
 
 # Documentation
 
