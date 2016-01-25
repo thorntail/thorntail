@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
+import org.apache.maven.settings.Settings;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositoryListener;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
@@ -45,21 +46,24 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
 
     @Override
     public ArtifactSpec resolve(ArtifactSpec spec) {
-        resetListeners();
-        try {
-            if (spec.file != null) {
-                return spec;
+        if (spec.file == null) {
+            final File localFile = new File(settings().getLocalRepository(), spec.jarRepoPath());
+            if (localFile.exists()) {
+                spec.file = localFile;
+            } else {
+                resetListeners();
+                try {
+                    final File file = this.resolver.resolve(spec.mavenGav()).withoutTransitivity().asSingleFile();
+                    if (file != null) {
+                        spec.file = file;
+                    }
+                } finally {
+                    resolutionComplete();
+                }
             }
-            File file = this.resolver.resolve(spec.mavenGav()).withoutTransitivity().asSingleFile();
-            if (file == null) {
-                return null;
-            }
-            spec.file = file;
-        } finally {
-            resolutionComplete();
         }
 
-        return spec;
+        return spec.file != null ? spec : null;
     }
 
     @Override
@@ -121,14 +125,21 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     }
 
     private DefaultRepositorySystemSession session() {
-        final MavenWorkingSession session = ((MavenWorkingSessionContainer) this.resolver).getMavenWorkingSession();
-        try {
-            final Method innerSession = ConfigurableMavenWorkingSessionImpl.class.getDeclaredMethod("getSession");
-            innerSession.setAccessible(true);
+        return (DefaultRepositorySystemSession)invokeWorkingSessionMethod("getSession");
+    }
 
-            return (DefaultRepositorySystemSession)innerSession.invoke(session);
+    private Settings settings() {
+        return (Settings)invokeWorkingSessionMethod("getSettings");
+    }
+
+    private Object invokeWorkingSessionMethod(final String methodName) {
+        try {
+            final Method method = ConfigurableMavenWorkingSessionImpl.class.getDeclaredMethod(methodName);
+            method.setAccessible(true);
+
+            return method.invoke(((MavenWorkingSessionContainer) this.resolver).getMavenWorkingSession());
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException("Failed to access maven session", e);
+            throw new RuntimeException("Failed to invoke " + methodName, e);
         }
     }
 

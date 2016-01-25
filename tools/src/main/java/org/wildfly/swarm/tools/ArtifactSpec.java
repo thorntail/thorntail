@@ -77,6 +77,11 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
         return String.format("%s-%s%s.%s", artifactId(), version(), classifier, type());
     }
 
+    public String jarRepoPath() {
+        return String.format("%s/%s/%s/%s", groupId().replace('.', '/'), artifactId(),
+                                 version(), jarName());
+    }
+
     public String toString() {
         return mavenGav() + " [" + this.scope + "]";
     }

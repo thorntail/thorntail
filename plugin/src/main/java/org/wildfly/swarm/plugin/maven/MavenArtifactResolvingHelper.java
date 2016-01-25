@@ -25,6 +25,8 @@ import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.impl.ArtifactResolver;
+import org.eclipse.aether.repository.LocalArtifactRequest;
+import org.eclipse.aether.repository.LocalArtifactResult;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
@@ -79,32 +81,31 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     @Override
     public ArtifactSpec resolve(ArtifactSpec spec) {
-        if (spec.file != null) {
+        if (spec.file == null) {
+            final DefaultArtifact artifact = new DefaultArtifact(spec.groupId(), spec.artifactId(), spec.classifier(),
+                                                                 spec.type(), spec.version());
 
-            return spec;
-        }
-
-        ArtifactRequest request = new ArtifactRequest();
-
-        DefaultArtifact artifact = new DefaultArtifact(spec.groupId(), spec.artifactId(), spec.classifier(), spec.type(), spec.version());
-
-        request.setArtifact(artifact);
-        request.setRepositories(this.remoteRepositories);
-
-        try {
-            ArtifactResult result = resolver.resolveArtifact(this.session, request);
-
-            if (result.isResolved()) {
-                spec.file = result.getArtifact().getFile();
-                return spec;
+            final LocalArtifactResult localResult = this.session.getLocalRepositoryManager()
+                    .find(this.session, new LocalArtifactRequest(artifact, this.remoteRepositories, null));
+            if (localResult.isAvailable()) {
+                spec.file = localResult.getFile();
+            } else {
+                try {
+                    final ArtifactResult result = resolver.resolveArtifact(this.session,
+                                                                           new ArtifactRequest(artifact,
+                                                                                               this.remoteRepositories,
+                                                                                               null));
+                    if (result.isResolved()) {
+                        spec.file = result.getArtifact().getFile();
+                    }
+                } catch (ArtifactResolutionException e) {
+                    System.err.println("ERR " + e);
+                    e.printStackTrace();
+                }
             }
-        } catch (ArtifactResolutionException e) {
-            System.err.println("ERR " + e);
-            e.printStackTrace();
-            return null;
         }
 
-        return null;
+        return spec.file != null ? spec : null;
 
     }
 

@@ -21,6 +21,12 @@ import java.util.Set;
  * @author Bob McWhirter
  */
 public interface ArtifactResolvingHelper {
+    /**
+     * Resolves the file for given artifact.
+     * @param spec The artifact to resolve
+     * @return spec with the file property set, or null if no file found
+     * @throws Exception
+     */
     ArtifactSpec resolve(ArtifactSpec spec) throws Exception;
 
     Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception;
