@@ -1201,6 +1201,7 @@
     <module>ribbon-secured</module>
     <module>security</module>
     <module>swagger</module>
+    <module>swagger-webapp</module>
     <module>transactions</module>
     <module>undertow</module>
     <module>undertow-js</module>
