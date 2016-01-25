@@ -25,4 +25,20 @@ public class BootstrapProperties {
 
     //public
     public static final String DEBUG_PORT = "swarm.debug.port";
+
+    public static boolean flagIsSet(final String prop) {
+        return flagIsSet(prop, false);
+    }
+
+    public static boolean flagIsSet(final String prop, final boolean defaultValue) {
+        final String value = System.getProperty(prop);
+
+        if (value != null){
+
+            return !"false".equals(value.toLowerCase());
+        } else {
+
+            return defaultValue;
+        }
+    }
 }

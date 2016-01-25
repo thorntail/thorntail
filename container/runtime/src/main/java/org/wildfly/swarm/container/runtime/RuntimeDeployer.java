@@ -34,6 +34,7 @@ import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Fraction;
@@ -88,10 +89,8 @@ public class RuntimeDeployer implements Deployer {
             }
         }
 
-        String dump = System.getProperty(SwarmProperties.EXPORT_DEPLOYMENT);
-        if (dump != null &&
-                !"false".equals(dump)) {
-            File out = new File(deployment.getName());
+        if (BootstrapProperties.flagIsSet(SwarmProperties.EXPORT_DEPLOYMENT)) {
+            final File out = new File(deployment.getName());
             System.err.println("Exporting deployment to " + out.getAbsolutePath());
             deployment.as(ZipExporter.class).exportTo(out, true);
         }

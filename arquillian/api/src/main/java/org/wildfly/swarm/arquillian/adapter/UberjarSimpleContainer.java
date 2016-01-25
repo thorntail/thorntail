@@ -182,8 +182,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         }
 
         final String debug = System.getProperty(BootstrapProperties.DEBUG_PORT);
-        if (debug != null &&
-                !"false".equals(debug)) {
+        if (debug != null) {
             try {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
@@ -194,11 +193,9 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         Archive<?> wrapped = tool.build();
 
-        final String dump = System.getProperty(SwarmProperties.EXPORT_UBERJAR);
-        if (dump != null &&
-                !"false".equals(dump)) {
+        if (BootstrapProperties.flagIsSet(SwarmProperties.EXPORT_UBERJAR)) {
             final File out = new File(wrapped.getName());
-            System.err.println("Dumping swarmjar to " + out.getAbsolutePath());
+            System.err.println("Exporting swarm jar to " + out.getAbsolutePath());
             wrapped.as(ZipExporter.class).exportTo(out, true);
         }
 
