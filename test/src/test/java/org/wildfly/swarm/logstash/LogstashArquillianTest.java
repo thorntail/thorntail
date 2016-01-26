@@ -42,10 +42,11 @@ public class LogstashArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( LogstashFraction.createDefaultLogstashFraction() );
+        return new Container().fraction(LogstashFraction.createDefaultLogstashFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

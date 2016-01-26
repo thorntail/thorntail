@@ -30,6 +30,7 @@ import org.wildfly.swarm.logging.LoggingFraction;
 public class LogstashFraction implements Fraction {
 
     private Properties handlerProperties = new Properties();
+
     private Properties formatterProperties = new Properties();
 
     private Level level;
@@ -51,13 +52,13 @@ public class LogstashFraction implements Fraction {
         String hostname = System.getProperty(LogstashProperties.HOSTNAME);
         String port = System.getProperty(LogstashProperties.PORT);
 
-        if ( hostname != null && port != null ) {
+        if (hostname != null && port != null) {
             return new LogstashFraction()
                     .hostname(hostname)
                     .port(port);
         }
 
-        if( loggingFractionIfNoLogstash ) {
+        if (loggingFractionIfNoLogstash) {
             return LoggingFraction.createDefaultLoggingFraction();
         }
         return null;
