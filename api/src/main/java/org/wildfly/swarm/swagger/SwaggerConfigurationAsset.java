@@ -1,11 +1,11 @@
 package org.wildfly.swarm.swagger;
 
-import org.jboss.shrinkwrap.api.asset.Asset;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
+
+import org.jboss.shrinkwrap.api.asset.Asset;
 
 /**
  * @author Lance Ball
@@ -33,7 +33,7 @@ public class SwaggerConfigurationAsset implements Asset {
                 builder.append(entry.getKey() + ":" + valueFor(value) + "\n");
             }
         }
-        return new ByteArrayInputStream( builder.toString().getBytes() );
+        return new ByteArrayInputStream(builder.toString().getBytes());
     }
 
     public SwaggerConfigurationAsset register(String[] packageNames) {

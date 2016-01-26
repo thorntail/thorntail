@@ -28,13 +28,14 @@ import org.wildfly.swarm.msc.ServiceActivatorArchive;
 public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implements SwaggerArchive {
 
     public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.runtime.SwaggerActivator";
+
     private SwaggerConfigurationAsset configurationAsset;
 
     public SwaggerArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
 
         Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
-        if ( node != null ) {
+        if (node != null) {
             Asset asset = node.getAsset();
             if (asset instanceof SwaggerConfigurationAsset) {
                 this.configurationAsset = (SwaggerConfigurationAsset) asset;

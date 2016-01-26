@@ -23,7 +23,7 @@ import org.wildfly.swarm.container.Fraction;
  */
 public class SwaggerFraction implements Fraction {
     static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride( SwaggerArchive.class, SwaggerArchiveImpl.class );
+        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(SwaggerArchive.class, SwaggerArchiveImpl.class);
     }
 
 }

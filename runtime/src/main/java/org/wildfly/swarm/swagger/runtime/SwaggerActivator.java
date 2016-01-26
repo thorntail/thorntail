@@ -15,14 +15,14 @@
  */
 package org.wildfly.swarm.swagger.runtime;
 
+import java.io.InputStream;
+
 import io.swagger.jaxrs.config.BeanConfig;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.wildfly.swarm.swagger.SwaggerArchive;
 import org.wildfly.swarm.swagger.SwaggerConfig;
-
-import java.io.InputStream;
 
 /**
  * @author Lance Ball

@@ -20,15 +20,15 @@ public class SwaggerConfig {
         String line;
 
         try {
-            while((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null) {
                 int separatorIndex = line.indexOf(":");
                 Key key = Key.valueOf(line.substring(0, separatorIndex));
-                Object value = line.substring(separatorIndex+1);
+                Object value = line.substring(separatorIndex + 1);
 
                 // SCHEMES is meant to be a String[]
                 // everything else is a String
                 if (key == Key.SCHEMES) {
-                    value = ((String)value).split(",");
+                    value = ((String) value).split(",");
                 }
                 put(key, value);
             }

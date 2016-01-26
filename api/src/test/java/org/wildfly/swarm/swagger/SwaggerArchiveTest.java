@@ -17,12 +17,9 @@ package org.wildfly.swarm.swagger;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.Test;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
-
-import java.util.Scanner;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -40,7 +37,7 @@ public class SwaggerArchiveTest {
         assertThat(asset).isNotNull();
         assertThat(asset).isInstanceOf(SwaggerConfigurationAsset.class);
 
-        assertThat(archive.as(ServiceActivatorArchive.class).containsServiceActivator( SwaggerArchiveImpl.SERVICE_ACTIVATOR_CLASS_NAME )).isTrue();
+        assertThat(archive.as(ServiceActivatorArchive.class).containsServiceActivator(SwaggerArchiveImpl.SERVICE_ACTIVATOR_CLASS_NAME)).isTrue();
     }
 
     @Test
@@ -60,7 +57,6 @@ public class SwaggerArchiveTest {
                 .setSchemes("http", "https")
                 .setTermsOfServiceUrl("http://myapplication.com/tos.txt")
                 .setVersion("1.0");
-
 
 
         Asset asset = archive.get(SwaggerArchive.SWAGGER_CONFIGURATION_PATH).getAsset();
