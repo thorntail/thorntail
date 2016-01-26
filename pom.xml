@@ -51,6 +51,8 @@
     <version.netty>4.0.26.Final</version.netty>
     <version.guava>14.0.1</version.guava>
 
+    <version.com.orbitz.consul>0.9.16</version.com.orbitz.consul>
+
     <version.keycloak>1.8.0.CR1</version.keycloak>
     <version.h2>1.4.187</version.h2>
 
@@ -304,6 +306,12 @@
         <groupId>org.jboss.spec.javax.sql</groupId>
         <artifactId>jboss-javax-sql-api_7.0_spec</artifactId>
         <version>${version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.orbitz.consul</groupId>
+        <artifactId>consul-client</artifactId>
+        <version>${version.com.orbitz.consul}</version>
       </dependency>
 
       <dependency>
@@ -909,6 +917,22 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-consul</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-consul-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-consul-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1217,6 +1241,7 @@
     <module>servo</module>
 
     <module>topology</module>
+    <module>topology-consul</module>
     <module>topology-jgroups</module>
     <module>topology-webapp</module>
 
