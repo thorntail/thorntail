@@ -155,4 +155,4 @@ Here are some tips on increasing the chance that your pull request is accepted:
  * Include tests that fail without your code, and pass with it
  * Update any associated documentation, or add new documentation. This will require a separate pull request as the documentation
  is in a separate repository
- * Follow the existing code style of the project
+ * Follow the existing [code style](code-style.md) of the project
