@@ -74,11 +74,6 @@ public class Registration implements Serializable {
 
     public static class EndPoint implements Topology.Entry, Serializable {
 
-        public enum Visibility {
-            PUBLIC,
-            PRIVATE
-        }
-
         private final String address;
 
         private final int port;
@@ -132,6 +127,11 @@ public class Registration implements Serializable {
             EndPoint that = (EndPoint) obj;
 
             return (this.address.equals(that.address) && this.port == that.port && this.visibility == that.visibility);
+        }
+
+        public enum Visibility {
+            PUBLIC,
+            PRIVATE
         }
     }
 
