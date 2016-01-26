@@ -25,7 +25,7 @@ public class JolokiaFraction implements Fraction {
     private final String context;
 
     public JolokiaFraction() {
-        this( "jolokia" );
+        this("jolokia");
     }
 
     public JolokiaFraction(String context) {
