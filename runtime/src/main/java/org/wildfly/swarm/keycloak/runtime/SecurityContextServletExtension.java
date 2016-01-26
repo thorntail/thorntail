@@ -24,7 +24,6 @@ import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ThreadSetupAction;
 import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.adapters.undertow.OIDCServletUndertowHttpFacade;
 import org.keycloak.adapters.undertow.OIDCUndertowHttpFacade;
 
 /**
@@ -33,7 +32,7 @@ import org.keycloak.adapters.undertow.OIDCUndertowHttpFacade;
 public class SecurityContextServletExtension implements ServletExtension {
     @Override
     public void handleDeployment(DeploymentInfo info, ServletContext context) {
-        System.err.println( "HANDLE DEPLOYMENT FOR SECURITY CONTEXT" );
+        System.err.println("HANDLE DEPLOYMENT FOR SECURITY CONTEXT");
         info.addThreadSetupAction(new ThreadSetupAction() {
             @Override
             public Handle setup(HttpServerExchange exchange) {
@@ -58,7 +57,7 @@ public class SecurityContextServletExtension implements ServletExtension {
                     @Override
                     public void handleRequest(HttpServerExchange exchange) throws Exception {
                         KeycloakSecurityContext c = exchange.getAttachment(OIDCUndertowHttpFacade.KEYCLOAK_SECURITY_CONTEXT_KEY);
-                        if ( c != null ) {
+                        if (c != null) {
                             KeycloakSecurityContextAssociation.associate(c);
                         }
 

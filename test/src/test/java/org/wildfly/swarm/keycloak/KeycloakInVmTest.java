@@ -26,7 +26,7 @@ public class KeycloakInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new KeycloakFraction() );
+        container.fraction(new KeycloakFraction());
         container.start().stop();
     }
 }

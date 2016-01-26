@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.JARArchive;
-import org.wildfly.swarm.naming.NamingFraction;
 
 /**
  * @author Bob McWhirter
@@ -43,10 +42,11 @@ public class KeycloakArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new KeycloakFraction() );
+        return new Container().fraction(new KeycloakFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

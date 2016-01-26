@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.keycloak;
 
-import org.jboss.shrinkwrap.api.asset.NamedAsset;
-import org.wildfly.swarm.container.util.XmlWriter;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +23,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.jboss.shrinkwrap.api.asset.NamedAsset;
+import org.wildfly.swarm.container.util.XmlWriter;
 
 /**
  * @author Bob McWhirter
@@ -64,8 +64,8 @@ public class SecuredWebXmlAsset implements NamedAsset {
             webApp.attr("version", "3.0");
 
             XmlWriter.Element param = webApp.element("context-param");
-            param.element( "param-name" ).content( "resteasy.scan" ).end();
-            param.element( "param-value" ).content( "true" ).end();
+            param.element("param-name").content("resteasy.scan").end();
+            param.element("param-value").content("true").end();
             param.end();
 
             Set<String> allRoles = new HashSet<>();
@@ -75,7 +75,7 @@ public class SecuredWebXmlAsset implements NamedAsset {
 
                 XmlWriter.Element webResourceCollection = securityConstraint.element("web-resource-collection");
                 webResourceCollection.element("url-pattern").content(each.urlPattern()).end();
-                for (String eachMethod: each.methods()) {
+                for (String eachMethod : each.methods()) {
                     webResourceCollection.element("http-method").content(eachMethod).end();
                 }
                 webResourceCollection.end();

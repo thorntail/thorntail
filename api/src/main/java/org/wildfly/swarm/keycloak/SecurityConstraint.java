@@ -25,11 +25,13 @@ import java.util.List;
 public class SecurityConstraint {
 
     private final String urlPattern;
+
     private List<String> methods = new ArrayList<>();
+
     private List<String> roles = new ArrayList<>();
 
     public SecurityConstraint() {
-        this( "/*" );
+        this("/*");
     }
 
     public SecurityConstraint(String urlPattern) {
@@ -55,7 +57,7 @@ public class SecurityConstraint {
     }
 
     public SecurityConstraint withRole(String role) {
-        this.roles.add( role );
+        this.roles.add(role);
         return this;
     }
 

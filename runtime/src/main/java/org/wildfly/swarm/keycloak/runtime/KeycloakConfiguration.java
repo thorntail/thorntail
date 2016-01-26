@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.keycloak.runtime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
@@ -23,10 +26,11 @@ import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.keycloak.KeycloakFraction;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
 /**
  * @author Bob McWhirter
@@ -44,7 +48,7 @@ public class KeycloakConfiguration extends AbstractServerConfiguration<KeycloakF
 
     @Override
     public void prepareArchive(Archive<?> a) {
-        a.as(JARArchive.class).addModule( "org.keycloak.keycloak-core" );
+        a.as(JARArchive.class).addModule("org.keycloak.keycloak-core");
     }
 
     @Override
