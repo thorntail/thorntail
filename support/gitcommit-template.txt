@@ -1,0 +1,10 @@
+Subject: 50 chars or less followed by blank line.
+
+Motivation:
+What is the purpose of this commit. Reference JIRA issues here.
+
+Modifications:
+What code has changed, and in what way?
+
+Result:
+How does this commit affect the product in behavior or usage.
