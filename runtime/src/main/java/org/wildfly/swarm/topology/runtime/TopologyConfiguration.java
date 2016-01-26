@@ -47,7 +47,7 @@ public class TopologyConfiguration extends AbstractServerConfiguration<TopologyF
     @Override
     public List<ServiceActivator> getServiceActivators(TopologyFraction fraction) {
         List<ServiceActivator> activators = new ArrayList<>();
-        activators.add( new TopologyManagerActivator() );
+        activators.add(new TopologyManagerActivator());
         return activators;
     }
 

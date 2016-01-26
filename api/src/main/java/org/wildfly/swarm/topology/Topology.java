@@ -18,12 +18,15 @@ public interface Topology {
     }
 
     void addListener(TopologyListener listener);
+
     void removeListener(TopologyListener listener);
-    Map<String,List<Entry>> asMap();
+
+    Map<String, List<Entry>> asMap();
 
     interface Entry {
 
         String getAddress();
+
         int getPort();
 
     }

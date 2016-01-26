@@ -28,7 +28,7 @@ public class TopologyInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new TopologyFraction() );
+        container.fraction(new TopologyFraction());
         container.start().stop();
     }
 

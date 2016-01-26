@@ -63,7 +63,7 @@ public class TopologyManager implements Topology {
         return result;
     }
 
-    public synchronized  Set<Registration> registrationsForService(String name) {
+    public synchronized Set<Registration> registrationsForService(String name) {
         Set<Registration> result = Collections.unmodifiableSet(
                 this.registrations.stream()
                         .filter(e -> e.getName().equals(name))
@@ -108,11 +108,11 @@ public class TopologyManager implements Topology {
         for (Registration registration : this.registrations) {
             for (Registration.EndPoint endPoint : registration.endPoints(Registration.EndPoint.Visibility.PUBLIC)) {
                 List<Entry> list = map.get(registration.getName());
-                if ( list == null ) {
+                if (list == null) {
                     list = new ArrayList<>();
-                    map.put( registration.getName(), list );
+                    map.put(registration.getName(), list);
                 }
-                list.add( endPoint );
+                list.add(endPoint);
             }
         }
 

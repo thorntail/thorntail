@@ -37,14 +37,14 @@ public class TopologyManagerActivator implements ServiceActivator {
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
         ServiceTarget target = context.getServiceTarget();
 
-        target.addService(TopologyManager.SERVICE_NAME, new ValueService<>( new ImmediateValue<>(TopologyManager.INSTANCE) ) )
+        target.addService(TopologyManager.SERVICE_NAME, new ValueService<>(new ImmediateValue<>(TopologyManager.INSTANCE)))
                 .install();
 
         BinderService binderService = new BinderService(Topology.JNDI_NAME, null, true);
 
         target.addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, Topology.JNDI_NAME), binderService)
                 .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
-                .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory( TopologyManager.INSTANCE ) )
+                .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(TopologyManager.INSTANCE))
                 .setInitialMode(ServiceController.Mode.ACTIVE)
                 .install();
 

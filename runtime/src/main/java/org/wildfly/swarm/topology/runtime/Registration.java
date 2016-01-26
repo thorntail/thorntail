@@ -14,6 +14,7 @@ import org.wildfly.swarm.topology.Topology;
 public class Registration implements Serializable {
 
     private final String sourceKey;
+
     private final String name;
 
     private final Set<EndPoint> endPoints = new HashSet<>();
@@ -110,7 +111,7 @@ public class Registration implements Serializable {
 
         @Override
         public String toString() {
-            return this.address +":" + this.port;
+            return this.address + ":" + this.port;
         }
 
         @Override

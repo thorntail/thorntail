@@ -13,6 +13,7 @@ import org.jboss.msc.value.InjectedValue;
 public class RegistrationAdvertiser implements Service<Void> {
 
     private final String name;
+
     private InjectedValue<TopologyConnector> topologyConnectorInjector = new InjectedValue<>();
 
     public RegistrationAdvertiser(String name) {

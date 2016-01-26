@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.topology;
 
-import org.wildfly.swarm.topology.Topology;
-
 public interface ExternalAddressMapper {
 
     /**
@@ -28,7 +26,7 @@ public interface ExternalAddressMapper {
      * implementation if needed.
      *
      * @param internalServer the internal RibbonServer address
-     * @param defaultPort port to use if an external port mapping is not found
+     * @param defaultPort    port to use if an external port mapping is not found
      * @return the external RibbonServer address
      */
     Topology.Entry toExternal(Topology.Entry internalServer, int defaultPort);

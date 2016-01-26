@@ -24,5 +24,6 @@ public interface TopologyArchive extends Assignable {
     String REGISTRATION_CONF = "META-INF/swarm-topology-registration.conf";
 
     TopologyArchive advertise();
+
     TopologyArchive advertise(String... serviceNames);
 }

@@ -71,7 +71,7 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
     }
 
     protected TopologyArchive doAdvertise() {
-        if (!as(ServiceActivatorArchive.class).containsServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME )) {
+        if (!as(ServiceActivatorArchive.class).containsServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME)) {
             as(ServiceActivatorArchive.class).addServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME);
             as(JARArchive.class).addModule("org.wildfly.swarm.topology", "runtime");
         }
@@ -83,7 +83,7 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
             buf.append(name).append("\n");
         }
 
-        as(JARArchive.class).add(new StringAsset(buf.toString()), REGISTRATION_CONF );
+        as(JARArchive.class).add(new StringAsset(buf.toString()), REGISTRATION_CONF);
         return this;
     }
 
