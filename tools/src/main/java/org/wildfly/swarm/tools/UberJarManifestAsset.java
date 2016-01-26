@@ -33,9 +33,11 @@ public class UberJarManifestAsset implements NamedAsset {
     public UberJarManifestAsset(String mainClass) {
         this.manifest = new UberJarManifest(mainClass);
     }
+
     public UberJarManifestAsset(UberJarManifest manifest) {
         this.manifest = manifest;
     }
+
     @Override
     public String getName() {
         return "META-INF/MANIFEST.MF";
@@ -45,9 +47,9 @@ public class UberJarManifestAsset implements NamedAsset {
     public InputStream openStream() {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            this.manifest.write( out );
+            this.manifest.write(out);
             out.close();
-            ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
             return in;
         } catch (IOException e) {
             e.printStackTrace();

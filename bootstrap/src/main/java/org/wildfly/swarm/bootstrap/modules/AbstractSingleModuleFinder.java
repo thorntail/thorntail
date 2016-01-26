@@ -45,12 +45,12 @@ public abstract class AbstractSingleModuleFinder implements ModuleFinder {
 
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        if ( ! identifier.getName().equals( this.moduleName ) || ! identifier.getSlot().equals( this.moduleSlot ) ) {
+        if (!identifier.getName().equals(this.moduleName) || !identifier.getSlot().equals(this.moduleSlot)) {
             return null;
         }
 
         ModuleSpec.Builder builder = ModuleSpec.build(identifier);
-        buildModule( builder, delegateLoader );
+        buildModule(builder, delegateLoader);
         return builder.create();
     }
 

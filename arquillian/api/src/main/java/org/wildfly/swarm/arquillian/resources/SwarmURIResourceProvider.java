@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.arquillian.resources;
 
-import org.jboss.arquillian.test.api.ArquillianResource;
-
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import org.jboss.arquillian.test.api.ArquillianResource;
 
 public class SwarmURIResourceProvider extends SwarmURLResourceProvider {
     @Override

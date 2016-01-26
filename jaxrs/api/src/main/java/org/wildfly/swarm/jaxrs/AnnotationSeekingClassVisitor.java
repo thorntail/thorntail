@@ -15,7 +15,9 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * @author Bob McWhirter
@@ -34,7 +36,7 @@ public class AnnotationSeekingClassVisitor extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-        if ( desc.equals( "Ljavax/ws/rs/ApplicationPath;" ) ) {
+        if (desc.equals("Ljavax/ws/rs/ApplicationPath;")) {
             found = true;
         }
         return super.visitAnnotation(desc, visible);

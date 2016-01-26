@@ -40,7 +40,7 @@ public class MavenArtifactDescriptor {
     }
 
     public MavenArtifactDescriptor(String groupId, String artifactId, String version) {
-        this(groupId, artifactId,  "jar", null, version);
+        this(groupId, artifactId, "jar", null, version);
     }
 
     public MavenArtifactDescriptor(String groupId, String artifactId, String type, String classifier, String version) {
@@ -48,7 +48,7 @@ public class MavenArtifactDescriptor {
         this.artifactId = artifactId;
         this.version = version;
         this.type = type;
-        if ( classifier != null && ! classifier.trim().equals( "" ) ) {
+        if (classifier != null && !classifier.trim().equals("")) {
             this.classifier = classifier;
         }
     }
@@ -59,26 +59,26 @@ public class MavenArtifactDescriptor {
 
     public static MavenArtifactDescriptor fromMscGav(String gav) throws IOException {
         String[] parts = gav.split(":");
-        if ( parts.length == 3 ) {
-            return new MavenArtifactDescriptor( parts[0], parts[1], parts[2] );
-        } else if (parts.length ==4) {
-            return new MavenArtifactDescriptor( parts[0], parts[1], "jar", parts[3], parts[2] );
+        if (parts.length == 3) {
+            return new MavenArtifactDescriptor(parts[0], parts[1], parts[2]);
+        } else if (parts.length == 4) {
+            return new MavenArtifactDescriptor(parts[0], parts[1], "jar", parts[3], parts[2]);
         } else {
-            throw new IOException("Invalid gav: " + gav );
+            throw new IOException("Invalid gav: " + gav);
         }
     }
 
     public static MavenArtifactDescriptor fromMavenGav(String gav) throws IOException {
         String[] parts = gav.split(":");
 
-        if ( parts.length == 3 ) {
-            return new MavenArtifactDescriptor( parts[0], parts[1], parts[2] );
-        } else if (parts.length ==4 ) {
-            return new MavenArtifactDescriptor( parts[0], parts[1], parts[2], null, parts[3] );
-        } else if ( parts.length == 5 ) {
-            return new MavenArtifactDescriptor( parts[0], parts[1], parts[2], parts[3], parts[4] );
+        if (parts.length == 3) {
+            return new MavenArtifactDescriptor(parts[0], parts[1], parts[2]);
+        } else if (parts.length == 4) {
+            return new MavenArtifactDescriptor(parts[0], parts[1], parts[2], null, parts[3]);
+        } else if (parts.length == 5) {
+            return new MavenArtifactDescriptor(parts[0], parts[1], parts[2], parts[3], parts[4]);
         } else {
-            throw new IOException("Invalid gav: " + gav );
+            throw new IOException("Invalid gav: " + gav);
         }
 
     }
@@ -132,10 +132,10 @@ public class MavenArtifactDescriptor {
     }
 
     public ArtifactCoordinates mscCoordinates() {
-        return new ArtifactCoordinates( this.groupId,
+        return new ArtifactCoordinates(this.groupId,
                 this.artifactId,
                 this.version,
-                this.classifier == null ? "" : this.classifier );
+                this.classifier == null ? "" : this.classifier);
 
     }
 
@@ -169,16 +169,16 @@ public class MavenArtifactDescriptor {
         p.append(this.version)
                 .append(delim);
 
-        p.append( this.artifactId)
+        p.append(this.artifactId)
                 .append('-')
-                .append( this.version );
+                .append(this.version);
 
-        if ( this.classifier != null ) {
-            p.append( '-' )
-                    .append( this.classifier );
+        if (this.classifier != null) {
+            p.append('-')
+                    .append(this.classifier);
         }
 
-        p.append( '.' ).append( this.type );
+        p.append('.').append(this.type);
 
         return p.toString();
     }

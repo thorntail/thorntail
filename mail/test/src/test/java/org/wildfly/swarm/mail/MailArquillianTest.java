@@ -31,7 +31,7 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.JARArchive;
 
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Bob McWhirter
@@ -49,7 +49,7 @@ public class MailArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( MailFraction.defaultFraction() );
+        return new Container().fraction(MailFraction.defaultFraction());
     }
 
     @Test
@@ -57,8 +57,8 @@ public class MailArquillianTest implements ContainerFactory {
         InitialContext context = new InitialContext();
 
         Object session = context.lookup("java:jboss/mail/Default");
-        assertThat( session ).isNotNull();
-        assertThat( session ).isInstanceOf(Session.class);
+        assertThat(session).isNotNull();
+        assertThat(session).isInstanceOf(Session.class);
     }
 
 }

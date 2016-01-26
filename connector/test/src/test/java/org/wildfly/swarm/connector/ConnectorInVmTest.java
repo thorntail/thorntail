@@ -26,7 +26,7 @@ public class ConnectorInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new ConnectorFraction() );
+        container.fraction(new ConnectorFraction());
         container.start().stop();
     }
 }

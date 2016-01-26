@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,13 +69,13 @@ public class NestedJarResourceLoader {
                 }
 
                 String relativeRoot = base.toExternalForm().substring(endLoc + 5);
-                File resourceRoot = new File( new File( exp, relativeRoot ), loaderPath );
+                File resourceRoot = new File(new File(exp, relativeRoot), loaderPath);
                 /*
                 if ( resourceRoot.listFiles() != null ) {
                     System.err.println("@ " + resourceRoot + " --> " + Arrays.asList(resourceRoot.listFiles()));
                 }
                 */
-                return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot );
+                return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot);
             }
         }
 

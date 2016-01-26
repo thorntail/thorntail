@@ -42,10 +42,11 @@ public class IOArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( IOFraction.createDefaultFraction() );
+        return new Container().fraction(IOFraction.createDefaultFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

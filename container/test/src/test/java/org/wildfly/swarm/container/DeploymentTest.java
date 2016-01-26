@@ -18,8 +18,9 @@ package org.wildfly.swarm.container;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
-import static org.fest.assertions.Fail.*;
-import static org.fest.assertions.Assertions.*;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 
 /**
  * @author Bob McWhirter
@@ -34,11 +35,11 @@ public class DeploymentTest {
         a.addModule("com.i.do.no.exist");
         try {
             container.deploy(a);
-            fail( "should have throw a DeploymentException" );
+            fail("should have throw a DeploymentException");
         } catch (DeploymentException e) {
             // expected and correct
-            assertThat( e.getArchive() ).isSameAs( a );
-            assertThat( e.getMessage() ).contains( "org.jboss.modules.ModuleNotFoundException: com.i.do.no.exist:main" );
+            assertThat(e.getArchive()).isSameAs(a);
+            assertThat(e.getMessage()).contains("org.jboss.modules.ModuleNotFoundException: com.i.do.no.exist:main");
         }
         container.stop();
     }
@@ -47,8 +48,8 @@ public class DeploymentTest {
     public void testDeploymentSuccess() throws Exception {
         Container container = new Container();
         container.start();
-        JARArchive a = ShrinkWrap.create( JARArchive.class, "good-deployment.jar" );
-        a.add(EmptyAsset.INSTANCE, "nothing.xml" );
+        JARArchive a = ShrinkWrap.create(JARArchive.class, "good-deployment.jar");
+        a.add(EmptyAsset.INSTANCE, "nothing.xml");
         container.deploy(a);
         container.stop();
     }

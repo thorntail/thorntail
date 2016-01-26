@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.integration.jaxrs;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
@@ -27,10 +31,6 @@ import org.openqa.selenium.WebDriver;
 import org.wildfly.swarm.arquillian.adapter.ArtifactDependencies;
 import org.wildfly.swarm.integration.base.TestConstants;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 

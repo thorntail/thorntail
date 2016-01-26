@@ -53,28 +53,28 @@ public class ModuleAnalyzer {
 
         String rootName = node.getName();
 
-        if ( rootName.equals( "module" ) ) {
+        if (rootName.equals("module")) {
             this.module = new ModuleDescriptorImpl(null, node);
         }
         in.close();
     }
 
     public String getName() {
-        if ( this.module == null ) {
+        if (this.module == null) {
             return "UNKNOWN";
         }
         return this.module.getName();
     }
 
     public String getSlot() {
-        if ( this.module.getSlot() == null ) {
+        if (this.module.getSlot() == null) {
             return "main";
         }
         return this.module.getSlot();
     }
 
     public List<ArtifactSpec> getDependencies() {
-        if ( this.module == null ) {
+        if (this.module == null) {
             return Collections.emptyList();
         }
 
@@ -85,7 +85,7 @@ public class ModuleAnalyzer {
         for (ArtifactType<ResourcesType<ModuleDescriptor>> artifact : artifacts) {
             ArtifactSpec dep = ArtifactSpec.fromMscGav(artifact.getName());
             dep.shouldGather = true;
-            dependencies.add( dep );
+            dependencies.add(dep);
         }
 
         return dependencies;

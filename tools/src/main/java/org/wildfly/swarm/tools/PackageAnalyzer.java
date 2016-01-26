@@ -26,8 +26,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.wildfly.swarm.tools.PackageDetector;
-
 /**
  * @author Bob McWhirter
  */
@@ -54,7 +52,7 @@ public class PackageAnalyzer {
         for (Map.Entry prop : properties.entrySet()) {
             Set<String> packages = new HashSet<>();
             packages.addAll(Arrays.asList(((String) prop.getValue()).split(",")));
-            fractionMap.put((String)prop.getKey(), packages);
+            fractionMap.put((String) prop.getKey(), packages);
         }
 
         return fractionMap;
@@ -63,7 +61,7 @@ public class PackageAnalyzer {
     public Set<String> detectNeededFractions() throws IOException {
         final Map<String, Set<String>> fractionPackages = fractionPackages();
         final Set<String> detectedPackages = PackageDetector
-                .detectPackages( this.source )
+                .detectPackages(this.source)
                 .keySet();
         final Set<String> neededFractions = new HashSet<>();
 

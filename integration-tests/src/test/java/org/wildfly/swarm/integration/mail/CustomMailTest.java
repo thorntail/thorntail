@@ -46,13 +46,13 @@ public class CustomMailTest extends AbstractWildFlySwarmTestCase implements Cont
     public Container newContainer(String... args) throws Exception {
         return new Container()
                 .fraction(new MailFraction()
-                        .smtpServer("Default", (smtp)->{
-                                smtp.host("localhost");
-                                smtp.port("25");
+                        .smtpServer("Default", (smtp) -> {
+                            smtp.host("localhost");
+                            smtp.port("25");
                         }));
     }
 
-//    @Test
+    //    @Test
     @RunAsClient
     public void testIt() throws IOException {
         String result = fetch(DEFAULT_URL + "static-content.txt");

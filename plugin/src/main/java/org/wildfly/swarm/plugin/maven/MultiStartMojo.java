@@ -15,6 +15,11 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
@@ -42,11 +47,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomUtils;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Bob McWhirter
@@ -98,12 +98,12 @@ public class MultiStartMojo extends AbstractSwarmMojo {
         String classifier = process.getChild("classifier").getValue();
         Artifact artifact = findArtifact(groupId, artifactId, classifier);
 
-        if ( artifact != null ) {
+        if (artifact != null) {
             startArtifact(artifact, process);
             return;
         }
 
-        throw new MojoFailureException( "Unable to start process" );
+        throw new MojoFailureException("Unable to start process");
     }
 
     @SuppressWarnings("unchecked")
@@ -148,27 +148,27 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
         SwarmExecutor executor = new SwarmExecutor();
 
-        executor.withExecutableJar( artifact.getFile().toPath() );
+        executor.withExecutableJar(artifact.getFile().toPath());
 
-        executor.withProperties( this.properties );
-        executor.withEnvironment( this.environment );
+        executor.withProperties(this.properties);
+        executor.withEnvironment(this.environment);
 
-        PlexusConfiguration props = process.getChild( "properties" );
+        PlexusConfiguration props = process.getChild("properties");
 
         for (PlexusConfiguration each : props.getChildren()) {
-            executor.withProperty( each.getName(), each.getValue() );
+            executor.withProperty(each.getName(), each.getValue());
         }
 
 
-        PlexusConfiguration env = process.getChild( "environment" );
+        PlexusConfiguration env = process.getChild("environment");
 
-        for ( PlexusConfiguration each : env.getChildren()) {
-            executor.withEnvironment( each.getName(), each.getValue() );
+        for (PlexusConfiguration each : env.getChildren()) {
+            executor.withEnvironment(each.getName(), each.getValue());
         }
 
         try {
             SwarmProcess launched = executor.execute();
-            launched.awaitDeploy( 30, TimeUnit.SECONDS );
+            launched.awaitDeploy(30, TimeUnit.SECONDS);
             procs.add(launched);
         } catch (IOException | InterruptedException e) {
             throw new MojoFailureException("Unable to execute: " + artifact, e);
@@ -189,7 +189,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
     protected Artifact findArtifact(String groupId, String artifactId, String classifier) {
         return this.project.getArtifacts()
                 .stream()
-                .filter( e->(e.getGroupId().equals( groupId ) && e.getArtifactId().equals( artifactId ) && e.getClassifier().equals( classifier ) ) )
+                .filter(e -> (e.getGroupId().equals(groupId) && e.getArtifactId().equals(artifactId) && e.getClassifier().equals(classifier)))
                 .findFirst()
                 .orElseGet(null);
     }
@@ -198,21 +198,21 @@ public class MultiStartMojo extends AbstractSwarmMojo {
         Xpp3Dom config = new Xpp3Dom("configuration");
 
         Xpp3Dom properties = new Xpp3Dom("properties");
-        config.addChild( properties );
+        config.addChild(properties);
 
         for (String name : this.properties.stringPropertyNames()) {
             Xpp3Dom prop = new Xpp3Dom(name);
-            prop.setValue( this.properties.getProperty( name ) );
-            properties.addChild( prop );
+            prop.setValue(this.properties.getProperty(name));
+            properties.addChild(prop);
         }
 
         Xpp3Dom environment = new Xpp3Dom("environment");
-        config.addChild( environment );
+        config.addChild(environment);
 
-        for (String name : this.environment.stringPropertyNames() ) {
+        for (String name : this.environment.stringPropertyNames()) {
             Xpp3Dom env = new Xpp3Dom(name);
-            env.setValue( this.environment.getProperty(name));
-            environment.addChild( env );
+            env.setValue(this.environment.getProperty(name));
+            environment.addChild(env);
         }
 
         return config;
@@ -237,8 +237,8 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
         Xpp3Dom config;
 
-        if ( execution == null ) {
-            config = new Xpp3Dom( "configuration" );
+        if (execution == null) {
+            config = new Xpp3Dom("configuration");
         } else {
             config = (Xpp3Dom) execution.getConfiguration();
         }

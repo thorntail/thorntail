@@ -27,7 +27,7 @@ import org.wildfly.swarm.bootstrap.Main;
  */
 public class UberJarManifest {
 
-    public static final Attributes.Name WILDFLY_SWARM_MAIN_CLASS_ATTRIBUTE = new Attributes.Name( "WildFly-Swarm-Main-Class" );
+    public static final Attributes.Name WILDFLY_SWARM_MAIN_CLASS_ATTRIBUTE = new Attributes.Name("WildFly-Swarm-Main-Class");
 
     private final Manifest manifest;
 
@@ -41,14 +41,14 @@ public class UberJarManifest {
 
         Attributes attrs = this.manifest.getMainAttributes();
         attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-        attrs.put(Attributes.Name.MAIN_CLASS, Main.class.getName() );
+        attrs.put(Attributes.Name.MAIN_CLASS, Main.class.getName());
         if (mainClass != null && !mainClass.equals("")) {
             attrs.put(WILDFLY_SWARM_MAIN_CLASS_ATTRIBUTE, mainClass);
         }
     }
 
     public String getMainClassName() {
-        if ( this.manifest == null )  {
+        if (this.manifest == null) {
             return null;
         }
 

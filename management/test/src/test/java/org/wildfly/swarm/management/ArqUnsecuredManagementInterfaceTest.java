@@ -16,7 +16,6 @@
 package org.wildfly.swarm.management;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;

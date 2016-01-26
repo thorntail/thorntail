@@ -42,10 +42,11 @@ public class ManagementArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( ManagementFraction.createDefaultFraction() );
+        return new Container().fraction(ManagementFraction.createDefaultFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

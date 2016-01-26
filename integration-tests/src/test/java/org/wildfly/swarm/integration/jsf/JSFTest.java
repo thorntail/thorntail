@@ -35,7 +35,7 @@ public class JSFTest extends AbstractWildFlySwarmTestCase {
         container = newContainer();
         container.start();
 
-        WARArchive deployment = ShrinkWrap.create( WARArchive.class );
+        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
         deployment.staticContent();
         container.deploy(deployment);
 

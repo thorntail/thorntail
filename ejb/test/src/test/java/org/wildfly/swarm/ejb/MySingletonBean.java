@@ -26,11 +26,11 @@ public class MySingletonBean implements MySingleton {
 
     @PostConstruct
     public void postConstruct() {
-        System.err.println( "constructed" );
+        System.err.println("constructed");
     }
 
     @Override
     public void sayHowdy() {
-        System.err.println( "howdy!" );
+        System.err.println("howdy!");
     }
 }

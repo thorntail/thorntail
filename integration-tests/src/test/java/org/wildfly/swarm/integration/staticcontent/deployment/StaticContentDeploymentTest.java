@@ -15,17 +15,17 @@
  */
 package org.wildfly.swarm.integration.staticcontent.deployment;
 
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 import org.wildfly.swarm.integration.staticcontent.StaticContentCommonTests;
 import org.wildfly.swarm.undertow.WARArchive;
-
-import java.io.FileNotFoundException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;

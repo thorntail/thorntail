@@ -42,10 +42,11 @@ public class ConnectorArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new ConnectorFraction() );
+        return new Container().fraction(new ConnectorFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

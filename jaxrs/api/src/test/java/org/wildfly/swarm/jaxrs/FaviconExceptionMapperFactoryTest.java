@@ -16,7 +16,6 @@
 package org.wildfly.swarm.jaxrs;
 
 import java.io.IOException;
-import java.security.SecureClassLoader;
 
 import org.junit.Test;
 

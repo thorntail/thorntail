@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.plugin.gradle;
 
+import java.util.Set;
+
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -26,8 +28,6 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultDependencyArtifact;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
-
-import java.util.Set;
 
 /**
  * @author Bob McWhirter

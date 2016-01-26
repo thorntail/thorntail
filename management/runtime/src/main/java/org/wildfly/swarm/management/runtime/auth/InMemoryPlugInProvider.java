@@ -29,7 +29,7 @@ public class InMemoryPlugInProvider implements PlugInProvider {
 
     @Override
     public AuthenticationPlugIn<Credential> loadAuthenticationPlugIn(String name) {
-        if ( name.equals(EnhancedSecurityRealm.IN_MEMORY_PLUGIN_NAME ) ) {
+        if (name.equals(EnhancedSecurityRealm.IN_MEMORY_PLUGIN_NAME)) {
             return new InMemoryAuthenticationPlugIn();
         }
         return null;
@@ -37,7 +37,7 @@ public class InMemoryPlugInProvider implements PlugInProvider {
 
     @Override
     public AuthorizationPlugIn loadAuthorizationPlugIn(String name) {
-        if ( name.equals( EnhancedSecurityRealm.IN_MEMORY_PLUGIN_NAME ) ) {
+        if (name.equals(EnhancedSecurityRealm.IN_MEMORY_PLUGIN_NAME)) {
             return new InMemoryAuthorizationPlugIn();
         }
         return null;

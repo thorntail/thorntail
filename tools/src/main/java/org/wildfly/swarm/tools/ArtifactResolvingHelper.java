@@ -23,6 +23,7 @@ import java.util.Set;
 public interface ArtifactResolvingHelper {
     /**
      * Resolves the file for given artifact.
+     *
      * @param spec The artifact to resolve
      * @return spec with the file property set, or null if no file found
      * @throws Exception

@@ -15,11 +15,6 @@
  */
 package org.wildfly.swarm.management;
 
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-
-import javax.security.auth.callback.Callback;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -62,11 +57,11 @@ public class ArqSecuredManagementInterfaceTest implements ContainerFactory {
                                     iface.securityRealm("ManagementRealm");
                                 })
                                 .securityRealm("ManagementRealm", (realm) -> {
-                                    realm.inMemoryAuthentication( (authn)->{
-                                        authn.add( "bob", "tacos!", true );
+                                    realm.inMemoryAuthentication((authn) -> {
+                                        authn.add("bob", "tacos!", true);
                                     });
-                                    realm.inMemoryAuthorization( (authz)->{
-                                        authz.add( "bob", "admin" );
+                                    realm.inMemoryAuthorization((authz) -> {
+                                        authz.add("bob", "admin");
                                     });
                                 })
                 );
@@ -82,7 +77,7 @@ public class ArqSecuredManagementInterfaceTest implements ContainerFactory {
 
         ModelNode response = client.execute(Operations.createOperation("whoami"));
 
-        System.err.println( response );
+        System.err.println(response);
 
         assertThat(response.get("outcome").asString()).isEqualTo("success");
 

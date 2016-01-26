@@ -36,7 +36,7 @@ public class UberJarMavenResolver implements MavenResolver {
 
     public static File copyTempJar(String artifactId, InputStream in, String packaging) throws IOException {
         Path tmp = Files.createTempFile(artifactId, "." + packaging);
-        Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING );
+        Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
         return tmp.toFile();
     }
 
@@ -60,7 +60,7 @@ public class UberJarMavenResolver implements MavenResolver {
 
         String artifactRelativePath = "m2repo/" + relativeArtifactPath('/', coordinates.getGroupId(), coordinates.getArtifactId(), coordinates.getVersion());
         String classifier = "";
-        if ( coordinates.getClassifier() != null && ! coordinates.getClassifier().trim().isEmpty() ) {
+        if (coordinates.getClassifier() != null && !coordinates.getClassifier().trim().isEmpty()) {
             classifier = "-" + coordinates.getClassifier();
         }
 

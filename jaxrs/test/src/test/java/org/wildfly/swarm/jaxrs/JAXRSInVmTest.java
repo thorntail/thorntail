@@ -26,7 +26,7 @@ public class JAXRSInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new JAXRSFraction() );
+        container.fraction(new JAXRSFraction());
         container.start().stop();
     }
 }

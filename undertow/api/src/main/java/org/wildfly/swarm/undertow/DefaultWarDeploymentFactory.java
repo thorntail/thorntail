@@ -15,13 +15,6 @@
  */
 package org.wildfly.swarm.undertow;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.DefaultDeploymentFactory;
-import org.wildfly.swarm.container.DependenciesContainer;
-
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -29,6 +22,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.DefaultDeploymentFactory;
+import org.wildfly.swarm.container.DependenciesContainer;
 
 /**
  * @author Bob McWhirter
@@ -45,7 +45,7 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
     }
 
     protected static String determineName() {
-       return DefaultDeploymentFactory.determineName(".war");
+        return DefaultDeploymentFactory.determineName(".war");
     }
 
     @Override
@@ -64,7 +64,7 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
     }
 
     public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {
-        final DependenciesContainer<?> archive = (DependenciesContainer<?>)givenArchive;
+        final DependenciesContainer<?> archive = (DependenciesContainer<?>) givenArchive;
 
         Path pwd = Paths.get(System.getProperty("user.dir"));
 

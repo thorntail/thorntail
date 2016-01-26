@@ -31,37 +31,37 @@ public class WildFlySwarmApplicationConfTest {
     public void testRoundTripWriteRead() throws Exception {
         WildFlySwarmApplicationConf appConf = new WildFlySwarmApplicationConf();
 
-        appConf.addEntry( new WildFlySwarmApplicationConf.GAVEntry( MavenArtifactDescriptor.fromMscGav("org.wildfly.swarm:fish:1.0")) );
-        appConf.addEntry( new WildFlySwarmApplicationConf.ModuleEntry( "com.mymodule" ) );
-        appConf.addEntry( new WildFlySwarmApplicationConf.PathEntry( "_bootstrap/myapp.war" ) );
+        appConf.addEntry(new WildFlySwarmApplicationConf.GAVEntry(MavenArtifactDescriptor.fromMscGav("org.wildfly.swarm:fish:1.0")));
+        appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry("com.mymodule"));
+        appConf.addEntry(new WildFlySwarmApplicationConf.PathEntry("_bootstrap/myapp.war"));
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         appConf.write(out);
         out.close();
 
-        String written = new String( out.toByteArray() );
+        String written = new String(out.toByteArray());
 
         String[] lines = written.split("(\\r)?(\\n)");
 
-        assertThat( lines ).hasSize(3);
-        assertThat( lines ).contains( "gav:org.wildfly.swarm:fish:1.0" );
-        assertThat( lines ).contains( "module:com.mymodule:main");
-        assertThat( lines ).contains( "path:_bootstrap/myapp.war" );
+        assertThat(lines).hasSize(3);
+        assertThat(lines).contains("gav:org.wildfly.swarm:fish:1.0");
+        assertThat(lines).contains("module:com.mymodule:main");
+        assertThat(lines).contains("path:_bootstrap/myapp.war");
 
-        ByteArrayInputStream in = new ByteArrayInputStream( written.getBytes() );
+        ByteArrayInputStream in = new ByteArrayInputStream(written.getBytes());
 
-        appConf = new WildFlySwarmApplicationConf( in );
+        appConf = new WildFlySwarmApplicationConf(in);
 
-        assertThat( appConf.getEntries() ).hasSize(3);
+        assertThat(appConf.getEntries()).hasSize(3);
 
-        WildFlySwarmApplicationConf.GAVEntry gavEntry = (WildFlySwarmApplicationConf.GAVEntry) appConf.getEntries().stream().filter(e->e instanceof WildFlySwarmApplicationConf.GAVEntry ).findFirst().get();
-        assertThat( gavEntry.getDescriptor().mscGav() ).isEqualTo( "org.wildfly.swarm:fish:1.0" );
+        WildFlySwarmApplicationConf.GAVEntry gavEntry = (WildFlySwarmApplicationConf.GAVEntry) appConf.getEntries().stream().filter(e -> e instanceof WildFlySwarmApplicationConf.GAVEntry).findFirst().get();
+        assertThat(gavEntry.getDescriptor().mscGav()).isEqualTo("org.wildfly.swarm:fish:1.0");
 
-        WildFlySwarmApplicationConf.ModuleEntry moduleEntry = (WildFlySwarmApplicationConf.ModuleEntry) appConf.getEntries().stream().filter(e->e instanceof WildFlySwarmApplicationConf.ModuleEntry ).findFirst().get();
-        assertThat( moduleEntry.getName() ).isEqualTo( "com.mymodule");
+        WildFlySwarmApplicationConf.ModuleEntry moduleEntry = (WildFlySwarmApplicationConf.ModuleEntry) appConf.getEntries().stream().filter(e -> e instanceof WildFlySwarmApplicationConf.ModuleEntry).findFirst().get();
+        assertThat(moduleEntry.getName()).isEqualTo("com.mymodule");
 
-        WildFlySwarmApplicationConf.PathEntry pathEntry = (WildFlySwarmApplicationConf.PathEntry) appConf.getEntries().stream().filter(e->e instanceof WildFlySwarmApplicationConf.PathEntry ).findFirst().get();
-        assertThat( pathEntry.getPath() ).isEqualTo( "_bootstrap/myapp.war" );
+        WildFlySwarmApplicationConf.PathEntry pathEntry = (WildFlySwarmApplicationConf.PathEntry) appConf.getEntries().stream().filter(e -> e instanceof WildFlySwarmApplicationConf.PathEntry).findFirst().get();
+        assertThat(pathEntry.getPath()).isEqualTo("_bootstrap/myapp.war");
 
     }
 }

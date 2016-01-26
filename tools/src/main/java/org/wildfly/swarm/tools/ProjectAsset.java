@@ -27,7 +27,7 @@ public interface ProjectAsset extends NamedAsset {
 
     Archive<?> getArchive();
 
-    default String getName()  {
+    default String getName() {
         return "_bootstrap/" + getSimpleName();
     }
 }

@@ -15,14 +15,14 @@
  */
 package org.wildfly.swarm.datasources;
 
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.wildfly.swarm.config.datasources.DataSource;
-import org.wildfly.swarm.container.util.XmlWriter;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.wildfly.swarm.config.datasources.DataSource;
+import org.wildfly.swarm.container.util.XmlWriter;
 
 /**
  * @author Bob McWhirter
@@ -82,7 +82,7 @@ public class DSXmlAsset implements Asset {
 
             out.close();
 
-            return new ByteArrayInputStream( str.toString().getBytes() );
+            return new ByteArrayInputStream(str.toString().getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

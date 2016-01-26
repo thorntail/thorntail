@@ -15,16 +15,17 @@
  */
 package org.wildfly.swarm.plugin.gradle;
 
+import java.util.Properties;
+
 import groovy.lang.Closure;
 import groovy.util.ConfigObject;
-
-import java.util.Properties;
 
 /**
  * @author Bob McWhirter
  */
 public class SwarmExtension {
     private String mainClass;
+
     private Boolean bundleDependencies;
 
     private Properties properties = new Properties();

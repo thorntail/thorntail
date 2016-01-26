@@ -16,7 +16,6 @@
 package org.wildfly.swarm.management;
 
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -60,9 +59,9 @@ public class ArqSecuredManagementInterfaceWithPrecomputedPropertiesTest implemen
                                     iface.securityRealm("ManagementRealm");
                                 })
                                 .securityRealm("ManagementRealm", (realm) -> {
-                                    realm.inMemoryAuthentication( (authn)->{
-                                        authn.add( new Properties() {{
-                                            put( "bob", "9b511b00aa7f2265621e38d2cf665f2f");
+                                    realm.inMemoryAuthentication((authn) -> {
+                                        authn.add(new Properties() {{
+                                            put("bob", "9b511b00aa7f2265621e38d2cf665f2f");
                                         }});
                                     });
                                     realm.inMemoryAuthorization();

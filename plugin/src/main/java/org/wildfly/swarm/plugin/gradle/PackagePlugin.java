@@ -19,7 +19,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.bundling.Jar;
 
 /**
@@ -29,7 +28,7 @@ public class PackagePlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project p) {
-        p.getExtensions().create( "swarm", SwarmExtension.class );
+        p.getExtensions().create("swarm", SwarmExtension.class);
         p.afterEvaluate(new Action<Project>() {
             @Override
             public void execute(Project project) {
@@ -37,10 +36,10 @@ public class PackagePlugin implements Plugin<Project> {
                 p.getTasks().withType(Jar.class, (task) -> {
                     task.getArchivePath();
                     t.dependsOn(task);
-                    t.jarTask( task );
+                    t.jarTask(task);
                 });
                 Task buildTask = p.getTasks().getByName("build");
-                buildTask.dependsOn( t );
+                buildTask.dependsOn(t);
             }
         });
     }

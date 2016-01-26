@@ -30,15 +30,15 @@ import org.jboss.as.domain.management.plugin.PlugInConfigurationSupport;
  */
 public class InMemoryAuthenticationPlugIn implements AuthenticationPlugIn<Credential>, PlugInConfigurationSupport {
 
-    private Map<String,String> credentials = new HashMap<>();
+    private Map<String, String> credentials = new HashMap<>();
 
     @Override
     public void init(Map<String, String> configuration, Map<String, Object> sharedState) throws IOException {
         for (String key : configuration.keySet()) {
-            if ( key.endsWith( ".hash" ) ) {
-                String userName = key.substring(0, key.length() - ".hash".length() );
-                String hash = configuration.get( key );
-                this.credentials.put( userName, hash );
+            if (key.endsWith(".hash")) {
+                String userName = key.substring(0, key.length() - ".hash".length());
+                String hash = configuration.get(key);
+                this.credentials.put(userName, hash);
             }
         }
     }
@@ -46,11 +46,11 @@ public class InMemoryAuthenticationPlugIn implements AuthenticationPlugIn<Creden
     @Override
     public Identity<Credential> loadIdentity(String userName, String realm) throws IOException {
 
-        if (!this.credentials.containsKey(userName ) ) {
+        if (!this.credentials.containsKey(userName)) {
             return null;
         }
 
-        String hash = this.credentials.get( userName );
+        String hash = this.credentials.get(userName);
         return new Identity<Credential>() {
             @Override
             public String getUserName() {

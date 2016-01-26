@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.integration.staticcontent.war;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
@@ -28,9 +31,6 @@ import org.wildfly.swarm.arquillian.adapter.ArtifactDependencies;
 import org.wildfly.swarm.integration.base.TestConstants;
 import org.wildfly.swarm.integration.staticcontent.StaticContentCommonTests;
 import org.wildfly.swarm.undertow.WARArchive;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 

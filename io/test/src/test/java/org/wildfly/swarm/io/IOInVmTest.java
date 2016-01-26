@@ -26,7 +26,7 @@ public class IOInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( IOFraction.createDefaultFraction() );
+        container.fraction(IOFraction.createDefaultFraction());
         container.start().stop();
     }
 }

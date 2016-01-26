@@ -28,11 +28,11 @@
     <artifact name="org.jgroups:jgroups:${version.org.jgroups}"/>
   </resources>
 
-    <dependencies>
-      <module name="javax.api"/>
-      
-      <!-- We override the module.xml purely to add this dependency -->
-      <module name="org.openshift.ping"/>
+  <dependencies>
+    <module name="javax.api"/>
 
-    </dependencies>
+    <!-- We override the module.xml purely to add this dependency -->
+    <module name="org.openshift.ping"/>
+
+  </dependencies>
 </module>

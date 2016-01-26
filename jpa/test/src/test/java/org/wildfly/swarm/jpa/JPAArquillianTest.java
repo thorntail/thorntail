@@ -42,10 +42,11 @@ public class JPAArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( JPAFraction.createDefaultFraction() );
+        return new Container().fraction(JPAFraction.createDefaultFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

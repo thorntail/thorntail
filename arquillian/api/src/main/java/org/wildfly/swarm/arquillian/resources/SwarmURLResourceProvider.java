@@ -15,15 +15,15 @@
  */
 package org.wildfly.swarm.arquillian.resources;
 
-import org.jboss.arquillian.container.test.impl.enricher.resource.OperatesOnDeploymentAwareProvider;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.wildfly.swarm.SwarmProperties;
-
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import org.jboss.arquillian.container.test.impl.enricher.resource.OperatesOnDeploymentAwareProvider;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.wildfly.swarm.SwarmProperties;
 
 public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider {
     @Override

@@ -33,12 +33,15 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.NamedContext;
 public class DeploymentContext extends NamedContext {
 
     private final InputStream socketInstream;
+
     private final OutputStream socketOutstream;
+
     private final BufferedReader reader;
+
     private final PrintWriter writer;
 
     private DeploymentContext(final String deploymentName, final InputStream socketInstream,
-        final OutputStream socketOutstream, final BufferedReader reader, final PrintWriter writer) {
+                              final OutputStream socketOutstream, final BufferedReader reader, final PrintWriter writer) {
         super(deploymentName);
         this.socketInstream = socketInstream;
         this.socketOutstream = socketOutstream;
@@ -49,19 +52,17 @@ public class DeploymentContext extends NamedContext {
     /**
      * Creates and returns a new {@link DeploymentContext} instance from the required arguments
      *
-     * @param deploymentName
-     *            Name of the deployment
+     * @param deploymentName  Name of the deployment
      * @param socketInstream
      * @param socketOutstream
      * @param reader
      * @param writer
      * @return
-     * @throws IllegalArgumentException
-     *             If any argument is not specified
+     * @throws IllegalArgumentException If any argument is not specified
      */
     public static DeploymentContext create(final String deploymentName, final InputStream socketInstream,
-        final OutputStream socketOutstream, final BufferedReader reader, final PrintWriter writer)
-        throws IllegalArgumentException {
+                                           final OutputStream socketOutstream, final BufferedReader reader, final PrintWriter writer)
+            throws IllegalArgumentException {
         if (deploymentName == null || deploymentName.length() == 0) {
             throw new IllegalArgumentException("Deployment name must be specified");
         }
@@ -78,7 +79,7 @@ public class DeploymentContext extends NamedContext {
             throw new IllegalArgumentException("writer must be specified");
         }
         final DeploymentContext context = new DeploymentContext(deploymentName, socketInstream, socketOutstream,
-            reader, writer);
+                reader, writer);
         return context;
     }
 

@@ -42,10 +42,11 @@ public class UndertowArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new UndertowFraction() );
+        return new Container().fraction(new UndertowFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

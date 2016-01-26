@@ -27,7 +27,7 @@ public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends
     String SECONDARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH = "WEB-INF/jboss-deployment-structure.xml";
 
     default T addModule(String name) {
-        return addModule( name, "main" );
+        return addModule(name, "main");
     }
 
     @SuppressWarnings("unchecked")
@@ -53,7 +53,7 @@ public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends
 
         this.add(asset, path);
 
-        ((JBossDeploymentStructureAsset)asset)
+        ((JBossDeploymentStructureAsset) asset)
                 .addModule(name, slot);
 
         return (T) this;

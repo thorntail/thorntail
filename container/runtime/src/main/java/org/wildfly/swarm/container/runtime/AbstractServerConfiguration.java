@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.Swarm;
@@ -40,7 +39,7 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
 
     protected DeploymentSpec deployment(String gav) {
         DeploymentSpec spec = new DeploymentSpec(gav);
-        this.deployments.add( spec );
+        this.deployments.add(spec);
         return spec;
     }
 
@@ -53,7 +52,7 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
         List<Archive> archives = new ArrayList<>();
 
         for (DeploymentSpec deployment : this.deployments) {
-            archives.add( deployment.toArchive( fraction ) );
+            archives.add(deployment.toArchive(fraction));
         }
 
         return archives;
@@ -97,14 +96,14 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
         Archive<?> toArchive(T fraction) throws Exception {
             Archive<?> archive;
 
-            if ( this.asName == null ) {
-                archive = Swarm.artifact( this.gav );
+            if (this.asName == null) {
+                archive = Swarm.artifact(this.gav);
             } else {
-                archive = Swarm.artifact( this.gav, asName );
+                archive = Swarm.artifact(this.gav, asName);
             }
 
-            if ( this.config != null ) {
-                this.config.accept( fraction, archive );
+            if (this.config != null) {
+                this.config.accept(fraction, archive);
             }
 
             return archive;

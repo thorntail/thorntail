@@ -30,19 +30,19 @@ public class JBossLoggingLogger implements BackingLogger {
 
     @Override
     public Object getLevel() {
-        if ( this.logger.isEnabled( Logger.Level.TRACE ) ) {
+        if (this.logger.isEnabled(Logger.Level.TRACE)) {
             return "TRACE";
         }
-        if ( this.logger.isEnabled( Logger.Level.DEBUG ) ) {
+        if (this.logger.isEnabled(Logger.Level.DEBUG)) {
             return "DEBUG";
         }
-        if ( this.logger.isEnabled( Logger.Level.INFO ) ) {
+        if (this.logger.isEnabled(Logger.Level.INFO)) {
             return "INFO";
         }
-        if ( this.logger.isEnabled( Logger.Level.WARN ) ) {
+        if (this.logger.isEnabled(Logger.Level.WARN)) {
             return "WARN";
         }
-        if ( this.logger.isEnabled( Logger.Level.ERROR ) ) {
+        if (this.logger.isEnabled(Logger.Level.ERROR)) {
             return "ERROR";
         }
 
@@ -61,31 +61,31 @@ public class JBossLoggingLogger implements BackingLogger {
 
     @Override
     public void trace(Object message) {
-        this.logger.trace( message );
+        this.logger.trace(message);
     }
 
     @Override
     public void debug(Object message) {
-        this.logger.debug( message );
+        this.logger.debug(message);
     }
 
     @Override
     public void info(Object message) {
-        this.logger.info( message );
+        this.logger.info(message);
     }
 
     @Override
     public void warn(Object message) {
-        this.logger.warn( message );
+        this.logger.warn(message);
     }
 
     @Override
     public void error(Object message) {
-        this.logger.error( message );
+        this.logger.error(message);
     }
 
     @Override
     public void error(Object message, Throwable t) {
-        this.logger.error( message, t );
+        this.logger.error(message, t);
     }
 }

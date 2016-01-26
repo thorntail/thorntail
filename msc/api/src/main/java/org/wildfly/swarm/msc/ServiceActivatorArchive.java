@@ -24,7 +24,9 @@ import org.jboss.shrinkwrap.api.Assignable;
 public interface ServiceActivatorArchive extends Assignable {
 
     ServiceActivatorArchive addServiceActivator(Class<? extends ServiceActivator> cls);
+
     ServiceActivatorArchive addServiceActivator(String clsName);
+
     boolean containsServiceActivator(String clsName);
 
 }

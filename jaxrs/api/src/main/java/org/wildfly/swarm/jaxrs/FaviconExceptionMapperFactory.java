@@ -16,16 +16,12 @@
 package org.wildfly.swarm.jaxrs;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.commons.RemappingClassAdapter;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
 
 /**
  * @author Bob McWhirter

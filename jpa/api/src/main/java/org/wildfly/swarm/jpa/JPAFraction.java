@@ -60,7 +60,7 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
                             .driverName("h2"));
 
             initContext.fraction(datasources);
-            System.err.println( "setting default Datasource to ExampleDS" );
+            System.err.println("setting default Datasource to ExampleDS");
             defaultDatasource("jboss/datasources/ExampleDS");
         }
     }

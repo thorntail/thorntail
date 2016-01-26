@@ -26,6 +26,7 @@ import org.wildfly.swarm.container.SocketBinding;
 public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction {
 
     private int port = 4712;
+
     private int statusPort = 4713;
 
     protected TransactionsFraction() {

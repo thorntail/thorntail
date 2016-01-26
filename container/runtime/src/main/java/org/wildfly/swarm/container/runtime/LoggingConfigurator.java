@@ -18,7 +18,6 @@ package org.wildfly.swarm.container.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.jboss.as.controller.persistence.ConfigurationPersister;
 import org.jboss.as.logging.logmanager.ConfigurationPersistence;
 import org.jboss.logmanager.Configurator;
 import org.jboss.logmanager.LogContext;
@@ -57,19 +56,19 @@ public class LoggingConfigurator extends ConfigurationPersistence implements Con
     public void configure(InputStream inputStream) throws IOException {
         this.propertyConfigurator.configure(inputStream);
         LogContextConfiguration config = this.propertyConfigurator.getLogContextConfiguration();
-        config.getHandlerConfiguration( "CONSOLE" ).setLevel( "ALL" );
+        config.getHandlerConfiguration("CONSOLE").setLevel("ALL");
         LevelNode root = InitialLoggerManager.INSTANCE.getRoot();
-        apply( root, config );
+        apply(root, config);
         config.commit();
     }
 
     protected void apply(LevelNode node, LogContextConfiguration config) {
-        if ( ! node.getName().equals( "" ) ) {
-            config.addLoggerConfiguration( node.getName() ).setLevel( node.getLevel().toString() );
+        if (!node.getName().equals("")) {
+            config.addLoggerConfiguration(node.getName()).setLevel(node.getLevel().toString());
         }
 
         for (LevelNode each : node.getChildren()) {
-            apply( each, config );
+            apply(each, config);
         }
     }
 }

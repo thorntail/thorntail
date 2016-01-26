@@ -42,10 +42,11 @@ public class EJBArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( EJBFraction.createDefaultFraction() );
+        return new Container().fraction(EJBFraction.createDefaultFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

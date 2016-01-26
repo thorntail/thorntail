@@ -15,6 +15,12 @@
  */
 package org.wildfly.swarm.transactions.runtime;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
+
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
@@ -22,11 +28,6 @@ import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractParserFactory;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.transactions.TransactionsFraction;
-
-import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -46,7 +47,7 @@ public class TransactionsConfiguration extends MarshallingServerConfiguration<Tr
 
     @Override
     public void prepareArchive(Archive<?> a) {
-        a.as(JARArchive.class).addModule( "org.jboss.jts");
+        a.as(JARArchive.class).addModule("org.jboss.jts");
     }
 
     @Override

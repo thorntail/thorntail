@@ -5,13 +5,13 @@
   -->
 
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.webservices" slot="api">
-    <resources>
-        <artifact name="org.wildfly.swarm:webservices:${project.version}"/>
-    </resources>
-    <dependencies>
+  <resources>
+    <artifact name="org.wildfly.swarm:webservices:${project.version}"/>
+  </resources>
+  <dependencies>
 
-        <module name="org.wildfly.swarm.container"/>
-        <module name="org.wildfly.swarm.configuration"/>
+    <module name="org.wildfly.swarm.container"/>
+    <module name="org.wildfly.swarm.configuration"/>
 
-    </dependencies>
+  </dependencies>
 </module>

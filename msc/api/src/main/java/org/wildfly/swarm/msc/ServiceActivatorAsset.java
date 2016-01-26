@@ -15,12 +15,16 @@
  */
 package org.wildfly.swarm.msc;
 
-import org.jboss.msc.service.ServiceActivator;
-import org.jboss.shrinkwrap.api.asset.Asset;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.msc.service.ServiceActivator;
+import org.jboss.shrinkwrap.api.asset.Asset;
 
 /**
  * @author Bob McWhirter
@@ -38,7 +42,7 @@ public class ServiceActivatorAsset implements Asset {
         String line;
 
         try {
-            while((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null) {
                 addServiceActivator(line);
             }
         } catch (IOException e) {
@@ -55,15 +59,15 @@ public class ServiceActivatorAsset implements Asset {
     }
 
     public void addServiceActivator(String className) {
-        this.activators.add( className );
+        this.activators.add(className);
     }
 
     public void addServiceActivator(Class<? extends ServiceActivator> cls) {
-        this.activators.add( cls.getName() );
+        this.activators.add(cls.getName());
     }
 
     public boolean containsServiceActivator(String className) {
-        return this.activators.contains( className );
+        return this.activators.contains(className);
     }
 
     @Override
@@ -71,10 +75,10 @@ public class ServiceActivatorAsset implements Asset {
         StringBuilder builder = new StringBuilder();
 
         for (String activator : this.activators) {
-            builder.append( activator ).append( "\n" );
+            builder.append(activator).append("\n");
         }
 
-        return new ByteArrayInputStream( builder.toString().getBytes() );
+        return new ByteArrayInputStream(builder.toString().getBytes());
     }
 
     public String toString() {

@@ -15,13 +15,6 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +22,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
+
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.DefaultRepositorySystemSession;
 
 /**
  * @author Bob McWhirter
@@ -40,8 +40,8 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     static {
         try {
             VERSION = loadProperties(PackageMojo.class
-                                             .getClassLoader()
-                                             .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties"))
+                    .getClassLoader()
+                    .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties"))
                     .getProperty("version");
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
 
     AbstractSwarmMojo() {
         if (this.additionalModules == null) {
-            this.additionalModules = new String[] {"modules"};
+            this.additionalModules = new String[]{"modules"};
         }
     }
 

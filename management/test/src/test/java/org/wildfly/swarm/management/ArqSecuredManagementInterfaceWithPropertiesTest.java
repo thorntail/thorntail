@@ -59,10 +59,10 @@ public class ArqSecuredManagementInterfaceWithPropertiesTest implements Containe
                                     iface.securityRealm("ManagementRealm");
                                 })
                                 .securityRealm("ManagementRealm", (realm) -> {
-                                    realm.inMemoryAuthentication( (authn)->{
-                                        authn.add( new Properties() {{
-                                            put( "bob", "tacos!" );
-                                        }}, true );
+                                    realm.inMemoryAuthentication((authn) -> {
+                                        authn.add(new Properties() {{
+                                            put("bob", "tacos!");
+                                        }}, true);
                                     });
                                     realm.inMemoryAuthorization();
                                 })

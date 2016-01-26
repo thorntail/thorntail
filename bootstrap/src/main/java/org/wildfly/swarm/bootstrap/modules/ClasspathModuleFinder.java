@@ -25,8 +25,6 @@ import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
-import org.jboss.modules.ResourceLoader;
-import org.jboss.modules.maven.MavenResolver;
 import org.jboss.modules.xml.ModuleXmlParser;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.Layout;
@@ -36,7 +34,7 @@ import org.wildfly.swarm.bootstrap.util.Layout;
  */
 public class ClasspathModuleFinder implements ModuleFinder {
 
-    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.classpath" );
+    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.classpath");
 
     public String toString() {
         return getClass().getSimpleName();
@@ -46,13 +44,13 @@ public class ClasspathModuleFinder implements ModuleFinder {
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
         final String path = "modules/" + identifier.getName().replace('.', '/') + "/" + identifier.getSlot() + "/module.xml";
 
-        if ( LOG.isTraceEnabled() ) {
-            LOG.trace( "attempt:" + identifier );
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("attempt:" + identifier);
         }
 
         try {
             ClassLoader cl = Layout.getInstance().getBootstrapClassLoader();
-            if ( LOG.isTraceEnabled() ) {
+            if (LOG.isTraceEnabled()) {
                 LOG.trace("classloader: " + cl);
                 LOG.trace("path: " + path);
             }
@@ -64,16 +62,16 @@ public class ClasspathModuleFinder implements ModuleFinder {
             }
 
             if (url == null) {
-                if ( LOG.isTraceEnabled() ) {
-                    LOG.trace( "not found: " + identifier );
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("not found: " + identifier);
                 }
                 return null;
             }
 
-            final URL base = new URL( url, "./" );
+            final URL base = new URL(url, "./");
 
-            if ( LOG.isTraceEnabled() ) {
-                LOG.trace( "base of " + identifier + ": " + base );
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("base of " + identifier + ": " + base);
             }
 
             InputStream in = url.openStream();
@@ -81,7 +79,7 @@ public class ClasspathModuleFinder implements ModuleFinder {
             ModuleSpec moduleSpec = null;
             try {
                 moduleSpec = ModuleXmlParser.parseModuleXml(
-                        ( rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor( base, rootPath, loaderPath, loaderName ),
+                        (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
                         MavenResolvers.get(),
                         "/",
                         in,

@@ -15,20 +15,6 @@
  */
 package org.wildfly.swarm.tools;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +32,20 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 /**
  * @author Bob McWhirter
@@ -112,7 +112,7 @@ public class BuildTool {
     public BuildTool dependency(String scope, String groupId, String artifactId, String version,
                                 String packaging, String classifier, File file, boolean topLevel) {
         this.dependencyManager.addDependency(new ArtifactSpec(scope, groupId, artifactId, version,
-                                                              packaging, classifier, file, topLevel));
+                packaging, classifier, file, topLevel));
         return this;
     }
 
@@ -169,8 +169,8 @@ public class BuildTool {
     private void addWildflySwarmBootstrapJar() throws BuildException, IOException {
         ArtifactSpec artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
 
-        if ( artifact == null ) {
-            throw new BuildException( "Unable to load org.wildfly.swarm:bootstrap; check your dependencies" );
+        if (artifact == null) {
+            throw new BuildException("Unable to load org.wildfly.swarm:bootstrap; check your dependencies");
         }
 
         if (!bootstrapJarShadesJBossModules(artifact.file)) {
@@ -197,7 +197,7 @@ public class BuildTool {
         }
         props.setProperty(BootstrapProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
 
-        if ( this.bundleDependencies ) {
+        if (this.bundleDependencies) {
             props.setProperty(BootstrapProperties.BUNDLED_DEPENDENCIES, "true");
         }
 
@@ -267,15 +267,15 @@ public class BuildTool {
             final File moduleDir = new File(additionalModule);
             this.archive.addAsResource(moduleDir, "modules");
             Files.find(moduleDir.toPath(), 20,
-                       (p, __) -> p.getFileName().toString().equals("module.xml"))
+                    (p, __) -> p.getFileName().toString().equals("module.xml"))
                     .forEach(p -> this.dependencyManager.addAdditionalModule(p));
 
         }
     }
 
     private void populateUberJarMavenRepository() throws Exception {
-        if ( this.bundleDependencies ) {
-            this.dependencyManager.populateUberJarMavenRepository( this.archive );
+        if (this.bundleDependencies) {
+            this.dependencyManager.populateUberJarMavenRepository(this.archive);
         } else {
             this.dependencyManager.populateUserMavenRepository();
         }
@@ -335,7 +335,7 @@ public class BuildTool {
             } else {
                 // no pom, try to match by file name
                 if (exact) {
-                        found = jarName.equals(String.format("%s-%s.%s", spec.artifactId(), spec.version(), spec.type()));
+                    found = jarName.equals(String.format("%s-%s.%s", spec.artifactId(), spec.version(), spec.type()));
                 } else {
                     found = jarName.matches("^" + spec.artifactId() + "-\\d.*\\." + spec.type());
                 }
@@ -359,8 +359,8 @@ public class BuildTool {
             archive.getContent().values().stream()
                     .filter(node -> node.getPath().get().startsWith(WEB_INF_LIB))
                     .filter(node -> !nodeIsInArtifactList(node, nonSwarmSpecs, false)
-                                    && (nodeIsInArtifactList(node, moduleSpecs, true)
-                                        || nodeIsSwarmArtifact(node)))
+                            && (nodeIsInArtifactList(node, moduleSpecs, true)
+                            || nodeIsSwarmArtifact(node)))
                     .forEach(node -> archive.delete(node.getPath()));
 
             return archive;

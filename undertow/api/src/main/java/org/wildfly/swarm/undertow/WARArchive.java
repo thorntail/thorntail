@@ -37,4 +37,4 @@ public interface WARArchive extends
         DependenciesContainer<WARArchive>,
         StaticContentContainer<WARArchive> {
 
-        }
+}

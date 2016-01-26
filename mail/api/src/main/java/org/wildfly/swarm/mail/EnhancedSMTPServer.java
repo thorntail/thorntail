@@ -49,15 +49,15 @@ public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
     }
 
     public OutboundSocketBinding outboundSocketBinding() {
-        if ( this.host == null && this.port == null ) {
+        if (this.host == null && this.port == null) {
             return null;
         }
 
-        this.outboundSocketBindingRef( "mail-smtp-" + this.sessionKey );
+        this.outboundSocketBindingRef("mail-smtp-" + this.sessionKey);
 
-        return new OutboundSocketBinding( "mail-smtp-" + this.sessionKey )
-                .remoteHost( this.host )
-                .remotePort( this.port );
+        return new OutboundSocketBinding("mail-smtp-" + this.sessionKey)
+                .remoteHost(this.host)
+                .remotePort(this.port);
     }
 
 

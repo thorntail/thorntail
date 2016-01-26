@@ -27,6 +27,7 @@ public class TestRunner {
     private final static String METHOD_NAME_EXECUTE = "execute";
 
     final ClassLoader deploymentLoader;
+
     public TestRunner(ClassLoader loader) {
         this.deploymentLoader = loader;
     }
@@ -52,7 +53,7 @@ public class TestRunner {
                 throw new IllegalStateException("Could not load class " + CLASS_NAME_ARQ_TEST_RUNNERS);
             }
             final Method getTestRunnerMethod = testRunnersClass.getMethod(METHOD_NAME_GET_TEST_RUNNER,
-                                                                          ClassLoader.class);
+                    ClassLoader.class);
             final Object testRunner = getTestRunnerMethod.invoke(null, this.deploymentLoader);
             final Class<?> testRunnerClass = testRunner.getClass();
             final Method executeMethod = testRunnerClass.getMethod(METHOD_NAME_EXECUTE, Class.class, String.class);

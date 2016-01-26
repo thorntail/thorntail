@@ -15,6 +15,12 @@
  */
 package org.wildfly.swarm.logging;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.wildfly.swarm.config.Logging;
 import org.wildfly.swarm.config.logging.AsyncHandler;
 import org.wildfly.swarm.config.logging.ConsoleHandler;
@@ -26,8 +32,6 @@ import org.wildfly.swarm.config.logging.PatternFormatter;
 import org.wildfly.swarm.config.logging.RootLogger;
 import org.wildfly.swarm.config.logging.SyslogHandler;
 import org.wildfly.swarm.container.Fraction;
-
-import java.util.*;
 
 /**
  * @author Bob McWhirter
@@ -147,7 +151,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return this fraction
      */
     public LoggingFraction customFormatter(String name, String module, String className, Properties properties) {
-        Map<Object,Object> formatterProperties = new HashMap<>();
+        Map<Object, Object> formatterProperties = new HashMap<>();
         final Enumeration<?> names = properties.propertyNames();
         while (names.hasMoreElements()) {
             final String nextElement = (String) names.nextElement();
@@ -213,7 +217,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return This fraction
      */
     public LoggingFraction fileHandler(String name, String path, Level level, String formatter) {
-        Map<Object,Object> fileProperties = new HashMap<>();
+        Map<Object, Object> fileProperties = new HashMap<>();
         fileProperties.put("path", path);
         fileProperties.put("relative-to", "jboss.server.log.dir");
         fileHandler(new FileHandler(name)
@@ -243,7 +247,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return this fraction
      */
     public LoggingFraction customHandler(String name, String module, String className, Properties properties, String formatter) {
-        Map<Object,Object> handlerProperties = new HashMap<>();
+        Map<Object, Object> handlerProperties = new HashMap<>();
         final Enumeration<?> names = properties.propertyNames();
         while (names.hasMoreElements()) {
             final String nextElement = (String) names.nextElement();

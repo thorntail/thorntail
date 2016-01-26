@@ -41,7 +41,7 @@ public class WildFlySwarmBootstrapConf {
 
     public final static String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-bootstrap.conf";
 
-    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.bootstrap" );
+    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.bootstrap");
 
     private List<MavenArtifactDescriptor> entries = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class WildFlySwarmBootstrapConf {
     }
 
     public void addEntry(MavenArtifactDescriptor entry) {
-        this.entries.add( entry );
+        this.entries.add(entry);
     }
 
     public void addEntry(String gav) throws IOException {
@@ -66,9 +66,9 @@ public class WildFlySwarmBootstrapConf {
         }
 
         if (parts.length == 3) {
-            addEntry( parts[0], parts[1], "jar", null, parts[2] );
+            addEntry(parts[0], parts[1], "jar", null, parts[2]);
         } else if (parts.length == 4) {
-            addEntry( parts[0], parts[1], "jar", parts[3], parts[2] );
+            addEntry(parts[0], parts[1], "jar", parts[3], parts[2]);
         }
     }
 
@@ -77,15 +77,15 @@ public class WildFlySwarmBootstrapConf {
     }
 
     public List<? extends MavenArtifactDescriptor> getEntries() {
-        return Collections.unmodifiableList( this.entries);
+        return Collections.unmodifiableList(this.entries);
     }
 
     public String toString() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            write( out );
+            write(out);
             out.close();
-            return new String( out.toByteArray() );
+            return new String(out.toByteArray());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -120,7 +120,7 @@ public class WildFlySwarmBootstrapConf {
 
     public void apply(ModuleSpec.Builder builder) throws IOException {
         for (MavenArtifactDescriptor entry : this.entries) {
-            apply( builder, entry );
+            apply(builder, entry);
         }
     }
 
@@ -130,8 +130,8 @@ public class WildFlySwarmBootstrapConf {
             throw new IOException("Unable to locate artifact: " + entry.mscGav());
         }
 
-        if ( LOG.isTraceEnabled() ) {
-            LOG.trace( "adding bootstrap artifact: " + artifact.getAbsolutePath() );
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("adding bootstrap artifact: " + artifact.getAbsolutePath());
         }
 
         builder.addResourceRoot(

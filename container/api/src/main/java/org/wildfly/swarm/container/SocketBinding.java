@@ -21,11 +21,13 @@ package org.wildfly.swarm.container;
 public class SocketBinding extends BaseSocketBinding {
 
     private String portExpression;
+
     private String multicastAddress;
+
     private String multicastPortExpression;
 
     public SocketBinding(String name) {
-        super( name );
+        super(name);
     }
 
     public SocketBinding port(int port) {
@@ -42,7 +44,7 @@ public class SocketBinding extends BaseSocketBinding {
         return this.portExpression;
     }
 
-    public SocketBinding multicastAddress(String multicastAddress ) {
+    public SocketBinding multicastAddress(String multicastAddress) {
         this.multicastAddress = multicastAddress;
         return this;
     }

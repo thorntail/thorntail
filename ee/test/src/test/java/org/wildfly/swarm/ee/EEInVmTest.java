@@ -26,7 +26,7 @@ public class EEInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new EEFraction() );
+        container.fraction(new EEFraction());
         container.start().stop();
     }
 }

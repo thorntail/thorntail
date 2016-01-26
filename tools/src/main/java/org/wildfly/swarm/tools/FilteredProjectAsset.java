@@ -15,13 +15,13 @@
  */
 package org.wildfly.swarm.tools;
 
+import java.io.InputStream;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-
-import java.io.InputStream;
 
 public abstract class FilteredProjectAsset implements ProjectAsset {
     private final ProjectAsset delegate;
@@ -43,8 +43,8 @@ public abstract class FilteredProjectAsset implements ProjectAsset {
     @Override
     public InputStream openStream() {
         return filter(ShrinkWrap.create(ZipImporter.class)
-                              .importFrom(this.delegate.openStream())
-                              .as(JavaArchive.class))
+                .importFrom(this.delegate.openStream())
+                .as(JavaArchive.class))
                 .as(ZipExporter.class)
                 .exportAsInputStream();
     }

@@ -26,7 +26,7 @@ public class WeldInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new WeldFraction() );
+        container.fraction(new WeldFraction());
         container.start().stop();
     }
 }

@@ -26,7 +26,7 @@ public class MailInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new MailFraction() );
+        container.fraction(new MailFraction());
         container.start().stop();
     }
 }

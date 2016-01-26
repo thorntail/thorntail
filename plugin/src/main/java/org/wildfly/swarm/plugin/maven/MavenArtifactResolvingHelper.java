@@ -15,6 +15,11 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.Authentication;
 import org.eclipse.aether.RepositorySystem;
@@ -35,11 +40,6 @@ import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Bob McWhirter
@@ -83,7 +83,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     public ArtifactSpec resolve(ArtifactSpec spec) {
         if (spec.file == null) {
             final DefaultArtifact artifact = new DefaultArtifact(spec.groupId(), spec.artifactId(), spec.classifier(),
-                                                                 spec.type(), spec.version());
+                    spec.type(), spec.version());
 
             final LocalArtifactResult localResult = this.session.getLocalRepositoryManager()
                     .find(this.session, new LocalArtifactRequest(artifact, this.remoteRepositories, null));
@@ -92,9 +92,9 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
             } else {
                 try {
                     final ArtifactResult result = resolver.resolveArtifact(this.session,
-                                                                           new ArtifactRequest(artifact,
-                                                                                               this.remoteRepositories,
-                                                                                               null));
+                            new ArtifactRequest(artifact,
+                                    this.remoteRepositories,
+                                    null));
                     if (result.isResolved()) {
                         spec.file = result.getArtifact().getFile();
                     }
@@ -121,11 +121,11 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         specs.forEach(spec -> request
                 .addDependency(new Dependency(new DefaultArtifact(spec.groupId(),
-                                                                  spec.artifactId(),
-                                                                  spec.classifier(),
-                                                                  spec.type(),
-                                                                  spec.version()),
-                                              "compile")));
+                        spec.artifactId(),
+                        spec.classifier(),
+                        spec.type(),
+                        spec.version()),
+                        "compile")));
 
         CollectResult result = this.system.collectDependencies(this.session, request);
 
@@ -138,12 +138,12 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                     final Artifact artifact = node.getArtifact();
 
                     return new ArtifactSpec(node.getDependency().getScope(),
-                                            artifact.getGroupId(),
-                                            artifact.getArtifactId(),
-                                            artifact.getVersion(),
-                                            artifact.getExtension(),
-                                            artifact.getClassifier(),
-                                            null);
+                            artifact.getGroupId(),
+                            artifact.getArtifactId(),
+                            artifact.getVersion(),
+                            artifact.getExtension(),
+                            artifact.getClassifier(),
+                            null);
                 })
                 .map(this::resolve)
                 .filter(x -> x != null)

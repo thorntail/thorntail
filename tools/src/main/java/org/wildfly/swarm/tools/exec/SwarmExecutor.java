@@ -15,10 +15,6 @@
  */
 package org.wildfly.swarm.tools.exec;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,6 +28,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
  * @author Bob McWhirter
@@ -65,7 +65,7 @@ public class SwarmExecutor {
     public SwarmExecutor() {
         this.stdout = System.out;
         this.stderr = System.err;
-        this.workingDirectory = Paths.get( System.getProperty( "user.dir" ) );
+        this.workingDirectory = Paths.get(System.getProperty("user.dir"));
     }
 
     public SwarmExecutor withStdoutFile(Path stdoutFile) {
@@ -137,7 +137,7 @@ public class SwarmExecutor {
         Set<String> names = props.stringPropertyNames();
 
         for (String name : names) {
-            this.properties.put( name, props.getProperty( name ) );
+            this.properties.put(name, props.getProperty(name));
         }
 
         return this;
@@ -152,7 +152,7 @@ public class SwarmExecutor {
         Set<String> names = env.stringPropertyNames();
 
         for (String name : names) {
-            this.environment.put( name, env.getProperty( name ) );
+            this.environment.put(name, env.getProperty(name));
         }
 
         return this;
@@ -170,7 +170,7 @@ public class SwarmExecutor {
         if (this.executable != null && this.executable instanceof ExecutableJar) {
             throw new RuntimeException("Cannot use a classpath with an executable jar");
         }
-        this.classpath.addAll( entries );
+        this.classpath.addAll(entries);
         return this;
     }
 
@@ -179,7 +179,7 @@ public class SwarmExecutor {
             throw new RuntimeException("Cannot use modules with an executable jar");
         }
         final File moduleJar = new File(System.getProperty("java.io.tmpdir"),
-                                        "swarm-module-overrides.jar");
+                "swarm-module-overrides.jar");
         final JavaArchive moduleArchive = ShrinkWrap.create(JavaArchive.class);
 
         boolean modulesAdded = false;
@@ -222,7 +222,7 @@ public class SwarmExecutor {
     }
 
     public SwarmExecutor withDefaultMainClass() {
-        return withMainClass( "org.wildfly.swarm.Swarm" );
+        return withMainClass("org.wildfly.swarm.Swarm");
     }
 
     public SwarmExecutor withArgument(String arg) {
@@ -244,7 +244,7 @@ public class SwarmExecutor {
 
         cli.add(getJava().toString());
 
-        if(debugPort != null) {
+        if (debugPort != null) {
             // see https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/conninv.html
             cli.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=" + debugPort);
         }

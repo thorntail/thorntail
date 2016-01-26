@@ -55,37 +55,37 @@ public class WildFlySwarmBootstrapConfTest {
 
         assertThat(bootstrapConf.getEntries()).hasSize(3);
 
-        assertContains( bootstrapConf, "org.wildfly.swarm", "dog", "1.0", null );
-        assertContains( bootstrapConf, "org.wildfly.swarm", "cat", "1.0", null );
-        assertContains( bootstrapConf, "org.wildfly.swarm", "fish", "1.0", "redhat-1" );
+        assertContains(bootstrapConf, "org.wildfly.swarm", "dog", "1.0", null);
+        assertContains(bootstrapConf, "org.wildfly.swarm", "cat", "1.0", null);
+        assertContains(bootstrapConf, "org.wildfly.swarm", "fish", "1.0", "redhat-1");
     }
 
     @Test
     public void testRoundTripReadWrite() throws Exception {
 
-        StringBuffer txt= new StringBuffer();
+        StringBuffer txt = new StringBuffer();
 
-        txt.append( "org.wildfly.swarm:dog:1.0\n");
-        txt.append( "org.wildfly.swarm:cat:1.0\n");
-        txt.append( "org.wildfly.swarm:fish:1.0:redhat-1\n");
+        txt.append("org.wildfly.swarm:dog:1.0\n");
+        txt.append("org.wildfly.swarm:cat:1.0\n");
+        txt.append("org.wildfly.swarm:fish:1.0:redhat-1\n");
 
-        ByteArrayInputStream in = new ByteArrayInputStream( txt.toString().getBytes() );
+        ByteArrayInputStream in = new ByteArrayInputStream(txt.toString().getBytes());
 
-        WildFlySwarmBootstrapConf bootstrapConf = new WildFlySwarmBootstrapConf( in );
+        WildFlySwarmBootstrapConf bootstrapConf = new WildFlySwarmBootstrapConf(in);
 
         assertThat(bootstrapConf.getEntries()).hasSize(3);
 
-        assertContains( bootstrapConf, "org.wildfly.swarm", "dog", "1.0", null );
-        assertContains( bootstrapConf, "org.wildfly.swarm", "cat", "1.0", null );
-        assertContains( bootstrapConf, "org.wildfly.swarm", "fish", "1.0", "redhat-1" );
+        assertContains(bootstrapConf, "org.wildfly.swarm", "dog", "1.0", null);
+        assertContains(bootstrapConf, "org.wildfly.swarm", "cat", "1.0", null);
+        assertContains(bootstrapConf, "org.wildfly.swarm", "fish", "1.0", "redhat-1");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        bootstrapConf.write( out );
+        bootstrapConf.write(out);
 
-        String written = new String( out.toByteArray() );
+        String written = new String(out.toByteArray());
 
-        String[] lines = written.split( "(\\r)?(\\n)" );
+        String[] lines = written.split("(\\r)?(\\n)");
 
         assertThat(lines).hasSize(3);
 
@@ -97,7 +97,7 @@ public class WildFlySwarmBootstrapConfTest {
 
     protected void assertContains(WildFlySwarmBootstrapConf conf, String groupId, String artifactId, String version, String classifier) {
         MavenArtifactDescriptor expected = MavenArtifactDescriptor.build().groupId(groupId).artifactId(artifactId).version(version).classifier(classifier).build();
-        assertThat( conf.getEntries() ).contains( expected );
+        assertThat(conf.getEntries()).contains(expected);
     }
 
 }

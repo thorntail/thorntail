@@ -15,13 +15,14 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
+import java.io.InputStream;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
-import java.io.InputStream;
+
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
 
 /**
  * @author Bob McWhirter
@@ -35,7 +36,7 @@ public class FaviconHandler {
                 final InputStream in = cl.getResourceAsStream("favicon.ico");
                 if (in != null) {
                     Response.ResponseBuilder builder = Response.ok();
-                    builder.entity( in );
+                    builder.entity(in);
                     return builder.build();
                 }
             } catch (ModuleLoadException e1) {

@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.container;
 
-import java.io.IOException;
-
 import org.jboss.shrinkwrap.api.Archive;
 
 /**

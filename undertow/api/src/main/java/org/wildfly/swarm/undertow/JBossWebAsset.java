@@ -15,19 +15,19 @@
  */
 package org.wildfly.swarm.undertow;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
 import org.jboss.shrinkwrap.descriptor.api.jbossweb60.JbossWebDescriptor;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
 
 /**
  * @author Bob McWhirter
  */
-public class JBossWebAsset implements Asset{
+public class JBossWebAsset implements Asset {
 
 
     private final JbossWebDescriptor descriptor;
@@ -37,14 +37,14 @@ public class JBossWebAsset implements Asset{
     public JBossWebAsset() {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
-                         () -> Descriptors.create(JbossWebDescriptor.class));
+                        () -> Descriptors.create(JbossWebDescriptor.class));
     }
 
     public JBossWebAsset(InputStream fromStream) {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
-                         () -> Descriptors.importAs(JbossWebDescriptor.class)
-                                                 .fromStream(fromStream));
+                        () -> Descriptors.importAs(JbossWebDescriptor.class)
+                                .fromStream(fromStream));
     }
 
     public String getContextRoot() {

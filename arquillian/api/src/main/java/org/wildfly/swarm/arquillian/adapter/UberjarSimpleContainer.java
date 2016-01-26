@@ -15,6 +15,15 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -36,15 +45,6 @@ import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Toby Crawley
@@ -85,7 +85,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         if (isContainerFactory(this.testClass)) {
             archive.as(JavaArchive.class)
                     .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                                          this.testClass.getName())
+                            this.testClass.getName())
                     .addClass(this.testClass)
                     .as(JARArchive.class)
                     .addModule("org.wildfly.swarm.container")
@@ -112,8 +112,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         MavenRemoteRepository jbossPublic =
                 MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
-                                                               "http://repository.jboss.org/nexus/content/groups/public/",
-                                                               "default");
+                        "http://repository.jboss.org/nexus/content/groups/public/",
+                        "default");
         jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
         jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
@@ -162,9 +162,9 @@ public class UberjarSimpleContainer implements SimpleContainer {
             for (MavenResolvedArtifact dep : deps) {
                 MavenCoordinate coord = dep.getCoordinate();
                 tool.dependency(dep.getScope().name(), coord.getGroupId(),
-                                coord.getArtifactId(), coord.getVersion(),
-                                coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile(),
-                                topLevelDeps.contains(gav(coord)));
+                        coord.getArtifactId(), coord.getVersion(),
+                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile(),
+                        topLevelDeps.contains(gav(coord)));
             }
         } else {
             // ensure that arq daemon is available
@@ -179,10 +179,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 for (MavenResolvedArtifact dep : deps) {
                     MavenCoordinate coord = dep.getCoordinate();
                     tool.dependency(dep.getScope().name(), coord.getGroupId(),
-                                    coord.getArtifactId(), coord.getVersion(),
-                                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile(),
-                                    this.requestedMavenArtifacts.contains(gav(coord)) ||
-                                            this.requestedMavenArtifacts.contains(ga(coord)));
+                            coord.getArtifactId(), coord.getVersion(),
+                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile(),
+                            this.requestedMavenArtifacts.contains(gav(coord)) ||
+                                    this.requestedMavenArtifacts.contains(ga(coord)));
                 }
             }
         }
@@ -193,7 +193,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", BootstrapProperties.DEBUG_PORT, debug),
-                                                   e);
+                        e);
             }
         }
 

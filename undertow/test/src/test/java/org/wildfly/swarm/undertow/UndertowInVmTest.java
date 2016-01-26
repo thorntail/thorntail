@@ -26,7 +26,7 @@ public class UndertowInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new UndertowFraction() );
+        container.fraction(new UndertowFraction());
         container.start().stop();
     }
 }

@@ -61,19 +61,19 @@ public class InitialLoggerManager implements BackingLoggerManager {
 
         categories.sort((l, r) -> l.compareTo(r));
 
-        BootstrapLogger.Level rootLevel = levels.get( "ROOT" );
-        if ( rootLevel == null ) {
+        BootstrapLogger.Level rootLevel = levels.get("ROOT");
+        if (rootLevel == null) {
             rootLevel = BootstrapLogger.Level.NONE;
         }
 
-        this.root = new LevelNode( "", rootLevel );
+        this.root = new LevelNode("", rootLevel);
 
         for (String each : categories) {
-            if ( each.equals( "ROOT" ) ) {
+            if (each.equals("ROOT")) {
                 continue;
             }
 
-            this.root.add( each, levels.get( each ) );
+            this.root.add(each, levels.get(each));
         }
     }
 
@@ -83,26 +83,26 @@ public class InitialLoggerManager implements BackingLoggerManager {
 
     @Override
     public BackingLogger getBackingLogger(String name) {
-        return new InitialBackingLogger(name, this.root.getLevel( name ) );
+        return new InitialBackingLogger(name, this.root.getLevel(name));
     }
 
     public synchronized void log(InitialBackingLogger logger, BootstrapLogger.Level level, Object message) {
-        if ( level.ordinal() < logger.getLevel().ordinal() ) {
+        if (level.ordinal() < logger.getLevel().ordinal()) {
             return;
         }
-        if ( message instanceof Throwable ) {
-            log( logger, level, (Throwable) message );
+        if (message instanceof Throwable) {
+            log(logger, level, (Throwable) message);
         } else {
-            log( logger, level, message.toString() );
+            log(logger, level, message.toString());
         }
     }
 
     public synchronized void log(InitialBackingLogger logger, BootstrapLogger.Level level, Object message, Throwable t) {
-        if ( level.ordinal() < logger.getLevel().ordinal() ) {
+        if (level.ordinal() < logger.getLevel().ordinal()) {
             return;
         }
-        log( logger, level, message );
-        log( logger, level, t );
+        log(logger, level, message);
+        log(logger, level, t);
     }
 
     private void log(InitialBackingLogger logger, BootstrapLogger.Level level, String message) {

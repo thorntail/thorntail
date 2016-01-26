@@ -16,14 +16,12 @@
 package org.wildfly.swarm.bootstrap;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ArchiveAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -124,10 +122,10 @@ public class MainIT extends AbstractBootstrapIntegrationTestCase {
         boolean exceptionFound = false;
         try {
             run.invoke(main);
-            fail( "should have thrown" );
+            fail("should have thrown");
         } catch (Throwable t) {
-            while ( t != null ) {
-                if ( t.getMessage() != null && t.getMessage().equals( "expected to throw" ) ) {
+            while (t != null) {
+                if (t.getMessage() != null && t.getMessage().equals("expected to throw")) {
                     exceptionFound = true;
                     break;
                 }
@@ -135,7 +133,7 @@ public class MainIT extends AbstractBootstrapIntegrationTestCase {
             }
         }
 
-        assertThat( exceptionFound ).isTrue();
+        assertThat(exceptionFound).isTrue();
     }
 
 

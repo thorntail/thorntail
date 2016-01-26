@@ -42,10 +42,11 @@ public class EEArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( EEFraction.createDefaultFraction() );
+        return new Container().fraction(EEFraction.createDefaultFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

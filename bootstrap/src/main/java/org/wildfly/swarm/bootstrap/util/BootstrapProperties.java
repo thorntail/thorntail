@@ -33,7 +33,7 @@ public class BootstrapProperties {
     public static boolean flagIsSet(final String prop, final boolean defaultValue) {
         final String value = System.getProperty(prop);
 
-        if (value != null){
+        if (value != null) {
 
             return !"false".equals(value.toLowerCase());
         } else {

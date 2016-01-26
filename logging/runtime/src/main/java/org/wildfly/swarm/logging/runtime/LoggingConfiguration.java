@@ -15,6 +15,12 @@
  */
 package org.wildfly.swarm.logging.runtime;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
+
 import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.bootstrap.logging.InitialLoggerManager;
@@ -24,11 +30,6 @@ import org.wildfly.swarm.container.runtime.AbstractParserFactory;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.logging.LoggingProperties;
-
-import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -68,7 +69,7 @@ public class LoggingConfiguration extends MarshallingServerConfiguration<Logging
 
         apply(root, fraction);
 
-        return super.getList( fraction );
+        return super.getList(fraction);
     }
 
     private void apply(LevelNode node, LoggingFraction fraction) {
@@ -78,7 +79,7 @@ public class LoggingConfiguration extends MarshallingServerConfiguration<Logging
             });
         }
         for (LevelNode each : node.getChildren()) {
-            apply( each, fraction );
+            apply(each, fraction);
         }
     }
 

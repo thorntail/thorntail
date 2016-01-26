@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.integration.ejb;
 
+import javax.ejb.EJB;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -22,8 +24,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
-
-import javax.ejb.EJB;
 
 import static org.junit.Assert.assertEquals;
 

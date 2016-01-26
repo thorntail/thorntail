@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.undertow;
 
-import org.jboss.shrinkwrap.api.asset.Asset;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.shrinkwrap.api.asset.Asset;
 
 public class UndertowExternalMountsAsset implements Asset {
     private List<String> externalMounts = new ArrayList<>();

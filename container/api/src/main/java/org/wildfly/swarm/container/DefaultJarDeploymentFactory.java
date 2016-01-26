@@ -15,10 +15,6 @@
  */
 package org.wildfly.swarm.container;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -26,6 +22,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 
 /**
  * @author Bob McWhirter
@@ -45,7 +45,7 @@ public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
     @Override
     public Archive create(Container container) throws Exception {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, determineName());
-        setup( archive );
+        setup(archive);
         return archive;
     }
 
@@ -77,8 +77,6 @@ public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
 
         return success;
     }
-
-
 
 
 }

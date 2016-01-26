@@ -25,6 +25,7 @@ import org.wildfly.swarm.config.datasources.DataSourceConsumer;
 public interface DatasourceArchive extends Assignable {
 
     DatasourceArchive dataSource(String key, DataSourceConsumer consumer);
+
     DatasourceArchive dataSource(DataSource ds);
 
 }

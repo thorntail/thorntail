@@ -115,7 +115,7 @@ public class DependencyManagerTest {
         });
 
         resolver.add(PROVIDED_A, (archive) -> {
-            archive.add(new ClassLoaderAsset("keycloak-core-module.xml"), "modules/org/keyclaok/keycloak-core-module/main/module.xml" );
+            archive.add(new ClassLoaderAsset("keycloak-core-module.xml"), "modules/org/keyclaok/keycloak-core-module/main/module.xml");
             archive.add(new StringAsset(
                     "com.sun.mail:javax.mail\n" +
                             "org.keycloak:keycloak-core|org.keycloak.keycloak-core-module"

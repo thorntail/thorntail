@@ -39,47 +39,47 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
     public ServiceActivatorArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
 
-        if ( getArchive().getName().endsWith( ".war" ) ) {
+        if (getArchive().getName().endsWith(".war")) {
             Node node = getArchive().get("WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName());
-            if ( node != null ) {
+            if (node != null) {
                 Asset maybeCorrect = node.getAsset();
-                if(maybeCorrect instanceof ServiceActivatorAsset) {
+                if (maybeCorrect instanceof ServiceActivatorAsset) {
                     this.asset = (ServiceActivatorAsset) maybeCorrect;
                 } else {
                     this.asset = new ServiceActivatorAsset(maybeCorrect.openStream());
                 }
             } else {
                 this.asset = new ServiceActivatorAsset();
-                getArchive().add( this.asset, "WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName() );
+                getArchive().add(this.asset, "WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName());
             }
-        }  else if ( getArchive().getName().endsWith( ".jar" ) ) {
+        } else if (getArchive().getName().endsWith(".jar")) {
             Node node = getArchive().get("META-INF/services/" + ServiceActivator.class.getName());
-            if ( node != null ) {
+            if (node != null) {
                 this.asset = (ServiceActivatorAsset) node.getAsset();
             } else {
                 this.asset = new ServiceActivatorAsset();
-                getArchive().add( this.asset, "META-INF/services/" + ServiceActivator.class.getName() );
+                getArchive().add(this.asset, "META-INF/services/" + ServiceActivator.class.getName());
             }
         }
     }
 
     public ServiceActivatorArchive addServiceActivator(Class<? extends ServiceActivator> cls) {
-        if ( getArchive().getName().endsWith( ".war" ) ) {
-            getArchive().as(WebArchive.class).addClass( cls );
-        } else if ( getArchive().getName().endsWith( ".jar" ) ) {
-            getArchive().as(JavaArchive.class).addClass( cls );
+        if (getArchive().getName().endsWith(".war")) {
+            getArchive().as(WebArchive.class).addClass(cls);
+        } else if (getArchive().getName().endsWith(".jar")) {
+            getArchive().as(JavaArchive.class).addClass(cls);
         }
-        this.asset.addServiceActivator( cls );
+        this.asset.addServiceActivator(cls);
         return this;
     }
 
     public ServiceActivatorArchive addServiceActivator(String className) {
-        this.asset.addServiceActivator( className );
+        this.asset.addServiceActivator(className);
         return this;
     }
 
     public boolean containsServiceActivator(String className) {
-        return this.asset.containsServiceActivator( className );
+        return this.asset.containsServiceActivator(className);
     }
 
 }

@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.integration.base;
 
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.logging.LoggingFraction;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.logging.LoggingFraction;
 
 /**
  * @author Bob McWhirter

@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.jca;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.wildfly.swarm.config.JCA;
 import org.wildfly.swarm.config.jca.ArchiveValidation;
 import org.wildfly.swarm.config.jca.BeanValidation;
@@ -25,9 +28,6 @@ import org.wildfly.swarm.config.jca.ShortRunningThreads;
 import org.wildfly.swarm.config.jca.Workmanager;
 import org.wildfly.swarm.container.Fraction;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Bob McWhirter
  */
@@ -37,7 +37,7 @@ public class JCAFraction extends JCA<JCAFraction> implements Fraction {
     }
 
     public static JCAFraction createDefaultFraction() {
-        Map<Object,Object> keepAlive = new HashMap<>();
+        Map<Object, Object> keepAlive = new HashMap<>();
         keepAlive.put("time", "10");
         keepAlive.put("unit", "SECONDS");
         JCAFraction fraction = new JCAFraction();

@@ -53,8 +53,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
-import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
@@ -81,6 +81,7 @@ public class Container {
     }
 
     private Map<Class<? extends Fraction>, Fraction> fractions = new ConcurrentHashMap<>();
+
     private Map<String, Fraction> fractionsBySimpleName = new ConcurrentHashMap<>();
 
     private List<Fraction> dependentFractions = new ArrayList<>();
@@ -90,6 +91,7 @@ public class Container {
     private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
 
     private Map<String, List<SocketBinding>> socketBindings = new HashMap<>();
+
     private Map<String, List<OutboundSocketBinding>> outboundSocketBindings = new HashMap<>();
 
     private List<Interface> interfaces = new ArrayList<>();
@@ -149,7 +151,7 @@ public class Container {
             } catch (URISyntaxException e) {
                 throw new IOException(e);
             }
-        } else if ( location.toExternalForm().startsWith( "jar:file:" ) ) {
+        } else if (location.toExternalForm().startsWith("jar:file:")) {
             return true;
         }
 
@@ -162,11 +164,11 @@ public class Container {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
-                        for( String name: names ) {
+                        for (String name : names) {
                             String value = props.getProperty(name);
                             if (System.getProperty(name) == null) {
                                 System.setProperty(name, value);
@@ -211,7 +213,7 @@ public class Container {
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.RuntimeServer");
         try {
             this.server = (Server) serverClass.newInstance();
-            if(this.xmlConfig !=null)
+            if (this.xmlConfig != null)
                 this.server.setXmlConfig(this.xmlConfig);
         } catch (Throwable t) {
             t.printStackTrace();
@@ -244,7 +246,7 @@ public class Container {
      * @return The container.
      */
     public Container fraction(Fraction fraction) {
-        if ( fraction != null ) {
+        if (fraction != null) {
             this.fractions.put(fractionRoot(fraction.getClass()), fraction);
             this.fractionsBySimpleName.put(fraction.simpleName(), fraction);
             fraction.initialize(new InitContext());
@@ -253,7 +255,7 @@ public class Container {
     }
 
     public Container fraction(Supplier<Fraction> supplier) {
-        return fraction( supplier.get() );
+        return fraction(supplier.get());
     }
 
     public List<Fraction> fractions() {
@@ -389,7 +391,7 @@ public class Container {
 
         list.add(binding);
 
-        System.err.println( "added: " + this.outboundSocketBindings );
+        System.err.println("added: " + this.outboundSocketBindings);
     }
 
     /**
@@ -440,7 +442,7 @@ public class Container {
     public Container deploy() throws DeploymentException {
         Archive deployment = createDefaultDeployment();
         if (deployment == null) {
-            throw new DeploymentException( "Unable to create default deployment" );
+            throw new DeploymentException("Unable to create default deployment");
         } else {
             return deploy(deployment);
         }
@@ -518,7 +520,7 @@ public class Container {
 
             return null;
         } catch (Exception e) {
-            throw new DeploymentException( e);
+            throw new DeploymentException(e);
         }
     }
 

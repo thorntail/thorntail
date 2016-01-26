@@ -40,56 +40,56 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
 
     public static JGroupsFraction defaultMulticastFraction() {
         return new JGroupsFraction()
-                .defaultChannel( "swarm-jgroups")
-                .stack( "udp", (s)->{
-                    s.transport( "UDP", (t)->{
+                .defaultChannel("swarm-jgroups")
+                .stack("udp", (s) -> {
+                    s.transport("UDP", (t) -> {
                         t.socketBinding("jgroups-udp");
                     });
-                    s.protocol( "PING" );
-                    s.protocol( "MERGE3" );
-                    s.protocol( "FD_SOCK", (p)->{
-                        p.socketBinding( "jgroups-udp-fd" );
+                    s.protocol("PING");
+                    s.protocol("MERGE3");
+                    s.protocol("FD_SOCK", (p) -> {
+                        p.socketBinding("jgroups-udp-fd");
                     });
-                    s.protocol( "FD_ALL" );
-                    s.protocol( "VERIFY_SUSPECT" );
-                    s.protocol( "pbcast.NAKACK2" );
-                    s.protocol( "UNICAST3" );
-                    s.protocol( "pbcast.STABLE" );
-                    s.protocol( "pbcast.GMS" );
-                    s.protocol( "UFC" );
-                    s.protocol( "MFC" );
-                    s.protocol( "FRAG2" );
-                    s.protocol( "RSVP" );
+                    s.protocol("FD_ALL");
+                    s.protocol("VERIFY_SUSPECT");
+                    s.protocol("pbcast.NAKACK2");
+                    s.protocol("UNICAST3");
+                    s.protocol("pbcast.STABLE");
+                    s.protocol("pbcast.GMS");
+                    s.protocol("UFC");
+                    s.protocol("MFC");
+                    s.protocol("FRAG2");
+                    s.protocol("RSVP");
                 })
-                .channel( "swarm-jgroups", (c)->{
-                    c.stack( "udp" );
+                .channel("swarm-jgroups", (c) -> {
+                    c.stack("udp");
                 });
     }
 
     public static JGroupsFraction defaultOpenShiftFraction() {
         return new JGroupsFraction()
-                .defaultChannel( "swarm-jgroups")
-                .stack( "tcp", (s)->{
-                    s.transport( "TCP", (t)->{
-                        t.socketBinding( "jgroups-tcp" );
+                .defaultChannel("swarm-jgroups")
+                .stack("tcp", (s) -> {
+                    s.transport("TCP", (t) -> {
+                        t.socketBinding("jgroups-tcp");
                     });
-                    s.protocol( "openshift.KUBE_PING" );
-                    s.protocol( "MERGE3" );
-                    s.protocol( "FD_SOCK", (p)->{
-                        p.socketBinding( "jgroups-tcp-fd" );
+                    s.protocol("openshift.KUBE_PING");
+                    s.protocol("MERGE3");
+                    s.protocol("FD_SOCK", (p) -> {
+                        p.socketBinding("jgroups-tcp-fd");
                     });
-                    s.protocol( "FD_ALL" );
-                    s.protocol( "VERIFY_SUSPECT" );
-                    s.protocol( "pbcast.NAKACK2" );
-                    s.protocol( "UNICAST3" );
-                    s.protocol( "pbcast.STABLE" );
-                    s.protocol( "pbcast.GMS" );
-                    s.protocol( "MFC" );
-                    s.protocol( "FRAG2" );
-                    s.protocol( "RSVP" );
+                    s.protocol("FD_ALL");
+                    s.protocol("VERIFY_SUSPECT");
+                    s.protocol("pbcast.NAKACK2");
+                    s.protocol("UNICAST3");
+                    s.protocol("pbcast.STABLE");
+                    s.protocol("pbcast.GMS");
+                    s.protocol("MFC");
+                    s.protocol("FRAG2");
+                    s.protocol("RSVP");
                 })
-                .channel( "swarm-jgroups", (c)->{
-                    c.stack( "tcp" );
+                .channel("swarm-jgroups", (c) -> {
+                    c.stack("tcp");
                 });
     }
 
@@ -99,7 +99,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                 new SocketBinding("jgroups-udp")
                         .port(55200)
                         .multicastAddress(SwarmProperties.propertyVar(JGroupsProperties.DEFAULT_MULTICAST_ADDRESS,
-                                                                      "230.0.0.4"))
+                                "230.0.0.4"))
                         .multicastPort(45688));
 
         initContext.socketBinding(
@@ -110,7 +110,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                 new SocketBinding("jgroups-mping")
                         .port(0)
                         .multicastAddress(SwarmProperties.propertyVar(JGroupsProperties.DEFAULT_MULTICAST_ADDRESS,
-                                                                      "230.0.0.4"))
+                                "230.0.0.4"))
                         .multicastPort(45700));
 
         initContext.socketBinding(

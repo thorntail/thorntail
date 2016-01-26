@@ -15,17 +15,9 @@
  */
 package org.wildfly.swarm;
 
-import org.jboss.modules.ModuleLoadException;
-import org.jboss.modules.maven.ArtifactCoordinates;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
-import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
-import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
-
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +28,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.maven.ArtifactCoordinates;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
+import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 /**
  * @author Bob McWhirter

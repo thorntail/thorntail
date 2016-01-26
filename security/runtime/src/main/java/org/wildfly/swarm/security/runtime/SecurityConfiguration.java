@@ -15,6 +15,14 @@
  */
 package org.wildfly.swarm.security.runtime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
+
 import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
@@ -25,13 +33,6 @@ import org.wildfly.swarm.config.security.security_domain.authentication.LoginMod
 import org.wildfly.swarm.container.runtime.AbstractParserFactory;
 import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.security.SecurityFraction;
-
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -50,11 +51,11 @@ public class SecurityConfiguration extends MarshallingServerConfiguration<Securi
                 .securityDomain(new SecurityDomain("other")
                         .classicAuthentication(new ClassicAuthentication()
                                 .loginModule(new LoginModule("RealmDirect")
-                                        .code("RealmDirect")
-                                        .flag(Flag.REQUIRED)
-                                        .moduleOptions(new HashMap<Object,Object>() {{
-                                            put("password-stacking", "useFirstPass");
-                                        }})
+                                                .code("RealmDirect")
+                                                .flag(Flag.REQUIRED)
+                                                .moduleOptions(new HashMap<Object, Object>() {{
+                                                    put("password-stacking", "useFirstPass");
+                                                }})
 
                                 )));
     }

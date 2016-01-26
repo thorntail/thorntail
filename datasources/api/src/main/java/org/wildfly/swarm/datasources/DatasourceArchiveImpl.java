@@ -36,7 +36,7 @@ public class DatasourceArchiveImpl extends AssignableBase<ArchiveBase<?>> implem
 
     @SuppressWarnings("unchecked")
     public DatasourceArchive dataSource(String key, DataSourceConsumer consumer) {
-        DataSource ds = new DataSource( key );
+        DataSource ds = new DataSource(key);
         consumer.accept(ds);
         dataSource(ds);
         return this;
@@ -50,7 +50,7 @@ public class DatasourceArchiveImpl extends AssignableBase<ArchiveBase<?>> implem
 
         String name = ds.getKey() + "-ds.xml";
 
-        getArchive().add( new DSXmlAsset( ds ), "META-INF/" + name );
+        getArchive().add(new DSXmlAsset(ds), "META-INF/" + name);
 
         return this;
     }

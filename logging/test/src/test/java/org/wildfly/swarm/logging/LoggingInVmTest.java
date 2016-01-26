@@ -26,7 +26,7 @@ public class LoggingInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new LoggingFraction() );
+        container.fraction(new LoggingFraction());
         container.start().stop();
     }
 }

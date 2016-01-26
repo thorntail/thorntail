@@ -15,15 +15,17 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
-
-import java.io.*;
-import java.nio.file.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
 import java.util.Set;
@@ -31,6 +33,17 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 
 /**
  * @author Bob McWhirter
@@ -41,8 +54,9 @@ import java.util.regex.Pattern;
 @Execute(phase = LifecyclePhase.PACKAGE)
 public class AnalyzeMojo extends AbstractMojo {
 
-    @Parameter(alias = "gav", defaultValue = "${gav}", required = true)
-    private String gav;
+    private static Pattern ARTIFACT = Pattern.compile("<artifact name=\"([^\"]+)\"");
+
+    private static Pattern MODULE = Pattern.compile("<module name=\"([^\"]+)\".*(slot=\"[^\"]+\")?");
 
     @Parameter(defaultValue = "${project.build.directory}")
     protected String projectBuildDir;
@@ -50,7 +64,11 @@ public class AnalyzeMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
+    @Parameter(alias = "gav", defaultValue = "${gav}", required = true)
+    private String gav;
+
     private Path dir;
+
     private Path modulesDir;
 
     private Graph graph = new Graph();
@@ -70,12 +88,12 @@ public class AnalyzeMojo extends AbstractMojo {
         }
 
         Graph.Artifact artifact = this.graph.getClosestArtifact(this.gav);
-        if ( artifact == null ) {
-            throw new MojoFailureException( "Unable to find artifact: " + this.gav );
+        if (artifact == null) {
+            throw new MojoFailureException("Unable to find artifact: " + this.gav);
         }
 
         DumpGraphVisitor visitor = new DumpGraphVisitor();
-        artifact.accept( visitor );
+        artifact.accept(visitor);
 
     }
 
@@ -135,10 +153,6 @@ public class AnalyzeMojo extends AbstractMojo {
 
     }
 
-    private static Pattern ARTIFACT = Pattern.compile("<artifact name=\"([^\"]+)\"");
-
-    private static Pattern MODULE = Pattern.compile("<module name=\"([^\"]+)\".*(slot=\"[^\"]+\")?");
-
     protected void analyzeModuleXml(String module, String slot, InputStream in) throws IOException {
         Graph.Module curModule = this.graph.getModule(module, slot);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
@@ -155,11 +169,11 @@ public class AnalyzeMojo extends AbstractMojo {
                     String artifactId = parts[1];
                     String version = parts[2];
                     String classifier = null;
-                    if ( parts.length >= 4 ) {
+                    if (parts.length >= 4) {
                         classifier = parts[3];
                     }
 
-                    curModule.addArtifact( this.graph.getArtifact( groupId, artifactId, version, classifier ));
+                    curModule.addArtifact(this.graph.getArtifact(groupId, artifactId, version, classifier));
                 } else {
                     matcher = MODULE.matcher(line);
                     if (matcher.find()) {

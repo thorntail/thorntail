@@ -15,12 +15,8 @@
  */
 package org.wildfly.swarm.bootstrap.util;
 
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
-
-import java.io.IOException;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -34,6 +30,10 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
+
 /**
  * @author Bob McWhirter
  */
@@ -45,6 +45,7 @@ public class Layout {
     private final Path root;
 
     private boolean uberJar;
+
     private boolean unpackedUberJar;
 
     private ClassLoader bootstrapClassLoader;
@@ -74,7 +75,7 @@ public class Layout {
         String mfName = "META-INF/MANIFEST.MF";
 
         if (isUberJar()) {
-            if(isUnpackedUberJar()) {
+            if (isUnpackedUberJar()) {
                 Path mani = root.resolve(mfName);
                 InputStream in = new FileInputStream(mani.toFile());
                 return new Manifest(in);
@@ -97,7 +98,7 @@ public class Layout {
     }
 
     public synchronized ClassLoader getBootstrapClassLoader() throws ModuleLoadException {
-        if ( this.bootstrapClassLoader == null ) {
+        if (this.bootstrapClassLoader == null) {
             this.bootstrapClassLoader = determineBootstrapClassLoader();
         }
         return this.bootstrapClassLoader;
@@ -129,7 +130,7 @@ public class Layout {
             }
         } else {
             Path props = root.resolve(wfsprops);
-            if ( Files.exists( props ) ) {
+            if (Files.exists(props)) {
                 InputStream in = new FileInputStream(props.toFile());
                 setupProperties(in);
                 this.uberJar = true;
@@ -139,7 +140,7 @@ public class Layout {
     }
 
 
-    private void setupProperties(InputStream inps) throws IOException{
+    private void setupProperties(InputStream inps) throws IOException {
         try (InputStream in = inps) {
             Properties props = new Properties();
             props.load(in);
@@ -148,7 +149,7 @@ public class Layout {
             }
 
             Set<String> names = props.stringPropertyNames();
-            for ( String name: names ) {
+            for (String name : names) {
                 String value = props.getProperty(name);
                 if (System.getProperty(name) == null) {
                     System.setProperty(name, value);

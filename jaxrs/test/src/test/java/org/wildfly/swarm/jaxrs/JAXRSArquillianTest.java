@@ -42,10 +42,11 @@ public class JAXRSArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new JAXRSFraction() );
+        return new Container().fraction(new JAXRSFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

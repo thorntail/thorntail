@@ -27,6 +27,6 @@ public class JSFConfiguration extends MarshallingServerConfiguration<JSFFraction
     public static final String EXTENSION_MODULE = "org.jboss.as.jsf";
 
     public JSFConfiguration() {
-        super(JSFFraction.class, EXTENSION_MODULE );
+        super(JSFFraction.class, EXTENSION_MODULE);
     }
 }

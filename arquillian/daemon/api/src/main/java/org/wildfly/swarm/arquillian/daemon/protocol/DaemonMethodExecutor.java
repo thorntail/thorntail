@@ -35,6 +35,7 @@ public class DaemonMethodExecutor implements ContainerMethodExecutor {
 
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger(DaemonMethodExecutor.class.getName());
+
     private static final String SPACE = " ";
 
     private final DeploymentContext context;
@@ -73,7 +74,7 @@ public class DaemonMethodExecutor implements ContainerMethodExecutor {
         try {
             // Read response
             final ObjectInputStream response = new ObjectInputStream(
-                new NoCloseInputStream(context.getSocketInstream()));
+                    new NoCloseInputStream(context.getSocketInstream()));
             final TestResult testResult = (TestResult) response.readObject();
             response.close();
             return testResult;

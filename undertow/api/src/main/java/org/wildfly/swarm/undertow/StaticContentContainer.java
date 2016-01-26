@@ -15,20 +15,19 @@
  */
 package org.wildfly.swarm.undertow;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Filter;
-import org.jboss.shrinkwrap.api.Filters;
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.impl.base.Validate;
-import org.jboss.shrinkwrap.impl.base.path.BasicPath;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Filter;
+import org.jboss.shrinkwrap.api.Filters;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 
 /**
  * @author Bob McWhirter
@@ -57,7 +56,7 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
 
         Node node = get("WEB-INF/undertow-external-mounts.conf");
         UndertowExternalMountsAsset asset;
-        if ( node == null ) {
+        if (node == null) {
             asset = new UndertowExternalMountsAsset();
             add(asset, "WEB-INF/undertow-external-mounts.conf");
         } else {
@@ -67,14 +66,14 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
         // Add external mounts for static content so changes are picked up
         // immediately during development
         Path webResources = Paths.get(System.getProperty("user.dir"), "src", "main", "webapp");
-        if (base != null ) {
+        if (base != null) {
             webResources = webResources.resolve(base);
         }
         if (Files.exists(webResources)) {
             asset.externalMount(webResources.toString());
         }
         webResources = Paths.get(System.getProperty("user.dir"), "src", "main", "resources");
-        if (base != null ) {
+        if (base != null) {
             webResources = webResources.resolve(base);
         }
         if (Files.exists(webResources)) {

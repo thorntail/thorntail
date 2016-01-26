@@ -26,7 +26,8 @@ import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.xml.ModuleXmlParser;
 
-/** Used only for loading dependencies of org.wildfly.bootstrap:main from its own jar.
+/**
+ * Used only for loading dependencies of org.wildfly.bootstrap:main from its own jar.
  *
  * @author Bob McWhirter
  */
@@ -52,10 +53,10 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
         ModuleSpec moduleSpec = null;
         InputStream in = null;
         try {
-            final URL base = new URL( url, "./" );
+            final URL base = new URL(url, "./");
             in = url.openStream();
             moduleSpec = ModuleXmlParser.parseModuleXml(
-                    (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor( base, rootPath, loaderPath, loaderName ),
+                    (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
                     MavenResolvers.get(),
                     "/",
                     in,
@@ -71,7 +72,7 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
             throw t;
         } finally {
             try {
-                if ( in != null ) {
+                if (in != null) {
                     in.close();
                 }
             } catch (IOException e) {

@@ -42,10 +42,11 @@ public class EJBRemoteArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new EJBRemoteFraction() );
+        return new Container().fraction(new EJBRemoteFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

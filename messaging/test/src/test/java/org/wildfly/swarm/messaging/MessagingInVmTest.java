@@ -26,7 +26,7 @@ public class MessagingInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( MessagingFraction.createDefaultFraction() );
+        container.fraction(MessagingFraction.createDefaultFraction());
         container.start().stop();
     }
 }

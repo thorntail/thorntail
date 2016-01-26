@@ -26,7 +26,7 @@ public class EJBRemoteInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new EJBRemoteFraction() );
+        container.fraction(new EJBRemoteFraction());
         container.start().stop();
     }
 }

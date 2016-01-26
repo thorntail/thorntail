@@ -30,9 +30,13 @@ import org.wildfly.swarm.container.Fraction;
 public class EEFraction extends EE<EEFraction> implements Fraction {
 
     public static final String CONCURRENCY_CONTEXT_DEFAULT = "java:jboss/ee/concurrency/context/default";
+
     public static final String CONCURRENCY_FACTORY_DEFAULT = "java:jboss/ee/concurrency/factory/default";
+
     public static final String CONCURRENCY_EXECUTOR_DEFAULT = "java:jboss/ee/concurrency/executor/default";
+
     public static final String CONCURRENCY_SCHEDULER_DEFAULT = "java:jboss/ee/concurrency/scheduler/default";
+
     public static final String DEFAULT_KEY = "default";
 
     public static EEFraction createDefaultFraction() {
@@ -58,11 +62,11 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
                         .coreThreads(5)
                         .keepaliveTime(3000L));
 
-        fraction.defaultBindingsService( (bindings)->{
-            bindings.contextService( "java:jboss/ee/concurrency/context/default" );
-            bindings.managedExecutorService( "java:jboss/ee/concurrency/executor/default" );
-            bindings.managedScheduledExecutorService("java:jboss/ee/concurrency/scheduler/default" );
-            bindings.managedThreadFactory( "java:jboss/ee/concurrency/factory/default" );
+        fraction.defaultBindingsService((bindings) -> {
+            bindings.contextService("java:jboss/ee/concurrency/context/default");
+            bindings.managedExecutorService("java:jboss/ee/concurrency/executor/default");
+            bindings.managedScheduledExecutorService("java:jboss/ee/concurrency/scheduler/default");
+            bindings.managedThreadFactory("java:jboss/ee/concurrency/factory/default");
         });
 
         return fraction;
@@ -70,12 +74,12 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
 
     @Override
     public void postInitialize(Container.PostInitContext initContext) {
-        if ( initContext.hasFraction( "Messaging" )) {
-            if ( this.subresources().defaultBindingsService() == null ) {
-                this.defaultBindingsService( new DefaultBindingsService() );
+        if (initContext.hasFraction("Messaging")) {
+            if (this.subresources().defaultBindingsService() == null) {
+                this.defaultBindingsService(new DefaultBindingsService());
             }
             this.subresources().defaultBindingsService()
-                    .jmsConnectionFactory( "java:jboss/DefaultJMSConnectionFactory" );
+                    .jmsConnectionFactory("java:jboss/DefaultJMSConnectionFactory");
         }
     }
 }

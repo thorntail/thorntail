@@ -79,10 +79,13 @@ public class Graph {
     public class Module {
 
         private final String module;
+
         private final String slot;
 
         private Set<Artifact> artifacts = new HashSet<>();
+
         private Set<Module> dependencies = new HashSet<>();
+
         private Set<Module> dependents = new HashSet<>();
 
         public Module(String module, String slot) {
@@ -120,8 +123,11 @@ public class Graph {
     public class Artifact {
 
         private final String groupId;
+
         private final String artifactId;
+
         private final String version;
+
         private final String classifier;
 
         private Set<Module> dependents = new HashSet<>();

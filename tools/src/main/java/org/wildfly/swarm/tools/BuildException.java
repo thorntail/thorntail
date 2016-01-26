@@ -21,6 +21,6 @@ package org.wildfly.swarm.tools;
 public class BuildException extends Exception {
 
     public BuildException(String message) {
-        super( message );
+        super(message);
     }
 }

@@ -29,7 +29,7 @@ public class MessagingConfiguration extends MarshallingServerConfiguration<Messa
     public static final String EXTENSION_MODULE = "org.wildfly.extension.messaging-activemq";
 
     public MessagingConfiguration() {
-        super(MessagingFraction.class, EXTENSION_MODULE );
+        super(MessagingFraction.class, EXTENSION_MODULE);
     }
 
     @Override

@@ -37,8 +37,8 @@ public class DefaultJAXRSWarDeploymentFactory extends DefaultWarDeploymentFactor
 
     @Override
     public Archive create(Container container) throws Exception {
-        JAXRSArchive archive = ShrinkWrap.create( JAXRSArchive.class, determineName() );
-        setup( archive );
+        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class, determineName());
+        setup(archive);
         return archive;
     }
 }

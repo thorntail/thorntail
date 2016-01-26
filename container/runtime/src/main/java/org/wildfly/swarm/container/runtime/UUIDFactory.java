@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.container.runtime;
 
-import org.wildfly.swarm.SwarmProperties;
-
 import java.util.UUID;
+
+import org.wildfly.swarm.SwarmProperties;
 
 /**
  * @author Bob McWhirter
@@ -28,27 +28,28 @@ public class UUIDFactory {
 
 
         String swarmNodeId = System.getProperty(SwarmProperties.NODE_ID);
-        String jbossNodeName = System.getProperty( "jboss.node.name" );
+        String jbossNodeName = System.getProperty("jboss.node.name");
 
         String uuidInput = null;
 
         // Prefer swarm.node.id, if present and jboss.node.name is
         // not, then set jboss.node.name=swarm.node.id
-        if ( swarmNodeId != null ) {
+        if (swarmNodeId != null) {
             uuidInput = swarmNodeId;
-            if ( jbossNodeName == null ) {
-                System.setProperty( "jboss.node.name", swarmNodeId );
+            if (jbossNodeName == null) {
+                System.setProperty("jboss.node.name", swarmNodeId);
             }
-        } if ( jbossNodeName != null ) {
+        }
+        if (jbossNodeName != null) {
             uuidInput = jbossNodeName;
         }
 
         // if neither swarm.node.id nor jboss.node.name are set,
         // just generate a random UUID
-        if ( uuidInput == null ) {
+        if (uuidInput == null) {
             return UUID.randomUUID();
         }
 
-        return UUID.nameUUIDFromBytes( uuidInput.getBytes() );
+        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
     }
 }

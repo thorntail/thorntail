@@ -25,7 +25,7 @@ import org.wildfly.swarm.container.Fraction;
 public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
 
     static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride( JAXRSArchive.class, JAXRSArchiveImpl.class );
+        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(JAXRSArchive.class, JAXRSArchiveImpl.class);
     }
 
     public JAXRSFraction() {

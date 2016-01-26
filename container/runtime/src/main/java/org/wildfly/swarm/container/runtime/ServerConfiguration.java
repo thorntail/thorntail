@@ -17,18 +17,16 @@ package org.wildfly.swarm.container.runtime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
 
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.container.Fraction;
-
-import javax.xml.namespace.QName;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Bob McWhirter
@@ -63,5 +61,7 @@ public interface ServerConfiguration<T extends Fraction> {
         return false;
     }
 
-    default Optional<ModelNode> getExtension() { return Optional.empty(); }
+    default Optional<ModelNode> getExtension() {
+        return Optional.empty();
+    }
 }

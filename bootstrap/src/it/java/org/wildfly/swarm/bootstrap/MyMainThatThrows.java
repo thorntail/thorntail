@@ -20,7 +20,7 @@ package org.wildfly.swarm.bootstrap;
  */
 public class MyMainThatThrows {
 
-    public static void main(String...args) throws Throwable {
+    public static void main(String... args) throws Throwable {
         throw new Exception("expected to throw");
 
     }

@@ -28,10 +28,15 @@ public class WebServicesFraction extends Webservices<WebServicesFraction> implem
     private static final String STANDARD_ENDPOINT_CONFIG = "Standard-Endpoint-Config";
 
     private static final String RECORDING = "Recording-Endpoint-Config";
+
     private static final String RECORDING_HANDLERS = "recording-handlers";
+
     private static final String SOAP_PROTOCOLS = "##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM";
+
     private static final String RECORDING_HANDLER = "RecordingHandler";
+
     private static final String RECORDING_HANDLER_CLASS = "org.jboss.ws.common.invocation.RecordingServerHandler";
+
     private static final String SOAP_HOST = "127.0.0.1";
 
     private static final String STANDARD_CLIENT_CONFIG = "Standard-Client-Config";
@@ -41,9 +46,9 @@ public class WebServicesFraction extends Webservices<WebServicesFraction> implem
     }
 
     public static WebServicesFraction createDefaultFraction() {
-        
+
         String SoapHost = System.getProperty(SwarmProperties.BIND_ADDRESS, SOAP_HOST);
-        
+
         return new WebServicesFraction()
                 .wsdlHost(SoapHost)
                 .endpointConfig(new EndpointConfig(STANDARD_ENDPOINT_CONFIG))
@@ -55,6 +60,6 @@ public class WebServicesFraction extends Webservices<WebServicesFraction> implem
         return new EndpointConfig(RECORDING)
                 .preHandlerChain(new PreHandlerChain(RECORDING_HANDLERS)
                         .protocolBindings(SOAP_PROTOCOLS)
-                .handler(new Handler(RECORDING_HANDLER).attributeClass(RECORDING_HANDLER_CLASS)));
+                        .handler(new Handler(RECORDING_HANDLER).attributeClass(RECORDING_HANDLER_CLASS)));
     }
 }

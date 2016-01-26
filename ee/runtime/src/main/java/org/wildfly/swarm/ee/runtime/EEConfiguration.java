@@ -15,21 +15,17 @@
  */
 package org.wildfly.swarm.ee.runtime;
 
-import org.jboss.dmr.ModelNode;
-import org.jboss.staxmapper.XMLElementReader;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.container.runtime.AbstractParserFactory;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
-import org.wildfly.swarm.ee.EEFraction;
-
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
+import javax.xml.namespace.QName;
+
+import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
+import org.wildfly.swarm.container.runtime.AbstractParserFactory;
+import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
+import org.wildfly.swarm.ee.EEFraction;
 
 /**
  * @author Bob McWhirter

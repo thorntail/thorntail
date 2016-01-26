@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.container;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DependenciesType;
@@ -22,30 +26,26 @@ import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DeploymentType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.JBossDeploymentStructureDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ModuleDependencyType;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
-
 import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
 
 /**
  * @author Bob McWhirter
  */
-public class JBossDeploymentStructureAsset implements Asset{
+public class JBossDeploymentStructureAsset implements Asset {
 
     private final JBossDeploymentStructureDescriptor descriptor;
 
     public JBossDeploymentStructureAsset() {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
-                         () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
+                        () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
     }
 
     public JBossDeploymentStructureAsset(InputStream fromStream) {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
-                         () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
-                                 .fromStream(fromStream));
+                        () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
+                                .fromStream(fromStream));
     }
 
     public void addModule(final String name, final String slot) {

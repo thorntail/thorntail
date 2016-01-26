@@ -45,7 +45,7 @@ public abstract class ExtensionServerConfiguration<T extends Fraction> extends A
 
     @Override
     public Optional<ModelNode> getExtension() {
-        if ( this.extensionModuleName != null ) {
+        if (this.extensionModuleName != null) {
             ModelNode node = new ModelNode();
             node.get(OP_ADDR).set(EXTENSION, this.extensionModuleName);
             node.get(OP).set(ADD);

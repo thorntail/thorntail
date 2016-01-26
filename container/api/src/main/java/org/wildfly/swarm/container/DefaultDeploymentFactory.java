@@ -15,11 +15,6 @@
  */
 package org.wildfly.swarm.container;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +25,11 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.UUID;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
  * @author Bob McWhirter

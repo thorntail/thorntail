@@ -42,10 +42,11 @@ public class DatasourcesArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction( new DatasourcesFraction() );
+        return new Container().fraction(new DatasourcesFraction());
     }
 
-    @Test @RunAsClient
+    @Test
+    @RunAsClient
     public void testNothing() {
 
     }

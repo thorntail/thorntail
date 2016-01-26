@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.jboss.modules.maven.MavenResolver;
@@ -37,7 +36,7 @@ public class MultiMavenResolver implements MavenResolver {
     }
 
     public void addResolver(MavenResolver resolver) {
-        this.resolvers.add( resolver );
+        this.resolvers.add(resolver);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class MultiMavenResolver implements MavenResolver {
 
         for (MavenResolver resolver : this.resolvers) {
             File result = resolver.resolveArtifact(coordinates, packaging);
-            if ( result != null ) {
+            if (result != null) {
                 return result;
             }
         }

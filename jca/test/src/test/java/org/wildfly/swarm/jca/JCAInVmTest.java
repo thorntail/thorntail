@@ -26,7 +26,7 @@ public class JCAInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( JCAFraction.createDefaultFraction() );
+        container.fraction(JCAFraction.createDefaultFraction());
         container.start().stop();
     }
 }

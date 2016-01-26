@@ -29,17 +29,17 @@ public class DeploymentException extends Exception {
     }
 
     public DeploymentException(Throwable rootCause) {
-        super( rootCause );
+        super(rootCause);
         this.archive = null;
     }
 
     public DeploymentException(Archive<?> archive, Throwable rootCause) {
-        super( rootCause );
+        super(rootCause);
         this.archive = archive;
     }
 
     public DeploymentException(Archive<?> archive, String message) {
-        super( message );
+        super(message);
         this.archive = archive;
     }
 

@@ -26,7 +26,7 @@ public class MSCInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new MSCFraction() );
+        container.fraction(new MSCFraction());
         container.start().stop();
     }
 }

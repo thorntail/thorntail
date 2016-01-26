@@ -38,6 +38,7 @@ public class AuthCallbackHandler implements CallbackHandler {
         this.password = password;
 
     }
+
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
         for (Callback current : callbacks) {

@@ -1,13 +1,14 @@
 package org.wildfly.swarm.ee.runtime;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.jboss.as.ee.subsystem.EeExtension;
 import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.container.runtime.AbstractParserFactory;
-
-import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Heiko Braun

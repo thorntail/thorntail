@@ -1,19 +1,5 @@
 package org.wildfly.swarm.container.runtime;
 
-import org.jboss.as.controller.parsing.Namespace;
-import org.jboss.as.controller.parsing.ProfileParsingCompletionHandler;
-import org.jboss.as.server.parsing.ExtensionHandler;
-import org.jboss.as.server.parsing.StandaloneXml;
-import org.jboss.dmr.ModelNode;
-import org.jboss.staxmapper.XMLElementReader;
-import org.jboss.staxmapper.XMLExtendedStreamReader;
-import org.jboss.staxmapper.XMLExtendedStreamWriter;
-import org.jboss.staxmapper.XMLMapper;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -22,7 +8,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.jboss.as.controller.parsing.Namespace;
+import org.jboss.as.controller.parsing.ProfileParsingCompletionHandler;
+import org.jboss.as.server.parsing.ExtensionHandler;
+import org.jboss.as.server.parsing.StandaloneXml;
 import org.jboss.as.server.parsing.StandaloneXml.ParsingOption;
+import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
+import org.jboss.staxmapper.XMLExtendedStreamReader;
+import org.jboss.staxmapper.XMLExtendedStreamWriter;
+import org.jboss.staxmapper.XMLMapper;
 
 /**
  * @author Heiko Braun
@@ -31,6 +31,7 @@ import org.jboss.as.server.parsing.StandaloneXml.ParsingOption;
 public class StandaloneXmlParser {
 
     private final XMLMapper xmlMapper;
+
     private final StandaloneXml parserDelegate;
 
     public StandaloneXmlParser() {
@@ -61,7 +62,7 @@ public class StandaloneXmlParser {
      * Add a parser for a subpart of the XML model.
      *
      * @param elementName the FQ element name (i.e. subsystem name)
-     * @param parser creates ModelNode's from XML input
+     * @param parser      creates ModelNode's from XML input
      * @return
      */
     public StandaloneXmlParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>> parser) {
@@ -99,7 +100,7 @@ public class StandaloneXmlParser {
     private static class NoopXMLElementReader implements XMLElementReader<List<ModelNode>> {
         @Override
         public void readElement(XMLExtendedStreamReader reader, List<ModelNode> modelNode) throws XMLStreamException {
-            System.out.println("Skip "+reader.getNamespaceURI()+"::"+reader.getLocalName());
+            System.out.println("Skip " + reader.getNamespaceURI() + "::" + reader.getLocalName());
             reader.discardRemainder();
         }
     }

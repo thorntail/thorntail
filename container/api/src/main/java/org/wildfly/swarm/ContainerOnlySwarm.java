@@ -22,7 +22,8 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.container.Container;
 
-/** Default {@code main(...)} if an application does not provide one.
+/**
+ * Default {@code main(...)} if an application does not provide one.
  *
  * <p>This simply constructs a default container, starts it and performs
  * a default deployment.  Typically only useful for barren WAR applications.</p>
@@ -31,32 +32,33 @@ import org.wildfly.swarm.container.Container;
  */
 public class ContainerOnlySwarm {
 
-    /** Main entry-point.
+    /**
+     * Main entry-point.
      *
      * @param args Ignored.
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
-        if ( System.getProperty( "boot.module.loader" ) == null ) {
-            System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader" );
+        if (System.getProperty("boot.module.loader") == null) {
+            System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
         Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
 
         ServiceLoader<ContainerFactory> factory = bootstrap.loadService(ContainerFactory.class);
         Iterator<ContainerFactory> factoryIter = factory.iterator();
 
-        if ( ! factoryIter.hasNext() ) {
-            simpleMain( args );
+        if (!factoryIter.hasNext()) {
+            simpleMain(args);
         } else {
-            factoryMain( factoryIter.next(), args );
+            factoryMain(factoryIter.next(), args);
         }
     }
 
-    public static void simpleMain(String...args) throws Exception {
+    public static void simpleMain(String... args) throws Exception {
         new Container().start();
     }
 
-    public static void factoryMain(ContainerFactory factory, String...args) throws Exception {
+    public static void factoryMain(ContainerFactory factory, String... args) throws Exception {
         factory.newContainer(args).start();
     }
 }

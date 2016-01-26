@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
@@ -24,10 +28,6 @@ import org.wildfly.swarm.arquillian.InVM;
 import org.wildfly.swarm.arquillian.StartupTimeout;
 import org.wildfly.swarm.arquillian.daemon.container.DaemonContainerConfigurationBase;
 import org.wildfly.swarm.arquillian.daemon.container.DaemonDeployableContainerBase;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Bob McWhirter
@@ -62,8 +62,8 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
         StartupTimeout startupTimeout = this.testClass.getAnnotation(StartupTimeout.class);
-        if ( startupTimeout != null ) {
-            setTimeout( startupTimeout.value() );
+        if (startupTimeout != null) {
+            setTimeout(startupTimeout.value());
         }
 
 
@@ -94,7 +94,7 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
         try {
             this.delegateContainer.stop();
         } catch (Exception e) {
-            throw new DeploymentException( "Unable to stop process", e );
+            throw new DeploymentException("Unable to stop process", e);
         }
     }
 

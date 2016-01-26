@@ -41,10 +41,10 @@ public class DaemonServiceActivator implements ServiceActivator {
         DaemonService runner = new DaemonService();
         serviceActivatorContext.getServiceTarget()
                 .addService(ServiceName.of("wildfly", "swarm", "arquillian", "daemon", "runner"),
-                            runner)
+                        runner)
                 .addDependency(ServiceName.JBOSS.append("as", "service-module-loader"),
-                               ModuleLoader.class,
-                               runner.getServiceLoader())
+                        ModuleLoader.class,
+                        runner.getServiceLoader())
                 .setInitialMode(ServiceController.Mode.ACTIVE)
                 .install();
     }
@@ -71,7 +71,7 @@ public class DaemonServiceActivator implements ServiceActivator {
                 }
 
                 //TODO: allow overriding the default port?
-                this.server =  Server.create("localhost", 12345, module.getClassLoader());
+                this.server = Server.create("localhost", 12345, module.getClassLoader());
                 this.server.start();
             } catch (ModuleLoadException | ServerLifecycleException e) {
                 throw new StartException(e);

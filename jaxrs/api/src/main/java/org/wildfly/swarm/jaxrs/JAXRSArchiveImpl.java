@@ -15,18 +15,23 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import org.jboss.shrinkwrap.api.*;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
-import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
-import org.objectweb.asm.ClassReader;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchiveEvent;
+import org.jboss.shrinkwrap.api.ArchiveEventHandler;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
+import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
+import org.objectweb.asm.ClassReader;
 
 /**
  * @author Bob McWhirter
@@ -96,6 +101,27 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         addExceptionMapperForFavicon();
     }
 
+    private static boolean hasApplicationPathAnnotation(ArchivePath path, Asset asset) {
+        if (asset == null) {
+            return false;
+        }
+
+        if (!path.get().endsWith(".class")) {
+            return false;
+        }
+
+        try (InputStream in = asset.openStream()) {
+            ClassReader reader = new ClassReader(in);
+            AnnotationSeekingClassVisitor visitor = new AnnotationSeekingClassVisitor();
+            reader.accept(visitor, 0);
+            return visitor.isFound();
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        }
+
+        return false;
+    }
+
     protected void addGeneratedApplication() {
 
         Map<ArchivePath, Node> content = getArchive().getContent();
@@ -136,16 +162,16 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         }
     }
 
+
+    // -------------------------------------------------------------------------------------||
+    // Required Implementations -----------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
     @Override
     public JAXRSArchive addResource(Class<?> resource) {
         addClass(resource);
         return covarientReturn();
     }
-
-
-    // -------------------------------------------------------------------------------------||
-    // Required Implementations -----------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
 
     /**
      * {@inheritDoc}
@@ -217,31 +243,10 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         return PATH_SERVICE_PROVIDERS;
     }
 
-
-    private static boolean hasApplicationPathAnnotation(ArchivePath path, Asset asset) {
-        if (asset == null) {
-            return false;
-        }
-
-        if (! path.get().endsWith(".class" ) ) {
-            return false;
-        }
-
-        try (InputStream in = asset.openStream() ) {
-            ClassReader reader = new ClassReader(in);
-            AnnotationSeekingClassVisitor visitor = new AnnotationSeekingClassVisitor();
-            reader.accept(visitor, 0 );
-            return visitor.isFound();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        }
-
-        return false;
-    }
-
     public static class ApplicationHandler implements ArchiveEventHandler {
 
         private final JAXRSArchive archive;
+
         private final String path;
 
         public ApplicationHandler(JAXRSArchive archive, String path) {

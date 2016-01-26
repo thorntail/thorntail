@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import org.jboss.shrinkwrap.api.Archive;
-
 import java.util.Set;
+
+import org.jboss.shrinkwrap.api.Archive;
 
 public interface SimpleContainer {
     void start(Archive<?> archive) throws Exception;

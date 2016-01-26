@@ -30,7 +30,7 @@ public class BatchConfiguration extends MarshallingServerConfiguration<BatchFrac
 
     @Override
     public BatchFraction defaultFraction() {
-        System.err.println( "creating batch default fraction" );
+        System.err.println("creating batch default fraction");
         return BatchFraction.createDefaultFraction();
     }
 }

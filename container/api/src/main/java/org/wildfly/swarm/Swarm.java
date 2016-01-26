@@ -23,10 +23,10 @@ import java.util.ServiceLoader;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.container.Container;
 
-/** Default {@code main(...)} if an application does not provide one.
+/**
+ * Default {@code main(...)} if an application does not provide one.
  *
  * <p>This simply constructs a default container, starts it and performs
  * a default deployment.  Typically only useful for barren WAR applications.</p>
@@ -37,50 +37,51 @@ public class Swarm {
 
     public static ArtifactManager ARTIFACT_MANAGER;
 
-    /** Main entry-point.
+    /**
+     * Main entry-point.
      *
      * @param args Ignored.
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
-        if ( System.getProperty( "boot.module.loader" ) == null ) {
-            System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader" );
+        if (System.getProperty("boot.module.loader") == null) {
+            System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
         Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
 
         ServiceLoader<ContainerFactory> factory = bootstrap.loadService(ContainerFactory.class);
         Iterator<ContainerFactory> factoryIter = factory.iterator();
 
-        if ( ! factoryIter.hasNext() ) {
-            simpleMain( args );
+        if (!factoryIter.hasNext()) {
+            simpleMain(args);
         } else {
-            factoryMain( factoryIter.next(), args );
+            factoryMain(factoryIter.next(), args);
         }
     }
 
-    public static void simpleMain(String...args) throws Exception {
+    public static void simpleMain(String... args) throws Exception {
         Container container = new Container().start();
         container.deploy();
     }
 
-    public static void factoryMain(ContainerFactory factory, String...args) throws Exception {
+    public static void factoryMain(ContainerFactory factory, String... args) throws Exception {
         Container container = factory.newContainer(args).start();
         container.deploy();
     }
 
     public static ArtifactManager artifactManager() throws IOException {
-        if ( ARTIFACT_MANAGER == null ) {
+        if (ARTIFACT_MANAGER == null) {
             ARTIFACT_MANAGER = new ArtifactManager();
         }
         return ARTIFACT_MANAGER;
     }
 
     public static JavaArchive artifact(String gav) throws Exception {
-        return artifactManager().artifact( gav );
+        return artifactManager().artifact(gav);
     }
 
     public static JavaArchive artifact(String gav, String asName) throws Exception {
-        return artifactManager().artifact( gav, asName );
+        return artifactManager().artifact(gav, asName);
     }
 
     public static List<JavaArchive> allArtifacts() throws Exception {

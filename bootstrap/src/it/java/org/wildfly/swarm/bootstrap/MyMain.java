@@ -20,7 +20,7 @@ package org.wildfly.swarm.bootstrap;
  */
 public class MyMain {
 
-    public static void main(String...args) {
+    public static void main(String... args) {
 
     }
 }

@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.integration.mail;
 
+import java.io.IOException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
@@ -23,8 +25,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.openqa.selenium.WebDriver;
 import org.wildfly.swarm.integration.base.TestConstants;
 import org.wildfly.swarm.undertow.WARArchive;
-
-import java.io.IOException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -44,7 +44,7 @@ public class SimpleMailTest {
         return deployment;
     }
 
-//    @Test
+    //    @Test
     @RunAsClient
     public void testSimple() throws IOException {
         browser.get(TestConstants.DEFAULT_URL + "static-content.txt");

@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.tools;
 
-import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
-
 import java.io.File;
+
+import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 
 /**
  * @author Bob McWhirter
@@ -79,7 +79,7 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public String jarRepoPath() {
         return String.format("%s/%s/%s/%s", groupId().replace('.', '/'), artifactId(),
-                                 version(), jarName());
+                version(), jarName());
     }
 
     public String toString() {

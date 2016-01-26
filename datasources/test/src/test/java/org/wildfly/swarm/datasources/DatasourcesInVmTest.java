@@ -26,7 +26,7 @@ public class DatasourcesInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( new DatasourcesFraction() );
+        container.fraction(new DatasourcesFraction());
         container.start().stop();
     }
 }

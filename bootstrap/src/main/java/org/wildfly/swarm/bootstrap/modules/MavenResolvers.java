@@ -26,10 +26,10 @@ public class MavenResolvers {
     private static final MultiMavenResolver INSTANCE = new MultiMavenResolver();
 
     static {
-        INSTANCE.addResolver( new UberJarMavenResolver() );
-        if ( System.getProperty(BootstrapProperties.BUNDLED_DEPENDENCIES) == null ) {
-            System.err.println( "Dependencies not bundled, will resolve from local M2REPO");
-            INSTANCE.addResolver( MavenResolver.createDefaultResolver() );
+        INSTANCE.addResolver(new UberJarMavenResolver());
+        if (System.getProperty(BootstrapProperties.BUNDLED_DEPENDENCIES) == null) {
+            System.err.println("Dependencies not bundled, will resolve from local M2REPO");
+            INSTANCE.addResolver(MavenResolver.createDefaultResolver());
         }
     }
 

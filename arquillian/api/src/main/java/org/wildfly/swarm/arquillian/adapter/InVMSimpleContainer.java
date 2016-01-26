@@ -49,7 +49,7 @@ public class InVMSimpleContainer implements SimpleContainer {
                     .addModule("org.wildfly.swarm.container")
                     .addModule("org.wildfly.swarm.configuration");
             Object factory = this.testClass.newInstance();
-            this.container = ((ContainerFactory)factory).newContainer();
+            this.container = ((ContainerFactory) factory).newContainer();
         } else {
             this.container = new Container();
         }

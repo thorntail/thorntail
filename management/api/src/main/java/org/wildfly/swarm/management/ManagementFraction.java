@@ -41,23 +41,23 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
 
     @Override
     public ManagementFraction httpInterfaceManagementInterface() {
-        return httpInterfaceManagementInterface( (iface)->{
+        return httpInterfaceManagementInterface((iface) -> {
         });
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public ManagementFraction httpInterfaceManagementInterface(HTTPInterfaceManagementInterfaceConsumer consumer) {
-        return super.httpInterfaceManagementInterface( (iface)->{
+        return super.httpInterfaceManagementInterface((iface) -> {
             iface.consoleEnabled(false);
             iface.httpUpgradeEnabled(true);
-            iface.socketBinding( "management-http" );
+            iface.socketBinding("management-http");
             consumer.accept(iface);
         });
     }
 
     public ManagementFraction securityRealm(String childKey, EnhancedSecurityRealm.Consumer consumer) {
-        return securityRealm( ()->{
+        return securityRealm(() -> {
             EnhancedSecurityRealm realm = new EnhancedSecurityRealm(childKey);
             consumer.accept(realm);
             return realm;

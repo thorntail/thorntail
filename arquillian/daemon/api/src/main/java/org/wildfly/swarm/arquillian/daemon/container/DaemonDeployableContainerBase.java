@@ -15,15 +15,6 @@
  */
 package org.wildfly.swarm.arquillian.daemon.container;
 
-import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
-import org.jboss.arquillian.container.spi.client.container.DeploymentException;
-import org.jboss.arquillian.container.spi.client.container.LifecycleException;
-import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
-import org.jboss.shrinkwrap.descriptor.api.Descriptor;
-import org.wildfly.swarm.arquillian.daemon.protocol.WireProtocol;
-import org.wildfly.swarm.arquillian.daemon.protocol.DaemonProtocol;
-import org.wildfly.swarm.arquillian.daemon.protocol.DeploymentContext;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,22 +28,37 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
+import org.jboss.arquillian.container.spi.client.container.DeploymentException;
+import org.jboss.arquillian.container.spi.client.container.LifecycleException;
+import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
+import org.jboss.shrinkwrap.descriptor.api.Descriptor;
+import org.wildfly.swarm.arquillian.daemon.protocol.DaemonProtocol;
+import org.wildfly.swarm.arquillian.daemon.protocol.DeploymentContext;
+import org.wildfly.swarm.arquillian.daemon.protocol.WireProtocol;
+
 /**
  * Base support for containers of the Arquillian Server Daemon
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
 public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonContainerConfigurationBase> implements
-    DeployableContainer<CONFIGTYPE> {
+        DeployableContainer<CONFIGTYPE> {
 
     private static final Logger log = Logger.getLogger(DaemonDeployableContainerBase.class.getName());
+
     private static final String ERROR_MESSAGE_DESCRIPTORS_UNSUPPORTED = "Descriptor deployment not supported";
 
     private InetSocketAddress remoteAddress;
+
     private Socket socket;
+
     private OutputStream socketOutstream;
+
     private InputStream socketInstream;
+
     private BufferedReader reader;
+
     private PrintWriter writer;
 
     private int timeout = 10;
@@ -94,8 +100,8 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
                     // Time expired?
                     if (currentTime > acceptableTime) {
                         throw new LifecycleException("Could not connect to the server at "
-                            + remoteAddress.getHostString() + ":" + remoteAddress.getPort() + " in the allotted "
-                            + secondsToWait + "s", ce);
+                                + remoteAddress.getHostString() + ":" + remoteAddress.getPort() + " in the allotted "
+                                + secondsToWait + "s", ce);
                     }
                     // Sleep and try again
                     try {
@@ -111,7 +117,7 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
             final OutputStream socketOutstream = socket.getOutputStream();
             this.socketOutstream = socketOutstream;
             final PrintWriter writer = new PrintWriter(new OutputStreamWriter(socketOutstream, WireProtocol.CHARSET),
-                true);
+                    true);
             this.writer = writer;
             final InputStream socketInstream = socket.getInputStream();
             this.socketInstream = socketInstream;
@@ -146,7 +152,7 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
 
     protected DeploymentContext createDeploymentContext(final String deploymentId) {
         return DeploymentContext.create(deploymentId, socketInstream,
-                                        socketOutstream, reader, writer);
+                socketOutstream, reader, writer);
     }
 
     /**

@@ -28,10 +28,10 @@ public class InMemoryAuthorization {
         this.plugin = plugin;
     }
 
-    public void add(String userName, String...roles) {
-        this.plugin.property( userName + ".roles", (prop)->{
+    public void add(String userName, String... roles) {
+        this.plugin.property(userName + ".roles", (prop) -> {
             String value = String.join(",", roles);
-            prop.value( value );
+            prop.value(value);
         });
 
     }

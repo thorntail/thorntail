@@ -33,8 +33,8 @@ public class ExecutableJar implements Executable {
     @Override
     public List<? extends String> toArguments() {
         List<String> args = new ArrayList<>();
-        args.add( "-jar" );
-        args.add( this.jar.toString() );
+        args.add("-jar");
+        args.add(this.jar.toString());
         return args;
     }
 }

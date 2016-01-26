@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.ejb;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.ejb3.AsyncService;
@@ -31,9 +34,6 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.security.SecurityFraction;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Ken Finnigan
  * @author Lance Ball
@@ -46,7 +46,7 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
     public static EJBFraction createDefaultFraction() {
 
-        Map<Object,Object> threadPoolSettings = new HashMap<>();
+        Map<Object, Object> threadPoolSettings = new HashMap<>();
         threadPoolSettings.put("time", "100");
         threadPoolSettings.put("unit", "MILLISECONDS");
 
@@ -94,7 +94,7 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
                                 .policyModule(new PolicyModule("default")
                                         .code("Delegating")
                                         .flag(Flag.REQUIRED)));
-                security.securityDomain( ejbPolicy );
+                security.securityDomain(ejbPolicy);
             }
         }
 

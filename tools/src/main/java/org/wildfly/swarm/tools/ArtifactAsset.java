@@ -15,13 +15,13 @@
  */
 package org.wildfly.swarm.tools;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
  * @author Bob McWhirter
@@ -45,7 +45,7 @@ public class ArtifactAsset implements ProjectAsset {
     @Override
     public InputStream openStream() {
         try {
-            return new FileInputStream( spec.file );
+            return new FileInputStream(spec.file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

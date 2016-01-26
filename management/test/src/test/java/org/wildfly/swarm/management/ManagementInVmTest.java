@@ -26,7 +26,7 @@ public class ManagementInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction( ManagementFraction.createDefaultFraction() );
+        container.fraction(ManagementFraction.createDefaultFraction());
         container.start().stop();
     }
 }

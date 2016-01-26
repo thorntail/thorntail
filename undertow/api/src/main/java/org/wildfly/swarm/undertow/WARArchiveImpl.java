@@ -15,14 +15,14 @@
  */
 package org.wildfly.swarm.undertow;
 
+import java.util.logging.Logger;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
 import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
-
-import java.util.logging.Logger;
 
 /**
  * @author Bob McWhirter

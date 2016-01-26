@@ -18,7 +18,6 @@ package org.wildfly.swarm.jaxrs;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
 
 /**
  * @author Bob McWhirter

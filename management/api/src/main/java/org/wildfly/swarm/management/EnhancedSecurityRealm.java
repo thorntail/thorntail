@@ -27,26 +27,27 @@ public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> 
 
     public EnhancedSecurityRealm(String key) {
         super(key);
-        plugIn( "org.wildfly.swarm.management:runtime");
+        plugIn("org.wildfly.swarm.management:runtime");
     }
 
     public EnhancedSecurityRealm inMemoryAuthentication(InMemoryAuthentication.Consumer consumer) {
-        return plugInAuthentication( (plugin)->{
-            plugin.name( IN_MEMORY_PLUGIN_NAME );
+        return plugInAuthentication((plugin) -> {
+            plugin.name(IN_MEMORY_PLUGIN_NAME);
             InMemoryAuthentication authn = new InMemoryAuthentication(getKey(), plugin);
-            consumer.accept( authn );
+            consumer.accept(authn);
         });
     }
 
     public EnhancedSecurityRealm inMemoryAuthorization() {
-        return inMemoryAuthorization( (authz)->{} );
+        return inMemoryAuthorization((authz) -> {
+        });
     }
 
     public EnhancedSecurityRealm inMemoryAuthorization(InMemoryAuthorization.Consumer consumer) {
-        return plugInAuthorization( (plugin)->{
-            plugin.name( IN_MEMORY_PLUGIN_NAME );
+        return plugInAuthorization((plugin) -> {
+            plugin.name(IN_MEMORY_PLUGIN_NAME);
             InMemoryAuthorization authz = new InMemoryAuthorization(plugin);
-            consumer.accept( authz );
+            consumer.accept(authz);
         });
     }
 

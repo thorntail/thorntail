@@ -98,8 +98,7 @@ public class JARArchiveImpl extends ContainerBase<JARArchive> implements JARArch
     /**
      * Libraries are not supported by JavaArchive.
      *
-     * @throws UnsupportedOperationException
-     *             Libraries are not supported by JavaArchive
+     * @throws UnsupportedOperationException Libraries are not supported by JavaArchive
      */
     @Override
     public ArchivePath getLibraryPath() {

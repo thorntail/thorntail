@@ -15,6 +15,11 @@
  */
 package org.wildfly.swarm.arquillian;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -24,11 +29,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.container.JARArchive;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -63,7 +63,7 @@ public class ArquillianTest {
 
     @Test
     @RunAsClient
-    public void testOutside() throws Exception{
+    public void testOutside() throws Exception {
         // confirm the resource injectors work
         assertEquals(EXPECTED_URL, url);
         assertEquals(EXPECTED_URI, uri);

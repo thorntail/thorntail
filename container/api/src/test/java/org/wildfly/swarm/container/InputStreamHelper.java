@@ -33,7 +33,7 @@ public class InputStreamHelper {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             String line = null;
             while ((line = reader.readLine()) != null) {
-                lines.add( line.trim() );
+                lines.add(line.trim());
             }
         }
         return lines;

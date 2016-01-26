@@ -15,16 +15,6 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.tools.exec.SwarmExecutor;
-import org.wildfly.swarm.tools.exec.SwarmProcess;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,6 +26,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.tools.exec.SwarmExecutor;
+import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 /**
  * @author Bob McWhirter
@@ -104,17 +104,17 @@ public class StartMojo extends AbstractSwarmMojo {
         }
 
         List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
-        if ( procs == null ) {
+        if (procs == null) {
             procs = new ArrayList<>();
             getPluginContext().put("swarm-process", procs);
         }
-        procs.add( process );
+        procs.add(process);
 
         if (waitForProcess) {
             try {
                 process.waitFor();
             } catch (InterruptedException e) {
-                throw new MojoExecutionException( "Error waiting for process to start", e );
+                throw new MojoExecutionException("Error waiting for process to start", e);
             }
         }
     }

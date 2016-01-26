@@ -24,25 +24,25 @@
 
 <module xmlns="urn:jboss:module:1.3" name="org.jboss.msc">
 
-    <properties>
-        <property name="jboss.require-java-version" value="1.7"/>
-    </properties>
+  <properties>
+    <property name="jboss.require-java-version" value="1.7"/>
+  </properties>
 
-    <main-class name="org.jboss.msc.Version"/>
+  <main-class name="org.jboss.msc.Version"/>
 
-    <resources>
-        <artifact name="org.jboss.msc:jboss-msc:${version.org.jboss.msc.jboss-msc}"/>
-    </resources>
+  <resources>
+    <artifact name="org.jboss.msc:jboss-msc:${version.org.jboss.msc.jboss-msc}"/>
+  </resources>
 
-    <dependencies>
-        <module name="javax.api"/>
-        <module name="org.jboss.logging"/>
-        <module name="org.jboss.modules"/>
+  <dependencies>
+    <module name="javax.api"/>
+    <module name="org.jboss.logging"/>
+    <module name="org.jboss.modules"/>
 
-        <!-- Optional deps -->
+    <!-- Optional deps -->
 
-        <module name="javax.inject.api" optional="true"/>
-        <module name="org.jboss.threads" optional="true"/>
-        <module name="org.jboss.vfs" optional="true"/>
-    </dependencies>
+    <module name="javax.inject.api" optional="true"/>
+    <module name="org.jboss.threads" optional="true"/>
+    <module name="org.jboss.vfs" optional="true"/>
+  </dependencies>
 </module>

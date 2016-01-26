@@ -32,7 +32,7 @@ public class ApplicationFactory2 implements Opcodes {
     static byte[] create(String name, String path) throws IOException {
         ClassReader reader = new ClassReader(DefaultApplication.class.getClassLoader().getResourceAsStream(DefaultApplication.class.getName().replace('.', '/') + ".class"));
 
-        String slashName = name.replace('.', '/' );
+        String slashName = name.replace('.', '/');
 
         ClassWriter writer = new ClassWriter(0);
         Remapper remapper = new Remapper() {

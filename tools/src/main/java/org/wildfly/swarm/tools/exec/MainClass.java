@@ -31,6 +31,6 @@ public class MainClass implements Executable {
 
     @Override
     public List<? extends String> toArguments() {
-        return Collections.singletonList( this.className );
+        return Collections.singletonList(this.className);
     }
 }
