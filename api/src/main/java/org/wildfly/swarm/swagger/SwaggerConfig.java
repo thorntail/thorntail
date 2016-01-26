@@ -13,21 +13,6 @@ import java.util.Set;
  */
 public class SwaggerConfig {
 
-    public enum Key {
-        TITLE,
-        PACKAGES,
-        DESCRIPTION,
-        TERMS_OF_SERVICE_URL,
-        CONTACT,
-        LICENSE,
-        LICENSE_URL,
-        VERSION,
-        SCHEMES,
-        HOST,
-        ROOT,
-        PRETTY_PRINT
-    }
-
     private final HashMap<Key, Object> config = new HashMap<>();
 
     public SwaggerConfig(InputStream input) {
@@ -74,5 +59,20 @@ public class SwaggerConfig {
 
     public Set<Map.Entry<Key, Object>> entrySet() {
         return config.entrySet();
+    }
+
+    public enum Key {
+        TITLE,
+        PACKAGES,
+        DESCRIPTION,
+        TERMS_OF_SERVICE_URL,
+        CONTACT,
+        LICENSE,
+        LICENSE_URL,
+        VERSION,
+        SCHEMES,
+        HOST,
+        ROOT,
+        PRETTY_PRINT
     }
 }
