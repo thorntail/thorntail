@@ -43,6 +43,26 @@ public class LogstashFraction implements Fraction {
         this.formatterProperties.put(nodeKey, nodeValue);
     }
 
+    public static Fraction createDefaultLogstashFraction() {
+        return createDefaultLogstashFraction(true);
+    }
+
+    public static Fraction createDefaultLogstashFraction(boolean loggingFractionIfNoLogstash) {
+        String hostname = System.getProperty(LogstashProperties.HOSTNAME);
+        String port = System.getProperty(LogstashProperties.PORT);
+
+        if ( hostname != null && port != null ) {
+            return new LogstashFraction()
+                    .hostname(hostname)
+                    .port(port);
+        }
+
+        if( loggingFractionIfNoLogstash ) {
+            return LoggingFraction.createDefaultLoggingFraction();
+        }
+        return null;
+    }
+
     public LogstashFraction level(Level level) {
         this.level = level;
         return this;
@@ -79,26 +99,6 @@ public class LogstashFraction implements Fraction {
                 .customFormatter("logstash", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.formatters.LogstashFormatter", this.formatterProperties)
                 .customHandler(logstashHandler)
                 .rootLogger(this.level, logstashHandler.getKey()));
-    }
-
-    public static Fraction createDefaultLogstashFraction() {
-        return createDefaultLogstashFraction(true);
-    }
-
-    public static Fraction createDefaultLogstashFraction(boolean loggingFractionIfNoLogstash) {
-        String hostname = System.getProperty(LogstashProperties.HOSTNAME);
-        String port = System.getProperty(LogstashProperties.PORT);
-
-        if ( hostname != null && port != null ) {
-            return new LogstashFraction()
-                    .hostname(hostname)
-                    .port(port);
-        }
-
-        if( loggingFractionIfNoLogstash ) {
-            return LoggingFraction.createDefaultLoggingFraction();
-        }
-        return null;
     }
 
 }
