@@ -10,14 +10,15 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 
-/** MSC service for the Consul HealthClient.
+/**
+ * MSC service for the Consul HealthClient.
  *
  * @author John Hovell
  * @author Bob McWhirter
  */
 public class HealthClientService implements Service<HealthClient> {
 
-    public static final ServiceName SERIVCE_NAME = ConsulService.SERVICE_NAME.append( "health-client" );
+    public static final ServiceName SERIVCE_NAME = ConsulService.SERVICE_NAME.append("health-client");
 
     private InjectedValue<Consul> consulInjector = new InjectedValue<>();
 

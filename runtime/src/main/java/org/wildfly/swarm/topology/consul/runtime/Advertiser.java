@@ -1,16 +1,12 @@
 package org.wildfly.swarm.topology.consul.runtime;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.orbitz.consul.AgentClient;
-import com.orbitz.consul.Consul;
 import com.orbitz.consul.NotRegisteredException;
 import com.orbitz.consul.model.agent.ImmutableRegistration;
 import org.jboss.msc.inject.Injector;
@@ -22,7 +18,8 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.topology.runtime.Registration;
 
-/** Service advertiser providing TTL checks for all registered deployments
+/**
+ * Service advertiser providing TTL checks for all registered deployments
  *
  * @author John Hovell
  * @author Bob McWhirter
@@ -56,14 +53,14 @@ public class Advertiser implements Service<Advertiser>, Runnable {
         for (Registration.EndPoint endPoint : registration.endPoints()) {
             String key = uuid.toString() + "-" + endPoint.getVisibility();
             com.orbitz.consul.model.agent.Registration consulReg = ImmutableRegistration.builder()
-                    .address( endPoint.getAddress() )
-                    .port( endPoint.getPort() )
-                    .id( key )
-                    .name( registration.getName() )
-                    .addTags( endPoint.getVisibility().toString() )
-                    .check( com.orbitz.consul.model.agent.Registration.RegCheck.ttl( 3L ))
+                    .address(endPoint.getAddress())
+                    .port(endPoint.getPort())
+                    .id(key)
+                    .name(registration.getName())
+                    .addTags(endPoint.getVisibility().toString())
+                    .check(com.orbitz.consul.model.agent.Registration.RegCheck.ttl(3L))
                     .build();
-            client.register( consulReg );
+            client.register(consulReg);
             keys.add(key);
         }
     }

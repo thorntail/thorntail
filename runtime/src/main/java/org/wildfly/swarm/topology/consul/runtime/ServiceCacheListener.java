@@ -11,7 +11,8 @@ import com.orbitz.consul.model.health.ServiceHealth;
 import org.wildfly.swarm.topology.runtime.Registration;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
 
-/** Service-cache listener.
+/**
+ * Service-cache listener.
  *
  * This cache listener is responsible for receiving notifications
  * of cache changes and calculating the differences to apply to the

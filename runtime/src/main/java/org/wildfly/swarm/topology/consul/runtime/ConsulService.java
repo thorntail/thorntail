@@ -10,14 +10,15 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
-/** MSC service providing the root Consul client.
+/**
+ * MSC service providing the root Consul client.
  *
  * @author John Hovell
  * @author Bob McWhirter
  */
 public class ConsulService implements Service<Consul> {
 
-    public static final ServiceName SERVICE_NAME = ServiceName.of( "swarm.topology.consul" );
+    public static final ServiceName SERVICE_NAME = ServiceName.of("swarm.topology.consul");
 
     private final URL url;
 
@@ -35,10 +36,10 @@ public class ConsulService implements Service<Consul> {
 
         // pool because of multiple threads.
         ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder();
-        clientBuilder = clientBuilder.connectionPoolSize( 20 );
+        clientBuilder = clientBuilder.connectionPoolSize(20);
 
-        builder.withClientBuilder( clientBuilder );
-        builder.withUrl( this.url );
+        builder.withClientBuilder(clientBuilder);
+        builder.withUrl(this.url);
 
         this.consul = builder.build();
     }

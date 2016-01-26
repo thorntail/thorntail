@@ -10,14 +10,15 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 
-/** MSC Service providing a Consul AgentClient.
+/**
+ * MSC Service providing a Consul AgentClient.
  *
  * @author John Hovell
  * @author Bob McWhirter
  */
 public class AgentClientService implements Service<AgentClient> {
 
-    public static final ServiceName SERVICE_NAME = ConsulService.SERVICE_NAME.append( "agent-client" );
+    public static final ServiceName SERVICE_NAME = ConsulService.SERVICE_NAME.append("agent-client");
 
     private InjectedValue<Consul> consulInjector = new InjectedValue<>();
 

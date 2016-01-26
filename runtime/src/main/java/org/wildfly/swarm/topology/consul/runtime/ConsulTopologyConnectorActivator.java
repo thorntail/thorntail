@@ -26,7 +26,8 @@ import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
 
-/** MSC activator for the ConsulTopologyConnector.
+/**
+ * MSC activator for the ConsulTopologyConnector.
  *
  * @author John Hovell
  * @author Bob McWhirter
@@ -43,7 +44,7 @@ public class ConsulTopologyConnectorActivator implements ServiceActivator {
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
         ServiceTarget target = context.getServiceTarget();
 
-        ConsulTopologyConnector connector = new ConsulTopologyConnector( this.url );
+        ConsulTopologyConnector connector = new ConsulTopologyConnector(this.url);
 
         target.addService(TopologyConnector.SERVICE_NAME, connector)
                 .addDependency(ServiceName.parse("org.wildfly.network.socket-binding.http"), SocketBinding.class, connector.getSocketBindingInjector())

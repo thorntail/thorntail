@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.orbitz.consul.CatalogClient;
 import com.orbitz.consul.HealthClient;
-import com.orbitz.consul.cache.ConsulCache;
 import com.orbitz.consul.cache.ServiceHealthCache;
 import com.orbitz.consul.model.ConsulResponse;
 import com.orbitz.consul.option.CatalogOptions;
@@ -24,7 +23,8 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
 
-/** Catalog-watching service.
+/**
+ * Catalog-watching service.
  *
  * This service regularly performs a blocking-wait poll of the catalog of all
  * services in order to avoid having to know a-priori which services are of
@@ -38,14 +38,17 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  */
 public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
 
-    public static final ServiceName SERVICE_NAME = ConsulService.SERVICE_NAME.append( "catalog-watcher" );
+    public static final ServiceName SERVICE_NAME = ConsulService.SERVICE_NAME.append("catalog-watcher");
 
     private InjectedValue<CatalogClient> catalogClientInjector = new InjectedValue<>();
+
     private InjectedValue<HealthClient> healthClientInjector = new InjectedValue<>();
+
     private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
 
     private Thread thread;
-    private Map<String,ServiceHealthCache> watchers = new HashMap<>();
+
+    private Map<String, ServiceHealthCache> watchers = new HashMap<>();
 
     public Injector<CatalogClient> getCatalogClientInjector() {
         return this.catalogClientInjector;
@@ -61,7 +64,7 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
 
     @Override
     public void start(StartContext startContext) throws StartException {
-        this.thread = new Thread( this );
+        this.thread = new Thread(this);
         this.thread.start();
     }
 
@@ -69,7 +72,7 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
     public void stop(StopContext stopContext) {
         this.thread.interrupt();
 
-        this.watchers.values().forEach(e->{
+        this.watchers.values().forEach(e -> {
             try {
                 e.stop();
             } catch (Exception e1) {
@@ -89,15 +92,15 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
 
         BigInteger index = null;
 
-        while ( true ) {
+        while (true) {
 
             QueryOptions options = QueryOptions.BLANK;
 
-            if ( index != null ) {
+            if (index != null) {
                 options = ImmutableQueryOptions.builder()
-                                .wait("60s")
-                                .index(index)
-                                .build();
+                        .wait("60s")
+                        .index(index)
+                        .build();
             }
 
             ConsulResponse<Map<String, List<String>>> services = client.getServices(options);
@@ -106,12 +109,12 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
 
             Map<String, List<String>> response = services.getResponse();
 
-            response.keySet().forEach( e->{
-                setupWatcher( e );
+            response.keySet().forEach(e -> {
+                setupWatcher(e);
             });
 
             try {
-                Thread.sleep( 1000 );
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 break;
             }
@@ -119,7 +122,7 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
     }
 
     private void setupWatcher(String serviceName) {
-        if ( watchers.containsKey( serviceName ) ) {
+        if (watchers.containsKey(serviceName)) {
             return;
         }
 
@@ -136,10 +139,10 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
 
 
         try {
-            healthCache.addListener( new ServiceCacheListener( serviceName, this.topologyManagerInjector.getValue() ));
+            healthCache.addListener(new ServiceCacheListener(serviceName, this.topologyManagerInjector.getValue()));
             healthCache.start();
-            healthCache.awaitInitialized( 1, TimeUnit.SECONDS );
-            this.watchers.put( serviceName, healthCache );
+            healthCache.awaitInitialized(1, TimeUnit.SECONDS);
+            this.watchers.put(serviceName, healthCache);
         } catch (Exception e) {
             e.printStackTrace();
         }

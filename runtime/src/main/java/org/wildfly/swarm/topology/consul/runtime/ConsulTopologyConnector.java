@@ -18,7 +18,8 @@ import org.wildfly.swarm.topology.runtime.Registration;
 import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
 
-/** Topology connector for Consul.
+/**
+ * Topology connector for Consul.
  *
  * This topology connector knows how to interact with a Consul catalog to
  * provide topology information to other systems, such as the Topology Web-App
@@ -32,9 +33,14 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
     private final URL url;
 
     private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
+
     private InjectedValue<SocketBinding> socketBindingInjector = new InjectedValue<>();
 
     private Advertiser advertiser;
+
+    public ConsulTopologyConnector(URL url) {
+        this.url = url;
+    }
 
     public Injector<TopologyManager> getTopologyManagerInjector() {
         return this.topologyManagerInjector;
@@ -44,58 +50,54 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
         return this.socketBindingInjector;
     }
 
-    public ConsulTopologyConnector(URL url) {
-        this.url = url;
-    }
-
     @Override
     public void advertise(String name) {
         SocketBinding binding = this.socketBindingInjector.getValue();
-        Registration registration = new Registration( "consul", name )
-                .endPoint( new Registration.EndPoint( binding.getAddress().getHostAddress(), binding.getPort() ) );
+        Registration registration = new Registration("consul", name)
+                .endPoint(new Registration.EndPoint(binding.getAddress().getHostAddress(), binding.getPort()));
 
-        this.advertiser.advertise( registration );
+        this.advertiser.advertise(registration);
     }
 
     @Override
     public void unadvertise(String name) {
-        this.advertiser.unadvertise( name );
+        this.advertiser.unadvertise(name);
     }
 
     @Override
     public void start(StartContext startContext) throws StartException {
         ServiceTarget target = startContext.getChildTarget();
 
-        ConsulService consul = new ConsulService( this.url );
-        target.addService( ConsulService.SERVICE_NAME, consul )
+        ConsulService consul = new ConsulService(this.url);
+        target.addService(ConsulService.SERVICE_NAME, consul)
                 .install();
 
         HealthClientService healthClient = new HealthClientService();
-        target.addService( HealthClientService.SERIVCE_NAME, healthClient )
-                .addDependency( ConsulService.SERVICE_NAME, Consul.class, healthClient.getConsulInjector()  )
+        target.addService(HealthClientService.SERIVCE_NAME, healthClient)
+                .addDependency(ConsulService.SERVICE_NAME, Consul.class, healthClient.getConsulInjector())
                 .install();
 
         AgentClientService agentClient = new AgentClientService();
-        target.addService( AgentClientService.SERVICE_NAME, agentClient )
-                .addDependency( ConsulService.SERVICE_NAME, Consul.class, agentClient.getConsulInjector() )
+        target.addService(AgentClientService.SERVICE_NAME, agentClient)
+                .addDependency(ConsulService.SERVICE_NAME, Consul.class, agentClient.getConsulInjector())
                 .install();
 
         CatalogClientService catalogClient = new CatalogClientService();
-        target.addService( CatalogClientService.SERVICE_NAME, catalogClient)
-                .addDependency( ConsulService.SERVICE_NAME, Consul.class, catalogClient.getConsulInjector() )
+        target.addService(CatalogClientService.SERVICE_NAME, catalogClient)
+                .addDependency(ConsulService.SERVICE_NAME, Consul.class, catalogClient.getConsulInjector())
                 .install();
 
 
         this.advertiser = new Advertiser();
-        target.addService( Advertiser.SERVICE_NAME, advertiser )
-                .addDependency( AgentClientService.SERVICE_NAME, AgentClient.class, advertiser.getAgentClientInjector() )
+        target.addService(Advertiser.SERVICE_NAME, advertiser)
+                .addDependency(AgentClientService.SERVICE_NAME, AgentClient.class, advertiser.getAgentClientInjector())
                 .install();
 
         CatalogWatcher watcher = new CatalogWatcher();
-        target.addService( CatalogWatcher.SERVICE_NAME, watcher )
-                .addDependency(CatalogClientService.SERVICE_NAME, CatalogClient.class, watcher.getCatalogClientInjector() )
-                .addDependency(HealthClientService.SERIVCE_NAME, HealthClient.class, watcher.getHealthClientInjector() )
-                .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, watcher.getTopologyManagerInjector() )
+        target.addService(CatalogWatcher.SERVICE_NAME, watcher)
+                .addDependency(CatalogClientService.SERVICE_NAME, CatalogClient.class, watcher.getCatalogClientInjector())
+                .addDependency(HealthClientService.SERIVCE_NAME, HealthClient.class, watcher.getHealthClientInjector())
+                .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, watcher.getTopologyManagerInjector())
                 .install();
     }
 

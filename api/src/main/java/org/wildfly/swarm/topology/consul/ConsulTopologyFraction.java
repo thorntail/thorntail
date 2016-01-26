@@ -20,7 +20,8 @@ import java.net.URL;
 
 import org.wildfly.swarm.container.Fraction;
 
-/** Consul topology-management fractoin.
+/**
+ * Consul topology-management fractoin.
  *
  * This fraction allows for the use of a cluster of Consul servers and agents
  * to manage topology information.
@@ -30,14 +31,15 @@ import org.wildfly.swarm.container.Fraction;
  */
 public class ConsulTopologyFraction implements Fraction {
 
-    /** The default consul Agent URL (http://localhost:8500/)
+    /**
+     * The default consul Agent URL (http://localhost:8500/)
      */
     private static final URL DEFAULT_URL;
 
     static {
         URL tmp = null;
         try {
-            tmp = new URL( "http://localhost:8500/" );
+            tmp = new URL("http://localhost:8500/");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -46,21 +48,24 @@ public class ConsulTopologyFraction implements Fraction {
 
     private URL url = null;
 
-    /** Construct a default fraction using the default agent URL of http://localhost:8500/.
+    /**
+     * Construct a default fraction using the default agent URL of http://localhost:8500/.
      */
     public ConsulTopologyFraction() {
         this.url = DEFAULT_URL;
     }
 
-    /** Construct with an agent URL
+    /**
+     * Construct with an agent URL
      *
      * @param url Agent URL
      */
     public ConsulTopologyFraction(URL url) {
-        url( url );
+        url(url);
     }
 
-    /** Construct with an agent URL
+    /**
+     * Construct with an agent URL
      *
      * @param url Agent URL
      */
@@ -68,7 +73,8 @@ public class ConsulTopologyFraction implements Fraction {
         url(url);
     }
 
-    /** Set the agent URL
+    /**
+     * Set the agent URL
      *
      * @param url The agent URL.
      * @return this fraction.
@@ -78,18 +84,20 @@ public class ConsulTopologyFraction implements Fraction {
         return this;
     }
 
-    /** Set the agent URL
+    /**
+     * Set the agent URL
      *
      * @param url The agent URL.
      * @return this fraction
      * @throws MalformedURLException if an error occurs parsing the URL.
      */
     public ConsulTopologyFraction url(String url) throws MalformedURLException {
-        this.url = new URL( url );
+        this.url = new URL(url);
         return this;
     }
 
-    /** Retrieve the configured agent URL.
+    /**
+     * Retrieve the configured agent URL.
      *
      * @return The agent URL.
      */

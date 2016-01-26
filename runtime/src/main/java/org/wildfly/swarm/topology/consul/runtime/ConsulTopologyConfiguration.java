@@ -22,7 +22,8 @@ import org.jboss.msc.service.ServiceActivator;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.topology.consul.ConsulTopologyFraction;
 
-/** Server configuration for the ConsulTopologyFraction.
+/**
+ * Server configuration for the ConsulTopologyFraction.
  *
  * @author John Hovell
  * @author Bob McWhirter
@@ -36,7 +37,7 @@ public class ConsulTopologyConfiguration extends AbstractServerConfiguration<Con
     @Override
     public List<ServiceActivator> getServiceActivators(ConsulTopologyFraction fraction) {
         List<ServiceActivator> activators = new ArrayList<>();
-        activators.add( new ConsulTopologyConnectorActivator( fraction.url()) );
+        activators.add(new ConsulTopologyConnectorActivator(fraction.url()));
         return activators;
     }
 
