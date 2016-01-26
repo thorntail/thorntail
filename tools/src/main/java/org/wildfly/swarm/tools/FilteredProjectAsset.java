@@ -24,6 +24,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import java.io.InputStream;
 
 public abstract class FilteredProjectAsset implements ProjectAsset {
+    private final ProjectAsset delegate;
+
     public FilteredProjectAsset(ProjectAsset delegate) {
         this.delegate = delegate;
     }
@@ -48,6 +50,4 @@ public abstract class FilteredProjectAsset implements ProjectAsset {
     }
 
     protected abstract Archive<?> filter(Archive<?> archive);
-
-    private final ProjectAsset delegate;
 }

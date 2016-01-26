@@ -45,12 +45,12 @@ public class SwarmExtension {
         return this.properties;
     }
 
-    public void setMainClassName(String mainClass) {
-        this.mainClass = mainClass;
-    }
-
     public String getMainClassName() {
         return this.mainClass;
+    }
+
+    public void setMainClassName(String mainClass) {
+        this.mainClass = mainClass;
     }
 
     public Boolean getBundleDependencies() {

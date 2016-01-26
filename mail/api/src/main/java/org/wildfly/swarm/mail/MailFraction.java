@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.mail;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.wildfly.swarm.config.Mail;
 import org.wildfly.swarm.config.mail.MailSession;
 import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
@@ -33,14 +30,23 @@ public class MailFraction extends Mail<MailFraction> implements Fraction {
     public MailFraction() {
     }
 
+    public static MailFraction defaultFraction() {
+        return new MailFraction()
+                .mailSession("Default", (session) -> {
+                    session.smtpServer((server) -> {
+                        server.host("localhost");
+                        server.port("25");
+                    });
+                });
+    }
 
     public MailFraction mailSession(String key, EnhancedMailSessionConsumer consumer) {
-        EnhancedMailSession session = new EnhancedMailSession( key );
-        return super.mailSession( ()->{
-            if ( consumer != null ) {
-                consumer.accept( session );
-                if ( session.jndiName() == null ) {
-                    session.jndiName( "java:jboss/mail/" + key );
+        EnhancedMailSession session = new EnhancedMailSession(key);
+        return super.mailSession(() -> {
+            if (consumer != null) {
+                consumer.accept(session);
+                if (session.jndiName() == null) {
+                    session.jndiName("java:jboss/mail/" + key);
                 }
             }
             return session;
@@ -48,29 +54,19 @@ public class MailFraction extends Mail<MailFraction> implements Fraction {
     }
 
     public MailFraction smtpServer(String key, EnhancedSMTPServerConsumer consumer) {
-        return this.mailSession( key, (session)->{
-            session.smtpServer( consumer );
+        return this.mailSession(key, (session) -> {
+            session.smtpServer(consumer);
         });
-    }
-
-    public static MailFraction defaultFraction() {
-        return new MailFraction()
-                .mailSession( "Default", (session)->{
-                    session.smtpServer( (server)->{
-                        server.host( "localhost" );
-                        server.port( "25" );
-                    });
-                });
     }
 
     @Override
     public void postInitialize(Container.PostInitContext initContext) {
         for (MailSession session : subresources().mailSessions()) {
             SMTPServer server = session.subresources().smtpServer();
-            if ( server != null && server instanceof EnhancedSMTPServer ) {
+            if (server != null && server instanceof EnhancedSMTPServer) {
                 OutboundSocketBinding socketBinding = ((EnhancedSMTPServer) server).outboundSocketBinding();
-                if ( socketBinding != null ) {
-                    initContext.outboundSocketBinding( socketBinding );
+                if (socketBinding != null) {
+                    initContext.outboundSocketBinding(socketBinding);
                 }
             }
         }

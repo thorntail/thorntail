@@ -140,6 +140,47 @@ public class Container {
         createShrinkWrapDomain();
     }
 
+    public static boolean isFatJar() throws IOException {
+        URL location = Container.class.getProtectionDomain().getCodeSource().getLocation();
+        Path root = null;
+        if (location.getProtocol().equals("file")) {
+            try {
+                root = Paths.get(location.toURI());
+            } catch (URISyntaxException e) {
+                throw new IOException(e);
+            }
+        } else if ( location.toExternalForm().startsWith( "jar:file:" ) ) {
+            return true;
+        }
+
+        if (Files.isRegularFile(root)) {
+            try (JarFile jar = new JarFile(root.toFile())) {
+                ZipEntry propsEntry = jar.getEntry("META-INF/wildfly-swarm.properties");
+                if (propsEntry != null) {
+                    try (InputStream in = jar.getInputStream(propsEntry)) {
+                        Properties props = new Properties();
+                        props.load(in);
+                        if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
+                            System.setProperty(BootstrapProperties.APP_ARTIFACT,
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                        }
+
+                        Set<String> names = props.stringPropertyNames();
+                        for( String name: names ) {
+                            String value = props.getProperty(name);
+                            if (System.getProperty(name) == null) {
+                                System.setProperty(name, value);
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private void createShrinkWrapDomain() throws ModuleLoadException {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
@@ -299,11 +340,9 @@ public class Container {
         return null;
     }
 
-
     public Map<String, List<SocketBinding>> socketBindings() {
         return this.socketBindings;
     }
-
 
     void socketBinding(SocketBinding binding) {
         socketBinding("default-sockets", binding);
@@ -329,7 +368,6 @@ public class Container {
     public Map<String, List<OutboundSocketBinding>> outboundSocketBindings() {
         return this.outboundSocketBindings;
     }
-
 
     void outboundSocketBinding(OutboundSocketBinding binding) {
         outboundSocketBinding("default-sockets", binding);
@@ -439,47 +477,9 @@ public class Container {
         this.args = args;
     }
 
-    /**
-     * Initialization Context to be passed to Fractions to allow them to provide
-     * additional functionality into the Container.
-     */
-    public class InitContext {
-        public void fraction(Fraction fraction) {
-            Container.this.dependentFraction(fraction);
-        }
-
-        public void socketBinding(SocketBinding binding) {
-            socketBinding("default-sockets", binding);
-        }
-
-        public void socketBinding(String groupName, SocketBinding binding) {
-            Container.this.socketBinding(groupName, binding);
-        }
-
-        public void outboundSocketBinding(OutboundSocketBinding binding) {
-            outboundSocketBinding("default-sockets", binding);
-        }
-
-        public void outboundSocketBinding(String groupName, OutboundSocketBinding binding) {
-            Container.this.outboundSocketBinding(groupName, binding);
-        }
-    }
-
-    public class PostInitContext extends InitContext {
-        public boolean hasFraction(String simpleName) {
-            return fractions().stream().anyMatch((f) -> f.simpleName().equalsIgnoreCase(simpleName));
-        }
-
-        public Fraction fraction(String simpleName) {
-            Optional<Fraction> opt = fractions().stream().filter((f) -> f.simpleName().equalsIgnoreCase(simpleName)).findFirst();
-            return opt.orElse(null);
-        }
-    }
-
     public PostInitContext createPostInitContext() {
         return new PostInitContext();
     }
-
 
     protected Archive createDefaultDeployment() throws DeploymentException {
         try {
@@ -573,44 +573,40 @@ public class Container {
         return "jar";
     }
 
-    public static boolean isFatJar() throws IOException {
-        URL location = Container.class.getProtectionDomain().getCodeSource().getLocation();
-        Path root = null;
-        if (location.getProtocol().equals("file")) {
-            try {
-                root = Paths.get(location.toURI());
-            } catch (URISyntaxException e) {
-                throw new IOException(e);
-            }
-        } else if ( location.toExternalForm().startsWith( "jar:file:" ) ) {
-            return true;
+    /**
+     * Initialization Context to be passed to Fractions to allow them to provide
+     * additional functionality into the Container.
+     */
+    public class InitContext {
+        public void fraction(Fraction fraction) {
+            Container.this.dependentFraction(fraction);
         }
 
-        if (Files.isRegularFile(root)) {
-            try (JarFile jar = new JarFile(root.toFile())) {
-                ZipEntry propsEntry = jar.getEntry("META-INF/wildfly-swarm.properties");
-                if (propsEntry != null) {
-                    try (InputStream in = jar.getInputStream(propsEntry)) {
-                        Properties props = new Properties();
-                        props.load(in);
-                        if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
-                            System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
-                        }
-
-                        Set<String> names = props.stringPropertyNames();
-                        for( String name: names ) {
-                            String value = props.getProperty(name);
-                            if (System.getProperty(name) == null) {
-                                System.setProperty(name, value);
-                            }
-                        }
-                    }
-                    return true;
-                }
-            }
+        public void socketBinding(SocketBinding binding) {
+            socketBinding("default-sockets", binding);
         }
 
-        return false;
+        public void socketBinding(String groupName, SocketBinding binding) {
+            Container.this.socketBinding(groupName, binding);
+        }
+
+        public void outboundSocketBinding(OutboundSocketBinding binding) {
+            outboundSocketBinding("default-sockets", binding);
+        }
+
+        public void outboundSocketBinding(String groupName, OutboundSocketBinding binding) {
+            Container.this.outboundSocketBinding(groupName, binding);
+        }
+    }
+
+    public class PostInitContext extends InitContext {
+        public boolean hasFraction(String simpleName) {
+            return fractions().stream().anyMatch((f) -> f.simpleName().equalsIgnoreCase(simpleName));
+        }
+
+        public Fraction fraction(String simpleName) {
+            Optional<Fraction> opt = fractions().stream().filter((f) -> f.simpleName().equalsIgnoreCase(simpleName)).findFirst();
+            return opt.orElse(null);
+        }
     }
 }

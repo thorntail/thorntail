@@ -34,6 +34,12 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
                 .processIdUuid(true);
     }
 
+    public static TransactionsFraction createDefaultFraction() {
+        return new TransactionsFraction()
+                .socketBinding("txn-recovery-environment")
+                .statusSocketBinding("txn-status-manager");
+    }
+
     @Override
     public void initialize(Container.InitContext initContext) {
 
@@ -52,11 +58,5 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
     public TransactionsFraction statusPort(int statusPort) {
         this.statusPort = statusPort;
         return this;
-    }
-
-    public static TransactionsFraction createDefaultFraction() {
-        return new TransactionsFraction()
-                .socketBinding("txn-recovery-environment")
-                .statusSocketBinding("txn-status-manager");
     }
 }

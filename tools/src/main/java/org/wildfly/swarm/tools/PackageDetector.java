@@ -15,6 +15,20 @@
  */
 package org.wildfly.swarm.tools;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
@@ -29,23 +43,6 @@ import org.objectweb.asm.TypePath;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 public class PackageDetector {
     public static Map<String, Set<String>> detectPackages(final File file) throws IOException {
         final PackageCollector visitor = new PackageCollector();
@@ -57,10 +54,10 @@ public class PackageDetector {
                                                              final PackageCollector visitor) throws IOException {
         if (file.isDirectory()) {
             return detectPackagesInDir(file, visitor);
-        } else if ( file.getName().endsWith( ".jar" ) || file.getName().endsWith( ".war" ) ) {
+        } else if (file.getName().endsWith(".jar") || file.getName().endsWith(".war")) {
             return detectPackagesInZip(new ZipFile(file), visitor);
         } else {
-            System.err.println( "Ignoring scanning of unknown file type: " + file.getName() );
+            System.err.println("Ignoring scanning of unknown file type: " + file.getName());
             return Collections.emptyMap();
         }
     }
@@ -100,12 +97,12 @@ public class PackageDetector {
             String name = entry.getName();
 
 
-            if ( name.endsWith( ".class" ) ) {
+            if (name.endsWith(".class")) {
                 try (InputStream in = new FileInputStream(entry)) {
                     new ClassReader(in).accept(visitor, 0);
                 }
             } else {
-                detectPackages( entry, visitor );
+                detectPackages(entry, visitor);
             }
         }
 
@@ -114,16 +111,69 @@ public class PackageDetector {
 
     static class PackageCollector extends ClassVisitor {
 
+        private final Map<String, Set<String>> packages = new HashMap<>();
+
+        private String currentClass = null;
+
+        private final AnnotationVisitor ANNOTATION_VISITOR =
+                new AnnotationVisitor(Opcodes.ASM5) {
+                    @Override
+                    public void visit(final String __,
+                                      final Object value) {
+                        if (value instanceof Type) {
+                            addType((Type) value);
+                        }
+                    }
+
+                    @Override
+                    public void visitEnum(final String __,
+                                          final String desc,
+                                          final String ___) {
+                        addType(desc);
+                    }
+
+                    @Override
+                    public AnnotationVisitor visitAnnotation(final String __,
+                                                             final String desc) {
+                        addType(desc);
+
+                        return this;
+                    }
+
+                    @Override
+                    public AnnotationVisitor visitArray(final String __) {
+                        return this;
+                    }
+                };
+
+        private final SignatureVisitor SIGNATURE_VISITOR =
+                new SignatureVisitor(Opcodes.ASM5) {
+                    private String outerName;
+
+                    @Override
+                    public void visitClassType(final String name) {
+                        outerName = name;
+                        addInternalType(name);
+                    }
+
+                    @Override
+                    public void visitInnerClassType(final String name) {
+                        outerName += "$" + name;
+                        addInternalType(outerName);
+                    }
+                };
+
+
+        public PackageCollector() {
+            super(Opcodes.ASM5);
+        }
+
         public Set<String> packages() {
             return Collections.unmodifiableSet(packages.keySet());
         }
 
         public Map<String, Set<String>> packageSources() {
             return Collections.unmodifiableMap(packages);
-        }
-
-        public PackageCollector() {
-            super(Opcodes.ASM5);
         }
 
         @Override
@@ -145,7 +195,6 @@ public class PackageDetector {
                 addSignature(signature);
             }
         }
-
 
         @Override
         public AnnotationVisitor visitAnnotation(final String desc,
@@ -379,7 +428,6 @@ public class PackageDetector {
             };
         }
 
-
         private String addPackage(String name) {
             if (name != null) {
                 final int pos = name.lastIndexOf('/');
@@ -461,58 +509,6 @@ public class PackageDetector {
                 addMethodTypes(handle.getDesc());
             }
         }
-
-        private String currentClass = null;
-
-        private final Map<String, Set<String>> packages = new HashMap<>();
-
-        private final AnnotationVisitor ANNOTATION_VISITOR =
-                new AnnotationVisitor(Opcodes.ASM5) {
-                    @Override
-                    public void visit(final String __,
-                                      final Object value) {
-                        if (value instanceof Type) {
-                            addType((Type) value);
-                        }
-                    }
-
-                    @Override
-                    public void visitEnum(final String __,
-                                          final String desc,
-                                          final String ___) {
-                        addType(desc);
-                    }
-
-                    @Override
-                    public AnnotationVisitor visitAnnotation(final String __,
-                                                             final String desc) {
-                        addType(desc);
-
-                        return this;
-                    }
-
-                    @Override
-                    public AnnotationVisitor visitArray(final String __) {
-                        return this;
-                    }
-                };
-
-        private final SignatureVisitor SIGNATURE_VISITOR =
-                new SignatureVisitor(Opcodes.ASM5) {
-                    @Override
-                    public void visitClassType(final String name) {
-                        outerName = name;
-                        addInternalType(name);
-                    }
-
-                    @Override
-                    public void visitInnerClassType(final String name) {
-                        outerName += "$" + name;
-                        addInternalType(outerName);
-                    }
-
-                    private String outerName;
-                };
 
     }
 }

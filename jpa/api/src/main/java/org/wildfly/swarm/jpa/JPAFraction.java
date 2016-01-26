@@ -33,6 +33,12 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
     public JPAFraction() {
     }
 
+    public static JPAFraction createDefaultFraction() {
+        return new JPAFraction()
+                .defaultExtendedPersistenceInheritance(DefaultExtendedPersistenceInheritance.DEEP);
+
+    }
+
     public JPAFraction inhibitDefaultDatasource() {
         this.inhibitDefaultDatasource = true;
         return this;
@@ -57,11 +63,5 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
             System.err.println( "setting default Datasource to ExampleDS" );
             defaultDatasource("jboss/datasources/ExampleDS");
         }
-    }
-
-    public static JPAFraction createDefaultFraction() {
-        return new JPAFraction()
-                .defaultExtendedPersistenceInheritance(DefaultExtendedPersistenceInheritance.DEEP);
-
     }
 }

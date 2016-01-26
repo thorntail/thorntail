@@ -25,10 +25,6 @@ public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> 
 
     public static final String IN_MEMORY_PLUGIN_NAME = "swarm-in-memory";
 
-    public static interface Consumer extends SecurityRealmConsumer<EnhancedSecurityRealm> {
-
-    }
-
     public EnhancedSecurityRealm(String key) {
         super(key);
         plugIn( "org.wildfly.swarm.management:runtime");
@@ -52,6 +48,10 @@ public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> 
             InMemoryAuthorization authz = new InMemoryAuthorization(plugin);
             consumer.accept( authz );
         });
+    }
+
+    public static interface Consumer extends SecurityRealmConsumer<EnhancedSecurityRealm> {
+
     }
 
 }

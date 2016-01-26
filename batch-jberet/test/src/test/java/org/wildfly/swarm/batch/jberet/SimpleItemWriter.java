@@ -35,6 +35,8 @@ import javax.inject.Named;
 public class SimpleItemWriter extends AbstractItemWriter implements ItemWriter {
     private static final Logger LOGGER = Logger.getLogger(SimpleItemWriter.class.getName());
 
+    private final AtomicInteger counter = new AtomicInteger();
+
     @BatchProperty(name = "writer.sleep")
     @Inject
     private String sleepTime;
@@ -45,8 +47,6 @@ public class SimpleItemWriter extends AbstractItemWriter implements ItemWriter {
 
     @Inject
     private StepContext stepContext;
-
-    private final AtomicInteger counter = new AtomicInteger();
 
     private volatile long sleepMillis = -1L;
 

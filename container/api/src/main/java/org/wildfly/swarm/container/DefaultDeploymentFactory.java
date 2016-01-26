@@ -36,10 +36,6 @@ import java.util.UUID;
  */
 public abstract class DefaultDeploymentFactory {
 
-    public abstract int getPriority();
-    public abstract String getType();
-    public abstract Archive create(Container container) throws Exception;
-
     protected static String determineName(final String suffix) {
         String prop = System.getProperty(BootstrapProperties.APP_PATH);
         if (prop != null) {
@@ -60,6 +56,12 @@ public abstract class DefaultDeploymentFactory {
 
         return UUID.randomUUID().toString() + suffix;
     }
+
+    public abstract int getPriority();
+
+    public abstract String getType();
+
+    public abstract Archive create(Container container) throws Exception;
 
     protected String convertSeparators(Path path) {
         String convertedPath = path.toString();

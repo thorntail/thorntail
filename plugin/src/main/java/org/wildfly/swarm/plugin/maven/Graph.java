@@ -25,6 +25,57 @@ import java.util.Set;
  */
 public class Graph {
 
+    private Map<String, Module> modules = new HashMap<>();
+
+    private Map<String, Artifact> artifacts = new HashMap<>();
+
+    public Graph() {
+
+    }
+
+    public void accept(GraphVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public Artifact getClosestArtifact(String gav) {
+
+        Set<String> keys = this.artifacts.keySet();
+        for (String each : keys) {
+            if (each.startsWith(gav)) {
+                return this.artifacts.get(each);
+            }
+        }
+
+        return null;
+    }
+
+    public Artifact getArtifact(String groupId, String artifactId, String version, String classifier) {
+        String key = groupId + ":" + artifactId + ":" + version;
+        if (classifier != null) {
+            key = key + ":" + classifier;
+        }
+
+        Artifact a = this.artifacts.get(key);
+        if (a == null) {
+            a = new Artifact(groupId, artifactId, version, classifier);
+            this.artifacts.put(key, a);
+        }
+
+        return a;
+    }
+
+    public Module getModule(String module, String slot) {
+
+        Module m = this.modules.get(module + ":" + slot);
+        if (m == null) {
+            m = new Module(module, slot);
+            this.modules.put(module + ":" + slot, m);
+        }
+
+        return m;
+
+    }
+
     public class Module {
 
         private final String module;
@@ -102,56 +153,6 @@ public class Graph {
         public void accept(GraphVisitor visitor) {
             visitor.visit(this);
         }
-    }
-
-    private Map<String, Module> modules = new HashMap<>();
-    private Map<String, Artifact> artifacts = new HashMap<>();
-
-    public Graph() {
-
-    }
-
-    public void accept(GraphVisitor visitor) {
-        visitor.visit(this);
-    }
-
-    public Artifact getClosestArtifact(String gav) {
-
-        Set<String> keys = this.artifacts.keySet();
-        for (String each : keys) {
-            if (each.startsWith(gav)) {
-                return this.artifacts.get(each);
-            }
-        }
-
-        return null;
-    }
-
-    public Artifact getArtifact(String groupId, String artifactId, String version, String classifier) {
-        String key = groupId + ":" + artifactId + ":" + version;
-        if (classifier != null) {
-            key = key + ":" + classifier;
-        }
-
-        Artifact a = this.artifacts.get(key);
-        if (a == null) {
-            a = new Artifact(groupId, artifactId, version, classifier);
-            this.artifacts.put(key, a);
-        }
-
-        return a;
-    }
-
-    public Module getModule(String module, String slot) {
-
-        Module m = this.modules.get(module + ":" + slot);
-        if (m == null) {
-            m = new Module(module, slot);
-            this.modules.put(module + ":" + slot, m);
-        }
-
-        return m;
-
     }
 
 

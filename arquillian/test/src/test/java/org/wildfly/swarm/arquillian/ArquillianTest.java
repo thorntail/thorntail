@@ -35,13 +35,8 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class ArquillianTest {
-    @ArquillianResource
-    URL url;
-
-    @ArquillianResource
-    URI uri;
-
     static final URI EXPECTED_URI;
+
     static final URL EXPECTED_URL;
 
     static {
@@ -52,6 +47,12 @@ public class ArquillianTest {
             throw new RuntimeException(e);
         }
     }
+
+    @ArquillianResource
+    URL url;
+
+    @ArquillianResource
+    URI uri;
 
     @Deployment
     public static Archive createDeployment() {

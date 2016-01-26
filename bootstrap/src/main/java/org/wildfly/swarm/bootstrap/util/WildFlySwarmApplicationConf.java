@@ -39,7 +39,6 @@ import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
 import org.jboss.modules.filter.ClassFilters;
 import org.jboss.modules.filter.PathFilters;
-import org.jboss.modules.maven.MavenResolver;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 
 /**
@@ -49,6 +48,79 @@ public class WildFlySwarmApplicationConf {
 
 
     public static final String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-application.conf";
+
+    private List<Entry> entries = new ArrayList<>();
+
+    public WildFlySwarmApplicationConf() {
+
+    }
+
+    public WildFlySwarmApplicationConf(InputStream in) throws IOException {
+        read(in);
+    }
+
+    public void addEntry(Entry entry) {
+        this.entries.add(entry);
+    }
+
+    public List<Entry> getEntries() {
+        return Collections.unmodifiableList(this.entries);
+    }
+
+    public void apply(ModuleSpec.Builder builder) throws Exception {
+        for (Entry entry : this.entries) {
+            entry.apply(builder);
+        }
+    }
+
+    public void write(OutputStream out) {
+        PrintWriter writer = new PrintWriter(out);
+
+        for (Entry entry : this.entries) {
+            entry.write(writer);
+        }
+
+        writer.flush();
+    }
+
+    public String toString() {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            write(out);
+            out.close();
+            return new String(out.toByteArray());
+        } catch (IOException e) {
+            return "";
+        }
+    }
+
+    protected void read(InputStream in) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            String line = null;
+
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (!line.isEmpty()) {
+                    Entry entry = null;
+                    if (line.startsWith("module:")) {
+                        line = line.substring(7).trim();
+                        entry = new ModuleEntry(line);
+                    } else if (line.startsWith("gav:")) {
+                        line = line.substring(4).trim();
+                        entry = new GAVEntry(MavenArtifactDescriptor.fromMscGav(line));
+                    } else if (line.startsWith("path:")) {
+                        line = line.substring(5).trim();
+                        entry = new PathEntry(line);
+                    }
+
+                    if (entry != null) {
+                        this.entries.add(entry);
+                    }
+                }
+            }
+        }
+
+    }
 
     public static abstract class Entry {
 
@@ -60,12 +132,13 @@ public class WildFlySwarmApplicationConf {
 
     public static class ModuleEntry extends Entry {
         private final String name;
+
         private final String slot;
 
         public ModuleEntry(String name) {
             String[] parts = name.split(":");
             this.name = parts[0];
-            if ( parts.length == 2 ) {
+            if (parts.length == 2) {
                 this.slot = parts[1];
             } else {
                 this.slot = "main";
@@ -162,13 +235,13 @@ public class WildFlySwarmApplicationConf {
             final String jarName = tmp.getFileName().toString();
             final JarFile jarFile = new JarFile(tmp.toFile());
             final ResourceLoader jarLoader = ResourceLoaders.createJarResourceLoader(jarName,
-                                                                                     jarFile);
+                    jarFile);
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
 
             if (".war".equals(ext)) {
                 final ResourceLoader warLoader = ResourceLoaders.createJarResourceLoader(jarName,
-                                                                                             jarFile,
-                                                                                             "WEB-INF/classes");
+                        jarFile,
+                        "WEB-INF/classes");
                 builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));
             }
         }
@@ -181,79 +254,5 @@ public class WildFlySwarmApplicationConf {
         public String getPath() {
             return this.path;
         }
-    }
-
-    private List<Entry> entries = new ArrayList<>();
-
-
-    public WildFlySwarmApplicationConf() {
-
-    }
-
-    public WildFlySwarmApplicationConf(InputStream in) throws IOException {
-        read(in);
-    }
-
-    public void addEntry(Entry entry) {
-        this.entries.add(entry);
-    }
-
-    public List<Entry> getEntries() {
-        return Collections.unmodifiableList(this.entries);
-    }
-
-    public void apply(ModuleSpec.Builder builder) throws Exception {
-        for (Entry entry : this.entries) {
-            entry.apply(builder);
-        }
-    }
-
-    public void write(OutputStream out) {
-        PrintWriter writer = new PrintWriter(out);
-
-        for (Entry entry : this.entries) {
-            entry.write(writer);
-        }
-
-        writer.flush();
-    }
-
-    public String toString() {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            write(out);
-            out.close();
-            return new String(out.toByteArray());
-        } catch (IOException e) {
-            return "";
-        }
-    }
-
-    protected void read(InputStream in) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            String line = null;
-
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (!line.isEmpty()) {
-                    Entry entry = null;
-                    if (line.startsWith("module:")) {
-                        line = line.substring(7).trim();
-                        entry = new ModuleEntry(line);
-                    } else if (line.startsWith("gav:")) {
-                        line = line.substring(4).trim();
-                        entry = new GAVEntry(MavenArtifactDescriptor.fromMscGav(line));
-                    } else if (line.startsWith("path:")) {
-                        line = line.substring(5).trim();
-                        entry = new PathEntry(line);
-                    }
-
-                    if (entry != null) {
-                        this.entries.add(entry);
-                    }
-                }
-            }
-        }
-
     }
 }

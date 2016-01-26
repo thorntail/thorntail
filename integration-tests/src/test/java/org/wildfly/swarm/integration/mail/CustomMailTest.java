@@ -35,6 +35,13 @@ import static org.fest.assertions.Assertions.assertThat;
 //@RunWith(Arquillian.class)
 public class CustomMailTest extends AbstractWildFlySwarmTestCase implements ContainerFactory {
 
+    @Deployment
+    public static Archive createDeployment() {
+        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
+        deployment.staticContent();
+        return deployment;
+    }
+
     @Override
     public Container newContainer(String... args) throws Exception {
         return new Container()
@@ -43,13 +50,6 @@ public class CustomMailTest extends AbstractWildFlySwarmTestCase implements Cont
                                 smtp.host("localhost");
                                 smtp.port("25");
                         }));
-    }
-
-    @Deployment
-    public static Archive createDeployment() {
-        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
-        deployment.staticContent();
-        return deployment;
     }
 
 //    @Test

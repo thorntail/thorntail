@@ -20,6 +20,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class TestRunner {
+    private final static String CLASS_NAME_ARQ_TEST_RUNNERS = "org.jboss.arquillian.container.test.spi.util.TestRunners";
+
+    private final static String METHOD_NAME_GET_TEST_RUNNER = "getTestRunner";
+
+    private final static String METHOD_NAME_EXECUTE = "execute";
+
+    final ClassLoader deploymentLoader;
     public TestRunner(ClassLoader loader) {
         this.deploymentLoader = loader;
     }
@@ -57,10 +64,4 @@ public class TestRunner {
             Thread.currentThread().setContextClassLoader(oldCL);
         }
     }
-
-    private final static String CLASS_NAME_ARQ_TEST_RUNNERS = "org.jboss.arquillian.container.test.spi.util.TestRunners";
-    private final static String METHOD_NAME_GET_TEST_RUNNER = "getTestRunner";
-    private final static String METHOD_NAME_EXECUTE = "execute";
-
-    final ClassLoader deploymentLoader;
 }

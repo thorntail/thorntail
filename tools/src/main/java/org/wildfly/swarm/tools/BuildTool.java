@@ -52,7 +52,14 @@ import java.util.regex.Pattern;
  */
 public class BuildTool {
 
+    protected static final String WEB_INF_LIB = "/WEB-INF/lib/";
+
+    protected static final Pattern POM_PROPERTIES =
+            Pattern.compile("/META-INF/maven/([^/]+/){2}pom.properties");
+
     private final JavaArchive archive;
+
+    private final Set<String> resourceDirectories = new HashSet<>();
 
     private String mainClass;
 
@@ -61,8 +68,6 @@ public class BuildTool {
     private boolean resolveTransitiveDependencies = false;
 
     private DependencyManager dependencyManager = new DependencyManager();
-
-    private final Set<String> resourceDirectories = new HashSet<>();
 
     private ProjectAsset projectAsset;
 
@@ -202,7 +207,6 @@ public class BuildTool {
         this.archive.addAsManifestResource(new ByteArrayAsset(propsBytes.toByteArray()), "wildfly-swarm.properties");
     }
 
-
     private void addWildFlyBootstrapConf() throws Exception {
         WildFlySwarmBootstrapConf bootstrapConf = this.dependencyManager.getWildFlySwarmBootstrapConf();
         this.archive.add(new StringAsset(bootstrapConf.toString()), WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
@@ -217,7 +221,6 @@ public class BuildTool {
         WildFlySwarmApplicationConf appConf = this.dependencyManager.getWildFlySwarmApplicationConf(this.projectAsset);
         this.archive.add(new StringAsset(appConf.toString()), WildFlySwarmApplicationConf.CLASSPATH_LOCATION);
     }
-
 
     private File createJar(String baseName, Path dir) throws IOException {
         File out = new File(dir.toFile(), baseName + "-swarm.jar");
@@ -277,34 +280,6 @@ public class BuildTool {
             this.dependencyManager.populateUserMavenRepository();
         }
     }
-
-    private class SwarmDepsFilteredAsset extends FilteredProjectAsset {
-
-        SwarmDepsFilteredAsset(ProjectAsset delegate) {
-            super(delegate);
-        }
-
-        @Override
-        protected Archive<?> filter(Archive<?> archive) {
-            final Set<ArtifactSpec> moduleSpecs = dependencyManager.getModuleDependencies();
-            final Set<ArtifactSpec> nonSwarmSpecs = dependencyManager.getNonSwarmDependencies();
-
-            archive.getContent().values().stream()
-                    .filter(node -> node.getPath().get().startsWith(WEB_INF_LIB))
-                    .filter(node -> !nodeIsInArtifactList(node, nonSwarmSpecs, false)
-                                    && (nodeIsInArtifactList(node, moduleSpecs, true)
-                                        || nodeIsSwarmArtifact(node)))
-                    .forEach(node -> archive.delete(node.getPath()));
-
-            return archive;
-        }
-
-    }
-
-    protected static final String WEB_INF_LIB = "/WEB-INF/lib/";
-
-    protected static final Pattern POM_PROPERTIES =
-            Pattern.compile("/META-INF/maven/([^/]+/){2}pom.properties");
 
     protected boolean nodeIsSwarmArtifact(final Node node) {
         return matchProperty(extractPomProperties(node), "groupId", DependencyManager.WILDFLY_SWARM_GROUP_ID);
@@ -368,6 +343,29 @@ public class BuildTool {
         }
 
         return found;
+    }
+
+    private class SwarmDepsFilteredAsset extends FilteredProjectAsset {
+
+        SwarmDepsFilteredAsset(ProjectAsset delegate) {
+            super(delegate);
+        }
+
+        @Override
+        protected Archive<?> filter(Archive<?> archive) {
+            final Set<ArtifactSpec> moduleSpecs = dependencyManager.getModuleDependencies();
+            final Set<ArtifactSpec> nonSwarmSpecs = dependencyManager.getNonSwarmDependencies();
+
+            archive.getContent().values().stream()
+                    .filter(node -> node.getPath().get().startsWith(WEB_INF_LIB))
+                    .filter(node -> !nodeIsInArtifactList(node, nonSwarmSpecs, false)
+                                    && (nodeIsInArtifactList(node, moduleSpecs, true)
+                                        || nodeIsSwarmArtifact(node)))
+                    .forEach(node -> archive.delete(node.getPath()));
+
+            return archive;
+        }
+
     }
 }
 

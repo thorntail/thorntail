@@ -36,11 +36,11 @@ public class IOBridge implements Runnable, Closeable{
     private final InputStream in;
     private final PrintStream out;
 
+    private final CountDownLatch latch;
+
     private BufferedWriter fileOut;
 
     private Exception error;
-
-    private final CountDownLatch latch;
 
     public IOBridge(CountDownLatch latch, InputStream in, OutputStream out, Path file) throws IOException {
         this.in = in;

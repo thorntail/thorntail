@@ -47,11 +47,11 @@ import java.util.stream.Collectors;
 public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
 
-    final private ArtifactResolver resolver;
-
     final protected RepositorySystemSession session;
 
     final protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
+
+    final private ArtifactResolver resolver;
 
     final private RepositorySystem system;
 

@@ -25,38 +25,6 @@ import org.jboss.modules.maven.ArtifactCoordinates;
  */
 public class MavenArtifactDescriptor {
 
-    public class Builder {
-
-        public Builder groupId(String groupId) {
-            MavenArtifactDescriptor.this.groupId = groupId;
-            return this;
-        }
-
-        public Builder artifactId(String artifactId) {
-            MavenArtifactDescriptor.this.artifactId = artifactId;
-            return this;
-        }
-
-        public Builder version(String version) {
-            MavenArtifactDescriptor.this.version = version;
-            return this;
-        }
-
-        public Builder type(String type) {
-            MavenArtifactDescriptor.this.type = type;
-            return this;
-        }
-
-        public Builder classifier(String classifier) {
-            MavenArtifactDescriptor.this.classifier = classifier;
-            return this;
-        }
-
-        public MavenArtifactDescriptor build() {
-            return MavenArtifactDescriptor.this;
-        }
-    }
-
     private String groupId;
 
     private String artifactId;
@@ -67,16 +35,26 @@ public class MavenArtifactDescriptor {
 
     private String type;
 
-    public static Builder build() {
-        return new MavenArtifactDescriptor().builder().type("jar");
-    }
-
     private MavenArtifactDescriptor() {
 
     }
 
-    private Builder builder() {
-        return new Builder();
+    public MavenArtifactDescriptor(String groupId, String artifactId, String version) {
+        this(groupId, artifactId,  "jar", null, version);
+    }
+
+    public MavenArtifactDescriptor(String groupId, String artifactId, String type, String classifier, String version) {
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+        this.version = version;
+        this.type = type;
+        if ( classifier != null && ! classifier.trim().equals( "" ) ) {
+            this.classifier = classifier;
+        }
+    }
+
+    public static Builder build() {
+        return new MavenArtifactDescriptor().builder().type("jar");
     }
 
     public static MavenArtifactDescriptor fromMscGav(String gav) throws IOException {
@@ -105,18 +83,8 @@ public class MavenArtifactDescriptor {
 
     }
 
-    public MavenArtifactDescriptor(String groupId, String artifactId, String version) {
-        this(groupId, artifactId,  "jar", null, version);
-    }
-
-    public MavenArtifactDescriptor(String groupId, String artifactId, String type, String classifier, String version) {
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
-        this.type = type;
-        if ( classifier != null && ! classifier.trim().equals( "" ) ) {
-            this.classifier = classifier;
-        }
+    private Builder builder() {
+        return new Builder();
     }
 
     @Override
@@ -213,5 +181,37 @@ public class MavenArtifactDescriptor {
         p.append( '.' ).append( this.type );
 
         return p.toString();
+    }
+
+    public class Builder {
+
+        public Builder groupId(String groupId) {
+            MavenArtifactDescriptor.this.groupId = groupId;
+            return this;
+        }
+
+        public Builder artifactId(String artifactId) {
+            MavenArtifactDescriptor.this.artifactId = artifactId;
+            return this;
+        }
+
+        public Builder version(String version) {
+            MavenArtifactDescriptor.this.version = version;
+            return this;
+        }
+
+        public Builder type(String type) {
+            MavenArtifactDescriptor.this.type = type;
+            return this;
+        }
+
+        public Builder classifier(String classifier) {
+            MavenArtifactDescriptor.this.classifier = classifier;
+            return this;
+        }
+
+        public MavenArtifactDescriptor build() {
+            return MavenArtifactDescriptor.this;
+        }
     }
 }

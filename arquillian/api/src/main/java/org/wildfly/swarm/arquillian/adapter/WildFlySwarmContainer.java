@@ -37,6 +37,9 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
 
     private Set<String> requestedMavenArtifacts;
 
+    private SimpleContainer delegateContainer;
+
+    private Class<?> testClass;
 
     @Override
     public Class<DaemonContainerConfigurationBase> getConfigurationClass() {
@@ -102,7 +105,4 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     @Override
     public void undeploy(Descriptor descriptor) throws DeploymentException {
     }
-
-    private SimpleContainer delegateContainer;
-    private Class<?> testClass;
 }

@@ -44,25 +44,6 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
     }
 
-    @Override
-    public void postInitialize(Container.PostInitContext initContext) {
-        SecurityFraction security = (SecurityFraction) initContext.fraction("security");
-
-        if (security != null) {
-            SecurityDomain ejbPolicy = security.subresources().securityDomains().stream().filter((e) -> e.getKey().equals("jboss-ejb-policy")).findFirst().orElse(null);
-            if (ejbPolicy == null) {
-                ejbPolicy = new SecurityDomain("jboss-ejb-policy")
-                        .classicAuthorization(new ClassicAuthorization()
-                                .policyModule(new PolicyModule("default")
-                                        .code("Delegating")
-                                        .flag(Flag.REQUIRED)));
-                security.securityDomain( ejbPolicy );
-            }
-        }
-
-        System.err.println("found security: " + security);
-    }
-
     public static EJBFraction createDefaultFraction() {
 
         Map<Object,Object> threadPoolSettings = new HashMap<>();
@@ -99,5 +80,24 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
         return fraction;
 
+    }
+
+    @Override
+    public void postInitialize(Container.PostInitContext initContext) {
+        SecurityFraction security = (SecurityFraction) initContext.fraction("security");
+
+        if (security != null) {
+            SecurityDomain ejbPolicy = security.subresources().securityDomains().stream().filter((e) -> e.getKey().equals("jboss-ejb-policy")).findFirst().orElse(null);
+            if (ejbPolicy == null) {
+                ejbPolicy = new SecurityDomain("jboss-ejb-policy")
+                        .classicAuthorization(new ClassicAuthorization()
+                                .policyModule(new PolicyModule("default")
+                                        .code("Delegating")
+                                        .flag(Flag.REQUIRED)));
+                security.securityDomain( ejbPolicy );
+            }
+        }
+
+        System.err.println("found security: " + security);
     }
 }

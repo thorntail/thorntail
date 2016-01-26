@@ -27,6 +27,10 @@ import org.wildfly.swarm.msc.ServiceActivatorArchive;
  * @author Toby Crawley
  */
 public class InVMSimpleContainer implements SimpleContainer {
+    private final Class<?> testClass;
+
+    private Container container;
+
     public InVMSimpleContainer(Class<?> testClass) {
         this.testClass = testClass;
     }
@@ -58,7 +62,4 @@ public class InVMSimpleContainer implements SimpleContainer {
             container.stop();
         }
     }
-
-    private final Class<?> testClass;
-    private Container container;
 }

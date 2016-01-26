@@ -32,6 +32,29 @@ import org.jboss.modules.maven.MavenResolver;
  */
 public class UberJarMavenResolver implements MavenResolver {
 
+    private static final Pattern snapshotPattern = Pattern.compile("-\\d{8}\\.\\d{6}-\\d+$");
+
+    public static File copyTempJar(String artifactId, InputStream in, String packaging) throws IOException {
+        Path tmp = Files.createTempFile(artifactId, "." + packaging);
+        Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING );
+        return tmp.toFile();
+    }
+
+    static String relativeArtifactPath(char separator, String groupId, String artifactId, String version) {
+        StringBuilder builder = new StringBuilder(groupId.replace('.', separator));
+        builder.append(separator).append(artifactId).append(separator);
+        String pathVersion;
+        final Matcher versionMatcher = snapshotPattern.matcher(version);
+        if (versionMatcher.find()) {
+            // it's really a snapshot
+            pathVersion = version.substring(0, versionMatcher.start()) + "-SNAPSHOT";
+        } else {
+            pathVersion = version;
+        }
+        builder.append(pathVersion).append(separator).append(artifactId).append('-').append(version);
+        return builder.toString();
+    }
+
     @Override
     public File resolveArtifact(ArtifactCoordinates coordinates, String packaging) throws IOException {
 
@@ -50,28 +73,5 @@ public class UberJarMavenResolver implements MavenResolver {
         }
 
         return null;
-    }
-
-    public static File copyTempJar(String artifactId, InputStream in, String packaging) throws IOException {
-        Path tmp = Files.createTempFile(artifactId, "." + packaging);
-        Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING );
-        return tmp.toFile();
-    }
-
-    private static final Pattern snapshotPattern = Pattern.compile("-\\d{8}\\.\\d{6}-\\d+$");
-
-    static String relativeArtifactPath(char separator, String groupId, String artifactId, String version) {
-        StringBuilder builder = new StringBuilder(groupId.replace('.', separator));
-        builder.append(separator).append(artifactId).append(separator);
-        String pathVersion;
-        final Matcher versionMatcher = snapshotPattern.matcher(version);
-        if (versionMatcher.find()) {
-            // it's really a snapshot
-            pathVersion = version.substring(0, versionMatcher.start()) + "-SNAPSHOT";
-        } else {
-            pathVersion = version;
-        }
-        builder.append(pathVersion).append(separator).append(artifactId).append('-').append(version);
-        return builder.toString();
     }
 }

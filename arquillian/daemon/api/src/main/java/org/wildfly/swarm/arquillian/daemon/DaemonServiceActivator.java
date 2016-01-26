@@ -51,6 +51,10 @@ public class DaemonServiceActivator implements ServiceActivator {
 
     class DaemonService implements Service<Void> {
 
+        private Server server;
+
+        private InjectedValue<ModuleLoader> serviceLoader = new InjectedValue<>();
+
         @Override
         public void start(StartContext context) throws StartException {
             try {
@@ -91,9 +95,6 @@ public class DaemonServiceActivator implements ServiceActivator {
         public Injector<ModuleLoader> getServiceLoader() {
             return serviceLoader;
         }
-
-        private Server server;
-        private InjectedValue<ModuleLoader> serviceLoader = new InjectedValue<>();
     }
 
 

@@ -39,9 +39,9 @@ import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
  */
 public class WildFlySwarmBootstrapConf {
 
-    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.bootstrap" );
-
     public final static String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-bootstrap.conf";
+
+    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.bootstrap" );
 
     private List<MavenArtifactDescriptor> entries = new ArrayList<>();
 
@@ -50,10 +50,13 @@ public class WildFlySwarmBootstrapConf {
 
     }
 
+    public WildFlySwarmBootstrapConf(InputStream in) throws IOException {
+        read(in);
+    }
+
     public void addEntry(MavenArtifactDescriptor entry) {
         this.entries.add( entry );
     }
-
 
     public void addEntry(String gav) throws IOException {
         String[] parts = gav.split(":");
@@ -75,10 +78,6 @@ public class WildFlySwarmBootstrapConf {
 
     public List<? extends MavenArtifactDescriptor> getEntries() {
         return Collections.unmodifiableList( this.entries);
-    }
-
-    public WildFlySwarmBootstrapConf(InputStream in) throws IOException {
-        read(in);
     }
 
     public String toString() {

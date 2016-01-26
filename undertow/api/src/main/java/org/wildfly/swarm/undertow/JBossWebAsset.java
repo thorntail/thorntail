@@ -30,6 +30,10 @@ import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
 public class JBossWebAsset implements Asset{
 
 
+    private final JbossWebDescriptor descriptor;
+
+    private boolean rootSet = false;
+
     public JBossWebAsset() {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
@@ -43,13 +47,13 @@ public class JBossWebAsset implements Asset{
                                                  .fromStream(fromStream));
     }
 
+    public String getContextRoot() {
+        return this.descriptor.getContextRoot();
+    }
+
     public void setContextRoot(String contextRoot) {
         this.descriptor.contextRoot(contextRoot);
         rootSet = true;
-    }
-
-    public String getContextRoot() {
-        return this.descriptor.getContextRoot();
     }
 
     public boolean isRootSet() {
@@ -60,8 +64,5 @@ public class JBossWebAsset implements Asset{
     public InputStream openStream() {
         return new ByteArrayInputStream(this.descriptor.exportAsString().getBytes());
     }
-
-    private final JbossWebDescriptor descriptor;
-    private boolean rootSet = false;
 
 }

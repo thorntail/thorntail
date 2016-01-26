@@ -15,18 +15,6 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import org.apache.maven.settings.Settings;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.RepositoryListener;
-import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenWorkingSession;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
-import org.jboss.shrinkwrap.resolver.impl.maven.ConfigurableMavenWorkingSessionImpl;
-import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
-import org.wildfly.swarm.tools.ArtifactResolvingHelper;
-import org.wildfly.swarm.tools.ArtifactSpec;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,10 +22,27 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.maven.settings.Settings;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositoryListener;
+import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.impl.maven.ConfigurableMavenWorkingSessionImpl;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
+import org.wildfly.swarm.tools.ArtifactResolvingHelper;
+import org.wildfly.swarm.tools.ArtifactSpec;
+
 /**
  * @author Bob McWhirter
  */
 public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelper {
+
+    private final ConfigurableMavenResolverSystem resolver;
+
+    private CompletableTransferListener transferListener;
+
+    private RepositoryListener repositoryListener;
 
     public ShrinkwrapArtifactResolvingHelper(ConfigurableMavenResolverSystem resolver) {
         this.resolver = resolver;
@@ -82,12 +87,12 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
         return Arrays.stream(artifacts).map(artifact -> {
             final MavenCoordinate coord = artifact.getCoordinate();
             return new ArtifactSpec("compile",
-                                    coord.getGroupId(),
-                                    coord.getArtifactId(),
-                                    coord.getVersion(),
-                                    coord.getPackaging().getId(),
-                                    coord.getClassifier(),
-                                    artifact.asFile());
+                    coord.getGroupId(),
+                    coord.getArtifactId(),
+                    coord.getVersion(),
+                    coord.getPackaging().getId(),
+                    coord.getClassifier(),
+                    artifact.asFile());
         }).collect(Collectors.toSet());
     }
 
@@ -125,11 +130,11 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     }
 
     private DefaultRepositorySystemSession session() {
-        return (DefaultRepositorySystemSession)invokeWorkingSessionMethod("getSession");
+        return (DefaultRepositorySystemSession) invokeWorkingSessionMethod("getSession");
     }
 
     private Settings settings() {
-        return (Settings)invokeWorkingSessionMethod("getSettings");
+        return (Settings) invokeWorkingSessionMethod("getSettings");
     }
 
     private Object invokeWorkingSessionMethod(final String methodName) {
@@ -142,10 +147,6 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             throw new RuntimeException("Failed to invoke " + methodName, e);
         }
     }
-
-    private final ConfigurableMavenResolverSystem resolver;
-    private CompletableTransferListener transferListener;
-    private RepositoryListener repositoryListener;
 
     public interface ResolverAction {
         MavenResolvedArtifact[] resolve(ConfigurableMavenResolverSystem resolver);

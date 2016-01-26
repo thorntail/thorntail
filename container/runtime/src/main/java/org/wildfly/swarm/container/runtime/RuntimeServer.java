@@ -39,6 +39,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.LogManager;
 
+import javax.xml.namespace.QName;
+
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
@@ -65,8 +67,8 @@ import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.vfs.TempFileProvider;
-import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -75,8 +77,6 @@ import org.wildfly.swarm.container.OutboundSocketBinding;
 import org.wildfly.swarm.container.Server;
 import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
-
-import javax.xml.namespace.QName;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
@@ -143,7 +143,7 @@ public class RuntimeServer implements Server {
 
     @Override
     public void setXmlConfig(URL xmlConfig) {
-        if(null==xmlConfig)
+        if (null == xmlConfig)
             throw new IllegalArgumentException("Invalid XML config");
         this.xmlConfig = Optional.of(xmlConfig);
     }
@@ -167,7 +167,7 @@ public class RuntimeServer implements Server {
             fraction.postInitialize(config.createPostInitContext());
         }
 
-        if(!xmlConfig.isPresent())
+        if (!xmlConfig.isPresent())
             applySocketBindingGroupDefaults(config);
 
         LinkedList<ModelNode> bootstrapOperations = new LinkedList<>();
@@ -248,29 +248,6 @@ public class RuntimeServer implements Server {
         return this.deployer;
     }
 
-    private static class ExtensionOpPriorityComparator implements Comparator<ModelNode> {
-        @Override
-        public int compare(ModelNode left, ModelNode right) {
-
-            PathAddress leftAddr = PathAddress.pathAddress(left.get(OP_ADDR));
-            PathAddress rightAddr = PathAddress.pathAddress(right.get(OP_ADDR));
-
-            String leftOpName = left.require(OP).asString();
-            String rightOpName = left.require(OP).asString();
-
-            if (leftAddr.size() == 1 && leftAddr.getElement(0).getKey().equals(EXTENSION) && leftOpName.equals(ADD)) {
-                return -1;
-            }
-
-            if (rightAddr.size() == 1 && rightAddr.getElement(0).getKey().equals(EXTENSION) && rightOpName.equals(ADD)) {
-                return 1;
-            }
-
-            return 0;
-        }
-    }
-
-
     public void stop() throws Exception {
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -297,7 +274,7 @@ public class RuntimeServer implements Server {
 
     private void applyDefaults(Container config) throws Exception {
         config.applyFractionDefaults(this);
-        if(!xmlConfig.isPresent()) {
+        if (!xmlConfig.isPresent()) {
             applyInterfaceDefaults(config);
         }
     }
@@ -305,7 +282,7 @@ public class RuntimeServer implements Server {
     private void applyInterfaceDefaults(Container config) {
         if (config.ifaces().isEmpty()) {
             config.iface("public",
-                         SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
+                    SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
         }
     }
 
@@ -313,7 +290,7 @@ public class RuntimeServer implements Server {
         if (config.socketBindingGroups().isEmpty()) {
             config.socketBindingGroup(
                     new SocketBindingGroup("default-sockets", "public",
-                                           SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
+                            SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
             );
         }
 
@@ -371,7 +348,7 @@ public class RuntimeServer implements Server {
                     List<Class<? extends ServerConfiguration>> serverConfigs = findServerConfigurationImpls(module);
 
                     for (Class<? extends ServerConfiguration> cls : serverConfigs) {
-                        if (! this.configList.stream().anyMatch((e) -> e.getClass().equals(cls))) {
+                        if (!this.configList.stream().anyMatch((e) -> e.getClass().equals(cls))) {
                             ServerConfiguration serverConfig = (ServerConfiguration) cls.newInstance();
                             this.configByFractionType.put(serverConfig.getType(), serverConfig);
                             this.configList.add(serverConfig);
@@ -406,14 +383,14 @@ public class RuntimeServer implements Server {
 
         Set<ClassInfo> infos = index.getAllKnownImplementors(DotName.createSimple(ServerConfiguration.class.getName()));
 
-        List<Class<? extends  ServerConfiguration>>  impls = new ArrayList<>();
+        List<Class<? extends ServerConfiguration>> impls = new ArrayList<>();
 
         for (ClassInfo info : infos) {
             try {
-                Class<? extends ServerConfiguration> cls = (Class<? extends ServerConfiguration>) module.getClassLoader().loadClass( info.name().toString() );
+                Class<? extends ServerConfiguration> cls = (Class<? extends ServerConfiguration>) module.getClassLoader().loadClass(info.name().toString());
 
-                if (! Modifier.isAbstract( cls.getModifiers() ) ) {
-                    impls.add( cls );
+                if (!Modifier.isAbstract(cls.getModifiers())) {
+                    impls.add(cls);
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -444,13 +421,11 @@ public class RuntimeServer implements Server {
 
     }
 
-
     private void getList(Container config, List<ModelNode> list) throws Exception {
 
-        if(xmlConfig.isPresent()) {
+        if (xmlConfig.isPresent()) {
             configureFractionsFromXML(config, list);
-        }
-        else {
+        } else {
             configureInterfaces(config, list);
             configureSocketBindingGroups(config, list);
             configureFractions(config, list);
@@ -541,32 +516,31 @@ public class RuntimeServer implements Server {
     }
 
     @SuppressWarnings("unchecked")
-       private void configureFractionsFromXML(Container container, List<ModelNode> operationList) throws Exception {
+    private void configureFractionsFromXML(Container container, List<ModelNode> operationList) throws Exception {
 
-           StandaloneXmlParser parser = new StandaloneXmlParser();
+        StandaloneXmlParser parser = new StandaloneXmlParser();
 
-           FractionProcessor<StandaloneXmlParser> consumer = (p, cfg, fraction) -> {
-               try {
-                   if(cfg.getSubsystemParsers().isPresent())
-                   {
-                       Map<QName, XMLElementReader<List<ModelNode>>> fractionParsers =
-                               (Map<QName, XMLElementReader<List<ModelNode>>>) cfg.getSubsystemParsers().get();
+        FractionProcessor<StandaloneXmlParser> consumer = (p, cfg, fraction) -> {
+            try {
+                if (cfg.getSubsystemParsers().isPresent()) {
+                    Map<QName, XMLElementReader<List<ModelNode>>> fractionParsers =
+                            (Map<QName, XMLElementReader<List<ModelNode>>>) cfg.getSubsystemParsers().get();
 
-                       fractionParsers.forEach(p::addDelegate);
-                   }
-               } catch (Exception e) {
-                   throw new RuntimeException(e);
-               }
-           };
+                    fractionParsers.forEach(p::addDelegate);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
 
-           // collect parsers
-           visitFractions(container, parser, consumer);
+        // collect parsers
+        visitFractions(container, parser, consumer);
 
-           // parse the configurations
-           List<ModelNode> parseResult = parser.parse(xmlConfig.get());
-           operationList.addAll(parseResult);
+        // parse the configurations
+        List<ModelNode> parseResult = parser.parse(xmlConfig.get());
+        operationList.addAll(parseResult);
 
-       }
+    }
 
     private void configureFractions(Container config, List<ModelNode> list) throws Exception {
         for (ServerConfiguration<Fraction> eachConfig : this.configList) {
@@ -585,32 +559,55 @@ public class RuntimeServer implements Server {
     }
 
     /**
-         * Wraps common iteration pattern over fraction and server configurations
-         * @param container
-         * @param context processing context (i.e. accumulator)
-         * @param fn a {@link org.wildfly.swarm.container.runtime.RuntimeServer.FractionProcessor} instance
-         */
-        private <T> void visitFractions(Container container, T context, FractionProcessor<T> fn) {
-            OUTER:
-            for (ServerConfiguration eachConfig : this.configList) {
-                boolean found = false;
-                INNER:
-                for (Fraction eachFraction : container.fractions()) {
-                    if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-                        found = true;
-                        fn.accept(context, eachConfig, eachFraction);
-                        break INNER;
-                    }
+     * Wraps common iteration pattern over fraction and server configurations
+     *
+     * @param container
+     * @param context   processing context (i.e. accumulator)
+     * @param fn        a {@link org.wildfly.swarm.container.runtime.RuntimeServer.FractionProcessor} instance
+     */
+    private <T> void visitFractions(Container container, T context, FractionProcessor<T> fn) {
+        OUTER:
+        for (ServerConfiguration eachConfig : this.configList) {
+            boolean found = false;
+            INNER:
+            for (Fraction eachFraction : container.fractions()) {
+                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+                    found = true;
+                    fn.accept(context, eachConfig, eachFraction);
+                    break INNER;
                 }
-                if (!found && !eachConfig.isIgnorable()) {
-                    System.err.println("*** unable to find fraction for: " + eachConfig.getType());
-                }
-
             }
-        }
+            if (!found && !eachConfig.isIgnorable()) {
+                System.err.println("*** unable to find fraction for: " + eachConfig.getType());
+            }
 
-        @FunctionalInterface
-        interface FractionProcessor<T> {
-            void accept(T t, ServerConfiguration config, Fraction fraction);
         }
+    }
+
+    @FunctionalInterface
+    interface FractionProcessor<T> {
+        void accept(T t, ServerConfiguration config, Fraction fraction);
+    }
+
+    private static class ExtensionOpPriorityComparator implements Comparator<ModelNode> {
+        @Override
+        public int compare(ModelNode left, ModelNode right) {
+
+            PathAddress leftAddr = PathAddress.pathAddress(left.get(OP_ADDR));
+            PathAddress rightAddr = PathAddress.pathAddress(right.get(OP_ADDR));
+
+            String leftOpName = left.require(OP).asString();
+            String rightOpName = left.require(OP).asString();
+
+            if (leftAddr.size() == 1 && leftAddr.getElement(0).getKey().equals(EXTENSION) && leftOpName.equals(ADD)) {
+                return -1;
+            }
+
+            if (rightAddr.size() == 1 && rightAddr.getElement(0).getKey().equals(EXTENSION) && rightOpName.equals(ADD)) {
+                return 1;
+            }
+
+            return 0;
+        }
+    }
 }

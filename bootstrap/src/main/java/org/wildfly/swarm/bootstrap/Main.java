@@ -35,14 +35,14 @@ public class Main {
 
     public static final String DEFAULT_MAIN_CLASS_NAME = "org.wildfly.swarm.Swarm";
 
-    public static void main(String... args) throws Throwable {
-        new Main(args).run();
-    }
-
     private final String[] args;
 
     public Main(String... args) throws Throwable {
         this.args = args;
+    }
+
+    public static void main(String... args) throws Throwable {
+        new Main(args).run();
     }
 
     public void run() throws Throwable {

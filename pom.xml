@@ -4,7 +4,8 @@
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -84,7 +85,7 @@
     <maven.min.version>3.2.1</maven.min.version>
 
     <!-- Surefire args -->
-    <surefire.jpda.args />
+    <surefire.jpda.args/>
     <surefire.system.args>-da ${surefire.jpda.args}</surefire.system.args>
 
     <!-- Checkstyle configuration -->
@@ -281,13 +282,13 @@
         <artifactId>gradle-core</artifactId>
         <version>${version.gradle}</version>
       </dependency>
-     <dependency>
+      <dependency>
         <groupId>org.gradle</groupId>
         <artifactId>gradle-base-services</artifactId>
         <version>${version.gradle}</version>
         <scope>provided</scope>
       </dependency>
-     <dependency>
+      <dependency>
         <groupId>org.gradle</groupId>
         <artifactId>gradle-plugins</artifactId>
         <version>${version.gradle.plugins}</version>
@@ -1091,7 +1092,7 @@
         <artifactId>maven-aether-provider</artifactId>
         <version>3.2.5</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-all</artifactId>

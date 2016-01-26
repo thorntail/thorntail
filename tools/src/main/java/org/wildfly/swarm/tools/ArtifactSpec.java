@@ -26,26 +26,15 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public final String scope;
 
-    public File file;
-
     public final boolean topLevel;
+
+    public File file;
 
     public boolean shouldGather = true;
 
     public boolean gathered = false;
 
     public boolean bootstrapped = false;
-
-    public static ArtifactSpec fromMscGav(String gav) {
-        String[] parts = gav.split(":");
-        if (parts.length == 3) {
-            return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", null, null);
-        } else if (parts.length == 4) {
-            return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", parts[3], null);
-        } else {
-            throw new RuntimeException("Invalid gav: " + gav);
-        }
-    }
 
     public ArtifactSpec(final String scope,
                         final String groupId,
@@ -63,6 +52,17 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
         this(scope, groupId, artifactId, version, packaging, classifier, file, false);
+    }
+
+    public static ArtifactSpec fromMscGav(String gav) {
+        String[] parts = gav.split(":");
+        if (parts.length == 3) {
+            return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", null, null);
+        } else if (parts.length == 4) {
+            return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", parts[3], null);
+        } else {
+            throw new RuntimeException("Invalid gav: " + gav);
+        }
     }
 
     public String jarName() {

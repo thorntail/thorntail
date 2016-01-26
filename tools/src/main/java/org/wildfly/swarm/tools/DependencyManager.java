@@ -53,8 +53,6 @@ public class DependencyManager {
 
     public static final String JBOSS_MODULES_ARTIFACT_ID = "jboss-modules";
 
-    private ArtifactResolvingHelper resolver;
-
     private final Set<ArtifactSpec> dependencies = new HashSet<>();
 
     private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
@@ -67,7 +65,31 @@ public class DependencyManager {
 
     private final Map<String, String> providedGAVToModuleMappings = new HashMap<>();
 
+    private ArtifactResolvingHelper resolver;
+
     public DependencyManager() {
+    }
+
+    protected static Stream<ModuleAnalyzer> findModuleXmls(File file) {
+        List<ModuleAnalyzer> analyzers = new ArrayList<>();
+        try {
+            JarFile jar = new JarFile(file);
+            Enumeration<JarEntry> entries = jar.entries();
+
+            while (entries.hasMoreElements()) {
+                JarEntry each = entries.nextElement();
+                String name = each.getName();
+
+                if (name.startsWith("modules/") && name.endsWith("module.xml")) {
+                    InputStream in = jar.getInputStream(each);
+                    analyzers.add(new ModuleAnalyzer(in));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return analyzers.stream();
     }
 
     Set<ArtifactSpec> getDependencies() {
@@ -224,7 +246,6 @@ public class DependencyManager {
         }
     }
 
-
     protected WildFlySwarmBootstrapConf getWildFlySwarmBootstrapConf() {
         WildFlySwarmBootstrapConf bootstrapConf = new WildFlySwarmBootstrapConf();
 
@@ -327,28 +348,6 @@ public class DependencyManager {
                 .flatMap(DependencyManager::findModuleXmls)
                 .forEach(this::analyzeModuleDependencies);
 
-    }
-
-    protected static Stream<ModuleAnalyzer> findModuleXmls(File file) {
-        List<ModuleAnalyzer> analyzers = new ArrayList<>();
-        try {
-            JarFile jar = new JarFile(file);
-            Enumeration<JarEntry> entries = jar.entries();
-
-            while (entries.hasMoreElements()) {
-                JarEntry each = entries.nextElement();
-                String name = each.getName();
-
-                if (name.startsWith("modules/") && name.endsWith("module.xml")) {
-                    InputStream in = jar.getInputStream(each);
-                    analyzers.add(new ModuleAnalyzer(in));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return analyzers.stream();
     }
 
     protected void analyzeModuleDependencies(ModuleAnalyzer analyzer) {

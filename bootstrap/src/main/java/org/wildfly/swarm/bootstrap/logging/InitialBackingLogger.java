@@ -21,6 +21,7 @@ package org.wildfly.swarm.bootstrap.logging;
 public class InitialBackingLogger implements BackingLogger {
 
     private final String category;
+
     private final BootstrapLogger.Level level;
 
 
@@ -49,31 +50,31 @@ public class InitialBackingLogger implements BackingLogger {
 
     @Override
     public void trace(Object message) {
-        InitialLoggerManager.INSTANCE.log( this, BootstrapLogger.Level.TRACE, message );
+        InitialLoggerManager.INSTANCE.log(this, BootstrapLogger.Level.TRACE, message);
     }
 
     @Override
     public void debug(Object message) {
-        InitialLoggerManager.INSTANCE.log( this, BootstrapLogger.Level.DEBUG, message );
+        InitialLoggerManager.INSTANCE.log(this, BootstrapLogger.Level.DEBUG, message);
     }
 
     @Override
     public void info(Object message) {
-        InitialLoggerManager.INSTANCE.log( this, BootstrapLogger.Level.INFO, message );
+        InitialLoggerManager.INSTANCE.log(this, BootstrapLogger.Level.INFO, message);
     }
 
     @Override
     public void warn(Object message) {
-        InitialLoggerManager.INSTANCE.log( this, BootstrapLogger.Level.WARN, message );
+        InitialLoggerManager.INSTANCE.log(this, BootstrapLogger.Level.WARN, message);
     }
 
     @Override
     public void error(Object message) {
-        InitialLoggerManager.INSTANCE.log( this, BootstrapLogger.Level.ERROR, message );
+        InitialLoggerManager.INSTANCE.log(this, BootstrapLogger.Level.ERROR, message);
     }
 
     @Override
     public void error(Object message, Throwable t) {
-        InitialLoggerManager.INSTANCE.log( this, BootstrapLogger.Level.ERROR, message, t );
+        InitialLoggerManager.INSTANCE.log(this, BootstrapLogger.Level.ERROR, message, t);
     }
 }

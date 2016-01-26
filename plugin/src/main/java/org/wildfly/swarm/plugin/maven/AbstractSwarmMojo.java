@@ -37,6 +37,17 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
 
     protected static String VERSION;
 
+    static {
+        try {
+            VERSION = loadProperties(PackageMojo.class
+                                             .getClassLoader()
+                                             .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties"))
+                    .getProperty("version");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
@@ -73,6 +84,32 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
     }
 
+    protected static Properties loadProperties(final InputStream in) throws IOException {
+        final Properties props = new Properties();
+        try {
+            props.load(in);
+        } finally {
+            in.close();
+        }
+
+        return props;
+    }
+
+    protected static Properties loadProperties(final String file) throws MojoFailureException {
+        return loadProperties(new File(file));
+    }
+
+    protected static Properties loadProperties(final File file) throws MojoFailureException {
+        try {
+
+            return loadProperties(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            throw new MojoFailureException("No such file: " + file, e);
+        } catch (IOException e) {
+            throw new MojoFailureException("Error reading file: " + file, e);
+        }
+    }
+
     protected void initProperties(final boolean withMaven) throws MojoFailureException {
         if (this.properties == null) {
             this.properties = new Properties();
@@ -100,43 +137,6 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
         if (this.environmentFile != null) {
             this.environment.putAll(loadProperties(this.environmentFile));
-        }
-    }
-
-    protected static Properties loadProperties(final InputStream in) throws IOException {
-        final Properties props = new Properties();
-        try {
-            props.load(in);
-        } finally {
-            in.close();
-        }
-
-        return props;
-    }
-
-    protected static Properties loadProperties(final String file) throws MojoFailureException {
-        return loadProperties(new File(file));
-    }
-
-    protected static Properties loadProperties(final File file) throws MojoFailureException {
-        try {
-
-            return loadProperties(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
-            throw new MojoFailureException("No such file: " + file, e);
-        } catch (IOException e) {
-            throw new MojoFailureException("Error reading file: " + file, e);
-        }
-    }
-
-    static {
-        try {
-            VERSION = loadProperties(PackageMojo.class
-                                             .getClassLoader()
-                                             .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties"))
-                    .getProperty("version");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

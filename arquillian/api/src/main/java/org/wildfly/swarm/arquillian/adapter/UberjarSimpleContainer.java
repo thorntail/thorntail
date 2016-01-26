@@ -51,7 +51,13 @@ import java.util.stream.Stream;
  */
 public class UberjarSimpleContainer implements SimpleContainer {
 
+    private final Class<?> testClass;
+
     private int timeout;
+
+    private SwarmProcess process;
+
+    private Set<String> requestedMavenArtifacts;
 
     public UberjarSimpleContainer(Class<?> testClass) {
         this.testClass = testClass;
@@ -245,10 +251,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
     private String gav(final String group, final String artifact, final String version) {
         return String.format("%s:%s:%s", group, artifact, version);
     }
-
-    private final Class<?> testClass;
-    private SwarmProcess process;
-    private Set<String> requestedMavenArtifacts;
 
 
 }

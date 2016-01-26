@@ -31,6 +31,14 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
 
     }
 
+    public static ManagementFraction createDefaultFraction() {
+        ManagementFraction fraction = new ManagementFraction();
+
+        fraction.httpInterfaceManagementInterface();
+
+        return fraction;
+    }
+
     @Override
     public ManagementFraction httpInterfaceManagementInterface() {
         return httpInterfaceManagementInterface( (iface)->{
@@ -54,14 +62,6 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
             consumer.accept(realm);
             return realm;
         });
-    }
-
-    public static ManagementFraction createDefaultFraction() {
-        ManagementFraction fraction = new ManagementFraction();
-
-        fraction.httpInterfaceManagementInterface();
-
-        return fraction;
     }
 
     @Override

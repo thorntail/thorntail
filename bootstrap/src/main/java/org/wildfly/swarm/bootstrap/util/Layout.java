@@ -49,16 +49,16 @@ public class Layout {
 
     private ClassLoader bootstrapClassLoader;
 
+    Layout(CodeSource codeSource) throws IOException, URISyntaxException {
+        this.root = determineRoot(codeSource);
+        determineIfIsUberJar();
+    }
+
     public static Layout getInstance() throws IOException, URISyntaxException {
         if (INSTANCE == null) {
             INSTANCE = new Layout(Layout.class.getProtectionDomain().getCodeSource());
         }
         return INSTANCE;
-    }
-
-    Layout(CodeSource codeSource) throws IOException, URISyntaxException {
-        this.root = determineRoot(codeSource);
-        determineIfIsUberJar();
     }
 
     public Path getRoot() {

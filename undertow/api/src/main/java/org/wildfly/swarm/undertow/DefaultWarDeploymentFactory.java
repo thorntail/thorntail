@@ -35,6 +35,19 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
+    public static WARArchive archiveFromCurrentApp() throws Exception {
+        final WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
+        final DefaultDeploymentFactory factory = new DefaultWarDeploymentFactory();
+        factory.setup(archive);
+        archive.addModule("org.wildfly.swarm.undertow", "runtime");
+
+        return archive;
+    }
+
+    protected static String determineName() {
+       return DefaultDeploymentFactory.determineName(".war");
+    }
+
     @Override
     public int getPriority() {
         return 0;
@@ -48,19 +61,6 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
     @Override
     public Archive create(Container container) throws Exception {
         return archiveFromCurrentApp();
-    }
-
-    public static WARArchive archiveFromCurrentApp() throws Exception {
-        final WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
-        final DefaultDeploymentFactory factory = new DefaultWarDeploymentFactory();
-        factory.setup(archive);
-        archive.addModule("org.wildfly.swarm.undertow", "runtime");
-
-        return archive;
-    }
-
-    protected static String determineName() {
-       return DefaultDeploymentFactory.determineName(".war");
     }
 
     public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {

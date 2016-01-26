@@ -15,14 +15,19 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
-import org.jboss.modules.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.HashSet;
+
+import org.jboss.modules.DependencySpec;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.ModuleLoader;
+import org.jboss.modules.ModuleSpec;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.Layout;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
-
-import java.io.*;
-import java.net.URISyntaxException;
-import java.util.HashSet;
 
 /**
  * Module-finder used only for loading the first set of jars when run in an fat-jar scenario.
@@ -31,8 +36,9 @@ import java.util.HashSet;
  */
 public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
 
-    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.bootstrap" );
     public static final String MODULE_NAME = "org.wildfly.swarm.bootstrap";
+
+    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.bootstrap");
 
     public BootstrapModuleFinder() {
         super(MODULE_NAME);
@@ -41,8 +47,8 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
 
-        if ( LOG.isTraceEnabled() ) {
-            LOG.trace( "Loading module" );
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Loading module");
         }
         try {
             if (Layout.getInstance().isUberJar()) {
@@ -55,10 +61,10 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
             HashSet<String> paths = new HashSet<String>();
-            paths.add( "org/wildfly/swarm/bootstrap/logging");
-            paths.add( "org/wildfly/swarm/bootstrap/util");
-            paths.add( "org/wildfly/swarm/bootstrap/modules");
-            builder.addDependency(DependencySpec.createSystemDependencySpec( paths, true ) );
+            paths.add("org/wildfly/swarm/bootstrap/logging");
+            paths.add("org/wildfly/swarm/bootstrap/util");
+            paths.add("org/wildfly/swarm/bootstrap/modules");
+            builder.addDependency(DependencySpec.createSystemDependencySpec(paths, true));
         } catch (IOException e) {
             throw new ModuleLoadException(e);
         } catch (URISyntaxException e) {
@@ -67,14 +73,14 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
     }
 
     protected void handleWildFlySwarmBootstrapConf(ModuleSpec.Builder builder) throws IOException {
-        if ( LOG.isTraceEnabled() ) {
-            LOG.trace( "Loading conf from " + WildFlySwarmBootstrapConf.CLASSPATH_LOCATION );
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Loading conf from " + WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
         }
         InputStream bootstrapTxt = getClass().getClassLoader().getResourceAsStream(WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
 
         if (bootstrapTxt != null) {
-            WildFlySwarmBootstrapConf conf = new WildFlySwarmBootstrapConf( bootstrapTxt );
-            conf.apply( builder );
+            WildFlySwarmBootstrapConf conf = new WildFlySwarmBootstrapConf(bootstrapTxt);
+            conf.apply(builder);
         }
     }
 }

@@ -33,6 +33,8 @@ import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
  */
 public class JBossDeploymentStructureAsset implements Asset{
 
+    private final JBossDeploymentStructureDescriptor descriptor;
+
     public JBossDeploymentStructureAsset() {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
@@ -72,6 +74,4 @@ public class JBossDeploymentStructureAsset implements Asset{
 
         return new ByteArrayInputStream(output.getBytes());
     }
-
-    private final JBossDeploymentStructureDescriptor descriptor;
 }

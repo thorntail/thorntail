@@ -15,6 +15,23 @@
  */
 package org.wildfly.swarm.arquillian.daemon.server;
 
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
@@ -38,24 +55,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.arquillian.daemon.TestRunner;
 import org.wildfly.swarm.arquillian.daemon.protocol.WireProtocol;
 
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
 /**
  * Netty-based implementation of a server; not thread-safe via the Java API (though invoking wire protocol
  * operations through its communication channels is). Responsible for handling I/O aspects of the server daemon.
@@ -66,6 +65,28 @@ import java.util.logging.Logger;
 public class Server {
 
     public static final int MAX_PORT = 65535;
+
+    private static final Logger log = Logger.getLogger(Server.class.getName());
+
+    private static final String NAME_CHANNEL_HANDLER_STRING_DECODER = "StringDecoder";
+
+    private static final String NAME_CHANNEL_HANDLER_FRAME_DECODER = "FrameDecoder";
+
+    private static final String NAME_CHANNEL_HANDLER_COMMAND = "CommandHandler";
+
+    private final List<EventLoopGroup> eventLoopGroups = new ArrayList<>();
+
+    private final InetSocketAddress bindAddress;
+
+    private final ConcurrentMap<String, GenericArchive> deployedArchives;
+
+    private final Domain shrinkwrapDomain;
+
+    private ExecutorService shutdownService;
+
+    private boolean running;
+
+    private ClassLoader classLoader;
 
     Server(final InetSocketAddress bindAddress, ClassLoader classLoader) {
         // Precondition checks
@@ -103,6 +124,14 @@ public class Server {
 
         // Create and return a new server instance
         return new Server(resolvedInetAddress, classLoader);
+    }
+
+    private static ChannelFuture sendResponse(final ChannelHandlerContext ctx, final String response) {
+        ByteBuf buf = ctx.alloc().buffer();
+        buf.writeBytes(response.getBytes(WireProtocol.CHARSET));
+        ctx.write(buf);
+
+        return ctx.writeAndFlush(Delimiters.lineDelimiter()[0]);
     }
 
     public final void start() throws ServerLifecycleException, IllegalStateException {
@@ -152,7 +181,7 @@ public class Server {
 
         if (log.isLoggable(Level.INFO)) {
             log.info("Arquillian Daemon server started on " + boundAddress.getHostName() + ":" +
-                             boundAddress.getPort());
+                    boundAddress.getPort());
         }
 
     }
@@ -231,7 +260,7 @@ public class Server {
     }
 
     protected final Serializable executeTest(final String testClassName, final String methodName)
-        throws IllegalStateException {
+            throws IllegalStateException {
         return new TestRunner(this.classLoader).executeTest(testClassName, methodName);
     }
 
@@ -244,6 +273,14 @@ public class Server {
             Server.this.stop();
             return null;
         });
+    }
+
+    private void setupPipeline(final ChannelPipeline pipeline) {
+        pipeline.addLast(NAME_CHANNEL_HANDLER_FRAME_DECODER,
+                new DelimiterBasedFrameDecoder(2000, Delimiters.lineDelimiter()));
+        pipeline.addLast(NAME_CHANNEL_HANDLER_STRING_DECODER,
+                new StringDecoder(WireProtocol.CHARSET));
+        pipeline.addLast(NAME_CHANNEL_HANDLER_COMMAND, new StringCommandHandler());
     }
 
     /**
@@ -306,7 +343,7 @@ public class Server {
                 // Will be captured by any remote process which launched us and is piping in our output
                 t.printStackTrace();
                 Server.sendResponse(ctx, WireProtocol.RESPONSE_ERROR_PREFIX
-                    + "Caught unexpected error servicing request: " + t.getMessage());
+                        + "Caught unexpected error servicing request: " + t.getMessage());
             }
 
         }
@@ -316,7 +353,7 @@ public class Server {
          * implementation.
          *
          * @see io.netty.channel.SimpleChannelInboundHandler#exceptionCaught(io.netty.channel.ChannelHandlerContext,
-         *      java.lang.Throwable)
+         * java.lang.Throwable)
          */
         @Override
         public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
@@ -333,34 +370,4 @@ public class Server {
         }
 
     }
-
-    private void setupPipeline(final ChannelPipeline pipeline) {
-        pipeline.addLast(NAME_CHANNEL_HANDLER_FRAME_DECODER,
-                         new DelimiterBasedFrameDecoder(2000, Delimiters.lineDelimiter()));
-        pipeline.addLast(NAME_CHANNEL_HANDLER_STRING_DECODER,
-                         new StringDecoder(WireProtocol.CHARSET));
-        pipeline.addLast(NAME_CHANNEL_HANDLER_COMMAND, new StringCommandHandler());
-    }
-
-    private static ChannelFuture sendResponse(final ChannelHandlerContext ctx, final String response) {
-        ByteBuf buf = ctx.alloc().buffer();
-        buf.writeBytes(response.getBytes(WireProtocol.CHARSET));
-        ctx.write(buf);
-
-        return ctx.writeAndFlush(Delimiters.lineDelimiter()[0]);
-    }
-
-
-    private static final Logger log = Logger.getLogger(Server.class.getName());
-    private static final String NAME_CHANNEL_HANDLER_STRING_DECODER = "StringDecoder";
-    private static final String NAME_CHANNEL_HANDLER_FRAME_DECODER = "FrameDecoder";
-    private static final String NAME_CHANNEL_HANDLER_COMMAND = "CommandHandler";
-
-    private final List<EventLoopGroup> eventLoopGroups = new ArrayList<>();
-    private final InetSocketAddress bindAddress;
-    private final ConcurrentMap<String, GenericArchive> deployedArchives;
-    private final Domain shrinkwrapDomain;
-    private ExecutorService shutdownService;
-    private boolean running;
-    private ClassLoader classLoader;
 }

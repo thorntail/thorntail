@@ -37,6 +37,37 @@ public class BatchFraction extends BatchJBeret<BatchFraction> implements Fractio
     public static final String DEFAULT_THREAD_POOL_NAME = "batch";
 
     /**
+     * Creates a default batch fraction.
+     * <p>
+     * Uses an {@code in-memory} job repository with the {@linkplain #DEFAULT_JOB_REPOSITORY_NAME default name}.
+     * </p>
+     *
+     * <p>
+     * Uses a default thread-pool with a calculated maximum number of threads based on the available number of processors. A
+     * keep alive time of 30 seconds is used for the thread-pool.
+     * </p>
+     *
+     * @return a new default batch fraction
+     */
+    public static BatchFraction createDefaultFraction() {
+        final BatchFraction fraction = new BatchFraction();
+        final InMemoryJobRepository<?> jobRepository = new InMemoryJobRepository<>(DEFAULT_JOB_REPOSITORY_NAME);
+        fraction.inMemoryJobRepository(jobRepository)
+                .defaultJobRepository(jobRepository.getKey());
+
+        // Default thread-pool
+        final ThreadPool<?> threadPool = new ThreadPool<>(DEFAULT_THREAD_POOL_NAME);
+        threadPool.maxThreads(ProcessorInfo.availableProcessors())
+                .keepaliveTime("time", "30")
+                .keepaliveTime("unit", "seconds");
+        fraction.threadPool(threadPool)
+                .defaultThreadPool(threadPool.getKey());
+
+        return fraction;
+
+    }
+
+    /**
      * Adds the in-memory job repository as the default job repository.
      *
      * @param jobRepository the job repository to use as the default
@@ -151,36 +182,5 @@ public class BatchFraction extends BatchJBeret<BatchFraction> implements Fractio
                 .keepaliveTime("time", Integer.toBinaryString(keepAliveTime))
                 .keepaliveTime("unit", keepAliveUnits.name().toLowerCase(Locale.ROOT));
         return threadPool(threadPool);
-    }
-
-    /**
-     * Creates a default batch fraction.
-     * <p>
-     * Uses an {@code in-memory} job repository with the {@linkplain #DEFAULT_JOB_REPOSITORY_NAME default name}.
-     * </p>
-     *
-     * <p>
-     * Uses a default thread-pool with a calculated maximum number of threads based on the available number of processors. A
-     * keep alive time of 30 seconds is used for the thread-pool.
-     * </p>
-     *
-     * @return a new default batch fraction
-     */
-    public static BatchFraction createDefaultFraction() {
-        final BatchFraction fraction = new BatchFraction();
-        final InMemoryJobRepository<?> jobRepository = new InMemoryJobRepository<>(DEFAULT_JOB_REPOSITORY_NAME);
-        fraction.inMemoryJobRepository(jobRepository)
-                .defaultJobRepository(jobRepository.getKey());
-
-        // Default thread-pool
-        final ThreadPool<?> threadPool = new ThreadPool<>(DEFAULT_THREAD_POOL_NAME);
-        threadPool.maxThreads(ProcessorInfo.availableProcessors())
-                .keepaliveTime("time", "30")
-                .keepaliveTime("unit", "seconds");
-        fraction.threadPool(threadPool)
-                .defaultThreadPool(threadPool.getKey());
-
-        return fraction;
-
     }
 }

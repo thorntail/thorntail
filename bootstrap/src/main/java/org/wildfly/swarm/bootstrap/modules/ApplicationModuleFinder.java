@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.Enumeration;
 
 import org.jboss.modules.DependencySpec;
-import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
@@ -42,23 +41,24 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
  */
 public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
-    private static final BootstrapLogger LOG = BootstrapLogger.logger( "org.wildfly.swarm.modules.application" );
     public final static String MODULE_NAME = "swarm.application";
 
+    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.application");
+
     public ApplicationModuleFinder() {
-        super( MODULE_NAME );
+        super(MODULE_NAME);
     }
 
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
         try {
             if (Layout.getInstance().isUberJar()) {
-                if ( LOG.isDebugEnabled() ) {
+                if (LOG.isDebugEnabled()) {
                     LOG.debug("Loading as uberjar");
                 }
                 handleWildFlySwarmApplicationConf(builder);
             } else {
-                if ( LOG.isDebugEnabled() ) {
+                if (LOG.isDebugEnabled()) {
                     LOG.debug("Loading as non-ubjerjar");
                 }
                 ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -70,7 +70,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                         String line = null;
                         while ((line = reader.readLine()) != null) {
                             line = line.trim();
-                            if ( ! line.isEmpty() ) {
+                            if (!line.isEmpty()) {
                                 builder.addDependency(
                                         DependencySpec.createModuleDependencySpec(
                                                 PathFilters.acceptAll(),
@@ -119,7 +119,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
         InputStream appConf = getClass().getClassLoader().getResourceAsStream(WildFlySwarmApplicationConf.CLASSPATH_LOCATION);
         if (appConf != null) {
             WildFlySwarmApplicationConf conf = new WildFlySwarmApplicationConf(appConf);
-            conf.apply( builder );
+            conf.apply(builder);
         }
     }
 }
