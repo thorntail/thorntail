@@ -2,10 +2,13 @@
 
 We welcome contributions of any kind to WildFly Swarm from everyone.
 
-We expect all contributors and users to follow our [Code of Conduct]code_of_conduct.md when communicating through project channels.
+We expect all contributors and users to follow our [Code of Conduct - TBD]() when communicating through project channels.
 These include, but are not limited to: irc, issues, code, Google Group discussions.
 
 Building WildFly Swarm requires Java 8 or newer and Maven 3.2.5 or newer.
+
+> If you are on Fedora, the Maven 3.2.5 build won't work, as it uses an older version of Aether that was replaced in the
+> official Maven 3.2.5 release. You'll need to manually install [Maven](https://maven.apache.org/download.cgi).
 
 ## One time setup
 
@@ -35,7 +38,7 @@ git git remote add upstream git://github.com/wildfly-swarm/wildfly-swarm.git
 
 ### Setup your IDE for the code style format of the project
 
-Currently we have code styles defined for Intellij. Please follow the steps in [the README]ide-configs/idea/README.md on how
+Currently we have code styles defined for Intellij. Please follow the steps in [the README](ide-configs/idea/README.md) on how
 to set them up.
 
 ### Setup commit message template
