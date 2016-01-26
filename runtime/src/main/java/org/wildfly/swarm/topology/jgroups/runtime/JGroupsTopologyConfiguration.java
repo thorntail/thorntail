@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.msc.service.ServiceActivator;
-import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.topology.jgroups.JGroupsTopologyFraction;
 
@@ -35,7 +34,7 @@ public class JGroupsTopologyConfiguration extends AbstractServerConfiguration<JG
     @Override
     public List<ServiceActivator> getServiceActivators(JGroupsTopologyFraction fraction) {
         List<ServiceActivator> activators = new ArrayList<>();
-        activators.add( new JGroupsTopologyConnectorActivator() );
+        activators.add(new JGroupsTopologyConnectorActivator());
         return activators;
     }
 

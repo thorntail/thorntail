@@ -16,14 +16,11 @@
 package org.wildfly.swarm.topology.jgroups.runtime;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.as.network.SocketBinding;
 import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.Service;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
@@ -42,7 +39,9 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
 public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnector>, Group.Listener, TopologyConnector {
 
     private InjectedValue<SocketBinding> socketBindingInjector = new InjectedValue<>();
+
     private InjectedValue<CommandDispatcherFactory> commandDispatcherFactoryInjector = new InjectedValue<>();
+
     private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
 
     private CommandDispatcher<JGroupsTopologyConnector> dispatcher;
@@ -118,7 +117,7 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
     }
 
     public synchronized void advertise(Registration registration) {
-        this.topologyManagerInjector.getValue().register( registration );
+        this.topologyManagerInjector.getValue().register(registration);
         doAdvertise(registration);
     }
 
