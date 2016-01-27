@@ -156,3 +156,14 @@ Here are some tips on increasing the chance that your pull request is accepted:
  * Update any associated documentation, or add new documentation. This will require a separate pull request as the documentation
  is in a separate repository
  * Follow the existing [code style](code-style.md) of the project
+
+## Updating User Guide
+
+If you'd like to contribute to the [User Guide](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/content/) of
+WildFly Swarm, you can do so in the following ways:
+
+  1. Submit a pull request to https://github.com/wildfly-swarm/wildfly-swarm-users-guide
+  2. Signup at http://gitbooks.io and use their web editor
+  3. Install the GitBooks desktop application
+
+If you want to use options 2 or 3 just let us know, as we will need to add your http://gitbooks.io id to the user guide for editing.
