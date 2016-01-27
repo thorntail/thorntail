@@ -54,6 +54,8 @@ public class SwarmExecutor {
 
     private List<Path> classpath = new ArrayList<>();
 
+    private List<String> jvmArguments = new ArrayList<>();
+
     private List<String> arguments = new ArrayList<>();
 
     private Executable executable;
@@ -230,6 +232,16 @@ public class SwarmExecutor {
         return this;
     }
 
+    public SwarmExecutor withJVMArgument(String arg) {
+        this.jvmArguments.add(arg);
+        return this;
+    }
+
+    public SwarmExecutor withJVMArguments(List<String> args) {
+        this.jvmArguments.addAll(args);
+        return this;
+    }
+
     public SwarmExecutor withWorkingDirectory(Path workingDirectory) {
         this.workingDirectory = workingDirectory;
         return this;
@@ -249,6 +261,8 @@ public class SwarmExecutor {
             cli.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=" + debugPort);
         }
 
+        cli.addAll(this.jvmArguments);
+
         for (String name : this.properties.keySet()) {
             cli.add("-D" + name + "=" + this.properties.get(name));
         }
@@ -261,6 +275,8 @@ public class SwarmExecutor {
 
         cli.addAll(this.executable.toArguments());
         cli.addAll(this.arguments);
+
+        System.err.println( "exec: " + cli );
 
 
         final ProcessBuilder processBuilder = new ProcessBuilder(cli)

@@ -58,6 +58,9 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "debug", property = BootstrapProperties.DEBUG_PORT)
     public Integer debugPort;
 
+    @Parameter(alias = "jvmArguments" )
+    public List<String> jvmArguments = new ArrayList();
+
     boolean waitForProcess;
 
     @SuppressWarnings("unchecked")
@@ -77,6 +80,8 @@ public class StartMojo extends AbstractSwarmMojo {
         } else {
             throw new MojoExecutionException("Unsupported packaging: " + this.project.getPackaging());
         }
+
+        executor.withJVMArguments( this.jvmArguments );
 
         final SwarmProcess process;
         try {
