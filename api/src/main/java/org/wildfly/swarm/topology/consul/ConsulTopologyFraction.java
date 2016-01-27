@@ -18,6 +18,7 @@ package org.wildfly.swarm.topology.consul;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.container.Fraction;
 
 /**
@@ -39,7 +40,8 @@ public class ConsulTopologyFraction implements Fraction {
     static {
         URL tmp = null;
         try {
-            tmp = new URL("http://localhost:8500/");
+            String consulUrl = System.getProperty(SwarmProperties.CONSUL_URL, "http://localhost:8500/");
+            tmp = new URL(consulUrl);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
