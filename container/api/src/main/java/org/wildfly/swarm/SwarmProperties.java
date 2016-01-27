@@ -44,6 +44,11 @@ public class SwarmProperties {
     //public
     public static final String ENVIRONMENT = "swarm.environment";
 
+    /**
+     * Full qualified http address, i.e. 'http://localhost:8500/
+     */
+    public static final String CONSUL_URL = "swarm.consul.url";
+
 
     public static String propertyVar(final String prop) {
         return String.format("${%s}", prop);
