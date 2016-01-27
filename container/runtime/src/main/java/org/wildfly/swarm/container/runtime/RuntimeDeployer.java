@@ -40,10 +40,12 @@ import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Fraction;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.BLOCKING_TIMEOUT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CONTENT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ENABLED;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HASH;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OPERATION_HEADERS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUNTIME_NAME;
 
@@ -112,6 +114,12 @@ public class RuntimeDeployer implements Deployer {
         deploymentAdd.get(OP_ADDR).set("deployment", deployment.getName());
         deploymentAdd.get(RUNTIME_NAME).set(deployment.getName());
         deploymentAdd.get(ENABLED).set(true);
+
+        int deploymentTimeout = Integer.parseInt( System.getProperty( "swarm.deployment.timeout", "5"));
+
+        final ModelNode opHeaders = new ModelNode();
+        opHeaders.get( BLOCKING_TIMEOUT ).set( deploymentTimeout );
+        deploymentAdd.get( OPERATION_HEADERS ).set( opHeaders );
 
         ModelNode content = deploymentAdd.get(CONTENT).add();
         content.get(HASH).set(hash);
