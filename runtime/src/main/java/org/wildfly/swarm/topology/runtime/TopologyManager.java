@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.jboss.msc.service.ServiceName;
@@ -40,17 +42,27 @@ public class TopologyManager implements Topology {
 
     private List<Registration> registrations = new ArrayList<>();
 
-    public void addListener(TopologyListener listener) {
+    private Executor executor = Executors.newFixedThreadPool(2);
+
+    public synchronized void addListener(TopologyListener listener) {
         this.listeners.add(listener);
     }
 
-    public void removeListener(TopologyListener listener) {
+    public synchronized void removeListener(TopologyListener listener) {
         this.listeners.remove(listener);
     }
 
     private void fireListeners() {
-        this.listeners.forEach((e) -> {
-            e.onChange(this);
+        List<TopologyListener> currentListeners = new ArrayList<>();
+        currentListeners.addAll( this.listeners );
+        currentListeners.forEach((e) -> {
+            executor.execute( ()->{
+                try {
+                    e.onChange(this);
+                } catch (Throwable t) {
+                    removeListener(e);
+                }
+            });
         });
     }
 
