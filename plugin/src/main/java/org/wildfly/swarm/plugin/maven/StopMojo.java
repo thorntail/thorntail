@@ -19,9 +19,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 /**
@@ -30,10 +32,23 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 @Mojo(name = "stop")
 public class StopMojo extends AbstractMojo {
 
+    @Parameter(defaultValue = "${mojoExecution}")
+    protected MojoExecution execution;
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if ( this.execution.getExecutionId().equals( "default-cli" ) ) {
+            getLog().error( "wildfly-swarm:stop is not usable from the CLI" );
+            return;
+        }
+
         List<SwarmProcess> value = (List<SwarmProcess>) getPluginContext().get("swarm-process");
+
+        if ( value == null ) {
+            getLog().error( "No known processes to stop" );
+            return;
+        }
 
         for (SwarmProcess each : value) {
             stop(each);
