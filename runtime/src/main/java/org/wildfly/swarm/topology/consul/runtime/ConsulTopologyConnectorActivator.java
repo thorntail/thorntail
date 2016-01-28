@@ -47,7 +47,7 @@ public class ConsulTopologyConnectorActivator implements ServiceActivator {
         ConsulTopologyConnector connector = new ConsulTopologyConnector(this.url);
 
         target.addService(TopologyConnector.SERVICE_NAME, connector)
-                .addDependency(ServiceName.parse("org.wildfly.network.socket-binding.http"), SocketBinding.class, connector.getSocketBindingInjector())
+                //.addDependency(ServiceName.parse("org.wildfly.network.socket-binding.http"), SocketBinding.class, connector.getSocketBindingInjector())
                 .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
                 .install();
     }

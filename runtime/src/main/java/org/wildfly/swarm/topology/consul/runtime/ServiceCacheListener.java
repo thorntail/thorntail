@@ -39,31 +39,23 @@ public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth
 
         List<HostAndPort> previousEntries = topologyManager.registrationsForService(this.name)
                 .stream()
-                .flatMap(e -> e.endPoints().stream())
                 .map(e -> HostAndPort.fromParts(e.getAddress(), e.getPort()))
                 .collect(Collectors.toList());
 
-        Set<HostAndPort> newEntries = new HashSet<>();
-        for (HostAndPort key : newValues.keySet()) {
-            ServiceHealth serviceHealth = newValues.get(key);
-            Service service = serviceHealth.getService();
-            newEntries.add(HostAndPort.fromParts(service.getAddress(), service.getPort()));
-        }
+        Set<HostAndPort> newEntries = newValues.values().stream()
+                .map( e->HostAndPort.fromParts( e.getService().getAddress(), e.getService().getPort() ) )
+                .collect( Collectors.toSet() );
 
         previousEntries.stream()
                 .filter(h -> !newEntries.contains(h))
-                .map(e -> new Registration("consul", this.name)
-                        .endPoint(new Registration.EndPoint(e.getHostText(), e.getPort())))
+                .map(e -> new Registration("consul", this.name, e.getHostText(), e.getPort()) )
                 .forEach(e -> {
                     this.topologyManager.unregister(e);
                 });
 
         newEntries.stream()
                 .filter(h -> !previousEntries.contains(h))
-                .map(e -> {
-                    return new Registration("consul", this.name)
-                            .endPoint(new Registration.EndPoint(e.getHostText(), e.getPort()));
-                })
+                .map(e -> new Registration("consul", this.name, e.getHostText(), e.getPort() ) )
                 .forEach(e -> {
                     this.topologyManager.register(e);
                 });

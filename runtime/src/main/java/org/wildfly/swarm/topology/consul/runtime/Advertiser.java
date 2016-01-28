@@ -1,8 +1,10 @@
 package org.wildfly.swarm.topology.consul.runtime;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -17,6 +19,7 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.topology.runtime.Registration;
 
 /**
@@ -33,7 +36,7 @@ public class Advertiser implements Service<Advertiser>, Runnable {
 
     private InjectedValue<AgentClient> agentClientInjector = new InjectedValue<>();
 
-    private Map<String, List<String>> advertisements = new ConcurrentHashMap<>();
+    private Set<Registration> advertisements = new HashSet<>();
 
     private Thread thread;
 
@@ -42,35 +45,26 @@ public class Advertiser implements Service<Advertiser>, Runnable {
     }
 
     public void advertise(Registration registration) {
-        if (this.advertisements.containsKey(registration.getName())) {
+        if (this.advertisements.contains(registration)) {
             return;
         }
 
         AgentClient client = this.agentClientInjector.getValue();
+        this.advertisements.add(registration);
 
-        List<String> keys = new ArrayList<>();
-        this.advertisements.put(registration.getName(), keys);
-
-        for (Registration.EndPoint endPoint : registration.endPoints()) {
-            String key = registration.getName() + "-" + endPoint.getVisibility();
-            com.orbitz.consul.model.agent.Registration consulReg = ImmutableRegistration.builder()
-                    .address(endPoint.getAddress())
-                    .port(endPoint.getPort())
-                    .id(key)
-                    .name(registration.getName())
-                    .addTags(endPoint.getVisibility().toString())
-                    .check(com.orbitz.consul.model.agent.Registration.RegCheck.ttl(3L))
-                    .build();
-            client.register(consulReg);
-
-            log.info("Register service '"+registration.getName()+"' with address "+endPoint.getAddress()+":"+endPoint.getPort());
-
-            keys.add(key);
-        }
+        com.orbitz.consul.model.agent.Registration consulReg = ImmutableRegistration.builder()
+                .address(registration.getAddress())
+                .port(registration.getPort())
+                .id(serviceId(registration))
+                .name(registration.getName())
+                .addTags(registration.getTags())
+                .check(com.orbitz.consul.model.agent.Registration.RegCheck.ttl(3L))
+                .build();
+        client.register(consulReg);
     }
 
-    public void unadvertise(String name) {
-        this.advertisements.remove(name);
+    public void unadvertise(String name, String address, int port) {
+        this.advertisements.removeIf( e->e.getName().equals( name)  && e.getAddress().equals( address ) && e.getPort() == port );
     }
 
     @Override
@@ -94,12 +88,11 @@ public class Advertiser implements Service<Advertiser>, Runnable {
     public void run() {
         AgentClient client = this.agentClientInjector.getValue();
         while (true) {
-            this.advertisements.values()
+            this.advertisements
                     .stream()
-                    .flatMap(e -> e.stream())
                     .forEach(e -> {
                         try {
-                            client.pass(e);
+                            client.pass(serviceId(e));
                         } catch (NotRegisteredException e1) {
                             // ignore?
                             e1.printStackTrace();
@@ -113,5 +106,9 @@ public class Advertiser implements Service<Advertiser>, Runnable {
             }
         }
 
+    }
+
+    private String serviceId(Registration registration) {
+        return registration.getName() + ":" + registration.getAddress() + ":" + registration.getPort();
     }
 }

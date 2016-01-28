@@ -14,8 +14,6 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.wildfly.swarm.SwarmProperties;
-import org.wildfly.swarm.container.SocketBindingGroup;
 import org.wildfly.swarm.topology.runtime.Registration;
 import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
@@ -36,8 +34,6 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
 
     private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
 
-    private InjectedValue<SocketBinding> socketBindingInjector = new InjectedValue<>();
-
     private Advertiser advertiser;
 
     public ConsulTopologyConnector(URL url) {
@@ -48,28 +44,15 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
         return this.topologyManagerInjector;
     }
 
-    public Injector<SocketBinding> getSocketBindingInjector() {
-        return this.socketBindingInjector;
-    }
-
     @Override
-    public void advertise(String name) {
-        SocketBinding binding = this.socketBindingInjector.getValue();
-
-        int portOffset = binding.getSocketBindings().getPortOffset();
-
-        Registration registration = new Registration("consul", name)
-                .endPoint(new Registration.EndPoint(
-                        binding.getAddress().getHostAddress(),
-                        binding.getPort()+portOffset)
-                );
-
+    public void advertise(String name, SocketBinding binding, String...tags) {
+        Registration registration = new Registration("consul", name, binding.getAddress().getHostAddress(), binding.getAbsolutePort(), tags );
         this.advertiser.advertise(registration);
     }
 
     @Override
-    public void unadvertise(String name) {
-        this.advertiser.unadvertise(name);
+    public void unadvertise(String name, SocketBinding binding) {
+        this.advertiser.unadvertise(name, binding.getAddress().getHostAddress(), binding.getAbsolutePort() );
     }
 
     @Override
