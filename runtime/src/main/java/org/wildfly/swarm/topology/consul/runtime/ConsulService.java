@@ -41,7 +41,11 @@ public class ConsulService implements Service<Consul> {
         builder.withClientBuilder(clientBuilder);
         builder.withUrl(this.url);
 
-        this.consul = builder.build();
+        try {
+            this.consul = builder.build();
+        } catch (Exception e) {
+            throw new StartException("Failed to connect consul at "+url, e);
+        }
     }
 
     @Override

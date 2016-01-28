@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.NotRegisteredException;
@@ -28,6 +29,8 @@ public class Advertiser implements Service<Advertiser>, Runnable {
 
     public static final ServiceName SERVICE_NAME = ConsulService.SERVICE_NAME.append("advertiser");
 
+    private static final Logger log = Logger.getLogger(Advertiser.class.getName());
+
     private InjectedValue<AgentClient> agentClientInjector = new InjectedValue<>();
 
     private Map<String, List<String>> advertisements = new ConcurrentHashMap<>();
@@ -43,15 +46,13 @@ public class Advertiser implements Service<Advertiser>, Runnable {
             return;
         }
 
-        UUID uuid = UUID.randomUUID();
-
         AgentClient client = this.agentClientInjector.getValue();
 
         List<String> keys = new ArrayList<>();
         this.advertisements.put(registration.getName(), keys);
 
         for (Registration.EndPoint endPoint : registration.endPoints()) {
-            String key = uuid.toString() + "-" + endPoint.getVisibility();
+            String key = registration.getName() + "-" + endPoint.getVisibility();
             com.orbitz.consul.model.agent.Registration consulReg = ImmutableRegistration.builder()
                     .address(endPoint.getAddress())
                     .port(endPoint.getPort())
@@ -61,6 +62,9 @@ public class Advertiser implements Service<Advertiser>, Runnable {
                     .check(com.orbitz.consul.model.agent.Registration.RegCheck.ttl(3L))
                     .build();
             client.register(consulReg);
+
+            log.info("Register service '"+registration.getName()+"' with address "+endPoint.getAddress()+":"+endPoint.getPort());
+
             keys.add(key);
         }
     }

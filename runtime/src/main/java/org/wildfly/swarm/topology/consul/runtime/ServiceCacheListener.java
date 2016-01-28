@@ -1,5 +1,6 @@
 package org.wildfly.swarm.topology.consul.runtime;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ConsulCache.Listener;
+import com.orbitz.consul.model.health.Service;
 import com.orbitz.consul.model.health.ServiceHealth;
 import org.wildfly.swarm.topology.runtime.Registration;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
@@ -41,7 +43,12 @@ public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth
                 .map(e -> HostAndPort.fromParts(e.getAddress(), e.getPort()))
                 .collect(Collectors.toList());
 
-        Set<HostAndPort> newEntries = newValues.keySet();
+        Set<HostAndPort> newEntries = new HashSet<>();
+        for (HostAndPort key : newValues.keySet()) {
+            ServiceHealth serviceHealth = newValues.get(key);
+            Service service = serviceHealth.getService();
+            newEntries.add(HostAndPort.fromParts(service.getAddress(), service.getPort()));
+        }
 
         previousEntries.stream()
                 .filter(h -> !newEntries.contains(h))
@@ -53,8 +60,11 @@ public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth
 
         newEntries.stream()
                 .filter(h -> !previousEntries.contains(h))
-                .map(e -> new Registration("consul", this.name)
-                        .endPoint(new Registration.EndPoint(e.getHostText(), e.getPort())))
+                .map(e -> {
+                    System.out.println(">> "+ e);
+                    return new Registration("consul", this.name)
+                            .endPoint(new Registration.EndPoint(e.getHostText(), e.getPort()));
+                })
                 .forEach(e -> {
                     this.topologyManager.register(e);
                 });
