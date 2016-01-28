@@ -16,24 +16,22 @@
 package org.wildfly.swarm.topology.jgroups.runtime;
 
 import org.wildfly.clustering.dispatcher.Command;
+import org.wildfly.swarm.topology.runtime.Registration;
 
 /**
  * @author Bob McWhirter
  */
 public class UnadvertiseCommand implements Command<Void, JGroupsTopologyConnector> {
 
-    private final String appName;
+    private final Registration registration;
 
-    private final String nodeKey;
-
-    public UnadvertiseCommand(String nodeKey, String appName) {
-        this.nodeKey = nodeKey;
-        this.appName = appName;
+    public UnadvertiseCommand(Registration registration) {
+        this.registration = registration;
     }
 
     @Override
     public Void execute(JGroupsTopologyConnector context) throws Exception {
-        context.unregister(this.nodeKey, this.appName);
+        context.unregister(this.registration);
         return null;
     }
 }

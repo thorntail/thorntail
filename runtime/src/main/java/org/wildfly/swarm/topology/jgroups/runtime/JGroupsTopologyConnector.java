@@ -17,6 +17,8 @@ package org.wildfly.swarm.topology.jgroups.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.as.network.SocketBinding;
 import org.jboss.msc.inject.Injector;
@@ -38,8 +40,6 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  */
 public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnector>, Group.Listener, TopologyConnector {
 
-    private InjectedValue<SocketBinding> socketBindingInjector = new InjectedValue<>();
-
     private InjectedValue<CommandDispatcherFactory> commandDispatcherFactoryInjector = new InjectedValue<>();
 
     private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
@@ -48,6 +48,8 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
 
     private Node node;
 
+    private Map<String, Registration> registrations = new ConcurrentHashMap<>();
+
 
     public JGroupsTopologyConnector() {
     }
@@ -55,10 +57,6 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
 
     public Injector<CommandDispatcherFactory> getCommandDispatcherFactoryInjector() {
         return this.commandDispatcherFactoryInjector;
-    }
-
-    public Injector<SocketBinding> getSocketBindingInjector() {
-        return this.socketBindingInjector;
     }
 
     public Injector<TopologyManager> getTopologyManagerInjector() {
@@ -109,10 +107,10 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         }
     }
 
-    public synchronized void advertise(String name) {
-        SocketBinding binding = this.socketBindingInjector.getValue();
-        Registration registration = new Registration(sourceKey(this.node), name)
-                .endPoint(new Registration.EndPoint(binding.getAddress().getHostAddress(), binding.getAbsolutePort()));
+    public synchronized void advertise(String name, SocketBinding binding, String... tags) {
+        Registration registration = new Registration(sourceKey(this.node), name, binding.getAddress().getHostAddress(), binding.getAbsolutePort(), tags);
+
+        this.registrations.put(name + ":" + binding.getName(), registration);
         advertise(registration);
     }
 
@@ -129,11 +127,14 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         }
     }
 
-    public synchronized void unadvertise(String appName) {
-        try {
-            this.dispatcher.submitOnCluster(new UnadvertiseCommand(sourceKey(this.node), appName));
-        } catch (Exception e) {
-            e.printStackTrace();
+    public synchronized void unadvertise(String appName, SocketBinding binding) {
+        Registration registration = this.registrations.remove(appName + ":" + binding.getName());
+        if (registration != null) {
+            try {
+                this.dispatcher.submitOnCluster(new UnadvertiseCommand(registration));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -141,8 +142,8 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         this.topologyManagerInjector.getValue().register(registration);
     }
 
-    void unregister(String nodeKey, String appName) {
-        this.topologyManagerInjector.getValue().unregisterAll(nodeKey, appName);
+    void unregister(Registration registration) {
+        this.topologyManagerInjector.getValue().unregister(registration);
     }
 
     String sourceKey(Node node) {
