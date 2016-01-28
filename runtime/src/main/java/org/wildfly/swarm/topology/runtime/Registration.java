@@ -1,42 +1,41 @@
 package org.wildfly.swarm.topology.runtime;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
 import org.wildfly.swarm.topology.Topology;
 
 /**
  * @author Bob McWhirter
  */
-public class Registration implements Serializable {
+public class Registration implements Topology.Entry, Serializable {
 
     private final String sourceKey;
 
     private final String name;
+    private final String address;
+    private final int port;
 
-    private final Set<EndPoint> endPoints = new HashSet<>();
+    private String[] tags;
 
-    public Registration(String sourceKey, String name) {
+    public Registration(String sourceKey, String name, String address, int port, String...tags) {
         if (sourceKey == null) {
             throw new IllegalArgumentException("Source key name cannot be null");
         }
         if (name == null) {
             throw new IllegalArgumentException("Registration name cannot be null");
         }
+        if ( address == null ) {
+            throw new IllegalArgumentException("Address cannot be null" );
+        }
         this.sourceKey = sourceKey;
         this.name = name;
-    }
-
-    public String toString() {
-        return "[Registration: " + this.sourceKey + ":" + this.name + ": " + this.endPoints + "]";
-    }
-
-    public Registration endPoint(EndPoint endPoint) {
-        this.endPoints.add(endPoint);
-        return this;
+        this.address = address;
+        this.port = port;
+        this.tags = tags;
+        if ( this.tags == null ) {
+            this.tags = new String[]{};
+        }
     }
 
     public String getSourceKey() {
@@ -47,19 +46,21 @@ public class Registration implements Serializable {
         return this.name;
     }
 
-    public Set<EndPoint> endPoints() {
-        return Collections.unmodifiableSet(this.endPoints);
+    public String getAddress() {
+        return this.address;
     }
 
-    public Set<EndPoint> endPoints(EndPoint.Visibility visibility) {
-        return Collections.unmodifiableSet(
-                this.endPoints.stream().filter(e -> e.getVisibility().equals(visibility))
-                        .collect(Collectors.toSet()));
+    public int getPort() {
+        return this.port;
+    }
+
+    public String toString() {
+        return this.address + ":" + this.port;
     }
 
     @Override
     public int hashCode() {
-        return this.sourceKey.hashCode() + this.name.hashCode() + this.endPoints.hashCode();
+        return this.sourceKey.hashCode() + this.name.hashCode() + this.address.hashCode() + this.port;
     }
 
     @Override
@@ -70,70 +71,20 @@ public class Registration implements Serializable {
 
         Registration that = (Registration) obj;
 
-        return (this.sourceKey.equals(that.sourceKey) && this.name.equals(that.name) && this.endPoints.equals(that.endPoints));
+        return (this.sourceKey.equals(that.sourceKey) && this.name.equals(that.name) && this.address.equals(that.address) && this.port == that.port);
     }
 
-    public static class EndPoint implements Topology.Entry, Serializable {
+    public String[] getTags() {
+        return tags;
+    }
 
-        private final String address;
-
-        private final int port;
-
-        private Visibility visibility;
-
-        public EndPoint(String address, int port) {
-            this.address = address;
-            this.port = port;
-            this.visibility = Visibility.PUBLIC;
-        }
-
-        public String getAddress() {
-            return this.address;
-        }
-
-        public int getPort() {
-            return this.port;
-        }
-
-        public Visibility getVisibility() {
-            return this.visibility;
-        }
-
-        public EndPoint isPublic() {
-            this.visibility = Visibility.PUBLIC;
-            return this;
-        }
-
-        public EndPoint isPrivate() {
-            this.visibility = Visibility.PRIVATE;
-            return this;
-        }
-
-        @Override
-        public String toString() {
-            return this.address + ":" + this.port;
-        }
-
-        @Override
-        public int hashCode() {
-            return (address + port + visibility).hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof EndPoint)) {
-                return false;
+    public boolean hasTag(String tag) {
+        for (String s : this.tags) {
+            if ( s.equals( tag ) ) {
+                return true;
             }
-
-            EndPoint that = (EndPoint) obj;
-
-            return (this.address.equals(that.address) && this.port == that.port && this.visibility == that.visibility);
         }
 
-        public enum Visibility {
-            PUBLIC,
-            PRIVATE
-        }
+        return false;
     }
-
 }

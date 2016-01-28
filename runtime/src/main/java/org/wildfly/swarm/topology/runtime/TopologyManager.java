@@ -54,9 +54,9 @@ public class TopologyManager implements Topology {
 
     private void fireListeners() {
         List<TopologyListener> currentListeners = new ArrayList<>();
-        currentListeners.addAll( this.listeners );
+        currentListeners.addAll(this.listeners);
         currentListeners.forEach((e) -> {
-            executor.execute( ()->{
+            executor.execute(() -> {
                 try {
                     e.onChange(this);
                 } catch (Throwable t) {
@@ -85,7 +85,18 @@ public class TopologyManager implements Topology {
         return result;
     }
 
+    public synchronized Set<Registration> registrationsForService(String name, String tag) {
+        Set<Registration> result = Collections.unmodifiableSet(
+                this.registrations.stream()
+                        .filter(e -> e.getName().equals(name) && e.hasTag( tag ) )
+                        .collect(Collectors.toSet())
+        );
+
+        return result;
+    }
+
     public synchronized void register(Registration registration) {
+        System.err.println( "try register: " + registration );
         if (!this.registrations.contains(registration)) {
             this.registrations.add(registration);
             fireListeners();
@@ -93,6 +104,7 @@ public class TopologyManager implements Topology {
     }
 
     public synchronized void unregister(Registration registration) {
+        System.err.println( "try unregister: " + registration );
         boolean removed = this.registrations.removeIf(e -> e.equals(registration));
         if (removed) {
             fireListeners();
@@ -118,14 +130,12 @@ public class TopologyManager implements Topology {
         Map<String, List<Entry>> map = new HashMap<>();
 
         for (Registration registration : this.registrations) {
-            for (Registration.EndPoint endPoint : registration.endPoints(Registration.EndPoint.Visibility.PUBLIC)) {
-                List<Entry> list = map.get(registration.getName());
-                if (list == null) {
-                    list = new ArrayList<>();
-                    map.put(registration.getName(), list);
-                }
-                list.add(endPoint);
+            List<Entry> list = map.get(registration.getName());
+            if (list == null) {
+                list = new ArrayList<>();
+                map.put(registration.getName(), list);
             }
+            list.add(registration);
         }
 
         return map;

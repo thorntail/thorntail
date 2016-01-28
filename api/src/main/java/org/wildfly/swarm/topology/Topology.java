@@ -29,5 +29,7 @@ public interface Topology {
 
         int getPort();
 
+        String[] getTags();
+
     }
 }

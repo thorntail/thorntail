@@ -10,5 +10,6 @@
     <module name="org.jboss.msc"/>
     <module name="org.jboss.as.naming"/>
     <module name="org.jboss.shrinkwrap"/>
+    <module name="org.jboss.as.network"/>
   </dependencies>
 </module>
