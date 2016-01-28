@@ -14,6 +14,8 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.container.SocketBindingGroup;
 import org.wildfly.swarm.topology.runtime.Registration;
 import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
@@ -53,8 +55,14 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
     @Override
     public void advertise(String name) {
         SocketBinding binding = this.socketBindingInjector.getValue();
+
+        int portOffset = binding.getSocketBindings().getPortOffset();
+
         Registration registration = new Registration("consul", name)
-                .endPoint(new Registration.EndPoint(binding.getAddress().getHostAddress(), binding.getPort()));
+                .endPoint(new Registration.EndPoint(
+                        binding.getAddress().getHostAddress(),
+                        binding.getPort()+portOffset)
+                );
 
         this.advertiser.advertise(registration);
     }

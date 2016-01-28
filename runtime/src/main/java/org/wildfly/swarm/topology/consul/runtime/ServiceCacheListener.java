@@ -61,7 +61,6 @@ public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth
         newEntries.stream()
                 .filter(h -> !previousEntries.contains(h))
                 .map(e -> {
-                    System.out.println(">> "+ e);
                     return new Registration("consul", this.name)
                             .endPoint(new Registration.EndPoint(e.getHostText(), e.getPort()));
                 })
