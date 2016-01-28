@@ -1,7 +1,10 @@
 package org.wildfly.swarm.topology.runtime;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.wildfly.swarm.topology.Topology;
 
@@ -16,7 +19,7 @@ public class Registration implements Topology.Entry, Serializable {
     private final String address;
     private final int port;
 
-    private String[] tags;
+    private List<String> tags = new ArrayList<>();
 
     public Registration(String sourceKey, String name, String address, int port, String...tags) {
         if (sourceKey == null) {
@@ -32,10 +35,7 @@ public class Registration implements Topology.Entry, Serializable {
         this.name = name;
         this.address = address;
         this.port = port;
-        this.tags = tags;
-        if ( this.tags == null ) {
-            this.tags = new String[]{};
-        }
+        this.tags.addAll( Arrays.asList( tags ) );
     }
 
     public String getSourceKey() {
@@ -54,8 +54,13 @@ public class Registration implements Topology.Entry, Serializable {
         return this.port;
     }
 
+    public Registration addTags(List<String> tags) {
+        this.tags.addAll( tags );
+        return this;
+    }
+
     public String toString() {
-        return this.address + ":" + this.port;
+        return "[Registration: " + this.name + "; " + this.address + ":" + this.port + "; " + Arrays.asList( this.tags ) + "]";
     }
 
     @Override
@@ -74,8 +79,8 @@ public class Registration implements Topology.Entry, Serializable {
         return (this.sourceKey.equals(that.sourceKey) && this.name.equals(that.name) && this.address.equals(that.address) && this.port == that.port);
     }
 
-    public String[] getTags() {
-        return tags;
+    public List<String> getTags() {
+        return Collections.unmodifiableList( this.tags );
     }
 
     public boolean hasTag(String tag) {

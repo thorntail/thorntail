@@ -96,7 +96,6 @@ public class TopologyManager implements Topology {
     }
 
     public synchronized void register(Registration registration) {
-        System.err.println( "try register: " + registration );
         if (!this.registrations.contains(registration)) {
             this.registrations.add(registration);
             fireListeners();
@@ -104,7 +103,6 @@ public class TopologyManager implements Topology {
     }
 
     public synchronized void unregister(Registration registration) {
-        System.err.println( "try unregister: " + registration );
         boolean removed = this.registrations.removeIf(e -> e.equals(registration));
         if (removed) {
             fireListeners();
