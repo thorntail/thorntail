@@ -108,6 +108,7 @@
   <modules>
     <module>hawkular</module>
     <module>keycloak</module>
+    <module>swagger-ui</module>
   </modules>
 
   <profiles>
