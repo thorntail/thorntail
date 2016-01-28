@@ -146,10 +146,5 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //ServiceWatcher watcher = new ServiceWatcher( serviceName, this.healthClientInjector.getValue() );
-        //this.watchers.put( serviceName, watcher );
-        //watcher.start();
-
     }
 }

@@ -36,26 +36,25 @@ public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth
 
     @Override
     public void notify(Map<HostAndPort, ServiceHealth> newValues) {
+        Set<Registration> previousEntries = topologyManager.registrationsForService(this.name);
 
-        List<HostAndPort> previousEntries = topologyManager.registrationsForService(this.name)
-                .stream()
-                .map(e -> HostAndPort.fromParts(e.getAddress(), e.getPort()))
-                .collect(Collectors.toList());
-
-        Set<HostAndPort> newEntries = newValues.values().stream()
-                .map( e->HostAndPort.fromParts( e.getService().getAddress(), e.getService().getPort() ) )
-                .collect( Collectors.toSet() );
+        Set<Registration> newEntries = newValues.values().stream()
+                .map(e -> new Registration("consul",
+                        this.name,
+                        e.getService().getAddress(),
+                        e.getService().getPort())
+                        .addTags(e.getService().getTags())
+                )
+                .collect(Collectors.toSet());
 
         previousEntries.stream()
-                .filter(h -> !newEntries.contains(h))
-                .map(e -> new Registration("consul", this.name, e.getHostText(), e.getPort()) )
+                .filter(e -> !newEntries.contains(e))
                 .forEach(e -> {
                     this.topologyManager.unregister(e);
                 });
 
         newEntries.stream()
-                .filter(h -> !previousEntries.contains(h))
-                .map(e -> new Registration("consul", this.name, e.getHostText(), e.getPort() ) )
+                .filter(e -> !previousEntries.contains(e))
                 .forEach(e -> {
                     this.topologyManager.register(e);
                 });

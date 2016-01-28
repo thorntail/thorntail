@@ -1,6 +1,7 @@
 package org.wildfly.swarm.topology.consul.runtime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class Advertiser implements Service<Advertiser>, Runnable {
 
     private InjectedValue<AgentClient> agentClientInjector = new InjectedValue<>();
 
-    private Set<Registration> advertisements = new HashSet<>();
+    private Set<Registration> advertisements = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private Thread thread;
 
@@ -50,17 +51,18 @@ public class Advertiser implements Service<Advertiser>, Runnable {
         }
 
         AgentClient client = this.agentClientInjector.getValue();
-        this.advertisements.add(registration);
 
         com.orbitz.consul.model.agent.Registration consulReg = ImmutableRegistration.builder()
                 .address(registration.getAddress())
                 .port(registration.getPort())
                 .id(serviceId(registration))
                 .name(registration.getName())
-                .addTags(registration.getTags())
+                .addTags(registration.getTags().toArray(new String[]{}))
                 .check(com.orbitz.consul.model.agent.Registration.RegCheck.ttl(3L))
                 .build();
         client.register(consulReg);
+
+        this.advertisements.add(registration);
     }
 
     public void unadvertise(String name, String address, int port) {
