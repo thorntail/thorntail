@@ -498,23 +498,28 @@ public class Container {
         return new PostInitContext();
     }
 
-    protected Archive createDefaultDeployment() throws DeploymentException {
+    /**
+     * Provides access to the default ShrinkWrap deployment.
+     *
+     * @return the default deployment
+     */
+    public Archive createDefaultDeployment() {
         try {
-            Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-            ServiceLoader<DefaultDeploymentFactory> providerLoader = m1.loadService(DefaultDeploymentFactory.class);
-
-            Iterator<DefaultDeploymentFactory> providerIter = providerLoader.iterator();
+            Iterator<DefaultDeploymentFactory> providerIter = Module.getBootModuleLoader()
+                    .loadModule(ModuleIdentifier.create("swarm.application"))
+                    .loadService(DefaultDeploymentFactory.class)
+                    .iterator();
 
             if (!providerIter.hasNext()) {
-                providerLoader = ServiceLoader.load(DefaultDeploymentFactory.class, ClassLoader.getSystemClassLoader());
-                providerIter = providerLoader.iterator();
+                providerIter = ServiceLoader.load(DefaultDeploymentFactory.class, ClassLoader.getSystemClassLoader())
+                        .iterator();
             }
 
-            Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
+            final Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
 
             while (providerIter.hasNext()) {
-                DefaultDeploymentFactory factory = providerIter.next();
-                DefaultDeploymentFactory current = factories.get(factory.getType());
+                final DefaultDeploymentFactory factory = providerIter.next();
+                final DefaultDeploymentFactory current = factories.get(factory.getType());
                 if (current == null) {
                     factories.put(factory.getType(), factory);
                 } else {
@@ -526,16 +531,11 @@ public class Container {
                 }
             }
 
-            String type = determineDeploymentType();
-            DefaultDeploymentFactory factory = factories.get(type);
+            final DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
 
-            if (factory != null) {
-                return factory.create(this);
-            }
-
-            return null;
+            return factory != null ? factory.create() : ShrinkWrap.create(JARArchive.class);
         } catch (Exception e) {
-            throw new DeploymentException(e);
+            throw new RuntimeException(e);
         }
     }
 

@@ -43,7 +43,7 @@ public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
     }
 
     @Override
-    public Archive create(Container container) throws Exception {
+    public Archive create() throws Exception {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, determineName());
         setup(archive);
         return archive;

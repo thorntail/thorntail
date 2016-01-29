@@ -59,7 +59,7 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
     }
 
     @Override
-    public Archive create(Container container) throws Exception {
+    public Archive create() throws Exception {
         return archiveFromCurrentApp();
     }
 

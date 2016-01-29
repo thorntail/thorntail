@@ -61,7 +61,7 @@ public abstract class DefaultDeploymentFactory {
 
     public abstract String getType();
 
-    public abstract Archive create(Container container) throws Exception;
+    public abstract Archive create() throws Exception;
 
     protected String convertSeparators(Path path) {
         String convertedPath = path.toString();
