@@ -34,6 +34,15 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
     public SwaggerArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
 
+        if (!as(ServiceActivatorArchive.class).containsServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME)) {
+            as(ServiceActivatorArchive.class).addServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME);
+            as(JARArchive.class).addModule("org.wildfly.swarm.swagger", "runtime");
+        }
+
+        loadOrCreateConfigurationAsset();
+    }
+
+    private void loadOrCreateConfigurationAsset() {
         Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
         if (node != null) {
             Asset asset = node.getAsset();
@@ -46,83 +55,86 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
             this.configurationAsset = new SwaggerConfigurationAsset();
             getArchive().add(this.configurationAsset, SWAGGER_CONFIGURATION_PATH);
         }
+    }
 
-        if (!as(ServiceActivatorArchive.class).containsServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME)) {
-            as(ServiceActivatorArchive.class).addServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME);
-            as(JARArchive.class).addModule("org.wildfly.swarm.swagger", "runtime");
-        }
+    public SwaggerConfigurationAsset getConfigurationAsset() {
+        return configurationAsset;
     }
 
     @Override
     public SwaggerArchive setResourcePackages(String... packages) {
-        configurationAsset.register(packages);
+        getConfigurationAsset().register(packages);
         return this;
     }
 
     @Override
     public SwaggerArchive setTitle(String title) {
-        configurationAsset.setTitle(title);
+        getConfigurationAsset().setTitle(title);
         return this;
     }
 
     @Override
     public SwaggerArchive setDescription(String description) {
-        configurationAsset.setDescription(description);
+        getConfigurationAsset().setDescription(description);
         return this;
     }
 
     @Override
     public SwaggerArchive setTermsOfServiceUrl(String url) {
-        configurationAsset.setTermsOfServiceUrl(url);
+        getConfigurationAsset().setTermsOfServiceUrl(url);
         return this;
     }
 
     @Override
     public SwaggerArchive setContact(String contact) {
-        configurationAsset.setContact(contact);
+        getConfigurationAsset().setContact(contact);
         return this;
     }
 
     @Override
     public SwaggerArchive setLicense(String license) {
-        configurationAsset.setLicense(license);
+        getConfigurationAsset().setLicense(license);
         return this;
     }
 
     @Override
     public SwaggerArchive setLicenseUrl(String licenseUrl) {
-        configurationAsset.setLicenseUrl(licenseUrl);
+        getConfigurationAsset().setLicenseUrl(licenseUrl);
         return this;
     }
 
     @Override
     public SwaggerArchive setVersion(String version) {
-        configurationAsset.setVersion(version);
+        getConfigurationAsset().setVersion(version);
         return this;
     }
 
     @Override
     public SwaggerArchive setSchemes(String... schemes) {
-        configurationAsset.setSchemes(schemes);
+        getConfigurationAsset().setSchemes(schemes);
         return this;
     }
 
     @Override
     public SwaggerArchive setHost(String host) {
-        configurationAsset.setHost(host);
+        getConfigurationAsset().setHost(host);
         return this;
     }
 
     @Override
     public SwaggerArchive setContextRoot(String root) {
-        configurationAsset.setContextRoot(root);
+        getConfigurationAsset().setContextRoot(root);
         return this;
     }
 
     @Override
     public SwaggerArchive setPrettyPrint(boolean prettyPrint) {
-        configurationAsset.setPrettyPrint(prettyPrint);
+        getConfigurationAsset().setPrettyPrint(prettyPrint);
         return this;
     }
 
+    @Override
+    public boolean hasResourcePackages() {
+        return getConfigurationAsset().getResourcePackages() != null;
+    }
 }

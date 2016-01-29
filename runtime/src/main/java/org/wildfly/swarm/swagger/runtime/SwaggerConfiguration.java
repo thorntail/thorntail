@@ -15,11 +15,17 @@
  */
 package org.wildfly.swarm.swagger.runtime;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
@@ -43,19 +49,49 @@ public class SwaggerConfiguration extends AbstractServerConfiguration<SwaggerFra
 
     @Override
     public void prepareArchive(Archive<?> a) {
-
         try {
-            JARArchive jarArchive = a.as(JARArchive.class);
-            jarArchive.addModule("io.swagger");
+            // Create a JAX-RS deployment archive
+            JAXRSArchive deployment = a.as(JAXRSArchive.class).addModule("io.swagger");
 
-            JAXRSArchive deployment = a.as(JAXRSArchive.class);
-            deployment.addResource(io.swagger.jaxrs.listing.ApiListingResource.class);
-            deployment.addResource(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+            // Make the deployment a swagger archive
+            SwaggerArchive swaggerArchive = deployment.as(SwaggerArchive.class);
 
-            // Set only required configuration option for swagger
-            SwaggerArchive swaggerArchive = jarArchive.as(SwaggerArchive.class);
+            // Get the context root from the deployment and tell swagger about it
             swaggerArchive.setContextRoot(deployment.getContextRoot());
 
+            // If the archive has not been configured with packages for swagger to scan
+            // try to be smart about it, and find the topmost package that's not in the
+            // org.wildfly.swarm package space
+            if (!swaggerArchive.hasResourcePackages()) {
+                String packageName = null;
+                for (Map.Entry<ArchivePath, Node> entry : deployment.getContent().entrySet()) {
+                    final ArchivePath key = entry.getKey();
+                    if (key.get().endsWith(".class")) {
+                        String parentPath = key.getParent().get();
+                        parentPath = parentPath.replaceFirst("/", "");
+
+                        String parentPackage = parentPath.replaceFirst(".*/classes/", "");
+                        parentPackage = parentPackage.replaceAll("/", ".");
+
+                        if (parentPackage.startsWith("org.wildfly.swarm")) {
+                            System.out.println("[Swagger] Ignoring swarm package " + parentPackage);
+                        } else {
+                            packageName = parentPackage;
+                            break;
+                        }
+                    }
+                }
+                if (packageName == null) {
+                    System.err.println("[Swagger] No eligible packages for Swagger to scan.");
+                } else {
+                    System.out.println("[Swagger] Configuring Swagger with " + packageName);
+                    swaggerArchive.setResourcePackages(packageName);
+                }
+            }
+
+            // Now add the swagger resources to our deployment
+            deployment.addResource(io.swagger.jaxrs.listing.ApiListingResource.class);
+            deployment.addResource(io.swagger.jaxrs.listing.SwaggerSerializers.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,4 +101,5 @@ public class SwaggerConfiguration extends AbstractServerConfiguration<SwaggerFra
     public List<ModelNode> getList(SwaggerFraction fraction) throws Exception {
         return Collections.emptyList();
     }
+
 }

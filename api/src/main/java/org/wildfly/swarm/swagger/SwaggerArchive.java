@@ -113,4 +113,10 @@ public interface SwaggerArchive extends Assignable {
      * @return this
      */
     public SwaggerArchive setPrettyPrint(boolean prettyPrint);
+
+    /**
+     * Determine if the archive has been configured for scanning
+     * @return true if the packages to be scanned have been configured
+     */
+    public boolean hasResourcePackages();
 }

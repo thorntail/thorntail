@@ -108,4 +108,9 @@ public class SwaggerConfigurationAsset implements Asset {
         }
         return value.toString();
     }
+
+
+    public String[] getResourcePackages() {
+        return (String[]) configuration.get(SwaggerConfig.Key.PACKAGES);
+    }
 }

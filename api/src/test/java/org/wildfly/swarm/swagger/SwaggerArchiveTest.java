@@ -30,8 +30,11 @@ public class SwaggerArchiveTest {
 
     @Test
     public void testSwaggerArchive() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.war");
+        JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.jar");
         SwaggerArchive swaggerArchive = archive.as(SwaggerArchive.class);
+
+        // we need to set at least one configuration option for the swagger configuration to activate
+        swaggerArchive.setHost("localhost");
 
         Asset asset = archive.get(SwaggerArchive.SWAGGER_CONFIGURATION_PATH).getAsset();
         assertThat(asset).isNotNull();
@@ -42,7 +45,7 @@ public class SwaggerArchiveTest {
 
     @Test
     public void testSwaggerConfiguration() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.war");
+        JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.jar");
 
         archive.as(SwaggerArchive.class)
                 .setResourcePackages("com.tester.resource", "com.tester.other.resource")
