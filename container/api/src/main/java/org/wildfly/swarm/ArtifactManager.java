@@ -18,12 +18,8 @@ package org.wildfly.swarm;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -32,9 +28,9 @@ import java.util.regex.Pattern;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
@@ -44,7 +40,7 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
  */
 public class ArtifactManager {
 
-    private WildFlySwarmDependenciesConf deps;
+    final private WildFlySwarmDependenciesConf deps;
 
     public ArtifactManager(WildFlySwarmDependenciesConf deps) {
         this.deps = deps;
@@ -58,66 +54,59 @@ public class ArtifactManager {
         InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(WildFlySwarmDependenciesConf.CLASSPATH_LOCATION);
         if (in != null) {
             this.deps = new WildFlySwarmDependenciesConf(in);
+        } else {
+            this.deps = null;
         }
     }
 
     public JavaArchive artifact(String gav) throws IOException, ModuleLoadException {
-        File file = findFile(gav);
-        if (file == null) {
-            throw new RuntimeException("Artifact not found.");
-        }
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, file.getName());
-        new ZipImporterImpl(archive).importFrom(file);
-        return archive;
+        return artifact(gav, null);
     }
 
     public JavaArchive artifact(String gav, String asName) throws IOException, ModuleLoadException {
-        File file = findFile(gav);
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, asName);
-        new ZipImporterImpl(archive).importFrom(file);
-        return archive;
+        final File file = findFile(gav);
+
+        if (file == null) {
+            throw new RuntimeException("Artifact not found.");
+        }
+
+        return ShrinkWrap.create(ZipImporter.class, asName == null ? file.getName() : asName)
+                .importFrom(file)
+                .as(JavaArchive.class);
     }
 
     public List<JavaArchive> allArtifacts() throws IOException {
-        List<JavaArchive> archives = new ArrayList<>();
+        final List<JavaArchive> archives = new ArrayList<>();
 
         if (this.deps != null) {
             for (MavenArtifactDescriptor each : this.deps.getPrimaryDependencies()) {
-                File artifact = MavenResolvers.get().resolveJarArtifact(each.mscCoordinates());
-                JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
-                new ZipImporterImpl(archive).importFrom(artifact);
-                archives.add(archive);
+                final File artifact = MavenResolvers.get().resolveJarArtifact(each.mscCoordinates());
+                archives.add(ShrinkWrap.create(ZipImporter.class, artifact.getName())
+                                     .importFrom(artifact)
+                                     .as(JavaArchive.class));
             }
         } else {
-            String classpath = System.getProperty("java.class.path");
-            String javaHome = System.getProperty("java.home");
-            Path pwd = Paths.get(System.getProperty("user.dir"));
+            final String classpath = System.getProperty("java.class.path");
+            final String javaHome = System.getProperty("java.home");
+            final Path pwd = Paths.get(System.getProperty("user.dir"));
             if (classpath != null) {
-                String[] elements = classpath.split(File.pathSeparator);
+                for (final String element : classpath.split(File.pathSeparator)) {
+                    if (!element.startsWith(javaHome)) {
+                        final File artifact = new File(element);
 
-                for (int i = 0; i < elements.length; ++i) {
-                    if (!elements[i].startsWith(javaHome)) {
-                        File artifact = new File(elements[i]);
                         if (artifact.toPath().startsWith(pwd)) {
-                            
+
                             continue;
                         }
 
                         if (artifact.isFile()) {
-                            JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
-                            new ZipImporterImpl(archive).importFrom(artifact);
-                            archives.add(archive);
+                            archives.add(ShrinkWrap.create(ZipImporter.class, artifact.getName())
+                                                 .importFrom(artifact)
+                                                 .as(JavaArchive.class));
                         } else {
-                            JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
-                            Path basePath = artifact.toPath();
-                            Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
-                                @Override
-                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                    archive.add(new FileAsset(file.toFile()), basePath.relativize(file).toString());
-                                    return FileVisitResult.CONTINUE;
-                                }
-                            });
-                            archives.add(archive);
+                            archives.add(ShrinkWrap.create(ExplodedImporter.class)
+                                                 .importDirectory(artifact)
+                                                 .as(JavaArchive.class));
                         }
                     }
                 }
@@ -190,6 +179,7 @@ public class ArtifactManager {
         if (this.deps != null) {
             MavenArtifactDescriptor found = this.deps.find(groupId, artifactId, packaging, classifier);
             if (found != null) {
+
                 return found.version();
             }
         }
@@ -202,12 +192,10 @@ public class ArtifactManager {
         String regexp = ".*" + artifactId + "-(.+)" + (classifier.length() == 0 ? "" : "-" + classifier) + "." + packaging;
         Pattern pattern = Pattern.compile(regexp);
 
-        String classpath = System.getProperty("java.class.path");
-        String[] elements = classpath.split(File.pathSeparator);
-
-        for (int i = 0; i < elements.length; ++i) {
-            Matcher matcher = pattern.matcher(elements[i]);
+        for (final String element : System.getProperty("java.class.path").split(File.pathSeparator)) {
+            Matcher matcher = pattern.matcher(element);
             if (matcher.matches()) {
+
                 return matcher.group(1);
             }
         }
