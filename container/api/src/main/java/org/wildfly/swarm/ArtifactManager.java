@@ -98,15 +98,16 @@ public class ArtifactManager {
                 for (int i = 0; i < elements.length; ++i) {
                     if (!elements[i].startsWith(javaHome)) {
                         File artifact = new File(elements[i]);
+                        if (artifact.toPath().startsWith(pwd)) {
+                            
+                            continue;
+                        }
+
                         if (artifact.isFile()) {
                             JavaArchive archive = ShrinkWrap.create(JavaArchive.class, artifact.getName());
                             new ZipImporterImpl(archive).importFrom(artifact);
                             archives.add(archive);
                         } else {
-                            if (artifact.toPath().startsWith(pwd)) {
-                                continue;
-                            }
-
                             JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
                             Path basePath = artifact.toPath();
                             Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
