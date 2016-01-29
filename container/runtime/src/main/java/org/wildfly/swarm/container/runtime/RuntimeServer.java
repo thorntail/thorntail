@@ -16,6 +16,7 @@
 package org.wildfly.swarm.container.runtime;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
@@ -46,6 +47,7 @@ import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
+import org.jboss.as.server.deployment.module.*;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
 import org.jboss.jandex.ClassInfo;
@@ -69,6 +71,7 @@ import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.vfs.TempFileProvider;
 import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Deployer;
 import org.wildfly.swarm.container.Fraction;
@@ -186,11 +189,20 @@ public class RuntimeServer implements Server {
 
         UUID grist = java.util.UUID.randomUUID();
         String tmpDir = System.getProperty("java.io.tmpdir");
-        Path gristedTmp = Paths.get(tmpDir).resolve("wildfly-swarm-" + grist);
-        System.setProperty("jboss.server.temp.dir", gristedTmp.toString());
+
+        File serverTmp = TempFileManager.INSTANCE.newTempDirectory("wildfly-swarm", ".d");
+        System.setProperty("jboss.server.temp.dir", serverTmp.getAbsolutePath());
 
         ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
-        TempFileProvider tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor);
+        TempFileProvider tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor, true);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                tempFileProvider.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
         List<ServiceActivator> activators = new ArrayList<>();
         activators.add(context -> {
             context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<>(tempFileProvider)))

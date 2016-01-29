@@ -28,6 +28,7 @@ import java.util.jar.JarFile;
 
 import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaders;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 /**
  * @author Bob McWhirter
@@ -48,10 +49,7 @@ public class NestedJarResourceLoader {
                 File exp = exploded.get(jarPath);
 
                 if (exp == null) {
-                    exp = File.createTempFile("module-jar", ".jar_d");
-                    exp.delete();
-                    exp.mkdirs();
-                    exp.deleteOnExit();
+                    exp = TempFileManager.INSTANCE.newTempDirectory( "module-jar", ".jar_d" );
 
                     JarFile jarFile = new JarFile(jarPath);
 

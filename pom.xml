@@ -75,7 +75,6 @@
 
     <version.fest-assert>1.4</version.fest-assert>
 
-
     <version.jruby-maven-plugin>1.1.3</version.jruby-maven-plugin>
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
     <version.maven-archetype-plugin>2.2</version.maven-archetype-plugin>

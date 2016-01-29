@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.jboss.modules.maven.MavenResolver;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 /**
  * @author Bob McWhirter
@@ -35,9 +36,9 @@ public class UberJarMavenResolver implements MavenResolver {
     private static final Pattern snapshotPattern = Pattern.compile("-\\d{8}\\.\\d{6}-\\d+$");
 
     public static File copyTempJar(String artifactId, InputStream in, String packaging) throws IOException {
-        Path tmp = Files.createTempFile(artifactId, "." + packaging);
-        Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
-        return tmp.toFile();
+        File tmp = TempFileManager.INSTANCE.newTempFile( artifactId, "." + packaging );
+        Files.copy(in, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        return tmp;
     }
 
     static String relativeArtifactPath(char separator, String groupId, String artifactId, String version) {

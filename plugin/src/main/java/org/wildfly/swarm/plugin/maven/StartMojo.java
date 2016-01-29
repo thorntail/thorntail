@@ -93,6 +93,13 @@ public class StartMojo extends AbstractSwarmMojo {
                     .withWorkingDirectory(this.project.getBasedir().toPath())
                     .execute();
 
+            Runtime.getRuntime().addShutdownHook( new Thread(()->{
+                try {
+                    process.stop( 10, TimeUnit.SECONDS );
+                } catch (InterruptedException e) {
+                }
+            }));
+
             process.awaitDeploy(2, TimeUnit.MINUTES);
 
             if (!process.isAlive()) {

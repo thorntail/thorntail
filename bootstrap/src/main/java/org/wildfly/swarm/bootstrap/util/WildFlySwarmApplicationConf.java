@@ -226,14 +226,13 @@ public class WildFlySwarmApplicationConf {
                 name = name.substring(0, dotLoc);
             }
 
-            Path tmp = Files.createTempFile(name, ext);
-            tmp.toFile().deleteOnExit();
+            File tmp = TempFileManager.INSTANCE.newTempFile(name, ext);
 
             try (InputStream artifactIn = getClass().getClassLoader().getResourceAsStream(this.path)) {
-                Files.copy(artifactIn, tmp, StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(artifactIn, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
-            final String jarName = tmp.getFileName().toString();
-            final JarFile jarFile = new JarFile(tmp.toFile());
+            final String jarName = tmp.getName().toString();
+            final JarFile jarFile = new JarFile(tmp);
             final ResourceLoader jarLoader = ResourceLoaders.createJarResourceLoader(jarName,
                     jarFile);
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
