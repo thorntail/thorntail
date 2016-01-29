@@ -102,6 +102,8 @@ public class Container {
 
     private Domain domain;
 
+    private boolean running = false;
+
     /**
      * Command line args if any
      */
@@ -401,7 +403,11 @@ public class Container {
      * @throws Exception if an error occurs.
      */
     public Container start() throws Exception {
-        this.deployer = this.server.start(this);
+        if (!this.running) {
+            this.deployer = this.server.start(this);
+            this.running = true;
+        }
+
         return this;
     }
 
@@ -412,7 +418,11 @@ public class Container {
      * @throws Exception If an error occurs.
      */
     public Container stop() throws Exception {
-        this.server.stop();
+        if (this.running) {
+            this.server.stop();
+            this.running = false;
+        }
+
         return this;
     }
 
@@ -437,7 +447,7 @@ public class Container {
      * <p>For WAR-based applications, the primary WAR artifact iwll be deployed.</p>
      *
      * @return The container.
-     * @throws Exception if an error occurs.
+     * @throws DeploymentException if an error occurs.
      */
     public Container deploy() throws DeploymentException {
         Archive deployment = createDefaultDeployment();
@@ -453,10 +463,15 @@ public class Container {
      *
      * @param deployment The ShrinkWrap archive to deploy.
      * @return The container.
-     * @throws Exception if an error occurs.
+     * @throws DeploymentException if an error occurs.
      */
     public Container deploy(Archive<?> deployment) throws DeploymentException {
+        if (!this.running) {
+            throw new RuntimeException("The Container has not been started.");
+        }
+
         this.deployer.deploy(deployment);
+
         return this;
     }
 
