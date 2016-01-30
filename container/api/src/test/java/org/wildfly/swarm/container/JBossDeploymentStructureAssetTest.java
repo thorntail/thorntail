@@ -24,6 +24,7 @@ import static org.wildfly.swarm.container.InputStreamHelper.read;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class JBossDeploymentStructureAssetTest {
 
@@ -48,10 +49,26 @@ public class JBossDeploymentStructureAssetTest {
 
         List<String> lines = read(asset2.openStream());
 
+        assertThat(lines).contains("<dependencies>");
+        assertThat(lines).excludes("<exclusions>");
         assertThat(lines).contains("<module name=\"com.mycorp\" slot=\"main\"/>");
         assertThat(lines).contains("<module name=\"com.mycorp.another\" slot=\"api\"/>");
 
     }
 
+    @Test
+    public void testExclusion() throws Exception {
+        JBossDeploymentStructureAsset asset = new JBossDeploymentStructureAsset();
+        asset.excludeModule("com.mycorp", "main");
 
+        JBossDeploymentStructureAsset asset2 = new JBossDeploymentStructureAsset(asset.openStream());
+        asset2.excludeModule("com.mycorp.more", "special");
+
+        List<String> lines = read(asset2.openStream());
+
+        assertThat(lines).excludes("<dependencies>");
+        assertThat(lines).contains("<exclusions>");
+        assertThat(lines).contains("<module name=\"com.mycorp\" slot=\"main\"/>");
+        assertThat(lines).contains("<module name=\"com.mycorp.more\" slot=\"special\"/>");
+    }
 }

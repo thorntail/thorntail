@@ -23,13 +23,16 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DependenciesType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DeploymentType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ExclusionsType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.JBossDeploymentStructureDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ModuleDependencyType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ModuleExclusionType;
 
 import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class JBossDeploymentStructureAsset implements Asset {
 
@@ -64,6 +67,26 @@ public class JBossDeploymentStructureAsset implements Asset {
         }
 
         dependencies.createModule()
+                .name(name)
+                .slot(slot);
+    }
+
+    public void excludeModule(final String name, final String slot) {
+        ExclusionsType<DeploymentType<JBossDeploymentStructureDescriptor>> exclusions = this.descriptor
+                .getOrCreateDeployment()
+                .getOrCreateExclusions();
+        List<ModuleExclusionType<ExclusionsType<DeploymentType<JBossDeploymentStructureDescriptor>>>> modules = exclusions.getAllModule();
+        for (ModuleExclusionType each : modules) {
+            final String existingSlot = each.getSlot();
+            if (name.equals(each.getName()) &&
+                    slot.equals(existingSlot == null ? "main" : existingSlot)) {
+
+                // module already excluded
+                return;
+            }
+        }
+
+        exclusions.createModule()
                 .name(name)
                 .slot(slot);
     }
