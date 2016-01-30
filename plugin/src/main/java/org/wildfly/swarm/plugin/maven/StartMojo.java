@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -156,23 +155,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
         return new SwarmExecutor()
                 .withModules(expandModules())
-                .withClassPathEntries(dependencies(false, artifact -> {
-                    if (artifact.getGroupId().equals("org.wildfly.swarm")) {
-                        return true;
-                    } else if (artifact.getArtifactId().equals("shrinkwrap-impl-base")) {
-                        return true;
-                    } else {
-                        List<String> depTrail = artifact.getDependencyTrail();
-                        if (depTrail != null && depTrail.size() > 0) {
-                            for (String dep : depTrail) {
-                                if (dep.startsWith("org.wildfly.swarm:")) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    return false;
-                }))
+                .withClassPathEntries(dependencies(false))
                 .withProperty(BootstrapProperties.APP_PATH,
                         Paths.get(this.projectBuildDir, finalName).toString())
                 .withDefaultMainClass();
@@ -196,10 +179,6 @@ public class StartMojo extends AbstractSwarmMojo {
     }
 
     List<Path> dependencies(boolean includeProjectArtifact) {
-        return dependencies(includeProjectArtifact, null);
-    }
-
-    List<Path> dependencies(boolean includeProjectArtifact, Predicate<Artifact> filter) {
 
         List<Path> elements = new ArrayList<>();
         Set<Artifact> artifacts = this.project.getArtifacts();
@@ -207,10 +186,7 @@ public class StartMojo extends AbstractSwarmMojo {
             if (each.getGroupId().equals("org.jboss.logmanager") && each.getArtifactId().equals("jboss-logmanager")) {
                 continue;
             }
-
-            if (filter == null || filter.test(each)) {
-                elements.add(each.getFile().toPath());
-            }
+            elements.add(each.getFile().toPath());
         }
 
         if (includeProjectArtifact) {
