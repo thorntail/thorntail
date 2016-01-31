@@ -48,16 +48,17 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
     public void initialize(Container.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
             final DatasourcesFraction datasources = new DatasourcesFraction()
-                    .jdbcDriver(new JDBCDriver("h2")
-                            .driverName("h2")
-                            .driverDatasourceClassName("org.h2.driver")
-                            .driverXaDatasourceClassName("org.h2.jdbcx.JdbcDataSource")
-                            .driverModuleName("com.h2database.h2"))
-                    .dataSource(new DataSource("ExampleDS")
-                            .connectionUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE")
-                            .userName("sa")
-                            .password("sa")
-                            .driverName("h2"));
+                    .jdbcDriver("h2", (d) -> {
+                        d.driverClassName("org.h2.Driver");
+                        d.xaDatasourceClass("org.h2.jdbcx.JdbcDataSource");
+                        d.driverModuleName("com.h2database.h2");
+                    })
+                    .dataSource("ExampleDS", (ds) -> {
+                        ds.driverName("h2");
+                        ds.connectionUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
+                        ds.userName("sa");
+                        ds.password("sa");
+                    });
 
             initContext.fraction(datasources);
             System.err.println("setting default Datasource to ExampleDS");
