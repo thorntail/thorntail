@@ -53,7 +53,7 @@
 
     <version.com.orbitz.consul>0.9.16</version.com.orbitz.consul>
 
-    <version.keycloak>1.8.0.CR1</version.keycloak>
+    <version.keycloak>1.8.0.Final</version.keycloak>
     <version.h2>1.4.187</version.h2>
 
     <version.hawkular>1.0.0.Alpha8</version.hawkular>
