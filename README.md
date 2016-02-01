@@ -1,6 +1,8 @@
 
 # WildFly Swarm
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm-plugin)
+
 WildFly Swarm provides a mechanism for building
 applications as *uber jars*, with just enough of the
 WildFly application server wrapped around it to support
