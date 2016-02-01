@@ -8,7 +8,7 @@
     <parent>
         <artifactId>webservices-parent</artifactId>
         <groupId>org.wildfly.swarm</groupId>
-        <version>1.0.0.Alpha8</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
