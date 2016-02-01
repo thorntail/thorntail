@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
-    <version>1.0.0.Alpha8-SNAPSHOT</version>
+    <version>1.0.0.Alpha8</version>
     <relativePath>../</relativePath>
   </parent>
 
