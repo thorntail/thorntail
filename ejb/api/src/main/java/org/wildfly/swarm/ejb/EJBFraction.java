@@ -97,7 +97,5 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
                 security.securityDomain(ejbPolicy);
             }
         }
-
-        System.err.println("found security: " + security);
     }
 }
