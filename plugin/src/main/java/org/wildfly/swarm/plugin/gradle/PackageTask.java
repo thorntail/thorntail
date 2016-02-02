@@ -19,8 +19,6 @@ import java.util.Set;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
@@ -33,7 +31,6 @@ import org.wildfly.swarm.tools.BuildTool;
  */
 public class PackageTask extends DefaultTask {
 
-
     private BuildTool tool;
 
     private Jar jarTask;
@@ -45,9 +42,8 @@ public class PackageTask extends DefaultTask {
 
     @TaskAction
     public void packageForSwarm() throws Exception {
-        Project project = getProject();
-
-        SwarmExtension ext = (SwarmExtension) project.getExtensions().getByName("swarm");
+        final Project project = getProject();
+        final SwarmExtension ext = (SwarmExtension) project.getExtensions().getByName("swarm");
 
         if (ext.getMainClassName() == null) {
             if (project.getConvention().getPlugins().containsKey("application")) {
@@ -56,24 +52,20 @@ public class PackageTask extends DefaultTask {
             }
         }
 
-        ConfigurationContainer configs = project.getConfigurations();
-        Configuration compile = configs.getByName("compile");
+        this.tool = new BuildTool()
+                .artifactResolvingHelper(new GradleArtifactResolvingHelper(project))
+                .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
+                                 jarTask.getExtension(), jarTask.getArchivePath())
+                .mainClass(ext.getMainClassName())
+                .properties(ext.getProperties());
 
-        this.tool = new BuildTool();
-        this.tool.artifactResolvingHelper(new GradleArtifactResolvingHelper(project));
+        project.getConfigurations()
+                .getByName("compile")
+                .getResolvedConfiguration()
+                .getFirstLevelModuleDependencies()
+                .forEach(d -> walk(true, d));
 
-        Set<ResolvedDependency> deps = compile.getResolvedConfiguration().getFirstLevelModuleDependencies();
-        for (ResolvedDependency each : deps) {
-            walk(each);
-        }
-
-        this.tool.projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(), jarTask.getExtension(), jarTask.getArchivePath());
-
-        this.tool.mainClass(ext.getMainClassName());
-
-        this.tool.properties(ext.getProperties());
-
-        Boolean bundleDependencies = ext.getBundleDependencies();
+        final Boolean bundleDependencies = ext.getBundleDependencies();
         if (bundleDependencies != null) {
             this.tool.bundleDependencies(bundleDependencies);
         }
@@ -81,8 +73,7 @@ public class PackageTask extends DefaultTask {
         this.tool.build(project.getName(), project.getBuildDir().toPath().resolve("libs"));
     }
 
-    private void walk(ResolvedDependency dep) {
-
+    private void walk(final boolean top, ResolvedDependency dep) {
         Set<ResolvedArtifact> artifacts = dep.getModuleArtifacts();
         for (ResolvedArtifact each : artifacts) {
             String[] parts = dep.getName().split(":");
@@ -90,12 +81,9 @@ public class PackageTask extends DefaultTask {
             String artifactId = parts[1];
             String version = parts[2];
             this.tool.dependency("compile", groupId, artifactId, version, each.getExtension(),
-                    each.getClassifier(), each.getFile(),
-                    dep.getParents().isEmpty());
+                                 each.getClassifier(), each.getFile(), top);
         }
 
-        for (ResolvedDependency each : dep.getChildren()) {
-            walk(each);
-        }
+        dep.getChildren().forEach(d -> walk(false, d));
     }
 }
