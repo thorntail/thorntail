@@ -24,6 +24,7 @@ import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
+import org.wildfly.swarm.plugin.Util;
 import org.wildfly.swarm.tools.BuildTool;
 
 /**
@@ -57,7 +58,8 @@ public class PackageTask extends DefaultTask {
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
                                  jarTask.getExtension(), jarTask.getArchivePath())
                 .mainClass(ext.getMainClassName())
-                .properties(ext.getProperties());
+                .properties(ext.getProperties())
+                .properties(Util.filteredSystemProperties(ext.getProperties(), false));
 
         project.getConfigurations()
                 .getByName("compile")

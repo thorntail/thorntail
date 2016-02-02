@@ -15,11 +15,7 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
@@ -29,6 +25,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.wildfly.swarm.plugin.Util;
 
 /**
  * @author Bob McWhirter
@@ -39,7 +36,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
 
     static {
         try {
-            VERSION = loadProperties(PackageMojo.class
+            VERSION = Util.loadProperties(PackageMojo.class
                     .getClassLoader()
                     .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties"))
                     .getProperty("version");
@@ -84,51 +81,20 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
     }
 
-    protected static Properties loadProperties(final InputStream in) throws IOException {
-        final Properties props = new Properties();
-        try {
-            props.load(in);
-        } finally {
-            in.close();
-        }
-
-        return props;
-    }
-
-    protected static Properties loadProperties(final String file) throws MojoFailureException {
-        return loadProperties(new File(file));
-    }
-
-    protected static Properties loadProperties(final File file) throws MojoFailureException {
-        try {
-
-            return loadProperties(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
-            throw new MojoFailureException("No such file: " + file, e);
-        } catch (IOException e) {
-            throw new MojoFailureException("Error reading file: " + file, e);
-        }
-    }
-
-    protected void initProperties(final boolean withMaven) throws MojoFailureException {
+    protected void initProperties(final boolean withMaven) {
         if (this.properties == null) {
             this.properties = new Properties();
         }
-        if (this.propertiesFile != null) {
-            this.properties.putAll(loadProperties(this.propertiesFile));
-        }
-        // copy any jboss.*, swarm.*, maven.*, or wildfly.* sysprops from System,
-        // along with anything that shadows a specified property
-        System.getProperties().stringPropertyNames().forEach(key -> {
-            if (key.startsWith("jboss.") ||
-                    key.startsWith("swarm.") ||
-                    key.startsWith("wildfly.") ||
-                    (withMaven && key.startsWith("maven.")) ||
-                    this.properties.containsKey(key)) {
-                this.properties.put(key, System.getProperty(key));
-            }
-        });
 
+        if (this.propertiesFile != null) {
+            try {
+                this.properties.putAll(Util.loadProperties(this.propertiesFile));
+            } catch (IOException e) {
+                getLog().error("Failed to load properties from " + this.propertiesFile, e);
+            }
+        }
+
+        this.properties.putAll(Util.filteredSystemProperties(this.properties, withMaven));
     }
 
     protected void initEnvironment() throws MojoFailureException {
@@ -136,7 +102,11 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
             this.environment = new Properties();
         }
         if (this.environmentFile != null) {
-            this.environment.putAll(loadProperties(this.environmentFile));
+            try {
+                this.environment.putAll(Util.loadProperties(this.environmentFile));
+            } catch (IOException e) {
+                getLog().error("Failed to load environment from " + this.environmentFile, e);
+            }
         }
     }
 }
