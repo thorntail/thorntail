@@ -15,10 +15,15 @@
  */
 package org.wildfly.swarm.plugin.gradle;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
@@ -36,8 +41,10 @@ public class PackageTask extends DefaultTask {
 
     private Jar jarTask;
 
-    public void jarTask(Jar jarTask) {
+    public Task jarTask(Jar jarTask) {
         this.jarTask = jarTask;
+
+        return this;
     }
 
 
@@ -53,13 +60,27 @@ public class PackageTask extends DefaultTask {
             }
         }
 
+        final Properties fromFile = new Properties();
+        if (ext.getPropertiesFile() != null) {
+            try {
+                fromFile.putAll(Util.loadProperties(ext.getPropertiesFile()));
+            } catch (IOException e) {
+                getLogger().error("Failed to load properties from " + ext.getPropertiesFile(), e);
+            }
+        }
+
         this.tool = new BuildTool()
                 .artifactResolvingHelper(new GradleArtifactResolvingHelper(project))
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
                                  jarTask.getExtension(), jarTask.getArchivePath())
                 .mainClass(ext.getMainClassName())
+                .bundleDependencies(ext.getBundleDependencies())
                 .properties(ext.getProperties())
-                .properties(Util.filteredSystemProperties(ext.getProperties(), false));
+                .properties(fromFile)
+                .properties(Util.filteredSystemProperties(ext.getProperties(), false))
+                .additionalModules(ext.getModuleDirs().stream()
+                                           .map(File::getAbsolutePath)
+                                           .collect(Collectors.toList()));
 
         project.getConfigurations()
                 .getByName("compile")

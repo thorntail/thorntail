@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.plugin.gradle;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import groovy.lang.Closure;
@@ -26,9 +29,13 @@ import groovy.util.ConfigObject;
 public class SwarmExtension {
     private String mainClass;
 
-    private Boolean bundleDependencies;
+    private Boolean bundleDependencies = true;
 
     private Properties properties = new Properties();
+
+    private File propertiesFile;
+
+    private List<File> moduleDirs = new ArrayList<>();
 
     public SwarmExtension() {
 
@@ -60,5 +67,22 @@ public class SwarmExtension {
 
     public void setBundleDependencies(Boolean bundleDependencies) {
         this.bundleDependencies = bundleDependencies;
+    }
+
+    public File getPropertiesFile() {
+        return propertiesFile;
+    }
+
+    public void setPropertiesFile(final File propertiesFile) {
+        this.propertiesFile = propertiesFile;
+    }
+
+    public List<File> getModuleDirs() {
+        return moduleDirs;
+    }
+
+    public void setModuleDirs(final List<File> moduleDirs) {
+        this.moduleDirs.clear();
+        this.moduleDirs.addAll(moduleDirs);
     }
 }
