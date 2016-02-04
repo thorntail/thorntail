@@ -18,6 +18,8 @@ package org.wildfly.swarm.arquillian.adapter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jboss.arquillian.container.spi.event.container.AfterSetup;
 import org.jboss.arquillian.container.test.impl.client.deployment.event.GenerateDeployment;
@@ -37,16 +39,20 @@ public class WildFlySwarmObserver {
 
     @SuppressWarnings({"unused", "unchecked"})
     public void generate(@Observes(precedence = 100) final GenerateDeployment event) throws Exception {
-        this.container.setTestClass(event.getTestClass().getJavaClass());
+        final Class testClass = event.getTestClass().getJavaClass();
+        this.container.setTestClass(testClass);
 
-        List<Method> annotatedMethods = ReflectionHelper.getMethodsWithAnnotation(event.getTestClass().getJavaClass(), ArtifactDependencies.class);
+        final List<Method> annotatedMethods = Stream.of(testClass.getDeclaredMethods())
+                .filter(m -> m.isAnnotationPresent(ArtifactDependencies.class))
+                .collect(Collectors.toList());
 
         if (annotatedMethods.size() > 1) {
             throw new IllegalArgumentException("Too many methods annotated with " + ArtifactDependencies.class.getName());
         }
 
         if (annotatedMethods.size() == 1) {
-            Method dependencyMethod = annotatedMethods.get(0);
+            final Method dependencyMethod = annotatedMethods.get(0);
+            dependencyMethod.setAccessible(true);
             validate(dependencyMethod);
 
             this.container.setRequestedMavenArtifacts((List<String>) dependencyMethod.invoke(null));
