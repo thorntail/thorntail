@@ -1,3 +1,3 @@
-implementingClassName=org.wildfly.swarm.datasources.DatasourceArchiveImpl
+implementingClassName=org.wildfly.swarm.datasources.internal.DatasourceArchiveImpl
 extension=.jar
 archiveFormat=ZIP

@@ -5,6 +5,7 @@
     <system export="true">
       <paths>
         <path name="org/wildfly/swarm/msc"/>
+        <path name="org/wildfly/swarm/msc/internal"/>
       </paths>
     </system>
 

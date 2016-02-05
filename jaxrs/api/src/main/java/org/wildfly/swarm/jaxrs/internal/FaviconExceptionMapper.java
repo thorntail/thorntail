@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs;
+package org.wildfly.swarm.jaxrs.internal;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.wildfly.swarm.config.JAXRS;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 
 /**
  * @author Bob McWhirter
  */
-public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
+public class FaviconExceptionMapper implements ExceptionMapper<NotFoundException> {
 
-    static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(JAXRSArchive.class, JAXRSArchiveImpl.class);
+    private final FaviconHandler handler;
+
+    public FaviconExceptionMapper() {
+        this.handler = new FaviconHandler();
     }
 
-    public JAXRSFraction() {
+    @Override
+    public Response toResponse(NotFoundException e) {
+        return handler.toResponse(e);
     }
-
-
 }

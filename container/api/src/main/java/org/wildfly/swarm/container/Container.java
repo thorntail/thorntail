@@ -56,6 +56,9 @@ import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.container.internal.DefaultDeploymentFactory;
+import org.wildfly.swarm.container.internal.Deployer;
+import org.wildfly.swarm.container.internal.Server;
 
 /**
  * A WildFly-Swarm container.

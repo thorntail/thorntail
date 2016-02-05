@@ -11,6 +11,7 @@
     <system export="true">
       <paths>
         <path name="org/wildfly/swarm/container"/>
+        <path name="org/wildfly/swarm/container/internal"/>
         <path name="org/wildfly/swarm/container/util"/>
 
         <path name="org/jboss/shrinkwrap/api"/>

@@ -28,6 +28,8 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
+import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
+import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 
 /**
  * @author Bob McWhirter

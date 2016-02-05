@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs;
+package org.wildfly.swarm.arquillian.adapter;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.wildfly.swarm.config.JAXRS;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author Bob McWhirter
+ * Signifies that an Arquillian-based test class should be run InVM instead of in a remote uberjar.
+ *
+ * @author Toby Crawley
  */
-public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
-
-    static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(JAXRSArchive.class, JAXRSArchiveImpl.class);
-    }
-
-    public JAXRSFraction() {
-    }
-
-
+@Retention(RetentionPolicy.RUNTIME)
+public @interface InVM {
 }

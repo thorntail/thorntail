@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.wildfly.swarm.config.JAXRS;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
+package org.wildfly.swarm.container.internal;
 
 /**
  * @author Bob McWhirter
  */
-public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
+public class BaseSocketBinding {
 
-    static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(JAXRSArchive.class, JAXRSArchiveImpl.class);
+    private final String name;
+
+    protected BaseSocketBinding(String name) {
+        this.name = name;
     }
 
-    public JAXRSFraction() {
+    public String name() {
+        return this.name;
     }
-
-
 }

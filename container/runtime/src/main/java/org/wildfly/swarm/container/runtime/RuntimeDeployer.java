@@ -35,7 +35,7 @@ import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.container.Deployer;
+import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Fraction;
 

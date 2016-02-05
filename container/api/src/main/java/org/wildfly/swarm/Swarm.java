@@ -24,6 +24,7 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.internal.ArtifactManager;
 
 /**
  * Default {@code main(...)} if an application does not provide one.

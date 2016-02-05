@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs;
+package org.wildfly.swarm.jaxrs.internal;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.wildfly.swarm.config.JAXRS;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * @author Bob McWhirter
  */
-public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
+public class AnnotationSeekingClassVisitor extends ClassVisitor {
 
-    static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(JAXRSArchive.class, JAXRSArchiveImpl.class);
+    private boolean found = false;
+
+    public AnnotationSeekingClassVisitor() {
+        super(Opcodes.ASM5);
     }
 
-    public JAXRSFraction() {
+    public boolean isFound() {
+        return this.found;
     }
 
+    @Override
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        if (desc.equals("Ljavax/ws/rs/ApplicationPath;")) {
+            found = true;
+        }
+        return super.visitAnnotation(desc, visible);
+    }
 
 }

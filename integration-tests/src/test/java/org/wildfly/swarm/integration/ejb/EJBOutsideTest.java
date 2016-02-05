@@ -28,7 +28,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
-import org.wildfly.swarm.arquillian.adapter.ArtifactDependencies;
+import org.wildfly.swarm.arquillian.ArtifactDependencies;
 import org.wildfly.swarm.integration.base.TestConstants;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 

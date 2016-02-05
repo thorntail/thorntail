@@ -13,24 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs;
+package org.wildfly.swarm.jaxrs.internal;
 
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.wildfly.swarm.config.JAXRS;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
+import org.wildfly.swarm.jaxrs.JAXRSArchive;
+import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 
 /**
  * @author Bob McWhirter
  */
-public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
+public class DefaultJAXRSWarDeploymentFactory extends DefaultWarDeploymentFactory {
 
-    static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(JAXRSArchive.class, JAXRSArchiveImpl.class);
+    @Override
+    public int getPriority() {
+        return 1000;
     }
 
-    public JAXRSFraction() {
+    @Override
+    public String getType() {
+        return "war";
     }
 
-
+    @Override
+    public Archive create() throws Exception {
+        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class, determineName());
+        setup(archive);
+        return archive;
+    }
 }

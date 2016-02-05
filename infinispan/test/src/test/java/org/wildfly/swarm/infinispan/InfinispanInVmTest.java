@@ -17,7 +17,7 @@ package org.wildfly.swarm.infinispan;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.arquillian.InVM;
+import org.wildfly.swarm.arquillian.adapter.InVM;
 
 @InVM
 @RunWith(Arquillian.class)

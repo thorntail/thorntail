@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.container;
 
+import org.wildfly.swarm.container.internal.BaseSocketBinding;
+
 /**
  * @author Bob McWhirter
  */

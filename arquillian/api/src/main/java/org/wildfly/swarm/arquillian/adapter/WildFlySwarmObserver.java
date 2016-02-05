@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import org.jboss.arquillian.container.spi.event.container.AfterSetup;
 import org.jboss.arquillian.container.test.impl.client.deployment.event.GenerateDeployment;
 import org.jboss.arquillian.core.api.annotation.Observes;
+import org.wildfly.swarm.arquillian.ArtifactDependencies;
 
 /**
  * @author Bob McWhirter

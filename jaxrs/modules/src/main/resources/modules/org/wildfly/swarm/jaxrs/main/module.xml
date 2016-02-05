@@ -3,6 +3,7 @@
     <system export="true">
       <paths>
         <path name="org/wildfly/swarm/jaxrs"/>
+        <path name="org/wildfly/swarm/jaxrs/internal"/>
       </paths>
     </system>
 

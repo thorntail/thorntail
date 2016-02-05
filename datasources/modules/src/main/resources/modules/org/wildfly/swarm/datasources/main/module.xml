@@ -5,6 +5,7 @@
     <system export="true">
       <paths>
         <path name="org/wildfly/swarm/datasources"/>
+        <path name="org/wildfly/swarm/datasources/internal"/>
       </paths>
     </system>
 
