@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.keycloak;
+package org.wildfly.swarm.keycloak.internal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +29,8 @@ import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.keycloak.Secured;
+import org.wildfly.swarm.keycloak.SecurityConstraint;
 import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
