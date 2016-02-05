@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology;
+package org.wildfly.swarm.topology.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
+import org.wildfly.swarm.topology.TopologyArchive;
 
 /**
  * @author Bob McWhirter

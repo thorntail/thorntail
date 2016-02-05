@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology;
+package org.wildfly.swarm.topology.internal;
+
+import org.wildfly.swarm.topology.ExternalAddressMapper;
+import org.wildfly.swarm.topology.Topology;
 
 public class IdentityExternalAddressMapper implements ExternalAddressMapper {
     @Override
