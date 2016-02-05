@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.undertow;
 
+import java.util.List;
+
 import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.Undertow;
@@ -38,7 +40,8 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     public UndertowFraction() {
     }
 
-    /** Create the default, HTTP-only fraction.
+    /**
+     * Create the default, HTTP-only fraction.
      *
      * @return The configured fraction.
      */
@@ -59,68 +62,59 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return fraction;
     }
 
-    /** Create the default HTTP and HTTPS fraction.
+    /**
+     * Create the default HTTP and HTTPS fraction.
      *
      * <p>This default requires configuration for accessing a keystore.
      * The application also <b>must</b> include the <code>management</code>
      * fraction in its dependencies.</p>
      *
-     * @see #enableHTTPS(String, String, String)
-     *
-     * @param path The keystore path.
+     * @param path     The keystore path.
      * @param password The keystore password.
-     * @param alias The server certificate alias.
-     *
+     * @param alias    The server certificate alias.
      * @return The configured fraction.
+     * @see #enableHTTPS(String, String, String)
      */
     public static UndertowFraction createDefaultFraction(String path, String password, String alias) {
         return createDefaultFraction()
-                .enableHTTPS( path, password, alias );
+                .enableHTTPS(path, password, alias);
     }
 
-    /** Create the default HTTPS-only fraction.
+    /**
+     * Create the default HTTPS-only fraction.
      *
      * <p>This default inhibits the non-SSL HTTP endpoint, and only creates
      * the default HTTPS endpoint. The application also <b>must</b> include
      * the <code>management</code> fraction in its dependencies.</p>
      *
-     * @see #enableHTTPS(String, String, String)
-     *
-     * @param path The keystore path.
+     * @param path     The keystore path.
      * @param password The keystore password.
-     * @param alias The server certificate alias.
-     *
+     * @param alias    The server certificate alias.
      * @return The configured fraction;
+     * @see #enableHTTPS(String, String, String)
      */
     public static UndertowFraction createDefaultHTTPSOnlyFraction(String path, String password, String alias) {
         UndertowFraction fraction = new UndertowFraction();
-        fraction.enableHTTPS( path, password, alias );
+        fraction.enableHTTPS(path, password, alias);
         return fraction;
     }
 
-    /** Enable HTTPS on this fraction.
+    /**
+     * Enable HTTPS on this fraction.
      *
      * <p>This will enable HTTPS of the fraction. The application also
      * <b>must</b> include the <code>management</code> fraction in its
      * dependencies.</p>
      *
-     * @param path The keystore path.
+     * @param path     The keystore path.
      * @param password The keystore password.
-     * @param alias The server certificate alias.
-     *
+     * @param alias    The server certificate alias.
      * @return This fraction.
      */
     public UndertowFraction enableHTTPS(String path, String password, String alias) {
         this.keystorePath = path;
         this.keystorePassword = password;
         this.alias = alias;
-
-        server( "default-server-ssl", (server)->{
-            server.httpsListener( "https", (listener)->{
-                listener.securityRealm( "SSLRealm" );
-                listener.socketBinding( "https" );
-            });
-        });
         return this;
     }
 
@@ -136,29 +130,48 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
 
     @Override
     public void postInitialize(Container.PostInitContext initContext) {
-        if ( this.keystorePassword != null & this.keystorePassword != null && this.alias != null ) {
+        if (this.keystorePassword != null & this.keystorePassword != null && this.alias != null) {
             ManagementCoreService management = (ManagementCoreService) initContext.fraction("management");
-            if ( management == null ) {
-                throw new RuntimeException( "HTTPS configured but org.wildfly.swarm:management not available" );
+            if (management == null) {
+                throw new RuntimeException("HTTPS configured but org.wildfly.swarm:management not available");
             }
 
-            management.securityRealm( "SSLRealm", (realm)->{
-                realm.sslServerIdentity( (identity)->{
-                    identity.keystorePath( this.keystorePath );
-                    identity.keystorePassword( this.keystorePassword );
-                    identity.alias( this.alias );
+            List<Server> servers = subresources().servers();
+
+            for (Server server : servers) {
+                if (server.subresources().httpsListeners().isEmpty()) {
+                    if (server.subresources().httpListener("default").socketBinding().equals("http")) {
+                        server.httpsListener("default-https", (listener) -> {
+                            listener.securityRealm("SSLRealm");
+                            listener.socketBinding("https");
+                        });
+                    }
+                }
+            }
+
+            management.securityRealm("SSLRealm", (realm) -> {
+                realm.sslServerIdentity((identity) -> {
+                    identity.keystorePath(this.keystorePath);
+                    identity.keystorePassword(this.keystorePassword);
+                    identity.alias(this.alias);
                 });
             });
         }
     }
 
-    /** Path to the keystore. */
+    /**
+     * Path to the keystore.
+     */
     private String keystorePath;
 
-    /** Password for the keystore. */
+    /**
+     * Password for the keystore.
+     */
     private String keystorePassword;
 
-    /** Server certificate alias. */
+    /**
+     * Server certificate alias.
+     */
     private String alias;
 
 }
