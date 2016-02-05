@@ -3,7 +3,7 @@ package org.wildfly.swarm.container.runtime;
 import java.net.URL;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jboss.dmr.ModelNode;
 import org.junit.BeforeClass;
 import org.junit.Test;
