@@ -16,6 +16,7 @@
 package org.wildfly.swarm.undertow;
 
 import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.undertow.BufferCache;
 import org.wildfly.swarm.config.undertow.HandlerConfiguration;
@@ -37,6 +38,10 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     public UndertowFraction() {
     }
 
+    /** Create the default, HTTP-only fraction.
+     *
+     * @return The configured fraction.
+     */
     public static UndertowFraction createDefaultFraction() {
         UndertowFraction fraction = new UndertowFraction();
 
@@ -54,6 +59,71 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return fraction;
     }
 
+    /** Create the default HTTP and HTTPS fraction.
+     *
+     * <p>This default requires configuration for accessing a keystore.
+     * The application also <b>must</b> include the <code>management</code>
+     * fraction in its dependencies.</p>
+     *
+     * @see #enableHTTPS(String, String, String)
+     *
+     * @param path The keystore path.
+     * @param password The keystore password.
+     * @param alias The server certificate alias.
+     *
+     * @return The configured fraction.
+     */
+    public static UndertowFraction createDefaultFraction(String path, String password, String alias) {
+        return createDefaultFraction()
+                .enableHTTPS( path, password, alias );
+    }
+
+    /** Create the default HTTPS-only fraction.
+     *
+     * <p>This default inhibits the non-SSL HTTP endpoint, and only creates
+     * the default HTTPS endpoint. The application also <b>must</b> include
+     * the <code>management</code> fraction in its dependencies.</p>
+     *
+     * @see #enableHTTPS(String, String, String)
+     *
+     * @param path The keystore path.
+     * @param password The keystore password.
+     * @param alias The server certificate alias.
+     *
+     * @return The configured fraction;
+     */
+    public static UndertowFraction createDefaultHTTPSOnlyFraction(String path, String password, String alias) {
+        UndertowFraction fraction = new UndertowFraction();
+        fraction.enableHTTPS( path, password, alias );
+        return fraction;
+    }
+
+    /** Enable HTTPS on this fraction.
+     *
+     * <p>This will enable HTTPS of the fraction. The application also
+     * <b>must</b> include the <code>management</code> fraction in its
+     * dependencies.</p>
+     *
+     * @param path The keystore path.
+     * @param password The keystore password.
+     * @param alias The server certificate alias.
+     *
+     * @return This fraction.
+     */
+    public UndertowFraction enableHTTPS(String path, String password, String alias) {
+        this.keystorePath = path;
+        this.keystorePassword = password;
+        this.alias = alias;
+
+        server( "default-server-ssl", (server)->{
+            server.httpsListener( "https", (listener)->{
+                listener.securityRealm( "SSLRealm" );
+                listener.socketBinding( "https" );
+            });
+        });
+        return this;
+    }
+
     @Override
     public void initialize(Container.InitContext initContext) {
         initContext.socketBinding(
@@ -63,4 +133,32 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
                 new SocketBinding("https")
                         .port(SwarmProperties.propertyVar(UndertowProperties.HTTPS_PORT, "8443")));
     }
+
+    @Override
+    public void postInitialize(Container.PostInitContext initContext) {
+        if ( this.keystorePassword != null & this.keystorePassword != null && this.alias != null ) {
+            ManagementCoreService management = (ManagementCoreService) initContext.fraction("management");
+            if ( management == null ) {
+                throw new RuntimeException( "HTTPS configured but org.wildfly.swarm:management not available" );
+            }
+
+            management.securityRealm( "SSLRealm", (realm)->{
+                realm.sslServerIdentity( (identity)->{
+                    identity.keystorePath( this.keystorePath );
+                    identity.keystorePassword( this.keystorePassword );
+                    identity.alias( this.alias );
+                });
+            });
+        }
+    }
+
+    /** Path to the keystore. */
+    private String keystorePath;
+
+    /** Password for the keystore. */
+    private String keystorePassword;
+
+    /** Server certificate alias. */
+    private String alias;
+
 }
