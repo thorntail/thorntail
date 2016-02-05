@@ -17,6 +17,7 @@ package org.wildfly.swarm.swagger;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.swagger.internal.SwaggerArchiveImpl;
 
 /**
  * @author Lance Ball

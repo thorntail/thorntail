@@ -1,4 +1,4 @@
-package org.wildfly.swarm.swagger;
+package org.wildfly.swarm.swagger.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.wildfly.swarm.swagger.SwaggerConfig;
 
 /**
  * @author Lance Ball

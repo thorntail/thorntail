@@ -20,6 +20,8 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.junit.Test;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
+import org.wildfly.swarm.swagger.internal.SwaggerArchiveImpl;
+import org.wildfly.swarm.swagger.internal.SwaggerConfigurationAsset;
 
 import static org.fest.assertions.Assertions.assertThat;
 
