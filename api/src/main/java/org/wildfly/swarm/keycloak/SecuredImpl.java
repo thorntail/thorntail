@@ -23,18 +23,22 @@ import java.io.InputStreamReader;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.NamedAsset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
+import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secured {
 
-    private SecuredWebXmlAsset asset;
+    private WebXmlAsset asset;
 
     /**
      * Constructs a new instance using the underlying specified archive, which is required
@@ -46,10 +50,16 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
 
         Node node = getArchive().as(JARArchive.class).get("WEB-INF/web.xml");
         if (node == null) {
-            this.asset = new SecuredWebXmlAsset();
+            this.asset = new WebXmlAsset();
             getArchive().as(JARArchive.class).add(this.asset);
-        } else if (!(node.getAsset() instanceof SecuredWebXmlAsset)) {
-            throw new RuntimeException("Secured may not be used when providing a custom WEB-INF/web.xml");
+        } else {
+            NamedAsset asset = (NamedAsset) node.getAsset();
+            if (!(asset instanceof WebXmlAsset)) {
+                this.asset = new WebXmlAsset(asset.openStream());
+                getArchive().as(JARArchive.class).add(this.asset);
+            } else {
+                this.asset = (WebXmlAsset) asset;
+            }
         }
 
         getArchive().as(JARArchive.class).addModule("org.wildfly.swarm.keycloak", "runtime");
@@ -78,6 +88,10 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
                 }
             }
         }
+
+        // Setup web.xml
+        this.asset.setContextParam("resteasy.scan", "true");
+        this.asset.setLoginConfig("KEYCLOAK", "ignored");
 
         if (keycloakJson != null) {
             getArchive().as(JARArchive.class).add(createAsset(keycloakJson), "WEB-INF/keycloak.json");

@@ -16,6 +16,7 @@
 package org.wildfly.swarm.keycloak;
 
 import org.jboss.shrinkwrap.api.Assignable;
+import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 
 /**
  * @author Bob McWhirter
