@@ -22,6 +22,8 @@ import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 import org.jboss.shrinkwrap.api.container.WebContainer;
 import org.wildfly.swarm.container.DependenciesContainer;
 import org.wildfly.swarm.container.JBossDeploymentStructureContainer;
+import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
+import org.wildfly.swarm.undertow.descriptors.WebXmlContainer;
 
 /**
  * @author Bob McWhirter
@@ -34,6 +36,7 @@ public interface WARArchive extends
         ServiceProviderContainer<WARArchive>,
         JBossDeploymentStructureContainer<WARArchive>,
         JBossWebContainer<WARArchive>,
+        WebXmlContainer<WARArchive>,
         DependenciesContainer<WARArchive>,
         StaticContentContainer<WARArchive> {
 

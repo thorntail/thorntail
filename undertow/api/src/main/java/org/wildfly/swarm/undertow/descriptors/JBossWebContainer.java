@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.undertow;
+package org.wildfly.swarm.undertow.descriptors;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.wildfly.swarm.undertow.UndertowProperties;
 
 /**
  * @author Bob McWhirter

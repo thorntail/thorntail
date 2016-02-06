@@ -1,6 +1,8 @@
 package org.wildfly.swarm.undertow;
 
 import org.junit.Test;
+import org.wildfly.swarm.undertow.descriptors.JBossWebAsset;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
