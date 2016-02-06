@@ -22,8 +22,8 @@ import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 import org.jboss.shrinkwrap.api.container.WebContainer;
 import org.wildfly.swarm.container.DependenciesContainer;
 import org.wildfly.swarm.container.JBossDeploymentStructureContainer;
-import org.wildfly.swarm.undertow.JBossWebContainer;
 import org.wildfly.swarm.undertow.StaticContentContainer;
+import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 
 /**
  * @author Bob McWhirter
