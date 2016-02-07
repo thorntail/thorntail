@@ -26,7 +26,8 @@ import java.util.Set;
 
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
 import org.wildfly.swarm.container.util.XmlWriter;
-import org.wildfly.swarm.keycloak.SecurityConstraint;
+import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
+
 
 /**
  * @author Bob McWhirter

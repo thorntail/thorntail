@@ -30,7 +30,6 @@ import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.keycloak.Secured;
-import org.wildfly.swarm.keycloak.SecurityConstraint;
 import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
