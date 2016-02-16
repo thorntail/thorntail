@@ -10,12 +10,13 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0.Alpha9-SNAPSHOT</version>
-    <relativePath>../parent</relativePath>
+    <version>1</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom</artifactId>
+  <version>1.0.0.Alpha9-SNAPSHOT</version>
 
   <name>WildFly Swarm: BOM for Fractions</name>
   <description>WildFly Swarm: BOM for Fractions</description>

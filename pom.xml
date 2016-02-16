@@ -10,15 +10,15 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0.Alpha9-SNAPSHOT</version>
-    <relativePath>parent/</relativePath>
+    <version>1</version>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm</artifactId>
+  <version>1.0.0.Alpha9-SNAPSHOT</version>
 
-  <name>WildFly Swarm: Parent</name>
-  <description>WildFly Swarm: Parent</description>
+  <name>WildFly Swarm: Root</name>
+  <description>WildFly Swarm: Root</description>
 
   <packaging>pom</packaging>
 
@@ -1163,7 +1163,6 @@
   </pluginRepositories>
 
   <modules>
-    <module>parent</module>
     <module>bom</module>
 
     <!-- misc -->
