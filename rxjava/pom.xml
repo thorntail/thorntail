@@ -9,13 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
+    <artifactId>netflix-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>rxjava</artifactId>
+  <artifactId>netflix-rxjava</artifactId>
 
   <name>WildFly Swarm: RX-Java</name>
   <description>WildFly Swarm: RX-Java</description>

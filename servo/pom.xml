@@ -9,7 +9,7 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
+    <artifactId>netflix-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
@@ -48,7 +48,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>guava</artifactId>
+      <artifactId>netflix-guava</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>
