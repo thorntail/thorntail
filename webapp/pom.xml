@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>swagger-webapp-parent</artifactId>
 
-  <name>WildFly Swarm: Swagger Webapp</name>
-  <description>WildFly Swarm: Swagger Webapp</description>
+  <name>WildFly Swarm: Swagger Web App</name>
+  <description>WildFly Swarm: Swagger Web App</description>
 
   <packaging>pom</packaging>
 

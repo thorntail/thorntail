@@ -22,15 +22,6 @@
 
   <packaging>jar</packaging>
 
-  <properties>
-    <version.io.swagger>1.5.5</version.io.swagger>
-    <version.reflections>0.9.10</version.reflections>
-    <version.slf4j>1.6.3</version.slf4j>
-    <version.guava>18.0</version.guava>
-    <version.javassist>3.18.2-GA</version.javassist>
-    <version.commons.lang>3.2.1</version.commons.lang>
-  </properties>
-
   <build>
     <resources>
       <resource>
@@ -57,58 +48,41 @@
       <artifactId>jaxrs</artifactId>
     </dependency>
 
-    <!-- TODO: It is unclear to me why we must specify the version here, but not for other wf-swarm dependencies like jaxrs above -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jackson</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-jaxrs</artifactId>
-      <version>${version.io.swagger}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-core</artifactId>
-      <version>${version.io.swagger}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-models</artifactId>
-      <version>${version.io.swagger}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
-      <version>${version.io.swagger}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>${version.guava}</version>
     </dependency>
     <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
-      <version>${version.reflections}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${version.slf4j}</version>
     </dependency>
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
-      <version>${version.javassist}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>${version.commons.lang}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
