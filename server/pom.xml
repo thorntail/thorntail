@@ -9,7 +9,7 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
+    <artifactId>keycloak-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>keycloak-server-parent</artifactId>
 
-  <name>WildFly Swarm: Keycloak Server</name>
-  <description>WildFly Swarm: Keycloak Server</description>
+  <name>WildFly Swarm Keycloak: Server Parent</name>
+  <description>WildFly Swarm Keycloak: Server Parent</description>
 
   <packaging>pom</packaging>
 
