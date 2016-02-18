@@ -9,16 +9,16 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
+    <artifactId>swagger-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>swagger-parent</artifactId>
+  <artifactId>swagger-adapter-parent</artifactId>
 
-  <name>WildFly Swarm: Swagger</name>
-  <description>WildFly Swarm: Swagger</description>
+  <name>WildFly Swarm: Swagger Adapter</name>
+  <description>WildFly Swarm: Swagger Adapter</description>
 
   <packaging>pom</packaging>
 

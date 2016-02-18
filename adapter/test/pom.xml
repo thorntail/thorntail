@@ -9,7 +9,7 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>swagger-parent</artifactId>
+    <artifactId>swagger-adapter-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>swagger-test</artifactId>
 
-  <name>WildFly Swarm: Swagger Test</name>
-  <description>WildFly Swarm: Swagger Test</description>
+  <name>WildFly Swarm: Swagger Adapter Test</name>
+  <description>WildFly Swarm: Swagger Adapter Test</description>
 
   <packaging>jar</packaging>
 
@@ -41,11 +41,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>swagger</artifactId>
+      <artifactId>swagger-adapter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>swagger-modules</artifactId>
+      <artifactId>swagger-adapter-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

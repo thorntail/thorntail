@@ -9,23 +9,23 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>swagger-parent</artifactId>
+    <artifactId>swagger-adapter-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>swagger-runtime</artifactId>
+  <artifactId>swagger-adapter-runtime</artifactId>
 
-  <name>WildFly Swarm: Swagger Runtime</name>
-  <description>WildFly Swarm: Swagger Runtime</description>
+  <name>WildFly Swarm: Swagger Adapter Runtime</name>
+  <description>WildFly Swarm: Swagger Adapter Runtime</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>swagger</artifactId>
+      <artifactId>swagger-adapter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

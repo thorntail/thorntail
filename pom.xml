@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm</artifactId>
+    <version>1.0.0.Alpha9-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>swagger-parent</artifactId>
+
+  <name>WildFly Swarm: Swagger</name>
+  <description>WildFly Swarm: Swagger</description>
+
+  <packaging>pom</packaging>
+
+  <properties>
+    <version.io.swagger>1.5.5</version.io.swagger>
+    <version.reflections>0.9.10</version.reflections>
+    <version.slf4j>1.6.3</version.slf4j>
+    <version.guava>18.0</version.guava>
+    <version.javassist>3.18.2-GA</version.javassist>
+    <version.commons.lang>3.2.1</version.commons.lang>
+    <version.jackson>2.4.5</version.jackson>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>swagger-adapter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>swagger-adapter-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>swagger-adapter-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>adapter</module>
+    <module>webapp</module>
+  </modules>
+
+</project>

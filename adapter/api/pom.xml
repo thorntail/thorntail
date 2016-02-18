@@ -9,16 +9,16 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>swagger-parent</artifactId>
+    <artifactId>swagger-adapter-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>swagger</artifactId>
+  <artifactId>swagger-adapter</artifactId>
 
-  <name>WildFly Swarm: Swagger API</name>
-  <description>WildFly Swarm: Swagger API</description>
+  <name>WildFly Swarm: Swagger Adapter API</name>
+  <description>WildFly Swarm: Swagger Adapter API</description>
 
   <packaging>jar</packaging>
 
@@ -29,7 +29,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>swagger-modules</artifactId>
+      <artifactId>swagger-adapter-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
