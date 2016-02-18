@@ -866,6 +866,17 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1216,6 +1227,7 @@
     <module>ribbon</module>
     <module>ribbon-secured</module>
     <module>security</module>
+    <module>spring</module>
     <module>swagger</module>
     <module>swagger-webapp</module>
     <module>transactions</module>

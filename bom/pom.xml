@@ -265,6 +265,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger</artifactId>
         <version>${project.version}</version>
       </dependency>
