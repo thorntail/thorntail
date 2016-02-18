@@ -11,7 +11,6 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
