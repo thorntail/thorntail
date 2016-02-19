@@ -4,7 +4,7 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
+    <artifactId>wildfly-swarm-core</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
   </parent>
 
@@ -12,8 +12,8 @@
   <artifactId>keycloak-parent</artifactId>
   <version>1.0.0.Alpha9-SNAPSHOT</version>
 
-  <name>WildFly Swarm Keycloak: Parent</name>
-  <description>WildFly Swarm Keycloak: Parent</description>
+  <name>WildFly Swarm: Keycloak Parent</name>
+  <description>WildFly Swarm: Keycloak Parent</description>
 
   <packaging>pom</packaging>
   <properties>
