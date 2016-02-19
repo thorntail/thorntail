@@ -21,6 +21,20 @@
     <version.wildfly-swarm>1.0.0.Alpha9-SNAPSHOT</version.wildfly-swarm>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>projectodd-snapshots</id>
+      <name>Project:odd Snapshots from CI</name>
+      <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <build>
     <finalName>${project.artifactId}</finalName>
 
