@@ -4,7 +4,7 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>spring-parent</artifactId>
+    <artifactId>spring-framework-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>

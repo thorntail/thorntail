@@ -4,24 +4,43 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
+    <artifactId>wildfly-swarm-core</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>spring-parent</artifactId>
+  <version>1.0.0.Alpha9-SNAPSHOT</version>
 
-  <name>WildFly Swarm: Spring</name>
-  <description>WildFly Swarm: Spring</description>
+  <name>WildFly Swarm: Spring Parent</name>
+  <description>WildFly Swarm: Spring Parent</description>
 
   <packaging>pom</packaging>
 
-  <modules>
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
-  </modules>
+  <properties>
+  </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>spring</module>
+  </modules>
 </project>
