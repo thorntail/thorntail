@@ -6,6 +6,7 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>core</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -16,10 +17,25 @@
   <description>WildFly Swarm: Keycloak Parent</description>
 
   <packaging>pom</packaging>
+
   <properties>
     <version.keycloak>1.8.1.Final</version.keycloak>
     <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>projectodd-snapshots</id>
+      <name>Project:odd Snapshots from CI</name>
+      <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <dependencyManagement>
     <dependencies>
