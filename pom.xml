@@ -11,6 +11,7 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>core</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -28,6 +29,20 @@
     <version.netty>4.0.26.Final</version.netty>
     <version.guava>14.0.1</version.guava>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>projectodd-snapshots</id>
+      <name>Project:odd Snapshots from CI</name>
+      <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <dependencyManagement>
     <dependencies>
