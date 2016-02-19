@@ -233,40 +233,19 @@
 
   <build>
     <plugins>
-      <!-- <plugin>
-        <groupId>de.saumya.mojo</groupId>
-        <artifactId>jruby-maven-plugin</artifactId>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
         <executions>
           <execution>
-            <id>generate-fraction-list</id>
-            <phase>generate-sources</phase>
+            <id>fraction-list</id>
+            <phase>generate-resources</phase>
             <goals>
-              <goal>jruby</goal>
+              <goal>fraction-list</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-artifacts</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <configuration>
-              <artifacts>
-                <artifact>
-                  <file>./target/classes/fraction-list.txt</file>
-                  <type>txt</type>
-                </artifact>
-              </artifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin> -->
     </plugins>
   </build>
 
