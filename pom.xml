@@ -9,12 +9,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
+    <artifactId>core</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>netflix-parent</artifactId>
+  <version>1.0.0.Alpha9-SNAPSHOT</version>
 
   <name>WildFly Swarm: Netflix</name>
   <description>WildFly Swarm: Netflix</description>
