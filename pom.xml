@@ -16,6 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jolokia-parent</artifactId>
+  <version>1.0.0.Alpha9-SNAPSHOT</version>
 
   <name>WildFly Swarm: Jolokia</name>
   <description>WildFly Swarm: Jolokia</description>
