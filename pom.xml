@@ -45,17 +45,17 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-topology</artifactId>
+        <artifactId>topology</artifactId>
         <version>${version.swarm.topology}</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-topology-modules</artifactId>
+        <artifactId>topology-modules</artifactId>
         <version>${version.swarm.topology}</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-topology-runtime</artifactId>
+        <artifactId>topology-runtime</artifactId>
         <version>${version.swarm.topology}</version>
       </dependency>
       <dependency>
