@@ -4,17 +4,22 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
-    <version>1.0.0.Alpha9-SNAPSHOT</version>
+    <artifactId>parent</artifactId>
+    <version>1</version>
   </parent>
 
   <groupId>org.wildfly.swarm.servers</groupId>
   <artifactId>servers-parent</artifactId>
+  <version>1.0.0.Alpha9-SNAPSHOT</version>
 
-  <name>WildFly Swarm Servers: Parent</name>
-  <description>WildFly Swarm Servers: Parent</description>
+  <name>WildFly Swarm: Servers Parent</name>
+  <description>WildFly Swarm: Servers Parent</description>
 
   <packaging>pom</packaging>
+
+  <properties>
+    <version.wildfly-swarm>1.0.0.Alpha9-SNAPSHOT</version.wildfly-swarm>
+  </properties>
 
   <build>
     <finalName>${project.artifactId}</finalName>
@@ -84,28 +89,19 @@
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>arquillian</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.graphene</groupId>
-      <artifactId>graphene-webdriver</artifactId>
-      <type>pom</type>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>bom</artifactId>
+        <version>${version.wildfly-swarm}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <modules>
-    <module>hawkular</module>
     <module>keycloak</module>
     <module>swagger-ui</module>
   </modules>
