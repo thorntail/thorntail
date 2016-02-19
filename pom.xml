@@ -38,21 +38,23 @@
   </repositories>
 
   <dependencyManagement>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-jgroups</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-jgroups-modules</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-jgroups-runtime</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-jgroups</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-jgroups-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-jgroups-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
   </dependencyManagement>
 
   <modules>
