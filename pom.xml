@@ -23,6 +23,10 @@
 
   <packaging>pom</packaging>
 
+  <properties>
+    <version.swarm.topology>1.0.0.Alpha9-SNAPSHOT</version.swarm.topology>
+  </properties>
+
   <repositories>
     <repository>
       <id>projectodd-snapshots</id>
@@ -39,6 +43,21 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-topology</artifactId>
+        <version>${version.swarm.topology}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-topology-modules</artifactId>
+        <version>${version.swarm.topology}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-topology-runtime</artifactId>
+        <version>${version.swarm.topology}</version>
+      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups</artifactId>
