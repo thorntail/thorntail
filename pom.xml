@@ -26,6 +26,18 @@
     <jruby.file>src/main/ruby/generate.rb</jruby.file>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>bom</artifactId>
+        <version>${project.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -60,11 +72,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>ejb-remote</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>hawkular</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -226,7 +233,7 @@
 
   <build>
     <plugins>
-      <plugin>
+      <!-- <plugin>
         <groupId>de.saumya.mojo</groupId>
         <artifactId>jruby-maven-plugin</artifactId>
         <executions>
@@ -259,7 +266,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin> -->
     </plugins>
   </build>
 
