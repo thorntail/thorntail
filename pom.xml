@@ -41,10 +41,10 @@
       <name>Project:odd Snapshots from CI</name>
       <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
       <releases>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
       </releases>
       <snapshots>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
