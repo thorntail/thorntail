@@ -15,6 +15,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-parent</artifactId>
+  <version>1.0.0.Alpha9-SNAPSHOT</version>
 
   <name>WildFly Swarm: Topology</name>
   <description>WildFly Swarm: Topology</description>
