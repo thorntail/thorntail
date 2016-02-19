@@ -22,6 +22,66 @@
 
   <packaging>pom</packaging>
 
+  <properties>
+    <version.swarm.topology>1.0.0.Alpha9-SNAPSHOT</version.swarm.topology>
+    <version.com.orbitz.consul>0.9.16</version.com.orbitz.consul>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>projectodd-snapshots</id>
+      <name>Project:odd Snapshots from CI</name>
+      <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.orbitz.consul</groupId>
+        <artifactId>consul-client</artifactId>
+        <version>${version.com.orbitz.consul}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology</artifactId>
+        <version>${version.swarm.topology}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-modules</artifactId>
+        <version>${version.swarm.topology}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-runtime</artifactId>
+        <version>${version.swarm.topology}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-consul</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-consul-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-consul-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <modules>
     <module>api</module>
     <module>runtime</module>
