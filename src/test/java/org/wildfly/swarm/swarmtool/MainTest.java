@@ -82,7 +82,7 @@ public class MainTest {
         return props;
     }
 
-    @Test
+//    @Test
     public void setProperties() throws Exception {
         final Result result = runTool(getResourcePath("simple-servlet.war"),
                 "-Dfoo=bar", "-Dham=biscuit",
