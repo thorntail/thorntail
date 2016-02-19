@@ -34,6 +34,20 @@
       </snapshots>
     </repository>
   </repositories>
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <build>
     <finalName>${project.artifactId}</finalName>
