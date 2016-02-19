@@ -24,10 +24,20 @@
   <packaging>pom</packaging>
 
   <properties>
+    <version.netflix.commons>0.1.1</version.netflix.commons>
+    <version.archaius>0.6.6</version.archaius>
+    <version.ribbon>2.1.0</version.ribbon>
+    <version.hystrix>1.4.3</version.hystrix>
     <version.rxjava>1.0.9</version.rxjava>
     <version.rxnetty>0.4.9</version.rxnetty>
     <version.netty>4.0.26.Final</version.netty>
     <version.guava>14.0.1</version.guava>
+    <version.servo>0.9.2</version.servo>
+
+    <version.commons-configuration>1.8</version.commons-configuration>
+
+    <version.keycloak>1.0.0.Alpha9-SNAPSHOT</version.keycloak>
+    <version.topology>1.0.0.Alpha9-SNAPSHOT</version.topology>
   </properties>
 
   <repositories>
@@ -83,6 +93,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>ribbon-secured-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -105,6 +120,87 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>servo</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.netflix.hystrix</groupId>
+        <artifactId>hystrix-core</artifactId>
+        <version>${version.hystrix}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon-transport</artifactId>
+        <version>${version.ribbon}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon</artifactId>
+        <version>${version.ribbon}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon-core</artifactId>
+        <version>${version.ribbon}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon-loadbalancer</artifactId>
+        <version>${version.ribbon}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.reactivex</groupId>
+        <artifactId>rxjava</artifactId>
+        <version>${version.rxjava}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.reactivex</groupId>
+        <artifactId>rxnetty</artifactId>
+        <version>${version.rxnetty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-buffer</artifactId>
+        <version>${version.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>${version.netty}</version>
+      </dependency>
+
+      <!-- Keycloak -->
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak</artifactId>
+        <version>${version.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak-modules</artifactId>
+        <version>${version.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak-runtime</artifactId>
+        <version>${version.keycloak}</version>
+      </dependency>
+
+      <!-- Topology -->
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology</artifactId>
+        <version>${version.topology}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-modules</artifactId>
+        <version>${version.topology}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-runtime</artifactId>
+        <version>${version.topology}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
