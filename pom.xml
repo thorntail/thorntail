@@ -11,6 +11,7 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>core</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -22,31 +23,45 @@
 
   <packaging>pom</packaging>
 
+  <repositories>
+    <repository>
+      <id>projectodd-snapshots</id>
+      <name>Project:odd Snapshots from CI</name>
+      <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-modules</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <modules>
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
     <module>test</module>
   </modules>
-
-    <dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>topology</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>topology-modules</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>topology-runtime</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-      </dependencies>
-    </dependencyManagement>
 
 </project>
