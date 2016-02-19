@@ -27,6 +27,20 @@
     <version.jolokia>1.3.1</version.jolokia>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>projectodd-snapshots</id>
+      <name>Project:odd Snapshots from CI</name>
+      <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
