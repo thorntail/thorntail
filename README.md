@@ -1,6 +1,8 @@
 
 # WildFly Swarm
 
+
+[![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm-plugin)
 
 WildFly Swarm provides a mechanism for building
