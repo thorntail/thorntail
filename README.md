@@ -84,3 +84,4 @@ Guide](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/).
 * Logs can be found [here](http://transcripts.jboss.org/channel/irc.freenode.org/%23wildfly-swarm/)
 
 
+
