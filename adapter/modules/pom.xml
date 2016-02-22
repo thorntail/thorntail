@@ -15,7 +15,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>swagger-adapter-modules</artifactId>
+  <artifactId>swagger-modules</artifactId>
 
   <name>WildFly Swarm: Swagger Adapter Modules</name>
   <description>WildFly Swarm: Swagger Adapter Modules</description>

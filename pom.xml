@@ -51,17 +51,17 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>swagger-adapter</artifactId>
+        <artifactId>swagger</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>swagger-adapter-modules</artifactId>
+        <artifactId>swagger-modules</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>swagger-adapter-runtime</artifactId>
+        <artifactId>swagger-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
 

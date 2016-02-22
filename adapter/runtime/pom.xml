@@ -15,7 +15,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>swagger-adapter-runtime</artifactId>
+  <artifactId>swagger-runtime</artifactId>
 
   <name>WildFly Swarm: Swagger Adapter Runtime</name>
   <description>WildFly Swarm: Swagger Adapter Runtime</description>
@@ -25,7 +25,7 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>swagger-adapter</artifactId>
+      <artifactId>swagger</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
