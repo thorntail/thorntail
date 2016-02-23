@@ -79,8 +79,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                         dep.getBaseVersion(),
                         dep.getType(),
                         dep.getClassifier(),
-                        dep.getFile(),
-                        dep.getDependencyTrail().size() == 2));
+                        dep.getFile()));
 
         List<Resource> resources = this.project.getResources();
         for (Resource each : resources) {

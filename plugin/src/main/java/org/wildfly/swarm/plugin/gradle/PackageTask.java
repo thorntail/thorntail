@@ -86,7 +86,7 @@ public class PackageTask extends DefaultTask {
                 .getByName("compile")
                 .getResolvedConfiguration()
                 .getFirstLevelModuleDependencies()
-                .forEach(d -> walk(true, d));
+                .forEach(this::walk);
 
         final Boolean bundleDependencies = ext.getBundleDependencies();
         if (bundleDependencies != null) {
@@ -96,7 +96,7 @@ public class PackageTask extends DefaultTask {
         this.tool.build(project.getName(), project.getBuildDir().toPath().resolve("libs"));
     }
 
-    private void walk(final boolean top, ResolvedDependency dep) {
+    private void walk(final ResolvedDependency dep) {
         Set<ResolvedArtifact> artifacts = dep.getModuleArtifacts();
         for (ResolvedArtifact each : artifacts) {
             String[] parts = dep.getName().split(":");
@@ -104,9 +104,9 @@ public class PackageTask extends DefaultTask {
             String artifactId = parts[1];
             String version = parts[2];
             this.tool.dependency("compile", groupId, artifactId, version, each.getExtension(),
-                                 each.getClassifier(), each.getFile(), top);
+                                 each.getClassifier(), each.getFile());
         }
 
-        dep.getChildren().forEach(d -> walk(false, d));
+        dep.getChildren().forEach(this::walk);
     }
 }

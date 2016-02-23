@@ -26,15 +26,11 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public final String scope;
 
-    public final boolean topLevel;
-
     public File file;
 
     public boolean shouldGather = true;
 
     public boolean gathered = false;
-
-    public boolean bootstrapped = false;
 
     public ArtifactSpec(final String scope,
                         final String groupId,
@@ -42,16 +38,10 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
                         final String version,
                         final String packaging,
                         final String classifier,
-                        final File file,
-                        final boolean topLevel) {
+                        final File file) {
         super(groupId, artifactId, packaging, classifier, version);
         this.scope = scope;
         this.file = file;
-        this.topLevel = topLevel;
-    }
-
-    public ArtifactSpec(String scope, String groupId, String artifactId, String version, String packaging, String classifier, File file) {
-        this(scope, groupId, artifactId, version, packaging, classifier, file, false);
     }
 
     public static ArtifactSpec fromMscGav(String gav) {

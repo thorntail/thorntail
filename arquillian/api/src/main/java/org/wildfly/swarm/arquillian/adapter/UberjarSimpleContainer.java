@@ -142,16 +142,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
         boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;
 
         if (!hasRequestedArtifacts) {
-            @SuppressWarnings("rawtypes")
-            final List<String> topLevelDeps =
-                    ((ResolveStageBaseImpl) resolver.loadPomFromFile("pom.xml")
-                            .importRuntimeAndTestDependencies())
-                            .getMavenWorkingSession()
-                            .getDependenciesForResolution()
-                            .stream()
-                            .map(d -> gav(d.getGroupId(), d.getArtifactId(), d.getVersion()))
-                            .collect(Collectors.toList());
-
             final MavenResolvedArtifact[] deps =
                     resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
                             .importRuntimeAndTestDependencies()
@@ -163,8 +153,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 MavenCoordinate coord = dep.getCoordinate();
                 tool.dependency(dep.getScope().name(), coord.getGroupId(),
                         coord.getArtifactId(), coord.getVersion(),
-                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile(),
-                        topLevelDeps.contains(gav(coord)));
+                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
             }
         } else {
             // ensure that arq daemon is available
@@ -180,9 +169,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                     MavenCoordinate coord = dep.getCoordinate();
                     tool.dependency(dep.getScope().name(), coord.getGroupId(),
                             coord.getArtifactId(), coord.getVersion(),
-                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile(),
-                            this.requestedMavenArtifacts.contains(gav(coord)) ||
-                                    this.requestedMavenArtifacts.contains(ga(coord)));
+                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
                 }
             }
         }

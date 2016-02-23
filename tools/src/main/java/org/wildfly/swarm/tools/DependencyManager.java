@@ -124,17 +124,6 @@ public class DependencyManager {
         this.dependencies.add(dep);
     }
 
-    public Set<ArtifactSpec> getNonSwarmDependencies() {
-        try {
-            return this.resolver.resolveAll(this.dependencies.stream()
-                    .filter(a -> a.topLevel)
-                    .filter(a -> !WILDFLY_SWARM_GROUP_ID.equals(a.groupId()))
-                    .collect(Collectors.toSet()));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void addAdditionalModule(Path module) {
         try {
             analyzeModuleDependencies(new ModuleAnalyzer(module));

@@ -52,11 +52,6 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
  */
 public class BuildTool {
 
-    protected static final String WEB_INF_LIB = "/WEB-INF/lib/";
-
-    protected static final Pattern POM_PROPERTIES =
-            Pattern.compile("/META-INF/maven/([^/]+/){2}pom.properties");
-
     private final JavaArchive archive;
 
     private final Set<String> resourceDirectories = new HashSet<>();
@@ -100,19 +95,19 @@ public class BuildTool {
     }
 
     public BuildTool projectArtifact(String groupId, String artifactId, String version, String packaging, File file) {
-        this.projectAsset = new SwarmDepsFilteredAsset(new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file)));
+        this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file));
         return this;
     }
 
     public BuildTool projectArchive(Archive archive) {
-        this.projectAsset = new SwarmDepsFilteredAsset(new ArchiveAsset(archive));
+        this.projectAsset = new ArchiveAsset(archive);
         return this;
     }
 
     public BuildTool dependency(String scope, String groupId, String artifactId, String version,
-                                String packaging, String classifier, File file, boolean topLevel) {
+                                String packaging, String classifier, File file) {
         this.dependencyManager.addDependency(new ArtifactSpec(scope, groupId, artifactId, version,
-                packaging, classifier, file, topLevel));
+                packaging, classifier, file));
         return this;
     }
 
@@ -281,91 +276,5 @@ public class BuildTool {
         }
     }
 
-    protected boolean nodeIsSwarmArtifact(final Node node) {
-        return matchProperty(extractPomProperties(node), "groupId", DependencyManager.WILDFLY_SWARM_GROUP_ID);
-    }
-
-    protected List<Properties> extractPomProperties(final Node node) {
-        final List<Properties> properties = new ArrayList<>();
-
-        try (final InputStream in = node.getAsset().openStream()) {
-            ShrinkWrap.create(ZipImporter.class)
-                    .importFrom(in)
-                    .as(JavaArchive.class)
-                    .getContent(p -> POM_PROPERTIES.matcher(p.get()).matches())
-                    .values()
-                    .forEach(propNode -> {
-                        final Properties props = new Properties();
-                        try (final InputStream in2 = propNode.getAsset().openStream()) {
-                            props.load(in2);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        properties.add(props);
-                    });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return properties;
-    }
-
-    protected boolean matchProperty(final List<Properties> properties, final String property, final String expected) {
-        return properties.stream()
-                .map(p -> expected.equals(p.getProperty(property)))
-                .reduce((found, match) -> found || match)
-                .orElse(false);
-    }
-
-    protected boolean nodeIsInArtifactList(final Node node,
-                                           final Collection<ArtifactSpec> artifactList,
-                                           final boolean exact) {
-        final List<Properties> poms = extractPomProperties(node);
-        final String jarName = node.getPath().get().substring(WEB_INF_LIB.length());
-        boolean found = false;
-        final Iterator<ArtifactSpec> specs = artifactList.iterator();
-
-        while (!found && specs.hasNext()) {
-            final ArtifactSpec spec = specs.next();
-            if (!poms.isEmpty()) {
-                found = matchProperty(poms, "groupId", spec.groupId())
-                        && matchProperty(poms, "artifactId", spec.artifactId())
-                        && (!exact || matchProperty(poms, "version", spec.version()));
-            } else {
-                // no pom, try to match by file name
-                if (exact) {
-                    found = jarName.equals(String.format("%s-%s.%s", spec.artifactId(), spec.version(), spec.type()));
-                } else {
-                    found = jarName.matches("^" + spec.artifactId() + "-\\d.*\\." + spec.type());
-                }
-            }
-        }
-
-        return found;
-    }
-
-    private class SwarmDepsFilteredAsset extends FilteredProjectAsset {
-
-        SwarmDepsFilteredAsset(ProjectAsset delegate) {
-            super(delegate);
-        }
-
-        @Override
-        protected Archive<?> filter(Archive<?> archive) {
-            final Set<ArtifactSpec> moduleSpecs = dependencyManager.getModuleDependencies();
-            final Set<ArtifactSpec> nonSwarmSpecs = dependencyManager.getNonSwarmDependencies();
-
-            archive.getContent().values().stream()
-                    .filter(node -> node.getPath().get().startsWith(WEB_INF_LIB))
-                    .filter(node -> !nodeIsInArtifactList(node, nonSwarmSpecs, false)
-                            && (nodeIsInArtifactList(node, moduleSpecs, true)
-                            || nodeIsSwarmArtifact(node)))
-                    .forEach(node -> archive.delete(node.getPath()));
-
-            return archive;
-        }
-
-    }
 }
 
