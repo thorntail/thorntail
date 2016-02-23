@@ -82,6 +82,20 @@
     </dependencies>
   </dependencyManagement>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <tagNameFormat>@{project.version}</tagNameFormat>
+          <preparationGoals>clean install</preparationGoals>
+          <arguments>-DskipTests</arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <modules>
     <module>api</module>
     <module>runtime</module>
