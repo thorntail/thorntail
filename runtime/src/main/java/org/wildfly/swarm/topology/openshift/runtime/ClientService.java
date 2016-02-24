@@ -40,8 +40,8 @@ public class ClientService implements Service<IClient> {
     }
 
     private IClient openshiftClient() throws IOException {
-        String kubeHost = Environment.serviceHost("kubernetes");
-        int kubePort = Environment.servicePort("kubernetes");
+        String kubeHost = serviceHost("kubernetes");
+        int kubePort = servicePort("kubernetes");
 
         Path tokenFile = Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/token");
         String scheme = "http";
@@ -62,5 +62,20 @@ public class ClientService implements Service<IClient> {
     @Override
     public IClient getValue() throws IllegalStateException, IllegalArgumentException {
         return this.client;
+    }
+
+    protected String serviceHost(String serviceName) {
+        String envName = serviceName.replace("-", "_").toUpperCase() + "_SERVICE_HOST";
+        return System.getenv(envName);
+    }
+
+    public static int servicePort(String serviceName) {
+        String envName = serviceName.replace("-", "_").toUpperCase() + "_SERVICE_PORT";
+        String envPort = System.getenv(envName);
+        if (envPort == null) {
+            return -1;
+        }
+
+        return Integer.parseInt(envPort);
     }
 }
