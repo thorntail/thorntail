@@ -297,301 +297,301 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>tools</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian-daemon</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian-daemon-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bootstrap</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>container</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>container-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>container-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>io</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>io-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>io-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -603,177 +603,177 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>security</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>security-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>security-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>weld</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>weld-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>weld-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <!-- Feature Packs -->
