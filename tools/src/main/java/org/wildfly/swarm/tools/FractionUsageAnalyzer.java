@@ -17,15 +17,13 @@ package org.wildfly.swarm.tools;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Bob McWhirter
@@ -43,41 +41,77 @@ public class FractionUsageAnalyzer {
         this.source = source;
     }
 
-    private Map<String, Set<String>> fractionPackages() {
-        final Properties properties = new Properties();
-        try (InputStream in =
-                     FractionUsageAnalyzer.class.getResourceAsStream("/org/wildfly/swarm/tools/fraction-packages.properties")) {
-            properties.load(in);
+
+    public Set<String> detectNeededFractions() throws IOException {
+        return findFractions(PackageDetector
+                                     .detectPackages(this.source)
+                                     .keySet());
+    }
+
+    static protected Set<String> findFractions(Set<String> packages) {
+        final Set<StatefulPackageMatcher> fractionPackages = fractionMatchers();
+
+        return packages.stream()
+                .flatMap(p -> fractionPackages.stream().map(m -> m.fraction(p)))
+                .filter(p -> p != null)
+                .collect(Collectors.toSet());
+    }
+
+    static private Set<StatefulPackageMatcher> fractionMatchers() {
+        final Properties properties;
+        try {
+            properties = PropertiesUtil.loadProperties(FractionUsageAnalyzer.class
+                                                               .getResourceAsStream("/org/wildfly/swarm/tools/fraction-packages.properties"));
         } catch (Exception e) {
             throw new RuntimeException("Failed to load fraction-packages.properties", e);
         }
 
-        final Map<String, Set<String>> fractionMap = new HashMap<>();
-
-        for (Map.Entry prop : properties.entrySet()) {
-            Set<String> packages = new HashSet<>();
-            packages.addAll(Arrays.asList(((String) prop.getValue()).split(",")));
-            fractionMap.put((String) prop.getKey(), packages);
-        }
-
-        return fractionMap;
+        return properties.stringPropertyNames().stream()
+                .flatMap(fractionName ->
+                                 Stream.of(properties.getProperty(fractionName).split(","))
+                                         .map(packages -> new StatefulPackageMatcher(fractionName,
+                                                                                     packages.split("\\+"))))
+                .collect(Collectors.toSet());
     }
 
-    public Set<String> detectNeededFractions() throws IOException {
-        final Map<String, Set<String>> fractionPackages = fractionPackages();
-        final Set<String> detectedPackages = PackageDetector
-                .detectPackages(this.source)
-                .keySet();
-        final Set<String> neededFractions = new HashSet<>();
 
-        for (Map.Entry<String, Set<String>> fraction : fractionPackages.entrySet()) {
-            neededFractions.addAll(fraction.getValue()
-                    .stream()
-                    .filter(detectedPackages::contains)
-                    .map(pkg -> fraction.getKey())
-                    .collect(Collectors.toList()));
+    static class StatefulPackageMatcher {
+        StatefulPackageMatcher(String fractionName, String... packages) {
+            this.fractionName = fractionName;
+            this.packageSpecs.addAll(Arrays.asList(packages));
         }
 
-        return neededFractions;
+        /**
+         * Returns the fraction name for the given package.
+         * If the matcher requires multiple packages for a fraction, the last matching package
+         * will cause the fraction name to be returned.
+         * @param pkg the package to match against
+         * @return the matching fraction name or null
+         */
+        public String fraction(final String pkg) {
+            final String match = matchingSpec(pkg);
+            if (match != null) {
+                this.matchedPackages.add(match);
+            }
+
+            return this.matchedPackages.equals(packageSpecs) ? this.fractionName : null;
+        }
+
+        private String matchingSpec(final String pkg) {
+            return this.packageSpecs.stream()
+                    .filter(spec -> {
+                        if (spec.endsWith("*")) {
+                            return pkg.startsWith(spec.substring(0, spec.length() - 1));
+                        } else {
+                            return pkg.equals(spec);
+                        }
+                    })
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        private final String fractionName;
+        private final Set<String> packageSpecs = new HashSet<>();
+        private final Set<String> matchedPackages = new HashSet<>();
     }
 }
