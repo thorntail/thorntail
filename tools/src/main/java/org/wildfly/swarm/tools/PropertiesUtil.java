@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.plugin;
+package org.wildfly.swarm.tools;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Util {
+public class PropertiesUtil {
 
     public static Properties loadProperties(final InputStream in) throws IOException {
         final Properties props = new Properties();
@@ -40,6 +40,17 @@ public class Util {
 
     public static Properties loadProperties(final File file) throws IOException {
         return loadProperties(new FileInputStream(file));
+    }
+
+    public static String versionFromPomProperties() {
+        try {
+            return loadProperties(PropertiesUtil.class
+                                          .getClassLoader()
+                                          .getResourceAsStream("META-INF/maven/org.wildfly.swarm/tools/pom.properties"))
+                    .getProperty("version");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load version from pom.properties", e);
+        }
     }
 
     /**

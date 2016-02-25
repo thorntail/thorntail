@@ -29,7 +29,7 @@ import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
-import org.wildfly.swarm.plugin.Util;
+import org.wildfly.swarm.tools.PropertiesUtil;
 import org.wildfly.swarm.tools.BuildTool;
 
 /**
@@ -63,7 +63,7 @@ public class PackageTask extends DefaultTask {
         final Properties fromFile = new Properties();
         if (ext.getPropertiesFile() != null) {
             try {
-                fromFile.putAll(Util.loadProperties(ext.getPropertiesFile()));
+                fromFile.putAll(PropertiesUtil.loadProperties(ext.getPropertiesFile()));
             } catch (IOException e) {
                 getLogger().error("Failed to load properties from " + ext.getPropertiesFile(), e);
             }
@@ -77,7 +77,7 @@ public class PackageTask extends DefaultTask {
                 .bundleDependencies(ext.getBundleDependencies())
                 .properties(ext.getProperties())
                 .properties(fromFile)
-                .properties(Util.filteredSystemProperties(ext.getProperties(), false))
+                .properties(PropertiesUtil.filteredSystemProperties(ext.getProperties(), false))
                 .additionalModules(ext.getModuleDirs().stream()
                                            .map(File::getAbsolutePath)
                                            .collect(Collectors.toList()));

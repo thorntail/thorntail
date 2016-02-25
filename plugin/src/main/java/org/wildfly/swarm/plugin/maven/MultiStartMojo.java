@@ -246,6 +246,14 @@ public class MultiStartMojo extends AbstractSwarmMojo {
         pdom.setValue("${project}");
         config.addChild(pdom);
 
+        pdom = new Xpp3Dom("repositorySystemSession");
+        pdom.setValue("${repositorySystemSession}");
+        config.addChild(pdom);
+
+        pdom = new Xpp3Dom("remoteRepositories");
+        pdom.setValue("${project.remoteArtifactRepositories}");
+        config.addChild(pdom);
+
         return config;
     }
 

@@ -18,6 +18,7 @@ package org.wildfly.swarm.tools;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,23 +29,27 @@ import java.util.stream.Collectors;
 
 /**
  * @author Bob McWhirter
+ * @author Toby Crawley
  */
-public class PackageAnalyzer {
+public class FractionUsageAnalyzer {
 
     private final File source;
 
-    public PackageAnalyzer(File source) {
+    public FractionUsageAnalyzer(Path source) {
+        this(source.toFile());
+    }
+
+    public FractionUsageAnalyzer(File source) {
         this.source = source;
     }
 
-    private Map<String, Set<String>> fractionPackages() throws IOException {
+    private Map<String, Set<String>> fractionPackages() {
         final Properties properties = new Properties();
         try (InputStream in =
-                     PackageAnalyzer.class.getResourceAsStream("/org/wildfly/swarm/tools/fraction-packages.properties")) {
-            if (in == null) {
-                throw new RuntimeException("Failed to load fraction-packages.properties");
-            }
+                     FractionUsageAnalyzer.class.getResourceAsStream("/org/wildfly/swarm/tools/fraction-packages.properties")) {
             properties.load(in);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load fraction-packages.properties", e);
         }
 
         final Map<String, Set<String>> fractionMap = new HashMap<>();

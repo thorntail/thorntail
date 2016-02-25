@@ -19,8 +19,6 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
@@ -28,13 +26,10 @@ import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
 import org.wildfly.swarm.tools.BuildTool;
 
 /**
@@ -49,14 +44,8 @@ import org.wildfly.swarm.tools.BuildTool;
 )
 public class PackageMojo extends AbstractSwarmMojo {
 
-    @Inject
-    protected ArtifactResolver resolver;
-
     @Parameter(alias = "bundleDependencies", defaultValue = "true")
     protected boolean bundleDependencies;
-
-    @Component
-    protected DefaultRepositorySystem repositorySystem;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -73,13 +62,7 @@ public class PackageMojo extends AbstractSwarmMojo {
 
 
         this.project.getArtifacts()
-                .forEach(dep -> tool.dependency(dep.getScope(),
-                        dep.getGroupId(),
-                        dep.getArtifactId(),
-                        dep.getBaseVersion(),
-                        dep.getType(),
-                        dep.getClassifier(),
-                        dep.getFile()));
+                .forEach(dep -> tool.dependency(artifactToArtifactSpec(dep)));
 
         List<Resource> resources = this.project.getResources();
         for (Resource each : resources) {
@@ -93,17 +76,10 @@ public class PackageMojo extends AbstractSwarmMojo {
             }
         }
 
-        tool
-                .properties(this.properties)
+        tool.properties(this.properties)
                 .mainClass(this.mainClass)
-                .bundleDependencies(this.bundleDependencies);
-
-        MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver,
-                this.repositorySystem,
-                this.repositorySystemSession);
-        this.remoteRepositories.forEach(resolvingHelper::remoteRepository);
-
-        tool.artifactResolvingHelper(resolvingHelper);
+                .bundleDependencies(this.bundleDependencies)
+                .artifactResolvingHelper(mavenArtifactResolvingHelper());
 
         try {
             File jar = tool.build(this.project.getBuild().getFinalName(), Paths.get(this.projectBuildDir));

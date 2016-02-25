@@ -53,11 +53,13 @@ public class PackageDetector {
     protected static Map<String, Set<String>> detectPackages(final File file,
                                                              final PackageCollector visitor) throws IOException {
         if (file.isDirectory()) {
+
             return detectPackagesInDir(file, visitor);
         } else if (file.getName().endsWith(".jar") || file.getName().endsWith(".war")) {
+
             return detectPackagesInZip(new ZipFile(file), visitor);
         } else {
-            System.err.println("Ignoring scanning of unknown file type: " + file.getName());
+
             return Collections.emptyMap();
         }
     }

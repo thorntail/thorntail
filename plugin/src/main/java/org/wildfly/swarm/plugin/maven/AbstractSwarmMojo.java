@@ -19,31 +19,27 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import javax.inject.Inject;
+
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.wildfly.swarm.plugin.Util;
+import org.eclipse.aether.impl.ArtifactResolver;
+import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
+import org.wildfly.swarm.tools.ArtifactSpec;
+import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
  * @author Bob McWhirter
  */
 public abstract class AbstractSwarmMojo extends AbstractMojo {
 
-    protected static String VERSION;
-
-    static {
-        try {
-            VERSION = Util.loadProperties(PackageMojo.class
-                    .getClassLoader()
-                    .getResourceAsStream("META-INF/maven/org.wildfly.swarm/wildfly-swarm-plugin/pom.properties"))
-                    .getProperty("version");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    protected static String VERSION = PropertiesUtil.versionFromPomProperties();
 
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
@@ -51,7 +47,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
     protected DefaultRepositorySystemSession repositorySystemSession;
 
-    @Parameter(defaultValue = "${project.remoteArtifactRepositories}", readonly = true)
+    @Parameter(alias = "remoteRepositories", defaultValue = "${project.remoteArtifactRepositories}", readonly = true)
     protected List<ArtifactRepository> remoteRepositories;
 
     @Parameter(defaultValue = "${project.build.directory}")
@@ -75,6 +71,12 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "modules")
     protected String[] additionalModules;
 
+    @Inject
+    protected ArtifactResolver resolver;
+
+    @Component
+    protected DefaultRepositorySystem repositorySystem;
+
     AbstractSwarmMojo() {
         if (this.additionalModules == null) {
             this.additionalModules = new String[]{"modules"};
@@ -88,13 +90,13 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
 
         if (this.propertiesFile != null) {
             try {
-                this.properties.putAll(Util.loadProperties(this.propertiesFile));
+                this.properties.putAll(PropertiesUtil.loadProperties(this.propertiesFile));
             } catch (IOException e) {
                 getLog().error("Failed to load properties from " + this.propertiesFile, e);
             }
         }
 
-        this.properties.putAll(Util.filteredSystemProperties(this.properties, withMaven));
+        this.properties.putAll(PropertiesUtil.filteredSystemProperties(this.properties, withMaven));
     }
 
     protected void initEnvironment() throws MojoFailureException {
@@ -103,10 +105,29 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
         if (this.environmentFile != null) {
             try {
-                this.environment.putAll(Util.loadProperties(this.environmentFile));
+                this.environment.putAll(PropertiesUtil.loadProperties(this.environmentFile));
             } catch (IOException e) {
                 getLog().error("Failed to load environment from " + this.environmentFile, e);
             }
         }
+    }
+
+    protected MavenArtifactResolvingHelper mavenArtifactResolvingHelper() {
+        MavenArtifactResolvingHelper resolvingHelper = new MavenArtifactResolvingHelper(this.resolver,
+                this.repositorySystem,
+                this.repositorySystemSession);
+        this.remoteRepositories.forEach(resolvingHelper::remoteRepository);
+
+        return resolvingHelper;
+    }
+
+    protected ArtifactSpec artifactToArtifactSpec(Artifact dep) {
+        return new ArtifactSpec(dep.getScope(),
+                                dep.getGroupId(),
+                                dep.getArtifactId(),
+                                dep.getBaseVersion(),
+                                dep.getType(),
+                                dep.getClassifier(),
+                                dep.getFile());
     }
 }

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.tools.ArtifactSpec;
+import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.DependencyManager;
+import org.wildfly.swarm.tools.FractionUsageAnalyzer;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -58,7 +63,7 @@ public class StartMojo extends AbstractSwarmMojo {
     public Integer debugPort;
 
     @Parameter(alias = "jvmArguments" )
-    public List<String> jvmArguments = new ArrayList();
+    public List<String> jvmArguments = new ArrayList<>();
 
     boolean waitForProcess;
 
@@ -152,12 +157,13 @@ public class StartMojo extends AbstractSwarmMojo {
         if (!finalName.endsWith(".war")) {
             finalName = finalName + ".war";
         }
+        final Path warFile = Paths.get(this.projectBuildDir, finalName);
 
         return new SwarmExecutor()
                 .withModules(expandModules())
-                .withClassPathEntries(dependencies(false))
+                .withClassPathEntries(dependencies(warFile, false))
                 .withProperty(BootstrapProperties.APP_PATH,
-                        Paths.get(this.projectBuildDir, finalName).toString())
+                              warFile.toString())
                 .withDefaultMainClass();
     }
 
@@ -167,7 +173,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
         final SwarmExecutor executor = new SwarmExecutor()
                 .withModules(expandModules())
-                .withClassPathEntries(dependencies(true));
+                .withClassPathEntries(dependencies(Paths.get(this.project.getBuild().getOutputDirectory()), true));
 
         if (this.mainClass != null) {
             executor.withMainClass(this.mainClass);
@@ -178,12 +184,48 @@ public class StartMojo extends AbstractSwarmMojo {
         return executor;
     }
 
-    List<Path> dependencies(boolean includeProjectArtifact) {
+    List<Path> findNeededFractions(final Set<Artifact> existingDeps, final Path source) throws MojoFailureException {
+        getLog().info("No WildFly Swarm dependencies found - scanning for needed fractions");
 
-        List<Path> elements = new ArrayList<>();
-        Set<Artifact> artifacts = this.project.getArtifacts();
+        final Set<String> fractions = new HashSet<>();
+        fractions.addAll(BuildTool.REQUIRED_FRACTIONS);
+        try {
+            fractions.addAll(new FractionUsageAnalyzer(source)
+                                     .detectNeededFractions());
+        } catch (IOException e) {
+            throw new MojoFailureException("failed to scan for fractions", e);
+        }
+
+        getLog().info("Detected fractions: " + String.join(", ", fractions.stream().sorted().collect(Collectors.toList())));
+
+        final Set<ArtifactSpec> specs = new HashSet<>();
+        specs.addAll(existingDeps.stream()
+                             .map(this::artifactToArtifactSpec)
+                             .collect(Collectors.toList()));
+        specs.addAll(fractions.stream()
+                             .map(f -> new ArtifactSpec("compile", DependencyManager.WILDFLY_SWARM_GROUP_ID,
+                                                        f, VERSION, "jar", null, null))
+                             .collect(Collectors.toList()));
+        try {
+            return mavenArtifactResolvingHelper().resolveAll(specs).stream()
+                    .map(s -> s.file.toPath())
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new MojoFailureException("failed to resolve fraction dependencies", e);
+        }
+    }
+
+    List<Path> dependencies(final Path archiveContent, final boolean includeProjectArtifact) throws MojoFailureException {
+        final List<Path> elements = new ArrayList<>();
+        final Set<Artifact> artifacts = this.project.getArtifacts();
+        boolean hasSwarmDeps = false;
         for (Artifact each : artifacts) {
-            if (each.getGroupId().equals("org.jboss.logmanager") && each.getArtifactId().equals("jboss-logmanager")) {
+            if (each.getGroupId().equals(DependencyManager.WILDFLY_SWARM_GROUP_ID)
+                    && each.getArtifactId().equals(DependencyManager.WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
+                hasSwarmDeps = true;
+            }
+            if (each.getGroupId().equals("org.jboss.logmanager")
+                    && each.getArtifactId().equals("jboss-logmanager")) {
                 continue;
             }
             elements.add(each.getFile().toPath());
@@ -191,6 +233,10 @@ public class StartMojo extends AbstractSwarmMojo {
 
         if (includeProjectArtifact) {
             elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));
+        }
+
+        if (!hasSwarmDeps) {
+          elements.addAll(findNeededFractions(artifacts, archiveContent));
         }
 
         return elements;
@@ -202,4 +248,3 @@ public class StartMojo extends AbstractSwarmMojo {
                 .collect(Collectors.toList());
     }
 }
-
