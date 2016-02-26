@@ -81,7 +81,7 @@ public class Main {
                     .ofType(File.class)
                     .describedAs("system properties file");
 
-    private static final String VERSION;
+    protected static final String VERSION;
 
     static {
         Properties props = new Properties();

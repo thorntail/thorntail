@@ -107,7 +107,7 @@ public class Build {
 
         for (String fractionName : this.swarmDependencies) {
             fractions.add(fractionName);
-            FractionDescriptor desc = fractionList.getFractionDescriptor("org.wildfly.swarm", fractionName);
+            FractionDescriptor desc = fractionList.getFractionDescriptor("org.wildfly.swarm", fractionName, Main.VERSION);
             if (desc != null) {
                 fractions.addAll(desc.getDependencies()
                         .stream()
