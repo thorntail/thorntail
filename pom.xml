@@ -58,10 +58,7 @@
   </dependencyManagement>
 
   <modules>
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
+    <module>core</module>
   </modules>
 
 </project>

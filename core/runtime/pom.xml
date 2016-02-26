@@ -9,34 +9,18 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>topology-parent</artifactId>
+    <artifactId>topology-core-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology-test</artifactId>
+  <artifactId>topology-runtime</artifactId>
 
-  <name>WildFly Swarm: Topology Test</name>
-  <description>WildFly Swarm: Topology Test</description>
+  <name>WildFly Swarm: Topology Core Runtime</name>
+  <description>WildFly Swarm: Topology Core Runtime</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -45,13 +29,23 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>arquillian</artifactId>
-      <scope>test</scope>
+      <artifactId>container-runtime</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>naming-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-naming</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

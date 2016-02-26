@@ -9,7 +9,7 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>topology-parent</artifactId>
+    <artifactId>topology-core-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-modules</artifactId>
 
-  <name>WildFly Swarm: Topology Modules</name>
-  <description>WildFly Swarm: Topology Modules</description>
+  <name>WildFly Swarm: Topology Core Modules</name>
+  <description>WildFly Swarm: Topology Core Modules</description>
 
   <packaging>jar</packaging>
 
