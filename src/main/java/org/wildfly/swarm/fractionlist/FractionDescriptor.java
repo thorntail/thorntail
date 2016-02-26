@@ -28,11 +28,14 @@ public class FractionDescriptor {
 
     private final String artifactId;
 
+    private final String version;
+
     private Set<FractionDescriptor> dependencies = new HashSet<>();
 
-    FractionDescriptor(String groupId, String artifactId) {
+    FractionDescriptor(String groupId, String artifactId, String version) {
         this.groupId = groupId;
         this.artifactId = artifactId;
+        this.version = version;
     }
 
     void addDependency(FractionDescriptor dep) {
@@ -47,13 +50,17 @@ public class FractionDescriptor {
         return this.artifactId;
     }
 
+    public String getVersion() {
+        return this.version;
+    }
+
     public Set<FractionDescriptor> getDependencies() {
         return Collections.unmodifiableSet(this.dependencies);
     }
 
     @Override
     public String toString() {
-        return this.groupId + ":" + this.artifactId;
+        return this.groupId + ":" + this.artifactId + ":" + this.version;
     }
 
     @Override
@@ -62,6 +69,8 @@ public class FractionDescriptor {
         int result = 1;
         result = prime * result + ((artifactId == null) ? 0 : artifactId.hashCode());
         result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
+        result = prime + result + ((version == null) ? 0 : version.hashCode());
+
         return result;
     }
 
@@ -69,23 +78,34 @@ public class FractionDescriptor {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
+
         if (obj == null)
             return false;
+
         if (getClass() != obj.getClass())
             return false;
+
         FractionDescriptor other = (FractionDescriptor) obj;
         if (artifactId == null) {
             if (other.artifactId != null)
                 return false;
-        }
-        else if (!artifactId.equals(other.artifactId))
+        } else if (!artifactId.equals(other.artifactId))
             return false;
+
         if (groupId == null) {
             if (other.groupId != null)
                 return false;
         }
         else if (!groupId.equals(other.groupId))
             return false;
+
+        if (version == null) {
+            if (other.version != null)
+                return false;
+        }
+        else if (!version.equals(other.version))
+            return false;
+
         return true;
     }
 }

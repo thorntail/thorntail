@@ -36,7 +36,7 @@ public class FractionListTest {
 
         FractionDescriptor logstash = descriptors.stream().filter(e -> e.getArtifactId().equals("logstash")).findFirst().get();
 
-        assertThat(list.getFractionDescriptor("org.wildfly.swarm", "logstash")).isEqualTo(logstash);
+        assertThat(list.getFractionDescriptor("org.wildfly.swarm", "logstash", logstash.getVersion())).isEqualTo(logstash);
 
         assertThat(logstash.getGroupId()).isEqualTo("org.wildfly.swarm");
         assertThat(logstash.getArtifactId()).isEqualTo("logstash");

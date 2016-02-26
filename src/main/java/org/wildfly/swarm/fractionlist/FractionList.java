@@ -29,7 +29,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class FractionList {
     
-    public static final String DEFAULT_GROUP_ID = "org.wildfly.swarm";
     private final Map<String, FractionDescriptor> descriptors = new TreeMap<>();
 
     private static final AtomicReference<FractionList> INSTANCE = new AtomicReference<>();
@@ -61,7 +60,7 @@ public class FractionList {
                 FractionDescriptor desc = this.descriptors.get(lhs);
                 if (desc == null) {
                     String[] gavParts = lhs.split(":");
-                    desc = new FractionDescriptor(gavParts[0], gavParts[1]);
+                    desc = new FractionDescriptor(gavParts[0], gavParts[1], gavParts[2]);
                     this.descriptors.put(lhs, desc);
                 }
 
@@ -78,7 +77,7 @@ public class FractionList {
                         FractionDescriptor depDesc = this.descriptors.get(dep);
                         if (depDesc == null) {
                             String[] gavParts = dep.split(":");
-                            depDesc = new FractionDescriptor(gavParts[0], gavParts[1]);
+                            depDesc = new FractionDescriptor(gavParts[0], gavParts[1], gavParts[2]);
                         }
                         desc.addDependency(depDesc);
                     }
@@ -93,7 +92,7 @@ public class FractionList {
         return Collections.unmodifiableCollection(this.descriptors.values());
     }
 
-    public FractionDescriptor getFractionDescriptor(final String groupId, final String artifactId) {
-        return this.descriptors.get(groupId + ":" + artifactId);
+    public FractionDescriptor getFractionDescriptor(final String groupId, final String artifactId, final String version) {
+        return this.descriptors.get(groupId + ":" + artifactId + ":" + version);
     }
 }
