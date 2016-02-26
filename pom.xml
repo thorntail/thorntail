@@ -985,6 +985,7 @@
     <module>mail</module>
     <module>messaging</module>
     <module>msc</module>
+    <module>monitor</module>
     <module>naming</module>
     <module>remoting</module>
     <module>security</module>
