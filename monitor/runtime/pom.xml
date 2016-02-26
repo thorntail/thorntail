@@ -9,23 +9,24 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>undertow-parent</artifactId>
+    <artifactId>monitor-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>undertow-runtime</artifactId>
+  <artifactId>monitor-runtime</artifactId>
 
-  <name>WildFly Swarm: Undertow Runtime</name>
-  <description>WildFly Swarm: Undertow Runtime</description>
+  <name>WildFly Swarm: Monitor Runtime</name>
+  <description>WildFly Swarm: Monitor Runtime</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow</artifactId>
+      <artifactId>monitor</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -36,17 +37,23 @@
       <artifactId>wildfly-server</artifactId>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-undertow</artifactId>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>monitor-runtime</artifactId>
+      <artifactId>naming-runtime</artifactId>
       <scope>provided</scope>
-      <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-naming</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

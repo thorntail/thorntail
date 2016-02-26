@@ -14,6 +14,11 @@
     <module name="io.undertow.core"/>
     <module name="org.jboss.modules"/>
 
+    <module name="org.wildfly.swarm.monitor" slot="runtime"/>
+
+    <!--
+    TODO: I need to talk to Bob why he added this and the inconsistencies this creates when the maven dep is not attached to this maven module
     <module name="javax.xml.bind.api"/>
+    -->
   </dependencies>
 </module>

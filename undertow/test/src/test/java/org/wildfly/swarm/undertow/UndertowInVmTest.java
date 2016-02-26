@@ -18,6 +18,11 @@ package org.wildfly.swarm.undertow;
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
 /**
  * @author Bob McWhirter
  */
@@ -28,5 +33,45 @@ public class UndertowInVmTest {
         Container container = new Container();
         container.fraction(new UndertowFraction());
         container.start().stop();
+    }
+
+    @Test
+    public void testMonitor() throws Exception {
+        Container container = new Container();
+        container.fraction(UndertowFraction.createDefaultFractionWithMonitor());
+        container.start();
+        System.out.println(getUrlContents("http://127.0.0.1:8080/node"));
+        System.out.println(getUrlContents("http://127.0.0.1:8080/heap"));
+        System.out.println(getUrlContents("http://127.0.0.1:8080/threads"));
+        container.stop();
+    }
+
+
+    private static String getUrlContents(String theUrl)
+    {
+        StringBuilder content = new StringBuilder();
+
+        try
+        {
+            URL url = new URL(theUrl);
+            URLConnection urlConnection = url.openConnection();
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream())
+            );
+
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null)
+            {
+                content.append(line + "\n");
+            }
+            bufferedReader.close();
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return content.toString();
     }
 }

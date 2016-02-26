@@ -48,7 +48,7 @@ public class UndertowConfiguration extends MarshallingServerConfiguration<Undert
 
     @Override
     public void prepareArchive(Archive<?> a) {
-        a.as(JARArchive.class).addModule("javax.xml.bind.api");
+        //a.as(JARArchive.class).addModule("javax.xml.bind.api");
     }
 
     @Override
