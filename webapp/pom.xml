@@ -15,11 +15,11 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology-core-parent</artifactId>
+  <artifactId>topology-webapp-parent</artifactId>
   <version>1.0.0.Alpha9-SNAPSHOT</version>
 
-  <name>WildFly Swarm: Topology Core</name>
-  <description>WildFly Swarm: Topology Core</description>
+  <name>WildFly Swarm: Topology Web App</name>
+  <description>WildFly Swarm: Topology Web App</description>
 
   <packaging>pom</packaging>
 

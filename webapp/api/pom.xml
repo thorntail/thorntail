@@ -9,16 +9,16 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>topology-core-parent</artifactId>
+    <artifactId>topology-webapp-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology</artifactId>
+  <artifactId>topology-webapp</artifactId>
 
-  <name>WildFly Swarm: Topology Core API</name>
-  <description>WildFly Swarm: Topology Core API</description>
+  <name>WildFly Swarm: Topology Web App API</name>
+  <description>WildFly Swarm: Topology Web App API</description>
 
   <packaging>jar</packaging>
 
@@ -29,20 +29,16 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-modules</artifactId>
-    </dependency>
-
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc</artifactId>
+      <artifactId>topology-webapp-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
-
-
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

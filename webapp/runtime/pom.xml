@@ -9,40 +9,41 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>topology-core-parent</artifactId>
+    <artifactId>topology-webapp-parent</artifactId>
     <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology</artifactId>
+  <artifactId>topology-webapp-runtime</artifactId>
 
-  <name>WildFly Swarm: Topology Core API</name>
-  <description>WildFly Swarm: Topology Core API</description>
+  <name>WildFly Swarm: Topology Web App Runtime</name>
+  <description>WildFly Swarm: Topology Web App Runtime</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>topology-webapp</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-modules</artifactId>
-    </dependency>
-
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc</artifactId>
+      <artifactId>topology-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
-
-
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-server</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 </project>
