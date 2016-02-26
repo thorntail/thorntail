@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>parent</artifactId>
-    <version>3</version>
+    <version>4</version>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -113,13 +113,6 @@
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
