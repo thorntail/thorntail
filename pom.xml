@@ -9,8 +9,8 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>core</artifactId>
-    <version>1.0.0.Alpha9-SNAPSHOT</version>
+    <artifactId>topology-parent</artifactId>
+    <version>1.0.0.Beta2</version>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -22,8 +22,14 @@
 
   <packaging>pom</packaging>
 
+  <scm>
+    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-consul.git</connection>
+    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-consul.git</developerConnection>
+    <url>https://github.com/wildfly-swarm/wildfly-swarm-topology-consul</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <properties>
-    <version.swarm.topology>1.0.0.Alpha9-SNAPSHOT</version.swarm.topology>
     <version.com.orbitz.consul>0.9.16</version.com.orbitz.consul>
   </properties>
 
@@ -51,50 +57,21 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-modules</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-runtime</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-consul</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-consul-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-consul-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
-          <tagNameFormat>@{project.version}</tagNameFormat>
-          <preparationGoals>clean install</preparationGoals>
-          <arguments>-DskipTests</arguments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
   <modules>
     <module>api</module>
