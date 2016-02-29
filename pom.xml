@@ -928,7 +928,6 @@
   <modules>
     <!-- misc -->
     <module>tools</module>
-    <module>plugin</module>
     <module>arquillian</module>
 
     <!-- base -->
