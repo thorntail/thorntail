@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+import org.wildfly.swarm.tools.FractionDescriptor;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -36,7 +37,7 @@ public class FractionListTest {
 
         FractionDescriptor logstash = descriptors.stream().filter(e -> e.getArtifactId().equals("logstash")).findFirst().get();
 
-        assertThat(list.getFractionDescriptor("org.wildfly.swarm", "logstash", logstash.getVersion())).isEqualTo(logstash);
+        assertThat(list.getFractionDescriptor("org.wildfly.swarm", "logstash")).isEqualTo(logstash);
 
         assertThat(logstash.getGroupId()).isEqualTo("org.wildfly.swarm");
         assertThat(logstash.getArtifactId()).isEqualTo("logstash");

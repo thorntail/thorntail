@@ -17,29 +17,31 @@ package org.wildfly.swarm.fractionlist;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
+import org.wildfly.swarm.tools.FractionDescriptor;
+import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
  * @author Bob McWhirter
  */
-public class FractionList {
+public class FractionList implements org.wildfly.swarm.tools.FractionList {
     
     private final Map<String, FractionDescriptor> descriptors = new TreeMap<>();
 
     private static final AtomicReference<FractionList> INSTANCE = new AtomicReference<>();
 
     public static FractionList get() {
-        return INSTANCE.updateAndGet( (old)->{
-            if ( old != null ) {
-                return old;
-            }
-            return new FractionList();
-        });
+        return INSTANCE.updateAndGet(old -> old != null ? old : new FractionList());
     }
 
     private FractionList() {
@@ -61,7 +63,7 @@ public class FractionList {
                 if (desc == null) {
                     String[] gavParts = lhs.split(":");
                     desc = new FractionDescriptor(gavParts[0], gavParts[1], gavParts[2]);
-                    this.descriptors.put(lhs, desc);
+                    this.descriptors.put(gavParts[0] + ":" + gavParts[1], desc);
                 }
 
                 if (sides.length > 1) {
@@ -88,11 +90,34 @@ public class FractionList {
         }
     }
 
+    @Override
     public Collection<FractionDescriptor> getFractionDescriptors() {
         return Collections.unmodifiableCollection(this.descriptors.values());
     }
 
-    public FractionDescriptor getFractionDescriptor(final String groupId, final String artifactId, final String version) {
-        return this.descriptors.get(groupId + ":" + artifactId + ":" + version);
+    @Override
+    public FractionDescriptor getFractionDescriptor(final String groupId, final String artifactId) {
+        return this.descriptors.get(groupId + ":" + artifactId);
+    }
+
+    @Override
+    public Map<String, FractionDescriptor> getPackageSpecs() {
+        final Map<String, String> packageSpecs = loadPackageSpecs();
+
+        return this.descriptors.values().stream()
+                .collect(Collectors.toMap(fd -> packageSpecs.get(fd.getArtifactId()),
+                                          fd -> fd));
+    }
+
+    private static Map<String, String> loadPackageSpecs() {
+        try {
+            final InputStream in = FractionList.class.getClassLoader()
+                    .getResourceAsStream("org/wildfly/swarm/fractionlist/fraction-packages.properties");
+
+            return new HashMap<>((Map) PropertiesUtil.loadProperties(in));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load fraction-packages.properties", e);
+        }
+
     }
 }
