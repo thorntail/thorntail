@@ -32,11 +32,6 @@ import java.util.stream.Stream;
  * @author Toby Crawley
  */
 public class FractionUsageAnalyzer {
-    public static final Set<String> REQUIRED_FRACTIONS = new HashSet<String>() {{
-        add("bootstrap");
-        add("container");
-    }};
-
     public FractionUsageAnalyzer(FractionList fractionList, Path source) {
         this(fractionList, source.toFile());
     }
@@ -49,11 +44,8 @@ public class FractionUsageAnalyzer {
 
     public Set<FractionDescriptor> detectNeededFractions() throws IOException {
         if (this.fractionList != null) {
-            final Set<FractionDescriptor> specs = REQUIRED_FRACTIONS.stream()
-                    .map(f -> this.fractionList
-                            .getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, f))
-                    .collect(Collectors.toSet());
-
+            final Set<FractionDescriptor> specs = new HashSet<>();
+            specs.add(this.fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, "container"));
             specs.addAll(findFractions(PackageDetector
                                                .detectPackages(this.source)
                                                .keySet()));
