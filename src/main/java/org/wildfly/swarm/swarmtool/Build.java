@@ -17,10 +17,10 @@ package org.wildfly.swarm.swarmtool;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
@@ -30,33 +30,25 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositorie
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.wildfly.swarm.arquillian.adapter.ShrinkwrapArtifactResolvingHelper;
-import org.wildfly.swarm.fractionlist.FractionDescriptor;
 import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.BuildTool;
-import org.wildfly.swarm.tools.PackageAnalyzer;
+import org.wildfly.swarm.tools.FractionDescriptor;
 
 public class Build {
-    final static Set<String> REQUIRED_FRACTIONS = new HashSet<String>() {{
-        add("bootstrap");
-        add("container");
-    }};
-
-    private final Set<String> swarmDependencies = new HashSet<>();
-
     private File source;
 
     private File outputDir;
 
     private String name;
 
-    private String version;
-
     private Properties properties;
 
     private boolean autoDetectFractions = true;
 
+    private Collection<FractionDescriptor> additionalFractions = new ArrayList<>();
+
     public Build() {
-        swarmDependencies.addAll(REQUIRED_FRACTIONS);
+
     }
 
     public Build source(final File source) {
@@ -77,8 +69,12 @@ public class Build {
         return this;
     }
 
-    public Build addSwarmDependencies(final List<String> deps) {
-        this.swarmDependencies.addAll(deps);
+    public Build addSwarmFractions(final List<String> deps) {
+        this.additionalFractions.addAll(deps.stream().map(f -> f.split(":"))
+                                        .map(parts -> parts.length == 3 ?
+                                                new FractionDescriptor(parts[0], parts[1], parts[2]) :
+                                                new FractionDescriptor("org.wildfly.swarm", parts[0], parts[1]))
+                                                .collect(Collectors.toList()));
 
         return this;
     }
@@ -89,34 +85,10 @@ public class Build {
         return this;
     }
 
-    public Build swarmVersion(String v) {
-        this.version = v;
-
-        return this;
-    }
-
     public Build autoDetectFractions(boolean v) {
         this.autoDetectFractions = v;
 
         return this;
-    }
-
-    private Set<String> allRequiredFractions() {
-        final FractionList fractionList = FractionList.get();
-        final Set<String> fractions = new HashSet<>();
-
-        for (String fractionName : this.swarmDependencies) {
-            fractions.add(fractionName);
-            FractionDescriptor desc = fractionList.getFractionDescriptor("org.wildfly.swarm", fractionName, Main.VERSION);
-            if (desc != null) {
-                fractions.addAll(desc.getDependencies()
-                        .stream()
-                        .map(d -> d.getArtifactId())
-                        .collect(Collectors.toSet()));
-            }
-        }
-
-        return fractions;
     }
 
     public File run() throws Exception {
@@ -137,29 +109,16 @@ public class Build {
         final BuildTool tool = new BuildTool()
                 .artifactResolvingHelper(new ShrinkwrapArtifactResolvingHelper(resolver))
                 .projectArtifact("", baseName, "", type, this.source)
+                .fractionList(FractionList.get())
+                .autoDetectFractions(this.autoDetectFractions)
                 .resolveTransitiveDependencies(true)
                 .properties(this.properties);
 
-        if (this.autoDetectFractions) {
-            this.swarmDependencies.addAll(new PackageAnalyzer(this.source).detectNeededFractions());
-        } else {
-            System.err.println("Skipping fraction auto-detection");
-        }
-
-        for (String dep : this.swarmDependencies) {
-            tool.dependency("compile", "org.wildfly.swarm", dep, this.version, "jar", null, null, true);
-        }
+        this.additionalFractions.forEach(f -> tool.fraction(f.toArtifactSpec()));
 
         final String jarName = this.name != null ? this.name : baseName;
         final String outDir = this.outputDir.getCanonicalPath();
-        System.err.println(String.format("Building %s/%s-swarm.jar with fractions: %s",
-                outDir,
-                jarName,
-                String.join(", ",
-                        allRequiredFractions()
-                                .stream()
-                                .sorted()
-                                .collect(Collectors.toList()))));
+        System.err.println(String.format("Building %s/%s-swarm.jar", outDir, jarName));
 
         return tool.build(jarName, Paths.get(outDir));
     }

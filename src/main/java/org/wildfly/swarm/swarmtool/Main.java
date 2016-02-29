@@ -17,7 +17,6 @@ package org.wildfly.swarm.swarmtool;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
@@ -26,6 +25,7 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import org.wildfly.swarm.tools.PropertiesUtil;
 
 import static java.util.Arrays.asList;
 
@@ -84,15 +84,14 @@ public class Main {
     protected static final String VERSION;
 
     static {
-        Properties props = new Properties();
-        try (InputStream propStream = Main.class.getClassLoader()
-                .getResourceAsStream("org/wildfly/swarm/swarmtool/version.properties")) {
-            props.load(propStream);
-        } catch (IOException e) {
-            e.printStackTrace();
+        try {
+            VERSION = PropertiesUtil
+                    .loadProperties(Main.class.getClassLoader()
+                                            .getResourceAsStream("org/wildfly/swarm/swarmtool/version.properties"))
+                    .getProperty("version");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load version.properties", e);
         }
-
-        VERSION = props.getProperty("version");
     }
 
     public static void main(final String[] args) throws Exception {
@@ -156,8 +155,7 @@ public class Main {
 
         return new Build()
                 .source(source)
-                .swarmVersion(VERSION)
-                .addSwarmDependencies(foundOptions.valuesOf(FRACTIONS_OPT))
+                .addSwarmFractions(foundOptions.valuesOf(FRACTIONS_OPT))
                 .outputDir(new File(foundOptions.valueOf(OUTPUT_DIR_OPT)))
                 .name(foundOptions.valueOf(NAME_OPT))
                 .autoDetectFractions(!foundOptions.has(DISABLE_AUTO_DETECT))
