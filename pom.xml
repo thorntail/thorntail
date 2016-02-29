@@ -15,7 +15,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-consul-parent</artifactId>
-  <version>1.0.0.Beta1</version>
+  <version>1.0.0.Beta2-SNAPSHOT</version>
 
   <name>WildFly Swarm: Topology via Consul</name>
   <description>WildFly Swarm: Topology via Consul</description>
@@ -26,7 +26,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-consul.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-consul.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-topology-consul</url>
-    <tag>1.0.0.Beta1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -58,17 +58,17 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-consul</artifactId>
-        <version>1.0.0.Beta1</version>
+        <version>1.0.0.Beta2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-consul-modules</artifactId>
-        <version>1.0.0.Beta1</version>
+        <version>1.0.0.Beta2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-consul-runtime</artifactId>
-        <version>1.0.0.Beta1</version>
+        <version>1.0.0.Beta2-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
