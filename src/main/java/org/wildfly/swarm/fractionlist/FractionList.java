@@ -105,6 +105,7 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
         final Map<String, String> packageSpecs = loadPackageSpecs();
 
         return this.descriptors.values().stream()
+                .filter(fd -> packageSpecs.containsKey(fd.getArtifactId()))
                 .collect(Collectors.toMap(fd -> packageSpecs.get(fd.getArtifactId()),
                                           fd -> fd));
     }
