@@ -9,8 +9,8 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>core</artifactId>
-    <version>1.0.0.Alpha9-SNAPSHOT</version>
+    <artifactId>topology-parent</artifactId>
+    <version>1.0.0.Beta2</version>
     <relativePath/>
   </parent>
 
@@ -22,10 +22,6 @@
   <description>WildFly Swarm: Topology via JGroups</description>
 
   <packaging>pom</packaging>
-
-  <properties>
-    <version.swarm.topology>1.0.0.Alpha9-SNAPSHOT</version.swarm.topology>
-  </properties>
 
   <repositories>
     <repository>
@@ -45,33 +41,18 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-modules</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-runtime</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
