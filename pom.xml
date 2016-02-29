@@ -23,6 +23,13 @@
 
   <packaging>pom</packaging>
 
+  <scm>
+    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-jgroups.git</connection>
+    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-jgroups.git</developerConnection>
+    <url>https://github.com/wildfly-swarm/wildfly-swarm-topology-jgroups</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <repositories>
     <repository>
       <id>projectodd-snapshots</id>
