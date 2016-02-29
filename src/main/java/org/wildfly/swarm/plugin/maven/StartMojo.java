@@ -34,6 +34,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DependencyManager;
 import org.wildfly.swarm.tools.FractionDescriptor;
@@ -189,7 +190,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
         final Set<FractionDescriptor> fractions;
         try {
-            fractions = new FractionUsageAnalyzer(null, source)
+            fractions = new FractionUsageAnalyzer(FractionList.get(), source)
                     .detectNeededFractions();
         } catch (IOException e) {
             throw new MojoFailureException("failed to scan for fractions", e);

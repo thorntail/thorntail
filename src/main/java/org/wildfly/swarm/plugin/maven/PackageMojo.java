@@ -30,6 +30,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.BuildTool;
 
 /**
@@ -51,15 +52,17 @@ public class PackageMojo extends AbstractSwarmMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         initProperties(false);
 
-        final BuildTool tool = new BuildTool();
-
-        tool.projectArtifact(
-                this.project.getArtifact().getGroupId(),
-                this.project.getArtifact().getArtifactId(),
-                this.project.getArtifact().getBaseVersion(),
-                this.project.getArtifact().getType(),
-                this.project.getArtifact().getFile());
-
+        final BuildTool tool = new BuildTool()
+                .projectArtifact(this.project.getArtifact().getGroupId(),
+                                 this.project.getArtifact().getArtifactId(),
+                                 this.project.getArtifact().getBaseVersion(),
+                                 this.project.getArtifact().getType(),
+                                 this.project.getArtifact().getFile())
+                .fractionList(FractionList.get())
+                .properties(this.properties)
+                .mainClass(this.mainClass)
+                .bundleDependencies(this.bundleDependencies)
+                .artifactResolvingHelper(mavenArtifactResolvingHelper());
 
         this.project.getArtifacts()
                 .forEach(dep -> tool.dependency(artifactToArtifactSpec(dep)));
@@ -75,11 +78,6 @@ public class PackageMojo extends AbstractSwarmMojo {
                 tool.additionalModule(source.getAbsolutePath());
             }
         }
-
-        tool.properties(this.properties)
-                .mainClass(this.mainClass)
-                .bundleDependencies(this.bundleDependencies)
-                .artifactResolvingHelper(mavenArtifactResolvingHelper());
 
         try {
             File jar = tool.build(this.project.getBuild().getFinalName(), Paths.get(this.projectBuildDir));
