@@ -48,6 +48,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
+
+import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.shrinkwrap.api.ConfigurationBuilder;
 import org.jboss.shrinkwrap.api.Domain;
 import org.jboss.shrinkwrap.api.GenericArchive;
@@ -75,22 +77,21 @@ public class Server {
     private static final String NAME_CHANNEL_HANDLER_COMMAND = "CommandHandler";
 
     private final List<EventLoopGroup> eventLoopGroups = new ArrayList<>();
-
-    private final InetSocketAddress bindAddress;
-
-    private final ConcurrentMap<String, GenericArchive> deployedArchives;
+    private final ConcurrentMap<String, GenericArchive> deployedArchives = new ConcurrentHashMap<>();
 
     private final Domain shrinkwrapDomain;
 
-    private ExecutorService shutdownService;
+    private final InetSocketAddress bindAddress;
+    private final DeploymentUnit deploymentUnit;
 
+    private ExecutorService shutdownService;
     private boolean running;
 
-    private ClassLoader classLoader;
 
-    Server(final InetSocketAddress bindAddress, ClassLoader classLoader) {
+    Server(final InetSocketAddress bindAddress, DeploymentUnit deploymentUnit) {
         // Precondition checks
         assert bindAddress != null : "Bind address must be specified";
+        assert deploymentUnit != null : "DeploymentUnit must be specified";
 
         // Determine the ClassLoader to use in creating the SW Domain
         final ClassLoader thisCl = Server.class.getClassLoader();
@@ -99,16 +100,14 @@ public class Server {
         if (Server.log.isLoggable(Level.FINEST)) {
             Server.log.finest("Using ClassLoader for ShrinkWrap Domain: " + thisCl);
         }
-        final Domain shrinkwrapDomain = ShrinkWrap.createDomain(new ConfigurationBuilder().classLoaders(classloaders));
+        this.shrinkwrapDomain = ShrinkWrap.createDomain(new ConfigurationBuilder().classLoaders(classloaders));
 
         // Set
+        this.deploymentUnit = deploymentUnit;
         this.bindAddress = bindAddress;
-        this.deployedArchives = new ConcurrentHashMap<>();
-        this.shrinkwrapDomain = shrinkwrapDomain;
-        this.classLoader = classLoader;
     }
 
-    public static Server create(final String bindAddress, final int bindPort, ClassLoader classLoader) throws IllegalArgumentException {
+    public static Server create(final String bindAddress, final int bindPort, final DeploymentUnit depunit) throws IllegalArgumentException {
 
         // Precondition checks
         if (bindPort < 0 || bindPort > MAX_PORT) {
@@ -123,7 +122,7 @@ public class Server {
         }
 
         // Create and return a new server instance
-        return new Server(resolvedInetAddress, classLoader);
+        return new Server(resolvedInetAddress, depunit);
     }
 
     private static ChannelFuture sendResponse(final ChannelHandlerContext ctx, final String response) {
@@ -259,9 +258,8 @@ public class Server {
         return shrinkwrapDomain;
     }
 
-    protected final Serializable executeTest(final String testClassName, final String methodName)
-            throws IllegalStateException {
-        return new TestRunner(this.classLoader).executeTest(testClassName, methodName);
+    protected final Serializable executeTest(final String testClassName, final String methodName) {
+        return new TestRunner(deploymentUnit).executeTest(testClassName, methodName);
     }
 
     /**

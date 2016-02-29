@@ -13,7 +13,6 @@
     <version>4</version>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>core</artifactId>
   <version>1.0.0.Beta3-SNAPSHOT</version>
 
@@ -975,4 +974,30 @@
 
     <module>integration-tests</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>swarm.debug</id>
+      <activation>
+        <property>
+          <name>swarm.debug</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <systemPropertyVariables>
+                  <swarm.debug.port>8787</swarm.debug.port>
+                </systemPropertyVariables>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
 </project>

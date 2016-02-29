@@ -53,8 +53,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     private final Class<?> testClass;
 
-    private int timeout;
-
     private SwarmProcess process;
 
     private Set<String> requestedMavenArtifacts;
@@ -95,6 +93,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .addServiceActivator(DaemonServiceActivator.class);
         archive.as(JARArchive.class)
                 .addModule("org.wildfly.swarm.arquillian.daemon")
+                .addModule("org.jboss.modules")
                 .addModule("org.jboss.msc");
 
         BuildTool tool = new BuildTool()
@@ -143,6 +142,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;
 
         if (!hasRequestedArtifacts) {
+            @SuppressWarnings("rawtypes")
             final List<String> topLevelDeps =
                     ((ResolveStageBaseImpl) resolver.loadPomFromFile("pom.xml")
                             .importRuntimeAndTestDependencies())

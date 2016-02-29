@@ -30,7 +30,9 @@ public class MySingletonBean implements MySingleton {
     }
 
     @Override
-    public void sayHowdy() {
-        System.err.println("howdy!");
+    public String sayHowdy() {
+        String howdy = "howdy!";
+        System.err.println(howdy);
+        return howdy;
     }
 }

@@ -55,7 +55,7 @@ public enum DaemonDeploymentPackager implements DeploymentPackager {
     public Archive<?> generateDeployment(final TestDeployment testDeployment,
                                          final Collection<ProtocolArchiveProcessor> processors) {
         // Merge auxiliary archives with the declared for ARQ and testrunner support
-        final Archive archive = testDeployment.getApplicationArchive();
+        final Archive<?> archive = testDeployment.getApplicationArchive();
         if (log.isLoggable(Level.FINEST)) {
             log.finest("Archive before additional packaging: " + archive.toString(true));
         }
