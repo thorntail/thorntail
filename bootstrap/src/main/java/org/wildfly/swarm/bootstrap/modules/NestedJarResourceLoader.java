@@ -41,10 +41,11 @@ public class NestedJarResourceLoader {
 
         //System.err.println( "** " + base + ", " + rootPath + ", " + loaderPath + ", " + loaderName );
 
-        if (base.toExternalForm().startsWith("jar:file:")) {
-            int endLoc = base.toExternalForm().indexOf(".jar!");
+        String urlString = base.toExternalForm();
+        if (urlString.startsWith("jar:file:")) {
+            int endLoc = urlString.indexOf(".jar!");
             if (endLoc > 0) {
-                String jarPath = base.toExternalForm().substring(9, endLoc + 4);
+                String jarPath = urlString.substring(9, endLoc + 4);
 
                 File exp = exploded.get(jarPath);
 
@@ -66,7 +67,7 @@ public class NestedJarResourceLoader {
                     }
                 }
 
-                String relativeRoot = base.toExternalForm().substring(endLoc + 5);
+                String relativeRoot = urlString.substring(endLoc + 5);
                 File resourceRoot = new File(new File(exp, relativeRoot), loaderPath);
                 /*
                 if ( resourceRoot.listFiles() != null ) {
@@ -76,8 +77,14 @@ public class NestedJarResourceLoader {
                 return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot);
             }
         }
+        else if (urlString.startsWith("file:")) {
+            return ResourceLoaders.createFileResourceLoader(
+                    loaderPath,
+                    new File(urlString.substring(5, urlString.length()))
+            );
+        }
 
-        return ResourceLoaders.createFileResourceLoader(loaderPath, new File(rootPath));
+        throw new IllegalArgumentException("Illegal module loader base: "+ base);
     }
 
 }
