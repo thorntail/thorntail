@@ -9,8 +9,8 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>core</artifactId>
-    <version>1.0.0.Beta3-SNAPSHOT</version>
+    <artifactId>bom-parent</artifactId>
+    <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -61,6 +61,11 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>fraction-list</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>tools</artifactId>
