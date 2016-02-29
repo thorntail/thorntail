@@ -18,9 +18,11 @@ package org.wildfly.swarm.tools;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Properties;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,26 +32,41 @@ import java.util.stream.Stream;
  * @author Toby Crawley
  */
 public class FractionUsageAnalyzer {
+    public static final Set<String> REQUIRED_FRACTIONS = new HashSet<String>() {{
+        add("bootstrap");
+        add("container");
+    }};
 
-    private final File source;
-
-    public FractionUsageAnalyzer(Path source) {
-        this(source.toFile());
+    public FractionUsageAnalyzer(FractionList fractionList, Path source) {
+        this(fractionList, source.toFile());
     }
 
-    public FractionUsageAnalyzer(File source) {
+    public FractionUsageAnalyzer(FractionList fractionList, File source) {
+        this.fractionList = fractionList;
         this.source = source;
     }
 
 
-    public Set<String> detectNeededFractions() throws IOException {
-        return findFractions(PackageDetector
-                                     .detectPackages(this.source)
-                                     .keySet());
+    public Set<FractionDescriptor> detectNeededFractions() throws IOException {
+        if (this.fractionList != null) {
+            final Set<FractionDescriptor> specs = REQUIRED_FRACTIONS.stream()
+                    .map(f -> this.fractionList
+                            .getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, f))
+                    .collect(Collectors.toSet());
+
+            specs.addAll(findFractions(PackageDetector
+                                               .detectPackages(this.source)
+                                               .keySet()));
+
+            return specs;
+        } else {
+
+            return Collections.EMPTY_SET;
+        }
     }
 
-    static protected Set<String> findFractions(Set<String> packages) {
-        final Set<StatefulPackageMatcher> fractionPackages = fractionMatchers();
+    protected Set<FractionDescriptor> findFractions(Set<String> packages) {
+        final List<StatefulPackageMatcher> fractionPackages = fractionMatchers();
 
         return packages.stream()
                 .flatMap(p -> fractionPackages.stream().map(m -> m.fraction(p)))
@@ -57,28 +74,26 @@ public class FractionUsageAnalyzer {
                 .collect(Collectors.toSet());
     }
 
-    static private Set<StatefulPackageMatcher> fractionMatchers() {
-        final Properties properties;
-        try {
-            properties = PropertiesUtil.loadProperties(FractionUsageAnalyzer.class
-                                                               .getResourceAsStream("/org/wildfly/swarm/tools/fraction-packages.properties"));
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load fraction-packages.properties", e);
-        }
+    private List<StatefulPackageMatcher> fractionMatchers() {
+        final List<StatefulPackageMatcher> matchers = new ArrayList<>();
 
-        return properties.stringPropertyNames().stream()
-                .flatMap(fractionName ->
-                                 Stream.of(properties.getProperty(fractionName).split(","))
-                                         .map(packages -> new StatefulPackageMatcher(fractionName,
-                                                                                     packages.split("\\+"))))
-                .collect(Collectors.toSet());
+        this.fractionList.getPackageSpecs().forEach((spec, fd) ->
+            Stream.of(spec.split(","))
+                    .forEach(s -> matchers.add(new StatefulPackageMatcher(fd,
+                                                                          s.split("\\+")))));
+
+        return matchers;
     }
+
+    private final File source;
+
+    private final FractionList fractionList;
 
 
     static class StatefulPackageMatcher {
-        StatefulPackageMatcher(String fractionName, String... packages) {
-            this.fractionName = fractionName;
-            this.packageSpecs.addAll(Arrays.asList(packages));
+        StatefulPackageMatcher(FractionDescriptor desc, String... packages) {
+            this.descriptor = desc;
+            this.packageSpecs = new HashSet<>(Arrays.asList(packages));
         }
 
         /**
@@ -86,15 +101,15 @@ public class FractionUsageAnalyzer {
          * If the matcher requires multiple packages for a fraction, the last matching package
          * will cause the fraction name to be returned.
          * @param pkg the package to match against
-         * @return the matching fraction name or null
+         * @return the matching fraction descriptor or null
          */
-        public String fraction(final String pkg) {
+        public FractionDescriptor fraction(final String pkg) {
             final String match = matchingSpec(pkg);
             if (match != null) {
                 this.matchedPackages.add(match);
             }
 
-            return this.matchedPackages.equals(packageSpecs) ? this.fractionName : null;
+            return this.matchedPackages.equals(packageSpecs) ? this.descriptor : null;
         }
 
         private String matchingSpec(final String pkg) {
@@ -110,8 +125,8 @@ public class FractionUsageAnalyzer {
                     .orElse(null);
         }
 
-        private final String fractionName;
-        private final Set<String> packageSpecs = new HashSet<>();
+        private final FractionDescriptor descriptor;
+        private final Set<String> packageSpecs;
         private final Set<String> matchedPackages = new HashSet<>();
     }
 }

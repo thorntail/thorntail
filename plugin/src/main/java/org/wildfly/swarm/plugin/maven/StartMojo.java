@@ -35,8 +35,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.tools.ArtifactSpec;
-import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DependencyManager;
+import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.FractionUsageAnalyzer;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
@@ -187,24 +187,25 @@ public class StartMojo extends AbstractSwarmMojo {
     List<Path> findNeededFractions(final Set<Artifact> existingDeps, final Path source) throws MojoFailureException {
         getLog().info("No WildFly Swarm dependencies found - scanning for needed fractions");
 
-        final Set<String> fractions = new HashSet<>();
-        fractions.addAll(BuildTool.REQUIRED_FRACTIONS);
+        final Set<FractionDescriptor> fractions;
         try {
-            fractions.addAll(new FractionUsageAnalyzer(source)
-                                     .detectNeededFractions());
+            fractions = new FractionUsageAnalyzer(null, source)
+                    .detectNeededFractions();
         } catch (IOException e) {
             throw new MojoFailureException("failed to scan for fractions", e);
         }
 
-        getLog().info("Detected fractions: " + String.join(", ", fractions.stream().sorted().collect(Collectors.toList())));
+        getLog().info("Detected fractions: " + String.join(", ", fractions.stream()
+                .map(FractionDescriptor::av)
+                .sorted()
+                .collect(Collectors.toList())));
 
         final Set<ArtifactSpec> specs = new HashSet<>();
         specs.addAll(existingDeps.stream()
                              .map(this::artifactToArtifactSpec)
                              .collect(Collectors.toList()));
         specs.addAll(fractions.stream()
-                             .map(f -> new ArtifactSpec("compile", DependencyManager.WILDFLY_SWARM_GROUP_ID,
-                                                        f, VERSION, "jar", null, null))
+                             .map(FractionDescriptor::toArtifactSpec)
                              .collect(Collectors.toList()));
         try {
             return mavenArtifactResolvingHelper().resolveAll(specs).stream()

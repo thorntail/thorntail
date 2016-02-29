@@ -37,6 +37,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
@@ -45,8 +46,6 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
  * @author Bob McWhirter
  */
 public class BuildTool {
-    public static String VERSION = PropertiesUtil.versionFromPomProperties();
-
     public static final Set<String> REQUIRED_FRACTIONS = new HashSet<String>() {{
         add("bootstrap");
         add("container");
@@ -73,6 +72,8 @@ public class BuildTool {
     private Set<String> additionalModules = new HashSet<>();
 
     private boolean autoDetectFractions = true;
+
+    private FractionList fractionList = null;
 
     public BuildTool() {
         this.archive = ShrinkWrap.create(JavaArchive.class);
@@ -108,18 +109,11 @@ public class BuildTool {
         return this;
     }
 
-    public BuildTool fraction(String name) {
-        fraction(DependencyManager.WILDFLY_SWARM_GROUP_ID, name, VERSION);
+    public BuildTool fraction(ArtifactSpec spec) {
+        this.fractions.add(spec);
 
         return this;
     }
-
-    public BuildTool fraction(String groupId, String name, String version) {
-        this.fractions.add(new ArtifactSpec("compile", groupId, name, version, "jar", null, null));
-
-        return this;
-    }
-
 
     public BuildTool dependency(String scope, String groupId, String artifactId, String version,
                                 String packaging, String classifier, File file) {
@@ -154,6 +148,12 @@ public class BuildTool {
 
     public BuildTool resourceDirectory(String dir) {
         this.resourceDirectories.add(dir);
+        return this;
+    }
+
+    public BuildTool fractionList(FractionList v) {
+        this.fractionList = v;
+
         return this;
     }
 
@@ -195,26 +195,22 @@ public class BuildTool {
         final File tmpFile = File.createTempFile("buildtool", this.projectAsset.getName().replace("/", "_"));
         tmpFile.deleteOnExit();
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
-        final Set<String> detectedFractions = new FractionUsageAnalyzer(tmpFile)
+        final Set<FractionDescriptor> detectedFractions = new FractionUsageAnalyzer(this.fractionList, tmpFile)
                 .detectNeededFractions();
-        detectedFractions.addAll(REQUIRED_FRACTIONS);
         System.out.println("Detected fractions: " + String.join(", ",
                                                                 detectedFractions.stream()
+                                                                        .map(FractionDescriptor::av)
                                                                         .sorted()
                                                                         .collect(Collectors.toList())));
-        detectedFractions.forEach(this::fraction);
+        detectedFractions.stream()
+                .map(FractionDescriptor::toArtifactSpec)
+                .forEach(this::fraction);
     }
 
     private void addFractions() throws Exception {
         System.out.println("Adding fractions: " +
                                    String.join(", ", this.fractions.stream()
-                                           .map(f -> {
-                                               if (DependencyManager.WILDFLY_SWARM_GROUP_ID.equals(f.groupId())) {
-                                                   return f.artifactId();
-                                               } else {
-                                                   return f.toString();
-                                               }
-                                           })
+                                           .map(MavenArtifactDescriptor::mscGav)
                                            .sorted()
                                            .collect(Collectors.toList())));
         this.fractions.forEach(f -> this.dependencyManager.addDependency(f));
@@ -227,6 +223,9 @@ public class BuildTool {
 
         if (artifact == null) {
             if (this.autoDetectFractions) {
+                if (this.fractionList == null) {
+                    throw new IllegalStateException("Fraction detection requested, but no FractionList provided");
+                }
                 System.out.println("No WildFly Swarm dependencies found; scanning for needed fractions");
                 autoDetectFractions();
             } else {

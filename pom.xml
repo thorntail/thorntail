@@ -29,7 +29,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha10</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha11</version.wildfly.swarm.fraction.plugin>
 
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.wildfly.config-api>0.3.27</version.wildfly.config-api>

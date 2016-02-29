@@ -15,7 +15,15 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.util.Properties;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,18 +36,52 @@ public class FractionUsageAnalyzerTest {
 
     @Test
     public void testFractionMatching() throws Exception {
-        final Properties properties =
-                PropertiesUtil.loadProperties(FractionUsageAnalyzer.class
-                                                      .getResourceAsStream("/org/wildfly/swarm/tools/fraction-packages.properties"));
+        final Map<String, String> specs = loadPackageSpecs();
 
-        properties.stringPropertyNames().forEach(fraction -> {
-            final Set<String> packages = Stream.of(properties.getProperty(fraction).split(","))
+        specs.forEach((name, spec) -> {
+            final Set<String> packages = Stream.of(spec.split(","))
                     .flatMap(pkgs -> Stream.of(pkgs.split("\\+")))
                     .map(p -> p.endsWith("*") ? p.substring(0, p.length() - 1) + ".foo" : p)
                     .collect(Collectors.toSet());
+            assertThat(new FractionUsageAnalyzer(fractionList(), (File)null)
+                               .findFractions(packages))
+                    .contains(new FractionDescriptor("org.wildfly.swarm", name, "0"));
 
-            assertThat(FractionUsageAnalyzer.findFractions(packages)).contains(fraction);
         });
     }
 
+    private static Map<String, String> loadPackageSpecs() {
+        try {
+            final InputStream in = FractionList.class.getClassLoader()
+                    .getResourceAsStream("fraction-packages.properties");
+
+            return new HashMap<>((Map) PropertiesUtil.loadProperties(in));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load fraction-packages.properties", e);
+        }
+
+    }
+
+    FractionList fractionList() {
+        return new FractionList() {
+            @Override
+            public Collection<FractionDescriptor> getFractionDescriptors() {
+                return null;
+            }
+
+            @Override
+            public FractionDescriptor getFractionDescriptor(final String groupId, final String artifactId) {
+                return null;
+            }
+
+            @Override
+            public Map<String, FractionDescriptor> getPackageSpecs() {
+                final Map<String, String> packageSpecs = loadPackageSpecs();
+
+                return packageSpecs.keySet().stream()
+                        .collect(Collectors.toMap(packageSpecs::get,
+                                                  f -> new FractionDescriptor("org.wildfly.swarm", f, "0")));
+            }
+        };
+    }
 }
