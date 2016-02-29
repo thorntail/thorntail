@@ -20,5 +20,5 @@ package org.wildfly.swarm.ejb;
  */
 public interface MySingleton {
 
-    void sayHowdy();
+    String sayHowdy();
 }

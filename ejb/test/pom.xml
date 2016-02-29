@@ -14,7 +14,6 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>ejb-test</artifactId>
 
   <name>WildFly Swarm: EJB Test</name>

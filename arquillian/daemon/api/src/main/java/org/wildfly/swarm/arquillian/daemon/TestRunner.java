@@ -18,6 +18,14 @@ package org.wildfly.swarm.arquillian.daemon;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jboss.as.server.deployment.Attachments;
+import org.jboss.as.server.deployment.DeploymentUnit;
+import org.jboss.as.server.deployment.SetupAction;
+import org.jboss.modules.ModuleClassLoader;
 
 public class TestRunner {
     private final static String CLASS_NAME_ARQ_TEST_RUNNERS = "org.jboss.arquillian.container.test.spi.util.TestRunners";
@@ -26,39 +34,45 @@ public class TestRunner {
 
     private final static String METHOD_NAME_EXECUTE = "execute";
 
-    final ClassLoader deploymentLoader;
+    private final DeploymentUnit deploymentUnit;
 
-    public TestRunner(ClassLoader loader) {
-        this.deploymentLoader = loader;
+    public TestRunner(DeploymentUnit deploymentUnit) {
+        this.deploymentUnit = deploymentUnit;
     }
 
-    public Serializable executeTest(final String testClassName,
-                                    final String methodName) throws IllegalStateException {
+    public Serializable executeTest(final String testClassName, final String methodName) {
 
         final ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
         try {
             // We have to set the TCCL here due to ARQ-1181; if that's resolved we can remove all TCCL mucking
-            Thread.currentThread().setContextClassLoader(this.deploymentLoader);
+            ModuleClassLoader classLoader = deploymentUnit.getAttachment(Attachments.MODULE).getClassLoader();
+            Thread.currentThread().setContextClassLoader(classLoader);
 
             final Class<?> testClass;
             try {
-                testClass = this.deploymentLoader.loadClass(testClassName);
+                testClass = classLoader.loadClass(testClassName);
             } catch (final ClassNotFoundException cnfe) {
                 throw new IllegalStateException("Could not load class " + testClassName);
             }
             final Class<?> testRunnersClass;
             try {
-                testRunnersClass = this.deploymentLoader.loadClass(CLASS_NAME_ARQ_TEST_RUNNERS);
+                testRunnersClass = classLoader.loadClass(CLASS_NAME_ARQ_TEST_RUNNERS);
             } catch (final ClassNotFoundException cnfe) {
                 throw new IllegalStateException("Could not load class " + CLASS_NAME_ARQ_TEST_RUNNERS);
             }
-            final Method getTestRunnerMethod = testRunnersClass.getMethod(METHOD_NAME_GET_TEST_RUNNER,
-                    ClassLoader.class);
-            final Object testRunner = getTestRunnerMethod.invoke(null, this.deploymentLoader);
-            final Class<?> testRunnerClass = testRunner.getClass();
-            final Method executeMethod = testRunnerClass.getMethod(METHOD_NAME_EXECUTE, Class.class, String.class);
+            final Method getTestRunnerMethod = testRunnersClass.getMethod(METHOD_NAME_GET_TEST_RUNNER, ClassLoader.class);
+            final Object testRunner = getTestRunnerMethod.invoke(null, classLoader);
+            final Method executeMethod = testRunner.getClass().getMethod(METHOD_NAME_EXECUTE, Class.class, String.class);
 
-            return (Serializable) executeMethod.invoke(testRunner, testClass, methodName);
+            List<SetupAction> setupActions = deploymentUnit.getAttachmentList(Attachments.SETUP_ACTIONS);
+            ContextManager contextManager = new ContextManager(setupActions);
+            Map<String, Object> props = new HashMap<>();
+            try {
+                contextManager.setup(props);
+                return (Serializable) executeMethod.invoke(testRunner, testClass, methodName);
+            } finally {
+                contextManager.teardown(props);
+            }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException iae) {
             throw new RuntimeException(iae);
         } finally {

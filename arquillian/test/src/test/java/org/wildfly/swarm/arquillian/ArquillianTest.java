@@ -24,14 +24,14 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.modules.ModuleClassLoader;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.container.JARArchive;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class ArquillianTest {
@@ -55,7 +55,7 @@ public class ArquillianTest {
     URI uri;
 
     @Deployment
-    public static Archive createDeployment() {
+    public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JARArchive.class)
                 .addModule("progress")
                 .addClass(ArquillianTest.class);
@@ -65,17 +65,20 @@ public class ArquillianTest {
     @RunAsClient
     public void testOutside() throws Exception {
         // confirm the resource injectors work
-        assertEquals(EXPECTED_URL, url);
-        assertEquals(EXPECTED_URI, uri);
+        Assert.assertEquals(EXPECTED_URL, url);
+        Assert.assertEquals(EXPECTED_URI, uri);
     }
 
     @Test
     public void testInside() throws Exception {
+
         // confirm we can load a custom module from a custom repo
-        assertNotNull(ArquillianTest.class.getClassLoader().getResource("progress/bar.clj"));
+        ClassLoader classLoader = ArquillianTest.class.getClassLoader();
+        Assert.assertTrue(classLoader instanceof ModuleClassLoader);
+        Assert.assertNotNull(classLoader.getResource("progress/bar.clj"));
 
         // confirm the resource injectors work
-        assertEquals(EXPECTED_URL, url);
-        assertEquals(EXPECTED_URI, uri);
+        Assert.assertEquals(EXPECTED_URL, url);
+        Assert.assertEquals(EXPECTED_URI, uri);
     }
 }
