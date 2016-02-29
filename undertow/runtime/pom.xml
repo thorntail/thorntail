@@ -41,12 +41,5 @@
       <artifactId>wildfly-undertow</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>monitor-runtime</artifactId>
-      <scope>provided</scope>
-      <version>${project.version}</version>
-    </dependency>
   </dependencies>
-
 </project>

@@ -62,6 +62,11 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>naming-modules</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow-modules</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
 </project>

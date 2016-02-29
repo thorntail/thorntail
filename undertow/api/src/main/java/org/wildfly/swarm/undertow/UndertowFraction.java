@@ -62,23 +62,6 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return fraction;
     }
 
-    public static UndertowFraction createDefaultFractionWithMonitor() {
-        UndertowFraction fraction = createDefaultFraction();
-
-        fraction.filterConfiguration();
-        fraction.subresources().filterConfiguration()
-                .customFilter("wfs-monitor", customFilter -> {
-                    customFilter.module("org.wildfly.swarm.monitor:runtime");
-                    customFilter.className("org.wildfly.swarm.monitor.runtime.MonitorEndpoints");
-                });
-
-        fraction.subresources().server("default-server")
-                .subresources().host("default-host")
-                .filterRef("wfs-monitor");
-
-        return fraction;
-    }
-
     /**
      * Create the default HTTP and HTTPS fraction.
      *

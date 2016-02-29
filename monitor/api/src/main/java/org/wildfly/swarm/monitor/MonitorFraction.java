@@ -15,7 +15,9 @@
  */
 package org.wildfly.swarm.monitor;
 
+import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.undertow.UndertowFraction;
 
 /**
  * @author Heiko Braun
@@ -23,6 +25,30 @@ import org.wildfly.swarm.container.Fraction;
 public class MonitorFraction implements Fraction {
 
     public MonitorFraction() {
+
+    }
+
+    @Override
+    public void postInitialize(Container.PostInitContext initContext) {
+
+        UndertowFraction undertow = (UndertowFraction) initContext.fraction("undertow");
+
+        if(undertow!=null) {
+            undertow.filterConfiguration();
+            undertow.subresources().filterConfiguration()
+                    .customFilter("wfs-monitor", customFilter -> {
+                        customFilter.module("org.wildfly.swarm.monitor:runtime");
+                        customFilter.className("org.wildfly.swarm.monitor.runtime.MonitorEndpoints");
+                    });
+
+            undertow.subresources().server("default-server")
+                    .subresources().host("default-host")
+                    .filterRef("wfs-monitor");
+
+
+        } else {
+            throw new RuntimeException("The monitor fraction requires the undertow fraction!");
+        }
 
     }
 }

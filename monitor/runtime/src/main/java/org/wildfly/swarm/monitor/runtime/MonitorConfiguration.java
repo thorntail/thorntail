@@ -15,13 +15,11 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
-import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceActivator;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.monitor.MonitorFraction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,30 +34,6 @@ public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFra
     @Override
     public MonitorFraction defaultFraction() {
         return new MonitorFraction();
-    }
-
-    @Override
-    public List<ModelNode> getList(MonitorFraction fraction) throws Exception {
-
-        /*CustomFilter filter = new CustomFilter("wfs-monitor");
-        filter.module("org.wildfly.swarm.monitor.runtime");
-        filter.className("org.wildfly.swarm.undertow.runtime.MonitorEndpoints");
-
-        EntityAdapter<CustomFilter> entityAdapter = new EntityAdapter<>(CustomFilter.class);
-
-        ModelNode address = new ModelNode();
-        address.get("address").add("subsystem", "undertow");
-        address.get("address").add("configuration", "filter");
-        address.get("address").add("custom-filter", filter.getKey());
-
-        ModelNode filterResource = entityAdapter.fromEntity(filter, address);
-
-        System.out.println(filterResource);
-
-        List<ModelNode> config = new ArrayList<>(1);
-        config.add(filterResource);
-        return config;*/
-        return Collections.EMPTY_LIST;
     }
 
     @Override
