@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>core</artifactId>
-    <version>1.0.0.Alpha9-SNAPSHOT</version>
+    <version>1.0.0.Beta2</version>
     <relativePath/>
   </parent>
 
@@ -17,6 +17,13 @@
   <description>WildFly Swarm: Keycloak Parent</description>
 
   <packaging>pom</packaging>
+
+  <scm>
+    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-keycloak.git</connection>
+    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-keycloak.git</developerConnection>
+    <url>https://github.com/wildfly-swarm/wildfly-swarm-keycloak</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
     <version.keycloak>1.8.1.Final</version.keycloak>
@@ -42,32 +49,33 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak-server</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak-server-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak-server-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
