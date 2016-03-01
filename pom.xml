@@ -6,12 +6,12 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>core</artifactId>
     <version>1.0.0.Beta2</version>
-    <relativePath/>
+    <relativePath />
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>spring-parent</artifactId>
-  <version>1.0.0.Alpha9-SNAPSHOT</version>
+  <version>1.0.0.Alpha1</version>
 
   <name>WildFly Swarm: Spring Parent</name>
   <description>WildFly Swarm: Spring Parent</description>
@@ -22,7 +22,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-spring.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-spring.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-spring</url>
-    <tag>HEAD</tag>
+    <tag>1.0.0.Alpha1</tag>
   </scm>
 
   <properties>
@@ -47,33 +47,33 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring</artifactId>
-        <version>1.0.0.Alpha9-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring-modules</artifactId>
-        <version>1.0.0.Alpha9-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring-runtime</artifactId>
-        <version>1.0.0.Alpha9-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring-rest</artifactId>
-        <version>1.0.0.Alpha9-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring-rest-modules</artifactId>
-        <version>1.0.0.Alpha9-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring-rest-runtime</artifactId>
-        <version>1.0.0.Alpha9-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
