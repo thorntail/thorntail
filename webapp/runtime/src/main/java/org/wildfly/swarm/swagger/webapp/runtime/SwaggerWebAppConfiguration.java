@@ -15,17 +15,17 @@
  */
 package org.wildfly.swarm.swagger.webapp.runtime;
 
-import org.jboss.shrinkwrap.api.*;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
 import org.wildfly.swarm.undertow.WARArchive;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Lance Ball
@@ -41,7 +41,11 @@ public class SwaggerWebAppConfiguration extends AbstractServerConfiguration<Swag
         List<Archive> list = new ArrayList<>();
         try {
             // Get the swagger-ui bits as an Archive
-            WARArchive war = Swarm.artifact("org.wildfly.swarm:swagger-webapp-ui:war:" + Container.VERSION,
+            String gav = "org.wildfly.swarm:swagger-webapp-ui:war:" + SwaggerWebAppFraction.VERSION;
+
+            System.err.println( "gav: " + gav );
+
+            WARArchive war = Swarm.artifact(gav,
                     "swagger-webapp-ui.war")
                     .as(WARArchive.class)
                     .setContextRoot(fraction.getContext());

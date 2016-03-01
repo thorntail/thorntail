@@ -26,12 +26,28 @@ import org.wildfly.swarm.undertow.UndertowProperties;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 
 /**
  * @author Lance Ball
  */
 public class SwaggerWebAppFraction implements Fraction {
+
+    public static final String VERSION;
+
+    static {
+        InputStream in = SwaggerWebAppFraction.class.getClassLoader().getResourceAsStream("swagger-webapp.properties");
+        Properties props = new Properties();
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty("version", "unknown");
+    }
 
     private final String DEFAULT_CONTEXT = "/swagger-ui";
     private String context = DEFAULT_CONTEXT;

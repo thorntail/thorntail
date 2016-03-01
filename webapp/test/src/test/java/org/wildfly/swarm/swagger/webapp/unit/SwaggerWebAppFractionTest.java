@@ -33,7 +33,7 @@ public class SwaggerWebAppFractionTest {
     @Test
     public void testAddWebContentFromGAV() {
         SwaggerWebAppFraction fraction = new SwaggerWebAppFraction();
-        fraction.addWebContent("org.wildfly.swarm:swagger-webapp-ui:war:" + Container.VERSION);
+        fraction.addWebContent("org.wildfly.swarm:swagger-webapp-ui:war:" + SwaggerWebAppFraction.VERSION);
         assertArchive(fraction);
     }
 

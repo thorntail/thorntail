@@ -42,18 +42,15 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>swagger-webapp</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>swagger-webapp-modules</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>swagger-webapp-ui</artifactId>
       <type>war</type>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
