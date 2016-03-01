@@ -15,10 +15,10 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
-import org.jboss.dmr.ModelNode;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.jboss.dmr.ModelNode;
 
 /**
  * The main API exposed by the monitoring service
@@ -36,6 +36,8 @@ public interface Monitor {
     }
 
     ModelNode getNodeInfo();
+
     ModelNode heap();
+
     ModelNode threads();
 }

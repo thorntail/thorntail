@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
@@ -53,21 +52,144 @@ public class DependencyManager {
 
     public static final String JBOSS_MODULES_ARTIFACT_ID = "jboss-modules";
 
-    private final Set<ArtifactSpec> dependencies = new HashSet<>();
-
-    private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
-
-    private final Set<ArtifactSpec> bootstrapDependencies = new HashSet<>();
-
-    private final Set<String> bootstrapModules = new HashSet<>();
-
-    private final Set<String> providedGAVs = new HashSet<>();
-
-    private final Map<String, String> providedGAVToModuleMappings = new HashMap<>();
-
-    private ArtifactResolvingHelper resolver;
-
     public DependencyManager() {
+    }
+
+    public void setArtifactResolvingHelper(ArtifactResolvingHelper resolver) {
+        this.resolver = resolver;
+    }
+
+    public void addDependency(ArtifactSpec dep) {
+        this.dependencies.add(dep);
+    }
+
+    public void addAdditionalModule(Path module) {
+        try {
+            analyzeModuleDependencies(new ModuleAnalyzer(module));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public boolean includeAsBootstrapJar(ArtifactSpec dependency) {
+
+        if (dependency.scope.equals("TEST")) {
+            return false;
+        }
+
+        if (isExplodedBootstrap(dependency)) {
+            return false;
+        }
+
+        return !dependency.scope.equals("PROVIDED");
+    }
+
+    public boolean isExplodedBootstrap(ArtifactSpec dependency) {
+        if (dependency.groupId().equals(JBOSS_MODULES_GROUP_ID) && dependency.artifactId().equals(JBOSS_MODULES_ARTIFACT_ID)) {
+            return true;
+        }
+        if (dependency.groupId().equals(WILDFLY_SWARM_GROUP_ID) && dependency.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isProvidedDependency(ArtifactSpec dependency) {
+        String gav = dependency.groupId() + ":" + dependency.artifactId();
+        return this.providedGAVs.contains(gav);
+    }
+
+    public ArtifactSpec findWildFlySwarmBootstrapJar() {
+        return findArtifact(WILDFLY_SWARM_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, "jar", null);
+    }
+
+    public ArtifactSpec findJBossModulesJar() {
+        return findArtifact(JBOSS_MODULES_GROUP_ID, JBOSS_MODULES_ARTIFACT_ID, null, "jar", null);
+    }
+
+    public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier) {
+        for (ArtifactSpec each : this.dependencies) {
+            if (groupId != null && !groupId.equals(each.groupId())) {
+                continue;
+            }
+
+            if (artifactId != null && !artifactId.equals(each.artifactId())) {
+                continue;
+            }
+
+            if (version != null && !version.equals(each.version())) {
+                continue;
+            }
+
+            if (packaging != null && !packaging.equals(each.type())) {
+                continue;
+            }
+
+            if (classifier != null && !classifier.equals(each.classifier())) {
+                continue;
+            }
+
+            return each;
+        }
+
+        return null;
+    }
+
+    public void populateUberJarMavenRepository(Archive archive) throws Exception {
+        for (ArtifactSpec dependency : this.dependencies) {
+            if (!this.bootstrapDependencies.contains(dependency) && !this.moduleDependencies.contains(dependency)) {
+                dependency.shouldGather = false;
+            }
+            if (includeAsBootstrapJar(dependency)) {
+                dependency.shouldGather = true;
+            }
+            if (isExplodedBootstrap(dependency)) {
+                dependency.shouldGather = false;
+            }
+            if (isProvidedDependency(dependency)) {
+                dependency.shouldGather = false;
+            }
+
+            if (dependency.shouldGather) {
+                addArtifactToArchiveMavenRepository(archive, dependency);
+            }
+        }
+
+        for (ArtifactSpec dependency : this.moduleDependencies) {
+            addArtifactToArchiveMavenRepository(archive, dependency);
+        }
+
+        for (ArtifactSpec dependency : this.bootstrapDependencies) {
+            if (!isExplodedBootstrap(dependency)) {
+                addArtifactToArchiveMavenRepository(archive, dependency);
+            }
+        }
+    }
+
+    public void populateUserMavenRepository() throws Exception {
+        for (ArtifactSpec each : this.dependencies) {
+            resolveArtifact(each);
+        }
+        for (ArtifactSpec each : this.moduleDependencies) {
+            resolveArtifact(each);
+        }
+    }
+
+    public void addArtifactToArchiveMavenRepository(Archive archive, ArtifactSpec artifact) throws Exception {
+
+        if (artifact.gathered) {
+            return;
+        }
+        artifact = resolveArtifact(artifact);
+
+        StringBuilder artifactPath = new StringBuilder("m2repo/");
+        artifactPath.append(artifact.repoPath(true));
+
+        archive.add(new FileAsset(artifact.file), artifactPath.toString());
+
+        artifact.gathered = true;
+
     }
 
     protected static Stream<ModuleAnalyzer> findModuleXmls(File file) {
@@ -114,23 +236,6 @@ public class DependencyManager {
 
     Map<String, String> getProvidedGAVToModuleMappings() {
         return this.providedGAVToModuleMappings;
-    }
-
-    public void setArtifactResolvingHelper(ArtifactResolvingHelper resolver) {
-        this.resolver = resolver;
-    }
-
-    public void addDependency(ArtifactSpec dep) {
-        this.dependencies.add(dep);
-    }
-
-    public void addAdditionalModule(Path module) {
-        try {
-            analyzeModuleDependencies(new ModuleAnalyzer(module));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     protected void analyzeDependencies(boolean resolveTransitive) throws Exception {
@@ -302,34 +407,6 @@ public class DependencyManager {
         return depsConf;
     }
 
-    public boolean includeAsBootstrapJar(ArtifactSpec dependency) {
-
-        if (dependency.scope.equals("TEST")) {
-            return false;
-        }
-
-        if (isExplodedBootstrap(dependency)) {
-            return false;
-        }
-
-        return !dependency.scope.equals("PROVIDED");
-    }
-
-    public boolean isExplodedBootstrap(ArtifactSpec dependency) {
-        if (dependency.groupId().equals(JBOSS_MODULES_GROUP_ID) && dependency.artifactId().equals(JBOSS_MODULES_ARTIFACT_ID)) {
-            return true;
-        }
-        if (dependency.groupId().equals(WILDFLY_SWARM_GROUP_ID) && dependency.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isProvidedDependency(ArtifactSpec dependency) {
-        String gav = dependency.groupId() + ":" + dependency.artifactId();
-        return this.providedGAVs.contains(gav);
-    }
-
     protected void analyzeModuleDependencies() {
         this.bootstrapDependencies.stream()
                 .filter(e -> e.type().equals("jar"))
@@ -407,97 +484,19 @@ public class DependencyManager {
         return spec;
     }
 
-    public ArtifactSpec findWildFlySwarmBootstrapJar() {
-        return findArtifact(WILDFLY_SWARM_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, "jar", null);
-    }
+    private final Set<ArtifactSpec> dependencies = new HashSet<>();
 
-    public ArtifactSpec findJBossModulesJar() {
-        return findArtifact(JBOSS_MODULES_GROUP_ID, JBOSS_MODULES_ARTIFACT_ID, null, "jar", null);
-    }
+    private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
 
-    public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier) {
-        for (ArtifactSpec each : this.dependencies) {
-            if (groupId != null && !groupId.equals(each.groupId())) {
-                continue;
-            }
+    private final Set<ArtifactSpec> bootstrapDependencies = new HashSet<>();
 
-            if (artifactId != null && !artifactId.equals(each.artifactId())) {
-                continue;
-            }
+    private final Set<String> bootstrapModules = new HashSet<>();
 
-            if (version != null && !version.equals(each.version())) {
-                continue;
-            }
+    private final Set<String> providedGAVs = new HashSet<>();
 
-            if (packaging != null && !packaging.equals(each.type())) {
-                continue;
-            }
+    private final Map<String, String> providedGAVToModuleMappings = new HashMap<>();
 
-            if (classifier != null && !classifier.equals(each.classifier())) {
-                continue;
-            }
-
-            return each;
-        }
-
-        return null;
-    }
-
-    public void populateUberJarMavenRepository(Archive archive) throws Exception {
-        for (ArtifactSpec dependency : this.dependencies) {
-            if (!this.bootstrapDependencies.contains(dependency) && !this.moduleDependencies.contains(dependency)) {
-                dependency.shouldGather = false;
-            }
-            if (includeAsBootstrapJar(dependency)) {
-                dependency.shouldGather = true;
-            }
-            if (isExplodedBootstrap(dependency)) {
-                dependency.shouldGather = false;
-            }
-            if (isProvidedDependency(dependency)) {
-                dependency.shouldGather = false;
-            }
-
-            if (dependency.shouldGather) {
-                addArtifactToArchiveMavenRepository(archive, dependency);
-            }
-        }
-
-        for (ArtifactSpec dependency : this.moduleDependencies) {
-            addArtifactToArchiveMavenRepository(archive, dependency);
-        }
-
-        for (ArtifactSpec dependency : this.bootstrapDependencies) {
-            if (!isExplodedBootstrap(dependency)) {
-                addArtifactToArchiveMavenRepository(archive, dependency);
-            }
-        }
-    }
-
-    public void populateUserMavenRepository() throws Exception {
-        for (ArtifactSpec each : this.dependencies) {
-            resolveArtifact(each);
-        }
-        for (ArtifactSpec each : this.moduleDependencies) {
-            resolveArtifact(each);
-        }
-    }
-
-    public void addArtifactToArchiveMavenRepository(Archive archive, ArtifactSpec artifact) throws Exception {
-
-        if (artifact.gathered) {
-            return;
-        }
-        artifact = resolveArtifact(artifact);
-
-        StringBuilder artifactPath = new StringBuilder("m2repo/");
-        artifactPath.append(artifact.repoPath(true));
-
-        archive.add(new FileAsset(artifact.file), artifactPath.toString());
-
-        artifact.gathered = true;
-
-    }
+    private ArtifactResolvingHelper resolver;
 
 
 }

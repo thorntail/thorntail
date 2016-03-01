@@ -41,11 +41,6 @@ public class WildFlySwarmBootstrapConf {
 
     public final static String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-bootstrap.conf";
 
-    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.bootstrap");
-
-    private List<MavenArtifactDescriptor> entries = new ArrayList<>();
-
-
     public WildFlySwarmBootstrapConf() {
 
     }
@@ -103,7 +98,6 @@ public class WildFlySwarmBootstrapConf {
         }
     }
 
-
     public void read(InputStream in) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             String line = null;
@@ -140,5 +134,9 @@ public class WildFlySwarmBootstrapConf {
                 )
         );
     }
+
+    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.bootstrap");
+
+    private List<MavenArtifactDescriptor> entries = new ArrayList<>();
 
 }

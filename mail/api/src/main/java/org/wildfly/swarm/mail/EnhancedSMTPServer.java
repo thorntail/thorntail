@@ -23,12 +23,6 @@ import org.wildfly.swarm.container.OutboundSocketBinding;
  */
 public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
 
-    private final String sessionKey;
-
-    private String host;
-
-    private String port;
-
     public EnhancedSMTPServer(String sessionKey) {
         this.sessionKey = sessionKey;
     }
@@ -59,6 +53,12 @@ public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
                 .remoteHost(this.host)
                 .remotePort(this.port);
     }
+
+    private final String sessionKey;
+
+    private String host;
+
+    private String port;
 
 
 }

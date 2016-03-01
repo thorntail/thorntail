@@ -24,8 +24,6 @@ import java.util.List;
  */
 public class ExecutableJar implements Executable {
 
-    private final Path jar;
-
     public ExecutableJar(Path jar) {
         this.jar = jar;
     }
@@ -37,4 +35,6 @@ public class ExecutableJar implements Executable {
         args.add(this.jar.toString());
         return args;
     }
+
+    private final Path jar;
 }

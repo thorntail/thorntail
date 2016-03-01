@@ -27,8 +27,6 @@ import org.wildfly.swarm.config.messaging.activemq.server.PooledConnectionFactor
  * @author Bob McWhirter
  */
 public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.Server<EnhancedServer> {
-    private static final AtomicInteger COUNTER = new AtomicInteger();
-
     public EnhancedServer(String key) {
         super(key);
     }
@@ -42,13 +40,13 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         inVmAcceptor("in-vm", (a) -> a.serverId(serverId));
 
         connectionFactory(new ConnectionFactory("InVmConnectionFactory")
-                .connectors(Collections.singletonList("in-vm"))
-                .entries(Collections.singletonList("java:/ConnectionFactory")));
+                                  .connectors(Collections.singletonList("in-vm"))
+                                  .entries(Collections.singletonList("java:/ConnectionFactory")));
 
         pooledConnectionFactory(new PooledConnectionFactory("activemq-ra")
-                .entries(Collections.singletonList("java:jboss/DefaultJMSConnectionFactory"))
-                .connectors(Collections.singletonList("in-vm"))
-                .transaction("xa"));
+                                        .entries(Collections.singletonList("java:jboss/DefaultJMSConnectionFactory"))
+                                        .connectors(Collections.singletonList("in-vm"))
+                                        .transaction("xa"));
 
         return this;
     }
@@ -78,4 +76,6 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
             }
         });
     }
+
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 }

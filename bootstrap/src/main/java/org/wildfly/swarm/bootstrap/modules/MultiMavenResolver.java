@@ -29,8 +29,6 @@ import org.jboss.modules.maven.MavenResolver;
 public class MultiMavenResolver implements MavenResolver {
 
 
-    private List<MavenResolver> resolvers = new ArrayList<>();
-
     public MultiMavenResolver() {
 
     }
@@ -51,4 +49,6 @@ public class MultiMavenResolver implements MavenResolver {
 
         return null;
     }
+
+    private List<MavenResolver> resolvers = new ArrayList<>();
 }

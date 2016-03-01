@@ -40,8 +40,6 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
  */
 public class ArtifactManager {
 
-    final private WildFlySwarmDependenciesConf deps;
-
     public ArtifactManager(WildFlySwarmDependenciesConf deps) {
         this.deps = deps;
     }
@@ -202,5 +200,7 @@ public class ArtifactManager {
 
         return null;
     }
+
+    final private WildFlySwarmDependenciesConf deps;
 
 }

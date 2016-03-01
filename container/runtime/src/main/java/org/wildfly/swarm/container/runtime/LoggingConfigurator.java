@@ -31,10 +31,6 @@ import org.wildfly.swarm.bootstrap.logging.LevelNode;
  */
 public class LoggingConfigurator extends ConfigurationPersistence implements Configurator {
 
-    private final LogContext context;
-
-    private final PropertyConfigurator propertyConfigurator;
-
     /**
      * Construct an instance.
      */
@@ -71,4 +67,8 @@ public class LoggingConfigurator extends ConfigurationPersistence implements Con
             apply(each, config);
         }
     }
+
+    private final LogContext context;
+
+    private final PropertyConfigurator propertyConfigurator;
 }

@@ -24,14 +24,6 @@ import java.util.Set;
  */
 public class FractionDescriptor {
 
-    private final String groupId;
-
-    private final String artifactId;
-
-    private final String version;
-
-    private final Set<FractionDescriptor> dependencies = new HashSet<>();
-
     public FractionDescriptor(String groupId, String artifactId, String version) {
         this.groupId = groupId;
         this.artifactId = artifactId;
@@ -106,10 +98,17 @@ public class FractionDescriptor {
         if (groupId == null) {
             if (other.groupId != null)
                 return false;
-        }
-        else if (!groupId.equals(other.groupId))
+        } else if (!groupId.equals(other.groupId))
             return false;
 
         return true;
     }
+
+    private final String groupId;
+
+    private final String artifactId;
+
+    private final String version;
+
+    private final Set<FractionDescriptor> dependencies = new HashSet<>();
 }

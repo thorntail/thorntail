@@ -34,8 +34,6 @@ import org.wildfly.swarm.bootstrap.util.Layout;
  */
 public class ClasspathModuleFinder implements ModuleFinder {
 
-    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.classpath");
-
     public String toString() {
         return getClass().getSimpleName();
     }
@@ -104,4 +102,6 @@ public class ClasspathModuleFinder implements ModuleFinder {
         }
 
     }
+
+    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.classpath");
 }

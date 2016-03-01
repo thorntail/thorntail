@@ -27,7 +27,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.wildfly.swarm.container.JARArchive;
-import org.wildfly.swarm.container.internal.DefaultDeploymentFactory;
 
 /**
  * @author Bob McWhirter
@@ -49,10 +48,6 @@ public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, determineName());
         setup(archive);
         return archive;
-    }
-
-    protected String determineName() {
-        return DefaultDeploymentFactory.determineName(".jar");
     }
 
     @Override
@@ -78,6 +73,10 @@ public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
         //archive.addAllDependencies();
 
         return success;
+    }
+
+    protected String determineName() {
+        return DefaultDeploymentFactory.determineName(".jar");
     }
 
 

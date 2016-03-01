@@ -24,8 +24,6 @@ import org.objectweb.asm.Opcodes;
  */
 public class AnnotationSeekingClassVisitor extends ClassVisitor {
 
-    private boolean found = false;
-
     public AnnotationSeekingClassVisitor() {
         super(Opcodes.ASM5);
     }
@@ -41,5 +39,7 @@ public class AnnotationSeekingClassVisitor extends ClassVisitor {
         }
         return super.visitAnnotation(desc, visible);
     }
+
+    private boolean found = false;
 
 }

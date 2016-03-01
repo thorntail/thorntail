@@ -38,12 +38,6 @@ import org.wildfly.swarm.tools.ArtifactSpec;
  */
 public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelper {
 
-    private final ConfigurableMavenResolverSystem resolver;
-
-    private CompletableTransferListener transferListener;
-
-    private RepositoryListener repositoryListener;
-
     public ShrinkwrapArtifactResolvingHelper(ConfigurableMavenResolverSystem resolver) {
         this.resolver = resolver;
         transferListener(new FailureReportingTransferListener());
@@ -87,12 +81,12 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
         return Arrays.stream(artifacts).map(artifact -> {
             final MavenCoordinate coord = artifact.getCoordinate();
             return new ArtifactSpec("compile",
-                    coord.getGroupId(),
-                    coord.getArtifactId(),
-                    coord.getVersion(),
-                    coord.getPackaging().getId(),
-                    coord.getClassifier(),
-                    artifact.asFile());
+                                    coord.getGroupId(),
+                                    coord.getArtifactId(),
+                                    coord.getVersion(),
+                                    coord.getPackaging().getId(),
+                                    coord.getClassifier(),
+                                    artifact.asFile());
         }).collect(Collectors.toSet());
     }
 
@@ -108,6 +102,15 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
         return this;
     }
 
+    public MavenResolvedArtifact[] withResolver(ResolverAction action) {
+        resetListeners();
+        try {
+            return action.resolve(this.resolver);
+        } finally {
+            resolutionComplete();
+        }
+    }
+
     private void resetListeners() {
         final DefaultRepositorySystemSession session = session();
         session.setRepositoryListener(this.repositoryListener);
@@ -117,15 +120,6 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     private void resolutionComplete() {
         if (this.transferListener != null) {
             this.transferListener.complete();
-        }
-    }
-
-    public MavenResolvedArtifact[] withResolver(ResolverAction action) {
-        resetListeners();
-        try {
-            return action.resolve(this.resolver);
-        } finally {
-            resolutionComplete();
         }
     }
 
@@ -147,6 +141,12 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             throw new RuntimeException("Failed to invoke " + methodName, e);
         }
     }
+
+    private final ConfigurableMavenResolverSystem resolver;
+
+    private CompletableTransferListener transferListener;
+
+    private RepositoryListener repositoryListener;
 
     public interface ResolverAction {
         MavenResolvedArtifact[] resolve(ConfigurableMavenResolverSystem resolver);

@@ -34,9 +34,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Arquillian.class)
 public class EJBInsideTest {
 
-    @EJB(lookup = "java:global/ejb-test/GreeterEJB")
-    private GreeterEJB greeter;
-
     @Deployment
     public static Archive createDeployment() throws Exception {
         return ShrinkWrap.create(JAXRSArchive.class, "ejb-test.war")
@@ -48,4 +45,7 @@ public class EJBInsideTest {
     public void testFromInside() {
         assertEquals(greeter.message(), "Howdy from EJB");
     }
+
+    @EJB(lookup = "java:global/ejb-test/GreeterEJB")
+    private GreeterEJB greeter;
 }

@@ -29,18 +29,8 @@ import org.wildfly.swarm.container.Fraction;
  */
 public abstract class AbstractServerConfiguration<T extends Fraction> implements ServerConfiguration<T> {
 
-    private final Class<T> type;
-
-    private List<DeploymentSpec> deployments = new ArrayList<>();
-
     public AbstractServerConfiguration(Class<T> type) {
         this.type = type;
-    }
-
-    protected DeploymentSpec deployment(String gav) {
-        DeploymentSpec spec = new DeploymentSpec(gav);
-        this.deployments.add(spec);
-        return spec;
     }
 
     @Override
@@ -72,13 +62,17 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
         }
     }
 
+    protected DeploymentSpec deployment(String gav) {
+        DeploymentSpec spec = new DeploymentSpec(gav);
+        this.deployments.add(spec);
+        return spec;
+    }
+
+    private final Class<T> type;
+
+    private List<DeploymentSpec> deployments = new ArrayList<>();
+
     public class DeploymentSpec {
-        private final String gav;
-
-        private String asName;
-
-        private BiConsumer<T, Archive<?>> config;
-
         public DeploymentSpec(String gav) {
             this.gav = gav;
         }
@@ -108,6 +102,12 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
 
             return archive;
         }
+
+        private final String gav;
+
+        private String asName;
+
+        private BiConsumer<T, Archive<?>> config;
 
     }
 

@@ -42,24 +42,6 @@ public class DaemonServiceActivator implements ServiceActivator {
 
     static class DaemonService implements Service<Void> {
 
-        private final InjectedValue<DeploymentUnit> injectedDeploymentUnit = new InjectedValue<>();
-        private Server server;
-
-        static void addService(ServiceTarget serviceTarget) {
-
-            final String artifactName = System.getProperty(BootstrapProperties.APP_ARTIFACT);
-            if (artifactName == null)
-                throw new IllegalStateException("Failed to find artifact name under " + BootstrapProperties.APP_ARTIFACT);
-
-            DaemonService runner = new DaemonService();
-            serviceTarget
-                    .addService(ServiceName.of("wildfly", "swarm", "arquillian", "daemon", "runner"), runner)
-                    .addDependency(Services.deploymentUnitName(artifactName), DeploymentUnit.class, runner.injectedDeploymentUnit)
-                    .addDependency(Services.deploymentUnitName(artifactName, Phase.POST_MODULE))
-                    .setInitialMode(ServiceController.Mode.ACTIVE)
-                    .install();
-        }
-
         @Override
         public void start(StartContext context) throws StartException {
             try {
@@ -86,5 +68,24 @@ public class DaemonServiceActivator implements ServiceActivator {
         public Void getValue() throws IllegalStateException, IllegalArgumentException {
             return null;
         }
+
+        static void addService(ServiceTarget serviceTarget) {
+
+            final String artifactName = System.getProperty(BootstrapProperties.APP_ARTIFACT);
+            if (artifactName == null)
+                throw new IllegalStateException("Failed to find artifact name under " + BootstrapProperties.APP_ARTIFACT);
+
+            DaemonService runner = new DaemonService();
+            serviceTarget
+                    .addService(ServiceName.of("wildfly", "swarm", "arquillian", "daemon", "runner"), runner)
+                    .addDependency(Services.deploymentUnitName(artifactName), DeploymentUnit.class, runner.injectedDeploymentUnit)
+                    .addDependency(Services.deploymentUnitName(artifactName, Phase.POST_MODULE))
+                    .setInitialMode(ServiceController.Mode.ACTIVE)
+                    .install();
+        }
+
+        private final InjectedValue<DeploymentUnit> injectedDeploymentUnit = new InjectedValue<>();
+
+        private Server server;
     }
 }

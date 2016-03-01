@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.server.ServerEnvironment;
@@ -27,11 +31,13 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.container.Container;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OUTCOME;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUCCESS;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 /**
  * @author Heiko Braun
  * @since 19/02/16
@@ -39,13 +45,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
 public class MonitorService implements Monitor, Service<MonitorService> {
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "monitor");
-
-    final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
-    final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
-
-    private ExecutorService executorService;
-    private ServerEnvironment serverEnvironment;
-    private ModelControllerClient controllerClient;
 
     @Override
     public void start(StartContext startContext) throws StartException {
@@ -99,8 +98,8 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         // /core-service=platform-mbean/type=memory:read-resource(include-runtime=true)
 
         ModelNode op = new ModelNode();
-        op.get(ADDRESS).add("core-service","platform-mbean");
-        op.get(ADDRESS).add("type","memory");
+        op.get(ADDRESS).add("core-service", "platform-mbean");
+        op.get(ADDRESS).add("type", "memory");
         op.get(OP).set("query");
         op.get("select").add("heap-memory-usage");
         op.get("select").add("non-heap-memory-usage");
@@ -119,8 +118,8 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         // /core-service=platform-mbean/type=threading:read-resource(include-runtime=true)
 
         ModelNode op = new ModelNode();
-        op.get(ADDRESS).add("core-service","platform-mbean");
-        op.get(ADDRESS).add("type","threading");
+        op.get(ADDRESS).add("core-service", "platform-mbean");
+        op.get(ADDRESS).add("type", "threading");
         op.get(OP).set("query");
         op.get("select").add("thread-count");
         op.get("select").add("peak-thread-count");
@@ -137,9 +136,19 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     }
 
     private static ModelNode unwrap(ModelNode response) {
-        if(response.get(OUTCOME).asString().equals(SUCCESS))
+        if (response.get(OUTCOME).asString().equals(SUCCESS))
             return response.get(RESULT);
         else
             return response;
     }
+
+    final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
+
+    final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
+
+    private ExecutorService executorService;
+
+    private ServerEnvironment serverEnvironment;
+
+    private ModelControllerClient controllerClient;
 }

@@ -33,16 +33,6 @@ import java.util.concurrent.CountDownLatch;
  */
 public class IOBridge implements Runnable, Closeable {
 
-    private final InputStream in;
-
-    private final PrintStream out;
-
-    private final CountDownLatch latch;
-
-    private BufferedWriter fileOut;
-
-    private Exception error;
-
     public IOBridge(CountDownLatch latch, InputStream in, OutputStream out, Path file) throws IOException {
         this.in = in;
         this.out = (out instanceof PrintStream ? (PrintStream) out : new PrintStream(out));
@@ -72,6 +62,17 @@ public class IOBridge implements Runnable, Closeable {
         }
     }
 
+    @Override
+    public void close() throws IOException {
+        try {
+            this.in.close();
+        } finally {
+            if (this.fileOut != null) {
+                this.fileOut.close();
+            }
+        }
+    }
+
     protected void processLine(String line) throws IOException {
         out.println(line);
         out.flush();
@@ -85,14 +86,13 @@ public class IOBridge implements Runnable, Closeable {
         }
     }
 
-    @Override
-    public void close() throws IOException {
-        try {
-            this.in.close();
-        } finally {
-            if (this.fileOut != null) {
-                this.fileOut.close();
-            }
-        }
-    }
+    private final InputStream in;
+
+    private final PrintStream out;
+
+    private final CountDownLatch latch;
+
+    private BufferedWriter fileOut;
+
+    private Exception error;
 }

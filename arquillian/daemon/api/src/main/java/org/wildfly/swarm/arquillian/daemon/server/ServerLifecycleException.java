@@ -22,10 +22,10 @@ package org.wildfly.swarm.arquillian.daemon.server;
  */
 public class ServerLifecycleException extends Exception {
 
-    private static final long serialVersionUID = 1L;
-
     public ServerLifecycleException(final String message, final Throwable cause) {
         super(message, cause);
     }
+
+    private static final long serialVersionUID = 1L;
 
 }

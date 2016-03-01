@@ -33,9 +33,9 @@ public class ApplicationFactory implements Opcodes {
         AnnotationVisitor av0;
 
         cw.visit(V1_7, ACC_PUBLIC + ACC_SUPER,
-                name.replace('.', '/'),
-                null,
-                "javax/ws/rs/core/Application", null);
+                 name.replace('.', '/'),
+                 null,
+                 "javax/ws/rs/core/Application", null);
 
         int lastDot = name.lastIndexOf('.');
         String simpleName = name.substring(lastDot + 1);
@@ -58,11 +58,11 @@ public class ApplicationFactory implements Opcodes {
             Label l1 = new Label();
             mv.visitLabel(l1);
             mv.visitLocalVariable("this",
-                    "L" + name.replace('.', '/') + ";",
-                    null,
-                    l0,
-                    l1,
-                    0);
+                                  "L" + name.replace('.', '/') + ";",
+                                  null,
+                                  l0,
+                                  l1,
+                                  0);
             mv.visitMaxs(1, 1);
             mv.visitEnd();
         }

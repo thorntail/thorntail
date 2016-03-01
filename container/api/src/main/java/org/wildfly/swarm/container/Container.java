@@ -71,50 +71,6 @@ public class Container {
 
     public static final String VERSION;
 
-    static {
-        InputStream in = Container.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
-        Properties props = new Properties();
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        VERSION = props.getProperty("version", "unknown");
-    }
-
-    private Map<Class<? extends Fraction>, Fraction> fractions = new ConcurrentHashMap<>();
-
-    private Map<String, Fraction> fractionsBySimpleName = new ConcurrentHashMap<>();
-
-    private List<Fraction> dependentFractions = new ArrayList<>();
-
-    private Set<Class<? extends Fraction>> defaultFractionTypes = new HashSet<>();
-
-    private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
-
-    private Map<String, List<SocketBinding>> socketBindings = new HashMap<>();
-
-    private Map<String, List<OutboundSocketBinding>> outboundSocketBindings = new HashMap<>();
-
-    private List<Interface> interfaces = new ArrayList<>();
-
-    private Server server;
-
-    private Deployer deployer;
-
-    private Domain domain;
-
-    private boolean running = false;
-
-    /**
-     * Command line args if any
-     */
-    private String[] args;
-
-    // server configuration xml
-    private URL xmlConfig;
-
     /**
      * Construct a new, un-started container.
      *
@@ -169,7 +125,7 @@ public class Container {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -186,43 +142,6 @@ public class Container {
         }
 
         return false;
-    }
-
-    private void createShrinkWrapDomain() throws ModuleLoadException {
-        ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
-        try {
-            if (isFatJar()) {
-                Thread.currentThread().setContextClassLoader(Container.class.getClassLoader());
-                Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-                Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
-            }
-            this.domain = ShrinkWrap.getDefaultDomain();
-            this.domain.getConfiguration().getExtensionLoader().addOverride(ZipExporter.class, ZipExporterImpl.class);
-            this.domain.getConfiguration().getExtensionLoader().addOverride(JavaArchive.class, JavaArchiveImpl.class);
-            this.domain.getConfiguration().getExtensionLoader().addOverride(WebArchive.class, WebArchiveImpl.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalCl);
-        }
-    }
-
-    private void createServer(boolean debugBootstrap, URL xmlConfig) throws Exception {
-        if (System.getProperty("boot.module.loader") == null) {
-            System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
-        }
-        if (debugBootstrap) {
-            Module.setModuleLogger(new StreamModuleLogger(System.err));
-        }
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container", "runtime"));
-        Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.RuntimeServer");
-        try {
-            this.server = (Server) serverClass.newInstance();
-            if (this.xmlConfig != null)
-                this.server.setXmlConfig(this.xmlConfig);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
     }
 
     public void applyFractionDefaults(Server server) throws Exception {
@@ -265,45 +184,6 @@ public class Container {
 
     public List<Fraction> fractions() {
         return this.fractions.values().stream().collect(Collectors.toList());
-    }
-
-    private void fractionDefault(Fraction defaultFraction) {
-        if (defaultFraction == null) {
-            return;
-        }
-        this.defaultFractionTypes.add(fractionRoot(defaultFraction.getClass()));
-        fraction(defaultFraction);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<? extends Fraction> fractionRoot(Class<? extends Fraction> fractionClass) {
-        Class<? extends Fraction> fractionRoot = fractionClass;
-        boolean rootFound = false;
-
-        while (!rootFound) {
-            Class<?>[] interfaces = fractionRoot.getInterfaces();
-            for (Class<?> anInterface : interfaces) {
-                if (anInterface.getName().equals(Fraction.class.getName())) {
-                    rootFound = true;
-                    break;
-                }
-            }
-
-            if (!rootFound) {
-                fractionRoot = (Class<? extends Fraction>) fractionRoot.getSuperclass();
-            }
-        }
-
-        return fractionRoot;
-    }
-
-    /**
-     * Add a fraction to the container that is a dependency of another fraction.
-     *
-     * @param fraction The dependent fraction to add.
-     */
-    private void dependentFraction(Fraction fraction) {
-        this.dependentFractions.add(fraction);
     }
 
     /**
@@ -351,52 +231,8 @@ public class Container {
         return this.socketBindings;
     }
 
-    void socketBinding(SocketBinding binding) {
-        socketBinding("default-sockets", binding);
-    }
-
-    void socketBinding(String groupName, SocketBinding binding) {
-        List<SocketBinding> list = this.socketBindings.get(groupName);
-
-        if (list == null) {
-            list = new ArrayList<>();
-            this.socketBindings.put(groupName, list);
-        }
-
-        for (SocketBinding each : list) {
-            if (each.name().equals(binding.name())) {
-                throw new RuntimeException("Socket binding '" + binding.name() + "' already configured for '" + each.portExpression() + "'");
-            }
-        }
-
-        list.add(binding);
-    }
-
     public Map<String, List<OutboundSocketBinding>> outboundSocketBindings() {
         return this.outboundSocketBindings;
-    }
-
-    void outboundSocketBinding(OutboundSocketBinding binding) {
-        outboundSocketBinding("default-sockets", binding);
-    }
-
-    void outboundSocketBinding(String groupName, OutboundSocketBinding binding) {
-        List<OutboundSocketBinding> list = this.outboundSocketBindings.get(groupName);
-
-        if (list == null) {
-            list = new ArrayList<>();
-            this.outboundSocketBindings.put(groupName, list);
-        }
-
-        for (OutboundSocketBinding each : list) {
-            if (each.name().equals(binding.name())) {
-                throw new RuntimeException("Outbound socket binding '" + binding.name() + "' already configured for '" + each.remoteHostExpression() + ":" + each.remotePortExpression() + "'");
-            }
-        }
-
-        list.add(binding);
-
-        System.err.println("added: " + this.outboundSocketBindings);
     }
 
     /**
@@ -542,6 +378,126 @@ public class Container {
         }
     }
 
+    private void createShrinkWrapDomain() throws ModuleLoadException {
+        ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+        try {
+            if (isFatJar()) {
+                Thread.currentThread().setContextClassLoader(Container.class.getClassLoader());
+                Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
+            }
+            this.domain = ShrinkWrap.getDefaultDomain();
+            this.domain.getConfiguration().getExtensionLoader().addOverride(ZipExporter.class, ZipExporterImpl.class);
+            this.domain.getConfiguration().getExtensionLoader().addOverride(JavaArchive.class, JavaArchiveImpl.class);
+            this.domain.getConfiguration().getExtensionLoader().addOverride(WebArchive.class, WebArchiveImpl.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalCl);
+        }
+    }
+
+    private void createServer(boolean debugBootstrap, URL xmlConfig) throws Exception {
+        if (System.getProperty("boot.module.loader") == null) {
+            System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+        }
+        if (debugBootstrap) {
+            Module.setModuleLogger(new StreamModuleLogger(System.err));
+        }
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container", "runtime"));
+        Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.RuntimeServer");
+        try {
+            this.server = (Server) serverClass.newInstance();
+            if (this.xmlConfig != null)
+                this.server.setXmlConfig(this.xmlConfig);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    private void fractionDefault(Fraction defaultFraction) {
+        if (defaultFraction == null) {
+            return;
+        }
+        this.defaultFractionTypes.add(fractionRoot(defaultFraction.getClass()));
+        fraction(defaultFraction);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends Fraction> fractionRoot(Class<? extends Fraction> fractionClass) {
+        Class<? extends Fraction> fractionRoot = fractionClass;
+        boolean rootFound = false;
+
+        while (!rootFound) {
+            Class<?>[] interfaces = fractionRoot.getInterfaces();
+            for (Class<?> anInterface : interfaces) {
+                if (anInterface.getName().equals(Fraction.class.getName())) {
+                    rootFound = true;
+                    break;
+                }
+            }
+
+            if (!rootFound) {
+                fractionRoot = (Class<? extends Fraction>) fractionRoot.getSuperclass();
+            }
+        }
+
+        return fractionRoot;
+    }
+
+    /**
+     * Add a fraction to the container that is a dependency of another fraction.
+     *
+     * @param fraction The dependent fraction to add.
+     */
+    private void dependentFraction(Fraction fraction) {
+        this.dependentFractions.add(fraction);
+    }
+
+    void socketBinding(SocketBinding binding) {
+        socketBinding("default-sockets", binding);
+    }
+
+    void socketBinding(String groupName, SocketBinding binding) {
+        List<SocketBinding> list = this.socketBindings.get(groupName);
+
+        if (list == null) {
+            list = new ArrayList<>();
+            this.socketBindings.put(groupName, list);
+        }
+
+        for (SocketBinding each : list) {
+            if (each.name().equals(binding.name())) {
+                throw new RuntimeException("Socket binding '" + binding.name() + "' already configured for '" + each.portExpression() + "'");
+            }
+        }
+
+        list.add(binding);
+    }
+
+    void outboundSocketBinding(OutboundSocketBinding binding) {
+        outboundSocketBinding("default-sockets", binding);
+    }
+
+    void outboundSocketBinding(String groupName, OutboundSocketBinding binding) {
+        List<OutboundSocketBinding> list = this.outboundSocketBindings.get(groupName);
+
+        if (list == null) {
+            list = new ArrayList<>();
+            this.outboundSocketBindings.put(groupName, list);
+        }
+
+        for (OutboundSocketBinding each : list) {
+            if (each.name().equals(binding.name())) {
+                throw new RuntimeException("Outbound socket binding '" + binding.name() + "' already configured for '" + each.remoteHostExpression() + ":" + each.remotePortExpression() + "'");
+            }
+        }
+
+        list.add(binding);
+
+        System.err.println("added: " + this.outboundSocketBindings);
+    }
+
     protected String determineDeploymentType() throws IOException {
         String artifact = System.getProperty(BootstrapProperties.APP_PATH);
         if (artifact != null) {
@@ -592,6 +548,50 @@ public class Container {
         // when in doubt, assume at least a .jar
         return "jar";
     }
+
+    static {
+        InputStream in = Container.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
+        Properties props = new Properties();
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty("version", "unknown");
+    }
+
+    private Map<Class<? extends Fraction>, Fraction> fractions = new ConcurrentHashMap<>();
+
+    private Map<String, Fraction> fractionsBySimpleName = new ConcurrentHashMap<>();
+
+    private List<Fraction> dependentFractions = new ArrayList<>();
+
+    private Set<Class<? extends Fraction>> defaultFractionTypes = new HashSet<>();
+
+    private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
+
+    private Map<String, List<SocketBinding>> socketBindings = new HashMap<>();
+
+    private Map<String, List<OutboundSocketBinding>> outboundSocketBindings = new HashMap<>();
+
+    private List<Interface> interfaces = new ArrayList<>();
+
+    private Server server;
+
+    private Deployer deployer;
+
+    private Domain domain;
+
+    private boolean running = false;
+
+    /**
+     * Command line args if any
+     */
+    private String[] args;
+
+    // server configuration xml
+    private URL xmlConfig;
 
     /**
      * Initialization Context to be passed to Fractions to allow them to provide

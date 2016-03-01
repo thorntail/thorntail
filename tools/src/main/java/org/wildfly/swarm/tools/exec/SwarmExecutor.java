@@ -38,32 +38,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public class SwarmExecutor {
 
-    private final OutputStream stdout;
-
-    private final OutputStream stderr;
-
-    private Path stdoutFile;
-
-    private Path stderrFile;
-
-    private Path java;
-
-    private Map<String, String> properties = new HashMap<>();
-
-    private Map<String, String> environment = new HashMap<>();
-
-    private List<Path> classpath = new ArrayList<>();
-
-    private List<String> jvmArguments = new ArrayList<>();
-
-    private List<String> arguments = new ArrayList<>();
-
-    private Executable executable;
-
-    private Path workingDirectory;
-
-    private Integer debugPort;
-
     public SwarmExecutor() {
         this.stdout = System.out;
         this.stderr = System.err;
@@ -95,27 +69,6 @@ public class SwarmExecutor {
             return findJava();
         }
         return this.java;
-    }
-
-    protected Path findJava() {
-        String javaHome = System.getProperty("java.home");
-        if (javaHome == null) {
-            throw new RuntimeException("unable to locate java binary");
-        }
-
-        Path binDir = FileSystems.getDefault().getPath(javaHome, "bin");
-
-        Path java = binDir.resolve("java.exe");
-        if (java.toFile().exists()) {
-            return java;
-        }
-
-        java = binDir.resolve("java");
-        if (java.toFile().exists()) {
-            return java;
-        }
-
-        throw new RuntimeException("unable to locate java binary");
     }
 
     public SwarmExecutor withDefaultSystemProperties() {
@@ -181,7 +134,7 @@ public class SwarmExecutor {
             throw new RuntimeException("Cannot use modules with an executable jar");
         }
         final File moduleJar = new File(System.getProperty("java.io.tmpdir"),
-                "swarm-module-overrides.jar");
+                                        "swarm-module-overrides.jar");
         final JavaArchive moduleArchive = ShrinkWrap.create(JavaArchive.class);
 
         boolean modulesAdded = false;
@@ -270,7 +223,7 @@ public class SwarmExecutor {
         if (!this.classpath.isEmpty()) {
             cli.add("-classpath");
             cli.add(String.join(File.pathSeparator,
-                    this.classpath.stream().map(e -> e.toString()).collect(Collectors.toList())));
+                                this.classpath.stream().map(e -> e.toString()).collect(Collectors.toList())));
         }
 
         cli.addAll(this.executable.toArguments());
@@ -287,5 +240,52 @@ public class SwarmExecutor {
                 this.stdout, this.stdoutFile,
                 this.stderr, this.stderrFile);
     }
+
+    protected Path findJava() {
+        String javaHome = System.getProperty("java.home");
+        if (javaHome == null) {
+            throw new RuntimeException("unable to locate java binary");
+        }
+
+        Path binDir = FileSystems.getDefault().getPath(javaHome, "bin");
+
+        Path java = binDir.resolve("java.exe");
+        if (java.toFile().exists()) {
+            return java;
+        }
+
+        java = binDir.resolve("java");
+        if (java.toFile().exists()) {
+            return java;
+        }
+
+        throw new RuntimeException("unable to locate java binary");
+    }
+
+    private final OutputStream stdout;
+
+    private final OutputStream stderr;
+
+    private Path stdoutFile;
+
+    private Path stderrFile;
+
+    private Path java;
+
+    private Map<String, String> properties = new HashMap<>();
+
+    private Map<String, String> environment = new HashMap<>();
+
+    private List<Path> classpath = new ArrayList<>();
+
+    private List<String> jvmArguments = new ArrayList<>();
+
+    private List<String> arguments = new ArrayList<>();
+
+    private Executable executable;
+
+    private Path workingDirectory;
+
+    private Integer debugPort;
 
 }

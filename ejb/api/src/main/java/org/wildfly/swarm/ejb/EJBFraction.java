@@ -59,24 +59,24 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
                 .logSystemExceptions(true)
                 .defaultResourceAdapterName(SwarmProperties.propertyVar("$ejb.resource-adapter-name", "activemq-ra.rar"))
                 .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("slsb-strict-max-pool")
-                        .maxPoolSize(20)
-                        .timeout(5L)
-                        .timeoutUnit(StrictMaxBeanInstancePool.TimeoutUnit.MINUTES))
+                                                   .maxPoolSize(20)
+                                                   .timeout(5L)
+                                                   .timeoutUnit(StrictMaxBeanInstancePool.TimeoutUnit.MINUTES))
                 .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("mdb-strict-max-pool")
-                        .maxPoolSize(20)
-                        .timeout(5L)
-                        .timeoutUnit(StrictMaxBeanInstancePool.TimeoutUnit.MINUTES))
+                                                   .maxPoolSize(20)
+                                                   .timeout(5L)
+                                                   .timeoutUnit(StrictMaxBeanInstancePool.TimeoutUnit.MINUTES))
                 .cache(new Cache("simple"))
                 .asyncService(new AsyncService().threadPoolName("default"))
                 .timerService(new TimerService()
-                        .threadPoolName("default")
-                        .defaultDataStore("default-file-store")
-                        .fileDataStore(new FileDataStore("default-file-store")
-                                .path("timer-service-data")
-                                .relativeTo("jboss.server.data.dir")))
+                                      .threadPoolName("default")
+                                      .defaultDataStore("default-file-store")
+                                      .fileDataStore(new FileDataStore("default-file-store")
+                                                             .path("timer-service-data")
+                                                             .relativeTo("jboss.server.data.dir")))
                 .threadPool(new ThreadPool("default")
-                        .maxThreads(10)
-                        .keepaliveTime(threadPoolSettings));
+                                    .maxThreads(10)
+                                    .keepaliveTime(threadPoolSettings));
 
         return fraction;
 
@@ -91,9 +91,9 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
             if (ejbPolicy == null) {
                 ejbPolicy = new SecurityDomain("jboss-ejb-policy")
                         .classicAuthorization(new ClassicAuthorization()
-                                .policyModule(new PolicyModule("default")
-                                        .code("Delegating")
-                                        .flag(Flag.REQUIRED)));
+                                                      .policyModule(new PolicyModule("default")
+                                                                            .code("Delegating")
+                                                                            .flag(Flag.REQUIRED)));
                 security.securityDomain(ejbPolicy);
             }
         }

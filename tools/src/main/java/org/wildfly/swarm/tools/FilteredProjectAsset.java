@@ -24,8 +24,6 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 public abstract class FilteredProjectAsset implements ProjectAsset {
-    private final ProjectAsset delegate;
-
     public FilteredProjectAsset(ProjectAsset delegate) {
         this.delegate = delegate;
     }
@@ -43,11 +41,13 @@ public abstract class FilteredProjectAsset implements ProjectAsset {
     @Override
     public InputStream openStream() {
         return filter(ShrinkWrap.create(ZipImporter.class)
-                .importFrom(this.delegate.openStream())
-                .as(JavaArchive.class))
+                              .importFrom(this.delegate.openStream())
+                              .as(JavaArchive.class))
                 .as(ZipExporter.class)
                 .exportAsInputStream();
     }
 
     protected abstract Archive<?> filter(Archive<?> archive);
+
+    private final ProjectAsset delegate;
 }

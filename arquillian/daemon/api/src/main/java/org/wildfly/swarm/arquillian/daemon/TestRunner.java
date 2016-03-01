@@ -28,14 +28,6 @@ import org.jboss.as.server.deployment.SetupAction;
 import org.jboss.modules.ModuleClassLoader;
 
 public class TestRunner {
-    private final static String CLASS_NAME_ARQ_TEST_RUNNERS = "org.jboss.arquillian.container.test.spi.util.TestRunners";
-
-    private final static String METHOD_NAME_GET_TEST_RUNNER = "getTestRunner";
-
-    private final static String METHOD_NAME_EXECUTE = "execute";
-
-    private final DeploymentUnit deploymentUnit;
-
     public TestRunner(DeploymentUnit deploymentUnit) {
         this.deploymentUnit = deploymentUnit;
     }
@@ -79,4 +71,12 @@ public class TestRunner {
             Thread.currentThread().setContextClassLoader(oldCL);
         }
     }
+
+    private final static String CLASS_NAME_ARQ_TEST_RUNNERS = "org.jboss.arquillian.container.test.spi.util.TestRunners";
+
+    private final static String METHOD_NAME_GET_TEST_RUNNER = "getTestRunner";
+
+    private final static String METHOD_NAME_EXECUTE = "execute";
+
+    private final DeploymentUnit deploymentUnit;
 }

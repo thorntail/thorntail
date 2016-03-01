@@ -22,12 +22,6 @@ import org.wildfly.swarm.container.internal.BaseSocketBinding;
  */
 public class SocketBinding extends BaseSocketBinding {
 
-    private String portExpression;
-
-    private String multicastAddress;
-
-    private String multicastPortExpression;
-
     public SocketBinding(String name) {
         super(name);
     }
@@ -68,6 +62,12 @@ public class SocketBinding extends BaseSocketBinding {
     public String multicastPortExpression() {
         return this.multicastPortExpression;
     }
+
+    private String portExpression;
+
+    private String multicastAddress;
+
+    private String multicastPortExpression;
 
 
 }

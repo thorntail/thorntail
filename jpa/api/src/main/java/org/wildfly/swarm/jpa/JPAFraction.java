@@ -16,8 +16,6 @@
 package org.wildfly.swarm.jpa;
 
 import org.wildfly.swarm.config.JPA;
-import org.wildfly.swarm.config.datasources.DataSource;
-import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
@@ -27,8 +25,6 @@ import org.wildfly.swarm.datasources.DatasourcesFraction;
  * @author Lance Ball
  */
 public class JPAFraction extends JPA<JPAFraction> implements Fraction {
-
-    private boolean inhibitDefaultDatasource = false;
 
     public JPAFraction() {
     }
@@ -65,4 +61,6 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
             defaultDatasource("jboss/datasources/ExampleDS");
         }
     }
+
+    private boolean inhibitDefaultDatasource = false;
 }

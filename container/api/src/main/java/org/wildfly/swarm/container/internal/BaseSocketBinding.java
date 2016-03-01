@@ -20,8 +20,6 @@ package org.wildfly.swarm.container.internal;
  */
 public class BaseSocketBinding {
 
-    private final String name;
-
     protected BaseSocketBinding(String name) {
         this.name = name;
     }
@@ -29,4 +27,6 @@ public class BaseSocketBinding {
     public String name() {
         return this.name;
     }
+
+    private final String name;
 }

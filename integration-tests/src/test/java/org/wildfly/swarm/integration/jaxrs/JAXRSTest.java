@@ -40,9 +40,6 @@ import static org.fest.assertions.Assertions.assertThat;
 @RunWith(Arquillian.class)
 public class JAXRSTest {
 
-    @Drone
-    WebDriver browser;
-
     @Deployment
     public static Archive createDeployment() throws Exception {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
@@ -65,5 +62,8 @@ public class JAXRSTest {
         browser.navigate().to(TestConstants.DEFAULT_URL);
         assertThat(browser.getPageSource()).contains("Howdy at ");
     }
+
+    @Drone
+    WebDriver browser;
 
 }

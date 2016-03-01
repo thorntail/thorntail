@@ -30,10 +30,6 @@ public class InitialLoggerManager implements BackingLoggerManager {
 
     public static final InitialLoggerManager INSTANCE = new InitialLoggerManager();
 
-    private static final String PREFIX = "swarm.log.";
-
-    private final LevelNode root;
-
     private InitialLoggerManager() {
         Properties props = System.getProperties();
         Set<String> names = props.stringPropertyNames();
@@ -111,25 +107,28 @@ public class InitialLoggerManager implements BackingLoggerManager {
 
         for (String line : lines) {
             System.err.println(String.format("%s %s [%s] (%s) %s",
-                    now,
-                    level.toString(),
-                    logger.getCategory(),
-                    Thread.currentThread().getName(),
-                    line));
+                                             now,
+                                             level.toString(),
+                                             logger.getCategory(),
+                                             Thread.currentThread().getName(),
+                                             line));
         }
     }
 
-
     private void log(InitialBackingLogger logger, BootstrapLogger.Level level, Throwable t) {
         System.err.println(String.format("%s %s [%s] (%s) %s",
-                new Date().toString(),
-                level,
-                logger.getCategory(),
-                Thread.currentThread().getName(),
-                t.getMessage()));
+                                         new Date().toString(),
+                                         level,
+                                         logger.getCategory(),
+                                         Thread.currentThread().getName(),
+                                         t.getMessage()));
         for (StackTraceElement stackTraceElement : t.getStackTrace()) {
             System.err.println("  " + stackTraceElement.toString());
         }
     }
+
+    private static final String PREFIX = "swarm.log.";
+
+    private final LevelNode root;
 
 }

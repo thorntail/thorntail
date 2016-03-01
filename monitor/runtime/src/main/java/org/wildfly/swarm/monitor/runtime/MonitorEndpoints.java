@@ -15,11 +15,10 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
+import javax.naming.NamingException;
+
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import org.jboss.dmr.ModelNode;
-
-import javax.naming.NamingException;
 
 /**
  * @author Heiko Braun
@@ -27,8 +26,6 @@ import javax.naming.NamingException;
  */
 public class MonitorEndpoints implements HttpHandler {
 
-
-    private final Monitor monitor;
 
     public MonitorEndpoints(HttpHandler parent) {
         try {
@@ -41,13 +38,11 @@ public class MonitorEndpoints implements HttpHandler {
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
 
-        if("/node".equals(exchange.getRequestPath())) {
+        if ("/node".equals(exchange.getRequestPath())) {
             nodeInfo(exchange);
-        }
-        else if("/heap".equals(exchange.getRequestPath())) {
+        } else if ("/heap".equals(exchange.getRequestPath())) {
             heap(exchange);
-        }
-        else if("/threads".equals(exchange.getRequestPath())) {
+        } else if ("/threads".equals(exchange.getRequestPath())) {
             threads(exchange);
         }
 
@@ -64,5 +59,7 @@ public class MonitorEndpoints implements HttpHandler {
     private void threads(HttpServerExchange exchange) {
         exchange.getResponseSender().send(monitor.threads().toJSONString(false));
     }
+
+    private final Monitor monitor;
 }
 

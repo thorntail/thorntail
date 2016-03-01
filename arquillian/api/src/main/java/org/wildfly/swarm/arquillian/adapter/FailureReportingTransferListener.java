@@ -28,8 +28,6 @@ import org.eclipse.aether.transfer.TransferEvent;
  * resources that aren't found in any repo.
  */
 public class FailureReportingTransferListener extends AbstractTransferListener implements CompletableTransferListener {
-    private final Map<String, List<TransferEvent>> transfers = new HashMap<>();
-
     @Override
     public void transferSucceeded(final TransferEvent event) {
         this.transfers.remove(event.getResource().getResourceName());
@@ -77,4 +75,6 @@ public class FailureReportingTransferListener extends AbstractTransferListener i
 
         return sb.toString();
     }
+
+    private final Map<String, List<TransferEvent>> transfers = new HashMap<>();
 }

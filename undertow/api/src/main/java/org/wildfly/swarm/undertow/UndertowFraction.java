@@ -51,12 +51,12 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         fraction.server(
                 new Server("default-server")
                         .httpListener(new HTTPListener("default")
-                                .socketBinding("http"))
+                                              .socketBinding("http"))
                         .host(new Host("default-host")))
                 .bufferCache(new BufferCache("default"))
                 .servletContainer(new ServletContainer("default")
-                        .websocketsSetting(new WebsocketsSetting())
-                        .jspSetting(new JSPSetting()))
+                                          .websocketsSetting(new WebsocketsSetting())
+                                          .jspSetting(new JSPSetting()))
                 .handlerConfiguration(new HandlerConfiguration());
 
         return fraction;

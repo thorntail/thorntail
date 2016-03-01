@@ -31,16 +31,16 @@ public class JGroupsInVmTest {
     public void testCanFindKubePing() throws Exception {
         Container container = new Container();
         container.fraction(new JGroupsFraction()
-                .defaultChannel("swarm-jgroups")
-                .channel("swarm-jgroups", (c) -> {
-                    c.stack("udp");
-                })
-                .stack("udp", (s) -> {
-                    s.transport("UDP", (t) -> {
-                        t.socketBinding("jgroups-udp");
-                    });
-                    s.protocol("openshift.KUBE_PING");
-                }));
+                                   .defaultChannel("swarm-jgroups")
+                                   .channel("swarm-jgroups", (c) -> {
+                                       c.stack("udp");
+                                   })
+                                   .stack("udp", (s) -> {
+                                       s.transport("UDP", (t) -> {
+                                           t.socketBinding("jgroups-udp");
+                                       });
+                                       s.protocol("openshift.KUBE_PING");
+                                   }));
         container.start().stop();
     }
 }

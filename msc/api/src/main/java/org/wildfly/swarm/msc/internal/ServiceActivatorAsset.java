@@ -31,8 +31,6 @@ import org.jboss.shrinkwrap.api.asset.Asset;
  */
 public class ServiceActivatorAsset implements Asset {
 
-    private List<String> activators = new ArrayList<>();
-
     public ServiceActivatorAsset() {
 
     }
@@ -85,4 +83,6 @@ public class ServiceActivatorAsset implements Asset {
         return this.activators.toString();
 
     }
+
+    private List<String> activators = new ArrayList<>();
 }

@@ -113,59 +113,6 @@ public class PackageDetector {
 
     static class PackageCollector extends ClassVisitor {
 
-        private final Map<String, Set<String>> packages = new HashMap<>();
-
-        private String currentClass = null;
-
-        private final AnnotationVisitor ANNOTATION_VISITOR =
-                new AnnotationVisitor(Opcodes.ASM5) {
-                    @Override
-                    public void visit(final String __,
-                                      final Object value) {
-                        if (value instanceof Type) {
-                            addType((Type) value);
-                        }
-                    }
-
-                    @Override
-                    public void visitEnum(final String __,
-                                          final String desc,
-                                          final String ___) {
-                        addType(desc);
-                    }
-
-                    @Override
-                    public AnnotationVisitor visitAnnotation(final String __,
-                                                             final String desc) {
-                        addType(desc);
-
-                        return this;
-                    }
-
-                    @Override
-                    public AnnotationVisitor visitArray(final String __) {
-                        return this;
-                    }
-                };
-
-        private final SignatureVisitor SIGNATURE_VISITOR =
-                new SignatureVisitor(Opcodes.ASM5) {
-                    private String outerName;
-
-                    @Override
-                    public void visitClassType(final String name) {
-                        outerName = name;
-                        addInternalType(name);
-                    }
-
-                    @Override
-                    public void visitInnerClassType(final String name) {
-                        outerName += "$" + name;
-                        addInternalType(outerName);
-                    }
-                };
-
-
         public PackageCollector() {
             super(Opcodes.ASM5);
         }
@@ -511,6 +458,58 @@ public class PackageDetector {
                 addMethodTypes(handle.getDesc());
             }
         }
+
+        private final Map<String, Set<String>> packages = new HashMap<>();
+
+        private String currentClass = null;
+
+        private final AnnotationVisitor ANNOTATION_VISITOR =
+                new AnnotationVisitor(Opcodes.ASM5) {
+                    @Override
+                    public void visit(final String __,
+                                      final Object value) {
+                        if (value instanceof Type) {
+                            addType((Type) value);
+                        }
+                    }
+
+                    @Override
+                    public void visitEnum(final String __,
+                                          final String desc,
+                                          final String ___) {
+                        addType(desc);
+                    }
+
+                    @Override
+                    public AnnotationVisitor visitAnnotation(final String __,
+                                                             final String desc) {
+                        addType(desc);
+
+                        return this;
+                    }
+
+                    @Override
+                    public AnnotationVisitor visitArray(final String __) {
+                        return this;
+                    }
+                };
+
+        private final SignatureVisitor SIGNATURE_VISITOR =
+                new SignatureVisitor(Opcodes.ASM5) {
+                    @Override
+                    public void visitClassType(final String name) {
+                        outerName = name;
+                        addInternalType(name);
+                    }
+
+                    @Override
+                    public void visitInnerClassType(final String name) {
+                        outerName += "$" + name;
+                        addInternalType(outerName);
+                    }
+
+                    private String outerName;
+                };
 
     }
 }

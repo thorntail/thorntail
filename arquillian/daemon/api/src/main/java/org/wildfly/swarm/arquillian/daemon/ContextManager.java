@@ -34,8 +34,6 @@ import org.jboss.as.server.deployment.SetupAction;
  */
 final class ContextManager {
 
-    private final List<SetupAction> setupActions;
-
     ContextManager(List<SetupAction> setupActions) {
         final List<SetupAction> actions = new ArrayList<SetupAction>(setupActions);
         Collections.sort(actions, new Comparator<SetupAction>() {
@@ -96,4 +94,6 @@ final class ContextManager {
             throw new RuntimeException(exceptionToThrow);
         }
     }
+
+    private final List<SetupAction> setupActions;
 }

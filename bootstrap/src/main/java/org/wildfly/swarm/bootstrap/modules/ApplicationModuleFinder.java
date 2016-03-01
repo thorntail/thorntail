@@ -43,8 +43,6 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
     public final static String MODULE_NAME = "swarm.application";
 
-    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.application");
-
     public ApplicationModuleFinder() {
         super(MODULE_NAME);
     }
@@ -122,4 +120,6 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
             conf.apply(builder);
         }
     }
+
+    private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.application");
 }

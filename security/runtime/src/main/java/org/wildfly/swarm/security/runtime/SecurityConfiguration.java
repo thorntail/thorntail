@@ -49,15 +49,15 @@ public class SecurityConfiguration extends MarshallingServerConfiguration<Securi
     public SecurityFraction defaultFraction() {
         return new SecurityFraction()
                 .securityDomain(new SecurityDomain("other")
-                        .classicAuthentication(new ClassicAuthentication()
-                                .loginModule(new LoginModule("RealmDirect")
-                                                .code("RealmDirect")
-                                                .flag(Flag.REQUIRED)
-                                                .moduleOptions(new HashMap<Object, Object>() {{
-                                                    put("password-stacking", "useFirstPass");
-                                                }})
+                                        .classicAuthentication(new ClassicAuthentication()
+                                                                       .loginModule(new LoginModule("RealmDirect")
+                                                                                            .code("RealmDirect")
+                                                                                            .flag(Flag.REQUIRED)
+                                                                                            .moduleOptions(new HashMap<Object, Object>() {{
+                                                                                                put("password-stacking", "useFirstPass");
+                                                                                            }})
 
-                                )));
+                                                                       )));
     }
 
     @Override

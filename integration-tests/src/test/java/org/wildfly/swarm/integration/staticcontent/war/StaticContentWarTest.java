@@ -40,9 +40,6 @@ import static org.fest.assertions.Assertions.assertThat;
 @RunWith(Arquillian.class)
 public class StaticContentWarTest implements StaticContentCommonTests {
 
-    @Drone
-    WebDriver browser;
-
     @Deployment
     public static Archive createDeployment() throws Exception {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
@@ -73,4 +70,7 @@ public class StaticContentWarTest implements StaticContentCommonTests {
     public void assertNotFound(String path) throws Exception {
         assertThat(browser.getPageSource().contains("Not Found"));
     }
+
+    @Drone
+    WebDriver browser;
 }

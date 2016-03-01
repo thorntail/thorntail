@@ -24,12 +24,6 @@ import java.util.List;
  */
 public class SecurityConstraint {
 
-    private final String urlPattern;
-
-    private List<String> methods = new ArrayList<>();
-
-    private List<String> roles = new ArrayList<>();
-
     public SecurityConstraint() {
         this("/*");
     }
@@ -69,4 +63,10 @@ public class SecurityConstraint {
     public List<String> roles() {
         return this.roles;
     }
+
+    private final String urlPattern;
+
+    private List<String> methods = new ArrayList<>();
+
+    private List<String> roles = new ArrayList<>();
 }

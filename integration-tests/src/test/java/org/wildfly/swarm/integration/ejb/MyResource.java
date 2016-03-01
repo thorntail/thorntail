@@ -28,12 +28,12 @@ import javax.ws.rs.Produces;
 @Path("/")
 public class MyResource {
 
-    @EJB
-    private GreeterEJB greeter;
-
     @GET
     @Produces("text/plain")
     public String get() {
         return greeter.message();
     }
+
+    @EJB
+    private GreeterEJB greeter;
 }

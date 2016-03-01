@@ -70,13 +70,13 @@ import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.OutboundSocketBinding;
-import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.container.SocketBindingGroup;
+import org.wildfly.swarm.container.internal.Deployer;
+import org.wildfly.swarm.container.internal.Server;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
@@ -96,29 +96,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.POR
  */
 @SuppressWarnings("unused")
 public class RuntimeServer implements Server {
-
-    private SelfContainedContainer container = new SelfContainedContainer();
-
-    private SimpleContentProvider contentProvider = new SimpleContentProvider();
-
-    private ServiceContainer serviceContainer;
-
-    private ModelControllerClient client;
-
-    private RuntimeDeployer deployer;
-
-    private Map<Class<? extends Fraction>, ServerConfiguration> configByFractionType = new ConcurrentHashMap<>();
-
-    private List<ServerConfiguration<Fraction>> configList = new ArrayList<>();
-
-    // optional XML config
-    private Optional<URL> xmlConfig = Optional.empty();
-
-    private BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.runtime.server");
-
-    // TODO : still needed or merge error?
-    private boolean debug;
-
 
     @SuppressWarnings("unused")
     public RuntimeServer() {
@@ -147,7 +124,6 @@ public class RuntimeServer implements Server {
             throw new IllegalArgumentException("Invalid XML config");
         this.xmlConfig = Optional.of(xmlConfig);
     }
-
 
     public void debug(boolean debug) {
         this.debug = debug;
@@ -291,7 +267,7 @@ public class RuntimeServer implements Server {
     private void applyInterfaceDefaults(Container config) {
         if (config.ifaces().isEmpty()) {
             config.iface("public",
-                    SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
+                         SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
         }
     }
 
@@ -299,7 +275,7 @@ public class RuntimeServer implements Server {
         if (config.socketBindingGroups().isEmpty()) {
             config.socketBindingGroup(
                     new SocketBindingGroup("default-sockets", "public",
-                            SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
+                                           SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
             );
         }
 
@@ -592,6 +568,28 @@ public class RuntimeServer implements Server {
 
         }
     }
+
+    private SelfContainedContainer container = new SelfContainedContainer();
+
+    private SimpleContentProvider contentProvider = new SimpleContentProvider();
+
+    private ServiceContainer serviceContainer;
+
+    private ModelControllerClient client;
+
+    private RuntimeDeployer deployer;
+
+    private Map<Class<? extends Fraction>, ServerConfiguration> configByFractionType = new ConcurrentHashMap<>();
+
+    private List<ServerConfiguration<Fraction>> configList = new ArrayList<>();
+
+    // optional XML config
+    private Optional<URL> xmlConfig = Optional.empty();
+
+    private BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.runtime.server");
+
+    // TODO : still needed or merge error?
+    private boolean debug;
 
     @FunctionalInterface
     interface FractionProcessor<T> {

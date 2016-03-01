@@ -36,8 +36,6 @@ import org.jboss.staxmapper.XMLElementReader;
  */
 public abstract class AbstractParserFactory {
 
-    private static final String SUBSYSTEM = "subsystem";
-
     /**
      * Parsers retain the namespace, but the local part becomes 'subsystem'
      *
@@ -58,9 +56,9 @@ public abstract class AbstractParserFactory {
 
     public abstract Map<QName, XMLElementReader<List<ModelNode>>> create();
 
-    public class ParsingContext implements ExtensionParsingContext {
+    private static final String SUBSYSTEM = "subsystem";
 
-        Map<QName, XMLElementReader<List<ModelNode>>> parsers = new HashMap<>();
+    public class ParsingContext implements ExtensionParsingContext {
 
         public Map<QName, XMLElementReader<List<ModelNode>>> getParser() {
             return parsers;
@@ -86,5 +84,7 @@ public abstract class AbstractParserFactory {
         public void setProfileParsingCompletionHandler(ProfileParsingCompletionHandler profileParsingCompletionHandler) {
             // ignore
         }
+
+        Map<QName, XMLElementReader<List<ModelNode>>> parsers = new HashMap<>();
     }
 }

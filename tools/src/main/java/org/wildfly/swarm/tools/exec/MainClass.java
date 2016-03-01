@@ -23,8 +23,6 @@ import java.util.List;
  */
 public class MainClass implements Executable {
 
-    private final String className;
-
     public MainClass(String className) {
         this.className = className;
     }
@@ -33,4 +31,6 @@ public class MainClass implements Executable {
     public List<? extends String> toArguments() {
         return Collections.singletonList(this.className);
     }
+
+    private final String className;
 }

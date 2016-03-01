@@ -22,10 +22,6 @@ import org.wildfly.swarm.container.internal.BaseSocketBinding;
  */
 public class OutboundSocketBinding extends BaseSocketBinding {
 
-    private String hostExpr;
-
-    private String portExpr;
-
     public OutboundSocketBinding(String name) {
         super(name);
     }
@@ -52,6 +48,10 @@ public class OutboundSocketBinding extends BaseSocketBinding {
     public String remotePortExpression() {
         return this.portExpr;
     }
+
+    private String hostExpr;
+
+    private String portExpr;
 
 
 }

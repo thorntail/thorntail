@@ -36,19 +36,17 @@ import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
  */
 public class JBossDeploymentStructureAsset implements Asset {
 
-    private final JBossDeploymentStructureDescriptor descriptor;
-
     public JBossDeploymentStructureAsset() {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
-                        () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
+                         () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
     }
 
     public JBossDeploymentStructureAsset(InputStream fromStream) {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
-                        () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
-                                .fromStream(fromStream));
+                         () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
+                                 .fromStream(fromStream));
     }
 
     public void addModule(final String name, final String slot) {
@@ -97,4 +95,6 @@ public class JBossDeploymentStructureAsset implements Asset {
 
         return new ByteArrayInputStream(output.getBytes());
     }
+
+    private final JBossDeploymentStructureDescriptor descriptor;
 }

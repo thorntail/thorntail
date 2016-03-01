@@ -27,8 +27,6 @@ import org.jboss.as.domain.management.plugin.PlugInConfigurationSupport;
  */
 public class InMemoryAuthorizationPlugIn implements AuthorizationPlugIn, PlugInConfigurationSupport {
 
-    private Map<String, String[]> roles = new HashMap<>();
-
     @Override
     public void init(Map<String, String> configuration, Map<String, Object> sharedState) throws IOException {
 
@@ -56,5 +54,7 @@ public class InMemoryAuthorizationPlugIn implements AuthorizationPlugIn, PlugInC
 
         return this.roles.get(userName);
     }
+
+    private Map<String, String[]> roles = new HashMap<>();
 
 }

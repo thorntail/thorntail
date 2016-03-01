@@ -35,9 +35,9 @@ import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.container.internal.Deployer;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.BLOCKING_TIMEOUT;
@@ -53,18 +53,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
  * @author Bob McWhirter
  */
 public class RuntimeDeployer implements Deployer {
-
-    private final ModelControllerClient client;
-
-    private final SimpleContentProvider contentProvider;
-
-    private final List<ServerConfiguration<Fraction>> configurations;
-
-    private final TempFileProvider tempFileProvider;
-
-    private final List<Closeable> mountPoints = new ArrayList<>();
-
-    private boolean debug = false;
 
     public RuntimeDeployer(List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
         this.configurations = configurations;
@@ -115,11 +103,11 @@ public class RuntimeDeployer implements Deployer {
         deploymentAdd.get(RUNTIME_NAME).set(deployment.getName());
         deploymentAdd.get(ENABLED).set(true);
 
-        int deploymentTimeout = Integer.parseInt( System.getProperty( "swarm.deployment.timeout", "300"));
+        int deploymentTimeout = Integer.parseInt(System.getProperty("swarm.deployment.timeout", "300"));
 
         final ModelNode opHeaders = new ModelNode();
-        opHeaders.get( BLOCKING_TIMEOUT ).set( deploymentTimeout );
-        deploymentAdd.get( OPERATION_HEADERS ).set( opHeaders );
+        opHeaders.get(BLOCKING_TIMEOUT).set(deploymentTimeout);
+        deploymentAdd.get(OPERATION_HEADERS).set(opHeaders);
 
         ModelNode content = deploymentAdd.get(CONTENT).add();
         content.get(HASH).set(hash);
@@ -151,5 +139,17 @@ public class RuntimeDeployer implements Deployer {
         }
 
     }
+
+    private final ModelControllerClient client;
+
+    private final SimpleContentProvider contentProvider;
+
+    private final List<ServerConfiguration<Fraction>> configurations;
+
+    private final TempFileProvider tempFileProvider;
+
+    private final List<Closeable> mountPoints = new ArrayList<>();
+
+    private boolean debug = false;
 
 }

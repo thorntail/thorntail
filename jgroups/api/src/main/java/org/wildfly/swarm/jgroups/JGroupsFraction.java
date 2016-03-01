@@ -99,7 +99,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                 new SocketBinding("jgroups-udp")
                         .port(55200)
                         .multicastAddress(SwarmProperties.propertyVar(JGroupsProperties.DEFAULT_MULTICAST_ADDRESS,
-                                "230.0.0.4"))
+                                                                      "230.0.0.4"))
                         .multicastPort(45688));
 
         initContext.socketBinding(
@@ -110,7 +110,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                 new SocketBinding("jgroups-mping")
                         .port(0)
                         .multicastAddress(SwarmProperties.propertyVar(JGroupsProperties.DEFAULT_MULTICAST_ADDRESS,
-                                "230.0.0.4"))
+                                                                      "230.0.0.4"))
                         .multicastPort(45700));
 
         initContext.socketBinding(

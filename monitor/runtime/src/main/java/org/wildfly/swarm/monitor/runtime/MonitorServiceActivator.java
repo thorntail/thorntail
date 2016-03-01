@@ -28,16 +28,13 @@ import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.jboss.msc.service.ValueService;
-import org.jboss.msc.value.ImmediateValue;
 
 /**
  * Installs a monitoring service so we get hold of the MSC services
  * to access the management model and server environment.
  *
- * @see Monitor
- *
  * @author Heiko Braun
+ * @see Monitor
  */
 public class MonitorServiceActivator implements ServiceActivator {
 

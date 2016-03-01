@@ -23,6 +23,10 @@ import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
  */
 public class MavenResolvers {
 
+    public synchronized static MavenResolver get() {
+        return INSTANCE;
+    }
+
     private static final MultiMavenResolver INSTANCE = new MultiMavenResolver();
 
     static {
@@ -31,10 +35,6 @@ public class MavenResolvers {
             System.err.println("Dependencies not bundled, will resolve from local M2REPO");
             INSTANCE.addResolver(MavenResolver.createDefaultResolver());
         }
-    }
-
-    public synchronized static MavenResolver get() {
-        return INSTANCE;
     }
 
 }

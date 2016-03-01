@@ -22,8 +22,6 @@ import org.wildfly.swarm.config.management.security_realm.PlugInAuthorization;
  */
 public class InMemoryAuthorization {
 
-    private final PlugInAuthorization plugin;
-
     public InMemoryAuthorization(PlugInAuthorization plugin) {
         this.plugin = plugin;
     }
@@ -35,6 +33,8 @@ public class InMemoryAuthorization {
         });
 
     }
+
+    private final PlugInAuthorization plugin;
 
     @FunctionalInterface
     public interface Consumer {

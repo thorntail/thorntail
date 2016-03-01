@@ -32,14 +32,6 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.NamedContext;
  */
 public class DeploymentContext extends NamedContext {
 
-    private final InputStream socketInstream;
-
-    private final OutputStream socketOutstream;
-
-    private final BufferedReader reader;
-
-    private final PrintWriter writer;
-
     private DeploymentContext(final String deploymentName, final InputStream socketInstream,
                               final OutputStream socketOutstream, final BufferedReader reader, final PrintWriter writer) {
         super(deploymentName);
@@ -79,7 +71,7 @@ public class DeploymentContext extends NamedContext {
             throw new IllegalArgumentException("writer must be specified");
         }
         final DeploymentContext context = new DeploymentContext(deploymentName, socketInstream, socketOutstream,
-                reader, writer);
+                                                                reader, writer);
         return context;
     }
 
@@ -110,5 +102,13 @@ public class DeploymentContext extends NamedContext {
     public PrintWriter getWriter() {
         return writer;
     }
+
+    private final InputStream socketInstream;
+
+    private final OutputStream socketOutstream;
+
+    private final BufferedReader reader;
+
+    private final PrintWriter writer;
 
 }

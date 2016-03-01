@@ -33,10 +33,6 @@ public class WildFlySwarmDependenciesConf {
 
     public final static String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-dependencies.conf";
 
-    private List<MavenArtifactDescriptor> primaryDependencies = new ArrayList<>();
-
-    private List<MavenArtifactDescriptor> extraDependencies = new ArrayList<>();
-
     public WildFlySwarmDependenciesConf() {
 
     }
@@ -160,4 +156,8 @@ public class WildFlySwarmDependenciesConf {
 
         return null;
     }
+
+    private List<MavenArtifactDescriptor> primaryDependencies = new ArrayList<>();
+
+    private List<MavenArtifactDescriptor> extraDependencies = new ArrayList<>();
 }

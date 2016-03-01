@@ -28,8 +28,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public class ArtifactAsset implements ProjectAsset {
 
-    private final ArtifactSpec spec;
-
     public ArtifactAsset(ArtifactSpec spec) {
         this.spec = spec;
     }
@@ -56,4 +54,6 @@ public class ArtifactAsset implements ProjectAsset {
     public Archive<?> getArchive() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, spec.file);
     }
+
+    private final ArtifactSpec spec;
 }

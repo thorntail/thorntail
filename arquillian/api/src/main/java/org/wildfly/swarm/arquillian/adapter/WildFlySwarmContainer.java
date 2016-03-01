@@ -34,12 +34,6 @@ import org.wildfly.swarm.arquillian.daemon.container.DaemonDeployableContainerBa
  */
 public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonContainerConfigurationBase> {
 
-    private Set<String> requestedMavenArtifacts;
-
-    private SimpleContainer delegateContainer;
-
-    private Class<?> testClass;
-
     @Override
     public Class<DaemonContainerConfigurationBase> getConfigurationClass() {
         return DaemonContainerConfigurationBase.class;
@@ -104,4 +98,10 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     @Override
     public void undeploy(Descriptor descriptor) throws DeploymentException {
     }
+
+    private Set<String> requestedMavenArtifacts;
+
+    private SimpleContainer delegateContainer;
+
+    private Class<?> testClass;
 }
