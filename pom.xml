@@ -10,8 +10,8 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>core</artifactId>
-    <version>1.0.0.Alpha9-SNAPSHOT</version>
+    <artifactId>topology-parent</artifactId>
+    <version>1.0.0.Beta2</version>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -22,6 +22,13 @@
   <description>WildFly Swarm: Topology via OpenShift</description>
 
   <packaging>pom</packaging>
+
+  <scm>
+    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-openshift.git</connection>
+    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-openshift.git</developerConnection>
+    <url>https://github.com/wildfly-swarm/wildfly-swarm-topology-openshift</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
     <version.swarm.topology>1.0.0.Alpha9-SNAPSHOT</version.swarm.topology>
@@ -46,33 +53,18 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-modules</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology-runtime</artifactId>
-        <version>${version.swarm.topology}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-openshift</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-openshift-modules</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-openshift-runtime</artifactId>
-        <version>${project.version}</version>
+        <version>1.0.0.Alpha9-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.openshift</groupId>
