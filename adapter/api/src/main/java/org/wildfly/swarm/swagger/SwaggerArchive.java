@@ -116,6 +116,7 @@ public interface SwaggerArchive extends Assignable {
 
     /**
      * Determine if the archive has been configured for scanning
+     *
      * @return true if the packages to be scanned have been configured
      */
     public boolean hasResourcePackages();

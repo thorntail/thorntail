@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.swagger.runtime;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +23,6 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.swagger.SwaggerArchive;

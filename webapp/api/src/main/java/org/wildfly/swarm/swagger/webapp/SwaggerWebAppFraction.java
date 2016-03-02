@@ -15,19 +15,18 @@
  */
 package org.wildfly.swarm.swagger.webapp;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.undertow.UndertowProperties;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 
 /**
@@ -36,21 +35,6 @@ import java.util.Properties;
 public class SwaggerWebAppFraction implements Fraction {
 
     public static final String VERSION;
-
-    static {
-        InputStream in = SwaggerWebAppFraction.class.getClassLoader().getResourceAsStream("swagger-webapp.properties");
-        Properties props = new Properties();
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        VERSION = props.getProperty("version", "unknown");
-    }
-
-    private final String DEFAULT_CONTEXT = "/swagger-ui";
-    private String context = DEFAULT_CONTEXT;
 
     public SwaggerWebAppFraction() {
         context = System.getProperty(UndertowProperties.CONTEXT_PATH, DEFAULT_CONTEXT);
@@ -68,9 +52,9 @@ public class SwaggerWebAppFraction implements Fraction {
      * Allows customization of the swagger-ui web interface.
      * The String provided can be one of either:
      *
-     *   - Path to a directory on disk
-     *   - Path to a jar/war/zip file on disk
-     *   - A GAV string with maven coordinates
+     * - Path to a directory on disk
+     * - Path to a jar/war/zip file on disk
+     * - A GAV string with maven coordinates
      *
      * @param content The location of the web resources (see above)
      * @return this
@@ -107,6 +91,22 @@ public class SwaggerWebAppFraction implements Fraction {
         archive.as(ExplodedImporter.class).importDirectory(directory);
         return archive;
     }
+
+    static {
+        InputStream in = SwaggerWebAppFraction.class.getClassLoader().getResourceAsStream("swagger-webapp.properties");
+        Properties props = new Properties();
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty("version", "unknown");
+    }
+
+    private final String DEFAULT_CONTEXT = "/swagger-ui";
+
+    private String context = DEFAULT_CONTEXT;
 
     private Archive<?> webContent;
 }

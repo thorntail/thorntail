@@ -30,8 +30,6 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
 
     public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.runtime.SwaggerActivator";
 
-    private SwaggerConfigurationAsset configurationAsset;
-
     public SwaggerArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
 
@@ -41,21 +39,6 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
         }
 
         loadOrCreateConfigurationAsset();
-    }
-
-    private void loadOrCreateConfigurationAsset() {
-        Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
-        if (node != null) {
-            Asset asset = node.getAsset();
-            if (asset instanceof SwaggerConfigurationAsset) {
-                this.configurationAsset = (SwaggerConfigurationAsset) asset;
-            } else {
-                this.configurationAsset = new SwaggerConfigurationAsset(asset.openStream());
-            }
-        } else {
-            this.configurationAsset = new SwaggerConfigurationAsset();
-            getArchive().add(this.configurationAsset, SWAGGER_CONFIGURATION_PATH);
-        }
     }
 
     public SwaggerConfigurationAsset getConfigurationAsset() {
@@ -138,4 +121,21 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
     public boolean hasResourcePackages() {
         return getConfigurationAsset().getResourcePackages() != null;
     }
+
+    private void loadOrCreateConfigurationAsset() {
+        Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
+        if (node != null) {
+            Asset asset = node.getAsset();
+            if (asset instanceof SwaggerConfigurationAsset) {
+                this.configurationAsset = (SwaggerConfigurationAsset) asset;
+            } else {
+                this.configurationAsset = new SwaggerConfigurationAsset(asset.openStream());
+            }
+        } else {
+            this.configurationAsset = new SwaggerConfigurationAsset();
+            getArchive().add(this.configurationAsset, SWAGGER_CONFIGURATION_PATH);
+        }
+    }
+
+    private SwaggerConfigurationAsset configurationAsset;
 }

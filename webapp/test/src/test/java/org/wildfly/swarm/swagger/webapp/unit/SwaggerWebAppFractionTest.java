@@ -18,11 +18,9 @@ package org.wildfly.swarm.swagger.webapp.unit;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.junit.Test;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
 
 import static org.fest.assertions.Assertions.assertThat;
-
 
 
 /**

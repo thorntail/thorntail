@@ -28,8 +28,6 @@ import java.util.Set;
  */
 public class SwaggerConfig {
 
-    private final HashMap<Key, Object> config = new HashMap<>();
-
     public SwaggerConfig(InputStream input) {
         BufferedReader in = new BufferedReader(new InputStreamReader(input));
         String line;
@@ -75,6 +73,8 @@ public class SwaggerConfig {
     public Set<Map.Entry<Key, Object>> entrySet() {
         return config.entrySet();
     }
+
+    private final HashMap<Key, Object> config = new HashMap<>();
 
     public enum Key {
         TITLE,

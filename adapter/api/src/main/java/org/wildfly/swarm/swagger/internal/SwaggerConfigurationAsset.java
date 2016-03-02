@@ -28,8 +28,6 @@ import org.wildfly.swarm.swagger.SwaggerConfig;
  */
 public class SwaggerConfigurationAsset implements Asset {
 
-    private final SwaggerConfig configuration;
-
     public SwaggerConfigurationAsset() {
         configuration = new SwaggerConfig();
     }
@@ -72,7 +70,6 @@ public class SwaggerConfigurationAsset implements Asset {
         return this;
     }
 
-
     public SwaggerConfigurationAsset setContact(String contact) {
         configuration.put(SwaggerConfig.Key.CONTACT, contact);
         return this;
@@ -112,6 +109,10 @@ public class SwaggerConfigurationAsset implements Asset {
         configuration.put(SwaggerConfig.Key.PRETTY_PRINT, prettyPrint);
     }
 
+    public String[] getResourcePackages() {
+        return (String[]) configuration.get(SwaggerConfig.Key.PACKAGES);
+    }
+
     private String valueFor(Object value) {
         if (value instanceof String[]) {
             StringBuilder buf = new StringBuilder();
@@ -125,8 +126,5 @@ public class SwaggerConfigurationAsset implements Asset {
         return value.toString();
     }
 
-
-    public String[] getResourcePackages() {
-        return (String[]) configuration.get(SwaggerConfig.Key.PACKAGES);
-    }
+    private final SwaggerConfig configuration;
 }

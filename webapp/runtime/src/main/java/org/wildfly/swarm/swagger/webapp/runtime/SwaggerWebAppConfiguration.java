@@ -15,11 +15,8 @@
  */
 package org.wildfly.swarm.swagger.webapp.runtime;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.Swarm;
@@ -43,10 +40,10 @@ public class SwaggerWebAppConfiguration extends AbstractServerConfiguration<Swag
             // Get the swagger-ui bits as an Archive
             String gav = "org.wildfly.swarm:swagger-webapp-ui:war:" + SwaggerWebAppFraction.VERSION;
 
-            System.err.println( "gav: " + gav );
+            System.err.println("gav: " + gav);
 
             WARArchive war = Swarm.artifact(gav,
-                    "swagger-webapp-ui.war")
+                                            "swagger-webapp-ui.war")
                     .as(WARArchive.class)
                     .setContextRoot(fraction.getContext());
 
