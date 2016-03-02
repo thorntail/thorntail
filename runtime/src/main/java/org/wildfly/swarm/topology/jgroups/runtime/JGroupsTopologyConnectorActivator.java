@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.topology.jgroups.runtime;
 
-import org.jboss.as.network.SocketBinding;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceName;

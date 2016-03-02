@@ -23,8 +23,6 @@ import org.wildfly.swarm.topology.runtime.Registration;
  */
 public class AdvertiseCommand implements Command<Void, JGroupsTopologyConnector> {
 
-    private Registration registration;
-
     public AdvertiseCommand(Registration registration) {
         this.registration = registration;
     }
@@ -34,4 +32,6 @@ public class AdvertiseCommand implements Command<Void, JGroupsTopologyConnector>
         context.register(this.registration);
         return null;
     }
+
+    private Registration registration;
 }

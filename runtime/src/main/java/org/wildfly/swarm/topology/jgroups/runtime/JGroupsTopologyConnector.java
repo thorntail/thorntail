@@ -40,20 +40,8 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  */
 public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnector>, Group.Listener, TopologyConnector {
 
-    private InjectedValue<CommandDispatcherFactory> commandDispatcherFactoryInjector = new InjectedValue<>();
-
-    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
-
-    private CommandDispatcher<JGroupsTopologyConnector> dispatcher;
-
-    private Node node;
-
-    private Map<String, Registration> registrations = new ConcurrentHashMap<>();
-
-
     public JGroupsTopologyConnector() {
     }
-
 
     public Injector<CommandDispatcherFactory> getCommandDispatcherFactoryInjector() {
         return this.commandDispatcherFactoryInjector;
@@ -70,7 +58,6 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         this.node = this.commandDispatcherFactoryInjector.getValue().getGroup().getLocalNode();
         requestAdvertisements();
     }
-
 
     @Override
     public void stop(StopContext stopContext) {
@@ -93,6 +80,29 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         });
     }
 
+    public synchronized void advertise(String name, SocketBinding binding, String... tags) {
+        Registration registration = new Registration(sourceKey(this.node), name, binding.getAddress().getHostAddress(), binding.getAbsolutePort(), tags);
+
+        this.registrations.put(name + ":" + binding.getName(), registration);
+        advertise(registration);
+    }
+
+    public synchronized void advertise(Registration registration) {
+        this.topologyManagerInjector.getValue().register(registration);
+        doAdvertise(registration);
+    }
+
+    public synchronized void unadvertise(String appName, SocketBinding binding) {
+        Registration registration = this.registrations.remove(appName + ":" + binding.getName());
+        if (registration != null) {
+            try {
+                this.dispatcher.submitOnCluster(new UnadvertiseCommand(registration));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     protected void requestAdvertisements() {
         try {
             this.dispatcher.submitOnCluster(new RequestAdvertisementsCommand(), this.node);
@@ -107,34 +117,11 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         }
     }
 
-    public synchronized void advertise(String name, SocketBinding binding, String... tags) {
-        Registration registration = new Registration(sourceKey(this.node), name, binding.getAddress().getHostAddress(), binding.getAbsolutePort(), tags);
-
-        this.registrations.put(name + ":" + binding.getName(), registration);
-        advertise(registration);
-    }
-
-    public synchronized void advertise(Registration registration) {
-        this.topologyManagerInjector.getValue().register(registration);
-        doAdvertise(registration);
-    }
-
     protected void doAdvertise(Registration registration) {
         try {
             this.dispatcher.submitOnCluster(new AdvertiseCommand(registration));
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public synchronized void unadvertise(String appName, SocketBinding binding) {
-        Registration registration = this.registrations.remove(appName + ":" + binding.getName());
-        if (registration != null) {
-            try {
-                this.dispatcher.submitOnCluster(new UnadvertiseCommand(registration));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -150,5 +137,15 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         return node.getName() + ":" + node.getSocketAddress().toString();
 
     }
+
+    private InjectedValue<CommandDispatcherFactory> commandDispatcherFactoryInjector = new InjectedValue<>();
+
+    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
+
+    private CommandDispatcher<JGroupsTopologyConnector> dispatcher;
+
+    private Node node;
+
+    private Map<String, Registration> registrations = new ConcurrentHashMap<>();
 
 }

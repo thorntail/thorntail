@@ -23,8 +23,6 @@ import org.wildfly.swarm.topology.runtime.Registration;
  */
 public class UnadvertiseCommand implements Command<Void, JGroupsTopologyConnector> {
 
-    private final Registration registration;
-
     public UnadvertiseCommand(Registration registration) {
         this.registration = registration;
     }
@@ -34,4 +32,6 @@ public class UnadvertiseCommand implements Command<Void, JGroupsTopologyConnecto
         context.unregister(this.registration);
         return null;
     }
+
+    private final Registration registration;
 }
