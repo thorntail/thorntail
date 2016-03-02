@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.JARArchive;
 

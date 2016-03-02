@@ -22,7 +22,7 @@
   <dependencies>
     <system export="true">
       <paths>
-        <path name="org/wildfly/camel/swarm/core"/>
+        <path name="org/wildfly/swarm/camel/core"/>
       </paths>
     </system>
 

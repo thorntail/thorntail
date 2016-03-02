@@ -17,10 +17,10 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.camel.swarm.servlet;
+package org.wildfly.swarm.camel.web;
 
-import org.wildfly.camel.swarm.core.CamelCoreFraction;
+import org.wildfly.swarm.camel.core.CamelCoreFraction;
 
-public class CamelServletFraction extends CamelCoreFraction {
+public class CamelWebFraction extends CamelCoreFraction {
 
 }

@@ -33,11 +33,11 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.camel.swarm.servlet.CamelServletFraction;
 import org.wildfly.camel.swarm.tests.jaxrs.subA.GreetingService;
 import org.wildfly.camel.swarm.tests.jaxrs.subA.RestApplication;
 import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.camel.web.CamelWebFraction;
 import org.wildfly.swarm.container.Container;
 
 @CamelAware
@@ -55,7 +55,7 @@ public class JAXRSProducerTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new CamelServletFraction());
+        return new Container().fraction(new CamelWebFraction());
     }
 
     @Test

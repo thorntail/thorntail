@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.camel.swarm.core.runtime;
+package org.wildfly.swarm.camel.core.runtime;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
@@ -31,7 +31,7 @@ import java.util.List;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.camel.swarm.core.CamelCoreFraction;
+import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 
 public class CamelCoreConfiguration extends AbstractServerConfiguration<CamelCoreFraction> {
