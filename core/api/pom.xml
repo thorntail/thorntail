@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Camel Subsystem
+  Wildfly Swarm :: Camel Core API
   %%
-  Copyright (C) 2013 - 2014 RedHat
+  Copyright (C) 2016 RedHat
   %%
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
     <version>1.0.0.Beta3-SNAPSHOT</version>
   </parent>
 
-    <name>Wildfly Swarm: Camel Core API</name>
+    <name>Wildfly Swarm :: Camel Core API</name>
     
     <artifactId>camel-core-api</artifactId>
 
