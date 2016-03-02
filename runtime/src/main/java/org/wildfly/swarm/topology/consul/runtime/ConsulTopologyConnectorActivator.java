@@ -17,10 +17,8 @@ package org.wildfly.swarm.topology.consul.runtime;
 
 import java.net.URL;
 
-import org.jboss.as.network.SocketBinding;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.runtime.TopologyConnector;
@@ -33,8 +31,6 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  * @author Bob McWhirter
  */
 public class ConsulTopologyConnectorActivator implements ServiceActivator {
-
-    private final URL url;
 
     public ConsulTopologyConnectorActivator(URL url) {
         this.url = url;
@@ -51,4 +47,6 @@ public class ConsulTopologyConnectorActivator implements ServiceActivator {
                 .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
                 .install();
     }
+
+    private final URL url;
 }

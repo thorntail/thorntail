@@ -35,10 +35,6 @@ public class HealthClientService implements Service<HealthClient> {
 
     public static final ServiceName SERIVCE_NAME = ConsulService.SERVICE_NAME.append("health-client");
 
-    private InjectedValue<Consul> consulInjector = new InjectedValue<>();
-
-    private HealthClient healthClient;
-
     public Injector<Consul> getConsulInjector() {
         return this.consulInjector;
     }
@@ -57,4 +53,8 @@ public class HealthClientService implements Service<HealthClient> {
     public HealthClient getValue() throws IllegalStateException, IllegalArgumentException {
         return this.healthClient;
     }
+
+    private InjectedValue<Consul> consulInjector = new InjectedValue<>();
+
+    private HealthClient healthClient;
 }

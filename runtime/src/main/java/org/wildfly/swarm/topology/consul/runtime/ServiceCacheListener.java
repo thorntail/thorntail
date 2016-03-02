@@ -15,15 +15,12 @@
  */
 package org.wildfly.swarm.topology.consul.runtime;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ConsulCache.Listener;
-import com.orbitz.consul.model.health.Service;
 import com.orbitz.consul.model.health.ServiceHealth;
 import org.wildfly.swarm.topology.runtime.Registration;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
@@ -40,10 +37,6 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  */
 public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth> {
 
-    private final String name;
-
-    private final TopologyManager topologyManager;
-
     public ServiceCacheListener(String name, TopologyManager topologyManager) {
         this.name = name;
         this.topologyManager = topologyManager;
@@ -55,9 +48,9 @@ public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth
 
         Set<Registration> newEntries = newValues.values().stream()
                 .map(e -> new Registration("consul",
-                        this.name,
-                        e.getService().getAddress(),
-                        e.getService().getPort())
+                                           this.name,
+                                           e.getService().getAddress(),
+                                           e.getService().getPort())
                         .addTags(e.getService().getTags())
                 )
                 .collect(Collectors.toSet());
@@ -74,4 +67,8 @@ public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth
                     this.topologyManager.register(e);
                 });
     }
+
+    private final String name;
+
+    private final TopologyManager topologyManager;
 }

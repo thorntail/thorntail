@@ -33,24 +33,6 @@ import org.wildfly.swarm.container.Fraction;
 public class ConsulTopologyFraction implements Fraction {
 
     /**
-     * The default consul Agent URL (http://localhost:8500/)
-     */
-    private static final URL DEFAULT_URL;
-
-    static {
-        URL tmp = null;
-        try {
-            String consulUrl = System.getProperty(SwarmProperties.CONSUL_URL, "http://localhost:8500/");
-            tmp = new URL(consulUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        DEFAULT_URL = tmp;
-    }
-
-    private URL url = null;
-
-    /**
      * Construct a default fraction using the default agent URL of http://localhost:8500/.
      */
     public ConsulTopologyFraction() {
@@ -106,6 +88,24 @@ public class ConsulTopologyFraction implements Fraction {
     public URL url() {
         return this.url;
     }
+
+    /**
+     * The default consul Agent URL (http://localhost:8500/)
+     */
+    private static final URL DEFAULT_URL;
+
+    static {
+        URL tmp = null;
+        try {
+            String consulUrl = System.getProperty(SwarmProperties.CONSUL_URL, "http://localhost:8500/");
+            tmp = new URL(consulUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        DEFAULT_URL = tmp;
+    }
+
+    private URL url = null;
 
 
 }

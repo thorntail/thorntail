@@ -15,13 +15,8 @@
  */
 package org.wildfly.swarm.topology.consul.runtime;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -35,7 +30,6 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.wildfly.swarm.container.SocketBinding;
 import org.wildfly.swarm.topology.runtime.Registration;
 
 /**
@@ -47,14 +41,6 @@ import org.wildfly.swarm.topology.runtime.Registration;
 public class Advertiser implements Service<Advertiser>, Runnable {
 
     public static final ServiceName SERVICE_NAME = ConsulService.SERVICE_NAME.append("advertiser");
-
-    private static final Logger log = Logger.getLogger(Advertiser.class.getName());
-
-    private InjectedValue<AgentClient> agentClientInjector = new InjectedValue<>();
-
-    private Set<Registration> advertisements = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
-    private Thread thread;
 
     public Injector<AgentClient> getAgentClientInjector() {
         return this.agentClientInjector;
@@ -81,7 +67,7 @@ public class Advertiser implements Service<Advertiser>, Runnable {
     }
 
     public void unadvertise(String name, String address, int port) {
-        this.advertisements.removeIf( e->e.getName().equals( name)  && e.getAddress().equals( address ) && e.getPort() == port );
+        this.advertisements.removeIf(e -> e.getName().equals(name) && e.getAddress().equals(address) && e.getPort() == port);
     }
 
     @Override
@@ -128,4 +114,12 @@ public class Advertiser implements Service<Advertiser>, Runnable {
     private String serviceId(Registration registration) {
         return registration.getName() + ":" + registration.getAddress() + ":" + registration.getPort();
     }
+
+    private static final Logger log = Logger.getLogger(Advertiser.class.getName());
+
+    private InjectedValue<AgentClient> agentClientInjector = new InjectedValue<>();
+
+    private Set<Registration> advertisements = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    private Thread thread;
 }

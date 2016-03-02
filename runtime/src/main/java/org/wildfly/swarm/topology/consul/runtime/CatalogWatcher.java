@@ -55,16 +55,6 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
 
     public static final ServiceName SERVICE_NAME = ConsulService.SERVICE_NAME.append("catalog-watcher");
 
-    private InjectedValue<CatalogClient> catalogClientInjector = new InjectedValue<>();
-
-    private InjectedValue<HealthClient> healthClientInjector = new InjectedValue<>();
-
-    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
-
-    private Thread thread;
-
-    private Map<String, ServiceHealthCache> watchers = new HashMap<>();
-
     public Injector<CatalogClient> getCatalogClientInjector() {
         return this.catalogClientInjector;
     }
@@ -162,4 +152,14 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
             e.printStackTrace();
         }
     }
+
+    private InjectedValue<CatalogClient> catalogClientInjector = new InjectedValue<>();
+
+    private InjectedValue<HealthClient> healthClientInjector = new InjectedValue<>();
+
+    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
+
+    private Thread thread;
+
+    private Map<String, ServiceHealthCache> watchers = new HashMap<>();
 }

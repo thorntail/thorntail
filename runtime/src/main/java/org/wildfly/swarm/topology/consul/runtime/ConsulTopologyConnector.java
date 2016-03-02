@@ -45,12 +45,6 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  */
 public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>, TopologyConnector {
 
-    private final URL url;
-
-    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
-
-    private Advertiser advertiser;
-
     public ConsulTopologyConnector(URL url) {
         this.url = url;
     }
@@ -60,14 +54,14 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
     }
 
     @Override
-    public void advertise(String name, SocketBinding binding, String...tags) {
-        Registration registration = new Registration("consul", name, binding.getAddress().getHostAddress(), binding.getAbsolutePort(), tags );
+    public void advertise(String name, SocketBinding binding, String... tags) {
+        Registration registration = new Registration("consul", name, binding.getAddress().getHostAddress(), binding.getAbsolutePort(), tags);
         this.advertiser.advertise(registration);
     }
 
     @Override
     public void unadvertise(String name, SocketBinding binding) {
-        this.advertiser.unadvertise(name, binding.getAddress().getHostAddress(), binding.getAbsolutePort() );
+        this.advertiser.unadvertise(name, binding.getAddress().getHostAddress(), binding.getAbsolutePort());
     }
 
     @Override
@@ -116,4 +110,10 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
     public ConsulTopologyConnector getValue() throws IllegalStateException, IllegalArgumentException {
         return this;
     }
+
+    private final URL url;
+
+    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
+
+    private Advertiser advertiser;
 }

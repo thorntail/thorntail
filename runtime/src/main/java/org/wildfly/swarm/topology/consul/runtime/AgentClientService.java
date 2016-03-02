@@ -35,10 +35,6 @@ public class AgentClientService implements Service<AgentClient> {
 
     public static final ServiceName SERVICE_NAME = ConsulService.SERVICE_NAME.append("agent-client");
 
-    private InjectedValue<Consul> consulInjector = new InjectedValue<>();
-
-    private AgentClient client;
-
     public Injector<Consul> getConsulInjector() {
         return this.consulInjector;
     }
@@ -57,4 +53,8 @@ public class AgentClientService implements Service<AgentClient> {
     public AgentClient getValue() throws IllegalStateException, IllegalArgumentException {
         return this.client;
     }
+
+    private InjectedValue<Consul> consulInjector = new InjectedValue<>();
+
+    private AgentClient client;
 }

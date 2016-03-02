@@ -35,10 +35,6 @@ public class ConsulService implements Service<Consul> {
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm.topology.consul");
 
-    private final URL url;
-
-    private Consul consul;
-
     public ConsulService(URL url) {
         this.url = url;
     }
@@ -59,7 +55,7 @@ public class ConsulService implements Service<Consul> {
         try {
             this.consul = builder.build();
         } catch (Exception e) {
-            throw new StartException("Failed to connect consul at "+url, e);
+            throw new StartException("Failed to connect consul at " + url, e);
         }
     }
 
@@ -72,4 +68,8 @@ public class ConsulService implements Service<Consul> {
     public Consul getValue() throws IllegalStateException, IllegalArgumentException {
         return this.consul;
     }
+
+    private final URL url;
+
+    private Consul consul;
 }
