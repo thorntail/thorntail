@@ -1,0 +1,6 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.camel.web" slot="runtime">
+
+    <dependencies>
+        <module name="org.wildfly.swarm.camel.core" slot="runtime" />
+    </dependencies>
+</module>

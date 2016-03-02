@@ -1,0 +1,13 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.camel.core">
+
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/camel/swarm/core"/>
+      </paths>
+    </system>
+
+    <module name="org.wildfly.swarm.camel.core" slot="api" export="true" services="export"/>
+
+  </dependencies>
+</module>

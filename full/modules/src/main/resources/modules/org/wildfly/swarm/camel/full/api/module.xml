@@ -1,0 +1,15 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.camel.full" slot="api">
+
+    <resources>
+        <artifact name="org.wildfly.swarm:camel-full-api:${project.version}" />
+    </resources>
+
+    <dependencies>
+        <module name="org.apache.camel.component.ejb" />
+        <module name="org.wildfly.swarm.camel.web" />
+        <module name="org.wildfly.extension.camel.cdi" />
+        <module name="org.wildfly.extension.camel.ee" />
+        <module name="org.wildfly.extension.camel.security" />
+        <module name="org.wildfly.extension.camel.undertow" />
+    </dependencies>
+</module>
