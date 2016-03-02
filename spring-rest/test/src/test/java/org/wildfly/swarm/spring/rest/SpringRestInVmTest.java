@@ -17,7 +17,6 @@ package org.wildfly.swarm.spring.rest;
 
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.spring.SpringFraction;
 
 /**
  * @author Ken Finnigan

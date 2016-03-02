@@ -18,7 +18,6 @@ package org.wildfly.swarm.spring;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.spring.SpringFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
