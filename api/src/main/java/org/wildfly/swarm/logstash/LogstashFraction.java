@@ -29,12 +29,6 @@ import org.wildfly.swarm.logging.LoggingFraction;
  */
 public class LogstashFraction implements Fraction {
 
-    private Properties handlerProperties = new Properties();
-
-    private Properties formatterProperties = new Properties();
-
-    private Level level;
-
     public LogstashFraction() {
         this("metaData", "wildflySwarmNode=${jboss.node.name}");
         hostname(SwarmProperties.propertyVar("logstash.host"));
@@ -97,9 +91,15 @@ public class LogstashFraction implements Fraction {
                 .namedFormatter("logstash")
                 .properties(handlerProperties);
         initContext.fraction(new LoggingFraction()
-                .customFormatter("logstash", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.formatters.LogstashFormatter", this.formatterProperties)
-                .customHandler(logstashHandler)
-                .rootLogger(this.level, logstashHandler.getKey()));
+                                     .customFormatter("logstash", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.formatters.LogstashFormatter", this.formatterProperties)
+                                     .customHandler(logstashHandler)
+                                     .rootLogger(this.level, logstashHandler.getKey()));
     }
+
+    private Properties handlerProperties = new Properties();
+
+    private Properties formatterProperties = new Properties();
+
+    private Level level;
 
 }
