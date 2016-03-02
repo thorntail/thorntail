@@ -18,7 +18,6 @@ package org.wildfly.swarm.topology.webapp.runtime;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -48,10 +47,6 @@ import org.wildfly.swarm.topology.TopologyListener;
  */
 @WebServlet(urlPatterns = {"/system/stream"}, asyncSupported = true)
 public class TopologySSEServlet extends HttpServlet {
-
-    private Topology topology;
-
-    private ScheduledExecutorService keepAliveExecutor;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -89,17 +84,17 @@ public class TopologySSEServlet extends HttpServlet {
         };
 
         ScheduledFuture keepAlive = this.keepAliveExecutor.scheduleAtFixedRate(() -> {
-                    try {
-                        writer.write(":\n\n");
-                        writer.flush();
-                    } catch (Throwable t) {
-                        TopologySSEServlet.this.topology.removeListener(topologyListener);
-                        throw t;
-                    }
-                },
-                10,
-                15,
-                TimeUnit.SECONDS);
+                                                                                   try {
+                                                                                       writer.write(":\n\n");
+                                                                                       writer.flush();
+                                                                                   } catch (Throwable t) {
+                                                                                       TopologySSEServlet.this.topology.removeListener(topologyListener);
+                                                                                       throw t;
+                                                                                   }
+                                                                               },
+                                                                               10,
+                                                                               15,
+                                                                               TimeUnit.SECONDS);
 
 
         asyncContext.setTimeout(0);
@@ -196,4 +191,8 @@ public class TopologySSEServlet extends HttpServlet {
         json.append("]");
         json.append("}");
     }
+
+    private Topology topology;
+
+    private ScheduledExecutorService keepAliveExecutor;
 }

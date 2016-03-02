@@ -33,8 +33,6 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
 
     public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.topology.runtime.RegistrationAdvertiserActivator";
 
-    private List<String> serviceNames = new ArrayList<>();
-
     /**
      * Constructs a new instance using the underlying specified archive, which is required
      *
@@ -42,18 +40,6 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
      */
     public TopologyArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
-    }
-
-    protected List<String> getServiceNames() {
-        if (!this.serviceNames.isEmpty()) {
-            return this.serviceNames;
-        }
-        String archiveName = this.getArchive().getName();
-        int lastDotLoc = archiveName.lastIndexOf('.');
-        if (lastDotLoc > 0) {
-            return Collections.singletonList(archiveName.substring(0, lastDotLoc));
-        }
-        return Collections.singletonList(archiveName);
     }
 
     @Override
@@ -69,6 +55,18 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
         }
 
         return advertise();
+    }
+
+    protected List<String> getServiceNames() {
+        if (!this.serviceNames.isEmpty()) {
+            return this.serviceNames;
+        }
+        String archiveName = this.getArchive().getName();
+        int lastDotLoc = archiveName.lastIndexOf('.');
+        if (lastDotLoc > 0) {
+            return Collections.singletonList(archiveName.substring(0, lastDotLoc));
+        }
+        return Collections.singletonList(archiveName);
     }
 
     protected TopologyArchive doAdvertise() {
@@ -87,6 +85,8 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
         as(JARArchive.class).add(new StringAsset(buf.toString()), REGISTRATION_CONF);
         return this;
     }
+
+    private List<String> serviceNames = new ArrayList<>();
 
 
 }

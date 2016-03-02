@@ -51,8 +51,8 @@ public class RegistrationAdvertiserActivator implements ServiceActivator {
             while ((serviceName = reader.readLine()) != null) {
                 serviceName = serviceName.trim();
                 if (!serviceName.isEmpty()) {
-                    installAdvertiser( target, serviceName, "http" );
-                    installAdvertiser( target, serviceName, "https" );
+                    installAdvertiser(target, serviceName, "http");
+                    installAdvertiser(target, serviceName, "https");
                 }
             }
 
@@ -62,12 +62,12 @@ public class RegistrationAdvertiserActivator implements ServiceActivator {
     }
 
     private void installAdvertiser(ServiceTarget target, String serviceName, String socketBindingName) {
-        ServiceName socketBinding = ServiceName.parse("org.wildfly.network.socket-binding." + socketBindingName );
-        RegistrationAdvertiser advertiser = new RegistrationAdvertiser( serviceName, socketBindingName );
+        ServiceName socketBinding = ServiceName.parse("org.wildfly.network.socket-binding." + socketBindingName);
+        RegistrationAdvertiser advertiser = new RegistrationAdvertiser(serviceName, socketBindingName);
 
         target.addService(ServiceName.of("swarm", "topology", "register", serviceName, socketBindingName), advertiser)
                 .addDependency(TopologyConnector.SERVICE_NAME, TopologyConnector.class, advertiser.getTopologyConnectorInjector())
-                .addDependency( socketBinding, SocketBinding.class, advertiser.getSocketBindingInjector() )
+                .addDependency(socketBinding, SocketBinding.class, advertiser.getSocketBindingInjector())
                 .setInitialMode(ServiceController.Mode.PASSIVE)
                 .install();
     }

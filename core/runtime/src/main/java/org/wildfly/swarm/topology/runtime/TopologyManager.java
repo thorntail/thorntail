@@ -38,32 +38,12 @@ public class TopologyManager implements Topology {
 
     public static final TopologyManager INSTANCE = new TopologyManager();
 
-    private List<TopologyListener> listeners = new ArrayList<>();
-
-    private List<Registration> registrations = new ArrayList<>();
-
-    private Executor executor = Executors.newFixedThreadPool(2);
-
     public synchronized void addListener(TopologyListener listener) {
         this.listeners.add(listener);
     }
 
     public synchronized void removeListener(TopologyListener listener) {
         this.listeners.remove(listener);
-    }
-
-    private void fireListeners() {
-        List<TopologyListener> currentListeners = new ArrayList<>();
-        currentListeners.addAll(this.listeners);
-        currentListeners.forEach((e) -> {
-            executor.execute(() -> {
-                try {
-                    e.onChange(this);
-                } catch (Throwable t) {
-                    removeListener(e);
-                }
-            });
-        });
     }
 
     public synchronized Set<Registration> registrationsForSourceKey(String sourceKey) {
@@ -88,7 +68,7 @@ public class TopologyManager implements Topology {
     public synchronized Set<Registration> registrationsForService(String name, String tag) {
         Set<Registration> result = Collections.unmodifiableSet(
                 this.registrations.stream()
-                        .filter(e -> e.getName().equals(name) && e.hasTag( tag ) )
+                        .filter(e -> e.getName().equals(name) && e.hasTag(tag))
                         .collect(Collectors.toSet())
         );
 
@@ -138,5 +118,25 @@ public class TopologyManager implements Topology {
 
         return map;
     }
+
+    private void fireListeners() {
+        List<TopologyListener> currentListeners = new ArrayList<>();
+        currentListeners.addAll(this.listeners);
+        currentListeners.forEach((e) -> {
+            executor.execute(() -> {
+                try {
+                    e.onChange(this);
+                } catch (Throwable t) {
+                    removeListener(e);
+                }
+            });
+        });
+    }
+
+    private List<TopologyListener> listeners = new ArrayList<>();
+
+    private List<Registration> registrations = new ArrayList<>();
+
+    private Executor executor = Executors.newFixedThreadPool(2);
 
 }

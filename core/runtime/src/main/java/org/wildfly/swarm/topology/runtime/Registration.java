@@ -28,29 +28,21 @@ import org.wildfly.swarm.topology.Topology;
  */
 public class Registration implements Topology.Entry, Serializable {
 
-    private final String sourceKey;
-
-    private final String name;
-    private final String address;
-    private final int port;
-
-    private List<String> tags = new ArrayList<>();
-
-    public Registration(String sourceKey, String name, String address, int port, String...tags) {
+    public Registration(String sourceKey, String name, String address, int port, String... tags) {
         if (sourceKey == null) {
             throw new IllegalArgumentException("Source key name cannot be null");
         }
         if (name == null) {
             throw new IllegalArgumentException("Registration name cannot be null");
         }
-        if ( address == null ) {
-            throw new IllegalArgumentException("Address cannot be null" );
+        if (address == null) {
+            throw new IllegalArgumentException("Address cannot be null");
         }
         this.sourceKey = sourceKey;
         this.name = name;
         this.address = address;
         this.port = port;
-        this.tags.addAll( Arrays.asList( tags ) );
+        this.tags.addAll(Arrays.asList(tags));
     }
 
     public String getSourceKey() {
@@ -70,12 +62,12 @@ public class Registration implements Topology.Entry, Serializable {
     }
 
     public Registration addTags(List<String> tags) {
-        this.tags.addAll( tags );
+        this.tags.addAll(tags);
         return this;
     }
 
     public String toString() {
-        return "[Registration: " + this.name + "; " + this.address + ":" + this.port + "; " + Arrays.asList( this.tags ) + "]";
+        return "[Registration: " + this.name + "; " + this.address + ":" + this.port + "; " + Arrays.asList(this.tags) + "]";
     }
 
     @Override
@@ -95,16 +87,26 @@ public class Registration implements Topology.Entry, Serializable {
     }
 
     public List<String> getTags() {
-        return Collections.unmodifiableList( this.tags );
+        return Collections.unmodifiableList(this.tags);
     }
 
     public boolean hasTag(String tag) {
         for (String s : this.tags) {
-            if ( s.equals( tag ) ) {
+            if (s.equals(tag)) {
                 return true;
             }
         }
 
         return false;
     }
+
+    private final String sourceKey;
+
+    private final String name;
+
+    private final String address;
+
+    private final int port;
+
+    private List<String> tags = new ArrayList<>();
 }

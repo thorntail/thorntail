@@ -36,8 +36,6 @@ import org.wildfly.swarm.undertow.WARArchive;
  */
 public class TopologyWebAppConfiguration extends AbstractServerConfiguration<TopologyWebAppFraction> {
 
-    private static final String DEFAULT_CONTEXT = "/topology";
-
     public TopologyWebAppConfiguration() {
         super(TopologyWebAppFraction.class);
     }
@@ -89,5 +87,7 @@ public class TopologyWebAppConfiguration extends AbstractServerConfiguration<Top
         webXml += "</web-app>";
         return webXml;
     }
+
+    private static final String DEFAULT_CONTEXT = "/topology";
 
 }

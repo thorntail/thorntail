@@ -15,6 +15,19 @@
  */
 package org.wildfly.swarm.topology.webapp.runtime;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.naming.NamingException;
+
 import io.undertow.server.handlers.proxy.LoadBalancingProxyClient;
 import io.undertow.server.handlers.proxy.ProxyHandler;
 import org.jboss.msc.inject.Injector;
@@ -28,26 +41,9 @@ import org.wildfly.swarm.topology.Topology;
 import org.wildfly.swarm.topology.TopologyListener;
 import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;
 
-import javax.naming.NamingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class TopologyProxyService implements Service<TopologyProxyService>, TopologyListener {
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm.topology.proxy");
-    private static final Logger log = Logger.getLogger(TopologyProxyService.class.getName());
-
-    private final Set<String> serviceNames;
-    private Map<String, InjectedValue<ProxyHandler>> proxyHandlerMap = new HashMap<>();
-    private Map<String, List<Topology.Entry>> proxyEntries = new HashMap<>();
 
     public TopologyProxyService(Set<String> serviceNames) {
         this.serviceNames = serviceNames;
@@ -55,7 +51,7 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
 
     public ServiceName mscServiceNameForServiceProxy(String serviceName) {
         return ServiceName.of("jboss", "undertow", "handler",
-                TopologyWebAppFraction.proxyHandlerName(serviceName));
+                              TopologyWebAppFraction.proxyHandlerName(serviceName));
     }
 
     @Override
@@ -145,4 +141,12 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
         }
         return new URI(scheme, null, entry.getAddress(), entry.getPort(), null, null, null);
     }
+
+    private static final Logger log = Logger.getLogger(TopologyProxyService.class.getName());
+
+    private final Set<String> serviceNames;
+
+    private Map<String, InjectedValue<ProxyHandler>> proxyHandlerMap = new HashMap<>();
+
+    private Map<String, List<Topology.Entry>> proxyEntries = new HashMap<>();
 }

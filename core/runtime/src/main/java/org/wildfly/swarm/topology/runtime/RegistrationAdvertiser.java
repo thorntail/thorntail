@@ -28,13 +28,7 @@ import org.jboss.msc.value.InjectedValue;
  */
 public class RegistrationAdvertiser implements Service<Void> {
 
-    private final String name;
-    private final String[] tags;
-
-    private InjectedValue<TopologyConnector> topologyConnectorInjector = new InjectedValue<>();
-    private InjectedValue<SocketBinding> socketBindingInjector = new InjectedValue<>();
-
-    public RegistrationAdvertiser(String name, String...tags) {
+    public RegistrationAdvertiser(String name, String... tags) {
         this.name = name;
         this.tags = tags;
     }
@@ -49,16 +43,24 @@ public class RegistrationAdvertiser implements Service<Void> {
 
     @Override
     public void start(StartContext startContext) throws StartException {
-        this.topologyConnectorInjector.getValue().advertise(this.name, this.socketBindingInjector.getValue(), this.tags );
+        this.topologyConnectorInjector.getValue().advertise(this.name, this.socketBindingInjector.getValue(), this.tags);
     }
 
     @Override
     public void stop(StopContext stopContext) {
-        this.topologyConnectorInjector.getValue().unadvertise(this.name, this.socketBindingInjector.getValue() );
+        this.topologyConnectorInjector.getValue().unadvertise(this.name, this.socketBindingInjector.getValue());
     }
 
     @Override
     public Void getValue() throws IllegalStateException, IllegalArgumentException {
         return null;
     }
+
+    private final String name;
+
+    private final String[] tags;
+
+    private InjectedValue<TopologyConnector> topologyConnectorInjector = new InjectedValue<>();
+
+    private InjectedValue<SocketBinding> socketBindingInjector = new InjectedValue<>();
 }

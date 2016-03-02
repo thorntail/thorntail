@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.topology.webapp;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.wildfly.swarm.config.undertow.HandlerConfiguration;
 import org.wildfly.swarm.config.undertow.Server;
 import org.wildfly.swarm.config.undertow.configuration.ReverseProxy;
@@ -24,17 +28,18 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Lance Ball
  */
 public class TopologyWebAppFraction implements Fraction {
 
-    private Map<String, String> proxiedServiceMappings = new HashMap<>();
-    private boolean exposeTopologyEndpoint = true;
+    /**
+     * @param serviceName
+     * @return the name of the Undertow proxy handler for this service
+     */
+    public static String proxyHandlerName(String serviceName) {
+        return serviceName + "-proxy-handler";
+    }
 
     /**
      * Set up a load-balancing reverse proxy for the given service at the
@@ -78,14 +83,6 @@ public class TopologyWebAppFraction implements Fraction {
         return exposeTopologyEndpoint;
     }
 
-    /**
-     * @param serviceName
-     * @return the name of the Undertow proxy handler for this service
-     */
-    public static String proxyHandlerName(String serviceName) {
-        return serviceName + "-proxy-handler";
-    }
-
     @Override
     public void postInitialize(Container.PostInitContext initContext) {
         if (!proxiedServiceMappings.isEmpty()) {
@@ -105,5 +102,9 @@ public class TopologyWebAppFraction implements Fraction {
             }
         }
     }
+
+    private Map<String, String> proxiedServiceMappings = new HashMap<>();
+
+    private boolean exposeTopologyEndpoint = true;
 
 }
