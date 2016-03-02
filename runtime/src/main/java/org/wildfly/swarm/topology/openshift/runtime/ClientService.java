@@ -15,6 +15,11 @@
  */
 package org.wildfly.swarm.topology.openshift.runtime;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.openshift.restclient.ClientFactory;
 import com.openshift.restclient.IClient;
 import com.openshift.restclient.NoopSSLCertificateCallback;
@@ -24,18 +29,20 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
-import org.wildfly.swarm.container.Environment;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class ClientService implements Service<IClient> {
 
     public static final ServiceName SERVICE_NAME = OpenShiftTopologyConnector.SERVICE_NAME.append("client");
 
-    private IClient client;
+    public static int servicePort(String serviceName) {
+        String envName = serviceName.replace("-", "_").toUpperCase() + "_SERVICE_PORT";
+        String envPort = System.getenv(envName);
+        if (envPort == null) {
+            return -1;
+        }
+
+        return Integer.parseInt(envPort);
+    }
 
     @Override
     public void start(StartContext context) throws StartException {
@@ -52,6 +59,11 @@ public class ClientService implements Service<IClient> {
     @Override
     public void stop(StopContext context) {
         this.client = null;
+    }
+
+    @Override
+    public IClient getValue() throws IllegalStateException, IllegalArgumentException {
+        return this.client;
     }
 
     private IClient openshiftClient() throws IOException {
@@ -74,23 +86,10 @@ public class ClientService implements Service<IClient> {
         return client;
     }
 
-    @Override
-    public IClient getValue() throws IllegalStateException, IllegalArgumentException {
-        return this.client;
-    }
-
     protected String serviceHost(String serviceName) {
         String envName = serviceName.replace("-", "_").toUpperCase() + "_SERVICE_HOST";
         return System.getenv(envName);
     }
 
-    public static int servicePort(String serviceName) {
-        String envName = serviceName.replace("-", "_").toUpperCase() + "_SERVICE_PORT";
-        String envPort = System.getenv(envName);
-        if (envPort == null) {
-            return -1;
-        }
-
-        return Integer.parseInt(envPort);
-    }
+    private IClient client;
 }

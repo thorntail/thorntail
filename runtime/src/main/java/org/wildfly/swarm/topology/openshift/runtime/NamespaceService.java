@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.topology.openshift.runtime;
 
+import java.util.List;
+
 import com.openshift.restclient.IClient;
 import com.openshift.restclient.ResourceKind;
 import com.openshift.restclient.model.IProject;
@@ -26,17 +28,9 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 
-import java.util.List;
-
 public class NamespaceService implements Service<String> {
 
     public static final ServiceName SERVICE_NAME = OpenShiftTopologyConnector.SERVICE_NAME.append("namespace");
-
-    private InjectedValue<IClient> clientInjector = new InjectedValue<>();
-
-    private IClient client;
-
-    private String namespace;
 
     public Injector<IClient> getClientInjector() {
         return this.clientInjector;
@@ -56,8 +50,8 @@ public class NamespaceService implements Service<String> {
             List<IProject> projects = this.client.list(ResourceKind.PROJECT);
             if (projects.size() != 1) {
                 throw new StartException("Unable to automatically detect the " +
-                        "Kubernetes namespace to use. Set the environment " +
-                        "variable KUBERNETES_NAMESPACE and try again.");
+                                                 "Kubernetes namespace to use. Set the environment " +
+                                                 "variable KUBERNETES_NAMESPACE and try again.");
             }
             this.namespace = projects.get(0).getNamespace();
         }
@@ -73,4 +67,10 @@ public class NamespaceService implements Service<String> {
     public String getValue() throws IllegalStateException, IllegalArgumentException {
         return this.namespace;
     }
+
+    private InjectedValue<IClient> clientInjector = new InjectedValue<>();
+
+    private IClient client;
+
+    private String namespace;
 }

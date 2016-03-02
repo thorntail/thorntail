@@ -15,11 +15,15 @@
  */
 package org.wildfly.swarm.topology.openshift.runtime;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.openshift.restclient.IClient;
 import com.openshift.restclient.ResourceKind;
 import com.openshift.restclient.model.IService;
 import com.openshift.restclient.model.IServicePort;
-import com.openshift.restclient.model.route.IRoute;
 import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceName;
@@ -30,25 +34,11 @@ import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.topology.runtime.Registration;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class ServiceWatcher implements Service<ServiceWatcher>, Runnable {
 
     public static final ServiceName SERVICE_NAME = OpenShiftTopologyConnector.SERVICE_NAME.append("service-watcher");
 
     public static final int DEFAULT_HTTPS_PORT = 8443;
-
-    private InjectedValue<IClient> clientInjector = new InjectedValue<>();
-
-    private InjectedValue<String> namespaceInjector = new InjectedValue<>();
-
-    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
-
-    private Thread thread;
 
     public Injector<IClient> getClientInjector() {
         return this.clientInjector;
@@ -84,7 +74,7 @@ public class ServiceWatcher implements Service<ServiceWatcher>, Runnable {
         String namespace = this.namespaceInjector.getValue();
         TopologyManager topologyManager = this.topologyManagerInjector.getValue();
 
-        while(!Thread.currentThread().isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted()) {
             // TODO: Move from polling to the OpenShift watch API
             // openshift-restclient-java first needs to publish a version supporting watch
             List<IService> services = client.list(ResourceKind.SERVICE, namespace);
@@ -115,9 +105,9 @@ public class ServiceWatcher implements Service<ServiceWatcher>, Runnable {
             // Only expose the service's default port and anything running on the https port
             if (servicePort.getPort() == service.getPort() || servicePort.getPort() == DEFAULT_HTTPS_PORT) {
                 Registration registration = new Registration("openshift",
-                        service.getName(),
-                        service.getPortalIP(),
-                        servicePort.getPort());
+                                                             service.getName(),
+                                                             service.getPortalIP(),
+                                                             servicePort.getPort());
                 if (servicePort.getPort() == DEFAULT_HTTPS_PORT) {
                     registration.addTags(Collections.singletonList("https"));
                 } else if (servicePort.getPort() == service.getPort()) {
@@ -128,4 +118,12 @@ public class ServiceWatcher implements Service<ServiceWatcher>, Runnable {
         }
         return newEntries;
     }
+
+    private InjectedValue<IClient> clientInjector = new InjectedValue<>();
+
+    private InjectedValue<String> namespaceInjector = new InjectedValue<>();
+
+    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
+
+    private Thread thread;
 }

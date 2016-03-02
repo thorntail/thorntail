@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.topology.openshift.runtime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.msc.service.ServiceActivator;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.topology.openshift.OpenShiftTopologyFraction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OpenShiftTopologyConfiguration extends AbstractServerConfiguration<OpenShiftTopologyFraction> {
 

@@ -59,8 +59,6 @@ public class OpenShiftTopologyConnector implements Service<OpenShiftTopologyConn
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm.topology.openshift");
 
-    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
-
     @Override
     public void start(StartContext context) throws StartException {
         ServiceTarget target = context.getChildTarget();
@@ -105,4 +103,6 @@ public class OpenShiftTopologyConnector implements Service<OpenShiftTopologyConn
     public Injector<TopologyManager> getTopologyManagerInjector() {
         return this.topologyManagerInjector;
     }
+
+    private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
 }
