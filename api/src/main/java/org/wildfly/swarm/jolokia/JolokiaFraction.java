@@ -22,8 +22,6 @@ import org.wildfly.swarm.container.Fraction;
  */
 public class JolokiaFraction implements Fraction {
 
-    private final String context;
-
     public JolokiaFraction() {
         this("jolokia");
     }
@@ -35,4 +33,6 @@ public class JolokiaFraction implements Fraction {
     public String context() {
         return this.context;
     }
+
+    private final String context;
 }
