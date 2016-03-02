@@ -37,6 +37,6 @@
     <modules>
         <module>api</module>
         <module>modules</module>
-        <module>test</module>
+        <module>tests</module>
     </modules>
 </project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Web API
+  Wildfly Swarm :: Camel Web :: API
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -29,14 +29,14 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <name>Wildfly Swarm :: Camel Web API</name>
+  <name>Wildfly Swarm :: Camel Web :: API</name>
 
-  <artifactId>camel-web-api</artifactId>
+  <artifactId>camel-web</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>camel-core-api</artifactId>
+      <artifactId>camel-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

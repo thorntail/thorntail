@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Core Test
+  Wildfly Swarm :: Camel Core :: Tests
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -29,14 +29,14 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-    <name>Wildfly Swarm :: Camel Core Test</name>
+    <name>Wildfly Swarm :: Camel Core :: Tests</name>
     
-    <artifactId>camel-core-test</artifactId>
+    <artifactId>camel-core-tests</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>camel-core-api</artifactId>
+            <artifactId>camel-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

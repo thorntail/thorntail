@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Web Test
+  Wildfly Swarm :: Camel Full :: Tests
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -25,18 +25,18 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>camel-web-parent</artifactId>
+    <artifactId>camel-full-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <name>Wildfly Swarm :: Camel Web Test</name>
+  <name>Wildfly Swarm :: Camel Full :: Tests</name>
 
-  <artifactId>camel-web-test</artifactId>
+  <artifactId>camel-full-tests</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>camel-web-api</artifactId>
+      <artifactId>camel-full</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

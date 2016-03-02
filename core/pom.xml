@@ -38,6 +38,6 @@
     <module>api</module>
     <module>modules</module>
     <module>runtime</module>
-    <module>test</module>
+    <module>tests</module>
   </modules>
 </project>

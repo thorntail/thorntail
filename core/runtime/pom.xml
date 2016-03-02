@@ -36,7 +36,7 @@
     <dependencies>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>camel-core-api</artifactId>
+            <artifactId>camel-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
