@@ -40,11 +40,6 @@ import static org.fest.assertions.Assertions.assertThat;
 @RunWith(Arquillian.class)
 public class EJBOutsideTest {
 
-    @Drone
-    WebDriver browser;
-
-    private GreeterEJB greeter;
-
     @Deployment
     public static Archive createDeployment() throws Exception {
         return ShrinkWrap.create(JAXRSArchive.class, "ejb-test.war")
@@ -67,4 +62,9 @@ public class EJBOutsideTest {
 
         assertThat(browser.getPageSource()).contains("Howdy from EJB");
     }
+
+    @Drone
+    WebDriver browser;
+
+    private GreeterEJB greeter;
 }

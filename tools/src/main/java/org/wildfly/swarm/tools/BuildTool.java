@@ -51,30 +51,6 @@ public class BuildTool {
         add("container");
     }};
 
-    private final Set<ArtifactSpec> fractions = new HashSet<>();
-
-    private final JavaArchive archive;
-
-    private final Set<String> resourceDirectories = new HashSet<>();
-
-    private String mainClass;
-
-    private boolean bundleDependencies = true;
-
-    private boolean resolveTransitiveDependencies = false;
-
-    private DependencyManager dependencyManager = new DependencyManager();
-
-    private ProjectAsset projectAsset;
-
-    private Properties properties = new Properties();
-
-    private Set<String> additionalModules = new HashSet<>();
-
-    private boolean autoDetectFractions = true;
-
-    private FractionList fractionList = null;
-
     public BuildTool() {
         this.archive = ShrinkWrap.create(JavaArchive.class);
     }
@@ -181,6 +157,38 @@ public class BuildTool {
         populateUberJarMavenRepository();
 
         return this.archive;
+    }
+
+    public boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
+        JarFile jarFile = new JarFile(artifactFile);
+        Enumeration<JarEntry> entries = jarFile.entries();
+
+        boolean jbossModulesFound = false;
+
+        while (entries.hasMoreElements()) {
+            JarEntry each = entries.nextElement();
+            if (each.getName().startsWith("org/jboss/modules/ModuleLoader")) {
+                jbossModulesFound = true;
+            }
+        }
+
+        return jbossModulesFound;
+    }
+
+    public void expandArtifact(File artifactFile) throws IOException {
+        JarFile jarFile = new JarFile(artifactFile);
+        Enumeration<JarEntry> entries = jarFile.entries();
+
+        while (entries.hasMoreElements()) {
+            JarEntry each = entries.nextElement();
+            if (each.getName().startsWith("META-INF")) {
+                continue;
+            }
+            if (each.isDirectory()) {
+                continue;
+            }
+            this.archive.add(new ZipFileEntryAsset(jarFile, each), each.getName());
+        }
     }
 
     protected void analyzeDependencies() throws Exception {
@@ -292,44 +300,12 @@ public class BuildTool {
         return out;
     }
 
-    public boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
-        JarFile jarFile = new JarFile(artifactFile);
-        Enumeration<JarEntry> entries = jarFile.entries();
-
-        boolean jbossModulesFound = false;
-
-        while (entries.hasMoreElements()) {
-            JarEntry each = entries.nextElement();
-            if (each.getName().startsWith("org/jboss/modules/ModuleLoader")) {
-                jbossModulesFound = true;
-            }
-        }
-
-        return jbossModulesFound;
-    }
-
-    public void expandArtifact(File artifactFile) throws IOException {
-        JarFile jarFile = new JarFile(artifactFile);
-        Enumeration<JarEntry> entries = jarFile.entries();
-
-        while (entries.hasMoreElements()) {
-            JarEntry each = entries.nextElement();
-            if (each.getName().startsWith("META-INF")) {
-                continue;
-            }
-            if (each.isDirectory()) {
-                continue;
-            }
-            this.archive.add(new ZipFileEntryAsset(jarFile, each), each.getName());
-        }
-    }
-
     private void addAdditionalModules() throws IOException {
         for (String additionalModule : additionalModules) {
             final File moduleDir = new File(additionalModule);
             this.archive.addAsResource(moduleDir, "modules");
             Files.find(moduleDir.toPath(), 20,
-                    (p, __) -> p.getFileName().toString().equals("module.xml"))
+                       (p, __) -> p.getFileName().toString().equals("module.xml"))
                     .forEach(p -> this.dependencyManager.addAdditionalModule(p));
 
         }
@@ -342,6 +318,30 @@ public class BuildTool {
             this.dependencyManager.populateUserMavenRepository();
         }
     }
+
+    private final Set<ArtifactSpec> fractions = new HashSet<>();
+
+    private final JavaArchive archive;
+
+    private final Set<String> resourceDirectories = new HashSet<>();
+
+    private String mainClass;
+
+    private boolean bundleDependencies = true;
+
+    private boolean resolveTransitiveDependencies = false;
+
+    private DependencyManager dependencyManager = new DependencyManager();
+
+    private ProjectAsset projectAsset;
+
+    private Properties properties = new Properties();
+
+    private Set<String> additionalModules = new HashSet<>();
+
+    private boolean autoDetectFractions = true;
+
+    private FractionList fractionList = null;
 
 
 }

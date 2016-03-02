@@ -48,7 +48,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
-
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.shrinkwrap.api.ConfigurationBuilder;
 import org.jboss.shrinkwrap.api.Domain;
@@ -67,26 +66,6 @@ import org.wildfly.swarm.arquillian.daemon.protocol.WireProtocol;
 public class Server {
 
     public static final int MAX_PORT = 65535;
-
-    private static final Logger log = Logger.getLogger(Server.class.getName());
-
-    private static final String NAME_CHANNEL_HANDLER_STRING_DECODER = "StringDecoder";
-
-    private static final String NAME_CHANNEL_HANDLER_FRAME_DECODER = "FrameDecoder";
-
-    private static final String NAME_CHANNEL_HANDLER_COMMAND = "CommandHandler";
-
-    private final List<EventLoopGroup> eventLoopGroups = new ArrayList<>();
-    private final ConcurrentMap<String, GenericArchive> deployedArchives = new ConcurrentHashMap<>();
-
-    private final Domain shrinkwrapDomain;
-
-    private final InetSocketAddress bindAddress;
-    private final DeploymentUnit deploymentUnit;
-
-    private ExecutorService shutdownService;
-    private boolean running;
-
 
     Server(final InetSocketAddress bindAddress, DeploymentUnit deploymentUnit) {
         // Precondition checks
@@ -123,14 +102,6 @@ public class Server {
 
         // Create and return a new server instance
         return new Server(resolvedInetAddress, depunit);
-    }
-
-    private static ChannelFuture sendResponse(final ChannelHandlerContext ctx, final String response) {
-        ByteBuf buf = ctx.alloc().buffer();
-        buf.writeBytes(response.getBytes(WireProtocol.CHARSET));
-        ctx.write(buf);
-
-        return ctx.writeAndFlush(Delimiters.lineDelimiter()[0]);
     }
 
     public final void start() throws ServerLifecycleException, IllegalStateException {
@@ -180,7 +151,7 @@ public class Server {
 
         if (log.isLoggable(Level.INFO)) {
             log.info("Arquillian Daemon server started on " + boundAddress.getHostName() + ":" +
-                    boundAddress.getPort());
+                             boundAddress.getPort());
         }
 
     }
@@ -189,8 +160,6 @@ public class Server {
         // Use an anonymous logger because the JUL LogManager will not log after process shutdown has been received
         final Logger log = Logger.getAnonymousLogger();
         log.addHandler(new Handler() {
-
-            private final String PREFIX = "[" + Server.class.getSimpleName() + "] ";
 
             @Override
             public void publish(final LogRecord record) {
@@ -206,6 +175,8 @@ public class Server {
             @Override
             public void close() throws SecurityException {
             }
+
+            private final String PREFIX = "[" + Server.class.getSimpleName() + "] ";
         });
 
         if (!this.isRunning()) {
@@ -233,6 +204,14 @@ public class Server {
 
     public final boolean isRunning() {
         return running;
+    }
+
+    private static ChannelFuture sendResponse(final ChannelHandlerContext ctx, final String response) {
+        ByteBuf buf = ctx.alloc().buffer();
+        buf.writeBytes(response.getBytes(WireProtocol.CHARSET));
+        ctx.write(buf);
+
+        return ctx.writeAndFlush(Delimiters.lineDelimiter()[0]);
     }
 
     /**
@@ -275,11 +254,33 @@ public class Server {
 
     private void setupPipeline(final ChannelPipeline pipeline) {
         pipeline.addLast(NAME_CHANNEL_HANDLER_FRAME_DECODER,
-                new DelimiterBasedFrameDecoder(2000, Delimiters.lineDelimiter()));
+                         new DelimiterBasedFrameDecoder(2000, Delimiters.lineDelimiter()));
         pipeline.addLast(NAME_CHANNEL_HANDLER_STRING_DECODER,
-                new StringDecoder(WireProtocol.CHARSET));
+                         new StringDecoder(WireProtocol.CHARSET));
         pipeline.addLast(NAME_CHANNEL_HANDLER_COMMAND, new StringCommandHandler());
     }
+
+    private static final Logger log = Logger.getLogger(Server.class.getName());
+
+    private static final String NAME_CHANNEL_HANDLER_STRING_DECODER = "StringDecoder";
+
+    private static final String NAME_CHANNEL_HANDLER_FRAME_DECODER = "FrameDecoder";
+
+    private static final String NAME_CHANNEL_HANDLER_COMMAND = "CommandHandler";
+
+    private final List<EventLoopGroup> eventLoopGroups = new ArrayList<>();
+
+    private final ConcurrentMap<String, GenericArchive> deployedArchives = new ConcurrentHashMap<>();
+
+    private final Domain shrinkwrapDomain;
+
+    private final InetSocketAddress bindAddress;
+
+    private final DeploymentUnit deploymentUnit;
+
+    private ExecutorService shutdownService;
+
+    private boolean running;
 
     /**
      * Handler for all {@link String}-based commands to the server as specified in {@link WireProtocol}
@@ -287,6 +288,27 @@ public class Server {
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
     private class StringCommandHandler extends SimpleChannelInboundHandler<String> {
+
+        /**
+         * Ignores all exceptions on messages received if the server is not running, else delegates to the super
+         * implementation.
+         *
+         * @see io.netty.channel.SimpleChannelInboundHandler#exceptionCaught(io.netty.channel.ChannelHandlerContext,
+         * java.lang.Throwable)
+         */
+        @Override
+        public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+            // If the server isn't running, ignore everything
+            if (!Server.this.isRunning()) {
+                // Ignore, but log if we've got a fine-grained enough level set
+                if (log.isLoggable(Level.FINEST)) {
+                    log.finest("Got exception while server is not running: " + cause.getMessage());
+                }
+                ctx.close();
+            } else {
+                super.exceptionCaught(ctx, cause);
+            }
+        }
 
         /**
          * {@inheritDoc}
@@ -344,27 +366,6 @@ public class Server {
                         + "Caught unexpected error servicing request: " + t.getMessage());
             }
 
-        }
-
-        /**
-         * Ignores all exceptions on messages received if the server is not running, else delegates to the super
-         * implementation.
-         *
-         * @see io.netty.channel.SimpleChannelInboundHandler#exceptionCaught(io.netty.channel.ChannelHandlerContext,
-         * java.lang.Throwable)
-         */
-        @Override
-        public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-            // If the server isn't running, ignore everything
-            if (!Server.this.isRunning()) {
-                // Ignore, but log if we've got a fine-grained enough level set
-                if (log.isLoggable(Level.FINEST)) {
-                    log.finest("Got exception while server is not running: " + cause.getMessage());
-                }
-                ctx.close();
-            } else {
-                super.exceptionCaught(ctx, cause);
-            }
         }
 
     }

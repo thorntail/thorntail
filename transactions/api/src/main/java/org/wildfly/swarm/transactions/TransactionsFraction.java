@@ -25,10 +25,6 @@ import org.wildfly.swarm.container.SocketBinding;
  */
 public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction {
 
-    private int port = 4712;
-
-    private int statusPort = 4713;
-
     protected TransactionsFraction() {
         this.socketBinding("txn-recovery-environment")
                 .statusSocketBinding("txn-status-manager")
@@ -45,10 +41,10 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
     public void initialize(Container.InitContext initContext) {
 
         initContext.socketBinding(new SocketBinding("txn-recovery-environment")
-                .port(this.port));
+                                          .port(this.port));
 
         initContext.socketBinding(new SocketBinding("txn-status-manager")
-                .port(this.statusPort));
+                                          .port(this.statusPort));
     }
 
     public TransactionsFraction port(int port) {
@@ -60,4 +56,8 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
         this.statusPort = statusPort;
         return this;
     }
+
+    private int port = 4712;
+
+    private int statusPort = 4713;
 }

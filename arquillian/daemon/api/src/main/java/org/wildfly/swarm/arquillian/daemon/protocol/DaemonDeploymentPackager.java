@@ -49,8 +49,6 @@ public enum DaemonDeploymentPackager implements DeploymentPackager {
 
     INSTANCE;
 
-    private static final Logger log = Logger.getLogger(DaemonDeploymentPackager.class.getName());
-
     @Override
     public Archive<?> generateDeployment(final TestDeployment testDeployment,
                                          final Collection<ProtocolArchiveProcessor> processors) {
@@ -89,7 +87,7 @@ public enum DaemonDeploymentPackager implements DeploymentPackager {
         return descs.entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        entry -> mergeServiceDescriptors(entry.getValue())));
+                                          entry -> mergeServiceDescriptors(entry.getValue())));
     }
 
     private Asset mergeServiceDescriptors(final List<Node> descs) {
@@ -119,4 +117,6 @@ public enum DaemonDeploymentPackager implements DeploymentPackager {
                     nodes.add(node);
                 });
     }
+
+    private static final Logger log = Logger.getLogger(DaemonDeploymentPackager.class.getName());
 }

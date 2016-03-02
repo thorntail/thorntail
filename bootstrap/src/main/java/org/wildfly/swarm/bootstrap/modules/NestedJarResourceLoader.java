@@ -35,8 +35,6 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
  */
 public class NestedJarResourceLoader {
 
-    private static Map<String, File> exploded = new HashMap<>();
-
     public static ResourceLoader loaderFor(URL base, String rootPath, String loaderPath, String loaderName) throws IOException {
 
         //System.err.println( "** " + base + ", " + rootPath + ", " + loaderPath + ", " + loaderName );
@@ -50,7 +48,7 @@ public class NestedJarResourceLoader {
                 File exp = exploded.get(jarPath);
 
                 if (exp == null) {
-                    exp = TempFileManager.INSTANCE.newTempDirectory( "module-jar", ".jar_d" );
+                    exp = TempFileManager.INSTANCE.newTempDirectory("module-jar", ".jar_d");
 
                     JarFile jarFile = new JarFile(jarPath);
 
@@ -76,15 +74,16 @@ public class NestedJarResourceLoader {
                 */
                 return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot);
             }
-        }
-        else if (urlString.startsWith("file:")) {
+        } else if (urlString.startsWith("file:")) {
             return ResourceLoaders.createFileResourceLoader(
                     loaderPath,
                     new File(urlString.substring(5, urlString.length()))
             );
         }
 
-        throw new IllegalArgumentException("Illegal module loader base: "+ base);
+        throw new IllegalArgumentException("Illegal module loader base: " + base);
     }
+
+    private static Map<String, File> exploded = new HashMap<>();
 
 }

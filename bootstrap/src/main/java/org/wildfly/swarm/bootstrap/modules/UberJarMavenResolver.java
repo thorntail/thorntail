@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,27 +32,10 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
  */
 public class UberJarMavenResolver implements MavenResolver {
 
-    private static final Pattern snapshotPattern = Pattern.compile("-\\d{8}\\.\\d{6}-\\d+$");
-
     public static File copyTempJar(String artifactId, InputStream in, String packaging) throws IOException {
-        File tmp = TempFileManager.INSTANCE.newTempFile( artifactId, "." + packaging );
+        File tmp = TempFileManager.INSTANCE.newTempFile(artifactId, "." + packaging);
         Files.copy(in, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
         return tmp;
-    }
-
-    static String relativeArtifactPath(char separator, String groupId, String artifactId, String version) {
-        StringBuilder builder = new StringBuilder(groupId.replace('.', separator));
-        builder.append(separator).append(artifactId).append(separator);
-        String pathVersion;
-        final Matcher versionMatcher = snapshotPattern.matcher(version);
-        if (versionMatcher.find()) {
-            // it's really a snapshot
-            pathVersion = version.substring(0, versionMatcher.start()) + "-SNAPSHOT";
-        } else {
-            pathVersion = version;
-        }
-        builder.append(pathVersion).append(separator).append(artifactId).append('-').append(version);
-        return builder.toString();
     }
 
     @Override
@@ -75,4 +57,21 @@ public class UberJarMavenResolver implements MavenResolver {
 
         return null;
     }
+
+    static String relativeArtifactPath(char separator, String groupId, String artifactId, String version) {
+        StringBuilder builder = new StringBuilder(groupId.replace('.', separator));
+        builder.append(separator).append(artifactId).append(separator);
+        String pathVersion;
+        final Matcher versionMatcher = snapshotPattern.matcher(version);
+        if (versionMatcher.find()) {
+            // it's really a snapshot
+            pathVersion = version.substring(0, versionMatcher.start()) + "-SNAPSHOT";
+        } else {
+            pathVersion = version;
+        }
+        builder.append(pathVersion).append(separator).append(artifactId).append('-').append(version);
+        return builder.toString();
+    }
+
+    private static final Pattern snapshotPattern = Pattern.compile("-\\d{8}\\.\\d{6}-\\d+$");
 }

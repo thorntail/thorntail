@@ -35,25 +35,6 @@ import org.wildfly.swarm.container.JARArchive;
 
 @RunWith(Arquillian.class)
 public class ArquillianTest {
-    static final URI EXPECTED_URI;
-
-    static final URL EXPECTED_URL;
-
-    static {
-        try {
-            EXPECTED_URI = new URI("http://127.0.0.1:8080/");
-            EXPECTED_URL = EXPECTED_URI.toURL();
-        } catch (MalformedURLException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @ArquillianResource
-    URL url;
-
-    @ArquillianResource
-    URI uri;
-
     @Deployment
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JARArchive.class)
@@ -81,4 +62,23 @@ public class ArquillianTest {
         Assert.assertEquals(EXPECTED_URL, url);
         Assert.assertEquals(EXPECTED_URI, uri);
     }
+
+    static final URI EXPECTED_URI;
+
+    static final URL EXPECTED_URL;
+
+    static {
+        try {
+            EXPECTED_URI = new URI("http://127.0.0.1:8080/");
+            EXPECTED_URL = EXPECTED_URI.toURL();
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @ArquillianResource
+    URL url;
+
+    @ArquillianResource
+    URI uri;
 }

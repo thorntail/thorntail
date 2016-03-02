@@ -31,8 +31,6 @@ import org.wildfly.swarm.arquillian.ArtifactDependencies;
  */
 public class WildFlySwarmObserver {
 
-    private WildFlySwarmContainer container;
-
     @SuppressWarnings("unused")
     public void afterSetup(@Observes final AfterSetup event) throws Exception {
         this.container = (WildFlySwarmContainer) event.getDeployableContainer();
@@ -73,4 +71,6 @@ public class WildFlySwarmObserver {
             throw new IllegalArgumentException("Method annotated with " + ArtifactDependencies.class.getName() + " can not accept parameters. " + dependencyMethod);
         }
     }
+
+    private WildFlySwarmContainer container;
 }

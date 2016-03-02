@@ -20,10 +20,6 @@ package org.wildfly.swarm.container;
  */
 public class Interface {
 
-    private final String name;
-
-    private final String expression;
-
     public Interface(String name, String expression) {
         this.name = name;
         this.expression = expression;
@@ -36,4 +32,8 @@ public class Interface {
     public String getExpression() {
         return this.expression;
     }
+
+    private final String name;
+
+    private final String expression;
 }

@@ -102,12 +102,12 @@ public class WebXmlAsset implements NamedAsset {
         for (SecurityConstraint each : this.constraints) {
             this.descriptor.createSecurityConstraint()
                     .createWebResourceCollection()
-                        .urlPattern(each.urlPattern())
-                        .httpMethod(each.methods().toArray(new String[each.methods().size()]))
-                        .up()
+                    .urlPattern(each.urlPattern())
+                    .httpMethod(each.methods().toArray(new String[each.methods().size()]))
+                    .up()
                     .getOrCreateAuthConstraint()
-                        .roleName(each.roles().toArray(new String[each.roles().size()]))
-                        .up();
+                    .roleName(each.roles().toArray(new String[each.roles().size()]))
+                    .up();
 
             allRoles.addAll(each.roles());
         }

@@ -34,9 +34,6 @@ import static org.fest.assertions.Assertions.assertThat;
 //@RunWith(Arquillian.class)
 public class SimpleMailTest {
 
-    @Drone
-    WebDriver browser;
-
     @Deployment
     public static Archive createDeployment() {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
@@ -51,5 +48,8 @@ public class SimpleMailTest {
 
         assertThat(browser.getPageSource()).isEqualTo("This is static.");
     }
+
+    @Drone
+    WebDriver browser;
 
 }

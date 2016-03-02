@@ -29,7 +29,7 @@ public class RemotingFraction extends Remoting<RemotingFraction> implements Frac
         RemotingFraction fraction = new RemotingFraction();
         fraction.endpointConfiguration(new EndpointConfiguration())
                 .httpConnector(new HTTPConnector("http-remoting-connector")
-                        .connectorRef("default"));
+                                       .connectorRef("default"));
         return fraction;
     }
 }

@@ -37,8 +37,6 @@ import org.jboss.shrinkwrap.descriptor.spi.node.dom.XmlDomNodeImporterImpl;
  */
 public class ModuleAnalyzer {
 
-    private ModuleDescriptorImpl module;
-
     public ModuleAnalyzer(File f) throws IOException {
         this(new FileInputStream(f));
     }
@@ -90,4 +88,6 @@ public class ModuleAnalyzer {
 
         return dependencies;
     }
+
+    private ModuleDescriptorImpl module;
 }

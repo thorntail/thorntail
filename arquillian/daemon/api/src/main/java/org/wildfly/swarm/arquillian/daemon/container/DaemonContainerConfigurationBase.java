@@ -23,11 +23,6 @@ import org.jboss.arquillian.container.spi.client.container.ContainerConfiguratio
  */
 public class DaemonContainerConfigurationBase implements ContainerConfiguration {
 
-    // Properties
-    private String host;
-
-    private String port;
-
     /**
      * {@inheritDoc}
      *
@@ -70,5 +65,10 @@ public class DaemonContainerConfigurationBase implements ContainerConfiguration 
     public void setPort(String port) {
         this.port = port;
     }
+
+    // Properties
+    private String host;
+
+    private String port;
 
 }

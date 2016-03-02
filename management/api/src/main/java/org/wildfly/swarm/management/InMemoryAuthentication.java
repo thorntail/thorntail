@@ -27,10 +27,6 @@ import org.wildfly.swarm.config.management.security_realm.PlugInAuthentication;
  */
 public class InMemoryAuthentication {
 
-    private final String realm;
-
-    private final PlugInAuthentication plugin;
-
     public InMemoryAuthentication(String realm, PlugInAuthentication plugin) {
         this.realm = realm;
         this.plugin = plugin;
@@ -89,6 +85,10 @@ public class InMemoryAuthentication {
             prop.value(str.toString());
         });
     }
+
+    private final String realm;
+
+    private final PlugInAuthentication plugin;
 
     @FunctionalInterface
     public interface Consumer {

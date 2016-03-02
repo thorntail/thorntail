@@ -35,8 +35,6 @@ public class Main {
 
     public static final String DEFAULT_MAIN_CLASS_NAME = "org.wildfly.swarm.Swarm";
 
-    private final String[] args;
-
     public Main(String... args) throws Throwable {
         this.args = args;
     }
@@ -85,6 +83,8 @@ public class Main {
 
         mainMethod.invoke(null, new Object[]{this.args});
     }
+
+    private final String[] args;
 
 
 }

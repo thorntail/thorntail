@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,8 +47,6 @@ public class WildFlySwarmApplicationConf {
 
 
     public static final String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-application.conf";
-
-    private List<Entry> entries = new ArrayList<>();
 
     public WildFlySwarmApplicationConf() {
 
@@ -122,6 +119,8 @@ public class WildFlySwarmApplicationConf {
 
     }
 
+    private List<Entry> entries = new ArrayList<>();
+
     public static abstract class Entry {
 
         abstract void apply(ModuleSpec.Builder builder) throws Exception;
@@ -131,10 +130,6 @@ public class WildFlySwarmApplicationConf {
     }
 
     public static class ModuleEntry extends Entry {
-        private final String name;
-
-        private final String slot;
-
         public ModuleEntry(String name) {
             String[] parts = name.split(":");
             this.name = parts[0];
@@ -143,6 +138,10 @@ public class WildFlySwarmApplicationConf {
             } else {
                 this.slot = "main";
             }
+        }
+
+        public String getName() {
+            return this.name;
         }
 
         @Override
@@ -164,14 +163,12 @@ public class WildFlySwarmApplicationConf {
             writer.println("module:" + this.name + ":" + this.slot);
         }
 
-        public String getName() {
-            return this.name;
-        }
+        private final String name;
+
+        private final String slot;
     }
 
     public static class GAVEntry extends Entry {
-
-        private final MavenArtifactDescriptor descriptor;
 
         public GAVEntry(MavenArtifactDescriptor descriptor) {
             this.descriptor = descriptor;
@@ -199,14 +196,18 @@ public class WildFlySwarmApplicationConf {
         void write(PrintWriter writer) {
             writer.println("gav:" + this.descriptor.mscGav());
         }
+
+        private final MavenArtifactDescriptor descriptor;
     }
 
     public static class PathEntry extends Entry {
 
-        private final String path;
-
         public PathEntry(String path) {
             this.path = path;
+        }
+
+        public String getPath() {
+            return this.path;
         }
 
         @Override
@@ -234,13 +235,13 @@ public class WildFlySwarmApplicationConf {
             final String jarName = tmp.getName().toString();
             final JarFile jarFile = new JarFile(tmp);
             final ResourceLoader jarLoader = ResourceLoaders.createJarResourceLoader(jarName,
-                    jarFile);
+                                                                                     jarFile);
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
 
             if (".war".equals(ext)) {
                 final ResourceLoader warLoader = ResourceLoaders.createJarResourceLoader(jarName,
-                        jarFile,
-                        "WEB-INF/classes");
+                                                                                         jarFile,
+                                                                                         "WEB-INF/classes");
                 builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));
             }
         }
@@ -250,8 +251,6 @@ public class WildFlySwarmApplicationConf {
             writer.println("path:" + this.path);
         }
 
-        public String getPath() {
-            return this.path;
-        }
+        private final String path;
     }
 }

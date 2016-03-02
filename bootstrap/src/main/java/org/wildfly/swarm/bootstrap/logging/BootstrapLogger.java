@@ -23,16 +23,6 @@ import java.util.Map;
  */
 public class BootstrapLogger {
 
-    private static Map<String, BootstrapLogger> LOGGERS = new HashMap<>();
-
-    private static BackingLoggerManager MANAGER = InitialLoggerManager.INSTANCE;
-
-    private static Object LOCK = new Object();
-
-    private final String name;
-
-    private BackingLogger backingLogger;
-
     private BootstrapLogger(String name) {
         this.name = name;
     }
@@ -53,19 +43,6 @@ public class BootstrapLogger {
             MANAGER = manager;
             LOGGERS.values().forEach(BootstrapLogger::resetBackingLogger);
         }
-    }
-
-    private BackingLogger getBackingLogger() {
-        if (this.backingLogger == null) {
-            synchronized (LOCK) {
-                this.backingLogger = MANAGER.getBackingLogger(this.name);
-            }
-        }
-        return this.backingLogger;
-    }
-
-    void resetBackingLogger() {
-        this.backingLogger = null;
     }
 
     public void trace(Object message) {
@@ -108,6 +85,29 @@ public class BootstrapLogger {
         return "[" + this.name + ": " + this.getLevel() + "]";
     }
 
+    private BackingLogger getBackingLogger() {
+        if (this.backingLogger == null) {
+            synchronized (LOCK) {
+                this.backingLogger = MANAGER.getBackingLogger(this.name);
+            }
+        }
+        return this.backingLogger;
+    }
+
+    void resetBackingLogger() {
+        this.backingLogger = null;
+    }
+
+    private static Map<String, BootstrapLogger> LOGGERS = new HashMap<>();
+
+    private static BackingLoggerManager MANAGER = InitialLoggerManager.INSTANCE;
+
+    private static Object LOCK = new Object();
+
+    private final String name;
+
+    private BackingLogger backingLogger;
+
     public enum Level {
         NONE(java.util.logging.Level.OFF),
         ERROR(java.util.logging.Level.SEVERE),
@@ -117,8 +117,6 @@ public class BootstrapLogger {
         TRACE(java.util.logging.Level.FINEST),
         ALL(java.util.logging.Level.ALL);
 
-        private final java.util.logging.Level jul;
-
         Level(java.util.logging.Level jul) {
             this.jul = jul;
         }
@@ -126,5 +124,7 @@ public class BootstrapLogger {
         public java.util.logging.Level toJUL() {
             return this.jul;
         }
+
+        private final java.util.logging.Level jul;
     }
 }

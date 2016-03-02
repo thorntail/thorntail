@@ -27,8 +27,6 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Ken Finnigan
  */
 public class JSFTest extends AbstractWildFlySwarmTestCase {
-    private Container container;
-
     //@Test
     //TODO Once https://issues.jboss.org/browse/WFLY-4889 is resolved, attempt to get the test working
     public void testSimple() throws Exception {
@@ -47,4 +45,6 @@ public class JSFTest extends AbstractWildFlySwarmTestCase {
     public void shutdown() throws Exception {
         container.stop();
     }
+
+    private Container container;
 }

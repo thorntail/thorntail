@@ -26,14 +26,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class SwarmProcess {
 
-    private final Process process;
-
-    private final IOBridge stdout;
-
-    private final IOBridge stderr;
-
-    private final CountDownLatch latch;
-
     public SwarmProcess(Process process, OutputStream stdout, Path stdoutFile, OutputStream stderr, Path stderrFile) throws IOException {
         this.process = process;
         this.latch = new CountDownLatch(1);
@@ -113,4 +105,12 @@ public class SwarmProcess {
 
         return -1;
     }
+
+    private final Process process;
+
+    private final IOBridge stdout;
+
+    private final IOBridge stderr;
+
+    private final CountDownLatch latch;
 }

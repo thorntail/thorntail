@@ -29,12 +29,10 @@ public class UberJarManifest {
 
     public static final Attributes.Name WILDFLY_SWARM_MAIN_CLASS_ATTRIBUTE = new Attributes.Name("WildFly-Swarm-Main-Class");
 
-    private final Manifest manifest;
-
-
     public UberJarManifest(Manifest manifest) {
         this.manifest = manifest;
     }
+
 
     public UberJarManifest(String mainClass) {
         this.manifest = new Manifest();
@@ -58,4 +56,6 @@ public class UberJarManifest {
     public void write(OutputStream out) throws IOException {
         this.manifest.write(out);
     }
+
+    private final Manifest manifest;
 }

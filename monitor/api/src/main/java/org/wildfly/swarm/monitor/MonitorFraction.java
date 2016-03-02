@@ -33,7 +33,7 @@ public class MonitorFraction implements Fraction {
 
         UndertowFraction undertow = (UndertowFraction) initContext.fraction("undertow");
 
-        if(undertow!=null) {
+        if (undertow != null) {
             undertow.filterConfiguration();
             undertow.subresources().filterConfiguration()
                     .customFilter("wfs-monitor", customFilter -> {

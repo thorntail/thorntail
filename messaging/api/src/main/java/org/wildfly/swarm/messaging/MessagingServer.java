@@ -23,20 +23,6 @@ import java.util.Set;
  */
 public class MessagingServer {
 
-    private static int SERVER_ID_COUNTER = 0;
-
-    private static int NAME_COUNTER = 0;
-
-    private final int serverId;
-
-    private String name;
-
-    private Set<String> topics = new HashSet<>();
-
-    private Set<String> queues = new HashSet<>();
-
-    private String inVmConnectorName;
-
     public MessagingServer() {
         this("server-" + (++NAME_COUNTER));
     }
@@ -84,5 +70,19 @@ public class MessagingServer {
     public String inVMConnectorJNDIName() {
         return this.inVmConnectorName;
     }
+
+    private static int SERVER_ID_COUNTER = 0;
+
+    private static int NAME_COUNTER = 0;
+
+    private final int serverId;
+
+    private String name;
+
+    private Set<String> topics = new HashSet<>();
+
+    private Set<String> queues = new HashSet<>();
+
+    private String inVmConnectorName;
 
 }

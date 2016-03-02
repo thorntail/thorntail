@@ -72,6 +72,11 @@ public class LoggingConfiguration extends MarshallingServerConfiguration<Logging
         return super.getList(fraction);
     }
 
+    @Override
+    public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+        return AbstractParserFactory.mapParserNamespaces(new LoggingParserFactory());
+    }
+
     private void apply(LevelNode node, LoggingFraction fraction) {
         if (!node.getName().equals("")) {
             fraction.logger(node.getName(), (l) -> {
@@ -81,10 +86,5 @@ public class LoggingConfiguration extends MarshallingServerConfiguration<Logging
         for (LevelNode each : node.getChildren()) {
             apply(each, fraction);
         }
-    }
-
-    @Override
-    public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
-        return AbstractParserFactory.mapParserNamespaces(new LoggingParserFactory());
     }
 }

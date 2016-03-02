@@ -32,8 +32,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
  */
 public abstract class ExtensionServerConfiguration<T extends Fraction> extends AbstractServerConfiguration<T> {
 
-    private final String extensionModuleName;
-
     public ExtensionServerConfiguration(Class<T> type, String extensionModuleName) {
         super(type);
         this.extensionModuleName = extensionModuleName;
@@ -59,4 +57,6 @@ public abstract class ExtensionServerConfiguration<T extends Fraction> extends A
     public List<ModelNode> getList(T fraction) throws Exception {
         return new ArrayList<>();
     }
+
+    private final String extensionModuleName;
 }

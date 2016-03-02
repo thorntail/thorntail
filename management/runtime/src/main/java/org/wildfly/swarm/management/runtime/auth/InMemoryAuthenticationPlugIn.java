@@ -30,8 +30,6 @@ import org.jboss.as.domain.management.plugin.PlugInConfigurationSupport;
  */
 public class InMemoryAuthenticationPlugIn implements AuthenticationPlugIn<Credential>, PlugInConfigurationSupport {
 
-    private Map<String, String> credentials = new HashMap<>();
-
     @Override
     public void init(Map<String, String> configuration, Map<String, Object> sharedState) throws IOException {
         for (String key : configuration.keySet()) {
@@ -63,5 +61,7 @@ public class InMemoryAuthenticationPlugIn implements AuthenticationPlugIn<Creden
             }
         };
     }
+
+    private Map<String, String> credentials = new HashMap<>();
 
 }

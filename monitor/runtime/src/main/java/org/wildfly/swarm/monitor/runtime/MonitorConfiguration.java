@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.msc.service.ServiceActivator;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.monitor.MonitorFraction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Heiko Braun

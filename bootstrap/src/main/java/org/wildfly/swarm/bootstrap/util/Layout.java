@@ -39,17 +39,6 @@ import org.jboss.modules.ModuleLoadException;
  */
 public class Layout {
 
-    private static Layout INSTANCE;
-
-
-    private final Path root;
-
-    private boolean uberJar;
-
-    private boolean unpackedUberJar;
-
-    private ClassLoader bootstrapClassLoader;
-
     Layout(CodeSource codeSource) throws IOException, URISyntaxException {
         this.root = determineRoot(codeSource);
         determineIfIsUberJar();
@@ -93,10 +82,6 @@ public class Layout {
         return null;
     }
 
-    private boolean isUnpackedUberJar() {
-        return this.unpackedUberJar;
-    }
-
     public synchronized ClassLoader getBootstrapClassLoader() throws ModuleLoadException {
         if (this.bootstrapClassLoader == null) {
             this.bootstrapClassLoader = determineBootstrapClassLoader();
@@ -104,6 +89,9 @@ public class Layout {
         return this.bootstrapClassLoader;
     }
 
+    private boolean isUnpackedUberJar() {
+        return this.unpackedUberJar;
+    }
 
     private Path determineRoot(CodeSource codeSource) throws IOException, URISyntaxException {
         URL location = codeSource.getLocation();
@@ -139,7 +127,6 @@ public class Layout {
         }
     }
 
-
     private void setupProperties(InputStream inps) throws IOException {
         try (InputStream in = inps) {
             Properties props = new Properties();
@@ -165,4 +152,14 @@ public class Layout {
             return Layout.class.getClassLoader();
         }
     }
+
+    private static Layout INSTANCE;
+
+    private final Path root;
+
+    private boolean uberJar;
+
+    private boolean unpackedUberJar;
+
+    private ClassLoader bootstrapClassLoader;
 }

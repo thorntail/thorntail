@@ -158,9 +158,9 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
             formatterProperties.put(nextElement, properties.getProperty(nextElement));
         }
         customFormatter(new CustomFormatter(name)
-                .module(module)
-                .attributeClass(className)
-                .properties(formatterProperties));
+                                .module(module)
+                                .attributeClass(className)
+                                .properties(formatterProperties));
         return this;
     }
 
@@ -193,8 +193,8 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      */
     public LoggingFraction consoleHandler(Level level, String formatter) {
         consoleHandler(new ConsoleHandler(CONSOLE)
-                .level(level)
-                .namedFormatter(formatter));
+                               .level(level)
+                               .namedFormatter(formatter));
         return this;
     }
 
@@ -221,9 +221,9 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
         fileProperties.put("path", path);
         fileProperties.put("relative-to", "jboss.server.log.dir");
         fileHandler(new FileHandler(name)
-                .level(level)
-                .formatter(formatter)
-                .file(fileProperties));
+                            .level(level)
+                            .formatter(formatter)
+                            .file(fileProperties));
         return this;
     }
 
@@ -255,10 +255,10 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
         }
 
         customHandler(new CustomHandler(name)
-                .module(module)
-                .attributeClass(className)
-                .formatter(formatter)
-                .properties(handlerProperties));
+                              .module(module)
+                              .attributeClass(className)
+                              .formatter(formatter)
+                              .properties(handlerProperties));
         return this;
     }
 
@@ -302,7 +302,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      */
     public LoggingFraction rootLogger(Level level, String... handlers) {
         rootLogger(new RootLogger().level(level)
-                .handlers(handlers));
+                           .handlers(handlers));
         return this;
     }
 

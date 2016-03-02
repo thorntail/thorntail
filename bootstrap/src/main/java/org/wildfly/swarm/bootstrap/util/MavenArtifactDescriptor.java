@@ -25,16 +25,6 @@ import org.jboss.modules.maven.ArtifactCoordinates;
  */
 public class MavenArtifactDescriptor {
 
-    private String groupId;
-
-    private String artifactId;
-
-    private String version;
-
-    private String classifier;
-
-    private String type;
-
     private MavenArtifactDescriptor() {
 
     }
@@ -83,10 +73,6 @@ public class MavenArtifactDescriptor {
 
     }
 
-    private Builder builder() {
-        return new Builder();
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -133,9 +119,9 @@ public class MavenArtifactDescriptor {
 
     public ArtifactCoordinates mscCoordinates() {
         return new ArtifactCoordinates(this.groupId,
-                this.artifactId,
-                this.version,
-                this.classifier == null ? "" : this.classifier);
+                                       this.artifactId,
+                                       this.version,
+                                       this.classifier == null ? "" : this.classifier);
 
     }
 
@@ -182,6 +168,20 @@ public class MavenArtifactDescriptor {
 
         return p.toString();
     }
+
+    private Builder builder() {
+        return new Builder();
+    }
+
+    private String groupId;
+
+    private String artifactId;
+
+    private String version;
+
+    private String classifier;
+
+    private String type;
 
     public class Builder {
 

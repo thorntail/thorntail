@@ -45,10 +45,6 @@ import org.jboss.staxmapper.XMLMapper;
  */
 public class StandaloneXmlParser {
 
-    private final XMLMapper xmlMapper;
-
-    private final StandaloneXml parserDelegate;
-
     public StandaloneXmlParser() {
 
         parserDelegate = new StandaloneXml(new ExtensionHandler() {
@@ -111,6 +107,10 @@ public class StandaloneXmlParser {
 
         return operationList;
     }
+
+    private final XMLMapper xmlMapper;
+
+    private final StandaloneXml parserDelegate;
 
     private static class NoopXMLElementReader implements XMLElementReader<List<ModelNode>> {
         @Override

@@ -30,8 +30,6 @@ import org.wildfly.swarm.container.util.XmlWriter;
  */
 public class DSXmlAsset implements Asset {
 
-    private final DataSource ds;
-
     public DSXmlAsset(DataSource ds) {
         this.ds = ds;
     }
@@ -87,4 +85,6 @@ public class DSXmlAsset implements Asset {
             throw new RuntimeException(e);
         }
     }
+
+    private final DataSource ds;
 }

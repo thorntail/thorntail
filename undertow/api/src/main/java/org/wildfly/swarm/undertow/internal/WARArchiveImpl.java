@@ -34,52 +34,6 @@ public class WARArchiveImpl extends WebContainerBase<WARArchive> implements WARA
     // Class Members ----------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
 
-    @SuppressWarnings("unused")
-    private static final Logger log = Logger.getLogger(WebArchiveImpl.class.getName());
-
-    /**
-     * Path to the web inside of the Archive.
-     */
-    private static final ArchivePath PATH_WEB = ArchivePaths.root();
-
-    /**
-     * Path to the WEB-INF inside of the Archive.
-     */
-    private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
-
-    /**
-     * Path to the resources inside of the Archive.
-     */
-    private static final ArchivePath PATH_RESOURCE = ArchivePaths.create(PATH_WEB_INF, "classes");
-
-    /**
-     * Path to the libraries inside of the Archive.
-     */
-    private static final ArchivePath PATH_LIBRARY = ArchivePaths.create(PATH_WEB_INF, "lib");
-
-    /**
-     * Path to the classes inside of the Archive.
-     */
-    private static final ArchivePath PATH_CLASSES = ArchivePaths.create(PATH_WEB_INF, "classes");
-
-    /**
-     * Path to the manifests inside of the Archive.
-     */
-    private static final ArchivePath PATH_MANIFEST = ArchivePaths.create("META-INF");
-
-    /**
-     * Path to web archive service providers.
-     */
-    private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
-
-    // -------------------------------------------------------------------------------------||
-    // Instance Members -------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
-
-    // -------------------------------------------------------------------------------------||
-    // Constructor ------------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
-
     /**
      * Create a new JAXRS Archive with any type storage engine as backing.
      *
@@ -89,10 +43,6 @@ public class WARArchiveImpl extends WebContainerBase<WARArchive> implements WARA
         super(WARArchive.class, delegate);
         setDefaultContextRoot();
     }
-
-    // -------------------------------------------------------------------------------------||
-    // Required Implementations -----------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
 
     /**
      * {@inheritDoc}
@@ -163,5 +113,55 @@ public class WARArchiveImpl extends WebContainerBase<WARArchive> implements WARA
     protected ArchivePath getServiceProvidersPath() {
         return PATH_SERVICE_PROVIDERS;
     }
+
+    // -------------------------------------------------------------------------------------||
+    // Instance Members -------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    // -------------------------------------------------------------------------------------||
+    // Constructor ------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    @SuppressWarnings("unused")
+    private static final Logger log = Logger.getLogger(WebArchiveImpl.class.getName());
+
+    // -------------------------------------------------------------------------------------||
+    // Required Implementations -----------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    /**
+     * Path to the web inside of the Archive.
+     */
+    private static final ArchivePath PATH_WEB = ArchivePaths.root();
+
+    /**
+     * Path to the WEB-INF inside of the Archive.
+     */
+    private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
+
+    /**
+     * Path to the resources inside of the Archive.
+     */
+    private static final ArchivePath PATH_RESOURCE = ArchivePaths.create(PATH_WEB_INF, "classes");
+
+    /**
+     * Path to the libraries inside of the Archive.
+     */
+    private static final ArchivePath PATH_LIBRARY = ArchivePaths.create(PATH_WEB_INF, "lib");
+
+    /**
+     * Path to the classes inside of the Archive.
+     */
+    private static final ArchivePath PATH_CLASSES = ArchivePaths.create(PATH_WEB_INF, "classes");
+
+    /**
+     * Path to the manifests inside of the Archive.
+     */
+    private static final ArchivePath PATH_MANIFEST = ArchivePaths.create("META-INF");
+
+    /**
+     * Path to web archive service providers.
+     */
+    private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
 
 }

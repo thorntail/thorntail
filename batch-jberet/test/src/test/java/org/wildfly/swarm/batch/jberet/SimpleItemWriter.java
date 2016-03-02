@@ -33,23 +33,6 @@ import javax.inject.Named;
  */
 @Named
 public class SimpleItemWriter extends AbstractItemWriter implements ItemWriter {
-    private static final Logger LOGGER = Logger.getLogger(SimpleItemWriter.class.getName());
-
-    private final AtomicInteger counter = new AtomicInteger();
-
-    @BatchProperty(name = "writer.sleep")
-    @Inject
-    private String sleepTime;
-
-    @BatchProperty(name = "writer.failAt")
-    @Inject
-    private long failAt;
-
-    @Inject
-    private StepContext stepContext;
-
-    private volatile long sleepMillis = -1L;
-
     @Override
     public void open(final Serializable checkpoint) throws Exception {
         if (sleepTime != null) {
@@ -77,4 +60,21 @@ public class SimpleItemWriter extends AbstractItemWriter implements ItemWriter {
 
         }
     }
+
+    private static final Logger LOGGER = Logger.getLogger(SimpleItemWriter.class.getName());
+
+    private final AtomicInteger counter = new AtomicInteger();
+
+    @BatchProperty(name = "writer.sleep")
+    @Inject
+    private String sleepTime;
+
+    @BatchProperty(name = "writer.failAt")
+    @Inject
+    private long failAt;
+
+    @Inject
+    private StepContext stepContext;
+
+    private volatile long sleepMillis = -1L;
 }

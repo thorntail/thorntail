@@ -29,18 +29,6 @@ import javax.inject.Named;
 @Named
 public class CountingItemReader implements ItemReader {
 
-    private final AtomicInteger counter = new AtomicInteger();
-
-    @BatchProperty(name = "chunk.start")
-    @Inject
-    private String start;
-
-    @BatchProperty(name = "chunk.end")
-    @Inject
-    private String end;
-
-    private volatile int endCount;
-
     @Override
     public void open(final Serializable checkpoint) throws Exception {
         if (checkpoint != null) {
@@ -72,4 +60,16 @@ public class CountingItemReader implements ItemReader {
             return current;
         return null;
     }
+
+    private final AtomicInteger counter = new AtomicInteger();
+
+    @BatchProperty(name = "chunk.start")
+    @Inject
+    private String start;
+
+    @BatchProperty(name = "chunk.end")
+    @Inject
+    private String end;
+
+    private volatile int endCount;
 }

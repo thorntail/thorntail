@@ -29,10 +29,6 @@ import javax.security.sasl.RealmCallback;
  */
 public class AuthCallbackHandler implements CallbackHandler {
 
-    private final String userName;
-
-    private final String password;
-
     public AuthCallbackHandler(String userName, String password) {
         this.userName = userName;
         this.password = password;
@@ -57,4 +53,8 @@ public class AuthCallbackHandler implements CallbackHandler {
         }
 
     }
+
+    private final String userName;
+
+    private final String password;
 }

@@ -43,52 +43,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     // Class Members ----------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
 
-    @SuppressWarnings("unused")
-    private static final Logger log = Logger.getLogger(WebArchiveImpl.class.getName());
-
-    /**
-     * Path to the web inside of the Archive.
-     */
-    private static final ArchivePath PATH_WEB = ArchivePaths.root();
-
-    /**
-     * Path to the WEB-INF inside of the Archive.
-     */
-    private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
-
-    /**
-     * Path to the resources inside of the Archive.
-     */
-    private static final ArchivePath PATH_RESOURCE = ArchivePaths.create(PATH_WEB_INF, "classes");
-
-    /**
-     * Path to the libraries inside of the Archive.
-     */
-    private static final ArchivePath PATH_LIBRARY = ArchivePaths.create(PATH_WEB_INF, "lib");
-
-    /**
-     * Path to the classes inside of the Archive.
-     */
-    private static final ArchivePath PATH_CLASSES = ArchivePaths.create(PATH_WEB_INF, "classes");
-
-    /**
-     * Path to the manifests inside of the Archive.
-     */
-    private static final ArchivePath PATH_MANIFEST = ArchivePaths.create("META-INF");
-
-    /**
-     * Path to web archive service providers.
-     */
-    private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
-
-    // -------------------------------------------------------------------------------------||
-    // Instance Members -------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
-
-    // -------------------------------------------------------------------------------------||
-    // Constructor ------------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
-
     /**
      * Create a new JAXRS Archive with any type storage engine as backing.
      *
@@ -100,6 +54,12 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         setDefaultContextRoot();
         addGeneratedApplication();
         addExceptionMapperForFavicon();
+    }
+
+    @Override
+    public JAXRSArchive addResource(Class<?> resource) {
+        addClass(resource);
+        return covarientReturn();
     }
 
     private static boolean hasApplicationPathAnnotation(ArchivePath path, Asset asset) {
@@ -163,17 +123,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         }
     }
 
-
-    // -------------------------------------------------------------------------------------||
-    // Required Implementations -----------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
-
-    @Override
-    public JAXRSArchive addResource(Class<?> resource) {
-        addClass(resource);
-        return covarientReturn();
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -203,6 +152,14 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     protected ArchivePath getResourcePath() {
         return PATH_RESOURCE;
     }
+
+    // -------------------------------------------------------------------------------------||
+    // Instance Members -------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    // -------------------------------------------------------------------------------------||
+    // Constructor ------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
 
     /**
      * {@inheritDoc}
@@ -244,17 +201,55 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         return PATH_SERVICE_PROVIDERS;
     }
 
+
+    // -------------------------------------------------------------------------------------||
+    // Required Implementations -----------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    @SuppressWarnings("unused")
+    private static final Logger log = Logger.getLogger(WebArchiveImpl.class.getName());
+
+    /**
+     * Path to the web inside of the Archive.
+     */
+    private static final ArchivePath PATH_WEB = ArchivePaths.root();
+
+    /**
+     * Path to the WEB-INF inside of the Archive.
+     */
+    private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
+
+    /**
+     * Path to the resources inside of the Archive.
+     */
+    private static final ArchivePath PATH_RESOURCE = ArchivePaths.create(PATH_WEB_INF, "classes");
+
+    /**
+     * Path to the libraries inside of the Archive.
+     */
+    private static final ArchivePath PATH_LIBRARY = ArchivePaths.create(PATH_WEB_INF, "lib");
+
+    /**
+     * Path to the classes inside of the Archive.
+     */
+    private static final ArchivePath PATH_CLASSES = ArchivePaths.create(PATH_WEB_INF, "classes");
+
+    /**
+     * Path to the manifests inside of the Archive.
+     */
+    private static final ArchivePath PATH_MANIFEST = ArchivePaths.create("META-INF");
+
+    /**
+     * Path to web archive service providers.
+     */
+    private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
+
     public static class ApplicationHandler implements ArchiveEventHandler {
-
-        private final JAXRSArchive archive;
-
-        private final String path;
 
         public ApplicationHandler(JAXRSArchive archive, String path) {
             this.archive = archive;
             this.path = path;
         }
-
 
         @Override
         public void handle(ArchiveEvent event) {
@@ -263,5 +258,9 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
                 this.archive.delete(this.path);
             }
         }
+
+        private final JAXRSArchive archive;
+
+        private final String path;
     }
 }

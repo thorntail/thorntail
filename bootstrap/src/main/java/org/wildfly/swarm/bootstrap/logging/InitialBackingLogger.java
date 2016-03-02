@@ -20,11 +20,6 @@ package org.wildfly.swarm.bootstrap.logging;
  */
 public class InitialBackingLogger implements BackingLogger {
 
-    private final String category;
-
-    private final BootstrapLogger.Level level;
-
-
     public InitialBackingLogger(String category, BootstrapLogger.Level level) {
         this.category = category;
         this.level = level;
@@ -77,4 +72,8 @@ public class InitialBackingLogger implements BackingLogger {
     public void error(Object message, Throwable t) {
         InitialLoggerManager.INSTANCE.log(this, BootstrapLogger.Level.ERROR, message, t);
     }
+
+    private final String category;
+
+    private final BootstrapLogger.Level level;
 }

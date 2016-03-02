@@ -23,8 +23,6 @@ import java.io.Writer;
  */
 public class XmlWriter implements AutoCloseable {
 
-    private final Writer out;
-
     public XmlWriter(Writer out) {
         this.out = out;
     }
@@ -37,11 +35,9 @@ public class XmlWriter implements AutoCloseable {
         this.out.close();
     }
 
+    private final Writer out;
+
     public class Element {
-        private String name;
-
-        private boolean hasContent = false;
-
         Element(String name) throws IOException {
             this.name = name;
             out.write("<" + name);
@@ -77,5 +73,9 @@ public class XmlWriter implements AutoCloseable {
                 out.write("/>");
             }
         }
+
+        private String name;
+
+        private boolean hasContent = false;
     }
 }

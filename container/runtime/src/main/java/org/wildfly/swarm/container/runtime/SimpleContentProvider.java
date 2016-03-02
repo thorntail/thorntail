@@ -26,9 +26,6 @@ import org.jboss.vfs.VirtualFile;
  */
 public class SimpleContentProvider implements ContentProvider {
 
-    private List<VirtualFile> contents = new ArrayList<>();
-
-
     public SimpleContentProvider() {
 
     }
@@ -48,4 +45,6 @@ public class SimpleContentProvider implements ContentProvider {
 
         return this.contents.get(index);
     }
+
+    private List<VirtualFile> contents = new ArrayList<>();
 }

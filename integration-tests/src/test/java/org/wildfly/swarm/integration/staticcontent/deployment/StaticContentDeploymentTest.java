@@ -81,6 +81,19 @@ public class StaticContentDeploymentTest extends AbstractWildFlySwarmTestCase im
         }
     }
 
+    public void assertContains(String path, String text) throws Exception {
+        assertThat(fetch(DEFAULT_URL + path)).contains(text);
+    }
+
+    public void assertNotFound(String path) throws Exception {
+        try {
+            fetch(DEFAULT_URL + path);
+            fail("FileNotFoundException expected but content found for path " + path);
+        } catch (Exception ex) {
+            assertThat(ex).isInstanceOf(FileNotFoundException.class);
+        }
+    }
+
     private void assertFileChangesReflected(String context) throws Exception {
         if (context.length() > 0 && !context.endsWith("/")) {
             context = context + "/";
@@ -95,19 +108,6 @@ public class StaticContentDeploymentTest extends AbstractWildFlySwarmTestCase im
             assertContains(context + "tmp/new-file.txt", "This is updated new-file.txt.");
         } finally {
             Files.deleteIfExists(newFile);
-        }
-    }
-
-    public void assertContains(String path, String text) throws Exception {
-        assertThat(fetch(DEFAULT_URL + path)).contains(text);
-    }
-
-    public void assertNotFound(String path) throws Exception {
-        try {
-            fetch(DEFAULT_URL + path);
-            fail("FileNotFoundException expected but content found for path " + path);
-        } catch (Exception ex) {
-            assertThat(ex).isInstanceOf(FileNotFoundException.class);
         }
     }
 }

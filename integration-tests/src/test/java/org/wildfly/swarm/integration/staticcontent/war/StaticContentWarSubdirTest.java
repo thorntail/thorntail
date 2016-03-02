@@ -35,9 +35,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class StaticContentWarSubdirTest {
-    @Drone
-    WebDriver browser;
-
     @Deployment
     public static Archive createDeployment() throws Exception {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
@@ -65,4 +62,7 @@ public class StaticContentWarSubdirTest {
         browser.navigate().to(TestConstants.DEFAULT_URL + path);
         assertThat(browser.getPageSource()).contains(content);
     }
+
+    @Drone
+    WebDriver browser;
 }

@@ -45,24 +45,6 @@ import org.wildfly.swarm.arquillian.daemon.protocol.WireProtocol;
 public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonContainerConfigurationBase> implements
         DeployableContainer<CONFIGTYPE> {
 
-    private static final Logger log = Logger.getLogger(DaemonDeployableContainerBase.class.getName());
-
-    private static final String ERROR_MESSAGE_DESCRIPTORS_UNSUPPORTED = "Descriptor deployment not supported";
-
-    private InetSocketAddress remoteAddress;
-
-    private Socket socket;
-
-    private OutputStream socketOutstream;
-
-    private InputStream socketInstream;
-
-    private BufferedReader reader;
-
-    private PrintWriter writer;
-
-    private int timeout = 10;
-
     @Override
     public void setup(final CONFIGTYPE configuration) {
         final String remoteHost = configuration.getHost();
@@ -100,8 +82,8 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
                     // Time expired?
                     if (currentTime > acceptableTime) {
                         throw new LifecycleException("Could not connect to the server at "
-                                + remoteAddress.getHostString() + ":" + remoteAddress.getPort() + " in the allotted "
-                                + secondsToWait + "s", ce);
+                                                             + remoteAddress.getHostString() + ":" + remoteAddress.getPort() + " in the allotted "
+                                                             + secondsToWait + "s", ce);
                     }
                     // Sleep and try again
                     try {
@@ -117,7 +99,7 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
             final OutputStream socketOutstream = socket.getOutputStream();
             this.socketOutstream = socketOutstream;
             final PrintWriter writer = new PrintWriter(new OutputStreamWriter(socketOutstream, WireProtocol.CHARSET),
-                    true);
+                                                       true);
             this.writer = writer;
             final InputStream socketInstream = socket.getInputStream();
             this.socketInstream = socketInstream;
@@ -150,11 +132,6 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
         return DaemonProtocol.DESCRIPTION;
     }
 
-    protected DeploymentContext createDeploymentContext(final String deploymentId) {
-        return DeploymentContext.create(deploymentId, socketInstream,
-                socketOutstream, reader, writer);
-    }
-
     /**
      * @throws UnsupportedOperationException
      * @see org.jboss.arquillian.container.spi.client.container.DeployableContainer#deploy(org.jboss.shrinkwrap.descriptor.api.Descriptor)
@@ -172,6 +149,11 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
     public void undeploy(final Descriptor descriptor) throws DeploymentException {
         throw new UnsupportedOperationException(ERROR_MESSAGE_DESCRIPTORS_UNSUPPORTED);
 
+    }
+
+    protected DeploymentContext createDeploymentContext(final String deploymentId) {
+        return DeploymentContext.create(deploymentId, socketInstream,
+                                        socketOutstream, reader, writer);
     }
 
     /**
@@ -232,5 +214,23 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
             socket = null;
         }
     }
+
+    private static final Logger log = Logger.getLogger(DaemonDeployableContainerBase.class.getName());
+
+    private static final String ERROR_MESSAGE_DESCRIPTORS_UNSUPPORTED = "Descriptor deployment not supported";
+
+    private InetSocketAddress remoteAddress;
+
+    private Socket socket;
+
+    private OutputStream socketOutstream;
+
+    private InputStream socketInstream;
+
+    private BufferedReader reader;
+
+    private PrintWriter writer;
+
+    private int timeout = 10;
 
 }

@@ -22,8 +22,6 @@ import org.jboss.shrinkwrap.api.Archive;
  */
 public class DeploymentException extends Exception {
 
-    private final Archive<?> archive;
-
     public DeploymentException(String message) {
         this.archive = null;
     }
@@ -46,5 +44,7 @@ public class DeploymentException extends Exception {
     public Archive<?> getArchive() {
         return this.archive;
     }
+
+    private final Archive<?> archive;
 
 }

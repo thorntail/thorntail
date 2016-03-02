@@ -70,9 +70,9 @@ public class FractionUsageAnalyzer {
         final List<StatefulPackageMatcher> matchers = new ArrayList<>();
 
         this.fractionList.getPackageSpecs().forEach((spec, fd) ->
-            Stream.of(spec.split(","))
-                    .forEach(s -> matchers.add(new StatefulPackageMatcher(fd,
-                                                                          s.split("\\+")))));
+                                                            Stream.of(spec.split(","))
+                                                                    .forEach(s -> matchers.add(new StatefulPackageMatcher(fd,
+                                                                                                                          s.split("\\+")))));
 
         return matchers;
     }
@@ -92,6 +92,7 @@ public class FractionUsageAnalyzer {
          * Returns the fraction name for the given package.
          * If the matcher requires multiple packages for a fraction, the last matching package
          * will cause the fraction name to be returned.
+         *
          * @param pkg the package to match against
          * @return the matching fraction descriptor or null
          */
@@ -118,7 +119,9 @@ public class FractionUsageAnalyzer {
         }
 
         private final FractionDescriptor descriptor;
+
         private final Set<String> packageSpecs;
+
         private final Set<String> matchedPackages = new HashSet<>();
     }
 }

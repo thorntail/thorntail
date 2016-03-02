@@ -28,8 +28,6 @@ public class TempFileManager {
 
     public static final TempFileManager INSTANCE = new TempFileManager();
 
-    private Set<File> registered = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
     private TempFileManager() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             INSTANCE.close();
@@ -59,21 +57,23 @@ public class TempFileManager {
 
     private void close() {
         for (File file : registered) {
-            deleteRecursively( file );
+            deleteRecursively(file);
         }
     }
 
     private void deleteRecursively(File file) {
-        if ( ! file.exists() ) {
+        if (!file.exists()) {
             return;
         }
-        if ( file.isDirectory() ) {
+        if (file.isDirectory()) {
             for (File child : file.listFiles()) {
-                deleteRecursively( child );
+                deleteRecursively(child);
             }
         }
 
         file.delete();
     }
+
+    private Set<File> registered = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
 }

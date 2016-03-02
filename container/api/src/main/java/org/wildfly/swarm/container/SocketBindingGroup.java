@@ -25,16 +25,6 @@ import java.util.List;
 public class SocketBindingGroup {
 
 
-    private final String name;
-
-    private final String defaultInterace;
-
-    private final String portOffsetExpression;
-
-    private List<SocketBinding> socketBindings = new ArrayList<>();
-
-    private List<OutboundSocketBinding> outboundSocketBindings = new ArrayList<>();
-
     public SocketBindingGroup(String name, String defaultInterface, String portOffsetExpression) {
         this.name = name;
         this.defaultInterace = defaultInterface;
@@ -70,5 +60,15 @@ public class SocketBindingGroup {
     public List<OutboundSocketBinding> outboundSocketBindings() {
         return this.outboundSocketBindings;
     }
+
+    private final String name;
+
+    private final String defaultInterace;
+
+    private final String portOffsetExpression;
+
+    private List<SocketBinding> socketBindings = new ArrayList<>();
+
+    private List<OutboundSocketBinding> outboundSocketBindings = new ArrayList<>();
 }
 

@@ -45,8 +45,6 @@ public class FractionHandlingTest extends AbstractWildFlySwarmTestCase {
     @Rule
     public TestName name = new TestName();
 
-    Container container = null;
-
     @Before
     public void setup() throws Exception {
         System.out.println("Starting test: " + name.getMethodName());
@@ -83,15 +81,15 @@ public class FractionHandlingTest extends AbstractWildFlySwarmTestCase {
     //    @Test
     public void userSpecifiedFractionOverridesDependentFraction() throws Exception {
         container.fraction(new DatasourcesFraction()
-                        .jdbcDriver(new JDBCDriver("myDriver")
-                                .driverDatasourceClassName("org.h2.Driver")
-                                .driverXaDatasourceClassName("org.h2.jdbcx.JdbcDataSource")
-                                .driverModuleName("com.h2database.h2"))
-                        .dataSource(new DataSource("MyDS")
-                                .driverName("myDriver")
-                                .connectionUrl("jdbc:myDriver:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE")
-                                .userName("sa")
-                                .password("sa"))
+                                   .jdbcDriver(new JDBCDriver("myDriver")
+                                                       .driverDatasourceClassName("org.h2.Driver")
+                                                       .driverXaDatasourceClassName("org.h2.jdbcx.JdbcDataSource")
+                                                       .driverModuleName("com.h2database.h2"))
+                                   .dataSource(new DataSource("MyDS")
+                                                       .driverName("myDriver")
+                                                       .connectionUrl("jdbc:myDriver:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE")
+                                                       .userName("sa")
+                                                       .password("sa"))
         );
 
         container.start();
@@ -170,4 +168,6 @@ public class FractionHandlingTest extends AbstractWildFlySwarmTestCase {
 
         dsFractionVerifier.accept(dsFraction);
     }
+
+    Container container = null;
 }

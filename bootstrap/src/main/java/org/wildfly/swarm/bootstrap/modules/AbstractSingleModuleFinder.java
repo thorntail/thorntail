@@ -26,10 +26,6 @@ import org.jboss.modules.ModuleSpec;
  */
 public abstract class AbstractSingleModuleFinder implements ModuleFinder {
 
-    private final String moduleName;
-
-    private final String moduleSlot;
-
     public AbstractSingleModuleFinder(String moduleName) {
         this(moduleName, "main");
     }
@@ -55,4 +51,8 @@ public abstract class AbstractSingleModuleFinder implements ModuleFinder {
     }
 
     public abstract void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException;
+
+    private final String moduleName;
+
+    private final String moduleSlot;
 }

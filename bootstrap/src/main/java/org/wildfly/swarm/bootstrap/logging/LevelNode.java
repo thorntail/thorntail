@@ -23,12 +23,6 @@ import java.util.List;
  */
 public class LevelNode {
 
-    private final String name;
-
-    private final BootstrapLogger.Level level;
-
-    private final List<LevelNode> children = new ArrayList<>();
-
     public LevelNode(String name, BootstrapLogger.Level level) {
         this.name = name;
         this.level = level;
@@ -69,4 +63,10 @@ public class LevelNode {
 
         return this.level;
     }
+
+    private final String name;
+
+    private final BootstrapLogger.Level level;
+
+    private final List<LevelNode> children = new ArrayList<>();
 }

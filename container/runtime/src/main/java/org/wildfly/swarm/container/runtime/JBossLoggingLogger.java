@@ -22,8 +22,6 @@ import org.wildfly.swarm.bootstrap.logging.BackingLogger;
  * @author Bob McWhirter
  */
 public class JBossLoggingLogger implements BackingLogger {
-    private final Logger logger;
-
     public JBossLoggingLogger(Logger logger) {
         this.logger = logger;
     }
@@ -88,4 +86,6 @@ public class JBossLoggingLogger implements BackingLogger {
     public void error(Object message, Throwable t) {
         this.logger.error(message, t);
     }
+
+    private final Logger logger;
 }

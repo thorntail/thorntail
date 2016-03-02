@@ -30,8 +30,6 @@ import org.wildfly.swarm.msc.ServiceActivatorArchive;
 
 public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> implements ServiceActivatorArchive {
 
-    private ServiceActivatorAsset asset;
-
     /**
      * Constructs a new instance using the underlying specified archive, which is required
      *
@@ -82,6 +80,8 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
     public boolean containsServiceActivator(String className) {
         return this.asset.containsServiceActivator(className);
     }
+
+    private ServiceActivatorAsset asset;
 
 }
 

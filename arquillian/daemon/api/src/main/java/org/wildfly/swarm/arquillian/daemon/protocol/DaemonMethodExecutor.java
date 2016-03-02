@@ -33,13 +33,6 @@ import org.jboss.arquillian.test.spi.TestResult;
  */
 public class DaemonMethodExecutor implements ContainerMethodExecutor {
 
-    @SuppressWarnings("unused")
-    private static final Logger log = Logger.getLogger(DaemonMethodExecutor.class.getName());
-
-    private static final String SPACE = " ";
-
-    private final DeploymentContext context;
-
     DaemonMethodExecutor(final DeploymentContext context) {
         if (context == null) {
             throw new IllegalArgumentException("deployment context must be specified");
@@ -86,14 +79,19 @@ public class DaemonMethodExecutor implements ContainerMethodExecutor {
         }
     }
 
+    @SuppressWarnings("unused")
+    private static final Logger log = Logger.getLogger(DaemonMethodExecutor.class.getName());
+
+    private static final String SPACE = " ";
+
+    private final DeploymentContext context;
+
     /**
      * Wrapper which does forwards all operations except {@link InputStream#close()} to the delegate
      *
      * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
      */
     private static final class NoCloseInputStream extends InputStream {
-
-        private final InputStream delegate;
 
         NoCloseInputStream(final InputStream delegate) {
             assert delegate != null : "delegate must be specified";
@@ -219,6 +217,8 @@ public class DaemonMethodExecutor implements ContainerMethodExecutor {
         public boolean markSupported() {
             return delegate.markSupported();
         }
+
+        private final InputStream delegate;
 
     }
 

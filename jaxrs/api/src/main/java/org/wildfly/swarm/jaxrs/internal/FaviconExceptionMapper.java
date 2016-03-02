@@ -24,8 +24,6 @@ import javax.ws.rs.ext.ExceptionMapper;
  */
 public class FaviconExceptionMapper implements ExceptionMapper<NotFoundException> {
 
-    private final FaviconHandler handler;
-
     public FaviconExceptionMapper() {
         this.handler = new FaviconHandler();
     }
@@ -34,4 +32,6 @@ public class FaviconExceptionMapper implements ExceptionMapper<NotFoundException
     public Response toResponse(NotFoundException e) {
         return handler.toResponse(e);
     }
+
+    private final FaviconHandler handler;
 }

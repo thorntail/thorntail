@@ -23,8 +23,6 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.asset.Asset;
 
 public class UndertowExternalMountsAsset implements Asset {
-    private List<String> externalMounts = new ArrayList<>();
-
     public void externalMount(String path) {
         externalMounts.add(path);
     }
@@ -37,4 +35,6 @@ public class UndertowExternalMountsAsset implements Asset {
         }
         return new ByteArrayInputStream(conf.toString().getBytes());
     }
+
+    private List<String> externalMounts = new ArrayList<>();
 }

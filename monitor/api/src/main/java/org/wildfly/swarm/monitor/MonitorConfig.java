@@ -24,8 +24,6 @@ import java.util.Set;
  */
 public class MonitorConfig {
 
-    private final HashMap<Key, Object> config = new HashMap<>();
-
     public MonitorConfig() {
 
     }
@@ -42,6 +40,8 @@ public class MonitorConfig {
     public Set<Map.Entry<Key, Object>> entrySet() {
         return config.entrySet();
     }
+
+    private final HashMap<Key, Object> config = new HashMap<>();
 
     public enum Key {
         WEB_CONTEXT
