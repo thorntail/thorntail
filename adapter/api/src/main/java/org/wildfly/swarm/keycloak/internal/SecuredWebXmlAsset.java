@@ -36,8 +36,6 @@ public class SecuredWebXmlAsset implements NamedAsset {
 
     public static final String NAME = "WEB-INF/web.xml";
 
-    private List<SecurityConstraint> constraints = new ArrayList<>();
-
     public SecuredWebXmlAsset() {
 
     }
@@ -115,4 +113,6 @@ public class SecuredWebXmlAsset implements NamedAsset {
     public String getName() {
         return NAME;
     }
+
+    private List<SecurityConstraint> constraints = new ArrayList<>();
 }

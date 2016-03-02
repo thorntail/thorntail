@@ -18,7 +18,6 @@ package org.wildfly.swarm.keycloak.server;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
@@ -42,11 +41,11 @@ public class KeycloakServerFraction implements Fraction {
         if (System.getProperty("jboss.server.config.dir") == null) {
             try {
                 //Path dir = Files.createTempDirectory("swarm-keycloak-config");
-                File dir = TempFileManager.INSTANCE.newTempDirectory( "swarm-keycloak-config", ".d" );
-                System.setProperty("jboss.server.config.dir", dir.getAbsolutePath() );
+                File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-keycloak-config", ".d");
+                System.setProperty("jboss.server.config.dir", dir.getAbsolutePath());
                 Files.copy(getClass().getClassLoader().getResourceAsStream("keycloak-server.json"),
-                        dir.toPath().resolve("keycloak-server.json"),
-                        StandardCopyOption.REPLACE_EXISTING);
+                           dir.toPath().resolve("keycloak-server.json"),
+                           StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
             }

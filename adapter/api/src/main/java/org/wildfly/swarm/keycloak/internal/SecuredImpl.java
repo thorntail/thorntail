@@ -39,8 +39,6 @@ import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
  */
 public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secured {
 
-    private WebXmlAsset asset;
-
     /**
      * Constructs a new instance using the underlying specified archive, which is required
      *
@@ -127,5 +125,7 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
         }
         return new ByteArrayAsset(str.toString().getBytes());
     }
+
+    private WebXmlAsset asset;
 }
 
