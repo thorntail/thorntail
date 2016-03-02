@@ -22,8 +22,8 @@ public class SecuredRibbon {
     public static <T> T from(final Class<T> classType) {
         return SecuredRibbonResourceFactory.INSTANCE.from(classType);
     }
-    
+
     public static <T> T from(final SecuredRibbonResourceFactory factory, final Class<T> classType) {
         return factory.from(classType);
-    } 
+    }
 }

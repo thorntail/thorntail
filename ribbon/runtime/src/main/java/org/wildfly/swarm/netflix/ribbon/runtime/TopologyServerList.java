@@ -29,10 +29,6 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  */
 public class TopologyServerList extends AbstractServerList<Server> {
 
-    private String appName;
-
-    private Boolean isSecure;
-
     @Override
     public void initWithNiwsConfig(IClientConfig config) {
         this.appName = config.getClientName();
@@ -41,19 +37,23 @@ public class TopologyServerList extends AbstractServerList<Server> {
 
     @Override
     public List<Server> getInitialListOfServers() {
-        String tag = ( this.isSecure ? "https" : "http" );
+        String tag = (this.isSecure ? "https" : "http");
         return TopologyManager.INSTANCE.registrationsForService(this.appName, tag)
                 .stream()
-                .map( reg-> new Server( reg.getAddress(), reg.getPort() ))
+                .map(reg -> new Server(reg.getAddress(), reg.getPort()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Server> getUpdatedListOfServers() {
-        String tag = ( this.isSecure ? "https" : "http" );
+        String tag = (this.isSecure ? "https" : "http");
         return TopologyManager.INSTANCE.registrationsForService(this.appName, tag)
                 .stream()
-                .map( reg-> new Server( reg.getAddress(), reg.getPort() ))
+                .map(reg -> new Server(reg.getAddress(), reg.getPort()))
                 .collect(Collectors.toList());
     }
+
+    private String appName;
+
+    private Boolean isSecure;
 }

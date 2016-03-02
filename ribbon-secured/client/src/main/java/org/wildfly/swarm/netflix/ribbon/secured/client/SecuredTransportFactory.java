@@ -42,28 +42,19 @@ import io.reactivex.netty.protocol.http.client.HttpClientResponse;
 public class SecuredTransportFactory extends RibbonTransportFactory {
 
     public static final ScheduledExecutorService poolCleanerScheduler;
-    private final int maxChunkSize;
-
-    static {
-        poolCleanerScheduler = Executors.newScheduledThreadPool(1);
-    }
 
     protected SecuredTransportFactory(final int maxChunkSize) {
         super(ClientConfigFactory.DEFAULT);
         this.maxChunkSize = maxChunkSize;
     }
 
-    private static RetryHandler getDefaultHttpRetryHandlerWithConfig(final IClientConfig config) {
-        return new NettyHttpLoadBalancerErrorHandler(config);
-    }
-
     @Override
     public HttpClient<ByteBuf, ByteBuf> newHttpClient(final IClientConfig config) {
         final List<ExecutionListener<HttpClientRequest<ByteBuf>, HttpClientResponse<ByteBuf>>> listeners = new ArrayList<>();
         listeners.add(createBearerHeaderAdder());
-        final PipelineConfiguratorComposite<HttpClientResponse<ByteBuf>, HttpClientRequest<ByteBuf>> pipelineConfigurator = new PipelineConfiguratorComposite<HttpClientResponse<ByteBuf>, 
+        final PipelineConfiguratorComposite<HttpClientResponse<ByteBuf>, HttpClientRequest<ByteBuf>> pipelineConfigurator = new PipelineConfiguratorComposite<HttpClientResponse<ByteBuf>,
                 HttpClientRequest<ByteBuf>>(new HttpClientPipelineConfigurator<ByteBuf, ByteBuf>(),
-                new HttpObjectAggregationConfigurator(maxChunkSize));
+                                            new HttpObjectAggregationConfigurator(maxChunkSize));
         final LoadBalancingHttpClient<ByteBuf, ByteBuf> client = LoadBalancingHttpClient.<ByteBuf, ByteBuf>builder()
                 .withClientConfig(config)
                 .withExecutorListeners(listeners)
@@ -75,8 +66,18 @@ public class SecuredTransportFactory extends RibbonTransportFactory {
         return client;
     }
 
+    private static RetryHandler getDefaultHttpRetryHandlerWithConfig(final IClientConfig config) {
+        return new NettyHttpLoadBalancerErrorHandler(config);
+    }
+
     private ExecutionListener<HttpClientRequest<ByteBuf>, HttpClientResponse<ByteBuf>> createBearerHeaderAdder() {
         return new BearerHeaderAdder();
     }
+
+    static {
+        poolCleanerScheduler = Executors.newScheduledThreadPool(1);
+    }
+
+    private final int maxChunkSize;
 
 }

@@ -19,7 +19,6 @@ import com.netflix.client.config.ClientConfigFactory;
 import com.netflix.ribbon.RibbonResourceFactory;
 import com.netflix.ribbon.RibbonTransportFactory;
 import com.netflix.ribbon.proxy.processor.AnnotationProcessorsProvider;
-
 import io.reactivex.netty.protocol.http.HttpObjectAggregationConfigurator;
 
 /**
@@ -31,10 +30,10 @@ public class SecuredRibbonResourceFactory extends RibbonResourceFactory {
 
     public SecuredRibbonResourceFactory(final int maxChunkSize) {
         this(ClientConfigFactory.DEFAULT,
-            new SecuredTransportFactory(maxChunkSize),
-            AnnotationProcessorsProvider.DEFAULT);
+             new SecuredTransportFactory(maxChunkSize),
+             AnnotationProcessorsProvider.DEFAULT);
     }
-    
+
     public SecuredRibbonResourceFactory(final ClientConfigFactory configFactory, final RibbonTransportFactory transportFactory, final AnnotationProcessorsProvider processors) {
         super(configFactory, transportFactory, processors);
     }
