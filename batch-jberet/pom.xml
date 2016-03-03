@@ -30,12 +30,14 @@
 
   <artifactId>batch-jberet-parent</artifactId>
 
-  <name>WildFly Swarm: Batch</name>
+  <name>WildFly Swarm: Batch Parent</name>
   <description>WildFly Swarm: JSR-352 - Batch (JBeret)</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>batch-jberet</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

@@ -15,12 +15,11 @@
  */
 package org.wildfly.swarm.jgroups;
 
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.JGroups;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Environment;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.container.SocketBinding;
+import org.wildfly.swarm.spi.api.Environment;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SocketBinding;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Bob McWhirter
@@ -94,7 +93,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
     }
 
     @Override
-    public void initialize(Container.InitContext initContext) {
+    public void initialize(Fraction.InitContext initContext) {
         initContext.socketBinding(
                 new SocketBinding("jgroups-udp")
                         .port(55200)

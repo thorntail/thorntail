@@ -38,14 +38,6 @@
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>webservices</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>webservices-modules</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>undertow</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

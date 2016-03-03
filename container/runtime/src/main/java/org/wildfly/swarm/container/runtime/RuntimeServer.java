@@ -69,17 +69,19 @@ import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.vfs.TempFileProvider;
-import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.Interface;
-import org.wildfly.swarm.container.OutboundSocketBinding;
-import org.wildfly.swarm.container.SocketBinding;
-import org.wildfly.swarm.container.SocketBindingGroup;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.SocketBinding;
+import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
@@ -223,7 +225,7 @@ public class RuntimeServer implements Server {
         for (ServerConfiguration<Fraction> eachConfig : this.configList) {
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-                    implicitDeployments.addAll(eachConfig.getImplicitDeployments(eachFraction));
+                    implicitDeployments.addAll(eachConfig.getImplicitDeployments(eachFraction, Swarm.artifactManager()));
                     break;
                 }
             }
@@ -321,6 +323,7 @@ public class RuntimeServer implements Server {
 
         // required for composite index
         resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container", "runtime")), indexes);
+        resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.spi", "runtime")), indexes);
 
         Enumeration<URL> bootstraps = m1.getClassLoader().getResources("wildfly-swarm-bootstrap.conf");
         if (!bootstraps.hasMoreElements()) {
@@ -365,6 +368,7 @@ public class RuntimeServer implements Server {
         CompositeIndex compositeIndex = CompositeIndex.create(indexes.toArray(new Index[indexes.size()]));
 
         List<Class<? extends ServerConfiguration>> impls = new ArrayList<>();
+
         Set<ClassInfo> infos = compositeIndex.getAllKnownImplementors(DotName.createSimple(ServerConfiguration.class.getName()));
 
         for (ClassInfo info : infos) {
@@ -393,8 +397,9 @@ public class RuntimeServer implements Server {
                 //System.out.println("Found : "+ next);
                 InputStream input = next.openStream();
                 IndexReader reader = new IndexReader(input);
+                Index index = reader.read();
                 try {
-                    indexes.add(reader.read());
+                    indexes.add(index);
                 } finally {
                     input.close();
                 }

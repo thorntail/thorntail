@@ -16,8 +16,8 @@
 package org.wildfly.swarm.ejb.remote;
 
 import org.wildfly.swarm.config.ejb3.RemoteService;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.ejb.EJBFraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Ken Finnigan
@@ -25,7 +25,7 @@ import org.wildfly.swarm.ejb.EJBFraction;
 public class EJBRemoteFraction extends EJBFraction {
 
     @Override
-    public void initialize(Container.InitContext initContext) {
+    public void initialize(Fraction.InitContext initContext) {
         initContext.fraction(
                 createDefaultFraction()
                         .remoteService(

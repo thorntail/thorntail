@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.Set;
 
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

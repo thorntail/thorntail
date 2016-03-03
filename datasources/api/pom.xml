@@ -15,7 +15,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>datasources</artifactId>
+  <artifactId>datasources-api</artifactId>
 
   <name>WildFly Swarm: Datasources API</name>
   <description>WildFly Swarm: Datasources API</description>
@@ -25,8 +25,13 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>container</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>datasources-modules</artifactId>
@@ -35,15 +40,7 @@
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jca</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>security</artifactId>
+      <artifactId>security-api</artifactId>
     </dependency>
   </dependencies>
 

@@ -17,7 +17,7 @@ package org.wildfly.swarm.container.runtime;
 
 import java.util.UUID;
 
-import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Bob McWhirter

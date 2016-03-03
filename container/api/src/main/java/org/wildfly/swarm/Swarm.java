@@ -25,6 +25,7 @@ import org.jboss.modules.ModuleIdentifier;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.internal.ArtifactManager;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
 
 /**
  * Default {@code main(...)} if an application does not provide one.
@@ -73,6 +74,7 @@ public class Swarm {
     public static ArtifactManager artifactManager() throws IOException {
         if (ARTIFACT_MANAGER == null) {
             ARTIFACT_MANAGER = new ArtifactManager();
+            ArtifactLookup.INSTANCE.set(ARTIFACT_MANAGER);
         }
         return ARTIFACT_MANAGER;
     }

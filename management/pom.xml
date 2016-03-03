@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>management-parent</artifactId>
 
-  <name>WildFly Swarm: Management</name>
-  <description>WildFly Swarm: Management</description>
+  <name>WildFly Swarm: Management Parent</name>
+  <description>WildFly Swarm: Management Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>management</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

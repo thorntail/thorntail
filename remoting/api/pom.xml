@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>remoting</artifactId>
+  <artifactId>remoting-api</artifactId>
 
   <name>WildFly Swarm: Remoting API</name>
   <description>WildFly Swarm: Remoting API</description>
@@ -20,22 +20,13 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>remoting-modules</artifactId>
     </dependency>
 
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
-    </dependency>
   </dependencies>
 
 </project>

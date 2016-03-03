@@ -17,7 +17,7 @@ package org.wildfly.swarm.batch.jberet;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>

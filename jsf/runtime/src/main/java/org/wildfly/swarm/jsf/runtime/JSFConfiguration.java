@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.jsf.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jsf.JSFFraction;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Ken Finnigan

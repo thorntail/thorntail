@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>infinispan-parent</artifactId>
 
-  <name>WildFly Swarm: Infinispan</name>
-  <description>WildFly Swarm: Infinispan</description>
+  <name>WildFly Swarm: Infinispan Parent</name>
+  <description>WildFly Swarm: Infinispan Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>infinispan</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
