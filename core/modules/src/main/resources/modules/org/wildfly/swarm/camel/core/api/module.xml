@@ -26,6 +26,7 @@
     <dependencies>
         <module name="org.wildfly.swarm.container" />
         <module name="org.wildfly.swarm.configuration" />
+        <module name="org.wildfly.extension.camel"/>
         <module name="org.jboss.shrinkwrap" />
     </dependencies>
 </module>

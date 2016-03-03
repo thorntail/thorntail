@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.camel.swarm.tests.jaxrs;
+package org.wildfly.swarm.camel.tests.jaxrs;
 
 import java.net.MalformedURLException;
 
@@ -33,29 +33,19 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.camel.swarm.tests.jaxrs.subA.GreetingService;
-import org.wildfly.camel.swarm.tests.jaxrs.subA.RestApplication;
 import org.wildfly.extension.camel.CamelAware;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.camel.web.CamelWebFraction;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.camel.tests.jaxrs.subA.GreetingService;
+import org.wildfly.swarm.camel.tests.jaxrs.subA.RestApplication;
 
 @CamelAware
 @RunWith(Arquillian.class)
-public class JAXRSProducerTest implements ContainerFactory {
+public class JAXRSProducerTest {
 
-    static final String JAXRS_ENDPOINT_WAR = "jaxrs-endpoint.war";
-
-    @Deployment(testable = false)
+    @Deployment
     public static WebArchive swarmDeployment() {
-        final WebArchive archive = ShrinkWrap.create(WebArchive.class, JAXRS_ENDPOINT_WAR);
+        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "jaxrs-endpoint.war");
         archive.addPackage(RestApplication.class.getPackage());
         return archive;
-    }
-
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new CamelWebFraction());
     }
 
     @Test

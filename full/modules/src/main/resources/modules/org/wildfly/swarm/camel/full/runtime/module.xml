@@ -21,5 +21,7 @@
 
     <dependencies>
         <module name="org.wildfly.swarm.camel.web" slot="runtime" />
+        <module name="org.wildfly.extension.camel.security"/>
+        <module name="org.wildfly.extension.camel.undertow"/>
     </dependencies>
 </module>

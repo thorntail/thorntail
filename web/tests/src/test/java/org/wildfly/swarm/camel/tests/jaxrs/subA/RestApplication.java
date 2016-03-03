@@ -17,20 +17,19 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.camel.swarm.tests.jaxrs.subA;
+package org.wildfly.swarm.camel.tests.jaxrs.subA;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
-@Path("/greet")
-public interface GreetingService {
-    
-    @GET
-    @Path("/hello/{name}")
-    @Produces(MediaType.APPLICATION_JSON)
-    Response sayHello(@PathParam("name") String name);
+@ApplicationPath("/rest")
+public class RestApplication extends Application {
+    @Override
+    public Set<Class<?>> getClasses() {
+        final Set<Class<?>> classes = new HashSet<>();
+        classes.add(GreetingServiceImpl.class);
+        return classes;
+    }
 }
