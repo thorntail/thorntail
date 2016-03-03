@@ -15,7 +15,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>transactions</artifactId>
+  <artifactId>transactions-api</artifactId>
 
   <name>WildFly Swarm: Transactions API</name>
   <description>WildFly Swarm: Transactions API</description>
@@ -25,22 +25,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>transactions-modules</artifactId>
-    </dependency>
-
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>remoting</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

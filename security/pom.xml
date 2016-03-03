@@ -23,6 +23,8 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>security</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

@@ -28,7 +28,7 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>batch-jberet</artifactId>
+  <artifactId>batch-jberet-api</artifactId>
 
   <name>WildFly Swarm: Batch API</name>
   <description>WildFly Swarm: Batch API (JBeret)</description>
@@ -38,7 +38,7 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -52,11 +52,7 @@
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>weld</artifactId>
+      <artifactId>datasources-api</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

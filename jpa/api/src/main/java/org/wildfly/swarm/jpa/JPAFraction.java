@@ -16,9 +16,8 @@
 package org.wildfly.swarm.jpa;
 
 import org.wildfly.swarm.config.JPA;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Ken Finnigan
@@ -41,7 +40,7 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
     }
 
     @Override
-    public void initialize(Container.InitContext initContext) {
+    public void initialize(Fraction.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
             final DatasourcesFraction datasources = new DatasourcesFraction()
                     .jdbcDriver("h2", (d) -> {

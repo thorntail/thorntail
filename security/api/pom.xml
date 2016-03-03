@@ -15,7 +15,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>security</artifactId>
+  <artifactId>security-api</artifactId>
 
   <name>WildFly Swarm: Security API</name>
   <description>WildFly Swarm: Security API</description>
@@ -25,11 +25,12 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>security-modules</artifactId>
+      <artifactId>config-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- provided dependencies -->

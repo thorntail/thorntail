@@ -16,7 +16,7 @@
 package org.wildfly.swarm.mail;
 
 import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
-import org.wildfly.swarm.container.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 
 /**
  * @author Bob McWhirter

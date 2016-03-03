@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.jgroups.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jgroups.JGroupsFraction;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter

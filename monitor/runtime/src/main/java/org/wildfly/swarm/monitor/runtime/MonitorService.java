@@ -29,7 +29,6 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.wildfly.swarm.container.Container;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
@@ -37,6 +36,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OUTCOME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUCCESS;
+
+//import org.wildfly.swarm.container.Container;
 
 /**
  * @author Heiko Braun
@@ -84,7 +85,8 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         try {
             ModelNode response = controllerClient.execute(op);
             ModelNode unwrapped = unwrap(response);
-            unwrapped.get("wfs-version").set(Container.VERSION);
+            // need a way to figure out *which* version we really mean here...
+            unwrapped.get("wfs-version").set( "fixme" );
             return unwrapped;
         } catch (IOException e) {
             return new ModelNode().get(FAILURE_DESCRIPTION).set(e.getMessage());

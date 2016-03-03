@@ -35,18 +35,15 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
-/**
- * @author Toby Crawley
- */
 public class UberjarSimpleContainer implements SimpleContainer {
 
     public UberjarSimpleContainer(Class<?> testClass) {

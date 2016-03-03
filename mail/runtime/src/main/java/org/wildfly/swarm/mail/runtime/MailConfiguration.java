@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.mail.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.mail.MailFraction;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Ken Finnigan

@@ -15,8 +15,14 @@
  */
 package org.wildfly.swarm.security;
 
+import java.util.HashMap;
+
 import org.wildfly.swarm.config.Security;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.config.security.Flag;
+import org.wildfly.swarm.config.security.SecurityDomain;
+import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;
+import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter
@@ -24,6 +30,21 @@ import org.wildfly.swarm.container.Fraction;
 public class SecurityFraction extends Security<SecurityFraction> implements Fraction {
 
     public SecurityFraction() {
+    }
+
+    public static SecurityFraction defaultSecurityFraction() {
+        return new SecurityFraction()
+                .securityDomain(new SecurityDomain("other")
+                        .classicAuthentication(new ClassicAuthentication()
+                                .loginModule(new LoginModule("RealmDirect")
+                                        .code("RealmDirect")
+                                        .flag(Flag.REQUIRED)
+                                        .moduleOptions(new HashMap<Object, Object>() {{
+                                            put("password-stacking", "useFirstPass");
+                                        }})
+
+                                )));
+
     }
 
 }

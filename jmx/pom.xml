@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jmx-parent</artifactId>
 
-  <name>WildFly Swarm: JMX</name>
-  <description>WildFly Swarm: JMX</description>
+  <name>WildFly Swarm: JMX Parent</name>
+  <description>WildFly Swarm: JMX Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>jmx</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

@@ -31,6 +31,7 @@
   <properties>
     <version.wildfly.swarm.fraction.plugin>1.0.0.Alpha11</version.wildfly.swarm.fraction.plugin>
 
+    <version.swarm.spi>1.0.0.Beta2</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.wildfly.config-api>0.3.27</version.wildfly.config-api>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
@@ -215,6 +216,15 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spi</artifactId>
+        <version>${version.swarm.spi}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.easytesting</groupId>
         <artifactId>fest-assert</artifactId>
@@ -318,6 +328,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>batch-jberet-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -330,6 +345,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>bean-validation-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -356,6 +376,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>connector-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -368,6 +393,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>container</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>container-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -388,6 +418,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>datasources-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -400,6 +435,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>ee-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -420,6 +460,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>ejb-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -432,6 +477,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>ejb-remote-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -452,6 +502,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>infinispan-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -464,6 +519,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>io</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>io-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -484,6 +544,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jaxrs-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -496,6 +561,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jca-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -516,6 +586,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jgroups-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -528,6 +603,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jmx-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -548,6 +628,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -564,6 +649,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jsf-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -576,6 +666,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>logging-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -602,6 +697,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>mail-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -614,6 +714,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>management-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -634,6 +739,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>messaging-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -645,7 +755,33 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>monitor</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>monitor-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>monitor-modules</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>monitor-runtime</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>msc-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -666,6 +802,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>naming-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -678,6 +819,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>remoting-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -698,6 +844,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>security-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>security-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -710,6 +861,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>transactions-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -730,6 +886,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>undertow-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -746,6 +907,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>webservices-api</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices-modules</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
@@ -758,6 +924,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>weld</artifactId>
+        <version>1.0.0.Beta3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>weld-api</artifactId>
         <version>1.0.0.Beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -794,6 +965,7 @@
         <scope>provided</scope>
       </dependency>
 
+<!--
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-api</artifactId>
@@ -812,6 +984,7 @@
         <version>${version.org.jboss.shrinkwrap}</version>
         <scope>compile</scope>
       </dependency>
+-->
       <dependency>
         <groupId>org.jboss.shrinkwrap.descriptors</groupId>
         <artifactId>shrinkwrap-descriptors-spi</artifactId>

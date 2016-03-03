@@ -16,9 +16,9 @@
 package org.wildfly.swarm.messaging.runtime;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.container.JARArchive;
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.messaging.MessagingFraction;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter

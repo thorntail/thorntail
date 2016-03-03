@@ -20,7 +20,9 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.junit.Test;
+import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.wildfly.swarm.container.InputStreamHelper.read;

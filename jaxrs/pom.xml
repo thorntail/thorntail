@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jaxrs-parent</artifactId>
 
-  <name>WildFly Swarm: JAX-RS</name>
-  <description>WildFly Swarm: JAX-RS</description>
+  <name>WildFly Swarm: JAX-RS Parent</name>
+  <description>WildFly Swarm: JAX-RS Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>jaxrs</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

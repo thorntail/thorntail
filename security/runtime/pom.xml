@@ -23,26 +23,26 @@
   <packaging>jar</packaging>
 
   <dependencies>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>security</artifactId>
+      <artifactId>security-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ee-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
+      <artifactId>config-api</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi-runtime</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-security</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

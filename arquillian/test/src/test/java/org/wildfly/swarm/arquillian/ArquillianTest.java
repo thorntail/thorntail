@@ -30,11 +30,12 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 
 @RunWith(Arquillian.class)
 public class ArquillianTest {
+
     @Deployment
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JARArchive.class)

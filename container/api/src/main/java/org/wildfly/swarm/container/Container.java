@@ -53,12 +53,17 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.container.internal.DefaultDeploymentFactory;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
+import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.SocketBinding;
+import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * A WildFly-Swarm container.
@@ -369,7 +374,6 @@ public class Container {
                     }
                 }
             }
-
             final DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
 
             return factory != null ? factory.create() : ShrinkWrap.create(JARArchive.class);
@@ -597,7 +601,7 @@ public class Container {
      * Initialization Context to be passed to Fractions to allow them to provide
      * additional functionality into the Container.
      */
-    public class InitContext {
+    private class InitContext implements Fraction.InitContext{
         public void fraction(Fraction fraction) {
             Container.this.dependentFraction(fraction);
         }
@@ -619,7 +623,7 @@ public class Container {
         }
     }
 
-    public class PostInitContext extends InitContext {
+    private class PostInitContext extends InitContext implements Fraction.PostInitContext {
         public boolean hasFraction(String simpleName) {
             return fractions().stream().anyMatch((f) -> f.simpleName().equalsIgnoreCase(simpleName));
         }

@@ -23,9 +23,9 @@ import javax.xml.namespace.QName;
 
 import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
-import org.wildfly.swarm.container.runtime.AbstractParserFactory;
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jaxrs.JAXRSFraction;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter
