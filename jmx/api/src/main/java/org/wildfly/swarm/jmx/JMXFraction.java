@@ -16,7 +16,7 @@
 package org.wildfly.swarm.jmx;
 
 import org.wildfly.swarm.config.JMX;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

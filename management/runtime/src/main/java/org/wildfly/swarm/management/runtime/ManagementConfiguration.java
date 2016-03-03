@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.management.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.management.ManagementFraction;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter

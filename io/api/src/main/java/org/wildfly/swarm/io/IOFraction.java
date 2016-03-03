@@ -18,7 +18,7 @@ package org.wildfly.swarm.io;
 import org.wildfly.swarm.config.IO;
 import org.wildfly.swarm.config.io.BufferPool;
 import org.wildfly.swarm.config.io.Worker;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

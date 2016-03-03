@@ -21,8 +21,7 @@ import org.wildfly.swarm.config.ee.DefaultBindingsService;
 import org.wildfly.swarm.config.ee.ManagedExecutorService;
 import org.wildfly.swarm.config.ee.ManagedScheduledExecutorService;
 import org.wildfly.swarm.config.ee.ManagedThreadFactory;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter
@@ -73,7 +72,7 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
     }
 
     @Override
-    public void postInitialize(Container.PostInitContext initContext) {
+    public void postInitialize(Fraction.PostInitContext initContext) {
         if (initContext.hasFraction("Messaging")) {
             if (this.subresources().defaultBindingsService() == null) {
                 this.defaultBindingsService(new DefaultBindingsService());

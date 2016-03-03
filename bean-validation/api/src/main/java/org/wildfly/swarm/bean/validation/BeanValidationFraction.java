@@ -16,7 +16,7 @@
 package org.wildfly.swarm.bean.validation;
 
 import org.wildfly.swarm.config.BeanValidation;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

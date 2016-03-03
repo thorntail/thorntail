@@ -16,7 +16,7 @@
 package org.wildfly.swarm.jsf;
 
 import org.wildfly.swarm.config.JSF;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Ken Finnigan

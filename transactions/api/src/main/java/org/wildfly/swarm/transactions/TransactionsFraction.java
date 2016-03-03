@@ -16,9 +16,8 @@
 package org.wildfly.swarm.transactions;
 
 import org.wildfly.swarm.config.Transactions;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.container.SocketBinding;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SocketBinding;
 
 /**
  * @author Bob McWhirter
@@ -38,7 +37,7 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
     }
 
     @Override
-    public void initialize(Container.InitContext initContext) {
+    public void initialize(Fraction.InitContext initContext) {
 
         initContext.socketBinding(new SocketBinding("txn-recovery-environment")
                                           .port(this.port));

@@ -20,8 +20,8 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Toby Crawley

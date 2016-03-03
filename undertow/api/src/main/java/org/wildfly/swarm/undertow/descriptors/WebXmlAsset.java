@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.descriptor.api.javaee7.ParamValueType;
 import org.jboss.shrinkwrap.descriptor.api.webapp31.WebAppDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.webcommon31.LoginConfigType;
 
-import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
+import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
 
 /**
  * @author Ken Finnigan

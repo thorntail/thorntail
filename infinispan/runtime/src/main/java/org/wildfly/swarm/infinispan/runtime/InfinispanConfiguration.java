@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.infinispan.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Lance Ball

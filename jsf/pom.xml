@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jsf-parent</artifactId>
 
-  <name>WildFly Swarm: JSF</name>
-  <description>WildFly Swarm: JSF</description>
+  <name>WildFly Swarm: JSF Parent</name>
+  <description>WildFly Swarm: JSF Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>jsf</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

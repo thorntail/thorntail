@@ -16,7 +16,7 @@
 package org.wildfly.swarm.batch.jberet.runtime;
 
 import org.wildfly.swarm.batch.jberet.BatchFraction;
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>

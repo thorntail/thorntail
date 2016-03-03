@@ -15,7 +15,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>undertow</artifactId>
+  <artifactId>undertow-api</artifactId>
 
   <name>WildFly Swarm: Undertow API</name>
   <description>WildFly Swarm: Undertow API</description>
@@ -25,7 +25,7 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -48,20 +48,6 @@
       <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
     </dependency>
 
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ee</artifactId>
-    </dependency>
-
     <!-- Provided APIs -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -70,6 +56,12 @@
     <dependency>
       <groupId>org.jboss.spec.javax.websocket</groupId>
       <artifactId>jboss-websocket-api_1.1_spec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

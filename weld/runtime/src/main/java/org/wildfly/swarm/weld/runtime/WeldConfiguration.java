@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.weld.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.weld.WeldFraction;
 
 /**

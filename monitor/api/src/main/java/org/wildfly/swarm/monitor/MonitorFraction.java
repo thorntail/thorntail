@@ -15,8 +15,7 @@
  */
 package org.wildfly.swarm.monitor;
 
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
 /**
@@ -29,7 +28,7 @@ public class MonitorFraction implements Fraction {
     }
 
     @Override
-    public void postInitialize(Container.PostInitContext initContext) {
+    public void postInitialize(Fraction.PostInitContext initContext) {
 
         UndertowFraction undertow = (UndertowFraction) initContext.fraction("undertow");
 

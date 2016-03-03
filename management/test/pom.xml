@@ -45,15 +45,8 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>management-modules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>management-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc-runtime</artifactId>
+      <artifactId>logging</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -65,11 +58,13 @@
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
+<!--
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-controller</artifactId>
       <scope>test</scope>
     </dependency>
+-->
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-controller-client</artifactId>

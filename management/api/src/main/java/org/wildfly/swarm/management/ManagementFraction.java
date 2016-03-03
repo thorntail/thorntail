@@ -15,12 +15,11 @@
  */
 package org.wildfly.swarm.management;
 
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.container.SocketBinding;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SocketBinding;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Bob McWhirter
@@ -65,7 +64,7 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
     }
 
     @Override
-    public void initialize(Container.InitContext initContext) {
+    public void initialize(Fraction.InitContext initContext) {
         initContext.socketBinding(
                 new SocketBinding("management-http")
                         .port(SwarmProperties.propertyVar(ManagementProperties.HTTP_PORT, "9990")));

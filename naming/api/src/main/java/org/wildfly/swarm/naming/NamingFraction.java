@@ -16,7 +16,7 @@
 package org.wildfly.swarm.naming;
 
 import org.wildfly.swarm.config.Naming;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

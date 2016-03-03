@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.webservices.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.webservices.WebServicesFraction;
 
 public class WebServicesConfiguration extends MarshallingServerConfiguration<WebServicesFraction> {
