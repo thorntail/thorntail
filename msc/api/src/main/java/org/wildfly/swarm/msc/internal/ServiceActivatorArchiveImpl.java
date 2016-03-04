@@ -28,12 +28,12 @@ import org.wildfly.swarm.msc.ServiceActivatorArchive;
  * @author Bob McWhirter
  */
 
-public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> implements ServiceActivatorArchive {
+public final class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> implements ServiceActivatorArchive {
+
+    private final ServiceActivatorAsset asset;
 
     /**
      * Constructs a new instance using the underlying specified archive, which is required
-     *
-     * @param archive
      */
     public ServiceActivatorArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
@@ -59,6 +59,8 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
                 this.asset = new ServiceActivatorAsset();
                 getArchive().add(this.asset, "META-INF/services/" + ServiceActivator.class.getName());
             }
+        } else {
+            throw new IllegalArgumentException("Usupported archive type: " + archive);
         }
     }
 
@@ -80,9 +82,6 @@ public class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBase<?>> 
     public boolean containsServiceActivator(String className) {
         return this.asset.containsServiceActivator(className);
     }
-
-    private ServiceActivatorAsset asset;
-
 }
 
 
