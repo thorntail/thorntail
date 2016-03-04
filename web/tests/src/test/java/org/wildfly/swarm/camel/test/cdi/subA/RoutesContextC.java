@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.camel.tests.cdi.subA;
+package org.wildfly.swarm.camel.test.cdi.subA;
 
 import javax.inject.Inject;
 
@@ -29,20 +29,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Uses contextD implicitly using that context for all injection points without
+ * Uses contextC implicitly using that context for all injection points without
  * having to mention them on each camel annotation
  */
-@ContextName("contextD")
-public class RoutesContextD extends RouteBuilder {
-    private static final Logger LOG = LoggerFactory.getLogger(RoutesContextD.class);
+@ContextName("contextC")
+public class RoutesContextC extends RouteBuilder {
+    private static final Logger LOG = LoggerFactory.getLogger(RoutesContextC.class);
 
-    @Inject @Uri("seda:D.a")
+    @Inject @Uri("seda:C.a")
     Endpoint a;
 
-    @EndpointInject(uri = "mock:D.b")
+    @EndpointInject(uri = "mock:C.b")
     public MockEndpoint b;
 
-    @Inject @Uri("seda:D.a")
+    @Inject @Uri("seda:C.a")
     ProducerTemplate producer;
 
     @Override
@@ -51,7 +51,7 @@ public class RoutesContextD extends RouteBuilder {
     }
 
     public void sendMessages() {
-        for (Object expectedBody : Constants.EXPECTED_BODIES_D) {
+        for (Object expectedBody : Constants.EXPECTED_BODIES_C) {
             LOG.info("Sending " + expectedBody + " to " + producer.getDefaultEndpoint());
             producer.sendBody(expectedBody);
         }

@@ -1,8 +1,8 @@
 /*
  * #%L
- * Wildfly Swarm :: Camel Web Test
+ * Wildfly Camel :: Testsuite
  * %%
- * Copyright (C) 2016 RedHat
+ * Copyright (C) 2013 - 2014 RedHat
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,53 +17,69 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.swarm.camel.tests.jaxrs;
+package org.wildfly.swarm.camel.test.cxf.ws;
 
 import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
-import org.wildfly.swarm.camel.tests.jaxrs.subA.GreetingService;
-import org.wildfly.swarm.camel.tests.jaxrs.subA.RestApplication;
+import org.wildfly.swarm.camel.test.cxf.ws.subA.Endpoint;
+import org.wildfly.swarm.camel.test.cxf.ws.subA.EndpointImpl;
 
+/**
+ * Test WebService endpoint access with the cxf component.
+ *
+ * @author thomas.diesler@jboss.com
+ * @since 11-Jun-2013
+ */
 @CamelAware
 @RunWith(Arquillian.class)
-public class JAXRSProducerTest {
+public class CXFWSProducerIntegrationTest {
 
     @Deployment
-    public static WebArchive swarmDeployment() {
-        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "jaxrs-endpoint.war");
-        archive.addPackage(RestApplication.class.getPackage());
+    public static Archive<?> getSimpleWar() {
+        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "cxf-ws-producer-tests.war");
+        archive.addClasses(Endpoint.class, EndpointImpl.class);
         return archive;
     }
 
     @Test
-    public void testJaxrsProducer() throws Exception {
+    public void testSimpleWar() throws Exception {
+        QName serviceName = new QName("http://wildfly.camel.test.cxf", "EndpointService");
+        Service service = Service.create(getWsdl("/"), serviceName);
+        Endpoint port = service.getPort(Endpoint.class);
+        Assert.assertEquals("Hello Foo", port.echo("Foo"));
+    }
+
+    @Test
+    public void testCxfProducer() throws Exception {
         CamelContext camelctx = new DefaultCamelContext();
         camelctx.addRoutes(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("direct:start")
-                .setHeader(Exchange.HTTP_METHOD, constant("GET")).
-                to("cxfrs://" + getEndpointAddress("/") + "?resourceClasses=" + GreetingService.class.getName());
+                from("direct:start").to("cxf://" + getEndpointAddress("/") + "?serviceClass=" + Endpoint.class.getName());
             }
         });
 
         camelctx.start();
         try {
             ProducerTemplate producer = camelctx.createProducerTemplate();
-            String result = producer.requestBodyAndHeader("direct:start", "mybody", "name", "Kermit", String.class);
+            String result = producer.requestBody("direct:start", "Kermit", String.class);
             Assert.assertEquals("Hello Kermit", result);
         } finally {
             camelctx.stop();
@@ -71,6 +87,10 @@ public class JAXRSProducerTest {
     }
 
     private String getEndpointAddress(String contextPath) throws MalformedURLException {
-        return "http://localhost:8080" + contextPath + "/rest/greet/hello/Kermit";
+        return "http://localhost:8080" + contextPath + "/EndpointService";
+    }
+
+    private URL getWsdl(String contextPath) throws MalformedURLException {
+        return new URL(getEndpointAddress(contextPath) + "?wsdl");
     }
 }

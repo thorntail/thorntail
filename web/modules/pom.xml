@@ -52,6 +52,10 @@
             <artifactId>jaxrs-weld</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>webservices</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.wildfly.camel</groupId>
             <artifactId>wildfly-camel-feature-full</artifactId>
             <version>${version.wildfly.camel}</version>

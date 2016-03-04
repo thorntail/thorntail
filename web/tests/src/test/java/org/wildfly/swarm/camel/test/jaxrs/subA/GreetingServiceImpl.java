@@ -17,19 +17,13 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.swarm.camel.tests.jaxrs.subA;
+package org.wildfly.swarm.camel.test.jaxrs.subA;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+import javax.ws.rs.core.Response;
 
-@ApplicationPath("/rest")
-public class RestApplication extends Application {
-    @Override
-    public Set<Class<?>> getClasses() {
-        final Set<Class<?>> classes = new HashSet<>();
-        classes.add(GreetingServiceImpl.class);
-        return classes;
+public class GreetingServiceImpl implements GreetingService {
+
+    public Response sayHello(String name) {
+        return Response.ok("Hello " + name).build();
     }
 }

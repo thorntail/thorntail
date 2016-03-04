@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.camel.tests.cdi;
+package org.wildfly.swarm.camel.test.cdi;
 
 import java.util.Map;
 
@@ -37,11 +37,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelContextRegistry;
-import org.wildfly.swarm.camel.tests.cdi.subA.Constants;
-import org.wildfly.swarm.camel.tests.cdi.subA.RoutesContextA;
-import org.wildfly.swarm.camel.tests.cdi.subA.RoutesContextB;
-import org.wildfly.swarm.camel.tests.cdi.subA.RoutesContextC;
-import org.wildfly.swarm.camel.tests.cdi.subA.RoutesContextD;
+import org.wildfly.swarm.camel.test.cdi.subA.Constants;
+import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextA;
+import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextB;
+import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextC;
+import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextD;
 
 @RunWith(Arquillian.class)
 public class CDIIntegrationTest {

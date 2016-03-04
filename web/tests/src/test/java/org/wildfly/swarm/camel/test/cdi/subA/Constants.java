@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.camel.tests.cdi.subA;
+package org.wildfly.swarm.camel.test.cdi.subA;
 
 public final class Constants {
 

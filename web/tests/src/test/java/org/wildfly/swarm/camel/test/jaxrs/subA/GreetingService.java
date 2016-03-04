@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.swarm.camel.tests.jaxrs.subA;
+package org.wildfly.swarm.camel.test.jaxrs.subA;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
