@@ -9,7 +9,7 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>spi-parent</artifactId>
+    <artifactId>spi</artifactId>
     <version>1.0.0.Alpha1-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
@@ -43,6 +43,15 @@
       <groupId>org.jboss</groupId>
       <artifactId>jboss-dmr</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-controller</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>config-api-runtime</artifactId>
+    </dependency>
+    
   </dependencies>
 
 </project>

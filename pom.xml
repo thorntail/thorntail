@@ -14,7 +14,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>spi-parent</artifactId>
+  <artifactId>spi</artifactId>
   <version>1.0.0.Alpha1-SNAPSHOT</version>
 
   <name>WildFly Swarm: SPI</name>
@@ -32,7 +32,11 @@
   <properties>
     <version.wildfly.config-api>0.3.27</version.wildfly.config-api>
     <version.wildfly>10.0.0.Final</version.wildfly>
+    <version.wildfly.config-api>0.3.27</version.wildfly.config-api>
     <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
+    <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-8</version.org.jboss.shrinkwrap.descriptors>
+
+    <version.fest-assert>1.4</version.fest-assert>
 
     <!-- Surefire args -->
     <surefire.jpda.args />
@@ -67,6 +71,16 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -74,6 +88,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spi-api</artifactId>
+        <version>1.0.0.Alpha1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spi-runtime</artifactId>
         <version>1.0.0.Alpha1-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -88,6 +107,68 @@
         <artifactId>shrinkwrap-api</artifactId>
         <version>${version.org.jboss.shrinkwrap}</version>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-spi</artifactId>
+        <version>${version.org.jboss.shrinkwrap}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-impl-base</artifactId>
+        <version>${version.org.jboss.shrinkwrap}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-spi</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-base</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-javaee</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>config-api</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>config-api-runtime</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>config-api-modules</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.easytesting</groupId>
+        <artifactId>fest-assert</artifactId>
+        <version>${version.fest-assert}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

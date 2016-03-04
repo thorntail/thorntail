@@ -30,6 +30,10 @@ public class OutboundSocketBinding {
         this.name = name;
     }
 
+    public String name() {
+        return this.name;
+    }
+
     public OutboundSocketBinding remoteHost(String hostExpr) {
         this.hostExpr = hostExpr;
         return this;

@@ -32,6 +32,10 @@ public class SocketBinding {
         this.name = name;
     }
 
+    public String name() {
+        return this.name;
+    }
+
     public SocketBinding port(int port) {
         this.portExpression = "" + port;
         return this;

@@ -26,6 +26,7 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -43,6 +44,10 @@ public interface ServerConfiguration<T extends Fraction> {
 
     default void prepareArchive(Archive<?> a) {
 
+    }
+
+    default List<Archive> getImplicitDeployments(T fraction, ArtifactLookup lookup) throws Exception {
+        return getImplicitDeployments( fraction );
     }
 
     default List<Archive> getImplicitDeployments(T fraction) throws Exception {
