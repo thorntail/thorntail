@@ -1,3 +1,0 @@
-implementingClassName=org.wildfly.swarm.spi.api.JARArchiveImpl
-extension=.jar
-archiveFormat=ZIP
