@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.wildfly.camel.swarm.core.subA;
+package org.wildfly.swarm.camel.core.subA;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;

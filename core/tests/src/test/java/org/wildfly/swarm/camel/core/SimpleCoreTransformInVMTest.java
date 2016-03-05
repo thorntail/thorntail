@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.camel.swarm.core;
+package org.wildfly.swarm.camel.core;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.wildfly.camel.swarm.tests.ejb.subA;
+package org.wildfly.swarm.camel.test.ejb.subA;
 
 import javax.ejb.Stateless;
 

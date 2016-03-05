@@ -34,18 +34,26 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
+import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.camel.test.jaxrs.subA.GreetingService;
 import org.wildfly.swarm.camel.test.jaxrs.subA.RestApplication;
+import org.wildfly.swarm.camel.web.CamelWebFraction;
+import org.wildfly.swarm.container.Container;
 
 @CamelAware
 @RunWith(Arquillian.class)
-public class JAXRSProducerTest {
+public class JAXRSProducerTest implements ContainerFactory {
 
     @Deployment
-    public static WebArchive swarmDeployment() {
+    public static WebArchive deployment() {
         final WebArchive archive = ShrinkWrap.create(WebArchive.class, "jaxrs-endpoint.war");
         archive.addPackage(RestApplication.class.getPackage());
         return archive;
+    }
+
+    @Override
+    public Container newContainer(String... args) throws Exception {
+        return new Container().fraction(new CamelWebFraction());
     }
 
     @Test

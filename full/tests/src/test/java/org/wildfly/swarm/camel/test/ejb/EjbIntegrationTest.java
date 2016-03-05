@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.wildfly.camel.swarm.tests.ejb;
+package org.wildfly.swarm.camel.test.ejb;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
@@ -27,22 +27,30 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.camel.swarm.tests.ejb.subA.HelloBean;
 import org.wildfly.extension.camel.CamelAware;
+import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.camel.full.CamelFullFraction;
+import org.wildfly.swarm.camel.test.ejb.subA.HelloBean;
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.JARArchive;
 
 @CamelAware
 @RunWith(Arquillian.class)
-public class EjbIntegrationTest {
+public class EjbIntegrationTest implements ContainerFactory {
 
     @Deployment
-    public static JavaArchive deployment() {
-        final JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
+    public static JARArchive deployment() {
+        final JARArchive archive = ShrinkWrap.create(JARArchive.class);
         archive.addClasses(HelloBean.class);
         return archive;
+    }
+
+    @Override
+    public Container newContainer(String... args) throws Exception {
+        return new Container().fraction(new CamelFullFraction());
     }
 
     @Test

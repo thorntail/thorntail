@@ -31,15 +31,17 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
+import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.camel.test.cxf.ws.subA.Endpoint;
 import org.wildfly.swarm.camel.test.cxf.ws.subA.EndpointImpl;
+import org.wildfly.swarm.camel.web.CamelWebFraction;
+import org.wildfly.swarm.container.Container;
 
 /**
  * Test WebService endpoint access with the cxf component.
@@ -49,13 +51,18 @@ import org.wildfly.swarm.camel.test.cxf.ws.subA.EndpointImpl;
  */
 @CamelAware
 @RunWith(Arquillian.class)
-public class CXFWSProducerIntegrationTest {
+public class CXFWSProducerIntegrationTest implements ContainerFactory {
 
     @Deployment
-    public static Archive<?> getSimpleWar() {
+    public static WebArchive deployment() {
         final WebArchive archive = ShrinkWrap.create(WebArchive.class, "cxf-ws-producer-tests.war");
         archive.addClasses(Endpoint.class, EndpointImpl.class);
         return archive;
+    }
+
+    @Override
+    public Container newContainer(String... args) throws Exception {
+        return new Container().fraction(new CamelWebFraction());
     }
 
     @Test

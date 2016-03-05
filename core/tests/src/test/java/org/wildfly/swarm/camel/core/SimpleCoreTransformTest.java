@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.camel.swarm.core;
+package org.wildfly.swarm.camel.core;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ConsumerTemplate;
@@ -26,11 +26,13 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.camel.swarm.core.subA.RouteBuilderA;
+import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.camel.core.subA.RouteBuilderA;
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.JARArchive;
 
 
 /**
@@ -38,14 +40,19 @@ import org.wildfly.camel.swarm.core.subA.RouteBuilderA;
  * @since 09-Feb-2016
  */
 @RunWith(Arquillian.class)
-public class SimpleCoreTransformTest {
+public class SimpleCoreTransformTest implements ContainerFactory {
 
     @Deployment
-    public static JavaArchive swarmDeployment() {
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
+    public static JARArchive swarmDeployment() {
+        JARArchive archive = ShrinkWrap.create(JARArchive.class);
         archive.addAsResource("spring/simple-camel-context.xml");
         archive.addClasses(RouteBuilderA.class);
         return archive;
+    }
+
+    @Override
+    public Container newContainer(String... args) throws Exception {
+        return new Container().fraction(new CamelCoreFraction());
     }
 
     @Test

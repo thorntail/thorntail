@@ -26,7 +26,7 @@
 
   <camelContext id="simpleTransform">
     <packageScan>
-      <package>org.wildfly.camel.swarm.core.subA</package>
+      <package>org.wildfly.swarm.camel.core.subA</package>
     </packageScan>
   </camelContext>
   

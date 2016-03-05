@@ -32,19 +32,22 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelContextRegistry;
+import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.camel.test.cdi.subA.Constants;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextA;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextB;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextC;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextD;
+import org.wildfly.swarm.camel.web.CamelWebFraction;
+import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.JARArchive;
 
 @RunWith(Arquillian.class)
-public class CDIIntegrationTest {
+public class CDIIntegrationTest implements ContainerFactory {
 
     @Resource(name = "java:jboss/camel/CamelContextRegistry")
     CamelContextRegistry contextRegistry;
@@ -62,13 +65,17 @@ public class CDIIntegrationTest {
     @Uri(value = "seda:foo", context = "contextD")
     ProducerTemplate producerD;
 
-    @Deployment(testable = true)
-    public static JavaArchive createDeployment() {
-        // Note, this needs to have the *.jar suffix
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "camel-cdi-tests.jar");
+    @Deployment
+    public static JARArchive deployment() {
+        JARArchive archive = ShrinkWrap.create(JARArchive.class, "camel-cdi-tests.jar");
         archive.addPackage(RoutesContextA.class.getPackage());
         archive.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;
+    }
+
+    @Override
+    public Container newContainer(String... args) throws Exception {
+        return new Container().fraction(new CamelWebFraction());
     }
 
     @Test
