@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.msc.runtime;
 
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.msc.MSCFraction;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
  * @author Bob McWhirter

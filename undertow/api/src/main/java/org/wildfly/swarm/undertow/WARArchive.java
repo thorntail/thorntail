@@ -20,8 +20,8 @@ import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 import org.jboss.shrinkwrap.api.container.WebContainer;
-import org.wildfly.swarm.container.DependenciesContainer;
-import org.wildfly.swarm.container.JBossDeploymentStructureContainer;
+import org.wildfly.swarm.spi.api.DependenciesContainer;
+import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 import org.wildfly.swarm.undertow.descriptors.WebXmlContainer;
 

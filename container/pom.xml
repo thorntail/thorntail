@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>container-parent</artifactId>
 
-  <name>WildFly Swarm: Container</name>
-  <description>WildFly Swarm: Container</description>
+  <name>WildFly Swarm: Container Parent</name>
+  <description>WildFly Swarm: Container Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>container</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

@@ -23,7 +23,7 @@ import java.net.URL;
 
 import org.jboss.arquillian.container.test.impl.enricher.resource.OperatesOnDeploymentAwareProvider;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.wildfly.swarm.SwarmProperties;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider {
     @Override

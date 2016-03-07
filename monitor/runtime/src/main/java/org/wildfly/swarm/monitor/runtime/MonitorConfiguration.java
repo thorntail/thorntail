@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.msc.service.ServiceActivator;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.monitor.MonitorFraction;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
  * @author Heiko Braun

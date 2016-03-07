@@ -17,7 +17,6 @@ package org.wildfly.swarm.undertow;
 
 import java.util.List;
 
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.undertow.BufferCache;
@@ -28,9 +27,9 @@ import org.wildfly.swarm.config.undertow.server.HTTPListener;
 import org.wildfly.swarm.config.undertow.server.Host;
 import org.wildfly.swarm.config.undertow.servlet_container.JSPSetting;
 import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.container.SocketBinding;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SocketBinding;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Bob McWhirter
@@ -119,7 +118,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     @Override
-    public void initialize(Container.InitContext initContext) {
+    public void initialize(Fraction.InitContext initContext) {
         initContext.socketBinding(
                 new SocketBinding("http")
                         .port(SwarmProperties.propertyVar(UndertowProperties.HTTP_PORT, "8080")));
@@ -129,7 +128,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     @Override
-    public void postInitialize(Container.PostInitContext initContext) {
+    public void postInitialize(Fraction.PostInitContext initContext) {
         if (this.keystorePassword != null & this.keystorePassword != null && this.alias != null) {
             ManagementCoreService management = (ManagementCoreService) initContext.fraction("management");
             if (management == null) {

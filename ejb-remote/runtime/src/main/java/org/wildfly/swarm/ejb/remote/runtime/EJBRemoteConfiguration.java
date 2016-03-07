@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.ejb.remote.runtime;
 
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.ejb.remote.EJBRemoteFraction;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
  * @author Ken Finnigan

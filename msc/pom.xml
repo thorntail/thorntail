@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>msc-parent</artifactId>
 
-  <name>WildFly Swarm: MSC</name>
-  <description>WildFly Swarm: MSC</description>
+  <name>WildFly Swarm: MSC Parent</name>
+  <description>WildFly Swarm: MSC Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>msc</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

@@ -20,8 +20,7 @@ import org.wildfly.swarm.config.infinispan.Mode;
 import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.LockingComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Lance Ball
@@ -37,7 +36,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
     }
 
     @Override
-    public void postInitialize(Container.PostInitContext initContext) {
+    public void postInitialize(Fraction.PostInitContext initContext) {
         if (this.defaultFraction) {
             if (initContext.hasFraction("jgroups")) {
                 clusteredDefaultFraction(initContext);
@@ -53,7 +52,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         return this;
     }
 
-    private InfinispanFraction clusteredDefaultFraction(Container.PostInitContext initContext) {
+    private InfinispanFraction clusteredDefaultFraction(Fraction.PostInitContext initContext) {
         cacheContainer("server",
                        cc -> cc.defaultCache("default")
                                .alias("singleton")
@@ -108,7 +107,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         return this;
     }
 
-    private InfinispanFraction localDefaultFraction(Container.PostInitContext initContext) {
+    private InfinispanFraction localDefaultFraction(Fraction.PostInitContext initContext) {
         cacheContainer("server",
                        cc -> cc.defaultCache("default")
                                .localCache("default", c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH)))

@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jpa-parent</artifactId>
 
-  <name>WildFly Swarm: JPA</name>
-  <description>WildFly Swarm: JPA</description>
+  <name>WildFly Swarm: JPA Parent</name>
+  <description>WildFly Swarm: JPA Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>jpa</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

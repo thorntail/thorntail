@@ -23,8 +23,8 @@ import org.wildfly.swarm.config.BatchJBeret;
 import org.wildfly.swarm.config.batch.jberet.InMemoryJobRepository;
 import org.wildfly.swarm.config.batch.jberet.JDBCJobRepository;
 import org.wildfly.swarm.config.batch.jberet.ThreadPool;
-import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * A batch (JSR-352) fraction implemented by JBeret.

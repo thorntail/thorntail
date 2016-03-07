@@ -18,7 +18,7 @@ package org.wildfly.swarm.datasources;
 import org.wildfly.swarm.config.Datasources;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriverConsumer;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

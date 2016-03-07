@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.ejb.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.ejb.EJBFraction;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Ken Finnigan

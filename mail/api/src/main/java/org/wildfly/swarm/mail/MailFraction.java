@@ -18,9 +18,8 @@ package org.wildfly.swarm.mail;
 import org.wildfly.swarm.config.Mail;
 import org.wildfly.swarm.config.mail.MailSession;
 import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.container.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 
 /**
  * @author Ken Finnigan
@@ -60,7 +59,7 @@ public class MailFraction extends Mail<MailFraction> implements Fraction {
     }
 
     @Override
-    public void postInitialize(Container.PostInitContext initContext) {
+    public void postInitialize(Fraction.PostInitContext initContext) {
         for (MailSession session : subresources().mailSessions()) {
             SMTPServer server = session.subresources().smtpServer();
             if (server != null && server instanceof EnhancedSMTPServer) {

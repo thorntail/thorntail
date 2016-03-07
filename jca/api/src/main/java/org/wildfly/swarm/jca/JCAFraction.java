@@ -26,7 +26,7 @@ import org.wildfly.swarm.config.jca.CachedConnectionManager;
 import org.wildfly.swarm.config.jca.LongRunningThreads;
 import org.wildfly.swarm.config.jca.ShortRunningThreads;
 import org.wildfly.swarm.config.jca.Workmanager;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

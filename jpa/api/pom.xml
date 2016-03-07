@@ -15,7 +15,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jpa</artifactId>
+  <artifactId>jpa-api</artifactId>
 
   <name>WildFly Swarm: JPA API</name>
   <description>WildFly Swarm: JPA API</description>
@@ -25,21 +25,16 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jpa-modules</artifactId>
     </dependency>
 
-    <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ee</artifactId>
+      <artifactId>datasources-api</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

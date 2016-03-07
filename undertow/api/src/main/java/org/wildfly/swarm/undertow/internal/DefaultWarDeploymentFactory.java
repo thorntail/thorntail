@@ -26,8 +26,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.wildfly.swarm.container.DependenciesContainer;
-import org.wildfly.swarm.container.internal.DefaultDeploymentFactory;
+import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
+import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
@@ -36,9 +36,13 @@ import org.wildfly.swarm.undertow.WARArchive;
 public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
     public static WARArchive archiveFromCurrentApp() throws Exception {
+        System.err.println( "A" );
         final WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
+        System.err.println( "B" );
         final DefaultDeploymentFactory factory = new DefaultWarDeploymentFactory();
+        System.err.println( "C " + factory );
         factory.setup(archive);
+        System.err.println( "D" );
         archive.addModule("org.wildfly.swarm.undertow", "runtime");
 
         return archive;

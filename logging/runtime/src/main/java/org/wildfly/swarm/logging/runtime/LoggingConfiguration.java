@@ -26,10 +26,10 @@ import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.bootstrap.logging.InitialLoggerManager;
 import org.wildfly.swarm.bootstrap.logging.LevelNode;
 import org.wildfly.swarm.config.logging.Level;
-import org.wildfly.swarm.container.runtime.AbstractParserFactory;
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.logging.LoggingProperties;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter

@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>messaging-parent</artifactId>
 
-  <name>WildFly Swarm: Messaging</name>
-  <description>WildFly Swarm: Messaging</description>
+  <name>WildFly Swarm: Messaging Parent</name>
+  <description>WildFly Swarm: Messaging Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>messaging</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

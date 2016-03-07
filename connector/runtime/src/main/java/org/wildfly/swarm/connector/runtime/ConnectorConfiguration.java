@@ -16,7 +16,7 @@
 package org.wildfly.swarm.connector.runtime;
 
 import org.wildfly.swarm.connector.ConnectorFraction;
-import org.wildfly.swarm.container.runtime.ExtensionServerConfiguration;
+import org.wildfly.swarm.spi.runtime.ExtensionServerConfiguration;
 
 /**
  * @author Bob McWhirter

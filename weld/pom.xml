@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>weld-parent</artifactId>
 
-  <name>WildFly Swarm: Weld</name>
-  <description>WildFly Swarm: Weld</description>
+  <name>WildFly Swarm: Weld Parent</name>
+  <description>WildFly Swarm: Weld Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>weld</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
