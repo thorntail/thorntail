@@ -28,9 +28,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
@@ -75,7 +75,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     protected ArtifactResolver resolver;
 
     @Component
-    protected DefaultRepositorySystem repositorySystem;
+    protected RepositorySystem repositorySystem;
 
     AbstractSwarmMojo() {
         if (this.additionalModules == null) {
