@@ -18,6 +18,7 @@ package org.wildfly.swarm.container.runtime;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -48,8 +49,10 @@ import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
 import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
+import org.jboss.jandex.IndexReader;
 import org.jboss.jandex.Indexer;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
@@ -314,6 +317,11 @@ public class RuntimeServer implements Server {
     private void loadFractionConfigurations() throws Exception {
         Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
 
+        List<Index> indexes = new ArrayList<>();
+
+        // required for composite index
+        resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container", "runtime")), indexes);
+
         Enumeration<URL> bootstraps = m1.getClassLoader().getResources("wildfly-swarm-bootstrap.conf");
         if (!bootstraps.hasMoreElements()) {
             bootstraps = ClassLoader.getSystemClassLoader().getResources("wildfly-swarm-bootstrap.conf");
@@ -330,7 +338,7 @@ public class RuntimeServer implements Server {
                     }
                     Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "runtime"));
 
-                    List<Class<? extends ServerConfiguration>> serverConfigs = findServerConfigurationImpls(module);
+                    List<Class<? extends ServerConfiguration>> serverConfigs = findServerConfigurationImpls(module, indexes);
 
                     for (Class<? extends ServerConfiguration> cls : serverConfigs) {
                         if (!this.configList.stream().anyMatch((e) -> e.getClass().equals(cls))) {
@@ -345,30 +353,19 @@ public class RuntimeServer implements Server {
         }
     }
 
-    protected List<Class<? extends ServerConfiguration>> findServerConfigurationImpls(Module module) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException {
+    protected List<Class<? extends ServerConfiguration>> findServerConfigurationImpls(Module module, List<Index> parentIndexes) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException {
 
-        Indexer indexer = new Indexer();
+        List<Index> indexes = new ArrayList<>();
 
-        Iterator<Resource> resources = module.iterateResources(PathFilters.acceptAll());
+        resolveBuildTimeIndex(module, indexes);
 
-        while (resources.hasNext()) {
-            Resource each = resources.next();
+        //resolveRuntimeIndex(module, indexes);
 
-
-            if (each.getName().endsWith(".class")) {
-                try {
-                    ClassInfo clsInfo = indexer.index(each.openStream());
-                } catch (IOException e) {
-                    //System.err.println("error: " + each.getName() + ": " + e.getMessage());
-                }
-            }
-        }
-
-        Index index = indexer.complete();
-
-        Set<ClassInfo> infos = index.getAllKnownImplementors(DotName.createSimple(ServerConfiguration.class.getName()));
+        indexes.addAll(parentIndexes);
+        CompositeIndex compositeIndex = CompositeIndex.create(indexes.toArray(new Index[indexes.size()]));
 
         List<Class<? extends ServerConfiguration>> impls = new ArrayList<>();
+        Set<ClassInfo> infos = compositeIndex.getAllKnownImplementors(DotName.createSimple(ServerConfiguration.class.getName()));
 
         for (ClassInfo info : infos) {
             try {
@@ -383,12 +380,48 @@ public class RuntimeServer implements Server {
 
         }
 
-
         return impls;
+    }
 
-        //List<AnnotationInstance> found = index.getAnnotations(DotName.createSimple(Configuration.class.getName()));
+    private void resolveBuildTimeIndex(Module module, List<Index> indexes) {
+        try {
+            Enumeration<URL> indexFiles = module.getClassLoader().findResources(BUILD_TIME_INDEX_NAME, false);
 
-        //return found;
+            while(indexFiles.hasMoreElements())
+            {
+                URL next = indexFiles.nextElement();
+                //System.out.println("Found : "+ next);
+                InputStream input = next.openStream();
+                IndexReader reader = new IndexReader(input);
+                try {
+                    indexes.add(reader.read());
+                } finally {
+                    input.close();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void resolveRuntimeIndex(Module module, List<Index> indexes) throws ModuleLoadException {
+        Indexer indexer = new Indexer();
+
+        Iterator<Resource> resources = module.iterateResources(PathFilters.acceptAll());
+
+        while (resources.hasNext()) {
+            Resource each = resources.next();
+
+            if (each.getName().endsWith(".class")) {
+                try {
+                    ClassInfo clsInfo = indexer.index(each.openStream());
+                } catch (IOException e) {
+                    //System.err.println("error: " + each.getName() + ": " + e.getMessage());
+                }
+            }
+        }
+
+        indexes.add(indexer.complete());
     }
 
     private void getExtensions(Container container, List<ModelNode> list) throws Exception {
@@ -568,6 +601,8 @@ public class RuntimeServer implements Server {
 
         }
     }
+
+    private static final String BUILD_TIME_INDEX_NAME = "META-INF/swarm-jandex.idx";
 
     private SelfContainedContainer container = new SelfContainedContainer();
 
