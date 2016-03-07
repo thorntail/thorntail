@@ -11,9 +11,6 @@ WildFly application server wrapped around it to support
 each application's use-case.
 
 > Note: WildFly Swarm requires Maven 3.2.5 or higher for building your application.
-> If you are on Fedora, the Maven 3.2.5 build won't work, as it uses an older version
-> of Aether that was replaced in the official Maven 3.2.5 release. You'll need to
-> manually [install Maven](https://maven.apache.org/download.cgi).
 
 > Note: WildFly Swarm requires JDK 8 or higher for building your application
 > or for building WildFly Swarm itself.
