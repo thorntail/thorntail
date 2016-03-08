@@ -221,6 +221,13 @@
         <artifactId>jaxrs-modules</artifactId>
         <version>${version.swarm.core}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>3.2.5</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
