@@ -10,47 +10,42 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>keycloak-adapter-parent</artifactId>
-    <version>1.0.0.Beta2-SNAPSHOT</version>
+    <version>1.0.0.Alpha9-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>keycloak-api</artifactId>
+  <artifactId>keycloak</artifactId>
 
-  <name>WildFly Swarm: Keycloak API</name>
-  <description>WildFly Swarm: Keycloak API</description>
+  <name>WildFly Swarm: Keycloak</name>
+  <description>WildFly Swarm: Keycloak</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-api</artifactId>
+      <artifactId>keycloak-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>keycloak-modules</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>keycloak-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow-api</artifactId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>security</artifactId>
     </dependency>
 
-    <!-- Provided APIs -->
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-core</artifactId>
-    </dependency>
   </dependencies>
 
 </project>

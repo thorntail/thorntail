@@ -22,10 +22,9 @@ import java.nio.file.StandardCopyOption;
 
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.config.infinispan.CacheContainer;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter
@@ -36,7 +35,7 @@ public class KeycloakServerFraction implements Fraction {
     }
 
     @Override
-    public void postInitialize(Container.PostInitContext initContext) {
+    public void postInitialize(Fraction.PostInitContext initContext) {
 
         if (System.getProperty("jboss.server.config.dir") == null) {
             try {
