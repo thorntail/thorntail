@@ -33,19 +33,20 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+        <version>1.0.0.Beta1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jandex</goal>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>bootstrap</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-modules</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>undertow-modules</artifactId>

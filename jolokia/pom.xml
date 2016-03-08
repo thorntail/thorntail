@@ -15,32 +15,33 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jolokia-api</artifactId>
+  <artifactId>jolokia</artifactId>
 
-  <name>WildFly Swarm: Jolokia API</name>
-  <description>WildFly Swarm: Jolokia API</description>
+  <name>WildFly Swarm: Jolokia</name>
+  <description>WildFly Swarm: Jolokia</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-api</artifactId>
+      <artifactId>jolokia-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jolokia-modules</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jolokia</groupId>
-      <artifactId>jolokia-war</artifactId>
-      <type>war</type>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jolokia-runtime</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow-api</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
+
   </dependencies>
 
 </project>

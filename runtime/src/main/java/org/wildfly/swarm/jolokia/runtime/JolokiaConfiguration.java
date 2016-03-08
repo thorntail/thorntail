@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.jolokia.runtime;
 
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.jolokia.JolokiaFraction;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**

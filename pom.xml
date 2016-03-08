@@ -9,9 +9,9 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>core</artifactId>
-    <version>1.0.0.Beta2</version>
-    <relativePath />
+    <artifactId>parent</artifactId>
+    <version>6</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -32,6 +32,8 @@
 
   <properties>
     <version.jolokia>1.3.1</version.jolokia>
+    <version.swarm.spi>1.0.0.Beta2</version.swarm.spi>
+    <version.swarm.fraction-plugin>1.0.0.Beta1</version.swarm.fraction-plugin>
   </properties>
 
   <repositories>
@@ -52,7 +54,20 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spi</artifactId>
+        <version>${version.swarm.spi}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jolokia</artifactId>
+        <version>1.0.0.Beta2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jolokia-api</artifactId>
         <version>1.0.0.Beta2-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -67,6 +82,22 @@
       </dependency>
 
       <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>undertow</artifactId>
+        <version>(,2)</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>undertow-api</artifactId>
+        <version>(,2)</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>undertow-modules</artifactId>
+        <version>(,2)</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.jolokia</groupId>
         <artifactId>jolokia-war</artifactId>
         <type>war</type>
@@ -76,6 +107,8 @@
   </dependencyManagement>
 
   <modules>
+    <module>jolokia</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
