@@ -57,7 +57,7 @@
         </dependency>
         <dependency>
             <groupId>org.wildfly.camel</groupId>
-            <artifactId>wildfly-camel-feature-full</artifactId>
+            <artifactId>wildfly-camel-feature-pack</artifactId>
             <version>${version.wildfly.camel}</version>
             <scope>provided</scope>
             <type>zip</type>
