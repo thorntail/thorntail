@@ -24,9 +24,9 @@ import javax.xml.namespace.QName;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
-import org.wildfly.swarm.container.JARArchive;
-import org.wildfly.swarm.container.runtime.AbstractParserFactory;
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.transactions.TransactionsFraction;
 
 /**

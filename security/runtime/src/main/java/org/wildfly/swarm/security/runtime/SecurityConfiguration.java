@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.security.runtime;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,14 +23,9 @@ import javax.xml.namespace.QName;
 
 import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.config.security.Flag;
-import org.wildfly.swarm.config.security.SecurityDomain;
-import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;
-import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
-import org.wildfly.swarm.container.runtime.AbstractParserFactory;
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.security.SecurityFraction;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter
@@ -47,34 +40,7 @@ public class SecurityConfiguration extends MarshallingServerConfiguration<Securi
 
     @Override
     public SecurityFraction defaultFraction() {
-        return new SecurityFraction()
-                .securityDomain(new SecurityDomain("other")
-                                        .classicAuthentication(new ClassicAuthentication()
-                                                                       .loginModule(new LoginModule("RealmDirect")
-                                                                                            .code("RealmDirect")
-                                                                                            .flag(Flag.REQUIRED)
-                                                                                            .moduleOptions(new HashMap<Object, Object>() {{
-                                                                                                put("password-stacking", "useFirstPass");
-                                                                                            }})
-
-                                                                       )));
-    }
-
-    @Override
-    public List<ModelNode> getList(SecurityFraction fraction) throws Exception {
-        if (fraction == null) {
-            fraction = defaultFraction();
-        }
-
-        List<ModelNode> list = new ArrayList<>();
-
-        ModelNode address = new ModelNode();
-
-        address.setEmptyList();
-
-        list.addAll(Marshaller.marshal(fraction));
-
-        return list;
+        return SecurityFraction.defaultSecurityFraction();
     }
 
     @Override

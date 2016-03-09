@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.jpa.jpa;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jpa.JPAFraction;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Ken Finnigan

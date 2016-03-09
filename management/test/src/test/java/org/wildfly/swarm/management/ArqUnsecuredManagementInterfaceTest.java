@@ -33,7 +33,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.logging.LoggingFraction;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -53,12 +54,13 @@ public class ArqUnsecuredManagementInterfaceTest implements ContainerFactory {
     @Override
     public Container newContainer(String... args) throws Exception {
         return new Container()
+                .fraction(LoggingFraction.createDebugLoggingFraction())
                 .fraction(ManagementFraction.createDefaultFraction());
     }
 
     @Test
     @RunAsClient
-    public void testClient() throws IOException {
+    public void testClient() throws Exception {
 
         ModelControllerClient client = ModelControllerClient.Factory.create(
                 "localhost", 9990

@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import org.jboss.as.ee.subsystem.EeExtension;
 import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
-import org.wildfly.swarm.container.runtime.AbstractParserFactory;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 
 /**
  * @author Heiko Braun

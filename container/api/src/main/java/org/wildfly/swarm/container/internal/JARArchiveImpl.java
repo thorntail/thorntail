@@ -19,7 +19,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Bob McWhirter

@@ -16,7 +16,7 @@
 package org.wildfly.swarm.messaging;
 
 import org.wildfly.swarm.config.MessagingActiveMQ;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

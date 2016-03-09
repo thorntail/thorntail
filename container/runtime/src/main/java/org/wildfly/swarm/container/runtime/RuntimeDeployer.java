@@ -32,12 +32,13 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.DeploymentException;
-import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.container.internal.Deployer;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.BLOCKING_TIMEOUT;

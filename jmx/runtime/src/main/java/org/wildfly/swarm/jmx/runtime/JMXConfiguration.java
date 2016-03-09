@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.jmx.runtime;
 
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
 import org.wildfly.swarm.jmx.JMXFraction;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter

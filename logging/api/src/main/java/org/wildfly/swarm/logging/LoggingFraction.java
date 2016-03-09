@@ -31,7 +31,7 @@ import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.config.logging.PatternFormatter;
 import org.wildfly.swarm.config.logging.RootLogger;
 import org.wildfly.swarm.config.logging.SyslogHandler;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter

@@ -16,7 +16,7 @@
 package org.wildfly.swarm.bean.validation.runtime;
 
 import org.wildfly.swarm.bean.validation.BeanValidationFraction;
-import org.wildfly.swarm.container.runtime.MarshallingServerConfiguration;
+import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
  * @author Bob McWhirter

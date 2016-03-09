@@ -15,13 +15,13 @@
  */
 package org.wildfly.swarm.webservices;
 
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.Webservices;
 import org.wildfly.swarm.config.webservices.ClientConfig;
 import org.wildfly.swarm.config.webservices.EndpointConfig;
 import org.wildfly.swarm.config.webservices.Handler;
 import org.wildfly.swarm.config.webservices.PreHandlerChain;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 public class WebServicesFraction extends Webservices<WebServicesFraction> implements Fraction {
 

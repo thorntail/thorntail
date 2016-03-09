@@ -18,7 +18,6 @@ package org.wildfly.swarm.ejb;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.ejb3.AsyncService;
 import org.wildfly.swarm.config.ejb3.Cache;
@@ -30,9 +29,9 @@ import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
 import org.wildfly.swarm.config.security.security_domain.ClassicAuthorization;
 import org.wildfly.swarm.config.security.security_domain.authorization.PolicyModule;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.security.SecurityFraction;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Ken Finnigan
@@ -83,7 +82,7 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
     }
 
     @Override
-    public void postInitialize(Container.PostInitContext initContext) {
+    public void postInitialize(Fraction.PostInitContext initContext) {
         SecurityFraction security = (SecurityFraction) initContext.fraction("security");
 
         if (security != null) {

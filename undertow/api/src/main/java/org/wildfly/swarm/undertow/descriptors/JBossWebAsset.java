@@ -22,7 +22,7 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
 import org.jboss.shrinkwrap.descriptor.api.jbossweb60.JbossWebDescriptor;
 
-import static org.wildfly.swarm.container.util.ClassLoading.withTCCL;
+import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
 
 /**
  * @author Bob McWhirter

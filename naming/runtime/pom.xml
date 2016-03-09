@@ -25,22 +25,20 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
+      <artifactId>naming-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-runtime</artifactId>
+      <artifactId>spi-runtime</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
-      <scope>provided</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-naming</artifactId>
       <scope>provided</scope>
     </dependency>
+
   </dependencies>
 
 </project>

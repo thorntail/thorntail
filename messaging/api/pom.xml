@@ -15,7 +15,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>messaging</artifactId>
+  <artifactId>messaging-api</artifactId>
 
   <name>WildFly Swarm: Messaging API</name>
   <description>WildFly Swarm: Messaging API</description>
@@ -25,37 +25,14 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>messaging-modules</artifactId>
     </dependency>
 
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>security</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ee</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>connector</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jca</artifactId>
-    </dependency>
-
-<!-- Provided APIs -->
+    <!-- Provided APIs -->
     <dependency>
       <groupId>org.jboss.spec.javax.jms</groupId>
       <artifactId>jboss-jms-api_2.0_spec</artifactId>

@@ -23,7 +23,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.junit.Assert.assertEquals;
 

@@ -34,11 +34,12 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
 
 /**
  * @author Bob McWhirter
  */
-public class ArtifactManager {
+public class ArtifactManager implements ArtifactLookup {
 
     public ArtifactManager(WildFlySwarmDependenciesConf deps) {
         this.deps = deps;

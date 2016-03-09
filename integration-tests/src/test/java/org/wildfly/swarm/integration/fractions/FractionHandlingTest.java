@@ -26,13 +26,13 @@ import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.connector.ConnectorFraction;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.integration.base.AbstractWildFlySwarmTestCase;
 import org.wildfly.swarm.jca.JCAFraction;
 import org.wildfly.swarm.jpa.JPAFraction;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.naming.NamingFraction;
+import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.transactions.TransactionsFraction;
 
 import static org.fest.assertions.Assertions.assertThat;

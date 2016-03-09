@@ -12,12 +12,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>remoting-parent</artifactId>
 
-  <name>WildFly Swarm: Remoting</name>
-  <description>WildFly Swarm: Remoting</description>
+  <name>WildFly Swarm: Remoting Parent</name>
+  <description>WildFly Swarm: Remoting Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>remoting</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
