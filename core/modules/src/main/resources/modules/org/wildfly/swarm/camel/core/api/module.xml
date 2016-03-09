@@ -24,9 +24,11 @@
     </resources>
 
     <dependencies>
+        <module name="org.apache.camel.core" />
         <module name="org.wildfly.swarm.container" />
         <module name="org.wildfly.swarm.configuration" />
         <module name="org.wildfly.extension.camel"/>
         <module name="org.jboss.shrinkwrap" />
+        <module name="org.slf4j" />
     </dependencies>
 </module>

@@ -24,10 +24,14 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXT
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
+import static org.wildfly.swarm.camel.core.CamelCoreFraction.LOGGER;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.management.mbean.ManagedCamelContext;
+import org.apache.camel.model.ModelCamelContext;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
@@ -46,7 +50,7 @@ public class CamelCoreConfiguration extends AbstractServerConfiguration<CamelCor
     }
 
     @Override
-    public List<ModelNode> getList(CamelCoreFraction fraction) {
+    public List<ModelNode> getList(CamelCoreFraction fraction) throws Exception {
 
         ModelNode node = new ModelNode();
         List<ModelNode> list = new ArrayList<>();
@@ -61,6 +65,35 @@ public class CamelCoreConfiguration extends AbstractServerConfiguration<CamelCor
         node.get(OP).set(ADD);
         list.add(node);
 
+        for (RouteBuilder builder : fraction.getRouteBuilders()) {
+
+            ModelCamelContext context = builder.getContext();
+            builder.addRoutesToCamelContext(context);
+            String routesXML = getRoutes(context);
+
+            LOGGER.info("Adding system context: {}", context.getName());
+            LOGGER.info("\n{}", routesXML);
+
+            node = new ModelNode();
+            address = address.append(PathElement.pathElement("context", context.getName()));
+            node.get(OP_ADDR).set(address.toModelNode());
+            node.get(OP).set(ADD);
+
+            node.get("value").set(replaceExpressions(routesXML));
+            list.add(node);
+        }
+
         return list;
+    }
+
+    private String getRoutes(ModelCamelContext context) throws Exception {
+        String routesXML = new ManagedCamelContext(context).dumpRoutesAsXml();
+        routesXML = routesXML.substring(routesXML.indexOf("<route>"));
+        routesXML = routesXML.substring(0, routesXML.lastIndexOf("</route>") + 8);
+        return routesXML;
+    }
+
+    private String replaceExpressions(String routesXML) {
+        return routesXML.replace("${", "#{");
     }
 }

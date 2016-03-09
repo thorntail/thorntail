@@ -19,8 +19,27 @@
  */
 package org.wildfly.swarm.camel.core;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.camel.builder.RouteBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wildfly.swarm.container.Fraction;
 
 public class CamelCoreFraction implements Fraction {
 
+    public final static Logger LOGGER = LoggerFactory.getLogger("org.wildfly.swarm.camel");
+
+    private final List<RouteBuilder> routeBuilders = new ArrayList<>();
+
+    public CamelCoreFraction addRouteBuilder(RouteBuilder builder) {
+        routeBuilders.add(builder);
+        return this;
+    }
+
+    public List<RouteBuilder> getRouteBuilders() {
+        return Collections.unmodifiableList(routeBuilders);
+    }
 }
