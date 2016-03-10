@@ -23,6 +23,8 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>swagger-webapp</module>
+
     <module>ui</module>
     <module>api</module>
     <module>runtime</module>

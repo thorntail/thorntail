@@ -15,44 +15,41 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>swagger-test</artifactId>
+  <artifactId>swagger</artifactId>
 
-  <name>WildFly Swarm: Swagger Adapter Test</name>
-  <description>WildFly Swarm: Swagger Adapter Test</description>
+  <name>WildFly Swarm: Swagger Adapter</name>
+  <description>WildFly Swarm: Swagger Adapter</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>swagger</artifactId>
+      <artifactId>swagger-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>arquillian</artifactId>
-      <scope>test</scope>
+      <artifactId>swagger-modules</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>swagger-runtime</artifactId>
+      <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

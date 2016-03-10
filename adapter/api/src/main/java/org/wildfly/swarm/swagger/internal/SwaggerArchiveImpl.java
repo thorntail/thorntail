@@ -19,8 +19,8 @@ import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
-import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.swagger.SwaggerArchive;
 
 /**

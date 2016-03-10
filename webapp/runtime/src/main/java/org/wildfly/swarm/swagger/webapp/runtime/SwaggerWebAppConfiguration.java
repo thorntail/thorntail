@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 
@@ -42,7 +42,7 @@ public class SwaggerWebAppConfiguration extends AbstractServerConfiguration<Swag
 
             System.err.println("gav: " + gav);
 
-            WARArchive war = Swarm.artifact(gav,
+            WARArchive war = ArtifactLookup.get().artifact(gav,
                                             "swagger-webapp-ui.war")
                     .as(WARArchive.class)
                     .setContextRoot(fraction.getContext());

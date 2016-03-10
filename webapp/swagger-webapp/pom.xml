@@ -9,50 +9,39 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>swagger-adapter-parent</artifactId>
+    <artifactId>swagger-webapp-parent</artifactId>
     <version>1.0.0.Beta2-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>swagger-test</artifactId>
+  <artifactId>swagger-webapp</artifactId>
 
-  <name>WildFly Swarm: Swagger Adapter Test</name>
-  <description>WildFly Swarm: Swagger Adapter Test</description>
+  <name>WildFly Swarm: Swagger Webapp</name>
+  <description>WildFly Swarm: Swagger Webapp</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>swagger</artifactId>
+      <artifactId>swagger-webapp-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>arquillian</artifactId>
-      <scope>test</scope>
+      <artifactId>swagger-webapp-modules</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>swagger-webapp-runtime</artifactId>
+      <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

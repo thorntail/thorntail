@@ -23,9 +23,9 @@ import java.util.Properties;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.container.Fraction;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.undertow.UndertowProperties;
 
 
@@ -66,7 +66,7 @@ public class SwaggerWebAppFraction implements Fraction {
         if (!maybeFile.exists()) {
             // the content string is a GAV
             try {
-                this.webContent = Swarm.artifact(content);
+                this.webContent = ArtifactLookup.get().artifact(content);
             } catch (Exception e) {
                 e.printStackTrace();
             }

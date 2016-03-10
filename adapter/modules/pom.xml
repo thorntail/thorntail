@@ -40,12 +40,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-modules</artifactId>
+      <artifactId>jaxrs-modules</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs</artifactId>
+      <artifactId>msc-modules</artifactId>
     </dependency>
 
     <dependency>
@@ -83,10 +82,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc-modules</artifactId>
     </dependency>
   </dependencies>
 

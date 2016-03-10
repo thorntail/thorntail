@@ -17,12 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>swagger-adapter-parent</artifactId>
 
-  <name>WildFly Swarm: Swagger Adapter</name>
-  <description>WildFly Swarm: Swagger Adapter</description>
+  <name>WildFly Swarm: Swagger Adapter Parent</name>
+  <description>WildFly Swarm: Swagger Adapter Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>swagger</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
