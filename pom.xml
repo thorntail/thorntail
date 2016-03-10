@@ -9,8 +9,8 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>core</artifactId>
-    <version>1.0.0.Beta2</version>
+    <artifactId>parent</artifactId>
+    <version>6</version>
     <relativePath />
   </parent>
 
@@ -18,8 +18,8 @@
   <artifactId>logstash-parent</artifactId>
   <version>1.0.0.Beta2-SNAPSHOT</version>
 
-  <name>WildFly Swarm: Logstash</name>
-  <description>WildFly Swarm: Logstash</description>
+  <name>WildFly Swarm: Logstash Parent</name>
+  <description>WildFly Swarm: Logstash Parent</description>
 
   <packaging>pom</packaging>
 
@@ -29,6 +29,13 @@
     <url>https://github.com/wildfly-swarm/wildfly-swarm-logstash</url>
     <tag>HEAD</tag>
   </scm>
+
+  <properties>
+    <version.swarm.spi>1.0.0.Beta3</version.swarm.spi>
+    <version.swarm.core>1.0.0.Beta3</version.swarm.core>
+    <version.swarm.fraction-plugin>1.0.0.Beta2</version.swarm.fraction-plugin>
+    <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
+  </properties>
 
   <repositories>
     <repository>
@@ -44,11 +51,60 @@
     </repository>
   </repositories>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+          <version>${version.swarm.fraction-plugin}</version>
+          <executions>
+            <execution>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>generate</goal>
+                <goal>jandex</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <reuseForks>false</reuseForks>
+          <runOrder>alphabetical</runOrder>
+          <failIfNoTests>false</failIfNoTests>
+          <systemPropertyVariables>
+            <swarm.bind.address>127.0.0.1</swarm.bind.address>
+            <project.version>${project.version}</project.version>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spi</artifactId>
+        <version>${version.swarm.spi}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>logstash</artifactId>
+        <version>1.0.0.Beta2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>logstash-api</artifactId>
         <version>1.0.0.Beta2-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -61,10 +117,27 @@
         <artifactId>logstash-runtime</artifactId>
         <version>1.0.0.Beta2-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>logging</artifactId>
+        <version>${version.swarm.core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>3.2.5</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
   <modules>
+    <module>logstash</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

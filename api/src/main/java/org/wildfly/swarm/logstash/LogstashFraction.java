@@ -17,12 +17,11 @@ package org.wildfly.swarm.logstash;
 
 import java.util.Properties;
 
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.config.logging.CustomHandler;
 import org.wildfly.swarm.config.logging.Level;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
 import org.wildfly.swarm.logging.LoggingFraction;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Ken Finnigan
@@ -84,7 +83,7 @@ public class LogstashFraction implements Fraction {
     }
 
     @Override
-    public void initialize(Container.InitContext initContext) {
+    public void initialize(Fraction.InitContext initContext) {
         final CustomHandler<?> logstashHandler = new CustomHandler<>("logstash-handler")
                 .module("org.jboss.logmanager.ext")
                 .attributeClass("org.jboss.logmanager.ext.handlers.SocketHandler")

@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.logstash.runtime;
 
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.logstash.LogstashFraction;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
  * @author Bob McWhirter
