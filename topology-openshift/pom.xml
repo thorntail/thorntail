@@ -15,48 +15,37 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology-openshift-runtime</artifactId>
+  <artifactId>topology-openshift</artifactId>
 
-  <name>WildFly Swarm: Topology via OpenShift Runtime</name>
-  <description>WildFly Swarm: Topology via OpenShift Runtime</description>
+  <name>WildFly Swarm: Topology via OpenShift</name>
+  <description>WildFly Swarm: Topology via OpenShift</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>topology-openshift-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
-      <scope>provided</scope>
+      <artifactId>topology-openshift-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-runtime</artifactId>
+      <artifactId>topology-openshift-runtime</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-network</artifactId>
-      <scope>provided</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.openshift</groupId>
-      <artifactId>openshift-restclient-java</artifactId>
-      <scope>provided</scope>
-    </dependency>
+
   </dependencies>
 
 </project>

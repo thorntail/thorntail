@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.topology.openshift;
 
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 public class OpenShiftTopologyFraction implements Fraction {
 }

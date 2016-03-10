@@ -1,6 +1,6 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.topology.openshift" slot="api">
   <resources>
-    <artifact name="org.wildfly.swarm:topology-openshift:${project.version}"/>
+    <artifact name="org.wildfly.swarm:topology-openshift-api:${project.version}"/>
   </resources>
 
   <dependencies>
