@@ -79,6 +79,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>arquillian</artifactId>
+        <version>${version.swarm.core}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring</artifactId>
         <version>1.0.0.Alpha3-SNAPSHOT</version>
       </dependency>
