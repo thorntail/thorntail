@@ -24,10 +24,13 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXT
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
+import static org.wildfly.swarm.camel.core.CamelCoreFraction.LOGGER;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.ModelCamelContext;
 import org.jboss.as.controller.PathAddress;
@@ -43,6 +46,7 @@ import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
+import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.extension.camel.CamelConstants;
 import org.wildfly.extension.camel.service.CamelContextRegistryService.MutableCamelContextRegistry;
@@ -96,6 +100,7 @@ public class CamelCoreConfiguration extends AbstractServerConfiguration<CamelCor
         static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("wildfly", "swarm", "camel", "bootstrap");
 
         InjectedValue<MutableCamelContextRegistry> injectedContextRegistry = new InjectedValue<>();
+        List<CamelContext> systemContexts = new ArrayList<>();
         CamelCoreFraction fraction;
 
         static ServiceController<Void> addService(ServiceTarget serviceTarget, CamelCoreFraction fraction) {
@@ -120,10 +125,29 @@ public class CamelCoreConfiguration extends AbstractServerConfiguration<CamelCor
                     camelctx.setApplicationContextClassLoader(classLoader);
                     builder.addRoutesToCamelContext(camelctx);
                     contextRegistry.addCamelContext(camelctx);
+                    systemContexts.add(camelctx);
+                }
+                for (CamelContext camelctx : systemContexts) {
                     camelctx.start();
                 }
             } catch (Exception ex) {
                 throw new StartException(ex);
+            }
+        }
+
+        @Override
+        public void stop(StopContext startContext) {
+            MutableCamelContextRegistry contextRegistry = injectedContextRegistry.getValue();
+            Collections.reverse(systemContexts);
+            for (CamelContext camelctx : systemContexts) {
+                try {
+                    camelctx.stop();
+                } catch (Exception ex) {
+                    LOGGER.error("Cannot stop context: " + camelctx, ex);
+                }
+            }
+            for (CamelContext camelctx : systemContexts) {
+                contextRegistry.removeCamelContext(camelctx);
             }
         }
     }
