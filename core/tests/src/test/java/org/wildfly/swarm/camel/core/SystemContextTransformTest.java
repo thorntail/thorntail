@@ -69,6 +69,7 @@ public class SystemContextTransformTest implements ContainerFactory {
 
         CamelContextRegistry contextRegistry = ServiceLocator.getRequiredService(CamelContextRegistry.class);
         CamelContext camelctx = contextRegistry.getCamelContext("camel-1");
+        Assert.assertEquals(CamelContextRegistry.class.getClassLoader(), camelctx.getApplicationContextClassLoader());
         Assert.assertEquals(ServiceStatus.Started, camelctx.getStatus());
 
         ProducerTemplate producer = camelctx.createProducerTemplate();

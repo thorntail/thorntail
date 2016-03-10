@@ -24,12 +24,13 @@
     </resources>
 
     <dependencies>
-        <module name="org.apache.camel.core" />
+        <module name="org.apache.camel.core" services="export"/>
         <module name="org.wildfly.swarm.camel.core" />
         <module name="org.wildfly.swarm.container" />
         <module name="org.wildfly.swarm.container" slot="runtime" />
         <module name="org.wildfly.swarm.configuration" />
         <module name="org.wildfly.extension.camel"/>
+        <module name="org.jboss.msc" />
         <module name="org.slf4j" />
     </dependencies>
     

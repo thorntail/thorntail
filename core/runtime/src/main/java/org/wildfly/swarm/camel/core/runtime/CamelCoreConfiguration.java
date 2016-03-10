@@ -24,17 +24,28 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXT
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
-import static org.wildfly.swarm.camel.core.CamelCoreFraction.LOGGER;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.management.mbean.ManagedCamelContext;
 import org.apache.camel.model.ModelCamelContext;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.service.AbstractService;
+import org.jboss.msc.service.ServiceActivator;
+import org.jboss.msc.service.ServiceActivatorContext;
+import org.jboss.msc.service.ServiceBuilder;
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceRegistryException;
+import org.jboss.msc.service.ServiceTarget;
+import org.jboss.msc.service.StartContext;
+import org.jboss.msc.service.StartException;
+import org.jboss.msc.value.InjectedValue;
+import org.wildfly.extension.camel.CamelConstants;
+import org.wildfly.extension.camel.service.CamelContextRegistryService.MutableCamelContextRegistry;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 
@@ -65,35 +76,55 @@ public class CamelCoreConfiguration extends AbstractServerConfiguration<CamelCor
         node.get(OP).set(ADD);
         list.add(node);
 
-        for (RouteBuilder builder : fraction.getRouteBuilders()) {
-
-            ModelCamelContext context = builder.getContext();
-            builder.addRoutesToCamelContext(context);
-            String routesXML = getRoutes(context);
-
-            LOGGER.info("Adding system context: {}", context.getName());
-            LOGGER.info("\n{}", routesXML);
-
-            node = new ModelNode();
-            address = address.append(PathElement.pathElement("context", context.getName()));
-            node.get(OP_ADDR).set(address.toModelNode());
-            node.get(OP).set(ADD);
-
-            node.get("value").set(replaceExpressions(routesXML));
-            list.add(node);
-        }
-
         return list;
     }
 
-    private String getRoutes(ModelCamelContext context) throws Exception {
-        String routesXML = new ManagedCamelContext(context).dumpRoutesAsXml();
-        routesXML = routesXML.substring(routesXML.indexOf("<route>"));
-        routesXML = routesXML.substring(0, routesXML.lastIndexOf("</route>") + 8);
-        return routesXML;
+    @Override
+    public List<ServiceActivator> getServiceActivators(final CamelCoreFraction fraction) {
+        List<ServiceActivator> activators = new ArrayList<>(super.getServiceActivators(fraction));
+        activators.add(new ServiceActivator() {
+            @Override
+            public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
+                BootstrapCamelContextService.addService(context.getServiceTarget(), fraction);
+            }
+        });
+        return activators;
     }
 
-    private String replaceExpressions(String routesXML) {
-        return routesXML.replace("${", "#{");
+    static class BootstrapCamelContextService extends AbstractService<Void> {
+
+        static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("wildfly", "swarm", "camel", "bootstrap");
+
+        InjectedValue<MutableCamelContextRegistry> injectedContextRegistry = new InjectedValue<>();
+        CamelCoreFraction fraction;
+
+        static ServiceController<Void> addService(ServiceTarget serviceTarget, CamelCoreFraction fraction) {
+            BootstrapCamelContextService service = new BootstrapCamelContextService(fraction);
+            ServiceName serviceName = SERVICE_NAME;
+            ServiceBuilder<Void> builder = serviceTarget.addService(serviceName, service);
+            builder.addDependency(CamelConstants.CAMEL_CONTEXT_REGISTRY_SERVICE_NAME, MutableCamelContextRegistry.class, service.injectedContextRegistry);
+            return builder.install();
+        }
+
+        BootstrapCamelContextService(CamelCoreFraction fraction) {
+            this.fraction = fraction;
+        }
+
+        @Override
+        public void start(StartContext startContext) throws StartException {
+            MutableCamelContextRegistry contextRegistry = injectedContextRegistry.getValue();
+            ClassLoader classLoader = MutableCamelContextRegistry.class.getClassLoader();
+            try {
+                for (RouteBuilder builder : fraction.getRouteBuilders()) {
+                    ModelCamelContext camelctx = builder.getContext();
+                    camelctx.setApplicationContextClassLoader(classLoader);
+                    builder.addRoutesToCamelContext(camelctx);
+                    contextRegistry.addCamelContext(camelctx);
+                    camelctx.start();
+                }
+            } catch (Exception ex) {
+                throw new StartException(ex);
+            }
+        }
     }
 }
