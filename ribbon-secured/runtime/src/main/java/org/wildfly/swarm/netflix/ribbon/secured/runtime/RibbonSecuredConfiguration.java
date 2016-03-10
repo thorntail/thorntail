@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.container.JARArchive;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.netflix.ribbon.secured.RibbonSecuredFraction;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
  * @author Bob McWhirter

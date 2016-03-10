@@ -17,9 +17,9 @@ package org.wildfly.swarm.ribbon;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.wildfly.swarm.SwarmProperties;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.netflix.ribbon.RibbonFraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Bob McWhirter

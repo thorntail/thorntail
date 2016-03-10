@@ -16,9 +16,9 @@
 package org.wildfly.swarm.netflix.ribbon.runtime;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.container.JARArchive;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.netflix.ribbon.RibbonFraction;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
  * @author Bob McWhirter

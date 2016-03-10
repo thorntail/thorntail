@@ -22,14 +22,23 @@
 
   <packaging>jar</packaging>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon</artifactId>
+      <artifactId>ribbon-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-runtime</artifactId>
+      <artifactId>spi-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -37,6 +46,7 @@
       <artifactId>topology-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
+<!--
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-network</artifactId>
@@ -52,6 +62,7 @@
       <artifactId>wildfly-naming</artifactId>
       <scope>provided</scope>
     </dependency>
+-->
     <dependency>
       <groupId>com.netflix.ribbon</groupId>
       <artifactId>ribbon-core</artifactId>
@@ -60,11 +71,6 @@
     <dependency>
       <groupId>com.netflix.ribbon</groupId>
       <artifactId>ribbon-loadbalancer</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>
