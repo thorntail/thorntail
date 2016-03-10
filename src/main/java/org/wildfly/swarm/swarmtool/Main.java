@@ -45,6 +45,9 @@ public class Main {
     private static final OptionSpec<Void> DISABLE_AUTO_DETECT =
             OPT_PARSER.accepts("no-fraction-detect", "disable auto fraction detection");
 
+    private static final OptionSpec<Void> DISABLE_BUNDLE_DEPS =
+            OPT_PARSER.accepts("no-bundle-deps", "disable bundling of dependencies");
+
     private static final OptionSpec<String> FRACTIONS_OPT =
             OPT_PARSER.acceptsAll(asList("f", "fractions"), "swarm fractions to include")
                     .withRequiredArg()
@@ -159,6 +162,7 @@ public class Main {
                 .outputDir(new File(foundOptions.valueOf(OUTPUT_DIR_OPT)))
                 .name(foundOptions.valueOf(NAME_OPT))
                 .autoDetectFractions(!foundOptions.has(DISABLE_AUTO_DETECT))
+                .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS))
                 .properties(properties)
                 .run();
     }

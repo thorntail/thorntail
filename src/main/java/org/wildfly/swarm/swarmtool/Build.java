@@ -45,6 +45,8 @@ public class Build {
 
     private boolean autoDetectFractions = true;
 
+    private boolean bundleDependencies = true;
+
     private Collection<FractionDescriptor> additionalFractions = new ArrayList<>();
 
     public Build() {
@@ -91,6 +93,12 @@ public class Build {
         return this;
     }
 
+    public Build bundleDependencies(boolean v) {
+        this.bundleDependencies = v;
+
+        return this;
+    }
+
     public File run() throws Exception {
         final String[] parts = this.source.getName().split("\\.(?=[^\\.]+$)");
         final String baseName = parts[0];
@@ -111,6 +119,7 @@ public class Build {
                 .projectArtifact("", baseName, "", type, this.source)
                 .fractionList(FractionList.get())
                 .autoDetectFractions(this.autoDetectFractions)
+                .bundleDependencies(this.bundleDependencies)
                 .resolveTransitiveDependencies(true)
                 .properties(this.properties);
 
