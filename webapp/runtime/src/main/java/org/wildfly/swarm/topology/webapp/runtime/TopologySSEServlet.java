@@ -17,6 +17,8 @@ package org.wildfly.swarm.topology.webapp.runtime;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -158,7 +160,17 @@ public class TopologySSEServlet extends HttpServlet {
             } else {
                 while (listIter.hasNext()) {
                     Topology.Entry server = listIter.next();
-                    String endpoint = server.getAddress() + ":" + server.getPort();
+
+                    boolean invalidServerAddress = false;
+                    try {
+                        //noinspection ResultOfMethodCallIgnored
+                        InetAddress.getByName(server.getAddress());
+                    } catch (UnknownHostException e) {
+                        invalidServerAddress = true;
+                    }
+
+                    String endpoint = (!invalidServerAddress ? (server.getTags().contains("https") ? "https" : "http") + "://" : "")
+                            + server.getAddress() + ":" + server.getPort();
                     populateEndpointAndTagsJson(json, endpoint, server.getTags());
                     if (listIter.hasNext()) {
                         json.append(",");
