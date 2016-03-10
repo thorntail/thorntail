@@ -18,8 +18,8 @@ package org.wildfly.swarm.topology.consul;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.wildfly.swarm.SwarmProperties;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * Consul topology-management fractoin.

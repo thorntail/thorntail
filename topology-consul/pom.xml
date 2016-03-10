@@ -15,21 +15,12 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology-consul-runtime</artifactId>
+  <artifactId>topology-consul</artifactId>
 
-  <name>WildFly Swarm: Topology via Consul Runtime</name>
-  <description>WildFly Swarm: Topology via Consul Runtime</description>
+  <name>WildFly Swarm: Topology via Consul</name>
+  <description>WildFly Swarm: Topology via Consul</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -38,33 +29,23 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
-      <scope>provided</scope>
+      <artifactId>topology-consul-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-runtime</artifactId>
+      <artifactId>topology-consul-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-network</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
-      <scope>provided</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.orbitz.consul</groupId>
-      <artifactId>consul-client</artifactId>
-      <scope>provided</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology</artifactId>
     </dependency>
 
   </dependencies>
-
 
 </project>
