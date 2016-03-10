@@ -68,6 +68,26 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.jandex</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>1.0.4</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+            <configuration>
+              <indexName>swarm-jandex.idx</indexName>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
