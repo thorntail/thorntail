@@ -10,12 +10,21 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>spring</artifactId>
+  <artifactId>spring-api</artifactId>
 
   <name>WildFly Swarm: Spring API</name>
   <description>WildFly Swarm: Spring API</description>
 
   <packaging>jar</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
@@ -26,14 +35,6 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>spring-modules</artifactId>
     </dependency>
-
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow</artifactId>
-    </dependency>
-
-    <!-- Provided APIs -->
 
   </dependencies>
 

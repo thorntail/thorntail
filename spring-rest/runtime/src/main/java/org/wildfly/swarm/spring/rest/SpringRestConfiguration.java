@@ -16,8 +16,8 @@
 package org.wildfly.swarm.spring.rest;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.container.JARArchive;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**

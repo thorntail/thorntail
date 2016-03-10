@@ -18,6 +18,8 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>spring</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

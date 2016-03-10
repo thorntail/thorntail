@@ -10,30 +10,31 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>spring-rest</artifactId>
+  <artifactId>spring-rest-api</artifactId>
 
   <name>WildFly Swarm: Spring REST API</name>
   <description>WildFly Swarm: Spring REST API</description>
 
   <packaging>jar</packaging>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>spring-rest-modules</artifactId>
     </dependency>
-
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spring</artifactId>
-    </dependency>
-
-    <!-- Provided APIs -->
 
   </dependencies>
 

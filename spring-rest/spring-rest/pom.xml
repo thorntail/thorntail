@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>spring-framework-parent</artifactId>
+    <artifactId>spring-rest-parent</artifactId>
     <version>1.0.0.Alpha2-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>spring-runtime</artifactId>
+  <artifactId>spring-rest</artifactId>
 
-  <name>WildFly Swarm: Spring Runtime</name>
-  <description>WildFly Swarm: Spring Runtime</description>
+  <name>WildFly Swarm: Spring REST</name>
+  <description>WildFly Swarm: Spring REST</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spring-api</artifactId>
+      <artifactId>spring-rest-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
+      <artifactId>spring-rest-modules</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spring-rest-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow-api</artifactId>
-      <scope>provided</scope>
+      <artifactId>spring</artifactId>
     </dependency>
+
   </dependencies>
 
 </project>

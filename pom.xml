@@ -4,8 +4,8 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>core</artifactId>
-    <version>1.0.0.Beta2</version>
+    <artifactId>parent</artifactId>
+    <version>6</version>
     <relativePath />
   </parent>
 
@@ -26,6 +26,10 @@
   </scm>
 
   <properties>
+    <version.jolokia>1.3.1</version.jolokia>
+    <version.swarm.core>1.0.0.Beta3</version.swarm.core>
+    <version.swarm.spi>1.0.0.Beta3</version.swarm.spi>
+    <version.swarm.fraction-plugin>1.0.0.Beta2</version.swarm.fraction-plugin>
   </properties>
   
   <repositories>
@@ -42,11 +46,45 @@
     </repository>
   </repositories>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+          <version>${version.swarm.fraction-plugin}</version>
+          <executions>
+            <execution>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>generate</goal>
+                <goal>jandex</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spi</artifactId>
+        <version>${version.swarm.spi}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring</artifactId>
+        <version>1.0.0.Alpha2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring-api</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -67,6 +105,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring-rest-api</artifactId>
+        <version>1.0.0.Alpha2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>spring-rest-modules</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
       </dependency>
@@ -75,6 +118,21 @@
         <artifactId>spring-rest-runtime</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>undertow</artifactId>
+        <version>${version.swarm.core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>3.2.5</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

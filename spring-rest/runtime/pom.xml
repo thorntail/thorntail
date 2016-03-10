@@ -20,22 +20,16 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spring-rest</artifactId>
+      <artifactId>spring-rest-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-runtime</artifactId>
-      <scope>provided</scope>
+      <artifactId>spi-runtime</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow-runtime</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
-      <scope>provided</scope>
+      <artifactId>undertow-api</artifactId>
     </dependency>
   </dependencies>
 
