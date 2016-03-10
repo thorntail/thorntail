@@ -9,49 +9,41 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>topology-webapp-parent</artifactId>
+    <artifactId>topology-core-parent</artifactId>
     <version>1.0.0.Beta3-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology-webapp-test</artifactId>
+  <artifactId>topology</artifactId>
 
-  <name>WildFly Swarm: Topology Web App Test</name>
-  <description>WildFly Swarm: Topology Web App Test</description>
+  <name>WildFly Swarm: Topology</name>
+  <description>WildFly Swarm: Topology</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-webapp</artifactId>
+      <artifactId>topology-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>arquillian</artifactId>
-      <scope>test</scope>
+      <artifactId>topology-modules</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>naming</artifactId>
     </dependency>
   </dependencies>
 

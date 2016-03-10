@@ -24,6 +24,8 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>topology-webapp</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

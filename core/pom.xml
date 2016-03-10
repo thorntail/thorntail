@@ -18,12 +18,14 @@
   <artifactId>topology-core-parent</artifactId>
   <version>1.0.0.Beta3-SNAPSHOT</version>
 
-  <name>WildFly Swarm: Topology Core</name>
-  <description>WildFly Swarm: Topology Core</description>
+  <name>WildFly Swarm: Topology Core Parent</name>
+  <description>WildFly Swarm: Topology Core Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>topology</module>
+
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>

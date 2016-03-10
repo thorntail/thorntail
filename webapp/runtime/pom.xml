@@ -22,28 +22,51 @@
 
   <packaging>jar</packaging>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-webapp</artifactId>
+      <artifactId>topology-webapp-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi-runtime</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>topology-runtime</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow</artifactId>
+      <artifactId>undertow-api</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-core</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

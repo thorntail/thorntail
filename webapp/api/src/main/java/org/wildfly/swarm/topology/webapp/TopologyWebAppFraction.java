@@ -24,8 +24,7 @@ import org.wildfly.swarm.config.undertow.Server;
 import org.wildfly.swarm.config.undertow.configuration.ReverseProxy;
 import org.wildfly.swarm.config.undertow.server.Host;
 import org.wildfly.swarm.config.undertow.server.host.Location;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
 /**
@@ -84,7 +83,7 @@ public class TopologyWebAppFraction implements Fraction {
     }
 
     @Override
-    public void postInitialize(Container.PostInitContext initContext) {
+    public void postInitialize(Fraction.PostInitContext initContext) {
         if (!proxiedServiceMappings.isEmpty()) {
             UndertowFraction undertow = (UndertowFraction) initContext.fraction("undertow");
             HandlerConfiguration handlerConfig = undertow.subresources().handlerConfiguration();

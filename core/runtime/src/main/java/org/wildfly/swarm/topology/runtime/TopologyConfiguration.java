@@ -22,7 +22,7 @@ import java.util.List;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.topology.TopologyFraction;
 
 /**

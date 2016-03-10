@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Lance Ball
@@ -42,12 +42,13 @@ public class TopologyWebAppArquillianTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new TopologyWebAppFraction());
+        return new Container()
+                .fraction(new TopologyWebAppFraction());
     }
 
     @Test
     @RunAsClient
-    public void testNothing() {
+    public void testNothing() throws InterruptedException {
 
     }
 
