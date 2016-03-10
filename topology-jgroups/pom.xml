@@ -15,57 +15,41 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology-jgroups-runtime</artifactId>
+  <artifactId>topology-jgroups</artifactId>
 
-  <name>WildFly Swarm: Topology via JGroups Runtime</name>
-  <description>WildFly Swarm: Topology via JGroups Runtime</description>
+  <name>WildFly Swarm: Topology via JGroups</name>
+  <description>WildFly Swarm: Topology via JGroups</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>topology-jgroups-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
+      <artifactId>topology-jgroups-modules</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology-jgroups-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology-runtime</artifactId>
-      <scope>provided</scope>
+      <artifactId>jgroups</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-clustering-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-network</artifactId>
-      <scope>provided</scope>
-    </dependency>
-<!--
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-naming</artifactId>
-      <scope>provided</scope>
-    </dependency>
--->
   </dependencies>
 
 </project>
