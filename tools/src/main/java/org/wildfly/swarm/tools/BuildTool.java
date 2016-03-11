@@ -46,11 +46,6 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
  * @author Bob McWhirter
  */
 public class BuildTool {
-    public static final Set<String> REQUIRED_FRACTIONS = new HashSet<String>() {{
-        add("bootstrap");
-        add("container");
-    }};
-
     public BuildTool() {
         this.archive = ShrinkWrap.create(JavaArchive.class);
     }
@@ -215,10 +210,26 @@ public class BuildTool {
                 .forEach(this::fraction);
     }
 
+    static String strippedSwarmGav(MavenArtifactDescriptor desc) {
+        if (desc.groupId().equals(DependencyManager.WILDFLY_SWARM_GROUP_ID)) {
+            return String.format("%s:%s", desc.artifactId(), desc.version());
+        }
+
+        return desc.mscGav();
+    }
+
     private void addFractions() throws Exception {
+        final Set<ArtifactSpec> allFractions = new HashSet<>(this.fractions);
+        this.fractions.stream()
+                .flatMap(s -> this.fractionList.getFractionDescriptor(s.groupId(), s.artifactId())
+                        .getDependencies()
+                        .stream()
+                        .map(FractionDescriptor::toArtifactSpec))
+                .forEach(allFractions::add);
+
         System.out.println("Adding fractions: " +
-                                   String.join(", ", this.fractions.stream()
-                                           .map(MavenArtifactDescriptor::mscGav)
+                                   String.join(", ", allFractions.stream()
+                                           .map(BuildTool::strippedSwarmGav)
                                            .sorted()
                                            .collect(Collectors.toList())));
         this.fractions.forEach(f -> this.dependencyManager.addDependency(f));

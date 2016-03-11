@@ -34,15 +34,15 @@ public class FractionDescriptor {
         this.dependencies.add(dep);
     }
 
-    public String getGroupId() {
+    public String groupId() {
         return this.groupId;
     }
 
-    public String getArtifactId() {
+    public String artifactId() {
         return this.artifactId;
     }
 
-    public String getVersion() {
+    public String version() {
         return this.version;
     }
 
@@ -60,6 +60,15 @@ public class FractionDescriptor {
 
     public String gav() {
         return this.groupId + ":" + this.artifactId + ":" + this.version;
+    }
+
+    public String gavOrAv() {
+        if (DependencyManager.WILDFLY_SWARM_GROUP_ID.equals(this.groupId)) {
+
+            return av();
+        }
+
+        return gav();
     }
 
     @Override
