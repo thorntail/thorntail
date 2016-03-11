@@ -10,6 +10,7 @@
     <artifact name="org.wildfly.swarm:spi-api:${version.swarm.spi}"/>
   </resources>
   <dependencies>
+    <module name="org.wildfly.swarm.container"/>
     <module name="org.jboss.shrinkwrap"/>
     <module name="org.jboss.shrinkwrap.descriptors"/>
   </dependencies>
