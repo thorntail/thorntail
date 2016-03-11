@@ -32,6 +32,9 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  */
 public class TopologyWebAppFraction implements Fraction {
 
+    public TopologyWebAppFraction() {
+    }
+
     /**
      * @param serviceName
      * @return the name of the Undertow proxy handler for this service

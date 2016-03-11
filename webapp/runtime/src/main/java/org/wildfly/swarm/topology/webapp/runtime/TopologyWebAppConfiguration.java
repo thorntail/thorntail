@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.topology.TopologyArchive;
 import org.wildfly.swarm.topology.webapp.TopologyProperties;
@@ -48,7 +49,7 @@ public class TopologyWebAppConfiguration extends AbstractServerConfiguration<Top
     }
 
     @Override
-    public List<Archive> getImplicitDeployments(TopologyWebAppFraction fraction) throws Exception {
+    public List<Archive> getImplicitDeployments(TopologyWebAppFraction fraction, ArtifactLookup lookup) throws Exception {
         String context = System.getProperty(TopologyProperties.CONTEXT_PATH);
         if (context == null) context = DEFAULT_CONTEXT;
 
