@@ -35,9 +35,16 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
  *
  * @author Bob McWhirter
  */
-public class Swarm {
+public class Swarm extends Container {
 
     public static ArtifactManager ARTIFACT_MANAGER;
+
+    public Swarm() throws Exception {
+    }
+
+    public Swarm(boolean debugBootstrap) throws Exception {
+        super( debugBootstrap );
+    }
 
     /**
      * Main entry-point.
@@ -62,7 +69,7 @@ public class Swarm {
     }
 
     public static void simpleMain(String... args) throws Exception {
-        Container container = new Container().start();
+        Container container = new Swarm().start();
         container.deploy();
     }
 
