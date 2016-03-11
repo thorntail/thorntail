@@ -30,6 +30,29 @@ public class FractionDescriptor {
         this.version = version;
     }
 
+    public static FractionDescriptor fromGav(final FractionList fractionList, final String gav) {
+        final String[] parts = gav.split(":");
+        FractionDescriptor desc = null;
+
+        switch (parts.length) {
+            case 1:
+                desc = fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, parts[0]);
+                break;
+            case 2:
+                desc = new FractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, parts[0], parts[1]);
+                break;
+            case 3:
+                desc = new FractionDescriptor(parts[0], parts[1], parts[2]);
+                break;
+        }
+
+        if (desc == null) {
+            throw new RuntimeException("Invalid fraction spec: " + gav);
+        }
+
+        return desc;
+    }
+
     public void addDependency(FractionDescriptor dep) {
         this.dependencies.add(dep);
     }
