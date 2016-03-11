@@ -17,13 +17,11 @@ package org.wildfly.swarm.plugin.maven;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -32,6 +30,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.FractionDescriptor;
 
 /**
  * @author Bob McWhirter
@@ -64,20 +63,23 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .bundleDependencies(this.bundleDependencies)
                 .artifactResolvingHelper(mavenArtifactResolvingHelper());
 
+        this.additionalFractions.stream()
+                .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))
+                .map(FractionDescriptor::toArtifactSpec)
+                .forEach(tool::fraction);
+
         this.project.getArtifacts()
                 .forEach(dep -> tool.dependency(artifactToArtifactSpec(dep)));
 
-        List<Resource> resources = this.project.getResources();
-        for (Resource each : resources) {
-            tool.resourceDirectory(each.getDirectory());
-        }
+        this.project.getResources()
+                .forEach(r -> tool.resourceDirectory(r.getDirectory()));
 
-        for (String additionalModule : additionalModules) {
-            File source = new File(this.project.getBuild().getOutputDirectory(), additionalModule);
-            if (source.exists()) {
-                tool.additionalModule(source.getAbsolutePath());
-            }
-        }
+
+        this.additionalModules.stream()
+                .map(m -> new File(this.project.getBuild().getOutputDirectory(), m))
+                .filter(File::exists)
+                .map(File::getAbsolutePath)
+                .forEach(tool::additionalModule);
 
         try {
             File jar = tool.build(this.project.getBuild().getFinalName(), Paths.get(this.projectBuildDir));

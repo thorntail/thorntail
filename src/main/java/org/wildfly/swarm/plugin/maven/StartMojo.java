@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -201,6 +200,22 @@ public class StartMojo extends AbstractSwarmMojo {
                 .sorted()
                 .collect(Collectors.toList())));
 
+        fractions.addAll(this.additionalFractions.stream()
+                         .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))
+                         .collect(Collectors.toSet()));
+
+        final Set<FractionDescriptor> allFractions = new HashSet<>(fractions);
+        allFractions.addAll(fractions.stream()
+                                    .flatMap(f -> f.getDependencies().stream())
+                                    .collect(Collectors.toSet()));
+
+
+        getLog().info("Using fractions: " +
+                              String.join(", ", allFractions.stream()
+                                      .map(FractionDescriptor::gavOrAv)
+                                      .sorted()
+                                      .collect(Collectors.toList())));
+
         final Set<ArtifactSpec> specs = new HashSet<>();
         specs.addAll(existingDeps.stream()
                              .map(this::artifactToArtifactSpec)
@@ -238,14 +253,14 @@ public class StartMojo extends AbstractSwarmMojo {
         }
 
         if (!hasSwarmDeps) {
-          elements.addAll(findNeededFractions(artifacts, archiveContent));
+            elements.addAll(findNeededFractions(artifacts, archiveContent));
         }
 
         return elements;
     }
 
     List<Path> expandModules() {
-        return Stream.of(this.additionalModules)
+        return this.additionalModules.stream()
                 .map(m -> Paths.get(this.project.getBuild().getOutputDirectory(), m))
                 .collect(Collectors.toList());
     }

@@ -16,6 +16,7 @@
 package org.wildfly.swarm.plugin.maven;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -28,8 +29,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.PropertiesUtil;
@@ -38,8 +39,6 @@ import org.wildfly.swarm.tools.PropertiesUtil;
  * @author Bob McWhirter
  */
 public abstract class AbstractSwarmMojo extends AbstractMojo {
-
-    protected static String VERSION = PropertiesUtil.versionFromPomProperties();
 
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
@@ -69,7 +68,10 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     protected String environmentFile;
 
     @Parameter(alias = "modules")
-    protected String[] additionalModules;
+    protected List<String> additionalModules = new ArrayList<>();
+
+    @Parameter(alias = "fractions")
+    protected List<String> additionalFractions = new ArrayList<>();
 
     @Inject
     protected ArtifactResolver resolver;
@@ -78,8 +80,8 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     protected RepositorySystem repositorySystem;
 
     AbstractSwarmMojo() {
-        if (this.additionalModules == null) {
-            this.additionalModules = new String[]{"modules"};
+        if (this.additionalModules.isEmpty()) {
+            this.additionalModules.add("modules");
         }
     }
 
