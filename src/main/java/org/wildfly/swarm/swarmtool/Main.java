@@ -18,6 +18,7 @@ package org.wildfly.swarm.swarmtool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,6 +26,16 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
+import org.wildfly.swarm.arquillian.adapter.ShrinkwrapArtifactResolvingHelper;
+import org.wildfly.swarm.fractionlist.FractionList;
+import org.wildfly.swarm.tools.ArtifactResolvingHelper;
+import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
 import static java.util.Arrays.asList;
@@ -119,10 +130,8 @@ public class Main {
             System.err.println(e.getMessage() + "\n");
         }
 
-        if (foundOptions == null ||
-                foundOptions.has(HELP_OPT)) {
+        if (foundOptions == null || foundOptions.has(HELP_OPT)) {
             OPT_PARSER.printHelpOn(System.err);
-
             exit(null);
         }
 
@@ -149,22 +158,30 @@ public class Main {
                 properties.load(in);
             }
         }
-
         foundOptions.valuesOf(SYSPROPS_OPT)
                 .forEach(prop -> {
                     final String[] parts = prop.split("=");
                     properties.put(parts[0], parts[1]);
                 });
 
-        return new Build()
-                .source(source)
-                .addSwarmFractions(foundOptions.valuesOf(FRACTIONS_OPT))
-                .outputDir(new File(foundOptions.valueOf(OUTPUT_DIR_OPT)))
-                .name(foundOptions.valueOf(NAME_OPT))
+        final String[] parts = source.getName().split("\\.(?=[^\\.]+$)");
+        final String baseName = parts[0];
+        final String type = parts[1] == null ? "jar" : parts[1];
+        final String jarName = foundOptions.has(NAME_OPT) ? foundOptions.valueOf(NAME_OPT) : baseName;
+        final String outDir = new File(foundOptions.valueOf(OUTPUT_DIR_OPT)).getCanonicalPath();
+
+        final BuildTool tool = new BuildTool()
+                .artifactResolvingHelper(getResolvingHelper())
+                .projectArtifact("", baseName, "", type, source)
+                .fractionList(FractionList.get())
                 .autoDetectFractions(!foundOptions.has(DISABLE_AUTO_DETECT))
                 .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS))
-                .properties(properties)
-                .run();
+                .resolveTransitiveDependencies(true)
+                .properties(properties);
+        addSwarmFractions(tool, foundOptions.valuesOf(FRACTIONS_OPT));
+
+        System.err.println(String.format("Building %s/%s-swarm.jar", outDir, jarName));
+        return tool.build(jarName, Paths.get(outDir));
     }
 
     private static void exit(String message) {
@@ -173,6 +190,28 @@ public class Main {
 
     private static void exit(String message, int code) {
         throw new ExitException(code, message);
+    }
+
+    private static ArtifactResolvingHelper getResolvingHelper() {
+        final MavenRemoteRepository jbossPublic =
+                MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
+                        "http://repository.jboss.org/nexus/content/groups/public/",
+                        "default");
+        jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
+        jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
+
+        return new ShrinkwrapArtifactResolvingHelper(
+                Maven.configureResolver()
+                        .withMavenCentralRepo(true)
+                        .withRemoteRepo(jbossPublic));
+    }
+
+    private static void addSwarmFractions(BuildTool tool, final List<String> deps) {
+        deps.stream().map(f -> f.split(":"))
+                .map(parts -> parts.length == 3 ?
+                        new FractionDescriptor(parts[0], parts[1], parts[2]) :
+                        new FractionDescriptor("org.wildfly.swarm", parts[0], parts[1]))
+                .forEach(f -> tool.fraction(f.toArtifactSpec()));
     }
 
     static class ExitException extends RuntimeException {
