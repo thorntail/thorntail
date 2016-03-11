@@ -34,16 +34,14 @@ public class SwaggerWebAppConfiguration extends AbstractServerConfiguration<Swag
     }
 
     @Override
-    public List<Archive> getImplicitDeployments(SwaggerWebAppFraction fraction) throws Exception {
+    public List<Archive> getImplicitDeployments(SwaggerWebAppFraction fraction, ArtifactLookup lookup) throws Exception {
         List<Archive> list = new ArrayList<>();
         try {
             // Get the swagger-ui bits as an Archive
             String gav = "org.wildfly.swarm:swagger-webapp-ui:war:" + SwaggerWebAppFraction.VERSION;
 
-            System.err.println("gav: " + gav);
-
-            WARArchive war = ArtifactLookup.get().artifact(gav,
-                                            "swagger-webapp-ui.war")
+            WARArchive war = lookup.artifact(gav,
+                    "swagger-webapp-ui.war")
                     .as(WARArchive.class)
                     .setContextRoot(fraction.getContext());
 
