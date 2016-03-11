@@ -141,12 +141,14 @@ public class DependencyManager {
             if (!this.bootstrapDependencies.contains(dependency) && !this.moduleDependencies.contains(dependency)) {
                 dependency.shouldGather = false;
             }
+
             if (includeAsBootstrapJar(dependency)) {
                 dependency.shouldGather = true;
-            }
-            if (isExplodedBootstrap(dependency)) {
+
+            } if (isExplodedBootstrap(dependency)) {
                 dependency.shouldGather = false;
             }
+
             if (isProvidedDependency(dependency)) {
                 dependency.shouldGather = false;
             }
@@ -154,6 +156,7 @@ public class DependencyManager {
             if (dependency.shouldGather) {
                 addArtifactToArchiveMavenRepository(archive, dependency);
             }
+
         }
 
         for (ArtifactSpec dependency : this.moduleDependencies) {
@@ -445,7 +448,7 @@ public class DependencyManager {
                 providedGAVs.add(spec.groupId() + ":" + spec.artifactId());
 
                 if (spec.artifactId().endsWith("-modules")) {
-                    providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-modules".length()));
+                    providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-modules".length()) + "-api");
                 }
 
                 try (InputStream in = jar.getInputStream(entry)) {
