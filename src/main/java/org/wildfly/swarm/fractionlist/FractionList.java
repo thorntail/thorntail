@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -105,8 +104,8 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
         final Map<String, String> packageSpecs = loadPackageSpecs();
 
         return this.descriptors.values().stream()
-                .filter(fd -> packageSpecs.containsKey(fd.getArtifactId()))
-                .collect(Collectors.toMap(fd -> packageSpecs.get(fd.getArtifactId()),
+                .filter(fd -> packageSpecs.containsKey(fd.artifactId()))
+                .collect(Collectors.toMap(fd -> packageSpecs.get(fd.artifactId()),
                                           fd -> fd));
     }
 

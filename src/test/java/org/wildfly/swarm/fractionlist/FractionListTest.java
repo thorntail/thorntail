@@ -35,16 +35,16 @@ public class FractionListTest {
 
         Collection<FractionDescriptor> descriptors = list.getFractionDescriptors();
 
-        FractionDescriptor logstash = descriptors.stream().filter(e -> e.getArtifactId().equals("logstash")).findFirst().get();
+        FractionDescriptor logstash = descriptors.stream().filter(e -> e.artifactId().equals("logstash")).findFirst().get();
 
         assertThat(list.getFractionDescriptor("org.wildfly.swarm", "logstash")).isEqualTo(logstash);
 
-        assertThat(logstash.getGroupId()).isEqualTo("org.wildfly.swarm");
-        assertThat(logstash.getArtifactId()).isEqualTo("logstash");
+        assertThat(logstash.groupId()).isEqualTo("org.wildfly.swarm");
+        assertThat(logstash.artifactId()).isEqualTo("logstash");
         assertThat(logstash.getDependencies()).hasSize(2);
 
-        assertThat(logstash.getDependencies().stream().filter(e -> e.getArtifactId().equals("container")).collect(Collectors.toList())).isNotEmpty();
-        assertThat(logstash.getDependencies().stream().filter(e -> e.getArtifactId().equals("logging")).collect(Collectors.toList())).isNotEmpty();
+        assertThat(logstash.getDependencies().stream().filter(e -> e.artifactId().equals("container")).collect(Collectors.toList())).isNotEmpty();
+        assertThat(logstash.getDependencies().stream().filter(e -> e.artifactId().equals("logging")).collect(Collectors.toList())).isNotEmpty();
     }
 
     @Test
