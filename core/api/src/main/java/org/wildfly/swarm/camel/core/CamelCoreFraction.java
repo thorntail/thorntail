@@ -26,7 +26,7 @@ import java.util.List;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wildfly.swarm.container.Fraction;
+import org.wildfly.swarm.spi.api.Fraction;
 
 public class CamelCoreFraction implements Fraction {
 

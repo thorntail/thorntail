@@ -35,7 +35,7 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.camel.full.CamelFullFraction;
 import org.wildfly.swarm.camel.test.ejb.subA.HelloBean;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 @CamelAware
 @RunWith(Arquillian.class)

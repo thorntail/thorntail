@@ -51,7 +51,7 @@ import org.jboss.msc.value.InjectedValue;
 import org.wildfly.extension.camel.CamelConstants;
 import org.wildfly.extension.camel.service.CamelContextRegistryService.MutableCamelContextRegistry;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
-import org.wildfly.swarm.container.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 public class CamelCoreConfiguration extends AbstractServerConfiguration<CamelCoreFraction> {
 

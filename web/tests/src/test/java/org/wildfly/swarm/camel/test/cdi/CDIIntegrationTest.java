@@ -44,7 +44,7 @@ import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextC;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextD;
 import org.wildfly.swarm.camel.web.CamelWebFraction;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 @RunWith(Arquillian.class)
 public class CDIIntegrationTest implements ContainerFactory {

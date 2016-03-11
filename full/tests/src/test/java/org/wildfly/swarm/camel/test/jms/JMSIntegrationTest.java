@@ -53,8 +53,8 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.camel.full.CamelFullFraction;
 import org.wildfly.swarm.config.messaging.activemq.server.JMSQueue;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.messaging.MessagingFraction;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * Test routes that use the jms component in routes.

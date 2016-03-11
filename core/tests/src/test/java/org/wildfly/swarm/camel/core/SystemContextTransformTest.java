@@ -35,7 +35,7 @@ import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.extension.camel.CamelContextRegistry;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 
 /**

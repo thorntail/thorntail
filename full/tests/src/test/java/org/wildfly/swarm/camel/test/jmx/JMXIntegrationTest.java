@@ -40,7 +40,7 @@ import org.wildfly.extension.camel.CamelContextRegistry;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.container.JARArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * Deploys a test which monitors an JMX attribute of a route.
