@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>arquillian-daemon-parent</artifactId>
-    <version>1.0.0.Beta4</version>
+    <version>1.0.0.Beta5-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
