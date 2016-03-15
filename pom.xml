@@ -22,10 +22,6 @@
 
   <packaging>jar</packaging>
 
-  <properties>
-    <jruby.file>src/main/ruby/generate.rb</jruby.file>
-  </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
