@@ -969,6 +969,15 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!--
+          org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
+      -->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>${version.maven.plugin.api}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-servlet-feature-pack</artifactId>
@@ -1054,16 +1063,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
-      <!--
-          Something brings in 3.2.1, which breaks ShrinkWrap's resolver.
-      -->
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-aether-provider</artifactId>
-        <version>3.2.5</version>
-      </dependency>
-
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-all</artifactId>
