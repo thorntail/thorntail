@@ -40,17 +40,6 @@
       <artifactId>undertow-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
-    </dependency>
-<!--
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>logging</artifactId>
-    </dependency>
--->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>io</artifactId>
