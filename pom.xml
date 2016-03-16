@@ -31,9 +31,8 @@
   <properties>
     <version.wildfly.swarm.fraction.plugin>1.0.0.Beta2</version.wildfly.swarm.fraction.plugin>
 
-    <version.swarm.spi>1.0.0.Beta3</version.swarm.spi>
+    <version.swarm.spi>1.0.0.Beta4</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
-    <version.wildfly.config-api>0.3.27</version.wildfly.config-api>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
@@ -53,8 +52,6 @@
     <version.gradle>2.4</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
     <version.groovy>2.4.3</version.groovy>
-
-    <version.fest-assert>1.4</version.fest-assert>
 
     <version.jruby-maven-plugin>1.1.3</version.jruby-maven-plugin>
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
@@ -235,7 +232,6 @@
 
   <dependencyManagement>
     <dependencies>
-
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spi</artifactId>
@@ -243,12 +239,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
-      <dependency>
-        <groupId>org.easytesting</groupId>
-        <artifactId>fest-assert</artifactId>
-        <version>${version.fest-assert}</version>
-      </dependency>
+      
       <dependency>
         <groupId>org.jboss.arquillian.graphene</groupId>
         <artifactId>graphene-webdriver</artifactId>
@@ -297,24 +288,6 @@
         <groupId>org.jboss.spec.javax.sql</groupId>
         <artifactId>jboss-javax-sql-api_7.0_spec</artifactId>
         <version>${version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>config-api</artifactId>
-        <version>${version.wildfly.config-api}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>config-api-runtime</artifactId>
-        <version>${version.wildfly.config-api}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>config-api-modules</artifactId>
-        <version>${version.wildfly.config-api}</version>
       </dependency>
 
       <!-- Project Artifacts -->
@@ -964,22 +937,6 @@
       <!-- Feature Packs -->
       <dependency>
         <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-parent</artifactId>
-        <version>${version.wildfly}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!--
-          org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
-      -->
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-aether-provider</artifactId>
-        <version>${version.maven.plugin.api}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly</groupId>
         <artifactId>wildfly-servlet-feature-pack</artifactId>
         <version>${version.wildfly}</version>
         <type>zip</type>
@@ -993,62 +950,6 @@
         <scope>provided</scope>
       </dependency>
 
-<!--
-      <dependency>
-        <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-api</artifactId>
-        <version>${version.org.jboss.shrinkwrap}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-spi</artifactId>
-        <version>${version.org.jboss.shrinkwrap}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-impl-base</artifactId>
-        <version>${version.org.jboss.shrinkwrap}</version>
-        <scope>compile</scope>
-      </dependency>
--->
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-        <artifactId>shrinkwrap-descriptors-spi</artifactId>
-        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-        <artifactId>shrinkwrap-descriptors-api-base</artifactId>
-        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-        <artifactId>shrinkwrap-descriptors-api-javaee</artifactId>
-        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-        <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
-        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-        <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
-        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-        <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
-        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
-        <scope>compile</scope>
-      </dependency>
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
