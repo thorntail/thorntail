@@ -19,10 +19,16 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.config.JAXRS;
 import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        extension = "org.jboss.as.jaxrs",
+        marshal = true,
+        parserFactoryClassName = "org.wildfly.swarm.jaxrs.runtime.JAXRSParserFactory"
+)
 public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
 
     public JAXRSFraction() {

@@ -26,8 +26,8 @@
     <module>connector</module>
 
     <module>api</module>
-    <module>runtime</module>
     <module>modules</module>
+    <module>runtime</module>
     <module>test</module>
   </modules>
 

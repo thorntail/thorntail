@@ -17,10 +17,15 @@ package org.wildfly.swarm.weld;
 
 import org.wildfly.swarm.config.Weld;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.weld"
+)
 public class WeldFraction extends Weld<WeldFraction> implements Fraction {
 
     public WeldFraction() {

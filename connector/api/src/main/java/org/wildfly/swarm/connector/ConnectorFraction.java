@@ -16,10 +16,14 @@
 package org.wildfly.swarm.connector;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        extension="org.jboss.as.connector"
+)
 public class ConnectorFraction implements Fraction {
 
     public ConnectorFraction() {

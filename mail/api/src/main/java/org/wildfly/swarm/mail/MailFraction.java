@@ -20,15 +20,22 @@ import org.wildfly.swarm.config.mail.MailSession;
 import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Ken Finnigan
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.mail"
+)
 public class MailFraction extends Mail<MailFraction> implements Fraction {
 
     public MailFraction() {
     }
 
+    @Default
     public static MailFraction defaultFraction() {
         return new MailFraction()
                 .mailSession("Default", (session) -> {

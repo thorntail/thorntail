@@ -22,10 +22,17 @@ import org.wildfly.swarm.config.ee.ManagedExecutorService;
 import org.wildfly.swarm.config.ee.ManagedScheduledExecutorService;
 import org.wildfly.swarm.config.ee.ManagedThreadFactory;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.ee",
+        parserFactoryClassName = "org.wildfly.swarm.ee.runtime.EEParserFactory"
+)
 public class EEFraction extends EE<EEFraction> implements Fraction {
 
     public static final String CONCURRENCY_CONTEXT_DEFAULT = "java:jboss/ee/concurrency/context/default";
@@ -38,6 +45,7 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
 
     public static final String DEFAULT_KEY = "default";
 
+    @Default
     public static EEFraction createDefaultFraction() {
         EEFraction fraction = new EEFraction();
         fraction.specDescriptorPropertyReplacement(false)

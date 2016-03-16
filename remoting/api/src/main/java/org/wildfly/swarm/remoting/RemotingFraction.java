@@ -19,12 +19,20 @@ import org.wildfly.swarm.config.Remoting;
 import org.wildfly.swarm.config.remoting.EndpointConfiguration;
 import org.wildfly.swarm.config.remoting.HTTPConnector;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Ken Finnigan
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.remoting",
+        parserFactoryClassName = "org.wildfly.swarm.remoting.runtime.RemotingParserFactory"
+)
 public class RemotingFraction extends Remoting<RemotingFraction> implements Fraction {
 
+    @Default
     public static RemotingFraction defaultFraction() {
         RemotingFraction fraction = new RemotingFraction();
         fraction.endpointConfiguration(new EndpointConfiguration())

@@ -32,17 +32,25 @@ import org.wildfly.swarm.config.security.security_domain.authorization.PolicyMod
 import org.wildfly.swarm.security.SecurityFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Ken Finnigan
  * @author Lance Ball
  */
+@Configuration(
+        extension = "org.jboss.as.ejb3",
+        marshal = true
+
+)
 public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
     protected EJBFraction() {
 
     }
 
+    @Default
     public static EJBFraction createDefaultFraction() {
 
         Map<Object, Object> threadPoolSettings = new HashMap<>();

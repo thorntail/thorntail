@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,12 +49,15 @@ import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ValueExpression;
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexReader;
 import org.jboss.jandex.Indexer;
+import org.jboss.jandex.MethodInfo;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
@@ -76,11 +80,15 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
+import org.wildfly.swarm.container.runtime.internal.AnnotationBasedServerConfiguration;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -272,7 +280,7 @@ public class RuntimeServer implements Server {
     private void applyInterfaceDefaults(Container config) {
         if (config.ifaces().isEmpty()) {
             config.iface("public",
-                         SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
+                    SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
         }
     }
 
@@ -280,7 +288,7 @@ public class RuntimeServer implements Server {
         if (config.socketBindingGroups().isEmpty()) {
             config.socketBindingGroup(
                     new SocketBindingGroup("default-sockets", "public",
-                                           SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
+                            SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
             );
         }
 
@@ -324,6 +332,7 @@ public class RuntimeServer implements Server {
         // required for composite index
         resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container", "runtime")), indexes);
         resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.spi", "runtime")), indexes);
+        resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.spi", "main")), indexes);
 
         Enumeration<URL> bootstraps = m1.getClassLoader().getResources("wildfly-swarm-bootstrap.conf");
         if (!bootstraps.hasMoreElements()) {
@@ -348,7 +357,16 @@ public class RuntimeServer implements Server {
                             ServerConfiguration serverConfig = (ServerConfiguration) cls.newInstance();
                             this.configByFractionType.put(serverConfig.getType(), serverConfig);
                             this.configList.add(serverConfig);
+                        }
+                    }
 
+                    module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "api"));
+                    List<ServerConfiguration> serverConfigInstances = findAnnotationServerConfigurations(module, indexes);
+
+                    for (ServerConfiguration serverConfigInstance : serverConfigInstances) {
+                        if (!this.configList.stream().anyMatch((e) -> e.getType().equals(serverConfigInstance.getType()))) {
+                            this.configByFractionType.put(serverConfigInstance.getType(), serverConfigInstance);
+                            this.configList.add(serverConfigInstance);
                         }
                     }
                 }
@@ -372,6 +390,9 @@ public class RuntimeServer implements Server {
         Set<ClassInfo> infos = compositeIndex.getAllKnownImplementors(DotName.createSimple(ServerConfiguration.class.getName()));
 
         for (ClassInfo info : infos) {
+            if (info.name().toString().equals(AnnotationBasedServerConfiguration.class.getName())) {
+                continue;
+            }
             try {
                 Class<? extends ServerConfiguration> cls = (Class<? extends ServerConfiguration>) module.getClassLoader().loadClass(info.name().toString());
 
@@ -387,12 +408,104 @@ public class RuntimeServer implements Server {
         return impls;
     }
 
+    protected List<ServerConfiguration> findAnnotationServerConfigurations(Module apiModule, List<Index> parentIndexes) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException {
+
+        List<Index> indexes = new ArrayList<>();
+
+        resolveBuildTimeIndex(apiModule, indexes);
+
+        //resolveRuntimeIndex(module, indexes);
+
+        indexes.addAll(parentIndexes);
+        CompositeIndex compositeIndex = CompositeIndex.create(indexes.toArray(new Index[indexes.size()]));
+
+        List<ServerConfiguration> impls = new ArrayList<>();
+
+        DotName configAnno = DotName.createSimple(Configuration.class.getName());
+
+        Set<ClassInfo> infos = compositeIndex.getAllKnownImplementors(DotName.createSimple(Fraction.class.getName()));
+
+        for (ClassInfo info : infos) {
+
+            for (AnnotationInstance anno : info.classAnnotations()) {
+                if (anno.name().equals(configAnno)) {
+                    try {
+                        ServerConfiguration config = fromAnnotation(apiModule, anno);
+                        impls.add(config);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+
+        return impls;
+    }
+
+    protected ServerConfiguration fromAnnotation(Module apiModule, AnnotationInstance anno) throws ClassNotFoundException, ModuleLoadException {
+        AnnotationValue marshalValue = anno.value("marshal");
+        AnnotationValue ignorableValue = anno.value("ignorable");
+        AnnotationValue extensionValue = anno.value("extension");
+        AnnotationValue parserFactoryClassNameValue = anno.value("parserFactoryClassName");
+
+        boolean marshal = (marshalValue != null) ? marshalValue.asBoolean() : false;
+        boolean ignorable = (ignorableValue != null) ? ignorableValue.asBoolean() : false;
+        String extension = (extensionValue != null) ? extensionValue.asString() : null;
+        String parserFactoryClass = (parserFactoryClassNameValue != null) ? parserFactoryClassNameValue.asString() : null;
+
+        Module mainModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(apiModule.getIdentifier().getName(), "main"));
+
+        Class<? extends Fraction> fractionClass = (Class<? extends Fraction>) mainModule.getClassLoader().loadClass(anno.target().asClass().name().toString());
+
+        AnnotationBasedServerConfiguration serverConfig = new AnnotationBasedServerConfiguration(fractionClass);
+
+        serverConfig.ignorable(ignorable);
+        serverConfig.extension(extension);
+        serverConfig.marshal(marshal);
+
+        if (parserFactoryClass != null && !parserFactoryClass.equals("")) {
+            Module runtimeModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(apiModule.getIdentifier().getName(), "runtime"));
+            Class<? extends AbstractParserFactory> parserFractoryClass = (Class<? extends AbstractParserFactory>) runtimeModule.getClassLoader().loadClass(parserFactoryClass);
+
+            serverConfig.parserFactoryClass(parserFractoryClass);
+        }
+
+        List<MethodInfo> fractionMethods = anno.target().asClass().methods();
+
+        DotName defaultAnno = DotName.createSimple(Default.class.getName());
+
+        boolean foundDefault = false;
+
+        for (MethodInfo each : fractionMethods) {
+            if (each.hasAnnotation(defaultAnno)) {
+                if (!each.parameters().isEmpty()) {
+                    throw new RuntimeException("Method marked @Default must require zero parameters");
+                }
+
+                if (!Modifier.isStatic(each.flags())) {
+                    throw new RuntimeException("Method marked @Default must be static");
+                }
+
+                if (foundDefault) {
+                    throw new RuntimeException("Multiple methods found marked as @Default");
+                }
+
+                foundDefault = true;
+
+                serverConfig.defaultFraction(each.name());
+            }
+        }
+
+
+        return serverConfig;
+    }
+
     private void resolveBuildTimeIndex(Module module, List<Index> indexes) {
         try {
             Enumeration<URL> indexFiles = module.getClassLoader().findResources(BUILD_TIME_INDEX_NAME, false);
 
-            while(indexFiles.hasMoreElements())
-            {
+            while (indexFiles.hasMoreElements()) {
                 URL next = indexFiles.nextElement();
                 //System.out.println("Found : "+ next);
                 InputStream input = next.openStream();

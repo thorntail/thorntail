@@ -21,16 +21,23 @@ import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.LockingComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Lance Ball
  * @author Toby Crawley
  */
+@Configuration(
+        extension = "org.jboss.as.clustering.infinispan",
+        marshal = true
+)
 public class InfinispanFraction extends Infinispan<InfinispanFraction> implements Fraction {
 
     private InfinispanFraction() {
     }
 
+    @Default
     public static InfinispanFraction createDefaultFraction() {
         return new InfinispanFraction().markDefaultFraction();
     }

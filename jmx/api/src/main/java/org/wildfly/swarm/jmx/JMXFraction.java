@@ -17,10 +17,15 @@ package org.wildfly.swarm.jmx;
 
 import org.wildfly.swarm.config.JMX;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.jmx"
+)
 public class JMXFraction extends JMX<JMXFraction> implements Fraction {
 
     public JMXFraction() {

@@ -20,16 +20,23 @@ import org.wildfly.swarm.spi.api.Environment;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.clustering.jgroups"
+)
 public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fraction {
 
     public JGroupsFraction() {
     }
 
 
+    @Default
     public static JGroupsFraction defaultFraction() {
         if (Environment.openshift()) {
             return defaultOpenShiftFraction();

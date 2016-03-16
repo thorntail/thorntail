@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -76,8 +77,6 @@ public class ArqSecuredManagementInterfaceTest implements ContainerFactory {
         );
 
         ModelNode response = client.execute(Operations.createOperation("whoami"));
-
-        System.err.println(response);
 
         assertThat(response.get("outcome").asString()).isEqualTo("success");
 

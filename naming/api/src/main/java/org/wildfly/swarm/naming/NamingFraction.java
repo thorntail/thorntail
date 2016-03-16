@@ -17,10 +17,16 @@ package org.wildfly.swarm.naming;
 
 import org.wildfly.swarm.config.Naming;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.naming",
+        parserFactoryClassName = "org.wildfly.swarm.naming.runtime.NamingParserFactory"
+)
 public class NamingFraction extends Naming<NamingFraction> implements Fraction {
 
     public NamingFraction() {

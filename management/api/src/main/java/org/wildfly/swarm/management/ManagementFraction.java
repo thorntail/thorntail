@@ -20,16 +20,22 @@ import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsu
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true
+)
 public class ManagementFraction extends ManagementCoreService<ManagementFraction> implements Fraction {
 
     public ManagementFraction() {
 
     }
 
+    @Default
     public static ManagementFraction createDefaultFraction() {
         ManagementFraction fraction = new ManagementFraction();
 

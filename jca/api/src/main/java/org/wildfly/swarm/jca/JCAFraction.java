@@ -27,15 +27,22 @@ import org.wildfly.swarm.config.jca.LongRunningThreads;
 import org.wildfly.swarm.config.jca.ShortRunningThreads;
 import org.wildfly.swarm.config.jca.Workmanager;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        parserFactoryClassName = "org.wildfly.swarm.jca.runtime.JCAParserFactory"
+)
 public class JCAFraction extends JCA<JCAFraction> implements Fraction {
 
     private JCAFraction() {
     }
 
+    @Default
     public static JCAFraction createDefaultFraction() {
         Map<Object, Object> keepAlive = new HashMap<>();
         keepAlive.put("time", "10");

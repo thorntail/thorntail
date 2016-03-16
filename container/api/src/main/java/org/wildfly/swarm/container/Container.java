@@ -130,7 +130,7 @@ public class Container {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -154,16 +154,25 @@ public class Container {
 
         // Process any dependent fractions from Application added fractions
         if (!this.dependentFractions.isEmpty()) {
-            this.dependentFractions.stream().filter(dependentFraction -> this.fractions.get(dependentFraction.getClass()) == null).forEach(this::fraction);
+            this.dependentFractions.stream()
+                    .filter(dependentFraction -> this.fractions.get(dependentFraction.getClass()) == null)
+                    .forEach(this::fraction);
             this.dependentFractions.clear();
         }
 
         // Provide defaults for those remaining
-        availFractions.stream().filter(fractionClass -> this.fractions.get(fractionClass) == null).forEach(fractionClass -> fractionDefault(server.createDefaultFor(fractionClass)));
+        availFractions.stream()
+                .filter(fractionClass -> this.fractions.get(fractionClass) == null)
+                .forEach(fractionClass -> fractionDefault(server.createDefaultFor(fractionClass)));
 
         // Determine if any dependent fractions should override non Application added fractions
         if (!this.dependentFractions.isEmpty()) {
-            this.dependentFractions.stream().filter(dependentFraction -> this.fractions.get(dependentFraction.getClass()) == null || (this.fractions.get(dependentFraction.getClass()) != null && this.defaultFractionTypes.contains(dependentFraction.getClass()))).forEach(this::fraction);
+            this.dependentFractions.stream()
+                    .filter(dependentFraction ->
+                            this.fractions.get(dependentFraction.getClass()) == null
+                                    || (this.fractions.get(dependentFraction.getClass()) != null
+                                    && this.defaultFractionTypes.contains(dependentFraction.getClass())))
+                    .forEach(this::fraction);
             this.dependentFractions.clear();
         }
     }
@@ -498,8 +507,6 @@ public class Container {
         }
 
         list.add(binding);
-
-        System.err.println("added: " + this.outboundSocketBindings);
     }
 
     protected String determineDeploymentType() throws IOException {
@@ -601,7 +608,7 @@ public class Container {
      * Initialization Context to be passed to Fractions to allow them to provide
      * additional functionality into the Container.
      */
-    private class InitContext implements Fraction.InitContext{
+    private class InitContext implements Fraction.InitContext {
         public void fraction(Fraction fraction) {
             Container.this.dependentFraction(fraction);
         }

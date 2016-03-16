@@ -19,10 +19,15 @@ import org.wildfly.swarm.config.Datasources;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriverConsumer;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        parserFactoryClassName = "org.wildfly.swarm.datasources.runtime.DatasourceParserFactory"
+)
 public class DatasourcesFraction extends Datasources<DatasourcesFraction> implements Fraction {
     @Override
     public DatasourcesFraction dataSource(DataSource value) {

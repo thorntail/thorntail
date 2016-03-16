@@ -18,16 +18,23 @@ package org.wildfly.swarm.jpa;
 import org.wildfly.swarm.config.JPA;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Ken Finnigan
  * @author Lance Ball
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.jpa"
+)
 public class JPAFraction extends JPA<JPAFraction> implements Fraction {
 
     public JPAFraction() {
     }
 
+    @Default
     public static JPAFraction createDefaultFraction() {
         return new JPAFraction()
                 .defaultExtendedPersistenceInheritance(DefaultExtendedPersistenceInheritance.DEEP);

@@ -30,10 +30,17 @@ import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        extension = "org.wildfly.extension.undertow",
+        parserFactoryClassName = "org.wildfly.swarm.undertow.runtime.UndertowParserFactory"
+)
 public class UndertowFraction extends Undertow<UndertowFraction> implements Fraction {
 
     public UndertowFraction() {
@@ -44,6 +51,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
      *
      * @return The configured fraction.
      */
+    @Default
     public static UndertowFraction createDefaultFraction() {
         UndertowFraction fraction = new UndertowFraction();
 
