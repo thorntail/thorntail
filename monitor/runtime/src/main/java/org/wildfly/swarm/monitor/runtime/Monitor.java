@@ -15,9 +15,13 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.dmr.ModelNode;
 
 /**
@@ -40,4 +44,10 @@ public interface Monitor {
     ModelNode heap();
 
     ModelNode threads();
+
+    void registerHealth(HealthMetaData metaData);
+
+    List<HealthMetaData> getHealthURIs();
+
+    Optional<SecurityRealm> getSecurityRealm();
 }

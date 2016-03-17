@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
+import org.jboss.jandex.Index;
+import org.jboss.jandex.Indexer;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
@@ -69,13 +71,34 @@ public class RuntimeDeployer implements Deployer {
     @Override
     public void deploy(Archive<?> deployment) throws DeploymentException {
 
+        // 1. give fractions a chance to handle the deployment
         for (ServerConfiguration each : this.configurations) {
             each.prepareArchive(deployment);
         }
 
-        if (this.debug) {
-            Map<ArchivePath, Node> c = deployment.getContent();
+        // 2. create a meta data index
+        Indexer indexer = new Indexer();
+        Map<ArchivePath, Node> c = deployment.getContent();
+        try {
             for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
+                if(each.getKey().get().endsWith(CLASS_SUFFIX)) {
+                    indexer.index(each.getValue().getAsset().openStream());
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Index index = indexer.complete();
+
+        // 2.1 let fractions process the meta data
+        for (ServerConfiguration each : this.configurations) {
+            each.processArchiveMetaData(deployment, index);
+        }
+
+        if (this.debug) {
+            Map<ArchivePath, Node> ctx = deployment.getContent();
+            for (Map.Entry<ArchivePath, Node> each : ctx.entrySet()) {
                 System.err.println(each.getKey() + " // " + each.getValue());
             }
         }
@@ -140,6 +163,8 @@ public class RuntimeDeployer implements Deployer {
         }
 
     }
+
+    private static final String CLASS_SUFFIX = ".class";
 
     private final ModelControllerClient client;
 

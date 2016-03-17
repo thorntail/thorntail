@@ -16,11 +16,16 @@
 package org.wildfly.swarm.monitor.runtime;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.as.server.ServerEnvironment;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.Service;
@@ -37,8 +42,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OUT
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUCCESS;
 
-//import org.wildfly.swarm.container.Container;
-
 /**
  * @author Heiko Braun
  * @since 19/02/16
@@ -47,17 +50,23 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "monitor");
 
+    MonitorService(Optional<String> securityRealm) {
+        this.securityRealm = securityRealm;
+    }
+
     @Override
     public void start(StartContext startContext) throws StartException {
-        System.out.println("<< Starting monitor service >>");
         executorService = Executors.newSingleThreadExecutor();
         serverEnvironment = serverEnvironmentValue.getValue();
         controllerClient = modelControllerValue.getValue().createClient(executorService);
+
+        if(!securityRealm.isPresent()) {
+            System.out.println("WARN: You are running the monitoring endpoints with any security realm configuration!");
+        }
     }
 
     @Override
     public void stop(StopContext stopContext) {
-        System.out.println("<< Stopping monitor service >>");
         if (executorService != null) {
             executorService.shutdownNow();
         }
@@ -137,6 +146,30 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         }
     }
 
+    @Override
+    public void registerHealth(HealthMetaData metaData) {
+        System.out.println("Adding /health endpoint delegate: "+metaData.getWebContext());
+        this.endpoints.add(metaData);
+    }
+
+    @Override
+    public List<HealthMetaData> getHealthURIs() {
+        return Collections.unmodifiableList(this.endpoints);
+    }
+
+    @Override
+    public Optional<SecurityRealm> getSecurityRealm() {
+
+        if(securityRealm.isPresent() && null==securityRealmServiceValue.getOptionalValue()) {
+            throw new RuntimeException("A security realm has been specified, but has not been configured: "+securityRealm.get());
+        }
+
+        return securityRealmServiceValue.getOptionalValue()!=null ?
+                Optional.of(securityRealmServiceValue.getValue()) :
+                Optional.empty();
+
+    }
+
     private static ModelNode unwrap(ModelNode response) {
         if (response.get(OUTCOME).asString().equals(SUCCESS))
             return response.get(RESULT);
@@ -148,9 +181,15 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
 
+    final InjectedValue<SecurityRealm> securityRealmServiceValue = new InjectedValue<SecurityRealm>();
+
+    private final Optional<String> securityRealm;
+
     private ExecutorService executorService;
 
     private ServerEnvironment serverEnvironment;
 
     private ModelControllerClient controllerClient;
+
+    private CopyOnWriteArrayList<HealthMetaData> endpoints = new CopyOnWriteArrayList<HealthMetaData>();
 }

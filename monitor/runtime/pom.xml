@@ -30,13 +30,36 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
+      <artifactId>container-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-server</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>naming-runtime</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-naming</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow-runtime</artifactId>
+      <scope>provided</scope>
+      <version>${project.version}</version>
+    </dependency>
+
   </dependencies>
 
 </project>

@@ -20,12 +20,11 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Bob McWhirter
@@ -35,8 +34,8 @@ public class JAXRSArquillianTest implements ContainerFactory {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
+        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
+        deployment.addClass(MyResource.class);
         return deployment;
     }
 
@@ -47,8 +46,8 @@ public class JAXRSArquillianTest implements ContainerFactory {
 
     @Test
     @RunAsClient
-    public void testNothing() {
-
+    public void testResource() {
+        Assert.assertTrue(JAXRSInVmTest.getUrlContents("http://localhost:8080/health").contains("Howdy"));
     }
 
 }

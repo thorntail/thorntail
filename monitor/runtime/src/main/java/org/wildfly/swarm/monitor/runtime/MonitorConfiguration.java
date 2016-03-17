@@ -17,8 +17,18 @@ package org.wildfly.swarm.monitor.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import javax.naming.NamingException;
+
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.Index;
+import org.jboss.jandex.MethodInfo;
 import org.jboss.msc.service.ServiceActivator;
+import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.monitor.MonitorFraction;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
@@ -26,6 +36,10 @@ import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
  * @author Heiko Braun
  */
 public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFraction> {
+
+
+    public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.monitor.Health");
+    public static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
 
     public MonitorConfiguration() {
         super(MonitorFraction.class);
@@ -39,8 +53,57 @@ public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFra
     @Override
     public List<ServiceActivator> getServiceActivators(MonitorFraction fraction) {
         List<ServiceActivator> activators = new ArrayList<>();
-        activators.add(new MonitorServiceActivator());
+        activators.add(new MonitorServiceActivator(fraction.securityRealm()));
         return activators;
     }
+
+    @Override
+    public void processArchiveMetaData(Archive<?> a, Index index) {
+        List<AnnotationInstance> annotations = index.getAnnotations(PATH);
+        for (AnnotationInstance annotation : annotations) {
+            if(annotation.target().kind()== AnnotationTarget.Kind.CLASS)
+            {
+                ClassInfo classInfo = annotation.target().asClass();
+
+                for (MethodInfo methodInfo : classInfo.methods()) {
+                    if (methodInfo.hasAnnotation(HEALTH)) {
+                        StringBuffer sb = new StringBuffer();
+                        boolean isSecure = false;
+
+                        // the class level @Path
+                        for (AnnotationInstance classAnnotation : classInfo.classAnnotations()) {
+                            if (classAnnotation.name().equals(PATH)) {
+                                String methodPathValue = classAnnotation.value().asString();
+                                if (!methodPathValue.equals("/"))
+                                    sb.append(methodPathValue);
+                            }
+                        }
+
+                        if (methodInfo.hasAnnotation(PATH)) {
+
+                            // the method local @Path
+                            sb.append(methodInfo.annotation(PATH).value().asString());
+
+                            // the method local @Health
+                            AnnotationInstance healthAnnotation = methodInfo.annotation(HEALTH);
+                            isSecure = healthAnnotation.value("inheritSecurity")!=null ? healthAnnotation.value("inheritSecurity").asBoolean() : true;
+
+                        } else {
+                            throw new RuntimeException("@Health requires an explicit @Path annotation");
+                        }
+
+                        try {
+                            HealthMetaData metaData = new HealthMetaData(sb.toString(), isSecure);
+                            Monitor.lookup().registerHealth(metaData);
+                        } catch (NamingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
 
 }
