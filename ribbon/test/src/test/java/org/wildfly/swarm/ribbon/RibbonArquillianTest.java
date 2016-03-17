@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.netflix.ribbon.RibbonFraction;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Bob McWhirter
@@ -36,7 +36,7 @@ public class RibbonArquillianTest implements ContainerFactory {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class);
+        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
         return deployment;
     }

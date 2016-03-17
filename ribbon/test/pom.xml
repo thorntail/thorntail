@@ -43,6 +43,13 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>ribbon</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow</artifactId>
+      <version>${version.swarm.core}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>arquillian</artifactId>

@@ -16,12 +16,14 @@
 package org.wildfly.swarm.netflix.ribbon.runtime;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.netflix.ribbon.RibbonArchive;
 import org.wildfly.swarm.netflix.ribbon.RibbonFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class RibbonConfiguration extends AbstractServerConfiguration<RibbonFraction> {
 
@@ -38,5 +40,11 @@ public class RibbonConfiguration extends AbstractServerConfiguration<RibbonFract
         archive.as(JARArchive.class).addModule("com.netflix.ribbon");
         archive.as(JARArchive.class).addModule("io.reactivex.rxjava");
         archive.as(JARArchive.class).addModule("io.netty");
+
+        // If there hasn't been any services advertised, then advertise a service under the archive name
+        if (!archive.as(RibbonArchive.class).hasAdvertised()) {
+            System.out.println("Call advertise() on " + archive.getName() + " " + archive.toString());
+            archive.as(RibbonArchive.class).advertise();
+        }
     }
 }
