@@ -71,7 +71,16 @@ public class BuildTool {
     }
 
     public BuildTool projectArtifact(String groupId, String artifactId, String version, String packaging, File file) {
-        this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file));
+        projectArtifact(groupId, artifactId, version, packaging, file, null);
+
+        return this;
+    }
+
+    public BuildTool projectArtifact(String groupId, String artifactId, String version,
+                                     String packaging, File file, String artifactName) {
+        this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file),
+                                              artifactName);
+
         return this;
     }
 

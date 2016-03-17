@@ -28,16 +28,22 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public class ArtifactAsset implements ProjectAsset {
 
-    public ArtifactAsset(ArtifactSpec spec) {
+    public ArtifactAsset(ArtifactSpec spec, String artifactName) {
         this.spec = spec;
+        this.artifactName = artifactName;
     }
 
     @Override
     public String getSimpleName() {
+        if (this.artifactName != null) {
+
+            return this.artifactName;
+        }
         final String version = this.spec.version();
-        return this.spec.artifactId()
-                + (version == null || version.isEmpty() ? "" : "-" + version)
-                + "." + this.spec.type();
+
+        return String.format("%s%s.%s", this.spec.artifactId(),
+                             (version == null || version.isEmpty() ? "" : "-" + version),
+                             this.spec.type());
     }
 
     @Override
@@ -56,4 +62,6 @@ public class ArtifactAsset implements ProjectAsset {
     }
 
     private final ArtifactSpec spec;
+
+    private final String artifactName;
 }
