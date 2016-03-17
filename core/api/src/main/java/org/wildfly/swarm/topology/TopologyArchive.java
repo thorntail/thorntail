@@ -19,6 +19,7 @@ import org.jboss.shrinkwrap.api.Assignable;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public interface TopologyArchive extends Assignable {
     String REGISTRATION_CONF = "META-INF/swarm-topology-registration.conf";
@@ -26,4 +27,6 @@ public interface TopologyArchive extends Assignable {
     TopologyArchive advertise();
 
     TopologyArchive advertise(String... serviceNames);
+
+    boolean hasAdvertised();
 }

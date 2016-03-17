@@ -28,6 +28,7 @@ import org.wildfly.swarm.topology.TopologyArchive;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implements TopologyArchive {
 
@@ -55,6 +56,11 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
         }
 
         return advertise();
+    }
+
+    @Override
+    public boolean hasAdvertised() {
+        return as(JARArchive.class).get(REGISTRATION_CONF) != null;
     }
 
     protected List<String> getServiceNames() {
