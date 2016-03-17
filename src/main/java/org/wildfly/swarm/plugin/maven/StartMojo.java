@@ -32,6 +32,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.ArtifactSpec;
@@ -95,6 +96,11 @@ public class StartMojo extends AbstractSwarmMojo {
                     .withStderrFile(this.stderrFile != null ? this.stderrFile.toPath() : null)
                     .withEnvironment(this.environment)
                     .withWorkingDirectory(this.project.getBasedir().toPath())
+                    .withProperty("remote.maven.repo",
+                                  String.join(",",
+                                              this.project.getRemoteProjectRepositories().stream()
+                                                      .map(RemoteRepository::getUrl)
+                                                      .collect(Collectors.toList())))
                     .execute();
 
             Runtime.getRuntime().addShutdownHook( new Thread(()->{
