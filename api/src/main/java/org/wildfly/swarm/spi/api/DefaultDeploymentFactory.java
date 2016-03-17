@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
  */
 public abstract class DefaultDeploymentFactory {
 
+    public static String APP_NAME = "swarm.app.name";
     public static String APP_PATH = "swarm.app.path";
     public static String APP_ARTIFACT = "swarm.app.artifact";
 
@@ -51,7 +52,12 @@ public abstract class DefaultDeploymentFactory {
     }
 
     protected static String determineName(final String suffix) {
-        String prop = System.getProperty(APP_PATH);
+        String prop = System.getProperty(APP_NAME);
+        if (prop != null) {
+            return prop;
+        }
+
+        prop = System.getProperty(APP_PATH);
         if (prop != null) {
             final File file = new File(prop);
             final String name = file.getName();
