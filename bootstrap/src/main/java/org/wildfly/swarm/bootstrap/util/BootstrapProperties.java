@@ -19,6 +19,8 @@ public class BootstrapProperties {
 
     public static final String BUNDLED_DEPENDENCIES = "swarm.bundled.dependencies";
 
+    public static final String APP_NAME = "swarm.app.name";
+
     public static final String APP_PATH = "swarm.app.path";
 
     public static final String APP_ARTIFACT = "swarm.app.artifact";
