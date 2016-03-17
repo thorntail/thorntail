@@ -50,13 +50,18 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         initProperties(false);
-
+        final Artifact primaryArtifact = this.project.getArtifact();
+        final String finalName = this.project.getBuild().getFinalName();
+        final String type = primaryArtifact.getType();
         final BuildTool tool = new BuildTool()
-                .projectArtifact(this.project.getArtifact().getGroupId(),
-                                 this.project.getArtifact().getArtifactId(),
-                                 this.project.getArtifact().getBaseVersion(),
-                                 this.project.getArtifact().getType(),
-                                 this.project.getArtifact().getFile())
+                .projectArtifact(primaryArtifact.getGroupId(),
+                                 primaryArtifact.getArtifactId(),
+                                 primaryArtifact.getBaseVersion(),
+                                 type,
+                                 primaryArtifact.getFile(),
+                                 finalName.endsWith("." + type) ?
+                                         finalName :
+                                         String.format("%s.%s", finalName, type))
                 .fractionList(FractionList.get())
                 .properties(this.properties)
                 .mainClass(this.mainClass)
@@ -82,9 +87,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .forEach(tool::additionalModule);
 
         try {
-            File jar = tool.build(this.project.getBuild().getFinalName(), Paths.get(this.projectBuildDir));
-
-            Artifact primaryArtifact = this.project.getArtifact();
+            File jar = tool.build(finalName, Paths.get(this.projectBuildDir));
 
             ArtifactHandler handler = new DefaultArtifactHandler("jar");
             Artifact swarmJarArtifact = new DefaultArtifact(
