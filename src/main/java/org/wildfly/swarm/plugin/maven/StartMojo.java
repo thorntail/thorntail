@@ -175,7 +175,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
         final SwarmExecutor executor = new SwarmExecutor()
                 .withModules(expandModules())
-                .withProperty(BootstrapProperties.APP_ARTIFACT,
+                .withProperty(BootstrapProperties.APP_NAME,
                               finalName.endsWith(".jar") ? finalName : finalName + ".jar")
                 .withClassPathEntries(dependencies(Paths.get(this.project.getBuild().getOutputDirectory()), true));
 
