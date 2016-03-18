@@ -50,10 +50,6 @@
       <groupId>com.netflix.ribbon</groupId>
       <artifactId>ribbon</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.netflix.hystrix</groupId>
-      <artifactId>hystrix-core</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>io.reactivex</groupId>
