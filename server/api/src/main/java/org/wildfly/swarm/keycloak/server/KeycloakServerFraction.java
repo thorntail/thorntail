@@ -44,8 +44,8 @@ public class KeycloakServerFraction implements Fraction {
                 File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-keycloak-config", ".d");
                 System.setProperty("jboss.server.config.dir", dir.getAbsolutePath());
                 Files.copy(getClass().getClassLoader().getResourceAsStream("keycloak-server.json"),
-                        dir.toPath().resolve("keycloak-server.json"),
-                        StandardCopyOption.REPLACE_EXISTING);
+                           dir.toPath().resolve("keycloak-server.json"),
+                           StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -63,8 +63,8 @@ public class KeycloakServerFraction implements Fraction {
                     .localCache("loginFailures")
                     .localCache("work")
                     .localCache("realmVersions", (ca) -> ca.transactionComponent(new TransactionComponent()
-                            .mode(TransactionComponent.Mode.BATCH)
-                            .locking(TransactionComponent.Locking.PESSIMISTIC)))
+                                                                                         .mode(TransactionComponent.Mode.BATCH)
+                                                                                         .locking(TransactionComponent.Locking.PESSIMISTIC)))
             );
         }
 
