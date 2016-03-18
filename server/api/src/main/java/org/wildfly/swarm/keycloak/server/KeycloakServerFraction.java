@@ -22,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.config.infinispan.CacheContainer;
+import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -43,8 +44,8 @@ public class KeycloakServerFraction implements Fraction {
                 File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-keycloak-config", ".d");
                 System.setProperty("jboss.server.config.dir", dir.getAbsolutePath());
                 Files.copy(getClass().getClassLoader().getResourceAsStream("keycloak-server.json"),
-                           dir.toPath().resolve("keycloak-server.json"),
-                           StandardCopyOption.REPLACE_EXISTING);
+                        dir.toPath().resolve("keycloak-server.json"),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,7 +60,12 @@ public class KeycloakServerFraction implements Fraction {
                     .localCache("users")
                     .localCache("sessions")
                     .localCache("offlineSessions")
-                    .localCache("loginFailures"));
+                    .localCache("loginFailures")
+                    .localCache("work")
+                    .localCache("realmVersions", (ca) -> ca.transactionComponent(new TransactionComponent()
+                            .mode(TransactionComponent.Mode.BATCH)
+                            .locking(TransactionComponent.Locking.PESSIMISTIC)))
+            );
         }
 
         DatasourcesFraction datasources = (DatasourcesFraction) initContext.fraction("datasources");
