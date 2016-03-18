@@ -43,7 +43,6 @@ public class RibbonConfiguration extends AbstractServerConfiguration<RibbonFract
 
         // If there hasn't been any services advertised, then advertise a service under the archive name
         if (!archive.as(RibbonArchive.class).hasAdvertised()) {
-            System.out.println("Call advertise() on " + archive.getName() + " " + archive.toString());
             archive.as(RibbonArchive.class).advertise();
         }
     }
