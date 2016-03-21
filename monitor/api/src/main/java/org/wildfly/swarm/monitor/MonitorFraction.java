@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.monitor;
 
+import java.util.Optional;
+
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
@@ -23,8 +25,15 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  */
 public class MonitorFraction implements Fraction {
 
-    public MonitorFraction() {
+    private Optional<String> securityRealm = Optional.empty();
 
+    public MonitorFraction securityRealm(String realmName) {
+        this.securityRealm = Optional.of(realmName);
+        return this;
+    }
+
+    public Optional<String> securityRealm() {
+        return this.securityRealm;
     }
 
     @Override
@@ -37,12 +46,14 @@ public class MonitorFraction implements Fraction {
             undertow.subresources().filterConfiguration()
                     .customFilter("wfs-monitor", customFilter -> {
                         customFilter.module("org.wildfly.swarm.monitor:runtime");
-                        customFilter.className("org.wildfly.swarm.monitor.runtime.MonitorEndpoints");
+                        customFilter.className("org.wildfly.swarm.monitor.runtime.SecureHttpContexts");
                     });
 
             undertow.subresources().server("default-server")
                     .subresources().host("default-host")
-                    .filterRef("wfs-monitor");
+                    .filterRef( "wfs-monitor", f -> {
+                        f.priority(100);
+                    });
 
 
         } else {
