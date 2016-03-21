@@ -47,7 +47,7 @@ public interface ServerConfiguration<T extends Fraction> {
 
     }
 
-    default void processMetaData(Archive<?> a, Index idx) {
+    default void processArchiveMetaData(Archive<?> a, Index idx) {
 
     }
 
