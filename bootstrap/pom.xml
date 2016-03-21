@@ -59,7 +59,8 @@
                 <filter>
                   <artifact>org.jboss.modules:jboss-modules</artifact>
                   <excludes>
-                    <exclude>org/jboss/modules/MavenArtifactUtil.class</exclude>
+                    <exclude>org/jboss/modules/maven/MavenArtifactUtil.class</exclude>
+                    <exclude>org/jboss/modules/maven/ArtifactCoordinates.class</exclude>
                   </excludes>
                 </filter>
               </filters>
