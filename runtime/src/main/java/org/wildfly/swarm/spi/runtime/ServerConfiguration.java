@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.xml.namespace.QName;
 
 import org.jboss.dmr.ModelNode;
+import org.jboss.jandex.Index;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
@@ -43,6 +44,10 @@ public interface ServerConfiguration<T extends Fraction> {
     }
 
     default void prepareArchive(Archive<?> a) {
+
+    }
+
+    default void processArchiveMetaData(Archive<?> a, Index idx) {
 
     }
 
