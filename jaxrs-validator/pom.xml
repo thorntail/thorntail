@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jaxrs-validation</artifactId>
+  <artifactId>jaxrs-validator</artifactId>
 
   <name>WildFly Swarm: JAX-RS + Validation</name>
   <description>WildFly Swarm: JAX-RS + Validation</description>
