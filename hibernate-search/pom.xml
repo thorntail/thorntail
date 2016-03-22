@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>core</artifactId>
+    <version>1.0.0.Beta5-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <artifactId>hibernate-search-parent</artifactId>
+
+  <name>WildFly Swarm: Hibernate Search</name>
+  <description>WildFly Swarm: Hibernate Search</description>
+
+  <packaging>pom</packaging>
+
+  <properties>
+    <!-- Must be the same as bundled in Wildfly-->
+    <version.hibernate.search>5.5.2.Final</version.hibernate.search>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-orm</artifactId>
+        <version>${version.hibernate.search}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>hibernate-search</module>
+
+    <module>api</module>
+    <module>runtime</module>
+    <module>modules</module>
+    <module>test</module>
+  </modules>
+
+</project>
