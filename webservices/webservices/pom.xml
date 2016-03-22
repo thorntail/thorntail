@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>webservices</artifactId>
 
-  <name>WildFly Swarm: Webservices</name>
-  <description>WildFly Swarm: Webservices</description>
+  <name>WildFly Swarm: WebServices</name>
+  <description>WildFly Swarm: WebServices</description>
 
   <packaging>jar</packaging>
 
