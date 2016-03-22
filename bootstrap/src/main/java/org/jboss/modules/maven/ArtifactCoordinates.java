@@ -36,6 +36,7 @@ public final class ArtifactCoordinates {
     private final String artifactId;
     private final String version;
     private final String classifier;
+    private Boolean isSnapshot = null;
     private int hashCode;
     private String toString;
 
@@ -120,6 +121,19 @@ public final class ArtifactCoordinates {
         return classifier;
     }
 
+    public boolean isSnapshot() {
+        if (isSnapshot == null) {
+            String version1 = getVersion();
+            final Matcher versionMatcher = snapshotPattern.matcher(version1);
+            if (versionMatcher.find()) {
+                isSnapshot = Boolean.TRUE;
+            } else {
+                isSnapshot = version1.contains("-SNAPSHOT");
+            }
+        }
+        return isSnapshot;
+    }
+
     /**
      * Create a relative repository path for the given artifact coordinates.
      *
@@ -150,6 +164,40 @@ public final class ArtifactCoordinates {
      */
     public String relativeArtifactPath() {
         return relativeArtifactPath('/');
+    }
+
+    public String relativeArtifactPath(char separator, String timestampVersion) {
+        String artifactId1 = getArtifactId();
+        String version1 = getVersion();
+        StringBuilder builder = new StringBuilder(getGroupId().replace('.', separator));
+        builder.append(separator).append(artifactId1).append(separator);
+        String pathVersion;
+        final Matcher versionMatcher = snapshotPattern.matcher(version1);
+        if (versionMatcher.find()) {
+            // it's really a snapshot
+            pathVersion = version1.substring(0, versionMatcher.start()) + "-SNAPSHOT";
+        } else {
+            pathVersion = version1;
+        }
+        builder.append(pathVersion).append(separator).append(artifactId1).append('-').append(timestampVersion);
+        return builder.toString();
+    }
+
+    public String relativeMetadataPath(char separator) {
+        String artifactId1 = getArtifactId();
+        String version1 = getVersion();
+        StringBuilder builder = new StringBuilder(getGroupId().replace('.', separator));
+        builder.append(separator).append(artifactId1).append(separator);
+        String pathVersion;
+        final Matcher versionMatcher = snapshotPattern.matcher(version1);
+        if (versionMatcher.find()) {
+            // it's really a snapshot
+            pathVersion = version1.substring(0, versionMatcher.start()) + "-SNAPSHOT";
+        } else {
+            pathVersion = version1;
+        }
+        builder.append(pathVersion).append(separator).append("maven-metadata.xml");
+        return builder.toString();
     }
 
     /**

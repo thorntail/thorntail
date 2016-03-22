@@ -34,9 +34,15 @@ import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.jar.JarFile;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.jboss.modules.Module;
 import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaders;
+import org.xml.sax.InputSource;
 
 /**
  * Helper class to resolve a maven artifact.
@@ -48,6 +54,16 @@ import org.jboss.modules.ResourceLoaders;
 public final class MavenArtifactUtil {
 
     static final Object artifactLock = new Object();
+    private static final XPath xpath = XPathFactory.newInstance().newXPath();
+    private static XPathExpression snapshotVersionXpath;
+
+    static {
+        try {
+            snapshotVersionXpath = xpath.compile("metadata/versioning/snapshotVersions/snapshotVersion[1]/value");
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Try to resolve a Maven JAR artifact.  Calling this method is identical to calling
@@ -81,6 +97,7 @@ public final class MavenArtifactUtil {
     public static File resolveArtifact(final ArtifactCoordinates coordinates, final String packaging) throws IOException {
         String artifactRelativePath = coordinates.relativeArtifactPath(File.separatorChar);
         String artifactRelativeHttpPath = coordinates.relativeArtifactPath('/');
+        String artifactRelativeMetadataHttpPath = coordinates.relativeMetadataPath('/');
         final MavenSettings settings = MavenSettings.getSettings();
         final Path localRepository = settings.getLocalRepository();
         final File localRepositoryFile = localRepository.toFile();
@@ -110,6 +127,24 @@ public final class MavenArtifactUtil {
                     } catch (IOException e) {
                         Module.getModuleLogger().trace(e, "Could not download '%s' from '%s' repository", artifactRelativePath, remoteRepository);
                         // try next one
+                    }
+                }
+                if (coordinates.isSnapshot()) {
+                    // Check repositories for timestamp snapshots
+                    String timestampedArtifactRelativePath;
+                    for (String remoteRepository : remoteRepos) {
+                        try {
+                            String remoteMetadataPath = remoteRepository + artifactRelativeMetadataHttpPath;
+                            timestampedArtifactRelativePath = coordinates.relativeArtifactPath('/', downloadTimestampVersion(coordinates + ":" + packaging, remoteMetadataPath));
+                            String remotePomPath = remoteRepository + timestampedArtifactRelativePath + ".pom";
+                            downloadFile(coordinates + ":" + packaging, remotePomPath, pomFile);
+                            if (pomFile.exists()) { //download successful
+                                return pomFile;
+                            }
+                        } catch (IOException|XPathExpressionException e) {
+                            Module.getModuleLogger().trace(e, "Could not download '%s' from '%s' repository", artifactRelativePath, remoteRepository);
+                            // try next one
+                        }
                     }
                 }
             } else {
@@ -146,6 +181,29 @@ public final class MavenArtifactUtil {
                         //
                     }
                 }
+                if (coordinates.isSnapshot()) {
+                    String timestampedArtifactRelativePath;
+                    for (String remoteRepository : remoteRepos) {
+                        try {
+                            String remoteMetadataPath = remoteRepository + artifactRelativeMetadataHttpPath;
+                            timestampedArtifactRelativePath = coordinates.relativeArtifactPath('/', downloadTimestampVersion(coordinates + ":" + packaging, remoteMetadataPath));
+                            String remotePomPath = remoteRepository + timestampedArtifactRelativePath + ".pom";
+                            String remoteArtifactPath = remoteRepository + timestampedArtifactRelativePath + classifier + "." + packaging;
+                            downloadFile(coordinates + ":pom", remotePomPath, pomFile);
+                            if (! pomFile.exists()) {
+                                // no POM; skip it
+                                continue;
+                            }
+                            downloadFile(coordinates + ":" + packaging, remoteArtifactPath, artifactFile);
+                            if (artifactFile.exists()) { //download successful
+                                return artifactFile;
+                            }
+                        } catch (IOException|XPathExpressionException e) {
+                            Module.getModuleLogger().trace(e, "Could not download '%s' from '%s' repository", artifactRelativePath, remoteRepository);
+                            // try next one
+                        }
+                    }
+                }
             }
             //could not find it in remote
             Module.getModuleLogger().trace("Could not find in any remote repository");
@@ -165,6 +223,17 @@ public final class MavenArtifactUtil {
             dest.getParentFile().mkdirs();
             if (message) { System.out.println("Downloading " + artifact); }
             Files.copy(bis, dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    static String downloadTimestampVersion(String artifact, String metadataSrc) throws IOException, XPathExpressionException {
+        final URL url = new URL(metadataSrc);
+        final URLConnection connection = url.openConnection();
+        boolean message = Boolean.getBoolean("maven.download.message");
+
+        try (InputStream is = connection.getInputStream()) {
+            if (message) { System.out.println("Downloading maven-metadata.xml for " + artifact); }
+            return snapshotVersionXpath.evaluate(new InputSource(is));
         }
     }
 
