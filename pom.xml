@@ -489,6 +489,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>1.0.0.Beta5-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan</artifactId>
         <version>1.0.0.Beta5-SNAPSHOT</version>
       </dependency>
@@ -1043,6 +1049,7 @@
     <module>jaxrs-jaxb</module>
     <module>jaxrs-jsonp</module>
     <module>jaxrs-multipart</module>
+    <module>jaxrs-validator</module>
     <module>jaxrs-weld</module>
     <module>jca</module>
     <module>jgroups</module>
