@@ -235,6 +235,14 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>core</artifactId>
+        <version>${version.swarm.core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak</artifactId>
         <version>${version.swarm.keycloak}</version>
         <type>pom</type>
