@@ -61,7 +61,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         controllerClient = modelControllerValue.getValue().createClient(executorService);
 
         if(!securityRealm.isPresent()) {
-            System.out.println("WARN: You are running the monitoring endpoints with any security realm configuration!");
+            System.out.println("WARN: You are running the monitoring endpoints without any security realm configuration!");
         }
     }
 

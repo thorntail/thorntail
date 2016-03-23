@@ -15,6 +15,11 @@
  */
 package org.wildfly.swarm.jaxrs;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,7 +40,7 @@ public class JAXRSArquillianTest implements ContainerFactory {
     @Deployment(testable = false)
     public static Archive createDeployment() {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
-        deployment.addClass(MyResource.class);
+        deployment.addClass(HealthCheckResource.class);
         return deployment;
     }
 
@@ -47,7 +52,31 @@ public class JAXRSArquillianTest implements ContainerFactory {
     @Test
     @RunAsClient
     public void testResource() {
-        Assert.assertTrue(JAXRSInVmTest.getUrlContents("http://localhost:8080/health").contains("Howdy"));
+        Assert.assertTrue(getUrlContents("http://localhost:8080/health/app/health-secure").contains("UP"));
     }
+
+    static String getUrlContents(String theUrl) {
+        StringBuilder content = new StringBuilder();
+
+        try {
+            URL url = new URL(theUrl);
+            URLConnection urlConnection = url.openConnection();
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream())
+            );
+
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                content.append(line + "\n");
+            }
+            bufferedReader.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return content.toString();
+    }
+
 
 }

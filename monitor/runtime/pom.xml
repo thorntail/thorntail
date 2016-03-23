@@ -32,11 +32,6 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container-runtime</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -58,6 +53,12 @@
       <artifactId>undertow-runtime</artifactId>
       <scope>provided</scope>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>

@@ -9,5 +9,6 @@
     <module name="org.wildfly.swarm.msc"/>
     <module name="org.jboss.shrinkwrap"/>
     <module name="org.wildfly.swarm.undertow"/>
+    <module name="org.jboss.dmr"/>
   </dependencies>
 </module>

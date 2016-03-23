@@ -15,69 +15,78 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import java.util.Properties;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.management.ManagementFraction;
+import org.wildfly.swarm.monitor.MonitorFraction;
 
 /**
  * @author Bob McWhirter
  */
-public class JAXRSInVmTest {
+public class JAXRSInVmTest extends SimpleHttp {
 
     @Test
-    public void testSimple() throws Exception {
+    public void testHealthIntegration() throws Exception {
 
         Container container = new Container();
         container.fraction(new JAXRSFraction());
+        container.fraction(new MonitorFraction().securityRealm("TestRealm"));
+        container.fraction(
+                new ManagementFraction()
+                        .securityRealm("TestRealm", (realm) -> {
+                            realm.inMemoryAuthentication((authn) -> {
+                                authn.add(new Properties() {{
+                                    put("admin", "password");
+                                }}, true);
+                            });
+                            realm.inMemoryAuthorization();
+                        })
+        );
         container.start();
 
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
-        deployment.addClass(MyResource.class);
+        deployment.addClass(TimeResource.class);
+        deployment.addClass(HealthCheckResource.class);
 
         container.deploy(deployment);
 
-        String directResponse = null;
-        boolean yieldException = false;
-        try {
-            directResponse = getUrlContents("http://localhost:8080/app/health");
-        } catch (Throwable e) {
-            yieldException = true;
-        }
-        Assert.assertTrue("Expected exception when directly accessing a health endpoint", yieldException);
+        // verify listing of subresources
+        SimpleHttp.Response endpointList = getUrlContents("http://localhost:8080/health");
+        Assert.assertTrue(endpointList.getBody().contains("links")); //hateos structure
 
-        String indirectResponse = getUrlContents("http://localhost:8080/health");
-        Assert.assertTrue("Illegal response from proxy", indirectResponse.contains("Howdy"));
+        // verify direct access to secure resources
+        SimpleHttp.Response response = getUrlContents("http://localhost:8080/app/health-secure"); // 403
+        Assert.assertTrue("Expected 403 when directly accessing secured health endpoint", response.getStatus() == 403);
+
+        // verify indirect access to secure resources
+        response = getUrlContents("http://localhost:8080/health/app/health-secure");
+        Assert.assertTrue(response.getBody().contains("UP"));
+
+        // verify indirect access, without auth, to secure resources
+        response = getUrlContents("http://localhost:8080/health/app/health-secure", false);
+        Assert.assertEquals(401, response.getStatus());
+
+        // verify direct access to insecure resources
+        response = getUrlContents("http://localhost:8080/app/health-insecure");
+        Assert.assertTrue(response.getBody().contains("UP"));
+
+        // verify indirect access, without auth, to insecure resources
+        response = getUrlContents("http://localhost:8080/health/app/health-insecure", false);
+        Assert.assertEquals(200, response.getStatus());
+
+        // verify indirect access to insecure resources
+        response = getUrlContents("http://localhost:8080/health/app/health-insecure");
+        Assert.assertTrue(response.getBody().contains("UP"));
+
+        // verify other resources remain untouched
+        response = getUrlContents("http://localhost:8080/another-app/time");
+        Assert.assertTrue(response.getBody().contains("Time"));
 
         container.stop();
 
-    }
-
-    static String getUrlContents(String theUrl) {
-        StringBuilder content = new StringBuilder();
-
-        try {
-            URL url = new URL(theUrl);
-            URLConnection urlConnection = url.openConnection();
-            BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream())
-            );
-
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line + "\n");
-            }
-            bufferedReader.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return content.toString();
     }
 }

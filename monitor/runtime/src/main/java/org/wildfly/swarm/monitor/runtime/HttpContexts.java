@@ -9,6 +9,7 @@ import io.undertow.attribute.ReadOnlyAttributeException;
 import io.undertow.attribute.RelativePathAttribute;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import org.jboss.dmr.ModelNode;
 
 /**
  * The actual monitoring HTTP endpoints. These are wrapped by {@link SecureHttpContexts}.
@@ -37,33 +38,68 @@ class HttpContexts implements HttpHandler {
             heap(exchange);
         } else if (THREADS.equals(exchange.getRequestPath())) {
             threads(exchange);
-        } else if (HEALTH.equals(exchange.getRequestPath())) {
-            healthRedirect(exchange);
         }
-        else if(Queries.isSecuredHealthEndpoint(monitor, exchange.getRelativePath()))
+        else if(Queries.preventDirectAccess(monitor, exchange.getRelativePath()))
         {
             exchange.setStatusCode(403);
             exchange.endExchange();
+        }
+        else if (HEALTH.equals(exchange.getRequestPath())) {
+            listHealtSubresources(exchange);
+        }
+        else if (exchange.getRelativePath().startsWith(HEALTH)) {
+            healthRedirect(exchange);
         }
 
         next.handleRequest(exchange);
     }
 
+    private void listHealtSubresources(HttpServerExchange exchange) {
+        if(monitor.getHealthURIs().isEmpty()) {
+            noHealthEndpoints(exchange);
+        }
+        else
+        {
+            ModelNode payload = new ModelNode();
+            for (HealthMetaData endpoint : monitor.getHealthURIs()) {
+                payload.get("links").add(HEALTH + endpoint.getWebContext());
+            }
+
+            exchange.setStatusCode(200);
+            exchange.getResponseSender().send(payload.toJSONString(false));
+        }
+
+    }
+
+    private void noHealthEndpoints(HttpServerExchange exchange) {
+        exchange.setStatusCode(503);
+        exchange.getResponseSender().send("No health endpoints configured!");
+    }
+
     private void healthRedirect(HttpServerExchange exchange) {
         if(monitor.getHealthURIs().isEmpty()) {
-            exchange.setStatusCode(503);
-            exchange.getResponseSender().send("No health endpoints configured!");
+            noHealthEndpoints(exchange);
         }
         else {
 
-            // TODO: Does this need to be guarded for concurrent access?
-            if(roundRobin==null)
-                roundRobin = new RoundRobin(monitor.getHealthURIs());
-
-            try {
-                RelativePathAttribute.INSTANCE.writeAttribute(exchange, roundRobin.next());
-            } catch (ReadOnlyAttributeException e) {
-                e.printStackTrace();
+            String rel = exchange.getRelativePath();
+            String subresource = rel.substring(HEALTH.length(), rel.length());
+            boolean matches = false;
+            for (HealthMetaData metaData : monitor.getHealthURIs()) {
+                if(metaData.getWebContext().equals(subresource)) {
+                    matches = true;
+                    break;
+                }
+            }
+            if(matches) {
+                try {
+                    RelativePathAttribute.INSTANCE.writeAttribute(exchange, subresource);
+                } catch (ReadOnlyAttributeException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                exchange.setStatusCode(404);
             }
         }
     }
@@ -85,13 +121,13 @@ class HttpContexts implements HttpHandler {
         return contexts;
     };
 
-    private static final String NODE = "/node";
+    public static final String NODE = "/node";
 
-    private static final String HEAP = "/heap";
+    public static final String HEAP = "/heap";
 
-    private static final String THREADS = "/threads";
+    public static final String THREADS = "/threads";
 
-    private static final String HEALTH = "/health";
+    public static final String HEALTH = "/health";
 
     private final Monitor monitor;
 
