@@ -192,6 +192,12 @@
         <version>${version.hystrix}</version>
       </dependency>
       <dependency>
+        <groupId>com.netflix.hystrix</groupId>
+        <artifactId>hystrix-metrics-event-stream</artifactId>
+        <version>${version.hystrix}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.netflix.ribbon</groupId>
         <artifactId>ribbon-transport</artifactId>
         <version>${version.ribbon}</version>

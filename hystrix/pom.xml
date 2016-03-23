@@ -48,6 +48,10 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow-modules</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>archaius</artifactId>
     </dependency>
     <dependency>
@@ -76,6 +80,18 @@
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
       <exclusions>
