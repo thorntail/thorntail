@@ -41,7 +41,7 @@
     <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
     <version.org.jboss.arquillian.drone>2.0.0.Alpha4</version.org.jboss.arquillian.drone>
     <version.org.arquillian.graphene>2.1.0.Alpha2</version.org.arquillian.graphene>
-    <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-8</version.org.jboss.shrinkwrap.descriptors>
+    <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-9</version.org.jboss.shrinkwrap.descriptors>
     <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
 
     <version.h2>1.4.187</version.h2>
