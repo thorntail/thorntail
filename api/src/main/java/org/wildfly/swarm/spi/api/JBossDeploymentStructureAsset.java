@@ -21,12 +21,12 @@ import java.util.List;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
-import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DependenciesType;
-import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.DeploymentType;
-import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ExclusionsType;
-import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.JBossDeploymentStructureDescriptor;
-import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ModuleDependencyType;
-import org.jboss.shrinkwrap.descriptor.api.jbossdeployment12.ModuleExclusionType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.DependenciesType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.DeploymentType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ExclusionsType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.JBossDeploymentStructureDescriptor;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ModuleDependencyType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ModuleExclusionType;
 
 import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
 
