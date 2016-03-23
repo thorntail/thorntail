@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -60,10 +59,6 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     @Parameter(alias = "processes")
     protected List<XmlPlexusConfiguration> processes;
-
-    //  ----------------------------------------
-    @Parameter(defaultValue = "${session}", readonly = true)
-    protected MavenSession mavenSession;
 
     @Component
     protected BuildPluginManager pluginManager;

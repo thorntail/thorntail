@@ -32,6 +32,7 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.repository.LocalArtifactRequest;
 import org.eclipse.aether.repository.LocalArtifactResult;
+import org.eclipse.aether.repository.Proxy;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
@@ -46,33 +47,22 @@ import org.wildfly.swarm.tools.ArtifactSpec;
  */
 public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
-
-    final protected RepositorySystemSession session;
-
-    final protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
-
-    final private ArtifactResolver resolver;
-
-    final private RepositorySystem system;
-
     public MavenArtifactResolvingHelper(ArtifactResolver resolver,
                                         RepositorySystem system,
-                                        RepositorySystemSession session) {
+                                        RepositorySystemSession session,
+                                        Proxy proxy) {
         this.resolver = resolver;
         this.system = system;
         this.session = session;
-        this.remoteRepositories.add(new RemoteRepository.Builder("jboss-public-repository-group", "default", "http://repository.jboss.org/nexus/content/groups/public/").build());
+        this.proxy = proxy;
+        this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
+                                                          "http://repository.jboss.org/nexus/content/groups/public/",
+                                                          null,
+                                                          this.proxy));
     }
 
     public void remoteRepository(ArtifactRepository repo) {
-        RemoteRepository.Builder builder = new RemoteRepository.Builder(repo.getId(), "default", repo.getUrl());
-        final Authentication mavenAuth = repo.getAuthentication();
-        if (mavenAuth != null && mavenAuth.getUsername() != null && mavenAuth.getPassword() != null) {
-            builder.setAuthentication(new AuthenticationBuilder()
-                    .addUsername(mavenAuth.getUsername())
-                    .addPassword(mavenAuth.getPassword()).build());
-        }
-        this.remoteRepositories.add(builder.build());
+        remoteRepository(buildRemoteRepository(repo.getId(), repo.getUrl(), repo.getAuthentication(), this.proxy));
     }
 
     public void remoteRepository(RemoteRepository repo) {
@@ -150,4 +140,31 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 .collect(Collectors.toSet());
     }
 
+    protected static RemoteRepository buildRemoteRepository(final String id, final String url,
+                                                            final Authentication auth, final Proxy proxy) {
+        RemoteRepository.Builder builder = new RemoteRepository.Builder(id, "default", url);
+        if (auth != null &&
+                auth.getUsername() != null &&
+                auth.getPassword() != null) {
+            builder.setAuthentication(new AuthenticationBuilder()
+                                              .addUsername(auth.getUsername())
+                                              .addPassword(auth.getPassword()).build());
+        }
+
+        if (proxy != null) {
+            builder.setProxy(proxy);
+        }
+
+        return builder.build();
+    }
+
+    final protected RepositorySystemSession session;
+
+    final protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
+
+    final private ArtifactResolver resolver;
+
+    final private RepositorySystem system;
+
+    final private Proxy proxy;
 }
