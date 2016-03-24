@@ -32,6 +32,11 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>bean-validation</artifactId>
+    </dependency>
+
     <!-- Provided APIs -->
     <dependency>
       <groupId>org.hibernate</groupId>
