@@ -17,6 +17,7 @@ package org.wildfly.swarm.undertow.descriptors;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
 
 /**
@@ -38,10 +39,12 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T> {
             asset = new WebXmlAsset();
             this.add(asset);
         } else {
-            asset = (NamedAsset) webXml.getAsset();
-            if (!(asset instanceof WebXmlAsset)) {
-                asset = new WebXmlAsset(asset.openStream());
+            Asset tempAsset = webXml.getAsset();
+            if (!(tempAsset instanceof WebXmlAsset)) {
+                asset = new WebXmlAsset(tempAsset.openStream());
                 this.add(asset);
+            } else {
+                asset = (NamedAsset) tempAsset;
             }
         }
 

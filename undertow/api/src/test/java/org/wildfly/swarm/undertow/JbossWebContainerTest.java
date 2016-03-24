@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.undertow;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 

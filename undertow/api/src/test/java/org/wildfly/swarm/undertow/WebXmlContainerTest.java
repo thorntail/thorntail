@@ -15,8 +15,29 @@
  */
 package org.wildfly.swarm.undertow;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Test;
+
 /**
  * @author Ken Finnigan
  */
 public class WebXmlContainerTest {
+
+    @Test
+    public void testContextParamOnClassloaderWebXML() throws Exception {
+        WARArchive archive = ShrinkWrap.create(WARArchive.class);
+        archive.setWebXML("web.xml");
+
+        archive.addContextParam("myParam", "myValue");
+    }
+
+    @Test
+    public void testContextParamOnFileWebXML() throws Exception {
+        WARArchive archive = ShrinkWrap.create(WARArchive.class);
+        archive.setWebXML(new File("src/test/resources/web.xml"));
+
+        archive.addContextParam("myParam", "myValue");
+    }
 }
