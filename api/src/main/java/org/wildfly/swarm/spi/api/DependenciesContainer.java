@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public interface DependenciesContainer<T extends Archive<T>> extends LibraryContainer<T>, Archive<T> {
 
@@ -30,6 +31,24 @@ public interface DependenciesContainer<T extends Archive<T>> extends LibraryCont
     default T addAllDependencies() throws Exception {
         List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts();
         addAsLibraries(artifacts);
+        return (T) this;
+    }
+
+    /**
+     * Add a single Maven dependency into the Archive.
+     * The following dependency formats are supported:
+     *   groupId:artifactId
+     *   groupId:artifactId:version
+     *   groupId:artifactId:packaging:version
+     *   groupId:artifactId:packaging:version:classifier
+     *
+     * @param gav String coordinates of the Maven dependency
+     * @return Archive instance
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    default T addDependency(String gav) throws Exception {
+        addAsLibrary(ArtifactLookup.get().artifact(gav));
         return (T) this;
     }
 }
