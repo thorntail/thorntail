@@ -17,7 +17,6 @@ package org.wildfly.swarm.monitor.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.naming.NamingException;
 
@@ -29,7 +28,14 @@ import org.jboss.jandex.Index;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.ClassAsset;
+import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
+import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.monitor.MonitorFraction;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
@@ -37,6 +43,15 @@ import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
  */
 public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFraction> {
 
+    /**
+     * Path to the WEB-INF inside of the Archive.
+     */
+    private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
+
+    /**
+     * Path to the classes inside of the Archive.
+     */
+    private static final ArchivePath PATH_CLASSES = ArchivePaths.create(PATH_WEB_INF, "classes");
 
     public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.monitor.Health");
     public static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
@@ -55,6 +70,18 @@ public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFra
         List<ServiceActivator> activators = new ArrayList<>();
         activators.add(new MonitorServiceActivator(fraction.securityRealm()));
         return activators;
+    }
+
+    @Override
+    public void prepareArchive(Archive<?> a) {
+        JARArchive jarArchive = a.as(JARArchive.class);
+        jarArchive.addModule("javax.ws.rs.api");
+        jarArchive.addModule("org.wildfly.swarm.monitor");
+        jarArchive.addModule("org.jboss.dmr");
+
+        Asset resource = new ClassAsset(HealthResponseFilter.class);
+        ArchivePath location = new BasicPath(PATH_CLASSES, AssetUtil.getFullPathForClassResource(HealthResponseFilter.class));
+        jarArchive.add(resource, location);
     }
 
     @Override

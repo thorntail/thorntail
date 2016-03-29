@@ -37,7 +37,6 @@
       <artifactId>undertow-api</artifactId>
     </dependency>
 
-
     <!-- MOVE TO A MODULE? -->
     <dependency>
       <groupId>org.ow2.asm</groupId>

@@ -119,11 +119,11 @@ public class SecureHttpContexts implements HttpHandler {
         handler = new PredicateHandler(exchange -> {
             return Queries.isSecuredHealthEndpoint(monitor, exchange.getRelativePath())
                     || HttpContexts.getDefaultContextNames().contains(exchange.getRelativePath());
-        }, handler, next);
+        }, handler, toWrap);
+
 
         return handler;
     }
-
 
     private static AuthenticationMechanism wrap(final AuthenticationMechanism toWrap, final AuthMechanism mechanism) {
         return new AuthenticationMechanismWrapper(toWrap, mechanism);
