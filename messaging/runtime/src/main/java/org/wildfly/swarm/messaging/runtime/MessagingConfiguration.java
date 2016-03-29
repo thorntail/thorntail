@@ -15,9 +15,18 @@
  */
 package org.wildfly.swarm.messaging.runtime;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
+
+import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.messaging.MessagingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
@@ -43,4 +52,8 @@ public class MessagingConfiguration extends MarshallingServerConfiguration<Messa
         a.as(JARArchive.class).addModule("javax.jms.api");
     }
 
+    @Override
+    public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+        return AbstractParserFactory.mapParserNamespaces(new MessagingParserFactory());
+    }
 }
