@@ -255,6 +255,9 @@ public class StartMojo extends AbstractSwarmMojo {
                     && each.getArtifactId().equals("jboss-logmanager")) {
                 continue;
             }
+            if (each.getScope().equals("provided")) {
+                continue;
+            }
             elements.add(each.getFile().toPath());
         }
 
