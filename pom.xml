@@ -166,6 +166,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-base</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
         <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
         <version>${version.org.jboss.shrinkwrap.descriptors}</version>
       </dependency>

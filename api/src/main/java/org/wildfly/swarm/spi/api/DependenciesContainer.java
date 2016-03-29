@@ -29,6 +29,17 @@ public interface DependenciesContainer<T extends Archive<T>> extends LibraryCont
 
     @SuppressWarnings("unchecked")
     default T addAllDependencies() throws Exception {
+        List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts("org.wildfly.swarm");
+        addAsLibraries(artifacts);
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    default T addAllDependencies(boolean includingWildFlySwarm) throws Exception {
+        if (!includingWildFlySwarm) {
+            return addAllDependencies();
+        }
+
         List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts();
         addAsLibraries(artifacts);
         return (T) this;

@@ -8,14 +8,15 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public interface ArtifactLookup {
 
     AtomicReference<ArtifactLookup> INSTANCE = new AtomicReference<>();
 
     static ArtifactLookup get() {
-        return INSTANCE.updateAndGet( (e)->{
-            if ( e != null ) {
+        return INSTANCE.updateAndGet((e) -> {
+            if (e != null) {
                 return e;
             }
 
@@ -33,6 +34,10 @@ public interface ArtifactLookup {
     }
 
     Archive artifact(String gav) throws Exception;
+
     Archive artifact(String gav, String asName) throws Exception;
+
     List<JavaArchive> allArtifacts() throws Exception;
+
+    List<JavaArchive> allArtifacts(String... groupIdExclusions) throws Exception;
 }
