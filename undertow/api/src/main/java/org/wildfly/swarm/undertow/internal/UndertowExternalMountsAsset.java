@@ -15,14 +15,35 @@
  */
 package org.wildfly.swarm.undertow.internal;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
 
 public class UndertowExternalMountsAsset implements Asset {
+
+    public UndertowExternalMountsAsset() {
+
+    }
+
+    public UndertowExternalMountsAsset(InputStream inputStream) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                externalMount(line);
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Error reading Undertow external mounts conf", ex);
+        }
+    }
+
     public void externalMount(String path) {
         externalMounts.add(path);
     }

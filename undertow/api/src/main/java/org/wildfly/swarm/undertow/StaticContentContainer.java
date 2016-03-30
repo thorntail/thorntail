@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
@@ -37,6 +38,8 @@ import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 public interface StaticContentContainer<T extends Archive<T>> extends Archive<T> {
 
     Logger log = Logger.getLogger(StaticContentContainer.class.getName());
+
+    String EXTERNAL_MOUNT_PATH = "WEB-INF/undertow-external-mounts.conf";
 
     default T staticContent() {
         return staticContent("");
@@ -56,13 +59,19 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
             log.log(Level.WARNING, "Error setting up static resources", ex);
         }
 
-        Node node = get("WEB-INF/undertow-external-mounts.conf");
+        Node node = get(EXTERNAL_MOUNT_PATH);
         UndertowExternalMountsAsset asset;
         if (node == null) {
             asset = new UndertowExternalMountsAsset();
-            add(asset, "WEB-INF/undertow-external-mounts.conf");
+            add(asset, EXTERNAL_MOUNT_PATH);
         } else {
-            asset = (UndertowExternalMountsAsset) node.getAsset();
+            Asset tempAsset = node.getAsset();
+            if (!(tempAsset instanceof UndertowExternalMountsAsset)) {
+                asset = new UndertowExternalMountsAsset(tempAsset.openStream());
+                add(asset, EXTERNAL_MOUNT_PATH);
+            } else {
+                asset = (UndertowExternalMountsAsset) node.getAsset();
+            }
         }
 
         // Add external mounts for static content so changes are picked up
