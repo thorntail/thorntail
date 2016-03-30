@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.internal;
 
+import java.util.List;
+
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +29,7 @@ import static org.junit.Assert.fail;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class ArtifactManagerTest {
 
@@ -34,6 +38,9 @@ public class ArtifactManagerTest {
 
         conf.addPrimaryDependency(MavenArtifactDescriptor.fromMscGav("org.jboss.spec.javax.enterprise.concurrent:jboss-concurrency-api_1.0_spec:1.0.0.Final"));
         conf.addPrimaryDependency(MavenArtifactDescriptor.fromMscGav("org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:1.0.0.Final"));
+        conf.addPrimaryDependency(MavenArtifactDescriptor.fromMscGav("org.wildfly.swarm:jaxrs:1.0.0.Beta4"));
+        conf.addPrimaryDependency(MavenArtifactDescriptor.fromMscGav("org.wildfly.swarm:weld:1.0.0.Beta4"));
+        conf.addPrimaryDependency(MavenArtifactDescriptor.fromMavenGav("joda-time:joda-time:2.7"));
         conf.addExtraDependency(MavenArtifactDescriptor.fromMavenGav("org.jolokia:jolokia-war:war:1.3.2"));
     }
 
@@ -117,6 +124,18 @@ public class ArtifactManagerTest {
         } catch (RuntimeException e) {
             assertThat(e).hasMessage("Artifact not found.");
         }
+    }
+
+    @Test
+    public void wildflySwarmDependenciesExcluded() throws Exception {
+        List<JavaArchive> archives = manager.allArtifacts("org.wildfly.swarm");
+        assertThat(archives.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void noDependenciesExcluded() throws Exception {
+        List<JavaArchive> archives = manager.allArtifacts();
+        assertThat(archives.size()).isEqualTo(5);
     }
 
     private static WildFlySwarmDependenciesConf conf = new WildFlySwarmDependenciesConf();

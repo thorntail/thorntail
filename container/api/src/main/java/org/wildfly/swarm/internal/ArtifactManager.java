@@ -18,9 +18,8 @@ package org.wildfly.swarm.internal;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +37,7 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class ArtifactManager implements ArtifactLookup {
 
@@ -75,10 +75,19 @@ public class ArtifactManager implements ArtifactLookup {
     }
 
     public List<JavaArchive> allArtifacts() throws IOException {
+        return allArtifacts("");
+    }
+
+    @Override
+    public List<JavaArchive> allArtifacts(String... groupIdExclusions) throws IOException {
         final List<JavaArchive> archives = new ArrayList<>();
+        final List<String> exclusions = Arrays.asList(groupIdExclusions);
 
         if (this.deps != null) {
             for (MavenArtifactDescriptor each : this.deps.getPrimaryDependencies()) {
+                if (exclusions.contains(each.groupId())) {
+                    continue;
+                }
                 final File artifact = MavenResolvers.get().resolveJarArtifact(each.mscCoordinates());
                 archives.add(ShrinkWrap.create(ZipImporter.class, artifact.getName())
                                      .importFrom(artifact)
@@ -87,16 +96,12 @@ public class ArtifactManager implements ArtifactLookup {
         } else {
             final String classpath = System.getProperty("java.class.path");
             final String javaHome = System.getProperty("java.home");
-            final Path pwd = Paths.get(System.getProperty("user.dir"));
+            final String pwd = System.getProperty("user.dir");
+            exclusions.replaceAll(s -> s.replace('.', File.separatorChar));
             if (classpath != null) {
                 for (final String element : classpath.split(File.pathSeparator)) {
-                    if (!element.startsWith(javaHome)) {
+                    if (!element.startsWith(javaHome) && !element.startsWith(pwd) && !excluded(exclusions, element)) {
                         final File artifact = new File(element);
-
-                        if (artifact.toPath().startsWith(pwd)) {
-
-                            continue;
-                        }
 
                         if (artifact.isFile()) {
                             archives.add(ShrinkWrap.create(ZipImporter.class, artifact.getName())
@@ -114,6 +119,16 @@ public class ArtifactManager implements ArtifactLookup {
         }
 
         return archives;
+    }
+
+    private boolean excluded(List<String> exclusions, String classPathElement) {
+        for (String exclusion : exclusions) {
+            if (classPathElement.contains(exclusion)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private File findFile(String gav) throws IOException, ModuleLoadException {
