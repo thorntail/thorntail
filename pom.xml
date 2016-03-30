@@ -83,22 +83,6 @@
       </extension>
     </extensions>
     <plugins>
-
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>tree</goal>
-            </goals>
-            <configuration>
-              <outputFile>target/dependencies.info</outputFile>
-              <tokens>whitespace</tokens>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -146,20 +130,15 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.jboss.jandex</groupId>
-        <artifactId>jandex-maven-plugin</artifactId>
-        <version>1.0.4</version>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+        <version>${version.wildfly.swarm.fraction.plugin}</version>
         <executions>
           <execution>
-            <id>make-index</id>
             <phase>process-classes</phase>
             <goals>
-              <goal>jandex</goal>
+              <goal>process</goal>
             </goals>
-            <configuration>
-              <indexName>swarm-jandex.idx</indexName>
-              <verbose>true</verbose>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -199,19 +178,6 @@
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
-        </plugin>
-        <plugin>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-          <version>${version.wildfly.swarm.fraction.plugin}</version>
-          <executions>
-            <execution>
-              <phase>prepare-package</phase>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
