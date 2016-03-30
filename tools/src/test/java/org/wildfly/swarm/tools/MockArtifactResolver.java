@@ -17,6 +17,7 @@ package org.wildfly.swarm.tools;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -66,6 +67,10 @@ public class MockArtifactResolver implements ArtifactResolvingHelper {
 
     @Override
     public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
-        return null;
+        Set<ArtifactSpec> resolved = new HashSet<>();
+        for (ArtifactSpec spec : specs) {
+            resolved.add(resolve(spec));
+        }
+        return resolved;
     }
 }

@@ -137,6 +137,7 @@ public class DependencyManager {
     }
 
     public void populateUberJarMavenRepository(Archive archive) throws Exception {
+        Set<ArtifactSpec> dependencies = new HashSet<>();
         for (ArtifactSpec dependency : this.dependencies) {
             if (!this.bootstrapDependencies.contains(dependency) && !this.moduleDependencies.contains(dependency)) {
                 dependency.shouldGather = false;
@@ -154,29 +155,30 @@ public class DependencyManager {
             }
 
             if (dependency.shouldGather) {
-                addArtifactToArchiveMavenRepository(archive, dependency);
+                dependencies.add(dependency);
             }
 
         }
 
         for (ArtifactSpec dependency : this.moduleDependencies) {
-            addArtifactToArchiveMavenRepository(archive, dependency);
+            dependencies.add(dependency);
         }
 
         for (ArtifactSpec dependency : this.bootstrapDependencies) {
             if (!isExplodedBootstrap(dependency)) {
-                addArtifactToArchiveMavenRepository(archive, dependency);
+                dependencies.add(dependency);
             }
+        }
+        resolveAllArtifacts(dependencies);
+        for (ArtifactSpec dependency : dependencies) {
+            addArtifactToArchiveMavenRepository(archive, dependency);
         }
     }
 
     public void populateUserMavenRepository() throws Exception {
-        for (ArtifactSpec each : this.dependencies) {
-            resolveArtifact(each);
-        }
-        for (ArtifactSpec each : this.moduleDependencies) {
-            resolveArtifact(each);
-        }
+        Set<ArtifactSpec> deps = new HashSet<>(this.dependencies);
+        deps.addAll(this.moduleDependencies);
+        resolveAllArtifacts(deps);
     }
 
     public void addArtifactToArchiveMavenRepository(Archive archive, ArtifactSpec artifact) throws Exception {
@@ -247,9 +249,7 @@ public class DependencyManager {
             this.dependencies.clear();
             this.dependencies.addAll(newDeps);
         } else {
-            for (ArtifactSpec each : this.dependencies) {
-                resolveArtifact(each);
-            }
+            this.resolver.resolveAll(this.dependencies);
         }
 
         scanModulesDependencies();
@@ -485,6 +485,10 @@ public class DependencyManager {
         }
 
         return spec;
+    }
+
+    protected Set<ArtifactSpec> resolveAllArtifacts(Set<ArtifactSpec> specs) throws Exception {
+        return this.resolver.resolveAll(specs);
     }
 
     private final Set<ArtifactSpec> dependencies = new HashSet<>();
