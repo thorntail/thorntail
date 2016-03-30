@@ -41,6 +41,12 @@ public class UndertowExternalMountsAsset implements Asset {
             }
         } catch (IOException ex) {
             throw new RuntimeException("Error reading Undertow external mounts conf", ex);
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException ignore) {
+
+            }
         }
     }
 
