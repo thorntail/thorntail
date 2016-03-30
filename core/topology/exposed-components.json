@@ -1,0 +1,6 @@
+[
+  {"name": "topology",                "doc": "topology-api"},
+  {"name": "topology-modules"},
+  {"name": "topology-webapp",         "doc": "topology-webapp-api"},
+  {"name": "topology-webapp-modules"}
+]
