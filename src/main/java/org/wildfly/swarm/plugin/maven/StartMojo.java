@@ -136,7 +136,7 @@ public class StartMojo extends AbstractSwarmMojo {
             try {
                 process.waitFor();
             } catch (InterruptedException e) {
-                throw new MojoExecutionException("Error waiting for process to start", e);
+                //do nothing
             } finally {
                 process.destroyForcibly();
             }
