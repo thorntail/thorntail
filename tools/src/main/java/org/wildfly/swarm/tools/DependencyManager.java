@@ -245,11 +245,11 @@ public class DependencyManager {
 
     protected void analyzeDependencies(boolean resolveTransitive) throws Exception {
         if (resolveTransitive) {
-            Set<ArtifactSpec> newDeps = this.resolver.resolveAll(this.dependencies);
+            Set<ArtifactSpec> newDeps = resolveAllArtifacts(this.dependencies);
             this.dependencies.clear();
             this.dependencies.addAll(newDeps);
         } else {
-            this.resolver.resolveAll(this.dependencies);
+            resolveAllArtifacts(this.dependencies);
         }
 
         scanModulesDependencies();
