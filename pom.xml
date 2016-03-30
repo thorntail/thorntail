@@ -299,6 +299,7 @@
     <module>rxjava</module>
     <module>rxnetty</module>
     <module>servo</module>
+    <module>netflix</module>
   </modules>
 
 </project>
