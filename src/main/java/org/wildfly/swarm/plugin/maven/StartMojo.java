@@ -136,7 +136,11 @@ public class StartMojo extends AbstractSwarmMojo {
             try {
                 process.waitFor();
             } catch (InterruptedException e) {
-                //do nothing
+                try {
+                    process.stop( 10, TimeUnit.SECONDS );
+                } catch (InterruptedException ie) {
+                    // Do nothing
+                }
             } finally {
                 process.destroyForcibly();
             }
