@@ -1,2 +1,0 @@
-org.jboss.spec.javax.faces:jboss-jsf-api_2.2_spec
-javax.inject:javax.inject

@@ -1,3 +1,0 @@
-org.hibernate:hibernate-search-orm
-org.hibernate:hibernate-search-engine
-org.hibernate:hibernate-search-serialization-avro

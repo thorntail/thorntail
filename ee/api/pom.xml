@@ -4,7 +4,8 @@
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns:swarm="http://wildfly-swarm.io/">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -31,28 +32,22 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>ee-modules</artifactId>
     </dependency>
-<!--
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
-    </dependency>
--->
 
     <!-- Provided APIs -->
-    <dependency>
+    <dependency swarm:scope="provided">
       <groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
       <artifactId>jboss-concurrency-api_1.0_spec</artifactId>
     </dependency>
 
-    <dependency>
+    <dependency swarm:scope="provided">
       <groupId>org.jboss.spec.javax.interceptor</groupId>
       <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
     </dependency>
-    <dependency>
+    <dependency swarm:scope="provided">
       <groupId>org.jboss.spec.javax.el</groupId>
       <artifactId>jboss-el-api_3.0_spec</artifactId>
     </dependency>
-    <dependency>
+    <dependency swarm:scope="provided">
       <groupId>org.glassfish</groupId>
       <artifactId>javax.el-impl</artifactId>
     </dependency>

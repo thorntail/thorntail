@@ -1,1 +1,0 @@
-org.jboss.spec.javax.sql:jboss-javax-sql-api_7.0_spec

@@ -1,1 +1,0 @@
-org.hibernate.javax.persistence:hibernate-jpa-2.1-api
