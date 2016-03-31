@@ -1,4 +1,6 @@
 [
   {"name": "swagger",         "doc": "swagger-api"},
-  {"name": "swagger-modules"}
+  {"name": "swagger-modules"},
+  {"name": "swagger-webapp"},
+  {"name": "swagger-webapp-modules"}
 ]
