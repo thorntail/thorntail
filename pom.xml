@@ -31,7 +31,7 @@
 
   <properties>
     <version.wildfly>10.0.0.Final</version.wildfly>
-    <version.wildfly.config-api>0.3.27</version.wildfly.config-api>
+    <version.wildfly.config-api>0.3.28</version.wildfly.config-api>
     <version.org.jboss.shrinkwrap>1.1.2</version.org.jboss.shrinkwrap>
     <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-9</version.org.jboss.shrinkwrap.descriptors>
     <version.maven.aether>3.2.5</version.maven.aether>
@@ -203,6 +203,43 @@
 
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>attach-exposed-components</id>
+      <activation>
+        <file>
+          <exists>exposed-components.json</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-exposed-components</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>exposed-components.json</file>
+                      <type>json</type>
+                      <classifier>exposed-components</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <modules>
     <module>api</module>
