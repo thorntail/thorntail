@@ -1,9 +1,6 @@
 require 'fileutils'
+require 'set'
 
-GROUPINGS = {"Core" => ->(x) { x !~ /\.config\./ },
-             "Config" => ->(x) { x =~ /\.config\./ }}
-ORDER = %w{Core Config}                      
-  
 def read_overview_frame(path)
   content = {:pre => [], :packages => [], :post => []}
   position = :pre
@@ -56,10 +53,15 @@ def read_overview_summary(path)
 end
 
 def group_packages(packages, groupings)
-  result = Hash.new { |h, k| h[k] = [] } 
+  result = Hash.new { |h, k| h[k] = [] }
+  package_matchers = groupings.reduce({}) do |acc, (k, v)|
+    acc[k] = Regexp.compile(v.map {|s| ">#{s.gsub(".", "\\.")}<"}.join("|"))
+    acc
+  end
+  
   packages.each do |p|
-    groupings.each do |g,matcher|
-      result[g] << p if matcher.call(p)
+    package_matchers.each do |g, matcher|
+      result[g] << p if matcher.match(p)
     end
   end
 
@@ -70,18 +72,24 @@ def write_content(content, path)
   File.open(path, "w") do |f|
     content[:pre].each {|line| f.puts(line)}
     
-    ORDER.each {|title| yield(f, title, content[:packages][title])}
+    content[:packages].keys.sort.each do |title|
+      yield(f, title, content[:packages][title])
+    end
     
     content[:post].each {|line| f.puts(line)}
   end
 end
 
-doc_path = "#{$ARGV[0]}/apidocs"
+target_path, doc_path = $ARGV
+doc_path << "/apidocs"
 
 puts "Grouping packages for javadoc"
 
+module_packages = Marshal.load(File.open(File.join(target_path,
+                                                   "packages.dat")))
+
 content = read_overview_frame("#{doc_path}/overview-frame.html")
-content[:packages] = group_packages(content[:packages], GROUPINGS)
+content[:packages] = group_packages(content[:packages], module_packages)
 write_content(content, "#{doc_path}/overview-frame.html") do |f, title, packages|
   f.puts "<h3>#{title}</h3><ul>"
   packages.each {|line| f.puts(line)}
@@ -89,7 +97,7 @@ write_content(content, "#{doc_path}/overview-frame.html") do |f, title, packages
 end
 
 content = read_overview_summary("#{doc_path}/overview-summary.html")
-content[:packages] = group_packages(content[:packages], GROUPINGS)
+content[:packages] = group_packages(content[:packages], module_packages)
 write_content(content, "#{doc_path}/overview-summary.html") do |f, title, packages|
   f.puts %Q{<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="#{title} table, listing packages, and an explanation">
 <caption><span>#{title}</span><span class="tabEnd">&nbsp;</span></caption>

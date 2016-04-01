@@ -52,7 +52,7 @@
             </goals>
             <configuration>
               <file>src/main/ruby/collect_src.rb</file>
-              <jrubyArgs>${project.build.directory}/combined-src ${project.build.directory}/depSources</jrubyArgs>
+              <jrubyArgs>${project.build.directory} ${project.build.directory}/combined-src ${project.build.directory}/depSources</jrubyArgs>
             </configuration>
           </execution>
           <execution>
@@ -63,7 +63,7 @@
             </goals>
             <configuration>
               <file>src/main/ruby/group_packages.rb</file>
-              <jrubyArgs>${project.reporting.outputDirectory}/${project.version}</jrubyArgs>
+              <jrubyArgs>${project.build.directory} ${project.reporting.outputDirectory}/${project.version}</jrubyArgs>
             </configuration>
           </execution>
         </executions>
