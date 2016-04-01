@@ -51,6 +51,18 @@
       <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
     </dependency>
 
+    <!-- MOVE TO A MODULE? -->
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-undertow</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Provided APIs -->
     <dependency swarm:scope="provided">
       <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -59,6 +71,10 @@
     <dependency swarm:scope="provided">
       <groupId>org.jboss.spec.javax.websocket</groupId>
       <artifactId>jboss-websocket-api_1.1_spec</artifactId>
+    </dependency>
+    <dependency swarm:scope="provided">
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-servlet</artifactId>
     </dependency>
 
     <dependency>

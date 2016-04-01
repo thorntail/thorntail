@@ -15,10 +15,17 @@
  */
 package org.wildfly.swarm.undertow.descriptors;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.undertow.internal.FaviconServletExtension;
 
 /**
  * @author Ken Finnigan
@@ -28,6 +35,34 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T> {
     @SuppressWarnings("unchecked")
     default T addContextParam(String name, String... values) {
         findWebXmlAsset().setContextParam(name, values);
+
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    default T addFaviconExceptionHandler() {
+        // Add FaviconServletExtension
+        String path = "WEB-INF/classes/" + FaviconServletExtension.EXTENSION_NAME.replace('.', '/') + ".class";
+        byte[] generatedExtension;
+        try {
+            generatedExtension = FaviconFactory.createFaviconServletExtension(FaviconServletExtension.EXTENSION_NAME);
+            add(new ByteArrayAsset(generatedExtension), path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Add FaviconErrorHandler
+        path = "WEB-INF/classes/" + FaviconServletExtension.HANDLER_NAME.replace('.', '/') + ".class";
+        byte[] generatedHandler;
+        try {
+            generatedHandler = FaviconFactory.createFaviconErrorHandler(FaviconServletExtension.HANDLER_NAME);
+            add(new ByteArrayAsset(generatedHandler), path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Add services entry for FaviconServletExtension
+        this.as(JARArchive.class).addAsServiceProvider(ServletException.class.getName(), FaviconServletExtension.EXTENSION_NAME);
 
         return (T) this;
     }

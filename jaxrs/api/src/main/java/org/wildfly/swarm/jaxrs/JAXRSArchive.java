@@ -24,6 +24,7 @@ import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 import org.wildfly.swarm.undertow.StaticContentContainer;
 import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
+import org.wildfly.swarm.undertow.descriptors.WebXmlContainer;
 
 /**
  * @author Bob McWhirter
@@ -37,6 +38,7 @@ public interface JAXRSArchive extends
         ServiceProviderContainer<JAXRSArchive>,
         JBossDeploymentStructureContainer<JAXRSArchive>,
         JBossWebContainer<JAXRSArchive>,
+        WebXmlContainer<JAXRSArchive>,
         StaticContentContainer<JAXRSArchive> {
 
     JAXRSArchive addResource(Class<?> resource);

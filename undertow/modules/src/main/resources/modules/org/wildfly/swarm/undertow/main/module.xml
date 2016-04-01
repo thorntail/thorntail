@@ -6,6 +6,7 @@
       <paths>
         <path name="org/wildfly/swarm/undertow"/>
         <path name="org/wildfly/swarm/undertow/internal"/>
+        <path name="org/wildfly/swarm/undertow/descriptors"/>
       </paths>
     </system>
 

@@ -37,6 +37,7 @@ import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements JAXRSArchive {
 
@@ -54,7 +55,7 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
 
         setDefaultContextRoot();
         addGeneratedApplication();
-        addExceptionMapperForFavicon();
+        addFaviconExceptionHandler();
     }
 
     @Override
@@ -114,16 +115,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    protected void addExceptionMapperForFavicon() {
-        try {
-            add(new ByteArrayAsset(FaviconExceptionMapperFactory.create()), "WEB-INF/classes/org/wildfly/swarm/generated/FaviconExceptionMapper.class");
-            addClass(FaviconHandler.class);
-            addModule("org.jboss.modules");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

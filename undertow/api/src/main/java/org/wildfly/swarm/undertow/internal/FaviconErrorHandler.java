@@ -13,20 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs.internal;
+package org.wildfly.swarm.undertow.internal;
 
-import java.io.IOException;
-
-import org.junit.Test;
-import org.wildfly.swarm.jaxrs.internal.FaviconExceptionMapperFactory;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
 
 /**
- * @author Bob McWhirter
+ * @author Ken Finnigan
  */
-public class FaviconExceptionMapperFactoryTest {
-
-    @Test
-    public void testCreate() throws IOException {
-        byte[] bytes = FaviconExceptionMapperFactory.create();
+public class FaviconErrorHandler implements HttpHandler {
+    public FaviconErrorHandler(final HttpHandler next) {
+        this.next = next;
     }
+
+    @Override
+    public void handleRequest(HttpServerExchange exchange) throws Exception {
+        try {
+            this.next.handleRequest(exchange);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private volatile HttpHandler next;
 }

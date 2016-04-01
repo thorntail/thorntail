@@ -15,23 +15,42 @@
  */
 package org.wildfly.swarm.jaxrs.internal;
 
+import java.io.InputStream;
+
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
+@Provider
 public class FaviconExceptionMapper implements ExceptionMapper<NotFoundException> {
-
-    public FaviconExceptionMapper() {
-        this.handler = new FaviconHandler();
-    }
 
     @Override
     public Response toResponse(NotFoundException e) {
-        return handler.toResponse(e);
-    }
+        if (e.getMessage().contains("favicon.ico")) {
+            try {
+                Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.undertow", "runtime"));
+                ClassLoader cl = module.getClassLoader();
+                final InputStream in = cl.getResourceAsStream("favicon.ico");
+                if (in != null) {
+                    Response.ResponseBuilder builder = Response.ok();
+                    builder.entity(in);
+                    return builder.build();
+                }
+            } catch (ModuleLoadException e1) {
+                throw e;
+            }
+        }
 
-    private final FaviconHandler handler;
+        // can't handle it, rethrow.
+        throw e;
+    }
 }
