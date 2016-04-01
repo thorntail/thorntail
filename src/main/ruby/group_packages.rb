@@ -72,7 +72,15 @@ def write_content(content, path)
   File.open(path, "w") do |f|
     content[:pre].each {|line| f.puts(line)}
     
-    content[:packages].keys.sort.each do |title|
+    content[:packages].keys.sort do |x,y|
+      if x == "config-api"
+        1
+      elsif y == "config-api"
+        -1
+      else
+        x <=> y
+      end
+    end.each do |title|
       yield(f, title, content[:packages][title])
     end
     
