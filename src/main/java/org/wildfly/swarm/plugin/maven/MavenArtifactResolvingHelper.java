@@ -29,6 +29,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.repository.LocalArtifactRequest;
 import org.eclipse.aether.repository.LocalArtifactResult;
@@ -134,8 +135,11 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
         result.getRoot().accept(gen);
+        List<DependencyNode> nodes = gen.getNodes();
 
-        return gen.getNodes().stream()
+        resolveDependenciesInParallel(nodes);
+
+        return nodes.stream()
                 .filter(node -> !"system".equals(node.getDependency().getScope()))
                 .map(node -> {
                     final Artifact artifact = node.getArtifact();
@@ -151,6 +155,18 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 .map(this::resolve)
                 .filter(x -> x != null)
                 .collect(Collectors.toSet());
+    }
+
+    private void resolveDependenciesInParallel(List<DependencyNode> nodes) {
+        List<ArtifactRequest> artifactRequests = nodes.stream()
+            .map(node -> new ArtifactRequest(node.getArtifact(), this.remoteRepositories, null))
+            .collect(Collectors.toList());
+
+        try {
+            this.resolver.resolveArtifacts(this.session, artifactRequests);
+        } catch (ArtifactResolutionException e) {
+            // ignore, error will be printed by resolve(ArtifactSpec)
+        }
     }
 
     protected static RemoteRepository buildRemoteRepository(final String id, final String url,
