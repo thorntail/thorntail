@@ -1,4 +1,4 @@
-<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.bean-validation">
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.bean.validation">
 
   <dependencies>
     <!-- For when run with bonafide IDE classpath -->
@@ -9,7 +9,7 @@
     </system>
 
     <!-- For when bootstrapped through a fat-jar -->
-    <module name="org.wildfly.swarm.bean-validation" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.bean.validation" slot="api" export="true" services="export"/>
 
   </dependencies>
 </module>
