@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.ArchiveEventHandler;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.ArchiveAsset;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
@@ -67,6 +68,10 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
             return false;
         }
 
+        if ( asset instanceof ArchiveAsset) {
+            return hasApplicationPathAnnotation( ((ArchiveAsset) asset).getArchive() );
+        }
+
         if (!path.get().endsWith(".class")) {
             return false;
         }
@@ -83,22 +88,21 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         return false;
     }
 
-    protected void addGeneratedApplication() {
-
-        Map<ArchivePath, Node> content = getArchive().getContent();
-
-        boolean applicationFound = false;
-
+    private static boolean hasApplicationPathAnnotation(Archive archive) {
+        Map<ArchivePath, Node> content = archive.getContent();
         for (Map.Entry<ArchivePath, Node> entry : content.entrySet()) {
             Node node = entry.getValue();
             Asset asset = node.getAsset();
             if (hasApplicationPathAnnotation(node.getPath(), asset)) {
-                applicationFound = true;
-                break;
+                return true;
             }
         }
 
-        if (!applicationFound) {
+        return false;
+    }
+
+    protected void addGeneratedApplication() {
+        if (!hasApplicationPathAnnotation(getArchive())) {
             String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
             String path = "WEB-INF/classes/" + name.replace('.', '/') + ".class";
 
