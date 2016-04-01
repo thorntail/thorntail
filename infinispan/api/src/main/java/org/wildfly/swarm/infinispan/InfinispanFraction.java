@@ -30,7 +30,8 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         extension = "org.jboss.as.clustering.infinispan",
-        marshal = true
+        marshal = true,
+        parserFactoryClassName = "org.wildfly.swarm.infinispan.runtime.ParserFactory"
 )
 public class InfinispanFraction extends Infinispan<InfinispanFraction> implements Fraction {
 

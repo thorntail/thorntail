@@ -28,7 +28,8 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.clustering.jgroups"
+        extension = "org.jboss.as.clustering.jgroups",
+        parserFactoryClassName = "org.wildfly.swarm.jgroups.runtime.ParserFactory"
 )
 public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fraction {
 

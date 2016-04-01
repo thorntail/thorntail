@@ -27,7 +27,8 @@ import org.wildfly.swarm.spi.api.annotations.Default;
 
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.webservices"
+        extension = "org.jboss.as.webservices",
+        parserFactoryClassName = "org.wildfly.swarm.webservices.runtime.ParserFactory"
 )
 public class WebServicesFraction extends Webservices<WebServicesFraction> implements Fraction {
 

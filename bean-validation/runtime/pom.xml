@@ -32,6 +32,10 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>spi-runtime</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-bean-validation</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

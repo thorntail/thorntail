@@ -24,7 +24,8 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.weld"
+        extension = "org.jboss.as.weld",
+        parserFactoryClassName = "org.wildfly.swarm.weld.runtime.ParserFactory"
 )
 public class WeldFraction extends Weld<WeldFraction> implements Fraction {
 

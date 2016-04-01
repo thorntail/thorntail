@@ -15,7 +15,16 @@
  */
 package org.wildfly.swarm.bean.validation.runtime;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
+
+import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.bean.validation.BeanValidationFraction;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
@@ -26,5 +35,10 @@ public class BeanValidationConfiguration extends MarshallingServerConfiguration<
 
     public BeanValidationConfiguration() {
         super(BeanValidationFraction.class, EXTENSION_MODULE);
+    }
+
+    @Override
+    public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+        return AbstractParserFactory.mapParserNamespaces(new ParserFactory());
     }
 }
