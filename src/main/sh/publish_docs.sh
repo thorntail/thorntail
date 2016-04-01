@@ -10,6 +10,7 @@ version=$3
 git clone git@github.com:wildfly-swarm/wildfly-swarm.git $tmp_dir
 cd $tmp_dir
 git checkout gh-pages
+git pull
 rsync -avz $site_dir/ $tmp_dir
 git add $version
 
