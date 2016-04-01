@@ -15,7 +15,16 @@
  */
 package org.wildfly.swarm.batch.jberet.runtime;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
+
+import org.jboss.dmr.ModelNode;
+import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.batch.jberet.BatchFraction;
+import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
 /**
@@ -32,5 +41,10 @@ public class BatchConfiguration extends MarshallingServerConfiguration<BatchFrac
     public BatchFraction defaultFraction() {
         System.err.println("creating batch default fraction");
         return BatchFraction.createDefaultFraction();
+    }
+
+    @Override
+    public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
+        return AbstractParserFactory.mapParserNamespaces(new BatchParserFactory());
     }
 }

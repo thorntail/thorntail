@@ -25,7 +25,8 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.jsf"
+        extension = "org.jboss.as.jsf",
+        parserFactoryClassName = "org.wildfly.swarm.jsf.runtime.ParserFactory"
 )
 public class JSFFraction extends JSF<JSFFraction> implements Fraction {
 

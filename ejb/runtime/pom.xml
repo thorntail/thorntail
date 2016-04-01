@@ -38,6 +38,10 @@
       <scope>provided</scope>
     </dependency>
 -->
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-ejb3</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
