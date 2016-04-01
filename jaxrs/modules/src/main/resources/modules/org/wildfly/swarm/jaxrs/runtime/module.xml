@@ -10,6 +10,7 @@
     <module name="org.wildfly.swarm.configuration"/>
 
     <module name="org.jboss.as.jaxrs"/>
+    <module name="org.jboss.resteasy.resteasy-jaxrs"/>
     <module name="org.jboss.resteasy.resteasy-jackson2-provider"/>
   </dependencies>
 </module>
