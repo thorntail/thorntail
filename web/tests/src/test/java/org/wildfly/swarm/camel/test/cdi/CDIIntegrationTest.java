@@ -25,6 +25,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.ServiceStatus;
+import org.apache.camel.cdi.ContextName;
 import org.apache.camel.cdi.Uri;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.util.CamelContextHelper;
@@ -53,12 +54,16 @@ public class CDIIntegrationTest implements ContainerFactory {
     CamelContextRegistry contextRegistry;
 
     @Inject
+    @ContextName("contextA")
     RoutesContextA routesA;
     @Inject
+    @ContextName("contextB")
     RoutesContextB routesB;
     @Inject
+    @ContextName("contextC")
     RoutesContextC routesC;
     @Inject
+    @ContextName("contextD")
     RoutesContextD routesD;
 
     @Inject

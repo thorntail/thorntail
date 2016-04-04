@@ -36,12 +36,14 @@ import org.slf4j.LoggerFactory;
 public class RoutesContextD extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(RoutesContextD.class);
 
+    @EndpointInject(uri = "mock:D.b", context = "contextD")
+    public MockEndpoint b;
+
+    @ContextName("contextD")
     @Inject @Uri("seda:D.a")
     Endpoint a;
 
-    @EndpointInject(uri = "mock:D.b")
-    public MockEndpoint b;
-
+    @ContextName("contextD")
     @Inject @Uri("seda:D.a")
     ProducerTemplate producer;
 

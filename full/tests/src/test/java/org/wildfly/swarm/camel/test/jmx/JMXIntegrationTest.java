@@ -20,8 +20,9 @@
 
 package org.wildfly.swarm.camel.test.jmx;
 
-import javax.annotation.Resource;
 import javax.management.monitor.MonitorNotification;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ConsumerTemplate;
@@ -31,7 +32,6 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,13 +52,9 @@ import org.wildfly.swarm.spi.api.JARArchive;
 @RunWith(Arquillian.class)
 public class JMXIntegrationTest implements ContainerFactory {
 
-    @Resource(name = "java:jboss/camel/CamelContextRegistry")
-    CamelContextRegistry contextRegistry;
-
     @Deployment
     public static JARArchive deployment() {
         final JARArchive archive = ShrinkWrap.create(JARArchive.class, "jmx-integration.jar");
-        archive.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;
     }
 
@@ -75,6 +71,8 @@ public class JMXIntegrationTest implements ContainerFactory {
 
     @Test
     public void testMonitorMBeanAttribute() throws Exception {
+        Context context = new InitialContext();
+        CamelContextRegistry contextRegistry = (CamelContextRegistry) context.lookup("java:jboss/camel/CamelContextRegistry");
 
         CamelContext sysctx = contextRegistry.getCamelContext("camel-1");
         Assert.assertEquals(ServiceStatus.Started, sysctx.getStatus());

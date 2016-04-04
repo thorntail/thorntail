@@ -38,10 +38,12 @@ public class RoutesContextA extends RouteBuilder {
     @EndpointInject(uri = "mock:A.b", context = "contextA")
     public MockEndpoint b;
 
-    @Inject @Uri(value = "seda:A.a", context = "contextA")
+    @ContextName("contextA")
+    @Inject @Uri(value = "seda:A.a")
     Endpoint a;
 
-    @Inject @Uri(value = "seda:A.a", context = "contextA")
+    @ContextName("contextA")
+    @Inject @Uri(value = "seda:A.a")
     ProducerTemplate producer;
 
     @Override
