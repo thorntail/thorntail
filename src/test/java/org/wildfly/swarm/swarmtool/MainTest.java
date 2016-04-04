@@ -35,7 +35,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class MainTest {
 
-    Result runTool(String... args) throws Exception {
+    static Result runTool(String... args) throws Exception {
         final OutputStream err = new ByteArrayOutputStream();
         final OutputStream out = new ByteArrayOutputStream();
         final PrintStream origErr = System.err;
@@ -63,8 +63,8 @@ public class MainTest {
         return result;
     }
 
-    String getResourcePath(String name) throws URISyntaxException {
-        return Paths.get(getClass().getClassLoader()
+    static String getResourcePath(String name) throws URISyntaxException {
+        return Paths.get(MainTest.class.getClassLoader()
                 .getResource(name)
                 .toURI())
                 .toString();
@@ -82,22 +82,44 @@ public class MainTest {
         return props;
     }
 
-//    @Test
-    public void setProperties() throws Exception {
-        final Result result = runTool(getResourcePath("simple-servlet.war"),
-                "-Dfoo=bar", "-Dham=biscuit",
-                "--property-file=" + getResourcePath("test.properties"));
-
-        assertThat(result.exitStatus).isEqualTo(0);
-
-        final Properties props = swarmProperties(result);
-        assertThat(props.get("cheese")).isEqualTo("biscuit");
-        assertThat(props.get("foo")).isEqualTo("bar");
-        // -D overrides properties file
-        assertThat(props.get("ham")).isEqualTo("biscuit");
+    static synchronized Result getBigJar() throws Exception {
+        if (bigJar == null) {
+            bigJar = runTool(getResourcePath("simple-servlet.war"), "--name=big",
+                    "-Dfoo=bar", "-Dham=biscuit", "--property-file=" + getResourcePath("test.properties"));
+            assertThat(bigJar.exitStatus).isEqualTo(0);
+        }
+        return bigJar;
     }
 
-    class Result {
+    static synchronized Result getLittleJar() throws Exception {
+        if (littleJar == null) {
+            littleJar = runTool(getResourcePath("simple-servlet.war"), "--name=little", "--no-bundle-deps");
+            assertThat(littleJar.exitStatus).isEqualTo(0);
+        }
+        return littleJar;
+    }
+
+    @Test
+    public void properties() throws Exception {
+        final Properties big = swarmProperties(getBigJar());
+        assertThat(big.get("cheese")).isEqualTo("biscuit");
+        assertThat(big.get("foo")).isEqualTo("bar");
+        // -D overrides properties file
+        assertThat(big.get("ham")).isEqualTo("biscuit");
+
+        final Properties little = swarmProperties(getLittleJar());
+        assertThat(little.get("cheese")).isNull();
+        assertThat(little.get("foo")).isNull();
+        assertThat(little.get("ham")).isNull();
+    }
+
+    @Test
+    public void dependencies() throws Exception {
+        assertThat(getBigJar().archive.contains("/m2repo")).isTrue();
+        assertThat(getLittleJar().archive.contains("/m2repo")).isFalse();
+    }
+
+    static class Result {
         public int exitStatus = 0;
 
         public String exitMessage = null;
@@ -111,4 +133,7 @@ public class MainTest {
             this.archive = ShrinkWrap.createFromZipFile(WebArchive.class, f);
         }
     }
+
+    static Result bigJar = null;
+    static Result littleJar = null;
 }
