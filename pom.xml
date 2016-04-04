@@ -48,12 +48,15 @@
         <version.wildfly.camel>4.0.0</version.wildfly.camel>
         <version.wildfly.swarm.core>1.0.0.Beta4</version.wildfly.swarm.core>
         
+        <version.eclipse.egit.github>2.1.5</version.eclipse.egit.github>
+        
         <!-- Plugin versions -->
         <version-jandex-maven-plugin>1.0.4</version-jandex-maven-plugin>
         <version-license-maven-plugin>1.8</version-license-maven-plugin>
         <version-maven-compiler-plugin>3.1</version-maven-compiler-plugin>
         <version-maven-enforcer-plugin>1.3.1</version-maven-enforcer-plugin>
         <version-maven-install-plugin>2.5.2</version-maven-install-plugin>
+        <version-maven-release-plugin>2.5</version-maven-release-plugin>
         <version-maven-source-plugin>2.3</version-maven-source-plugin>
         <version-maven-surefire-plugin>2.18.1</version-maven-surefire-plugin>
         <version-wildfly-swarm-fraction-plugin>1.0.0.Beta2</version-wildfly-swarm-fraction-plugin>
@@ -61,6 +64,7 @@
 
     <!-- Modules -->
     <modules>
+        <module>docs</module>
         <module>core</module>
         <module>web</module>
         <module>full</module>
@@ -388,6 +392,7 @@
                     <version>${version-maven-release-plugin}</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <preparationGoals>clean install</preparationGoals>
                         <tagNameFormat>@{project.version}</tagNameFormat>
                     </configuration>
                 </plugin>
