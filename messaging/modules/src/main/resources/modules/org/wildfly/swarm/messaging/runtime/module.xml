@@ -11,5 +11,6 @@
     <module name="org.jboss.shrinkwrap"/>
 
     <module name="org.wildfly.extension.messaging-activemq"/>
+    <module name="org.jboss.xnio.netty.netty-xnio-transport"/>
   </dependencies>
 </module>
