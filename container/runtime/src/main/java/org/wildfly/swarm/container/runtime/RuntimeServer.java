@@ -228,7 +228,7 @@ public class RuntimeServer implements Server {
         this.deployer = new RuntimeDeployer(this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
         if ( startListeners ) {
-            this.deployer.enabledHttpListeners();
+            this.deployer.enableHttpListeners();
         }
 
         List<Archive> implicitDeployments = new ArrayList<>();
