@@ -26,7 +26,7 @@ import org.wildfly.swarm.spi.api.Fraction;
  */
 public interface Server {
 
-    Deployer start(Container config) throws Exception;
+    Deployer start(Container config, boolean startListeners) throws Exception;
 
     void stop() throws Exception;
 

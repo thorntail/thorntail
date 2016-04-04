@@ -23,7 +23,6 @@ import org.wildfly.swarm.config.undertow.BufferCache;
 import org.wildfly.swarm.config.undertow.HandlerConfiguration;
 import org.wildfly.swarm.config.undertow.Server;
 import org.wildfly.swarm.config.undertow.ServletContainer;
-import org.wildfly.swarm.config.undertow.server.HTTPListener;
 import org.wildfly.swarm.config.undertow.server.Host;
 import org.wildfly.swarm.config.undertow.servlet_container.JSPSetting;
 import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
@@ -57,13 +56,15 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
 
         fraction.server(
                 new Server("default-server")
-                        .httpListener(new HTTPListener("default")
-                                              .socketBinding("http"))
+                        .httpListener("default", (listener) -> {
+                            listener.socketBinding("http")
+                                    .enabled(false);
+                        })
                         .host(new Host("default-host")))
                 .bufferCache(new BufferCache("default"))
                 .servletContainer(new ServletContainer("default")
-                                          .websocketsSetting(new WebsocketsSetting())
-                                          .jspSetting(new JSPSetting()))
+                        .websocketsSetting(new WebsocketsSetting())
+                        .jspSetting(new JSPSetting()))
                 .handlerConfiguration(new HandlerConfiguration());
 
         return fraction;

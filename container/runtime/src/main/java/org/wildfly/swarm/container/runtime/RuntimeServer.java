@@ -143,7 +143,7 @@ public class RuntimeServer implements Server {
     }
 
     @Override
-    public Deployer start(Container config) throws Exception {
+    public Deployer start(Container config, boolean startListeners) throws Exception {
 
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
@@ -225,8 +225,11 @@ public class RuntimeServer implements Server {
         Executor executor = Executors.newSingleThreadExecutor();
 
         this.client = controller.createClient(executor);
-        this.deployer = new RuntimeDeployer(this.configList, this.client, this.contentProvider, tempFileProvider);
+        this.deployer = new RuntimeDeployer(this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
+        if ( startListeners ) {
+            this.deployer.enabledHttpListeners();
+        }
 
         List<Archive> implicitDeployments = new ArrayList<>();
 

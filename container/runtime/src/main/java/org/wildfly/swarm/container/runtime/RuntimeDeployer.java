@@ -22,11 +22,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
+import org.jboss.msc.service.AbstractServiceListener;
+import org.jboss.msc.service.ServiceContainer;
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
@@ -57,7 +62,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
  */
 public class RuntimeDeployer implements Deployer {
 
-    public RuntimeDeployer(List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
+    public RuntimeDeployer(ServiceContainer serviceContainer, List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
+        this.serviceContainer = serviceContainer;
         this.configurations = configurations;
         this.client = client;
         this.contentProvider = contentProvider;
@@ -81,7 +87,7 @@ public class RuntimeDeployer implements Deployer {
         Map<ArchivePath, Node> c = deployment.getContent();
         try {
             for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
-                if(each.getKey().get().endsWith(CLASS_SUFFIX)) {
+                if (each.getKey().get().endsWith(CLASS_SUFFIX)) {
                     indexer.index(each.getValue().getAsset().openStream());
                 }
             }
@@ -143,7 +149,13 @@ public class RuntimeDeployer implements Deployer {
             ModelNode result = client.execute(deploymentAdd);
 
             ModelNode outcome = result.get("outcome");
+
             if (outcome.asString().equals("success")) {
+                // When there's a successful deployment, enable every undertow http listener
+                // if it's not already enabled, regardless of name.
+
+                enabledHttpListeners(deployment);
+
                 return;
             }
 
@@ -151,7 +163,53 @@ public class RuntimeDeployer implements Deployer {
             throw new DeploymentException(deployment, description.asString());
         } catch (IOException e) {
             throw new DeploymentException(deployment, e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    void enabledHttpListeners(Archive<?> deployment) throws InterruptedException {
+        if (!deployment.getName().endsWith(".war") && !deployment.getName().endsWith(".ear")) {
+            // only enable listeners for .war and .ear deployments
+            // to avoid early listeners because of a datasource .jar or
+            // other non-webbly stuff.
+            return;
+        }
+        enabledHttpListeners();
+    }
+
+    void enabledHttpListeners() throws InterruptedException {
+
+        List<ServiceName> allNames = this.serviceContainer.getServiceNames();
+
+        ServiceName rootListener = ServiceName.of("jboss", "undertow", "listener");
+
+        int numRequired = 0;
+        Semaphore semaphore = new Semaphore(0);
+
+        for (ServiceName eachName : allNames) {
+            if (rootListener.isParentOf(eachName)) {
+                ServiceController<?> listenerService = this.serviceContainer.getService(eachName);
+                if (listenerService != null) {
+                    if (listenerService.getMode() != ServiceController.Mode.ACTIVE) {
+                        ++numRequired;
+                        listenerService.addListener(new AbstractServiceListener() {
+                            @Override
+                            public void transition(ServiceController controller, ServiceController.Transition transition) {
+                                if (transition.enters(ServiceController.State.UP)) {
+                                    semaphore.release();
+                                }
+                                super.transition(controller, transition);
+                            }
+                        });
+
+                        listenerService.setMode(ServiceController.Mode.ACTIVE);
+                    }
+                }
+            }
+        }
+
+        semaphore.acquire(numRequired);
     }
 
     void stop() {
@@ -165,6 +223,8 @@ public class RuntimeDeployer implements Deployer {
     }
 
     private static final String CLASS_SUFFIX = ".class";
+
+    private final ServiceContainer serviceContainer;
 
     private final ModelControllerClient client;
 
