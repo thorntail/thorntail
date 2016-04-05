@@ -256,20 +256,8 @@ public class Container {
      * @throws Exception if an error occurs.
      */
     public Container start() throws Exception {
-        return start(false);
-    }
-
-    /**
-     * Start the container.
-     *
-     * @param startListeners if the listeners should be started immediately
-     *
-     * @return The container.
-     * @throws Exception if an error occurs.
-     */
-    public Container start(boolean startListeners) throws Exception {
         if (!this.running) {
-            this.deployer = this.server.start(this, startListeners);
+            this.deployer = this.server.start(this);
             this.running = true;
         }
 

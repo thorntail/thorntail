@@ -58,7 +58,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
                 new Server("default-server")
                         .httpListener("default", (listener) -> {
                             listener.socketBinding("http")
-                                    .enabled(false);
+                                    .enabled(true);
                         })
                         .host(new Host("default-host")))
                 .bufferCache(new BufferCache("default"))

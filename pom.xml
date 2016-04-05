@@ -31,7 +31,7 @@
   <properties>
     <version.wildfly.swarm.fraction.plugin>10</version.wildfly.swarm.fraction.plugin>
 
-    <version.swarm.spi>1.0.0.Beta8</version.swarm.spi>
+    <version.swarm.spi>1.0.0.Beta10</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
@@ -809,6 +809,27 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>request-controller</artifactId>
+        <version>1.0.0.Beta5-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>request-controller-api</artifactId>
+        <version>1.0.0.Beta5-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>request-controller-modules</artifactId>
+        <version>1.0.0.Beta5-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>request-controller-runtime</artifactId>
+        <version>1.0.0.Beta5-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>security</artifactId>
         <version>1.0.0.Beta5-SNAPSHOT</version>
       </dependency>
@@ -1036,6 +1057,7 @@
     <module>monitor</module>
     <module>naming</module>
     <module>remoting</module>
+    <module>request-controller</module>
     <module>security</module>
     <module>transactions</module>
     <module>undertow</module>

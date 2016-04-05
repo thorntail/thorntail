@@ -77,8 +77,6 @@ public class RuntimeDeployer implements Deployer {
     @Override
     public void deploy(Archive<?> deployment) throws DeploymentException {
 
-        preEnableHttpListeners();
-
         // 1. give fractions a chance to handle the deployment
         for (ServerConfiguration each : this.configurations) {
             each.prepareArchive(deployment);
@@ -155,7 +153,6 @@ public class RuntimeDeployer implements Deployer {
             if (outcome.asString().equals("success")) {
                 // When there's a successful deployment, enable every undertow http listener
                 // if it's not already enabled, regardless of name.
-                enableHttpListeners();
                 return;
             }
 
@@ -163,70 +160,7 @@ public class RuntimeDeployer implements Deployer {
             throw new DeploymentException(deployment, description.asString());
         } catch (IOException e) {
             throw new DeploymentException(deployment, e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
-    }
-
-    void preEnableHttpListeners() {
-        List<ServiceName> allNames = this.serviceContainer.getServiceNames();
-
-        ServiceName rootListener = ServiceName.of("jboss", "undertow", "listener");
-
-        for (ServiceName eachName : allNames) {
-            if (rootListener.isParentOf(eachName)) {
-                ServiceController<?> listenerService = this.serviceContainer.getService(eachName);
-                if (listenerService != null) {
-                    if (listenerService.getMode() == ServiceController.Mode.NEVER) {
-                        listenerService.setMode(ServiceController.Mode.ON_DEMAND);
-                    }
-                }
-            }
-        }
-    }
-
-    void enableHttpListeners(Archive<?> deployment) throws InterruptedException {
-        if (!deployment.getName().endsWith(".war") && !deployment.getName().endsWith(".ear")) {
-            // only enable listeners for .war and .ear deployments
-            // to avoid early listeners because of a datasource .jar or
-            // other non-webbly stuff.
-            return;
-        }
-        enableHttpListeners();
-    }
-
-    void enableHttpListeners() throws InterruptedException {
-
-        List<ServiceName> allNames = this.serviceContainer.getServiceNames();
-
-        ServiceName rootListener = ServiceName.of("jboss", "undertow", "listener");
-
-        int numRequired = 0;
-        Semaphore semaphore = new Semaphore(0);
-
-        for (ServiceName eachName : allNames) {
-            if (rootListener.isParentOf(eachName)) {
-                ServiceController<?> listenerService = this.serviceContainer.getService(eachName);
-                if (listenerService != null) {
-                    if (listenerService.getMode() != ServiceController.Mode.ACTIVE) {
-                        ++numRequired;
-                        listenerService.addListener(new AbstractServiceListener() {
-                            @Override
-                            public void transition(ServiceController controller, ServiceController.Transition transition) {
-                                if (transition.enters(ServiceController.State.UP)) {
-                                    semaphore.release();
-                                }
-                                super.transition(controller, transition);
-                            }
-                        });
-
-                        listenerService.setMode(ServiceController.Mode.ACTIVE);
-                    }
-                }
-            }
-        }
-
-        semaphore.acquire(numRequired);
     }
 
     void stop() {

@@ -102,6 +102,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT_OFFSET;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUSPEND;
 
 /**
  * @author Bob McWhirter
@@ -143,7 +144,7 @@ public class RuntimeServer implements Server {
     }
 
     @Override
-    public Deployer start(Container config, boolean startListeners) throws Exception {
+    public Deployer start(Container config) throws Exception {
 
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
@@ -212,7 +213,6 @@ public class RuntimeServer implements Server {
             }
         }
 
-
         this.serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
         for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
             ServiceController<?> serviceController = this.serviceContainer.getService(serviceName);
@@ -227,9 +227,6 @@ public class RuntimeServer implements Server {
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
-        if ( startListeners ) {
-            this.deployer.enableHttpListeners();
-        }
 
         List<Archive> implicitDeployments = new ArrayList<>();
 

@@ -13,26 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.internal;
+package org.wildfly.swarm.request.controller;
 
-import java.net.URL;
-import java.util.Set;
-
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.config.RequestController;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
+ * @author Lance Ball
  */
-public interface Server {
+@SuppressWarnings("unused")
+@Configuration(
+        extension = "org.wildfly.extension.request-controller",
+        marshal = true
+)
+public class RequestControllerFraction extends RequestController<RequestControllerFraction> implements Fraction {
 
-    Deployer start(Container config) throws Exception;
+    private RequestControllerFraction() {
 
-    void stop() throws Exception;
+    }
 
-    void setXmlConfig(URL xmlConfig);
+    @Default
+    public static RequestControllerFraction createDefaultFraction() {
+        return new RequestControllerFraction();
+    }
 
-    Set<Class<? extends Fraction>> getFractionTypes();
 
-    Fraction createDefaultFor(Class<? extends Fraction> fractionClazz);
 }

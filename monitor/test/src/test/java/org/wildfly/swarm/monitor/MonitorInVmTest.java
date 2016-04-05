@@ -31,7 +31,7 @@ public class MonitorInVmTest {
     @Test
     public void testMonitor() throws Exception {
         Container container = new Container();
-        container.start(true);
+        container.start();
         System.out.println(getUrlContents("http://127.0.0.1:8080/node"));
         System.out.println(getUrlContents("http://127.0.0.1:8080/heap"));
         System.out.println(getUrlContents("http://127.0.0.1:8080/threads"));
