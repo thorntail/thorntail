@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,16 +45,18 @@ public class FractionUsageAnalyzer {
 
     public Set<FractionDescriptor> detectNeededFractions() throws IOException {
         if (this.fractionList != null) {
-            final Set<FractionDescriptor> specs = new HashSet<>();
-            specs.add(this.fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, "container"));
+            final Set<FractionDescriptor> specs = new TreeSet<>();
             specs.addAll(findFractions(PackageDetector
                                                .detectPackages(this.source)
                                                .keySet()));
-
+            // Add container only if no fractions are detected, as they have a transitive dependency to container
+            if (specs.isEmpty()) {
+                specs.add(this.fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, "container"));
+            }
             return specs;
         } else {
 
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
     }
 
