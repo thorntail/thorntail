@@ -105,6 +105,8 @@ public class StartMojo extends AbstractSwarmMojo {
 
             Runtime.getRuntime().addShutdownHook( new Thread(()->{
                 try {
+                    // Sleeping for a few millis will give time to shutdown gracefully
+                    Thread.sleep(100L);
                     process.stop( 10, TimeUnit.SECONDS );
                 } catch (InterruptedException e) {
                 }
