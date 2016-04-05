@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,7 +44,7 @@ public class FractionUsageAnalyzer {
 
     public Set<FractionDescriptor> detectNeededFractions() throws IOException {
         if (this.fractionList != null) {
-            final Set<FractionDescriptor> specs = new TreeSet<>();
+            final Set<FractionDescriptor> specs = new HashSet<>();
             specs.addAll(findFractions(PackageDetector
                                                .detectPackages(this.source)
                                                .keySet()));
