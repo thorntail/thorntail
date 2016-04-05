@@ -62,7 +62,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
  */
 public class RuntimeDeployer implements Deployer {
 
-    public RuntimeDeployer(ServiceContainer serviceContainer, List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
+    public RuntimeDeployer(RuntimeServer.Opener opener, ServiceContainer serviceContainer, List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
+        this.opener = opener;
         this.serviceContainer = serviceContainer;
         this.configurations = configurations;
         this.client = client;
@@ -153,6 +154,7 @@ public class RuntimeDeployer implements Deployer {
             if (outcome.asString().equals("success")) {
                 // When there's a successful deployment, enable every undertow http listener
                 // if it's not already enabled, regardless of name.
+                openConnections(deployment);
                 return;
             }
 
@@ -160,6 +162,18 @@ public class RuntimeDeployer implements Deployer {
             throw new DeploymentException(deployment, description.asString());
         } catch (IOException e) {
             throw new DeploymentException(deployment, e);
+        }
+    }
+
+    public void openConnections(Archive<?> archive) {
+        if ( archive.getName().endsWith( ".war" ) || archive.getName().endsWith( ".ear" ) ) {
+            openConnections();
+        }
+    }
+
+    public void openConnections() {
+        if ( this.opener != null ) {
+            this.opener.open();
         }
     }
 
@@ -188,5 +202,7 @@ public class RuntimeDeployer implements Deployer {
     private final List<Closeable> mountPoints = new ArrayList<>();
 
     private boolean debug = false;
+
+    private final RuntimeServer.Opener opener;
 
 }

@@ -256,8 +256,12 @@ public class Container {
      * @throws Exception if an error occurs.
      */
     public Container start() throws Exception {
+        return start(false);
+    }
+
+    public Container start(boolean eagerlyOpen) throws Exception {
         if (!this.running) {
-            this.deployer = this.server.start(this);
+            this.deployer = this.server.start(this, eagerlyOpen);
             this.running = true;
         }
 

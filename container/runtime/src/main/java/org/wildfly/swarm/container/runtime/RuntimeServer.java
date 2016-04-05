@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
@@ -144,7 +146,7 @@ public class RuntimeServer implements Server {
     }
 
     @Override
-    public Deployer start(Container config) throws Exception {
+    public Deployer start(Container config, boolean eagerlyOpen) throws Exception {
 
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
@@ -221,11 +223,18 @@ public class RuntimeServer implements Server {
                 throw exception;
             }
         }
+
+        Opener opener = tryToAddGateHandlers();
+
         ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
+        if ( eagerlyOpen ) {
+            opener.open();
+        }
+
         this.client = controller.createClient(executor);
-        this.deployer = new RuntimeDeployer(this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
+        this.deployer = new RuntimeDeployer(opener, this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
 
         List<Archive> implicitDeployments = new ArrayList<>();
@@ -244,6 +253,50 @@ public class RuntimeServer implements Server {
         }
 
         return this.deployer;
+    }
+
+    protected Opener tryToAddGateHandlers() throws Exception {
+        try {
+            Module undertowRuntime = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.undertow", "runtime"));
+
+            Class<?> wrapperClass = undertowRuntime.getClassLoader().loadClass("org.wildfly.swarm.undertow.runtime.GateHandlerWrapper");
+
+            Object wrapperInstance = wrapperClass.newInstance();
+
+            ServiceName listenerRoot = ServiceName.of("jboss", "undertow", "listener");
+            List<ServiceName> names = this.serviceContainer.getServiceNames();
+
+            for (ServiceName name : names) {
+                if (listenerRoot.isParentOf(name)) {
+                    ServiceController<?> service = this.serviceContainer.getService(name);
+
+                    Object value = service.getValue();
+                    Class<?> cls = value.getClass();
+
+                    OUTER:
+                    while (cls != null) {
+                        Method[] methods = cls.getDeclaredMethods();
+                        INNER:
+                        for (int i = 0; i < methods.length; ++i) {
+                            Method method = methods[i];
+                            if (method.getName().equals("addWrapperHandler")) {
+                                method.setAccessible(true);
+                                method.invoke(value, wrapperInstance );
+                                break OUTER;
+                            }
+                        }
+                        cls = cls.getSuperclass();
+                    }
+                    service.setMode(ServiceController.Mode.ACTIVE);
+                }
+            }
+
+            return (Opener) wrapperInstance;
+        } catch (ModuleLoadException e) {
+            // that's okay, no undertow, quietly return;
+        }
+
+        return null;
     }
 
     public void stop() throws Exception {
@@ -769,5 +822,9 @@ public class RuntimeServer implements Server {
 
             return 0;
         }
+    }
+
+    public interface Opener {
+        void open();
     }
 }
