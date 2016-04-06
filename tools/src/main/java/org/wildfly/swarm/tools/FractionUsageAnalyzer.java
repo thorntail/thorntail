@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -42,20 +43,27 @@ public class FractionUsageAnalyzer {
         this.source = source;
     }
 
-
     public Set<FractionDescriptor> detectNeededFractions() throws IOException {
         if (this.fractionList != null) {
             final Set<FractionDescriptor> specs = new HashSet<>();
             specs.addAll(findFractions(PackageDetector
                                                .detectPackages(this.source)
                                                .keySet()));
+            // Remove fractions that have a dependency on each other
+            Iterator<FractionDescriptor> it = specs.iterator();
+            while (it.hasNext()) {
+                FractionDescriptor descriptor = it.next();
+                // Is set as a dependent to any other descriptor? If so, remove it
+                if (specs.stream().anyMatch(fd->fd.getDependencies().contains(descriptor))) {
+                    it.remove();
+                }
+            }
             // Add container only if no fractions are detected, as they have a transitive dependency to container
             if (specs.isEmpty()) {
                 specs.add(this.fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, "container"));
             }
             return specs;
         } else {
-
             return Collections.emptySet();
         }
     }
