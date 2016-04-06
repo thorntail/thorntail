@@ -15,8 +15,14 @@
  */
 package org.wildfly.swarm.undertow.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
 
 /**
  * @author Ken Finnigan
@@ -28,11 +34,51 @@ public class FaviconErrorHandler implements HttpHandler {
 
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        try {
-            this.next.handleRequest(exchange);
-        } catch (Exception e) {
-            throw e;
+        boolean faviconHandled = false;
+
+        if (!exchange.isResponseComplete() && exchange.getRequestPath().contains("favicon.ico")) {
+
+            try (InputStream faviconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("favicon.ico")) {
+                if (faviconStream != null) {
+                    // Load from WAR
+                    faviconHandled = writeFavicon(faviconStream, exchange);
+                }
+            }
+
+            if (!faviconHandled) {
+                Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.undertow", "runtime"));
+                ClassLoader cl = module.getClassLoader();
+
+                try (InputStream in = cl.getResourceAsStream("favicon.ico")) {
+                    if (in != null) {
+                        // Return default
+                        faviconHandled = writeFavicon(in, exchange);
+                    }
+                }
+            }
         }
+
+        if (!faviconHandled) {
+            this.next.handleRequest(exchange);
+        }
+    }
+
+    private boolean writeFavicon(InputStream inputStream, HttpServerExchange exchange) throws IOException {
+        if (inputStream != null) {
+            exchange.startBlocking();
+            OutputStream os = exchange.getOutputStream();
+            byte[] buffer = new byte[1024];
+
+            while (inputStream.read(buffer) > -1) {
+                os.write(buffer);
+            }
+
+            exchange.endExchange();
+
+            return true;
+        }
+
+        return false;
     }
 
     private volatile HttpHandler next;

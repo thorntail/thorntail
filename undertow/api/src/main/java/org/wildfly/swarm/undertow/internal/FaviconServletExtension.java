@@ -32,9 +32,9 @@ public class FaviconServletExtension implements ServletExtension {
 
     @Override
     public void handleDeployment(DeploymentInfo deploymentInfo, ServletContext servletContext) {
-        deploymentInfo.addInitialHandlerChainWrapper(handler -> {
+        deploymentInfo.addInnerHandlerChainWrapper(handler -> {
             try {
-                return Handlers.exceptionHandler((HttpHandler) Class.forName(HANDLER_NAME).getConstructor(HttpHandler.class).newInstance(handler));
+                return Handlers.path((HttpHandler) Class.forName(HANDLER_NAME).getConstructor(HttpHandler.class).newInstance(handler));
             } catch (Exception e) {
                 e.printStackTrace();
                 return handler;

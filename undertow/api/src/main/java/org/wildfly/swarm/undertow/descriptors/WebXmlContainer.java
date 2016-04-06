@@ -17,20 +17,20 @@ package org.wildfly.swarm.undertow.descriptors;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-
+import io.undertow.servlet.ServletExtension;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
+import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 import org.wildfly.swarm.undertow.internal.FaviconServletExtension;
 
 /**
  * @author Ken Finnigan
  */
-public interface WebXmlContainer<T extends Archive<T>> extends Archive<T> {
+public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, ServiceProviderContainer<T>, JBossDeploymentStructureContainer<T> {
 
     @SuppressWarnings("unchecked")
     default T addContextParam(String name, String... values) {
@@ -62,7 +62,10 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T> {
         }
 
         // Add services entry for FaviconServletExtension
-        this.as(JARArchive.class).addAsServiceProvider(ServletException.class.getName(), FaviconServletExtension.EXTENSION_NAME);
+        this.addAsServiceProvider(ServletExtension.class.getName(), FaviconServletExtension.EXTENSION_NAME);
+
+        // Add JBoss Modules to deployment
+        this.addModule("org.jboss.modules");
 
         return (T) this;
     }
