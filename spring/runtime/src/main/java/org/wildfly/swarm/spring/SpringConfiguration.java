@@ -32,17 +32,4 @@ public class SpringConfiguration extends AbstractServerConfiguration<SpringFract
     public SpringFraction defaultFraction() {
         return new SpringFraction();
     }
-
-    @Override
-    public void prepareArchive(Archive<?> archive) {
-        if (JARArchive.class.isAssignableFrom(archive.getClass())) {
-            // Prevent sun.jdk module from being added to JAR, otherwise wildfly-swarm:run
-            // will fail as Spring jars are on system classpath
-            archive.as(JARArchive.class).excludeModule("sun.jdk");
-        } else if (WARArchive.class.isAssignableFrom(archive.getClass())) {
-            // Prevent sun.jdk module from being added to WAR, otherwise wildfly-swarm:run
-            // will fail as Spring jars are on system classpath
-            archive.as(WARArchive.class).excludeModule("sun.jdk");
-        }
-    }
 }
