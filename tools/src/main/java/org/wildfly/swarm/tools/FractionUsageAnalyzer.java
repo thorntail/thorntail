@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,7 +65,7 @@ public class FractionUsageAnalyzer {
 
         return packages.stream()
                 .flatMap(p -> fractionPackages.stream().map(m -> m.fraction(p)))
-                .filter(p -> p != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
@@ -84,7 +85,7 @@ public class FractionUsageAnalyzer {
     private final FractionList fractionList;
 
 
-    static class StatefulPackageMatcher {
+    private static class StatefulPackageMatcher {
         StatefulPackageMatcher(FractionDescriptor desc, String... packages) {
             this.descriptor = desc;
             this.packageSpecs = new HashSet<>(Arrays.asList(packages));
