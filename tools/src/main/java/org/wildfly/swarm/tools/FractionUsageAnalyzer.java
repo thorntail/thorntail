@@ -44,28 +44,27 @@ public class FractionUsageAnalyzer {
     }
 
     public Set<FractionDescriptor> detectNeededFractions() throws IOException {
-        if (this.fractionList != null) {
-            final Set<FractionDescriptor> specs = new HashSet<>();
-            specs.addAll(findFractions(PackageDetector
-                                               .detectPackages(this.source)
-                                               .keySet()));
-            // Remove fractions that have a dependency on each other
-            Iterator<FractionDescriptor> it = specs.iterator();
-            while (it.hasNext()) {
-                FractionDescriptor descriptor = it.next();
-                // Is set as a dependent to any other descriptor? If so, remove it
-                if (specs.stream().anyMatch(fd->fd.getDependencies().contains(descriptor))) {
-                    it.remove();
-                }
-            }
-            // Add container only if no fractions are detected, as they have a transitive dependency to container
-            if (specs.isEmpty()) {
-                specs.add(this.fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, "container"));
-            }
-            return specs;
-        } else {
+        if (this.fractionList == null) {
             return Collections.emptySet();
         }
+        final Set<FractionDescriptor> specs = new HashSet<>();
+        specs.addAll(findFractions(PackageDetector
+                                           .detectPackages(this.source)
+                                           .keySet()));
+        // Remove fractions that have a dependency on each other
+        Iterator<FractionDescriptor> it = specs.iterator();
+        while (it.hasNext()) {
+            FractionDescriptor descriptor = it.next();
+            // Is set as a dependency to any other descriptor? If so, remove it
+            if (specs.stream().anyMatch(fd->fd.getDependencies().contains(descriptor))) {
+                it.remove();
+            }
+        }
+        // Add container only if no fractions are detected, as they have a transitive dependency to container
+        if (specs.isEmpty()) {
+            specs.add(this.fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, "container"));
+        }
+        return specs;
     }
 
     protected Set<FractionDescriptor> findFractions(Set<String> packages) {
