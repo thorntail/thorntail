@@ -24,8 +24,6 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
-import org.wildfly.swarm.config.security.Flag;
-import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.drools.server.DroolsServerFraction;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
