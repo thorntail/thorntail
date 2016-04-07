@@ -17,6 +17,5 @@
     <module name="org.jboss.shrinkwrap"/>
 
     <module name="org.jboss.resteasy.resteasy-jackson-provider"/>
-    <module name="com.h2database.h2"/>
   </dependencies>
 </module>
