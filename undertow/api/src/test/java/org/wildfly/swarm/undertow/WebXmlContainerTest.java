@@ -19,6 +19,9 @@ import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
+import org.wildfly.swarm.undertow.descriptors.Servlet;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Ken Finnigan
@@ -39,5 +42,22 @@ public class WebXmlContainerTest {
         archive.setWebXML(new File("src/test/resources/web.xml"));
 
         archive.addContextParam("myParam", "myValue");
+    }
+
+    @Test
+    public void testReadingExistingWebXML() throws Exception {
+        WARArchive archive = ShrinkWrap.create(WARArchive.class);
+        archive.setWebXML(new File("src/test/resources/web.xml"));
+
+        String paramValue = archive.getContextParamValue("paramName");
+        assertThat(paramValue).isNotNull();
+        assertThat(paramValue).isEqualTo("paramValue");
+
+        Servlet servlet = archive.servlet("com.app.MyServletClass");
+        assertThat(servlet).isNotNull();
+        assertThat(servlet.servletName()).isEqualTo("MyServlet");
+        assertThat(servlet.urlPatterns()).isNotNull();
+        assertThat(servlet.urlPatterns().size()).isEqualTo(1);
+        assertThat(servlet.urlPatterns().get(0)).isEqualTo("/me");
     }
 }

@@ -20,14 +20,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
+import org.jboss.shrinkwrap.descriptor.api.javaee7.ListenerType;
 import org.jboss.shrinkwrap.descriptor.api.javaee7.ParamValueType;
 import org.jboss.shrinkwrap.descriptor.api.webapp31.WebAppDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.webcommon31.LoginConfigType;
+import org.jboss.shrinkwrap.descriptor.api.webcommon31.ServletType;
 
 import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
 
@@ -67,6 +71,21 @@ public class WebXmlAsset implements NamedAsset {
         return paramValue.isPresent() ? paramValue.get().getParamValue() : null;
     }
 
+    public Servlet addServlet(String servletName, String servletClass) {
+        Servlet servlet = new Servlet(servletName, servletClass);
+        this.servlets.add(servlet);
+        return servlet;
+    }
+
+    public Servlet getServlet(String servletClass) {
+        ServletType<WebAppDescriptor> descriptorServlet = this.descriptor.getAllServlet()
+                .stream()
+                .filter(s -> s.getServletClass().equals(servletClass))
+                .findFirst().get();
+
+        return convert(descriptorServlet);
+    }
+
     public void setLoginConfig(String authMethod, String realmName) {
         this.descriptor.createLoginConfig()
                 .authMethod(authMethod)
@@ -83,6 +102,15 @@ public class WebXmlAsset implements NamedAsset {
         return loginConfig.isPresent() ? loginConfig.get().getRealmName() : null;
     }
 
+    public void addListener(String listener) {
+        this.descriptor.createListener()
+                .listenerClass(listener);
+    }
+
+    public List<String> allListenersClasses() {
+        return this.descriptor.getAllListener().stream().map(ListenerType::getListenerClass).collect(Collectors.toList());
+    }
+
     public SecurityConstraint protect() {
         SecurityConstraint constraint = new SecurityConstraint();
         this.constraints.add(constraint);
@@ -97,6 +125,7 @@ public class WebXmlAsset implements NamedAsset {
 
     @Override
     public InputStream openStream() {
+        // Add Security Constraints
         Set<String> allRoles = new HashSet<>();
 
         for (SecurityConstraint each : this.constraints) {
@@ -115,6 +144,36 @@ public class WebXmlAsset implements NamedAsset {
         for (String eachRole : allRoles) {
             this.descriptor.getOrCreateSecurityRole()
                     .roleName(eachRole);
+        }
+
+        // Add Servlets
+        for (Servlet each : this.servlets) {
+            ServletType<WebAppDescriptor> servlet =
+                    this.descriptor.createServlet()
+                            .servletName(each.servletName())
+                            .servletClass(each.servletClass())
+                            .displayName(each.displayName())
+                            .enabled(each.enabled());
+
+            if (each.asyncSupported() != null) {
+                servlet.asyncSupported(each.asyncSupported());
+            }
+
+            if (each.loadOnStartup() != null) {
+                servlet.loadOnStartup(each.loadOnStartup());
+            }
+
+            for (Map.Entry<String, String> init : each.initParams().entrySet()) {
+                servlet.createInitParam()
+                        .paramName(init.getKey())
+                        .paramValue(init.getValue());
+            }
+
+            if (each.urlPatterns().size() > 0) {
+                this.descriptor.createServletMapping()
+                        .servletName(each.servletName())
+                        .urlPattern(each.urlPatterns().stream().toArray(String[]::new));
+            }
         }
 
         return new ByteArrayInputStream(this.descriptor.exportAsString().getBytes());
@@ -140,7 +199,38 @@ public class WebXmlAsset implements NamedAsset {
         return builder.toString();
     }
 
+    private Servlet convert(ServletType<WebAppDescriptor> descriptorServlet) {
+        Servlet servlet = new Servlet(descriptorServlet.getServletName(), descriptorServlet.getServletClass());
+
+        List<String> dispNames = descriptorServlet.getAllDisplayName();
+        if (dispNames.size() > 0) {
+            servlet.withDisplayName(dispNames.get(0));
+        }
+        List<String> descriptions = descriptorServlet.getAllDescription();
+        if (descriptions.size() > 0) {
+            servlet.withDescription(descriptions.get(0));
+        }
+        servlet.withEnabled(descriptorServlet.isEnabled());
+        servlet.withAsyncSupported(descriptorServlet.isAsyncSupported());
+        servlet.withLoadOnStartup(descriptorServlet.getLoadOnStartup());
+        servlet.withInitParams(
+                descriptorServlet.getAllInitParam()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                ParamValueType::getParamName,
+                                ParamValueType::getParamValue)
+                        )
+        );
+        servlet.withUrlPatterns(this.descriptor.getAllServletMapping()
+                                        .stream()
+                                        .filter(mapping -> mapping.getServletName().equals(servlet.servletName()))
+                                        .findFirst().get().getAllUrlPattern());
+        return servlet;
+    }
+
     private final WebAppDescriptor descriptor;
 
     private List<SecurityConstraint> constraints = new ArrayList<>();
+
+    private List<Servlet> servlets = new ArrayList<>();
 }

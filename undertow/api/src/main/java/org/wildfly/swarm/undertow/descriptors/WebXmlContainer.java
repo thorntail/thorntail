@@ -39,6 +39,10 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         return (T) this;
     }
 
+    default String getContextParamValue(String name) {
+        return findWebXmlAsset().getContextParam(name);
+    }
+
     @SuppressWarnings("unchecked")
     default T addFaviconExceptionHandler() {
         // Add FaviconServletExtension
@@ -68,6 +72,14 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         this.addModule("org.jboss.modules");
 
         return (T) this;
+    }
+
+    default Servlet addServlet(String servletName, String servletClass) {
+        return findWebXmlAsset().addServlet(servletName, servletClass);
+    }
+
+    default Servlet servlet(String servletClass) {
+        return findWebXmlAsset().getServlet(servletClass);
     }
 
     default WebXmlAsset findWebXmlAsset() {
