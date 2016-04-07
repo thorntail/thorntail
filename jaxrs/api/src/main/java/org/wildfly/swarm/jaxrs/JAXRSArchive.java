@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 import org.jboss.shrinkwrap.api.container.WebContainer;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
+import org.wildfly.swarm.spi.api.MarkerContainer;
 import org.wildfly.swarm.undertow.StaticContentContainer;
 import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 import org.wildfly.swarm.undertow.descriptors.WebXmlContainer;
@@ -39,6 +40,7 @@ public interface JAXRSArchive extends
         JBossDeploymentStructureContainer<JAXRSArchive>,
         JBossWebContainer<JAXRSArchive>,
         WebXmlContainer<JAXRSArchive>,
+        MarkerContainer<JAXRSArchive>,
         StaticContentContainer<JAXRSArchive> {
 
     JAXRSArchive addResource(Class<?> resource);
