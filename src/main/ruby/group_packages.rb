@@ -73,9 +73,9 @@ def write_content(content, path)
     content[:pre].each {|line| f.puts(line)}
     
     content[:packages].keys.sort do |x,y|
-      if x == "config-api"
+      if x == "Config API"
         1
-      elsif y == "config-api"
+      elsif y == "Config API"
         -1
       else
         x <=> y
