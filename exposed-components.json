@@ -1,0 +1,4 @@
+{"Jolokia": [
+  {"name": "jolokia",        "doc": "jolokia-api"},
+  {"name": "jolokia-modules"}
+]}
