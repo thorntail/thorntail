@@ -1,4 +1,4 @@
-[
+{"Netflix": [
   {"name": "archaius"},
   {"name": "netflix-guava"},
   {"name": "hystrix"},
@@ -10,4 +10,4 @@
   {"name": "netflix-rxjava"},
   {"name": "netflix-rxnetty"},
   {"name": "servo"}
-]
+]}
