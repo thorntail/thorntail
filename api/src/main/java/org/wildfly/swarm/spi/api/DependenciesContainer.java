@@ -25,12 +25,15 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
-public interface DependenciesContainer<T extends Archive<T>> extends LibraryContainer<T>, Archive<T> {
+public interface DependenciesContainer<T extends Archive<T>> extends LibraryContainer<T>, MarkerContainer<T>, Archive<T> {
 
     @SuppressWarnings("unchecked")
     default T addAllDependencies() throws Exception {
-        List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts("org.wildfly.swarm");
-        addAsLibraries(artifacts);
+        if (!hasMarker("org.wildfly.swarm.allDependencies")) {
+            List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts("org.wildfly.swarm");
+            addAsLibraries(artifacts);
+            addMarker("org.wildfly.swarm.allDependencies");
+        }
         return (T) this;
     }
 
@@ -40,8 +43,11 @@ public interface DependenciesContainer<T extends Archive<T>> extends LibraryCont
             return addAllDependencies();
         }
 
-        List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts();
-        addAsLibraries(artifacts);
+        if (!hasMarker("org.wildfly.swarm.allDependencies")) {
+            List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts();
+            addAsLibraries(artifacts);
+            addMarker("org.wildfly.swarm.allDependencies");
+        }
         return (T) this;
     }
 
