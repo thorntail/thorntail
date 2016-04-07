@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -108,7 +109,14 @@ public class ArtifactManager implements ArtifactLookup {
                                                  .importFrom(artifact)
                                                  .as(JavaArchive.class));
                         } else {
-                            archives.add(ShrinkWrap.create(ExplodedImporter.class)
+                            final String archiveName;
+                            if (element.endsWith("/target/classes")) {
+                                String[] parts = element.split("/");
+                                archiveName = parts[parts.length - 3] + ".jar";
+                            } else {
+                                archiveName = UUID.randomUUID().toString() + ".jar";
+                            }
+                            archives.add(ShrinkWrap.create(ExplodedImporter.class, archiveName)
                                                  .importDirectory(artifact)
                                                  .as(JavaArchive.class));
                         }

@@ -56,7 +56,7 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
     public Archive create() throws Exception {
-        return archiveFromCurrentApp().staticContent();
+        return ShrinkWrap.create(WARArchive.class, determineName()).staticContent();
     }
 
     public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {
