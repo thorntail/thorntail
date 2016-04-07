@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -85,8 +83,10 @@ import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.internal.AnnotationBasedServerConfiguration;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
@@ -94,6 +94,7 @@ import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HOST;
@@ -104,7 +105,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT_OFFSET;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUSPEND;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VALUE;
 
 /**
  * @author Bob McWhirter
@@ -142,6 +143,13 @@ public class RuntimeServer implements Server {
         this.xmlConfig = Optional.of(xmlConfig);
     }
 
+    @Override
+    public void setStageConfig(ProjectStage enabledConfig) {
+        if (null == enabledConfig)
+            throw new IllegalArgumentException("Invalid stage config");
+        this.enabledStage = Optional.of(enabledConfig);
+    }
+
     public void debug(boolean debug) {
         this.debug = debug;
     }
@@ -164,6 +172,9 @@ public class RuntimeServer implements Server {
             applySocketBindingGroupDefaults(config);
 
         LinkedList<ModelNode> bootstrapOperations = new LinkedList<>();
+
+        if(enabledStage.isPresent())
+            getSystemProperties(enabledStage, bootstrapOperations);
 
         // the extensions
         getExtensions(config, bootstrapOperations);
@@ -256,6 +267,21 @@ public class RuntimeServer implements Server {
         }
 
         return this.deployer;
+    }
+
+    private void getSystemProperties(Optional<ProjectStage> enabledStage, LinkedList<ModelNode> bootstrapOperations) {
+        if(!enabledStage.isPresent())
+            throw new IllegalArgumentException("No stage config present");
+
+        ProjectStage projectStage = enabledStage.get();
+        Map<String, String> properties = projectStage.getProperties();
+        for (String key : properties.keySet()) {
+            ModelNode modelNode = new ModelNode();
+            modelNode.get(OP).set(ADD);
+            modelNode.get(ADDRESS).set("system-property", key);
+            modelNode.get(VALUE).set(properties.get(key));
+            bootstrapOperations.add(modelNode);
+        }
     }
 
     protected Opener tryToAddGateHandlers() throws Exception {
@@ -799,6 +825,8 @@ public class RuntimeServer implements Server {
 
     // TODO : still needed or merge error?
     private boolean debug;
+
+    private Optional<ProjectStage> enabledStage = Optional.empty();
 
     @FunctionalInterface
     interface FractionProcessor<T> {

@@ -56,13 +56,16 @@ import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.internal.Deployer;
+import org.wildfly.swarm.container.internal.ProjectStageFactory;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
@@ -82,7 +85,7 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container() throws Exception {
-        this(false, null);
+        this(false);
     }
 
     /**
@@ -95,17 +98,25 @@ public class Container {
      */
     public Container(boolean debugBootstrap) throws Exception {
         System.setProperty(SwarmProperties.VERSION, VERSION);
-        createServer(debugBootstrap, null);
+
+        createServer(debugBootstrap);
         createShrinkWrapDomain();
     }
 
-    public Container(boolean debugBootstrap, URL xmlConfig) throws Exception {
+    public Container withXmlConfig(URL url) {
+        this.server.setXmlConfig(url);
+        return this;
+    }
 
-        this.xmlConfig = xmlConfig;
+    public Container withStageConfig(URL url) {
+        loadStageConfiguration(url);
+        return this;
+    }
 
-        System.setProperty(SwarmProperties.VERSION, VERSION);
-        createServer(debugBootstrap, xmlConfig);
-        createShrinkWrapDomain();
+    public StageConfig stageConfig() {
+        if(!enabledStage.isPresent())
+            throw new RuntimeException("Stage config is not present");
+        return new StageConfig(enabledStage.get());
     }
 
     public static boolean isFatJar() throws IOException {
@@ -130,7 +141,7 @@ public class Container {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -169,9 +180,9 @@ public class Container {
         if (!this.dependentFractions.isEmpty()) {
             this.dependentFractions.stream()
                     .filter(dependentFraction ->
-                            this.fractions.get(dependentFraction.getClass()) == null
-                                    || (this.fractions.get(dependentFraction.getClass()) != null
-                                    && this.defaultFractionTypes.contains(dependentFraction.getClass())))
+                                    this.fractions.get(dependentFraction.getClass()) == null
+                                            || (this.fractions.get(dependentFraction.getClass()) != null
+                                            && this.defaultFractionTypes.contains(dependentFraction.getClass())))
                     .forEach(this::fraction);
             this.dependentFractions.clear();
         }
@@ -261,6 +272,10 @@ public class Container {
 
     public Container start(boolean eagerlyOpen) throws Exception {
         if (!this.running) {
+
+            if(enabledStage.isPresent())
+                this.server.setStageConfig(enabledStage.get());
+
             this.deployer = this.server.start(this, eagerlyOpen);
             this.running = true;
         }
@@ -414,7 +429,7 @@ public class Container {
         }
     }
 
-    private void createServer(boolean debugBootstrap, URL xmlConfig) throws Exception {
+    private void createServer(boolean debugBootstrap) throws Exception {
         if (System.getProperty("boot.module.loader") == null) {
             System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
         }
@@ -425,8 +440,7 @@ public class Container {
         Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.RuntimeServer");
         try {
             this.server = (Server) serverClass.newInstance();
-            if (this.xmlConfig != null)
-                this.server.setXmlConfig(this.xmlConfig);
+
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -564,6 +578,34 @@ public class Container {
         return "jar";
     }
 
+    private void loadStageConfiguration(URL url) {
+
+        try {
+            enableStageConfiguration(url.openStream());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load stage configuration from URL :"+url.toExternalForm(), e);
+        }
+    }
+
+    private void enableStageConfiguration(InputStream input) {
+        List<ProjectStage> projectStages = new ProjectStageFactory().loadStages(input);
+        String stageName = System.getProperty("swarm.project.stage", "default");
+        ProjectStage stage = null;
+        for (ProjectStage projectStage : projectStages) {
+            if(projectStage.getName().equals(stageName)) {
+                stage = projectStage;
+                break;
+            }
+        }
+
+        if(null==stage)
+            throw new RuntimeException("Project stage '"+stageName+"' cannot be found");
+
+        System.out.println("[INFO] Using project stage: "+stageName);
+
+        this.enabledStage = Optional.of(stage);
+    }
+
     static {
         InputStream in = Container.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
         Properties props = new Properties();
@@ -575,6 +617,8 @@ public class Container {
 
         VERSION = props.getProperty("version", "unknown");
     }
+
+
 
     private Map<Class<? extends Fraction>, Fraction> fractions = new ConcurrentHashMap<>();
 
@@ -605,8 +649,7 @@ public class Container {
      */
     private String[] args;
 
-    // server configuration xml
-    private URL xmlConfig;
+    private Optional<ProjectStage> enabledStage = Optional.empty();
 
     /**
      * Initialization Context to be passed to Fractions to allow them to provide
@@ -632,6 +675,14 @@ public class Container {
         public void outboundSocketBinding(String groupName, OutboundSocketBinding binding) {
             Container.this.outboundSocketBinding(groupName, binding);
         }
+
+        @Override
+        public Optional<StageConfig> projectStage() {
+            Optional<StageConfig> cfg = enabledStage.isPresent() ?
+                    Optional.of(new StageConfig(enabledStage.get())) : Optional.empty();
+
+            return cfg;
+        }
     }
 
     private class PostInitContext extends InitContext implements Fraction.PostInitContext {
@@ -643,5 +694,6 @@ public class Container {
             Optional<Fraction> opt = fractions().stream().filter((f) -> f.simpleName().equalsIgnoreCase(simpleName)).findFirst();
             return opt.orElse(null);
         }
+
     }
 }

@@ -43,6 +43,12 @@
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-all</artifactId>
     </dependency>
+
+    <dependency >
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${version.org.snakeyaml}</version>
+    </dependency>
   </dependencies>
 
   <build>

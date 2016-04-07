@@ -22,6 +22,10 @@
 
   <packaging>pom</packaging>
 
+  <properties>
+    <version.org.snakeyaml>1.17</version.org.snakeyaml>
+  </properties>
+
   <modules>
     <module>container</module>
 

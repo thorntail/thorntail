@@ -16,10 +16,13 @@
 package org.wildfly.swarm.container.internal;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.Set;
 
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.ProjectStage;
+import org.wildfly.swarm.spi.api.StageConfig;
 
 /**
  * @author Bob McWhirter
@@ -32,7 +35,10 @@ public interface Server {
 
     void setXmlConfig(URL xmlConfig);
 
+    void setStageConfig(ProjectStage stageConfig);
+
     Set<Class<? extends Fraction>> getFractionTypes();
 
     Fraction createDefaultFor(Class<? extends Fraction> fractionClazz);
+
 }
