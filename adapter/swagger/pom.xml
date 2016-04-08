@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>swagger</artifactId>
 
-  <name>WildFly Swarm: Swagger Adapter</name>
-  <description>WildFly Swarm: Swagger Adapter</description>
+  <name>Swagger</name>
+  <description>Generate swagger.json for all JAX-RS endpoints in your application</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Web,Management</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

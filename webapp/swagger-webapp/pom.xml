@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>swagger-webapp</artifactId>
 
-  <name>WildFly Swarm: Swagger Webapp</name>
-  <description>WildFly Swarm: Swagger Webapp</description>
+  <name>Swagger Webapp</name>
+  <description>UI for Swagger to visualize the generated swagger.json</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Web,Management</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
