@@ -89,6 +89,17 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     /**
+     * Create the default HTTP and AJP fraction.
+     *
+     * @return The configured fraction.
+     * @see #enableAJP()
+     */
+    public static UndertowFraction createDefaultAndEnableAJPFraction() {
+        return createDefaultFraction()
+                .enableAJP();
+    }
+
+    /**
      * Create the default HTTPS-only fraction.
      *
      * <p>This default inhibits the non-SSL HTTP endpoint, and only creates
@@ -108,6 +119,23 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     /**
+     * Create the default AJP-only fraction.
+     *
+     * <p>This default inhibits the HTTP endpoint, and only creates
+     * the default AJP endpoint.</p>
+     *
+     * @return The configured fraction.
+     * @see #enableAJP()
+     */
+    public static UndertowFraction createDefaultAJPOnlyFraction() {
+        UndertowFraction fraction = createDefaultFraction();
+        fraction.subresources().server("default-server")
+                .subresources().httpListeners().clear();
+        fraction.enableAJP();
+        return fraction;
+    }
+
+    /**
      * Enable HTTPS on this fraction.
      *
      * <p>This will enable HTTPS of the fraction. The application also
@@ -123,6 +151,16 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         this.keystorePath = path;
         this.keystorePassword = password;
         this.alias = alias;
+        return this;
+    }
+
+    /**
+     * Enable AJP on this fraction.
+     *
+     * @return This fraction.
+     */
+    public UndertowFraction enableAJP() {
+        this.enableAJP = true;
         return this;
     }
 
@@ -165,6 +203,16 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
                 });
             });
         }
+
+        if (this.enableAJP) {
+            initContext.socketBinding(
+                new SocketBinding("ajp")
+                    .port(SwarmProperties.propertyVar(UndertowProperties.AJP_PORT, "8009")));
+
+            subresources().servers().stream()
+                    .filter(server -> server.subresources().ajpListeners().isEmpty())
+                    .forEach(server -> server.ajpListener("ajp", listener -> listener.socketBinding("ajp")));
+        }
     }
 
     /**
@@ -181,5 +229,10 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
      * Server certificate alias.
      */
     private String alias;
+
+    /**
+     * Whether or not enabling AJP
+     */
+    private boolean enableAJP;
 
 }
