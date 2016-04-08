@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>logstash</artifactId>
 
-  <name>WildFly Swarm: Logstash</name>
-  <description>WildFly Swarm: Logstash</description>
+  <name>Logstash</name>
+  <description>Write log entries to Logstash for use in ELK stack</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Logging</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
