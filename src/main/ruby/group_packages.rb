@@ -68,7 +68,7 @@ def group_packages(packages, groupings)
   result
 end
 
-def write_content(content, path)
+def write_content(content, versions, path)
   File.open(path, "w") do |f|
     content[:pre].each {|line| f.puts(line)}
     
@@ -81,7 +81,7 @@ def write_content(content, path)
         x <=> y
       end
     end.each do |title|
-      yield(f, title, content[:packages][title])
+      yield(f, title, versions[title], content[:packages][title])
     end
     
     content[:post].each {|line| f.puts(line)}
@@ -96,19 +96,24 @@ puts "Grouping packages for javadoc"
 module_packages = Marshal.load(File.open(File.join(target_path,
                                                    "packages.dat")))
 
+module_versions = Marshal.load(File.open(File.join(target_path,
+                                                   "versions.dat")))
+
 content = read_overview_frame("#{doc_path}/overview-frame.html")
 content[:packages] = group_packages(content[:packages], module_packages)
-write_content(content, "#{doc_path}/overview-frame.html") do |f, title, packages|
-  f.puts "<h3>#{title}</h3><ul>"
+write_content(content, module_versions,
+              "#{doc_path}/overview-frame.html") do |f, title, version, packages|
+  f.puts "<h4>#{title} (#{version})</h4><ul>"
   packages.each {|line| f.puts(line)}
   f.puts "</ul>"
 end
 
 content = read_overview_summary("#{doc_path}/overview-summary.html")
 content[:packages] = group_packages(content[:packages], module_packages)
-write_content(content, "#{doc_path}/overview-summary.html") do |f, title, packages|
+write_content(content, module_versions,
+              "#{doc_path}/overview-summary.html") do |f, title, version, packages|
   f.puts %Q{<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="#{title} table, listing packages, and an explanation">
-<caption><span>#{title}</span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>#{title} (#{version})</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Package</th>
 <th class="colLast" scope="col">Description</th>
