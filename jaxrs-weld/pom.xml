@@ -17,13 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jaxrs-weld</artifactId>
 
-  <name>WildFly Swarm: JAX-RS + Weld</name>
-  <description>WildFly Swarm: JAX-RS + Weld</description>
+  <name>JAX-RS with CDI</name>
+  <description>Provide CDI injection into RESTful services</description>
 
   <packaging>jar</packaging>
 
   <properties>
     <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
+    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
   </properties>
 
   <build>

@@ -12,13 +12,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jaxrs-validator</artifactId>
 
-  <name>WildFly Swarm: JAX-RS + Validation</name>
-  <description>WildFly Swarm: JAX-RS + Validation</description>
+  <name>JAX-RS with Validation</name>
+  <description>Validation support for RESTful services</description>
 
   <packaging>jar</packaging>
 
   <properties>
     <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
+    <swarm.fraction.tags>JavaEE,Web,Validation</swarm.fraction.tags>
   </properties>
 
   <build>

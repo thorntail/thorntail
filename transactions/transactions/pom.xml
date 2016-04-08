@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>transactions</artifactId>
 
-  <name>WildFly Swarm: Transactions</name>
-  <description>WildFly Swarm: Transactions</description>
+  <name>Transactions</name>
+  <description>JTA distributed transactions with Naryana</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>JavaEE</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

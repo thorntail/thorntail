@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>logging</artifactId>
 
-  <name>WildFly Swarm: Logging</name>
-  <description>WildFly Swarm: Logging</description>
+  <name>Logging</name>
+  <description>Customizing the Logging for WildFly</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Logging</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

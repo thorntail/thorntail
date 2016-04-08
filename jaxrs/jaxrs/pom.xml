@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jaxrs</artifactId>
 
-  <name>WildFly Swarm: JAX-RS</name>
-  <description>WildFly Swarm: JAX-RS</description>
+  <name>JAX-RS</name>
+  <description>RESTful Web Services with RESTEasy</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

@@ -12,13 +12,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jaxrs-jsonp</artifactId>
 
-  <name>WildFly Swarm: JAX-RS + JSON-P</name>
-  <description>WildFly Swarm: JAX-RS + JSON-P</description>
+  <name>JAX-RS with JSON-P</name>
+  <description>Enable JSON-P interchange format for RESTful services</description>
 
   <packaging>jar</packaging>
 
   <properties>
     <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
+    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
   </properties>
 
   <build>

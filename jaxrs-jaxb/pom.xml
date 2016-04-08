@@ -12,13 +12,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jaxrs-jaxb</artifactId>
 
-  <name>WildFly Swarm: JAX-RS + JAXB</name>
-  <description>WildFly Swarm: JAX-RS + JAXB</description>
+  <name>JAX-RS with JAXB</name>
+  <description>Add JAXB binding support for RESTful services</description>
 
   <packaging>jar</packaging>
 
   <properties>
     <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
+    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
   </properties>
 
   <build>

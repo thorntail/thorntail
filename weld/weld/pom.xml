@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>weld</artifactId>
 
-  <name>WildFly Swarm: Weld</name>
-  <description>WildFly Swarm: Weld</description>
+  <name>Weld</name>
+  <description>CDI with Weld</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -56,7 +60,7 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>transactions</artifactId>
     </dependency>
-  
+
   </dependencies>
 
 </project>

@@ -25,6 +25,10 @@
 
   <packaging>jar</packaging>
 
+  <properties>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
+  </properties>
+
   <build>
     <resources>
       <resource>

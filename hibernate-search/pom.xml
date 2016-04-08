@@ -18,11 +18,12 @@
 
   <artifactId>hibernate-search</artifactId>
 
-  <name>WildFly Swarm: Hibernate Search</name>
+  <name>Hibernate Search</name>
   <description>WildFly Swarm: Hibernate Search</description>
 
   <properties>
     <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
+    <swarm.fraction.tags>Hibernate</swarm.fraction.tags>
   </properties>
 
   <build>

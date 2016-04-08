@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bean-validation</artifactId>
 
-  <name>WildFly Swarm: Bean Validation</name>
-  <description>WildFly Swarm: Bean Validation</description>
+  <name>Bean Validation</name>
+  <description>Define constraints on object models with annotations</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>JavaEE,Validation</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

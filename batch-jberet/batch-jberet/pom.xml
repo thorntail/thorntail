@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>batch-jberet</artifactId>
 
-  <name>WildFly Swarm: Batch</name>
-  <description>WildFly Swarm: Batch (JBeret)</description>
+  <name>Batch</name>
+  <description>Java EE Batch with JBeret</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>JavaEE,Batch</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

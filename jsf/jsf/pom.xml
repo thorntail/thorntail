@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jsf</artifactId>
 
-  <name>WildFly Swarm: JSF</name>
-  <description>WildFly Swarm: JSF</description>
+  <name>JSF</name>
+  <description>Java Server Faces for developing UIs</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

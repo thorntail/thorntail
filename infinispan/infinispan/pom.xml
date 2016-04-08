@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>infinispan</artifactId>
 
-  <name>WildFly Swarm: Infinispan</name>
-  <description>WildFly Swarm: Infinispan</description>
+  <name>Infinispan</name>
+  <description>Distributed in-memory key/value store</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Data</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

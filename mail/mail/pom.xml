@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>mail</artifactId>
 
-  <name>WildFly Swarm: Mail</name>
-  <description>WildFly Swarm: Mail</description>
+  <name>Mail</name>
+  <description>Java Mail API for messaging</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Integration</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

@@ -17,13 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jaxrs-multipart</artifactId>
 
-  <name>WildFly Swarm: JAX-RS + Multipart</name>
-  <description>WildFly Swarm: JAX-RS + Multipart</description>
+  <name>JAX-RS with Multipart</name>
+  <description>Multipart support for RESTful services</description>
 
   <packaging>jar</packaging>
 
   <properties>
     <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
+    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
   </properties>
 
   <build>

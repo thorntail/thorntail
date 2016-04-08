@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>request-controller</artifactId>
 
-  <name>WildFly Swarm: Request Controller</name>
+  <name>Request Controller</name>
   <description>WildFly Swarm: Request Controller</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
+  </properties>
 
   <dependencies>
     <dependency>
