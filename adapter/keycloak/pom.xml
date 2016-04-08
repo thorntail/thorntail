@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>keycloak</artifactId>
 
-  <name>WildFly Swarm: Keycloak</name>
-  <description>WildFly Swarm: Keycloak</description>
+  <name>Keycloak</name>
+  <description>Securing your RESTful services</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Security,Web</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>

@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>keycloak-server</artifactId>
 
-  <name>WildFly Swarm: Keycloak Server</name>
-  <description>WildFly Swarm: Keycloak Server</description>
+  <name>Keycloak Server</name>
+  <description>Running Keycloak in an uber jar</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Security</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
