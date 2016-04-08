@@ -1,0 +1,7 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.jaxrs.cdi">
+
+  <dependencies>
+    <!-- to bring in the optional module -->
+    <module name="org.jboss.resteasy.resteasy-cdi"/>
+  </dependencies>
+</module>

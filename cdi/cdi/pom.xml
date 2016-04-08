@@ -9,21 +9,21 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>batch-jberet-parent</artifactId>
+    <artifactId>cdi-parent</artifactId>
     <version>1.0.0.Beta5-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>batch-jberet</artifactId>
+  <artifactId>cdi</artifactId>
 
-  <name>Batch</name>
-  <description>Java EE Batch with JBeret</description>
+  <name>CDI</name>
+  <description>CDI with Weld</description>
 
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.tags>JavaEE,Batch</swarm.fraction.tags>
+    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
   </properties>
 
   <dependencies>
@@ -33,26 +33,34 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>batch-jberet-api</artifactId>
+      <artifactId>cdi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>batch-jberet-modules</artifactId>
+      <artifactId>cdi-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>batch-jberet-runtime</artifactId>
+      <artifactId>cdi-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>bean-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>ee</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>transactions</artifactId>
+    </dependency>
 
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>cdi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources</artifactId>
-    </dependency>
   </dependencies>
 
 </project>

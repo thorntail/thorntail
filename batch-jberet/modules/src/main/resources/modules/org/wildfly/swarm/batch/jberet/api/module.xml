@@ -26,7 +26,7 @@
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.configuration"/>
     <module name="org.wildfly.swarm.datasources"/>
-    <module name="org.wildfly.swarm.weld"/>
+    <module name="org.wildfly.swarm.cdi"/>
     <module name="org.wildfly.common"/>
   </dependencies>
 </module>

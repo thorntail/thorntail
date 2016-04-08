@@ -9,49 +9,32 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>batch-jberet-parent</artifactId>
+    <artifactId>cdi-parent</artifactId>
     <version>1.0.0.Beta5-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>batch-jberet</artifactId>
+  <artifactId>cdi-runtime</artifactId>
 
-  <name>Batch</name>
-  <description>Java EE Batch with JBeret</description>
+  <name>WildFly Swarm: CDI Runtime</name>
+  <description>WildFly Swarm: CDI Runtime</description>
 
   <packaging>jar</packaging>
-
-  <properties>
-    <swarm.fraction.tags>JavaEE,Batch</swarm.fraction.tags>
-  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>batch-jberet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>batch-jberet-modules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>batch-jberet-runtime</artifactId>
-      <scope>provided</scope>
+      <artifactId>cdi-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>cdi</artifactId>
+      <artifactId>spi-runtime</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources</artifactId>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-weld</artifactId>
     </dependency>
   </dependencies>
 

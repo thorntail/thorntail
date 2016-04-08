@@ -1,5 +1,7 @@
 {"Core": [
    {"name": "bootstrap"},
+   {"name": "cdi",                    "doc": "cdi-api"},
+   {"name": "cdi-modules"},
    {"name": "container",               "doc": "container-api"},
    {"name": "container-modules"},
    {"name": "arquillian",              "doc": "arquillian"},
@@ -24,12 +26,12 @@
    {"name": "io",                      "doc": "io-api"},
    {"name": "io-modules"},
    {"name": "jaxrs",                   "doc": "jaxrs-api"},
+   {"name": "jaxrs-cdi"},
    {"name": "jaxrs-modules"},
    {"name": "jaxrs-jaxb"},
    {"name": "jaxrs-jsonp"},
    {"name": "jaxrs-multipart"},
    {"name": "jaxrs-validator"},
-   {"name": "jaxrs-weld"},
    {"name": "jca",                     "doc": "jca-api"},
    {"name": "jca-modules"},
    {"name": "jgroups",                 "doc": "jgroups-api"},
@@ -64,8 +66,5 @@
    {"name": "undertow",                "doc": "undertow-api"},
    {"name": "undertow-modules"},
    {"name": "webservices",             "doc": "webservices-api"},
-   {"name": "webservices-modules"},
-   {"name": "weld",                    "doc": "weld-api"},
-   {"name": "weld-modules"}
-]}    
-    
+   {"name": "webservices-modules"}
+]}

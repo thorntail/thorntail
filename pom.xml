@@ -205,7 +205,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      
+
       <dependency>
         <groupId>org.jboss.arquillian.graphene</groupId>
         <artifactId>graphene-webdriver</artifactId>
@@ -914,22 +914,22 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>weld</artifactId>
+        <artifactId>cdi</artifactId>
         <version>1.0.0.Beta5-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>weld-api</artifactId>
+        <artifactId>cdi-api</artifactId>
         <version>1.0.0.Beta5-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>weld-modules</artifactId>
+        <artifactId>cdi-modules</artifactId>
         <version>1.0.0.Beta5-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>weld-runtime</artifactId>
+        <artifactId>cdi-runtime</artifactId>
         <version>1.0.0.Beta5-SNAPSHOT</version>
       </dependency>
 
@@ -1030,6 +1030,7 @@
     <!-- fractions -->
     <module>batch-jberet</module>
     <module>bean-validation</module>
+    <module>cdi</module>
     <module>connector</module>
     <module>datasources</module>
     <module>ee</module>
@@ -1040,11 +1041,11 @@
     <module>infinispan</module>
     <module>io</module>
     <module>jaxrs</module>
+    <module>jaxrs-cdi</module>
     <module>jaxrs-jaxb</module>
     <module>jaxrs-jsonp</module>
     <module>jaxrs-multipart</module>
     <module>jaxrs-validator</module>
-    <module>jaxrs-weld</module>
     <module>jca</module>
     <module>jgroups</module>
     <module>jmx</module>
@@ -1062,7 +1063,6 @@
     <module>transactions</module>
     <module>undertow</module>
     <module>undertow-js</module>
-    <module>weld</module>
     <module>webservices</module>
 
     <module>integration-tests</module>
