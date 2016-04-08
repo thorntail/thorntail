@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.spring;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Ken Finnigan
