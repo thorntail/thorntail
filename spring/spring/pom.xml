@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>spring</artifactId>
 
-  <name>WildFly Swarm: Spring Framework</name>
-  <description>WildFly Swarm: Spring Framework</description>
+  <name>Spring</name>
+  <description>Develop Spring applications</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Spring</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
