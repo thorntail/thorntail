@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-jgroups</artifactId>
 
-  <name>WildFly Swarm: Topology via JGroups</name>
-  <description>WildFly Swarm: Topology via JGroups</description>
+  <name>JGroups</name>
+  <description>Utilizes JGroups as a Service Registry that is discoverable</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Service Discovery</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
