@@ -23,6 +23,9 @@ public class UndertowProperties {
     public static final String HTTPS_PORT = "swarm.https.port";
 
     //public
+    public static final String AJP_PORT = "swarm.ajp.port";
+
+    //public
     public static final String CONTEXT_PATH = "swarm.context.path";
 
 }
