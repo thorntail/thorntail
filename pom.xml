@@ -26,9 +26,9 @@
   </scm>
 
   <properties>
-    <version.swarm.core>1.0.0.Beta4</version.swarm.core>
-    <version.swarm.spi>1.0.0.Beta9</version.swarm.spi>
-    <version.swarm.fraction-plugin>10</version.swarm.fraction-plugin>
+    <version.swarm.core>1.0.0.Beta5</version.swarm.core>
+    <version.swarm.spi>1.0.0.Beta12</version.swarm.spi>
+    <version.swarm.fraction-plugin>12</version.swarm.fraction-plugin>
   </properties>
   
   <repositories>
