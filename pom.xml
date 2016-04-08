@@ -203,6 +203,14 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>bean-validation</artifactId>
+        <version>${version.swarm.core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs</artifactId>
         <version>${version.swarm.core}</version>
         <type>pom</type>

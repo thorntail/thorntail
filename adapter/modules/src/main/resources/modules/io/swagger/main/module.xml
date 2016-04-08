@@ -17,6 +17,7 @@
     <module name="javax.ws.rs.api"/>
     <module name="javax.servlet.api"/>
     <module name="javax.xml.bind.api"/>
+    <module name="javax.validation.api"/>
 
     <module name="com.fasterxml.jackson" slot="swagger"/>
     <module name="org.wildfly.swarm.swagger" slot="runtime"/>
