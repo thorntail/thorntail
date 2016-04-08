@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jolokia</artifactId>
 
-  <name>WildFly Swarm: Jolokia</name>
-  <description>WildFly Swarm: Jolokia</description>
+  <name>Jolokia</name>
+  <description>Deploys the jolokia.war to activate JMX-HTTP bridge as an alternative to JSR-160 connectors</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Management</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
