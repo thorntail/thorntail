@@ -113,8 +113,9 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
      * @see #enableHTTPS(String, String, String)
      */
     public static UndertowFraction createDefaultHTTPSOnlyFraction(String path, String password, String alias) {
-        UndertowFraction fraction = new UndertowFraction();
-        fraction.enableHTTPS(path, password, alias);
+        UndertowFraction fraction = createDefaultFraction();
+        fraction.removeHttpListenersFromDefaultServer()
+                .enableHTTPS(path, password, alias);
         return fraction;
     }
 
@@ -129,9 +130,8 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
      */
     public static UndertowFraction createDefaultAJPOnlyFraction() {
         UndertowFraction fraction = createDefaultFraction();
-        fraction.subresources().server("default-server")
-                .subresources().httpListeners().clear();
-        fraction.enableAJP();
+        fraction.removeHttpListenersFromDefaultServer()
+                .enableAJP();
         return fraction;
     }
 
@@ -186,12 +186,10 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
 
             for (Server server : servers) {
                 if (server.subresources().httpsListeners().isEmpty()) {
-                    if (server.subresources().httpListener("default").socketBinding().equals("http")) {
-                        server.httpsListener("default-https", (listener) -> {
-                            listener.securityRealm("SSLRealm");
-                            listener.socketBinding("https");
-                        });
-                    }
+                    server.httpsListener("default-https", (listener) -> {
+                        listener.securityRealm("SSLRealm");
+                        listener.socketBinding("https");
+                    });
                 }
             }
 
@@ -234,5 +232,11 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
      * Whether or not enabling AJP
      */
     private boolean enableAJP;
+
+    private UndertowFraction removeHttpListenersFromDefaultServer() {
+        this.subresources().server("default-server")
+            .subresources().httpListeners().clear();
+        return this;
+    }
 
 }
