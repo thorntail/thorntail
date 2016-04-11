@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>hystrix</artifactId>
 
-  <name>WildFly Swarm: Hystrix</name>
-  <description>WildFly Swarm: Hystrix</description>
+  <name>Hystrix</name>
+  <description>Latency and Fault Tolerance, such as Circuit Breaker, with Hystrix from Netflix OSS</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Fault Tolerance,Netflix OSS</swarm.fraction.tags>
+  </properties>
 
   <build>
     <resources>

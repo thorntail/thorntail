@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>ribbon-secured</artifactId>
 
-  <name>WildFly Swarm: Ribbon Secured</name>
-  <description>WildFly Swarm: Ribbon Secured</description>
+  <name>Ribbon Secured</name>
+  <description>Provides security token propagation across invocations when using Netflix Ribbon and Keycloak</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Service Discovery,Netflix OSS,Security</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
