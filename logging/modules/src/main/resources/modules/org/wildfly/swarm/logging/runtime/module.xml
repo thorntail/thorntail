@@ -15,6 +15,7 @@
     <module name="org.jboss.as.logging"/>
     <module name="org.jboss.logging.jul-to-slf4j-stub"/>
     <module name="org.apache.commons.logging"/>
+    <module name="ch.qos.cal10n"/>
   </dependencies>
 
 </module>
