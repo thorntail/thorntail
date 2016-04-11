@@ -23,6 +23,8 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>ribbon-secured</module>
+
     <module>api</module>
     <module>client</module>
     <module>runtime</module>

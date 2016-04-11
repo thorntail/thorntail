@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
@@ -15,21 +15,12 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>ribbon-secured-runtime</artifactId>
+  <artifactId>ribbon-secured</artifactId>
 
-  <name>WildFly Swarm: Ribbon Secured Runtime</name>
-  <description>WildFly Swarm: Ribbon Secured Runtime</description>
+  <name>WildFly Swarm: Ribbon Secured</name>
+  <description>WildFly Swarm: Ribbon Secured</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -38,14 +29,19 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
-      <scope>provided</scope>
+      <artifactId>ribbon-secured-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-runtime</artifactId>
+      <artifactId>ribbon-secured-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>ribbon</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>
