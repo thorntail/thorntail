@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-consul</artifactId>
 
-  <name>WildFly Swarm: Topology via Consul</name>
-  <description>WildFly Swarm: Topology via Consul</description>
+  <name>Hashicorp Consul</name>
+  <description>Service Discovery with Hashicorp Consul</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>Service Discovery</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
