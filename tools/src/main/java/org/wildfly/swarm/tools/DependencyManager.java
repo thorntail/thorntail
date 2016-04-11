@@ -37,6 +37,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmClasspathConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 /**
@@ -146,7 +147,8 @@ public class DependencyManager {
             if (includeAsBootstrapJar(dependency)) {
                 dependency.shouldGather = true;
 
-            } if (isExplodedBootstrap(dependency)) {
+            }
+            if (isExplodedBootstrap(dependency)) {
                 dependency.shouldGather = false;
             }
 
@@ -359,15 +361,27 @@ public class DependencyManager {
 
         Set<ArtifactSpec> applicationArtifacts = new HashSet<>();
 
+        WildFlySwarmApplicationConf appConf = new WildFlySwarmApplicationConf();
+
         for (ArtifactSpec each : this.dependencies) {
             if (!this.bootstrapDependencies.contains(each)) {
                 if (each.type().equals("jar") && each.shouldGather) {
-                    applicationArtifacts.add(each);
+                    Set<WildFlySwarmClasspathConf.Action> actions = this.classpathConf.getActions(each.file, each.groupId(), each.artifactId());
+                    if ( actions.isEmpty() ) {
+                        applicationArtifacts.add(each);
+                    } else {
+                        if ( includeAsBootstrapJar( each ) ) {
+                            for (WildFlySwarmClasspathConf.Action action : actions) {
+                                if (action instanceof WildFlySwarmClasspathConf.ReplaceAction) {
+                                    WildFlySwarmClasspathConf.ReplaceAction replace = (WildFlySwarmClasspathConf.ReplaceAction) action;
+                                    appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(replace.moduleName + ":" + replace.moduleSlot));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        WildFlySwarmApplicationConf appConf = new WildFlySwarmApplicationConf();
 
         for (String each : this.bootstrapModules) {
             appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(each));
@@ -468,6 +482,11 @@ public class DependencyManager {
                     }
                 }
             }
+
+            entry = jar.getEntry(WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
+            if (entry != null) {
+                this.classpathConf.read( jar.getInputStream( entry ) );
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -505,5 +524,6 @@ public class DependencyManager {
 
     private ArtifactResolvingHelper resolver;
 
+    private WildFlySwarmClasspathConf classpathConf = new WildFlySwarmClasspathConf();
 
 }

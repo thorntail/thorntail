@@ -47,6 +47,10 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
         super(MODULE_NAME);
     }
 
+    protected ApplicationModuleFinder(String slot) {
+        super( MODULE_NAME, slot );
+    }
+
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
         try {

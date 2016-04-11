@@ -39,7 +39,7 @@ import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
  */
 public class WildFlySwarmBootstrapConf {
 
-    public final static String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-bootstrap.conf";
+    public final static String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-classpath.conf";
 
     public WildFlySwarmBootstrapConf() {
 

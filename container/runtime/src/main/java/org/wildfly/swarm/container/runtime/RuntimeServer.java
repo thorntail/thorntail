@@ -126,6 +126,7 @@ public class RuntimeServer implements Server {
                 //force logging init
                 LogManager.getLogManager();
                 BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());
+                //System.clearProperty( "org.jboss.logmanager.configurator" );
             } finally {
                 Thread.currentThread().setContextClassLoader(originalCl);
             }
@@ -236,6 +237,8 @@ public class RuntimeServer implements Server {
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(opener, this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
+
+        this.serviceContainer.addService( ServiceName.of( "swarm", "deployer"), new ValueService<>( new ImmediateValue<Object>( this.deployer ))).install();
 
         List<Archive> implicitDeployments = new ArrayList<>();
 
