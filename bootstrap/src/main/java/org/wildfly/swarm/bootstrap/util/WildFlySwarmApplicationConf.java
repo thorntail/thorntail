@@ -73,9 +73,16 @@ public class WildFlySwarmApplicationConf {
     public void write(OutputStream out) {
         PrintWriter writer = new PrintWriter(out);
 
+        this.entries.stream()
+                .sorted()
+                .distinct()
+                .forEach(e -> e.write(writer));
+
+        /*
         for (Entry entry : this.entries) {
             entry.write(writer);
         }
+        */
 
         writer.flush();
     }
@@ -121,7 +128,7 @@ public class WildFlySwarmApplicationConf {
 
     private List<Entry> entries = new ArrayList<>();
 
-    public static abstract class Entry {
+    public static abstract class Entry implements Comparable {
 
         abstract void apply(ModuleSpec.Builder builder) throws Exception;
 
@@ -163,9 +170,37 @@ public class WildFlySwarmApplicationConf {
             writer.println("module:" + this.name + ":" + this.slot);
         }
 
+        @Override
+        public int compareTo(Object that) {
+            if (that instanceof ModuleEntry) {
+                int result = this.name.compareTo(((ModuleEntry) that).name);
+
+                if (result != 0) {
+                    return result;
+                }
+
+                return this.slot.compareTo(((ModuleEntry) that).slot);
+            }
+            return getClass().getName().compareTo(that.getClass().getName());
+        }
+
+        @Override
+        public boolean equals(Object that) {
+            if (that instanceof ModuleEntry) {
+                return this.name.equals(((ModuleEntry) that).name) && this.slot.equals(((ModuleEntry) that).slot);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.name.hashCode() + this.slot.hashCode();
+        }
+
         private final String name;
 
         private final String slot;
+
     }
 
     public static class GAVEntry extends Entry {
@@ -197,7 +232,31 @@ public class WildFlySwarmApplicationConf {
             writer.println("gav:" + this.descriptor.mscGav());
         }
 
+        @Override
+        public int compareTo(Object that) {
+            if (that instanceof GAVEntry) {
+                this.descriptor.compareTo(((GAVEntry) that).descriptor);
+
+            }
+            return getClass().getName().compareTo(that.getClass().getName());
+        }
+
+        @Override
+        public boolean equals(Object that) {
+            if (that instanceof GAVEntry) {
+                return this.descriptor.equals(((GAVEntry) that).descriptor);
+            }
+
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.descriptor.hashCode();
+        }
+
         private final MavenArtifactDescriptor descriptor;
+
     }
 
     public static class PathEntry extends Entry {
@@ -235,13 +294,13 @@ public class WildFlySwarmApplicationConf {
             final String jarName = tmp.getName().toString();
             final JarFile jarFile = new JarFile(tmp);
             final ResourceLoader jarLoader = ResourceLoaders.createJarResourceLoader(jarName,
-                                                                                     jarFile);
+                    jarFile);
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
 
             if (".war".equals(ext)) {
                 final ResourceLoader warLoader = ResourceLoaders.createJarResourceLoader(jarName,
-                                                                                         jarFile,
-                                                                                         "WEB-INF/classes");
+                        jarFile,
+                        "WEB-INF/classes");
                 builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));
             }
         }
@@ -251,6 +310,28 @@ public class WildFlySwarmApplicationConf {
             writer.println("path:" + this.path);
         }
 
+        @Override
+        public int compareTo(Object that) {
+            if (that instanceof PathEntry) {
+                return this.path.compareTo( ((PathEntry) that).path );
+            }
+            return getClass().getName().compareTo(that.getClass().getName());
+        }
+
+        @Override
+        public boolean equals(Object that) {
+            if ( that instanceof  PathEntry ) {
+                return this.path.equals( ((PathEntry) that).path );
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.path.hashCode();
+        }
+
         private final String path;
+
     }
 }

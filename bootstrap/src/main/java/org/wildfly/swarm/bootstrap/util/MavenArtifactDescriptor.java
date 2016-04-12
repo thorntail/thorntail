@@ -23,7 +23,7 @@ import org.jboss.modules.maven.ArtifactCoordinates;
 /**
  * @author Bob McWhirter
  */
-public class MavenArtifactDescriptor {
+public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescriptor> {
 
     private MavenArtifactDescriptor() {
 
@@ -83,6 +83,48 @@ public class MavenArtifactDescriptor {
             return false;
         }
         return this.mavenGav().equals(((MavenArtifactDescriptor) obj).mavenGav());
+    }
+
+    @Override
+    public int compareTo(MavenArtifactDescriptor that) {
+        int result = this.groupId.compareTo( that.groupId );
+        if ( result != 0 ) {
+            return result;
+        }
+
+        result = this.artifactId.compareTo( that.artifactId );
+        if ( result != 0 ) {
+            return result;
+        }
+
+        result = this.version.compareTo( that.version );
+        if ( result != 0 ) {
+            return result;
+        }
+
+        if ( this.type != null && that.type == null ) {
+            return 1;
+        }
+
+        if ( this.type == null && that.type != null ) {
+            return -1;
+        }
+
+        result = this.type.compareTo( that.type );
+
+        if ( result != 0 ) {
+            return result;
+        }
+
+        if ( this.classifier != null && that.classifier == null ) {
+            return 1;
+        }
+
+        if ( this.classifier == null && that.classifier != null ) {
+            return -1;
+        }
+
+        return this.classifier.compareTo( that.classifier );
     }
 
     @Override
@@ -182,6 +224,7 @@ public class MavenArtifactDescriptor {
     private String classifier;
 
     private String type;
+
 
     public class Builder {
 
