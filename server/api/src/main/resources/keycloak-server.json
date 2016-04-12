@@ -19,6 +19,11 @@
   "user": {
     "provider": "jpa"
   },
+  "userCache": {
+    "default" : {
+      "enabled": true
+    }
+  },
   "userSessionPersister": {
     "provider": "jpa"
   },
@@ -48,7 +53,14 @@
       "databaseSchema": "update"
     }
   },
+  "realmCache": {
+    "provider": "default",
+    "default" : {
+      "enabled": true
+    }
+  },
   "connectionsInfinispan": {
+    "provider": "default",
     "default": {
       "cacheContainer": "java:comp/env/infinispan/Keycloak"
     }
