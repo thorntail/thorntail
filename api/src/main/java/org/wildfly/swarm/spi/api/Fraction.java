@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.spi.api;
 
+import java.util.Optional;
+
 /**
  * @author Bob McWhirter
  */
@@ -30,6 +32,8 @@ public interface Fraction {
         void outboundSocketBinding(OutboundSocketBinding binding);
 
         void outboundSocketBinding(String groupName, OutboundSocketBinding binding);
+
+        Optional<StageConfig> projectStage();
     }
 
     interface PostInitContext extends InitContext {
@@ -37,6 +41,7 @@ public interface Fraction {
         boolean hasFraction(String simpleName);
 
         Fraction fraction(String simpleName);
+
     }
 
     default String simpleName() {
