@@ -18,6 +18,10 @@
 
   <packaging>pom</packaging>
 
+  <properties>
+    <version.wildfly-swarm>${project.version}</version.wildfly-swarm>
+  </properties>
+
   <scm>
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-servers.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-servers.git</developerConnection>
@@ -61,7 +65,7 @@
         <plugin>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-plugin</artifactId>
-          <version>${project.version}</version>
+          <version>${version.wildfly-swarm}</version>
           <executions>
             <execution>
               <id>package</id>
@@ -126,7 +130,7 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bom</artifactId>
-        <version>${project.version}</version>
+        <version>${version.wildfly-swarm}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
