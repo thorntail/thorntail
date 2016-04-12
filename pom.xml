@@ -23,7 +23,6 @@
 
   <properties>
     <uberjar.name>swarmtool-standalone</uberjar.name>
-    <uberjar.fullname>${uberjar.name}-${project.version}</uberjar.fullname>
   </properties>
 
   <build>
@@ -38,7 +37,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <configuration>
-          <finalName>${uberjar.fullname}</finalName>
+          <finalName>${uberjar.name}</finalName>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.wildfly.swarm.swarmtool.Main</mainClass>
@@ -51,6 +50,28 @@
             <goals>
               <goal>shade</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-uberjar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/${uberjar.name}.jar</file>
+                  <type>jar</type>
+                  <classifier>standalone</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -100,71 +121,4 @@
 
   </dependencies>
 
-  <profiles>
-    <profile>
-      <id>deploy-snapshot-bom</id>
-      <activation>
-        <!-- will be automatically deactivated when the release profile below is activated -->
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-deploy-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>deploy-generated-bom</id>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>deploy-file</goal>
-                </goals>
-                <configuration>
-                  <packaging>jar</packaging>
-                  <repositoryId>${project.distributionManagement.snapshotRepository.id}</repositoryId>
-                  <url>${project.distributionManagement.snapshotRepository.url}</url>
-                  <file>${project.build.directory}/${uberjar.fullname}.jar</file>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${uberjar.name}</artifactId>
-                  <version>${project.version}</version>
-                  <generatePom>true</generatePom>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>deploy-generated-bom</id>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>sign-and-deploy-file</goal>
-                </goals>
-                <configuration>
-                  <packaging>jar</packaging>
-                  <repositoryId>${project.distributionManagement.repository.id}</repositoryId>
-                  <url>${project.distributionManagement.repository.url}</url>
-                  <file>${project.build.directory}/${uberjar.fullname}.jar</file>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${uberjar.name}</artifactId>
-                  <version>${project.version}</version>
-                  <generatePom>true</generatePom>
-                  <sources>${project.build.directory}/${project.artifactId}-${project.version}-sources.jar</sources>
-                  <javadoc>${project.build.directory}/${project.artifactId}-${project.version}-javadoc.jar</javadoc>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
