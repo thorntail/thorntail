@@ -18,6 +18,13 @@
 
   <packaging>pom</packaging>
 
+  <scm>
+    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-servers.git</connection>
+    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-servers.git</developerConnection>
+    <url>https://github.com/wildfly-swarm/wildfly-swarm-servers</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <repositories>
     <repository>
       <id>projectodd-snapshots</id>
