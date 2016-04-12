@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.arquillian.adapter;
+package org.wildfly.swarm.arquillian.resolver;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

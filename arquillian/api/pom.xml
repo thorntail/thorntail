@@ -29,6 +29,11 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>arquillian-resolver</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>spi-api</artifactId>
     </dependency>
     <dependency>
@@ -50,10 +55,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>arquillian-daemon</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.shrinkwrap.resolver</groupId>
-      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>

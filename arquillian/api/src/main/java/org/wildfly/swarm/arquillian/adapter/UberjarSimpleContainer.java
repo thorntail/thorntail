@@ -36,6 +36,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositorie
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
+import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.spi.api.JARArchive;
