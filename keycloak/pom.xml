@@ -28,7 +28,7 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
         <configuration>
-          <mainClass>org.wildfly.swarm.ContainerOnlySwarm</mainClass>
+          <mainClass>org.wildfly.swarm.servers.keycloak.KeycloakServer</mainClass>
         </configuration>
         <executions>
           <execution>
