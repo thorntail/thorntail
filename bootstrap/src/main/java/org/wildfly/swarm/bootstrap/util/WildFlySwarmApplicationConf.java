@@ -297,7 +297,7 @@ public class WildFlySwarmApplicationConf {
                     jarFile);
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
 
-            if (".war".equals(ext)) {
+            if (".war".equalsIgnoreCase(ext)) {
                 final ResourceLoader warLoader = ResourceLoaders.createJarResourceLoader(jarName,
                         jarFile,
                         "WEB-INF/classes");
