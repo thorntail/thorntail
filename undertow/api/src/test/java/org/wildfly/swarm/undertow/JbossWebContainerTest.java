@@ -56,4 +56,14 @@ public class JbossWebContainerTest {
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("myRoot");
     }
+
+    @Test
+    public void testSettingSecurityDomain() throws Exception {
+        WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
+
+        assertThat(archive.getSecurityDomain()).isNull();
+
+        archive.setSecurityDomain("some-security-domain");
+        assertThat(archive.getSecurityDomain()).isEqualTo("some-security-domain");
+    }
 }

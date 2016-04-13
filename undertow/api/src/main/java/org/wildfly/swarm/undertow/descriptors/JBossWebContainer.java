@@ -50,6 +50,16 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
         return findJbossWebAsset().getContextRoot();
     }
 
+    default String getSecurityDomain() {
+        return findJbossWebAsset().getSecurityDomain();
+    }
+
+    @SuppressWarnings("unchecked")
+    default T setSecurityDomain(String securityDomain) {
+        findJbossWebAsset().setSecurityDomain(securityDomain);
+
+        return (T) this;
+    }
 
     default JBossWebAsset findJbossWebAsset() {
         final Node jbossWeb = this.get(JBOSS_WEB_PATH);

@@ -56,6 +56,14 @@ public class JBossWebAsset implements Asset {
         return rootSet;
     }
 
+    public String getSecurityDomain() {
+        return this.descriptor.getSecurityDomain();
+    }
+
+    public void setSecurityDomain(String securityDomain) {
+        this.descriptor.securityDomain(securityDomain);
+    }
+
     @Override
     public InputStream openStream() {
         return new ByteArrayInputStream(this.descriptor.exportAsString().getBytes());
