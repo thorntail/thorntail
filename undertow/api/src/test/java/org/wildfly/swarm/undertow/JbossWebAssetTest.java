@@ -40,5 +40,7 @@ public class JbossWebAssetTest {
         assertThat(asset.isRootSet()).isTrue();
         assertThat(asset.getContextRoot()).isEqualTo("/anotherRoot");
 
+        asset.setSecurityDomain("some-security-domain");
+        assertThat(asset.getSecurityDomain()).isEqualTo("some-security-domain");
     }
 }
