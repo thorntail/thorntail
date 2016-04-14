@@ -45,6 +45,7 @@
     <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
 
     <version.h2>1.4.187</version.h2>
+    <version.mysql>6.0.2</version.mysql>
 
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
@@ -614,6 +615,27 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-mysql</artifactId>
+        <version>1.0.0.Beta6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-mysql-api</artifactId>
+        <version>1.0.0.Beta6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-mysql-modules</artifactId>
+        <version>1.0.0.Beta6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-mysql-runtime</artifactId>
+        <version>1.0.0.Beta6-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf</artifactId>
         <version>1.0.0.Beta6-SNAPSHOT</version>
       </dependency>
@@ -1050,6 +1072,7 @@
     <module>jgroups</module>
     <module>jmx</module>
     <module>jpa</module>
+    <module>jpa-mysql</module>
     <module>jsf</module>
     <module>logging</module>
     <module>mail</module>
