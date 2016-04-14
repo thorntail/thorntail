@@ -37,29 +37,33 @@ public final class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBas
         super(archive);
 
         if (getArchive().getName().endsWith(".war")) {
-            Node node = getArchive().get("WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName());
-            if (node != null) {
-                Asset maybeCorrect = node.getAsset();
-                if (maybeCorrect instanceof ServiceActivatorAsset) {
-                    this.asset = (ServiceActivatorAsset) maybeCorrect;
-                } else {
-                    this.asset = new ServiceActivatorAsset(maybeCorrect.openStream());
-                }
-            } else {
-                this.asset = new ServiceActivatorAsset();
-                getArchive().add(this.asset, "WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName());
-            }
+            prepareAsset( "WEB-INF/classes/" );
         } else if (getArchive().getName().endsWith(".jar")) {
-            Node node = getArchive().get("META-INF/services/" + ServiceActivator.class.getName());
-            if (node != null) {
-                this.asset = (ServiceActivatorAsset) node.getAsset();
-            } else {
-                this.asset = new ServiceActivatorAsset();
-                getArchive().add(this.asset, "META-INF/services/" + ServiceActivator.class.getName());
-            }
+            prepareAsset();
         } else {
             throw new IllegalArgumentException("Usupported archive type: " + archive);
         }
+    }
+
+    protected void prepareAsset() {
+        prepareAsset( "" );
+    }
+
+    protected void prepareAsset(String pathPrefix) {
+        Node node = getArchive().get( pathPrefix + "META-INF/services/" + ServiceActivator.class.getName());
+        if (node != null) {
+            Asset maybeCorrect = node.getAsset();
+            if (maybeCorrect instanceof ServiceActivatorAsset) {
+                this.asset = (ServiceActivatorAsset) maybeCorrect;
+            } else {
+                this.asset = new ServiceActivatorAsset(maybeCorrect.openStream());
+                getArchive().add(this.asset, pathPrefix + "META-INF/services/" + ServiceActivator.class.getName());
+            }
+        } else {
+            this.asset = new ServiceActivatorAsset();
+            getArchive().add(this.asset, pathPrefix + "META-INF/services/" + ServiceActivator.class.getName());
+        }
+
     }
 
     public ServiceActivatorArchive addServiceActivator(Class<? extends ServiceActivator> cls) {
@@ -81,7 +85,7 @@ public final class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBas
         return this.asset.containsServiceActivator(className);
     }
 
-    private final ServiceActivatorAsset asset;
+    private ServiceActivatorAsset asset;
 }
 
 
