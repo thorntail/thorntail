@@ -178,9 +178,10 @@ public class DependencyManager {
     }
 
     public void populateUserMavenRepository() throws Exception {
-        Set<ArtifactSpec> deps = new HashSet<>(this.dependencies);
-        deps.addAll(this.moduleDependencies);
-        resolveAllArtifacts(deps);
+        resolveAllArtifacts( this.dependencies );
+        for (ArtifactSpec each : this.moduleDependencies) {
+            resolveArtifact(each);
+        }
     }
 
     public void addArtifactToArchiveMavenRepository(Archive archive, ArtifactSpec artifact) throws Exception {
@@ -437,9 +438,13 @@ public class DependencyManager {
         this.moduleDependencies.addAll(analyzer.getDependencies());
 
         for (ArtifactSpec each : analyzer.getDependencies()) {
-            providedGAVToModuleMappings.put(
-                    each.groupId() + ":" + each.artifactId(),
-                    analyzer.getName() + ":" + analyzer.getSlot());
+            if ( analyzer.getName().startsWith( "org.wildfly.swarm" ) && analyzer.getSlot().equals( "api" ) ) {
+                // skip
+            } else {
+                providedGAVToModuleMappings.put(
+                        each.groupId() + ":" + each.artifactId(),
+                        analyzer.getName() + ":" + analyzer.getSlot());
+            }
         }
 
     }
