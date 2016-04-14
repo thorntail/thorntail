@@ -132,6 +132,21 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hystrix-api</artifactId>
+        <version>1.0.0.Beta4-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hystrix-modules</artifactId>
+        <version>1.0.0.Beta4-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hystrix-runtime</artifactId>
+        <version>1.0.0.Beta4-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon</artifactId>
         <version>1.0.0.Beta4-SNAPSHOT</version>
       </dependency>

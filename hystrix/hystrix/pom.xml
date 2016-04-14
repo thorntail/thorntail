@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
@@ -9,49 +9,36 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>ribbon-parent</artifactId>
+    <artifactId>hystrix-parent</artifactId>
     <version>1.0.0.Beta4-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>ribbon</artifactId>
+  <artifactId>hystrix</artifactId>
 
-  <name>Ribbon</name>
-  <description>Client side load balancing with Netflix Ribbon</description>
+  <name>Hystrix</name>
+  <description>Latency and Fault Tolerance, such as Circuit Breaker, with Hystrix from Netflix OSS</description>
 
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.tags>Service Discovery,Netflix OSS</swarm.fraction.tags>
+    <swarm.fraction.tags>Fault Tolerance,Netflix OSS</swarm.fraction.tags>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-api</artifactId>
+      <artifactId>hystrix-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-modules</artifactId>
+      <artifactId>hystrix-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-runtime</artifactId>
+      <artifactId>hystrix-runtime</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>hystrix</artifactId>
     </dependency>
 
   </dependencies>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
@@ -9,51 +9,43 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>ribbon-parent</artifactId>
+    <artifactId>hystrix-parent</artifactId>
     <version>1.0.0.Beta4-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>ribbon</artifactId>
+  <artifactId>hystrix-runtime</artifactId>
 
-  <name>Ribbon</name>
-  <description>Client side load balancing with Netflix Ribbon</description>
+  <name>WildFly Swarm: Hystrix Runtime</name>
+  <description>WildFly Swarm: Hystrix Runtime</description>
 
   <packaging>jar</packaging>
 
-  <properties>
-    <swarm.fraction.tags>Service Discovery,Netflix OSS</swarm.fraction.tags>
-  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-api</artifactId>
+      <artifactId>hystrix-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-modules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-runtime</artifactId>
+      <artifactId>spi-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>topology</artifactId>
+      <artifactId>undertow-api</artifactId>
+      <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>hystrix</artifactId>
-    </dependency>
-
   </dependencies>
 
 </project>
