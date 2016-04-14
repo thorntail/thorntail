@@ -68,7 +68,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
     boolean waitForProcess;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "ThrowableResultOfMethodCallIgnored"})
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         initProperties(true);
@@ -149,7 +149,6 @@ public class StartMojo extends AbstractSwarmMojo {
         }
     }
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     protected SwarmExecutor uberJarExecutor() throws MojoFailureException {
         getLog().info("Starting -swarm.jar");
 
@@ -163,7 +162,6 @@ public class StartMojo extends AbstractSwarmMojo {
                 .withExecutableJar(Paths.get(this.projectBuildDir, finalName + "-swarm.jar"));
     }
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     protected SwarmExecutor warExecutor() throws MojoFailureException {
         getLog().info("Starting .war");
 
@@ -171,27 +169,25 @@ public class StartMojo extends AbstractSwarmMojo {
         if (!finalName.endsWith(".war")) {
             finalName = finalName + ".war";
         }
-        final Path warFile = Paths.get(this.projectBuildDir, finalName);
 
-        return new SwarmExecutor()
-                .withModules(expandModules())
-                .withClassPathEntries(dependencies(warFile, false))
-                .withProperty(BootstrapProperties.APP_PATH,
-                              warFile.toString())
-                .withDefaultMainClass();
+        return executor(Paths.get(this.projectBuildDir, finalName), finalName);
     }
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+
     protected SwarmExecutor jarExecutor() throws MojoFailureException {
         getLog().info("Starting .jar");
 
         final String finalName = this.project.getBuild().getFinalName();
 
+        return executor(Paths.get(this.project.getBuild().getOutputDirectory()),
+                        finalName.endsWith(".jar") ? finalName : finalName + ".jar");
+    }
+
+    protected SwarmExecutor executor(final Path appPath, final String name) throws MojoFailureException {
         final SwarmExecutor executor = new SwarmExecutor()
                 .withModules(expandModules())
-                .withProperty(BootstrapProperties.APP_NAME,
-                              finalName.endsWith(".jar") ? finalName : finalName + ".jar")
-                .withClassPathEntries(dependencies(Paths.get(this.project.getBuild().getOutputDirectory()), true));
+                .withProperty(BootstrapProperties.APP_NAME, name)
+                .withClassPathEntries(dependencies(appPath));
 
         if (this.mainClass != null) {
             executor.withMainClass(this.mainClass);
@@ -250,7 +246,7 @@ public class StartMojo extends AbstractSwarmMojo {
         }
     }
 
-    List<Path> dependencies(final Path archiveContent, final boolean includeProjectArtifact) throws MojoFailureException {
+    List<Path> dependencies(final Path archiveContent) throws MojoFailureException {
         final List<Path> elements = new ArrayList<>();
         final Set<Artifact> artifacts = this.project.getArtifacts();
         boolean hasSwarmDeps = false;
@@ -269,9 +265,7 @@ public class StartMojo extends AbstractSwarmMojo {
             elements.add(each.getFile().toPath());
         }
 
-        if (includeProjectArtifact) {
-            elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));
-        }
+        elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));
 
         if (!hasSwarmDeps) {
             elements.addAll(findNeededFractions(artifacts, archiveContent));
