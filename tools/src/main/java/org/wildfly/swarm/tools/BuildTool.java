@@ -207,8 +207,10 @@ public class BuildTool {
         final File tmpFile = File.createTempFile("buildtool", this.projectAsset.getName().replace("/", "_"));
         tmpFile.deleteOnExit();
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
-        final Set<FractionDescriptor> detectedFractions = new FractionUsageAnalyzer(this.fractionList, tmpFile)
-                .detectNeededFractions();
+        final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer(this.fractionList)
+                .source(tmpFile);
+
+        final Set<FractionDescriptor> detectedFractions = analyzer.detectNeededFractions();
         System.out.println("Detected fractions: " + String.join(", ",
                                                                 detectedFractions.stream()
                                                                         .map(FractionDescriptor::av)

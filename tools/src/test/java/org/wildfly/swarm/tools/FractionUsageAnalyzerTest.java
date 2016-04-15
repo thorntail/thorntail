@@ -15,13 +15,9 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +39,7 @@ public class FractionUsageAnalyzerTest {
                     .flatMap(pkgs -> Stream.of(pkgs.split("\\+")))
                     .map(p -> p.endsWith("*") ? p.substring(0, p.length() - 1) + ".foo" : p)
                     .collect(Collectors.toSet());
-            assertThat(new FractionUsageAnalyzer(fractionList(), (File)null)
+            assertThat(new FractionUsageAnalyzer(fractionList())
                                .findFractions(packages))
                     .contains(new FractionDescriptor("org.wildfly.swarm", name, "0"));
 

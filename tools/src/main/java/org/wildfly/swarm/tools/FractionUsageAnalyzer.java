@@ -34,13 +34,20 @@ import java.util.stream.Stream;
  * @author Toby Crawley
  */
 public class FractionUsageAnalyzer {
-    public FractionUsageAnalyzer(FractionList fractionList, Path source) {
-        this(fractionList, source.toFile());
+    public FractionUsageAnalyzer(final FractionList fractionList) {
+        this.fractionList = fractionList;
     }
 
-    public FractionUsageAnalyzer(FractionList fractionList, File source) {
-        this.fractionList = fractionList;
-        this.source = source;
+    public FractionUsageAnalyzer source(final Path source) {
+        source(source.toFile());
+
+        return this;
+    }
+
+    public FractionUsageAnalyzer source(final File source) {
+        this.sources.add(source);
+
+        return this;
     }
 
     public Set<FractionDescriptor> detectNeededFractions() throws IOException {
@@ -48,9 +55,12 @@ public class FractionUsageAnalyzer {
             return Collections.emptySet();
         }
         final Set<FractionDescriptor> specs = new HashSet<>();
-        specs.addAll(findFractions(PackageDetector
-                                           .detectPackages(this.source)
-                                           .keySet()));
+        for (File f : this.sources) {
+            specs.addAll(findFractions(PackageDetector
+                                               .detectPackages(f)
+                                               .keySet()));
+        }
+
         // Remove fractions that have a dependency on each other
         Iterator<FractionDescriptor> it = specs.iterator();
         while (it.hasNext()) {
@@ -87,7 +97,7 @@ public class FractionUsageAnalyzer {
         return matchers;
     }
 
-    private final File source;
+    private final List<File> sources = new ArrayList<>();
 
     private final FractionList fractionList;
 
