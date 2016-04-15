@@ -4,7 +4,7 @@
 
 Support for Logstash.
 
-## Enable Jolokia
+## Enable Logstash
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
