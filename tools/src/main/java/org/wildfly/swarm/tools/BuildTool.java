@@ -241,7 +241,7 @@ public class BuildTool {
                                            .map(BuildTool::strippedSwarmGav)
                                            .sorted()
                                            .collect(Collectors.toList())));
-        this.fractions.forEach(f -> this.dependencyManager.addDependency(f));
+        allFractions.forEach(f -> this.dependencyManager.addDependency(f));
         resolveTransitiveDependencies(true);
         analyzeDependencies();
     }
