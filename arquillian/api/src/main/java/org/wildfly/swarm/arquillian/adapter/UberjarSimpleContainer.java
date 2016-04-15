@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
+import org.wildfly.swarm.arquillian.WithMain;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
@@ -174,6 +175,12 @@ public class UberjarSimpleContainer implements SimpleContainer {
             }
         }
 
+        WithMain withMainAnno = this.testClass.getAnnotation(WithMain.class);
+        if ( withMainAnno != null ) {
+            System.err.println( "Using main-class: " + withMainAnno.value().getName() );
+            tool.mainClass( withMainAnno.value().getName() );
+        }
+
         Archive<?> wrapped = tool.build();
 
         if (BootstrapProperties.flagIsSet(SwarmProperties.EXPORT_UBERJAR)) {
@@ -193,7 +200,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         executor.withProperty("java.net.preferIPv4Stack", "true");
         executor.withExecutableJar(executable.toPath());
-
 
         File workingDirectory = Files.createTempDirectory("arquillian").toFile();
         workingDirectory.deleteOnExit();
