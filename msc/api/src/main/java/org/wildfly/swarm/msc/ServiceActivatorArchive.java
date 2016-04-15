@@ -17,6 +17,7 @@ package org.wildfly.swarm.msc;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Assignable;
+import org.wildfly.swarm.msc.internal.ServiceActivatorAsset;
 
 /**
  * @author Bob McWhirter
@@ -29,4 +30,7 @@ public interface ServiceActivatorArchive extends Assignable {
 
     boolean containsServiceActivator(String clsName);
 
+    ServiceActivatorAsset getAsset();
+
+    ServiceActivatorArchive setAsset(ServiceActivatorAsset asset);
 }

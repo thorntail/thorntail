@@ -35,35 +35,40 @@ public final class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBas
      */
     public ServiceActivatorArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
+        prepareAsset();
+    }
 
-        if (getArchive().getName().endsWith(".war")) {
-            prepareAsset( "WEB-INF/classes/" );
-        } else if (getArchive().getName().endsWith(".jar")) {
-            prepareAsset();
-        } else {
-            throw new IllegalArgumentException("Usupported archive type: " + archive);
+    private String path() {
+        if ( getArchive().getName().endsWith( ".war" ) ) {
+            return "WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName();
         }
+
+        return "META-INF/services/" + ServiceActivator.class.getName();
+    }
+
+    public ServiceActivatorAsset getAsset() {
+        return this.asset;
+    }
+
+    public ServiceActivatorArchive setAsset(ServiceActivatorAsset asset) {
+        this.asset = asset;
+        getArchive().add(this.asset, path());
+        return this;
     }
 
     protected void prepareAsset() {
-        prepareAsset( "" );
-    }
-
-    protected void prepareAsset(String pathPrefix) {
-        Node node = getArchive().get( pathPrefix + "META-INF/services/" + ServiceActivator.class.getName());
+        Node node = getArchive().get( path() );
         if (node != null) {
             Asset maybeCorrect = node.getAsset();
             if (maybeCorrect instanceof ServiceActivatorAsset) {
-                this.asset = (ServiceActivatorAsset) maybeCorrect;
+                setAsset((ServiceActivatorAsset) maybeCorrect);
             } else {
-                this.asset = new ServiceActivatorAsset(maybeCorrect.openStream());
-                getArchive().add(this.asset, pathPrefix + "META-INF/services/" + ServiceActivator.class.getName());
+                ServiceActivatorAsset read = new ServiceActivatorAsset(maybeCorrect.openStream());
+                setAsset( read );
             }
         } else {
-            this.asset = new ServiceActivatorAsset();
-            getArchive().add(this.asset, pathPrefix + "META-INF/services/" + ServiceActivator.class.getName());
+            setAsset( new ServiceActivatorAsset() );
         }
-
     }
 
     public ServiceActivatorArchive addServiceActivator(Class<? extends ServiceActivator> cls) {
