@@ -170,7 +170,7 @@ public class StartMojo extends AbstractSwarmMojo {
             finalName = finalName + ".war";
         }
 
-        return executor(Paths.get(this.projectBuildDir, finalName), finalName);
+        return executor(Paths.get(this.projectBuildDir, finalName), finalName, false);
     }
 
 
@@ -180,14 +180,16 @@ public class StartMojo extends AbstractSwarmMojo {
         final String finalName = this.project.getBuild().getFinalName();
 
         return executor(Paths.get(this.project.getBuild().getOutputDirectory()),
-                        finalName.endsWith(".jar") ? finalName : finalName + ".jar");
+                        finalName.endsWith(".jar") ? finalName : finalName + ".jar",
+                        true);
     }
 
-    protected SwarmExecutor executor(final Path appPath, final String name) throws MojoFailureException {
+    protected SwarmExecutor executor(final Path appPath, final String name,
+                                     final boolean scanDependencies) throws MojoFailureException {
         final SwarmExecutor executor = new SwarmExecutor()
                 .withModules(expandModules())
                 .withProperty(BootstrapProperties.APP_NAME, name)
-                .withClassPathEntries(dependencies(appPath));
+                .withClassPathEntries(dependencies(appPath, scanDependencies));
 
         if (this.mainClass != null) {
             executor.withMainClass(this.mainClass);
@@ -198,13 +200,18 @@ public class StartMojo extends AbstractSwarmMojo {
         return executor;
     }
 
-    List<Path> findNeededFractions(final Set<Artifact> existingDeps, final Path source) throws MojoFailureException {
+    List<Path> findNeededFractions(final Set<Artifact> existingDeps,
+                                   final Path source,
+                                   final boolean scanDeps) throws MojoFailureException {
         getLog().info("No WildFly Swarm dependencies found - scanning for needed fractions");
 
         final Set<FractionDescriptor> fractions;
+        final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer(FractionList.get()).source(source);
+        if (scanDeps) {
+            existingDeps.forEach(d -> analyzer.source(d.getFile()));
+        }
         try {
-            fractions = new FractionUsageAnalyzer(FractionList.get(), source)
-                    .detectNeededFractions();
+            fractions = analyzer.detectNeededFractions();
         } catch (IOException e) {
             throw new MojoFailureException("failed to scan for fractions", e);
         }
@@ -246,7 +253,8 @@ public class StartMojo extends AbstractSwarmMojo {
         }
     }
 
-    List<Path> dependencies(final Path archiveContent) throws MojoFailureException {
+    List<Path> dependencies(final Path archiveContent,
+                            final boolean scanDependencies) throws MojoFailureException {
         final List<Path> elements = new ArrayList<>();
         final Set<Artifact> artifacts = this.project.getArtifacts();
         boolean hasSwarmDeps = false;
@@ -268,7 +276,7 @@ public class StartMojo extends AbstractSwarmMojo {
         elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));
 
         if (!hasSwarmDeps) {
-            elements.addAll(findNeededFractions(artifacts, archiveContent));
+            elements.addAll(findNeededFractions(artifacts, archiveContent, scanDependencies));
         }
 
         return elements;
