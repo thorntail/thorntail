@@ -101,6 +101,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         BuildTool tool = new BuildTool()
                 .projectArchive(archive)
+                .fractionDetectionMode(BuildTool.FractionDetectionMode.never)
                 .bundleDependencies(false);
 
         final String additionalModules = System.getProperty(SwarmProperties.BUILD_MODULES);

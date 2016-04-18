@@ -46,6 +46,8 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
  * @author Bob McWhirter
  */
 public class BuildTool {
+    public enum FractionDetectionMode {when_missing, force, never}
+
     public BuildTool() {
         this.archive = ShrinkWrap.create(JavaArchive.class);
     }
@@ -137,8 +139,8 @@ public class BuildTool {
         return this;
     }
 
-    public BuildTool autoDetectFractions(boolean v) {
-        this.autoDetectFractions = v;
+    public BuildTool fractionDetectionMode(FractionDetectionMode v) {
+        this.fractionDetectionMode = v;
 
         return this;
     }
@@ -203,7 +205,7 @@ public class BuildTool {
         this.archive.add(this.projectAsset);
     }
 
-    private void autoDetectFractions() throws Exception {
+    private void detectFractions() throws Exception {
         final File tmpFile = File.createTempFile("buildtool", this.projectAsset.getName().replace("/", "_"));
         tmpFile.deleteOnExit();
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
@@ -237,6 +239,7 @@ public class BuildTool {
                         .getDependencies()
                         .stream()
                         .map(FractionDescriptor::toArtifactSpec))
+                .filter(d -> this.dependencyManager.findArtifact(d.groupId(), d.artifactId(), null, null, null) == null)
                 .forEach(allFractions::add);
 
         System.out.println("Adding fractions: " +
@@ -244,6 +247,7 @@ public class BuildTool {
                                            .map(BuildTool::strippedSwarmGav)
                                            .sorted()
                                            .collect(Collectors.toList())));
+
         allFractions.forEach(f -> this.dependencyManager.addDependency(f));
         resolveTransitiveDependencies(true);
         analyzeDependencies();
@@ -252,25 +256,31 @@ public class BuildTool {
     private void addWildflySwarmBootstrapJar() throws Exception {
         ArtifactSpec artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
 
-        if (artifact == null) {
-            if (this.autoDetectFractions) {
-                if (this.fractionList == null) {
-                    throw new IllegalStateException("Fraction detection requested, but no FractionList provided");
-                }
-                System.out.println("No WildFly Swarm dependencies found; scanning for needed fractions");
-                autoDetectFractions();
-            } else {
-                System.out.println("No WildFly Swarm dependencies found and fraction detection disabled");
+        if (this.fractionDetectionMode != FractionDetectionMode.never) {
+            if (this.fractionList == null) {
+                throw new IllegalStateException("Fraction detection requested, but no FractionList provided");
             }
-            addFractions();
-            artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
+
+            if (this.fractionDetectionMode == FractionDetectionMode.force ||
+                    artifact == null) {
+                System.out.println("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
+                detectFractions();
+                addFractions();
+                artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
+            }
+        } else if (artifact == null) {
+            System.err.println("No WildFly Swarm dependencies found and fraction detection disabled");
         }
 
-        if (!bootstrapJarShadesJBossModules(artifact.file)) {
-            ArtifactSpec jbossModules = this.dependencyManager.findJBossModulesJar();
-            expandArtifact(jbossModules.file);
+        if (artifact != null) {
+            if (!bootstrapJarShadesJBossModules(artifact.file)) {
+                ArtifactSpec jbossModules = this.dependencyManager.findJBossModulesJar();
+                expandArtifact(jbossModules.file);
+            }
+            expandArtifact(artifact.file);
+        } else {
+            throw new IllegalStateException("No WildFly Swarm Bootstrap fraction found");
         }
-        expandArtifact(artifact.file);
     }
 
     private void addManifest() throws IOException {
@@ -362,7 +372,7 @@ public class BuildTool {
 
     private Set<String> additionalModules = new HashSet<>();
 
-    private boolean autoDetectFractions = true;
+    private FractionDetectionMode fractionDetectionMode = FractionDetectionMode.when_missing;
 
     private FractionList fractionList = null;
 
