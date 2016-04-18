@@ -41,9 +41,12 @@ def process(input_dir, output_dir)
   packages = {}
   versions = {}
   Dir.glob("#{input_dir}/*").each do |dir|
-    dirname = File.basename(dir)
-    packages[dirname] = collect_src(dir, output_dir)
-    versions[dirname] = File.read(File.join(dir, "_version")).strip
+    version_file = File.join(dir, "_version")
+    if File.exist?(version_file)
+      dirname = File.basename(dir)
+      packages[dirname] = collect_src(dir, output_dir)
+      versions[dirname] = File.read(version_file).strip
+    end
   end
 
   [packages, versions]
