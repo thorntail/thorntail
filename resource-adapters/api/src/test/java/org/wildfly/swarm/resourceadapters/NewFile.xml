@@ -1,0 +1,64 @@
+<ironjacamar>
+	<bean-validation-groups>
+		<bean-validation-group>bean-validation-group0</bean-validation-group>
+		<bean-validation-group>bean-validation-group1</bean-validation-group>
+	</bean-validation-groups>
+	<bootstrap-context>bootstrap-context0</bootstrap-context>
+	<config-property name="name1">config-property0
+	</config-property>
+	<transaction-support>NoTransaction</transaction-support>
+	<connection-definitions>
+		<connection-definition use-ccm="true"
+			class-name="class-name1" jndi-ccm="jndi-name1" enabled="true"
+			use-java-context="true">
+			<config-property name="name5">config-property2
+			</config-property>
+			<config-property name="name7">config-property3
+			</config-property>
+			<pool>
+				<min-pool-size>50</min-pool-size>
+				<max-pool-size>50</max-pool-size>
+				<prefill>false</prefill>
+				<use-strict-min>false</use-strict-min>
+				<flush-strategy>IdleConnections</flush-strategy>
+			</pool>
+			<security>
+				<security-domain>security-domain0</security-domain>
+			</security>
+			<timeout>
+				<blocking-timeout-millis>50</blocking-timeout-millis>
+				<idle-timeout-minutes>50</idle-timeout-minutes>
+				<allocation-retry>50</allocation-retry>
+				<allocation-retry-wait-millis>50</allocation-retry-wait-millis>
+				<xa-resource-timeout>50</xa-resource-timeout>
+			</timeout>
+			<validation>
+				<background-validation>false</background-validation>
+				<background-validation-millis>50</background-validation-millis>
+				<use-fast-fail>false</use-fast-fail>
+			</validation>
+			<recovery no-recovery="false">
+				<recover-plugin class-name="class-name3">
+					<config-property name="name9">config-property4
+					</config-property>
+				</recover-plugin>
+			</recovery>
+		</connection-definition>
+	</connection-definitions>
+	<admin-objects>
+		<admin-object class-name="class-name9" jndi-name="jndi-name5"
+			enabled="true" use-java-context="true">
+			<config-property name="name17">config-property8
+			</config-property>
+			<config-property name="name19">config-property9
+			</config-property>
+		</admin-object>
+		<admin-object class-name="class-nam21" jndi-name="jndi-name7"
+			enabled="true" use-java-context="true">
+			<config-property name="name21">config-propert10
+			</config-property>
+			<config-property name="name23">config-property11
+			</config-property>
+		</admin-object>
+	</admin-objects>
+</ironjacamar>

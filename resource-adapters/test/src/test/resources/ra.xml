@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright © 2010, Nitin Verma (project owner for XADisk https://xadisk.dev.java.net/). All rights reserved.
+
+This source code is being made available to the public under the terms specified in the license
+“Eclipse Public License 1.0” located at http://www.opensource.org/licenses/eclipse-1.0.php.
+-->
+
+
+<connector xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+    http://java.sun.com/xml/ns/j2ee/connector_1_5.xsd"
+    version="1.5">
+
+    <description>XAFileSystem Resource Adapter</description>
+    <display-name>XAFileSystem Resource Adapter</display-name>
+    <vendor-name>XADisk@java.net</vendor-name>
+    <eis-type>XAFileSystem 1.2.2</eis-type>
+    <resourceadapter-version>1.2.2</resourceadapter-version>
+
+    <resourceadapter>
+
+        <resourceadapter-class>
+            org.xadisk.connector.XADiskResourceAdapter
+        </resourceadapter-class>
+
+        <config-property>
+            <config-property-name>directBufferPoolSize</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>1000</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>nonDirectBufferPoolSize</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>1000</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>bufferSize</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>4096</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>xaDiskHome</config-property-name>
+            <config-property-type>java.lang.String</config-property-type>
+            <config-property-value>/tmp/xadisk</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>instanceId</config-property-name>
+            <config-property-type>java.lang.String</config-property-type>
+            <config-property-value></config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>transactionLogFileMaxSize</config-property-name>
+            <config-property-type>java.lang.Long</config-property-type>
+            <config-property-value>1000000000</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>cumulativeBufferSizeForDiskWrite</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>1000000</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>directBufferIdleTime</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>100</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>nonDirectBufferIdleTime</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>100</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>bufferPoolRelieverInterval</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>60</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>maxNonPooledBufferSize</config-property-name>
+            <config-property-type>java.lang.Long</config-property-type>
+            <config-property-value>1000000</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>deadLockDetectorInterval</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>30</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>lockTimeOut</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>10000</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>maximumConcurrentEventDeliveries</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>20</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>transactionTimeout</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>60</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>enableRemoteInvocations</config-property-name>
+            <config-property-type>java.lang.Boolean</config-property-type>
+            <config-property-value>false</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>serverAddress</config-property-name>
+            <config-property-type>java.lang.String</config-property-type>
+            <config-property-value>127.0.0.1</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>serverPort</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value>9999</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>synchronizeDirectoryChanges</config-property-name>
+            <config-property-type>java.lang.Boolean</config-property-type>
+            <config-property-value>true</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>enableClusterMode</config-property-name>
+            <config-property-type>java.lang.Boolean</config-property-type>
+            <config-property-value>false</config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>clusterMasterAddress</config-property-name>
+            <config-property-type>java.lang.String</config-property-type>
+            <config-property-value></config-property-value>
+        </config-property>
+        <config-property>
+            <config-property-name>clusterMasterPort</config-property-name>
+            <config-property-type>java.lang.Integer</config-property-type>
+            <config-property-value></config-property-value>
+        </config-property>
+
+        <outbound-resourceadapter>
+            <connection-definition>
+                <managedconnectionfactory-class>
+                    org.xadisk.connector.outbound.XADiskManagedConnectionFactory
+                </managedconnectionfactory-class>
+                <config-property>
+                    <config-property-name>instanceId</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                </config-property>
+                <connectionfactory-interface>
+                    org.xadisk.connector.outbound.XADiskConnectionFactory
+                </connectionfactory-interface>
+                <connectionfactory-impl-class>
+                    org.xadisk.connector.outbound.XADiskConnectionFactoryImpl
+                </connectionfactory-impl-class>
+                <connection-interface>
+                    org.xadisk.connector.outbound.XADiskConnection
+                </connection-interface>
+                <connection-impl-class>
+                    org.xadisk.connector.outbound.XADiskConnectionImpl
+                </connection-impl-class>
+            </connection-definition>
+            <connection-definition>
+                <managedconnectionfactory-class>
+                    org.xadisk.bridge.proxies.impl.XADiskRemoteManagedConnectionFactory
+                </managedconnectionfactory-class>
+                <config-property>
+                    <config-property-name>serverAddress</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                </config-property>
+                <config-property>
+                    <config-property-name>serverPort</config-property-name>
+                    <config-property-type>java.lang.Integer</config-property-type>
+                </config-property>
+                <config-property>
+                    <config-property-name>instanceId</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                </config-property>
+                <connectionfactory-interface>
+                    org.xadisk.bridge.proxies.interfaces.XADiskRemoteConnectionFactory
+                </connectionfactory-interface>
+                <connectionfactory-impl-class>
+                    org.xadisk.connector.outbound.XADiskConnectionFactoryImpl
+                </connectionfactory-impl-class>
+                <connection-interface>
+                    org.xadisk.bridge.proxies.interfaces.XADiskRemoteConnection
+                </connection-interface>
+                <connection-impl-class>
+                    org.xadisk.connector.outbound.XADiskConnectionImpl
+                </connection-impl-class>
+            </connection-definition>
+
+            <transaction-support>
+                XATransaction
+            </transaction-support>
+            <reauthentication-support>
+                false
+            </reauthentication-support>
+        </outbound-resourceadapter>
+
+        <inbound-resourceadapter>
+            <messageadapter>
+                <messagelistener>
+                    <!-- the schema says "The messagelistener-type element content must be
+	      unique in the messageadapter. Several messagelisteners
+	      can not use the same messagelistener-type. In order to have a different ActivationSpec
+              for remote xadisk, we had to have a different <messagelistener> element and also
+              a different listener-type due to the unique constraint. But this would remove the flexibilty
+              to write same MDBs for local and remote xadisk. So, finally deciding to use same ActivationSpec"-->
+                    <messagelistener-type>
+                        org.xadisk.connector.inbound.FileSystemEventListener
+                    </messagelistener-type>
+                    <activationspec>
+                        <activationspec-class>
+                            org.xadisk.connector.inbound.XADiskActivationSpecImpl
+                        </activationspec-class>
+                        <required-config-property>
+                            <config-property-name>areFilesRemote</config-property-name>
+                        </required-config-property>
+                        <required-config-property>
+                            <config-property-name>remoteServerAddress</config-property-name>
+                        </required-config-property>
+                        <required-config-property>
+                            <config-property-name>remoteServerPort</config-property-name>
+                        </required-config-property>
+                        <required-config-property>
+                            <config-property-name>fileNamesAndEventInterests</config-property-name>
+                        </required-config-property>
+                    </activationspec>
+                </messagelistener>
+            </messageadapter>
+        </inbound-resourceadapter>
+    </resourceadapter>
+</connector>
