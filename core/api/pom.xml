@@ -31,7 +31,7 @@
 
     <name>Wildfly Swarm :: Camel Core :: API</name>
     
-    <artifactId>camel-core</artifactId>
+    <artifactId>camel-core-api</artifactId>
 
     <dependencies>
         <dependency>
@@ -43,10 +43,15 @@
             <groupId>org.wildfly.camel</groupId>
             <artifactId>wildfly-camel-subsystem-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>container</artifactId>
-        </dependency>
     </dependencies>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+        </plugin>
+      </plugins>
+    </build>
   
 </project>

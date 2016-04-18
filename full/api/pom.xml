@@ -31,7 +31,7 @@
 
   <name>Wildfly Swarm :: Camel Full :: API</name>
 
-  <artifactId>camel-full</artifactId>
+  <artifactId>camel-full-api</artifactId>
 
   <dependencies>
     <dependency>

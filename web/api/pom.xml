@@ -31,7 +31,7 @@
 
   <name>Wildfly Swarm :: Camel Web :: API</name>
 
-  <artifactId>camel-web</artifactId>
+  <artifactId>camel-web-api</artifactId>
 
   <dependencies>
     <dependency>
