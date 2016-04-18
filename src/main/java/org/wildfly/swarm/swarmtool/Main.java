@@ -174,7 +174,9 @@ public class Main {
                 .artifactResolvingHelper(getResolvingHelper())
                 .projectArtifact("", baseName, "", type, source)
                 .fractionList(FractionList.get())
-                .autoDetectFractions(!foundOptions.has(DISABLE_AUTO_DETECT))
+                .fractionDetectionMode(foundOptions.has(DISABLE_AUTO_DETECT) ?
+                                             BuildTool.FractionDetectionMode.never :
+                                             BuildTool.FractionDetectionMode.force)
                 .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS))
                 .resolveTransitiveDependencies(true)
                 .properties(properties);
