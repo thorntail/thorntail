@@ -22,6 +22,10 @@ import java.util.Set;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.container.spi.context.ContainerContext;
+import org.jboss.arquillian.container.spi.context.DeploymentContext;
+import org.jboss.arquillian.core.api.Instance;
+import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.wildfly.swarm.arquillian.StartupTimeout;
@@ -33,6 +37,13 @@ import org.wildfly.swarm.arquillian.daemon.container.DaemonDeployableContainerBa
  * @author Toby Crawley
  */
 public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonContainerConfigurationBase> {
+
+    @Inject
+    Instance<ContainerContext> containerContext;
+
+    @Inject
+    Instance<DeploymentContext> deploymentContext;
+
 
     @Override
     public Class<DaemonContainerConfigurationBase> getConfigurationClass() {
@@ -63,7 +74,7 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
         if (this.testClass.getAnnotation(InVM.class) != null) {
             this.delegateContainer = new InVMSimpleContainer(this.testClass);
         } else {
-            this.delegateContainer = new UberjarSimpleContainer(this.testClass);
+            this.delegateContainer = new UberjarSimpleContainer(this.containerContext.get(), this.testClass);
         }
         try {
             this.delegateContainer

@@ -24,6 +24,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
+import org.jboss.arquillian.container.spi.context.ContainerContext;
+import org.jboss.arquillian.container.spi.context.DeploymentContext;
+import org.jboss.arquillian.core.api.Instance;
+import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -48,7 +52,11 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 public class UberjarSimpleContainer implements SimpleContainer {
 
-    public UberjarSimpleContainer(Class<?> testClass) {
+
+    private final ContainerContext containerContext;
+
+    public UberjarSimpleContainer(ContainerContext containerContext, Class<?> testClass) {
+        this.containerContext = containerContext;
         this.testClass = testClass;
     }
 
@@ -61,6 +69,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     @Override
     public void start(Archive<?> archive) throws Exception {
+
   /*
         System.err.println( ">>> CORE" );
         System.err.println(" NAME: " + archive.getName());
@@ -71,10 +80,13 @@ public class UberjarSimpleContainer implements SimpleContainer {
         */
 
         //System.err.println("is factory: " + isContainerFactory(this.testClass));
+
+        MainSpecifier mainSpecifier = containerContext.getObjectStore().get(MainSpecifier.class);
+
         if (isContainerFactory(this.testClass)) {
             archive.as(JavaArchive.class)
                     .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                                          this.testClass.getName())
+                            this.testClass.getName())
                     .addClass(this.testClass)
                     .as(JARArchive.class)
                     .addModule("org.wildfly.swarm.container")
@@ -94,16 +106,16 @@ public class UberjarSimpleContainer implements SimpleContainer {
         final String additionalModules = System.getProperty(SwarmProperties.BUILD_MODULES);
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
-                                           .map(File::new)
-                                           .filter(File::exists)
-                                           .map(File::getAbsolutePath)
-                                           .collect(Collectors.toList()));
+                    .map(File::new)
+                    .filter(File::exists)
+                    .map(File::getAbsolutePath)
+                    .collect(Collectors.toList()));
         }
 
         MavenRemoteRepository jbossPublic =
                 MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
-                                                               "http://repository.jboss.org/nexus/content/groups/public/",
-                                                               "default");
+                        "http://repository.jboss.org/nexus/content/groups/public/",
+                        "default");
         jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
         jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
@@ -143,8 +155,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
             for (MavenResolvedArtifact dep : deps) {
                 MavenCoordinate coord = dep.getCoordinate();
                 tool.dependency(dep.getScope().name(), coord.getGroupId(),
-                                coord.getArtifactId(), coord.getVersion(),
-                                coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                        coord.getArtifactId(), coord.getVersion(),
+                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
             }
         } else {
             // ensure that arq daemon is available
@@ -159,8 +171,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 for (MavenResolvedArtifact dep : deps) {
                     MavenCoordinate coord = dep.getCoordinate();
                     tool.dependency(dep.getScope().name(), coord.getGroupId(),
-                                    coord.getArtifactId(), coord.getVersion(),
-                                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                            coord.getArtifactId(), coord.getVersion(),
+                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
                 }
             }
         }
@@ -171,14 +183,22 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", BootstrapProperties.DEBUG_PORT, debug),
-                                                   e);
+                        e);
             }
         }
 
-        WithMain withMainAnno = this.testClass.getAnnotation(WithMain.class);
-        if ( withMainAnno != null ) {
-            System.err.println( "Using main-class: " + withMainAnno.value().getName() );
-            tool.mainClass( withMainAnno.value().getName() );
+        if ( mainSpecifier != null ) {
+            tool.mainClass( mainSpecifier.getClassName() );
+            String[] args = mainSpecifier.getArgs();
+
+            for (String arg : args) {
+                executor.withArgument( arg );
+            }
+        } else {
+            WithMain withMainAnno = this.testClass.getAnnotation(WithMain.class);
+            if (withMainAnno != null) {
+                tool.mainClass(withMainAnno.value().getName());
+            }
         }
 
         Archive<?> wrapped = tool.build();
