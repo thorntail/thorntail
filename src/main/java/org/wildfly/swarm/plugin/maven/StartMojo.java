@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
@@ -36,6 +37,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.ArtifactSpec;
+import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DependencyManager;
 import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.FractionUsageAnalyzer;
@@ -203,15 +205,23 @@ public class StartMojo extends AbstractSwarmMojo {
     List<Path> findNeededFractions(final Set<Artifact> existingDeps,
                                    final Path source,
                                    final boolean scanDeps) throws MojoFailureException {
-        getLog().info("No WildFly Swarm dependencies found - scanning for needed fractions");
+        getLog().info("Scanning for needed WildFly Swarm fractions with mode: " + fractionDetectMode);
+
+        final Set<String> existingDepGASet = existingDeps.stream()
+                .map(d -> String.format("%s:%s", d.getGroupId(), d.getArtifactId()))
+                .collect(Collectors.toSet());
 
         final Set<FractionDescriptor> fractions;
         final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer(FractionList.get()).source(source);
         if (scanDeps) {
             existingDeps.forEach(d -> analyzer.source(d.getFile()));
         }
+        final Predicate<FractionDescriptor> notExistingDep =
+                d -> !existingDepGASet.contains(String.format("%s:%s", d.groupId(), d.artifactId()));
         try {
-            fractions = analyzer.detectNeededFractions();
+            fractions = analyzer.detectNeededFractions().stream()
+                    .filter(notExistingDep)
+                    .collect(Collectors.toSet());
         } catch (IOException e) {
             throw new MojoFailureException("failed to scan for fractions", e);
         }
@@ -228,6 +238,7 @@ public class StartMojo extends AbstractSwarmMojo {
         final Set<FractionDescriptor> allFractions = new HashSet<>(fractions);
         allFractions.addAll(fractions.stream()
                                     .flatMap(f -> f.getDependencies().stream())
+                                    .filter(notExistingDep)
                                     .collect(Collectors.toSet()));
 
 
@@ -241,7 +252,7 @@ public class StartMojo extends AbstractSwarmMojo {
         specs.addAll(existingDeps.stream()
                              .map(this::artifactToArtifactSpec)
                              .collect(Collectors.toList()));
-        specs.addAll(fractions.stream()
+        specs.addAll(allFractions.stream()
                              .map(FractionDescriptor::toArtifactSpec)
                              .collect(Collectors.toList()));
         try {
@@ -275,8 +286,13 @@ public class StartMojo extends AbstractSwarmMojo {
 
         elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));
 
-        if (!hasSwarmDeps) {
-            elements.addAll(findNeededFractions(artifacts, archiveContent, scanDependencies));
+        if (fractionDetectMode != BuildTool.FractionDetectionMode.never) {
+            if (fractionDetectMode == BuildTool.FractionDetectionMode.force ||
+                    !hasSwarmDeps) {
+                elements.addAll(findNeededFractions(artifacts, archiveContent, scanDependencies));
+            }
+        } else if (!hasSwarmDeps) {
+            getLog().warn("No WildFly Swarm dependencies found and fraction detection disabled");
         }
 
         return elements;

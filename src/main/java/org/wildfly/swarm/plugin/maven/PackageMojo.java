@@ -66,6 +66,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .properties(this.properties)
                 .mainClass(this.mainClass)
                 .bundleDependencies(this.bundleDependencies)
+                .fractionDetectionMode(fractionDetectMode)
                 .artifactResolvingHelper(mavenArtifactResolvingHelper());
 
         this.additionalFractions.stream()

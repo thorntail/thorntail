@@ -36,6 +36,7 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.wildfly.swarm.tools.ArtifactSpec;
+import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
@@ -78,6 +79,9 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
 
     @Parameter(alias = "fractions")
     protected List<String> additionalFractions = new ArrayList<>();
+
+    @Parameter(defaultValue = "when_missing")
+    protected BuildTool.FractionDetectionMode fractionDetectMode;
 
     @Inject
     protected ArtifactResolver resolver;
