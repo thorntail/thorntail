@@ -852,6 +852,27 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>resource-adapters</artifactId>
+        <version>1.0.0.Beta6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>resource-adapters-api</artifactId>
+        <version>1.0.0.Beta6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>resource-adapters-modules</artifactId>
+        <version>1.0.0.Beta6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>resource-adapters-runtime</artifactId>
+        <version>1.0.0.Beta6-SNAPSHOT</version>
+      </dependency>      
+      
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>security</artifactId>
         <version>1.0.0.Beta7-SNAPSHOT</version>
       </dependency>
@@ -1082,6 +1103,7 @@
     <module>naming</module>
     <module>remoting</module>
     <module>request-controller</module>
+    <module>resource-adapters</module>
     <module>security</module>
     <module>transactions</module>
     <module>undertow</module>
