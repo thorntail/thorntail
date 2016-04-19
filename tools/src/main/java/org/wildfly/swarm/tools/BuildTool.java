@@ -145,6 +145,12 @@ public class BuildTool {
         return this;
     }
 
+    public BuildTool logger(SimpleLogger logger) {
+        this.log = logger;
+
+        return this;
+    }
+
     public File build(String baseName, Path dir) throws Exception {
         build();
         return createJar(baseName, dir);
@@ -214,11 +220,11 @@ public class BuildTool {
         this.dependencyManager.getDependencies().forEach(d -> analyzer.source(d.file));
 
         final Set<FractionDescriptor> detectedFractions = analyzer.detectNeededFractions();
-        System.out.println("Detected fractions: " + String.join(", ",
-                                                                detectedFractions.stream()
-                                                                        .map(FractionDescriptor::av)
-                                                                        .sorted()
-                                                                        .collect(Collectors.toList())));
+        this.log.info("Detected fractions: " + String.join(", ",
+                                                           detectedFractions.stream()
+                                                                   .map(FractionDescriptor::av)
+                                                                   .sorted()
+                                                                   .collect(Collectors.toList())));
         detectedFractions.stream()
                 .map(FractionDescriptor::toArtifactSpec)
                 .forEach(this::fraction);
@@ -242,11 +248,11 @@ public class BuildTool {
                 .filter(d -> this.dependencyManager.findArtifact(d.groupId(), d.artifactId(), null, null, null) == null)
                 .forEach(allFractions::add);
 
-        System.out.println("Adding fractions: " +
-                                   String.join(", ", allFractions.stream()
-                                           .map(BuildTool::strippedSwarmGav)
-                                           .sorted()
-                                           .collect(Collectors.toList())));
+        this.log.info("Adding fractions: " +
+                              String.join(", ", allFractions.stream()
+                                      .map(BuildTool::strippedSwarmGav)
+                                      .sorted()
+                                      .collect(Collectors.toList())));
 
         allFractions.forEach(f -> this.dependencyManager.addDependency(f));
         resolveTransitiveDependencies(true);
@@ -263,13 +269,13 @@ public class BuildTool {
 
             if (this.fractionDetectionMode == FractionDetectionMode.force ||
                     artifact == null) {
-                System.out.println("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
+                this.log.info("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
                 detectFractions();
                 addFractions();
                 artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
             }
         } else if (artifact == null) {
-            System.err.println("No WildFly Swarm dependencies found and fraction detection disabled");
+            this.log.error("No WildFly Swarm dependencies found and fraction detection disabled");
         }
 
         if (artifact != null) {
@@ -375,6 +381,34 @@ public class BuildTool {
     private FractionDetectionMode fractionDetectionMode = FractionDetectionMode.when_missing;
 
     private FractionList fractionList = null;
+
+    private SimpleLogger log = STD_LOGGER;
+
+    private static SimpleLogger STD_LOGGER = new SimpleLogger() {
+        @Override
+        public void info(String msg) {
+            System.out.println(msg);
+        }
+
+        @Override
+        public void error(String msg) {
+            System.err.println(msg);
+        }
+
+        @Override
+        public void error(String msg, Throwable t) {
+            error(msg);
+            t.printStackTrace();
+        }
+    };
+
+    public interface SimpleLogger {
+        void info(String msg);
+
+        void error(String msg);
+
+        void error(String msg, Throwable t);
+    }
 
 
 }
