@@ -67,7 +67,23 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .mainClass(this.mainClass)
                 .bundleDependencies(this.bundleDependencies)
                 .fractionDetectionMode(fractionDetectMode)
-                .artifactResolvingHelper(mavenArtifactResolvingHelper());
+                .artifactResolvingHelper(mavenArtifactResolvingHelper())
+                .logger(new BuildTool.SimpleLogger() {
+                    @Override
+                    public void info(String msg) {
+                        getLog().info(msg);
+                    }
+
+                    @Override
+                    public void error(String msg) {
+                        getLog().error(msg);
+                    }
+
+                    @Override
+                    public void error(String msg, Throwable t) {
+                        getLog().error(msg, t);
+                    }
+                });
 
         this.additionalFractions.stream()
                 .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))

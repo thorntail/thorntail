@@ -83,7 +83,23 @@ public class PackageTask extends DefaultTask {
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
                 .additionalModules(ext.getModuleDirs().stream()
                                            .map(File::getAbsolutePath)
-                                           .collect(Collectors.toList()));
+                                           .collect(Collectors.toList()))
+                .logger(new BuildTool.SimpleLogger() {
+                    @Override
+                    public void info(String msg) {
+                        getLogger().info(msg);
+                    }
+
+                    @Override
+                    public void error(String msg) {
+                        getLogger().error(msg);
+                    }
+
+                    @Override
+                    public void error(String msg, Throwable t) {
+                        getLogger().error(msg, t);
+                    }
+                });
 
         project.getConfigurations()
                 .getByName("compile")
