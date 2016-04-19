@@ -29,6 +29,7 @@ import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
+import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.PropertiesUtil;
 import org.wildfly.swarm.tools.BuildTool;
 
@@ -78,6 +79,8 @@ public class PackageTask extends DefaultTask {
                 .properties(ext.getProperties())
                 .properties(fromFile)
                 .properties(PropertiesUtil.filteredSystemProperties(ext.getProperties(), false))
+                .fractionList(FractionList.get())
+                .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
                 .additionalModules(ext.getModuleDirs().stream()
                                            .map(File::getAbsolutePath)
                                            .collect(Collectors.toList()));
