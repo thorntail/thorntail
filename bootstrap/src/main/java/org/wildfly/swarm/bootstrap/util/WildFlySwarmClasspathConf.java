@@ -32,7 +32,7 @@ public class WildFlySwarmClasspathConf {
     }
 
     public WildFlySwarmClasspathConf(ClassLoader classLoader) throws IOException {
-        Enumeration<URL> classpathConfs = ClassLoader.getSystemClassLoader().getResources(WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
+        Enumeration<URL> classpathConfs = classLoader.getResources(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
 
         while (classpathConfs.hasMoreElements()) {
             URL each = classpathConfs.nextElement();

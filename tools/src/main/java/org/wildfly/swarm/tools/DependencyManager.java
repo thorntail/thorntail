@@ -178,7 +178,7 @@ public class DependencyManager {
     }
 
     public void populateUserMavenRepository() throws Exception {
-        resolveAllArtifacts( this.dependencies );
+        resolveAllArtifacts(this.dependencies);
         for (ArtifactSpec each : this.moduleDependencies) {
             resolveArtifact(each);
         }
@@ -368,10 +368,10 @@ public class DependencyManager {
             if (!this.bootstrapDependencies.contains(each)) {
                 if (each.type().equals("jar") && each.shouldGather) {
                     Set<WildFlySwarmClasspathConf.Action> actions = this.classpathConf.getActions(each.file, each.groupId(), each.artifactId());
-                    if ( actions.isEmpty() ) {
+                    if (actions.isEmpty()) {
                         applicationArtifacts.add(each);
                     } else {
-                        if ( includeAsBootstrapJar( each ) ) {
+                        if (includeAsBootstrapJar(each)) {
                             for (WildFlySwarmClasspathConf.Action action : actions) {
                                 if (action instanceof WildFlySwarmClasspathConf.ReplaceAction) {
                                     WildFlySwarmClasspathConf.ReplaceAction replace = (WildFlySwarmClasspathConf.ReplaceAction) action;
@@ -438,7 +438,7 @@ public class DependencyManager {
         this.moduleDependencies.addAll(analyzer.getDependencies());
 
         for (ArtifactSpec each : analyzer.getDependencies()) {
-            if ( analyzer.getName().startsWith( "org.wildfly.swarm" ) && analyzer.getSlot().equals( "api" ) ) {
+            if (analyzer.getName().startsWith("org.wildfly.swarm") && analyzer.getSlot().equals("api")) {
                 // skip
             } else {
                 providedGAVToModuleMappings.put(
@@ -488,9 +488,9 @@ public class DependencyManager {
                 }
             }
 
-            entry = jar.getEntry(WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
+            entry = jar.getEntry(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
             if (entry != null) {
-                this.classpathConf.read( jar.getInputStream( entry ) );
+                this.classpathConf.read(jar.getInputStream(entry));
             }
         } catch (IOException e) {
             e.printStackTrace();
