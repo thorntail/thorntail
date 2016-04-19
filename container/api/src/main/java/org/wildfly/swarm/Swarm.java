@@ -19,13 +19,18 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.function.Supplier;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SocketBindingGroup;
 
 /**
  * Default {@code main(...)} if an application does not provide one.
@@ -44,6 +49,56 @@ public class Swarm extends Container {
 
     public Swarm(boolean debugBootstrap) throws Exception {
         super( debugBootstrap );
+    }
+
+    @Override
+    public Swarm fraction(Supplier<Fraction> supplier) {
+        return (Swarm) super.fraction(supplier);
+    }
+
+    @Override
+    public Swarm fraction(Fraction fraction) {
+        return (Swarm) super.fraction(fraction);
+    }
+
+    @Override
+    public Swarm iface(String name, String expression) {
+        return (Swarm) super.iface(name, expression);
+    }
+
+    @Override
+    public Swarm socketBindingGroup(SocketBindingGroup group) {
+        return (Swarm) super.socketBindingGroup(group);
+    }
+
+    @Override
+    public Swarm start(boolean eagerlyOpen) throws Exception {
+        return (Swarm) super.start(eagerlyOpen);
+    }
+
+    @Override
+    public Swarm stop() throws Exception {
+        return (Swarm) super.stop();
+    }
+
+    @Override
+    public Swarm start() throws Exception {
+        return (Swarm) super.start();
+    }
+
+    @Override
+    public Swarm start(Archive<?> deployment) throws Exception {
+        return (Swarm) super.start(deployment);
+    }
+
+    @Override
+    public Swarm deploy() throws DeploymentException {
+        return (Swarm) super.deploy();
+    }
+
+    @Override
+    public Swarm deploy(Archive<?> deployment) throws DeploymentException {
+        return (Swarm) super.deploy(deployment);
     }
 
     /**
