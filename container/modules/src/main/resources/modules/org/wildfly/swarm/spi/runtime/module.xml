@@ -13,5 +13,8 @@
     <module name="org.wildfly.swarm.spi" slot="main"/>
     <module name="org.jboss.as.controller"/>
     <module name="org.wildfly.swarm.configuration"/>
+    <!-- the following have been added to support xml parsing  (see AbstractParserFactory) -->
+    <module name="javax.api" export="true"/>
+    <module name="org.jboss.staxmapper" export="true"/>
   </dependencies>
 </module>
