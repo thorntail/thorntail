@@ -1,0 +1,47 @@
+server:
+    address: 192.168.1.100
+logger:
+    level: DEBUG
+remote:
+    hosts:
+      - some.where.com
+      - else.where.com
+swarm:
+  port:
+    offset: 10
+  magic:
+    enabled: true
+
+---
+project:
+    stage: development
+server:
+    address: 127.0.0.1
+logger:
+    level: DEBUG
+remote:
+    hosts:
+      - foo.bar.com
+      - bar.foo.com
+swarm:
+  port:
+    offset: 50
+  magic:
+    enabled: false
+---
+project:
+    stage: production
+server:
+    address: 192.168.1.120
+logger:
+    level: INFO
+remote:
+    hosts:
+      - foo.bar.com
+      - bar.foo.com
+swarm:
+  port:
+    offset: 100
+  magic:
+    enabled: false
+

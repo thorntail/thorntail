@@ -15,5 +15,6 @@
     <module name="org.jboss.shrinkwrap"/>
     <module name="org.jboss.shrinkwrap.descriptors"/>
     <module name="org.wildfly.swarm.bootstrap" optional="true"/>
+    <module name="org.yaml.snakeyaml"/>
   </dependencies>
 </module>
