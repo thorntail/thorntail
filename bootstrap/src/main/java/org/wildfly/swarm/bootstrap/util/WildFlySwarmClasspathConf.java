@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -73,12 +72,22 @@ public class WildFlySwarmClasspathConf {
             e.printStackTrace();
         }
 
-        actions.addAll(matchers.stream()
-                .filter(e -> e.matches(groupId, artifactId))
-                .map(e -> e.getAction())
-                .collect(Collectors.toSet()));
+        actions.addAll(getActions(groupId, artifactId));
 
         return actions;
+    }
+
+    public Set<Action> getActions(String groupId, String artifactId) {
+        return matchers.stream()
+                .filter(e -> e.matches(groupId, artifactId))
+                .map(Matcher::getAction)
+                .collect(Collectors.toSet());
+    }
+
+    public List<Matcher> getMatchesForActionType(Class<? extends Action> actionType) {
+        return matchers.stream()
+                .filter(m -> m.getAction().getClass().isAssignableFrom(actionType))
+                .collect(Collectors.toList());
     }
 
     public void read(InputStream in) throws IOException {

@@ -1,3 +1,0 @@
-com.sun.mail:javax.mail
-javax.activation:activation
-org.jboss.resteasy:resteasy-multipart-provider

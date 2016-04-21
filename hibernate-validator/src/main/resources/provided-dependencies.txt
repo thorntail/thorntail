@@ -1,3 +1,0 @@
-org.hibernate:hibernate-validator
-org.jboss.spec.javax.el:jboss-el-api_3.0_spec
-org.glassfish:javax.el-impl

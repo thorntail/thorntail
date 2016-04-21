@@ -117,9 +117,8 @@ public class DependencyManagerTest {
         resolver.add(PROVIDED_A, (archive) -> {
             archive.add(new ClassLoaderAsset("keycloak-core-module.xml"), "modules/org/keyclaok/keycloak-core-module/main/module.xml");
             archive.add(new StringAsset(
-                    "com.sun.mail:javax.mail\n" +
-                            "org.keycloak:keycloak-core|org.keycloak.keycloak-core-module"
-            ), "provided-dependencies.txt");
+                    "maven(com.sun.mail:javax.mail) remove"
+            ), "META-INF/wildfly-swarm-classpath.conf");
 
         });
 
@@ -240,14 +239,9 @@ public class DependencyManagerTest {
         manager.analyzeDependencies(false);
 
         assertThat(manager.getDependencies()).hasSize(1);
-        assertThat(manager.getProvidedGAVs()).hasSize(3);
+        assertThat(manager.getProvidedGAVs()).hasSize(2);
         assertThat(manager.getProvidedGAVs()).contains(PROVIDED_A.groupId() + ":" + PROVIDED_A.artifactId());
         assertThat(manager.getProvidedGAVs()).contains("com.sun.mail:javax.mail");
-        assertThat(manager.getProvidedGAVs()).contains("org.keycloak:keycloak-core");
-
-        assertThat(manager.getProvidedGAVToModuleMappings()).hasSize(1);
-        assertThat(manager.getProvidedGAVToModuleMappings().get("org.keycloak:keycloak-core")).isNotNull();
-        assertThat(manager.getProvidedGAVToModuleMappings().get("org.keycloak:keycloak-core")).isEqualTo("org.keycloak.keycloak-core-module");
     }
 
     @Test

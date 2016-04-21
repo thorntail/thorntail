@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
@@ -42,6 +43,7 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class DependencyManager {
 
@@ -367,13 +369,17 @@ public class DependencyManager {
         for (ArtifactSpec each : this.dependencies) {
             if (!this.bootstrapDependencies.contains(each)) {
                 if (each.type().equals("jar") && each.shouldGather) {
-                    Set<WildFlySwarmClasspathConf.Action> actions = this.classpathConf.getActions(each.file, each.groupId(), each.artifactId());
-                    if (actions.isEmpty()) {
-                        applicationArtifacts.add(each);
-                    } else {
-                        if (includeAsBootstrapJar(each)) {
-                            for (WildFlySwarmClasspathConf.Action action : actions) {
-                                if (action instanceof WildFlySwarmClasspathConf.ReplaceAction) {
+                    if (!isProvidedDependency(each)) {
+                        Set<WildFlySwarmClasspathConf.Action> actions =
+                                this.classpathConf.getActions(each.file, each.groupId(), each.artifactId())
+                                        .stream()
+                                        .filter(a -> a instanceof WildFlySwarmClasspathConf.ReplaceAction)
+                                        .collect(Collectors.toSet());
+                        if (actions.isEmpty()) {
+                            applicationArtifacts.add(each);
+                        } else {
+                            if (includeAsBootstrapJar(each)) {
+                                for (WildFlySwarmClasspathConf.Action action : actions) {
                                     WildFlySwarmClasspathConf.ReplaceAction replace = (WildFlySwarmClasspathConf.ReplaceAction) action;
                                     appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(replace.moduleName + ":" + replace.moduleSlot));
                                 }
@@ -439,7 +445,8 @@ public class DependencyManager {
 
         for (ArtifactSpec each : analyzer.getDependencies()) {
             if (analyzer.getName().startsWith("org.wildfly.swarm") && analyzer.getSlot().equals("api")) {
-                // skip
+                providedGAVs.add(each.groupId() + ":" + each.artifactId());
+                providedGAVs.add(each.groupId() + ":" + each.artifactId().substring(0, each.artifactId().length() - "-api".length()));
             } else {
                 providedGAVToModuleMappings.put(
                         each.groupId() + ":" + each.artifactId(),
@@ -460,9 +467,10 @@ public class DependencyManager {
             return;
         }
         try (JarFile jar = new JarFile(spec.file)) {
-
-            ZipEntry entry = jar.getEntry("provided-dependencies.txt");
+            ZipEntry entry = jar.getEntry(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
             if (entry != null) {
+                this.classpathConf.read(jar.getInputStream(entry));
+
                 // add ourselves
                 providedGAVs.add(spec.groupId() + ":" + spec.artifactId());
 
@@ -470,27 +478,16 @@ public class DependencyManager {
                     providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-modules".length()) + "-api");
                 }
 
-                try (InputStream in = jar.getInputStream(entry)) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    String line = null;
-
-                    // add everything mentioned in the file
-                    while ((line = reader.readLine()) != null) {
-                        line = line.trim();
-                        if (line.length() > 0) {
-                            String[] parts = line.split("\\|");
-                            if (parts.length > 1) {
-                                this.providedGAVToModuleMappings.put(parts[0], parts[1]);
-                            }
-                            providedGAVs.add(parts[0].trim());
-                        }
-                    }
+                if (spec.artifactId().endsWith("-api")) {
+                    providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-api".length()));
                 }
-            }
 
-            entry = jar.getEntry(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
-            if (entry != null) {
-                this.classpathConf.read(jar.getInputStream(entry));
+                providedGAVs.addAll(
+                        this.classpathConf.getMatchesForActionType(WildFlySwarmClasspathConf.RemoveAction.class).stream()
+                                .map(m -> (WildFlySwarmClasspathConf.MavenMatcher) m)
+                                .map(m -> m.groupId + ":" + m.artifactId)
+                                .collect(Collectors.toList())
+                );
             }
         } catch (IOException e) {
             e.printStackTrace();
