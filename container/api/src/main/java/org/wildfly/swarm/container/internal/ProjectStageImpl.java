@@ -33,13 +33,14 @@ public class ProjectStageImpl implements ProjectStage {
 
             String[] lines = buffer.toString().split("\n");
             for (String line : lines) {
-                String[] tokens = line.split("=");
+                int pos = line.indexOf('=');
+                String left = line.substring(0, pos);
 
                 // args precendence (java -Dfoo=bar)
-                if(null==System.getProperty(tokens[0]))
-                    this.properties.put(tokens[0], tokens[1]);
+                if(null==System.getProperty(left))
+                    this.properties.put(left, line.substring(pos + 1, line.length()));
                 else
-                    this.properties.put(tokens[0], System.getProperty(tokens[0]));
+                    this.properties.put(left, System.getProperty(left));
             }
         }
         return this;
