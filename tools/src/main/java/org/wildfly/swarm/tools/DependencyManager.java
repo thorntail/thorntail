@@ -369,20 +369,20 @@ public class DependencyManager {
         for (ArtifactSpec each : this.dependencies) {
             if (!this.bootstrapDependencies.contains(each)) {
                 if (each.type().equals("jar") && each.shouldGather) {
-                    if (!isProvidedDependency(each)) {
-                        Set<WildFlySwarmClasspathConf.Action> actions =
-                                this.classpathConf.getActions(each.file, each.groupId(), each.artifactId())
-                                        .stream()
-                                        .filter(a -> a instanceof WildFlySwarmClasspathConf.ReplaceAction)
-                                        .collect(Collectors.toSet());
-                        if (actions.isEmpty()) {
+                    Set<WildFlySwarmClasspathConf.Action> actions =
+                            this.classpathConf.getActions(each.file, each.groupId(), each.artifactId())
+                                    .stream()
+                                    .filter(a -> a instanceof WildFlySwarmClasspathConf.ReplaceAction)
+                                    .collect(Collectors.toSet());
+                    if (actions.isEmpty()) {
+                        if (!isProvidedDependency(each)) {
                             applicationArtifacts.add(each);
-                        } else {
-                            if (includeAsBootstrapJar(each)) {
-                                for (WildFlySwarmClasspathConf.Action action : actions) {
-                                    WildFlySwarmClasspathConf.ReplaceAction replace = (WildFlySwarmClasspathConf.ReplaceAction) action;
-                                    appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(replace.moduleName + ":" + replace.moduleSlot));
-                                }
+                        }
+                    } else {
+                        if (includeAsBootstrapJar(each)) {
+                            for (WildFlySwarmClasspathConf.Action action : actions) {
+                                WildFlySwarmClasspathConf.ReplaceAction replace = (WildFlySwarmClasspathConf.ReplaceAction) action;
+                                appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(replace.moduleName + ":" + replace.moduleSlot));
                             }
                         }
                     }
