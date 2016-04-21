@@ -33,7 +33,7 @@
     <version.swarm.spi>1.0.0.Beta12</version.swarm.spi>
     <version.swarm.topology>1.0.0.CR2</version.swarm.topology>
     <version.swarm.core>1.0.0.Beta5</version.swarm.core>
-    <version.swarm.fraction-plugin>12</version.swarm.fraction-plugin>
+    <version.swarm.fraction-plugin>17</version.swarm.fraction-plugin>
     <version.openshift.client>3.0.1.Final</version.openshift.client>
   </properties>
 
