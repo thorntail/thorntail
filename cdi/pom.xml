@@ -28,6 +28,7 @@
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
+    <module>ext</module>
     <module>test</module>
   </modules>
 

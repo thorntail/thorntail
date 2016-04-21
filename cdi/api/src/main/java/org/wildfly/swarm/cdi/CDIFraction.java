@@ -22,11 +22,6 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
 /**
  * @author Bob McWhirter
  */
-@Configuration(
-        marshal = true,
-        extension = "org.jboss.as.weld",
-        parserFactoryClassName = "org.wildfly.swarm.cdi.runtime.ParserFactory"
-)
 public class CDIFraction extends Weld<CDIFraction> implements Fraction {
 
     public CDIFraction() {

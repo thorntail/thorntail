@@ -9,6 +9,9 @@
     <module name="org.wildfly.swarm.container" slot="runtime"/>
     <module name="org.wildfly.swarm.configuration"/>
 
+    <module name="org.jboss.shrinkwrap"/>
+    <module name="org.wildfly.swarm.undertow"/>
+
     <module name="org.jboss.as.weld"/>
   </dependencies>
 </module>

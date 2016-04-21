@@ -15,33 +15,20 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>cdi-api</artifactId>
+  <artifactId>cdi-ext</artifactId>
 
-  <name>WildFly Swarm: CDI API</name>
-  <description>WildFly Swarm: CDI API</description>
+  <name>WildFly Swarm: CDI Extensions</name>
+  <description>WildFly Swarm: CDI Extensions</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
+
+    <!-- Provided APIs -->
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>spi-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>cdi-modules</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>cdi-ext</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <!-- Provided APIs -->
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
     </dependency>
 
     <dependency>
@@ -49,15 +36,11 @@
       <artifactId>javax.inject</artifactId>
     </dependency>
 
-  </dependencies>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
+  </dependencies>
 
 </project>

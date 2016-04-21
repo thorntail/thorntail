@@ -12,3 +12,4 @@ org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-base
 org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-jboss
 org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-javaee
 org.yaml:snakeyaml
+org.wildfly:wildfly-naming
