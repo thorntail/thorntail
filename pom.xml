@@ -35,7 +35,7 @@
     <version.swarm.topology>1.0.0.CR2</version.swarm.topology>
     <version.swarm.keycloak>1.0.0.CR1</version.swarm.keycloak>
     <version.swarm.core>1.0.0.Beta5</version.swarm.core>
-    <version.swarm.fraction-plugin>12</version.swarm.fraction-plugin>
+    <version.swarm.fraction-plugin>17</version.swarm.fraction-plugin>
 
     <version.netflix.commons>0.1.1</version.netflix.commons>
     <version.archaius>0.6.6</version.archaius>
@@ -207,6 +207,12 @@
       </dependency>
 
       <dependency>
+        <groupId>com.netflix.archaius</groupId>
+        <artifactId>archaius-core</artifactId>
+        <version>${version.archaius}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.netflix.hystrix</groupId>
         <artifactId>hystrix-core</artifactId>
         <version>${version.hystrix}</version>
@@ -249,6 +255,16 @@
         <version>${version.rxnetty}</version>
       </dependency>
       <dependency>
+        <groupId>io.reactivex</groupId>
+        <artifactId>rxnetty-contexts</artifactId>
+        <version>${version.rxnetty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.reactivex</groupId>
+        <artifactId>rxnetty-servo</artifactId>
+        <version>${version.rxnetty}</version>
+      </dependency>
+      <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-buffer</artifactId>
         <version>${version.netty}</version>
@@ -257,6 +273,17 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-all</artifactId>
         <version>${version.netty}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.netflix.servo</groupId>
+        <artifactId>servo-core</artifactId>
+        <version>${version.servo}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.servo</groupId>
+        <artifactId>servo-internal</artifactId>
+        <version>${version.servo}</version>
       </dependency>
 
       <dependency>

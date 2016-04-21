@@ -1,2 +1,0 @@
-com.netflix.hystrix:hystrix-core
-com.netflix.hystrix:hystrix-metrics-event-stream

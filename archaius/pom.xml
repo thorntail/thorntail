@@ -54,6 +54,13 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>netflix-guava</artifactId>
     </dependency>
+
+    <!-- Provided APIs -->
+    <dependency>
+      <groupId>com.netflix.archaius</groupId>
+      <artifactId>archaius-core</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>

@@ -1,6 +1,0 @@
-com.netflix.ribbon:ribbon
-com.netflix.ribbon:ribbon-core
-com.netflix.ribbon:ribbon-transport
-com.netflix.ribbon:ribbon-loadbalancer
-io.netty:netty-buffer|io.netty
-io.netty:netty-all|io.netty
