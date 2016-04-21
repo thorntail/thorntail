@@ -483,7 +483,7 @@ public class DependencyManager {
                 }
 
                 providedGAVs.addAll(
-                        this.classpathConf.getMatchesForActionType(WildFlySwarmClasspathConf.RemoveAction.class).stream()
+                        this.classpathConf.getMatchesForActionType(WildFlySwarmClasspathConf.MavenMatcher.class, WildFlySwarmClasspathConf.RemoveAction.class).stream()
                                 .map(m -> (WildFlySwarmClasspathConf.MavenMatcher) m)
                                 .map(m -> m.groupId + ":" + m.artifactId)
                                 .collect(Collectors.toList())

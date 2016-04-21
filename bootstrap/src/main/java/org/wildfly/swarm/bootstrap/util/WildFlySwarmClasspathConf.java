@@ -84,8 +84,9 @@ public class WildFlySwarmClasspathConf {
                 .collect(Collectors.toSet());
     }
 
-    public List<Matcher> getMatchesForActionType(Class<? extends Action> actionType) {
+    public List<Matcher> getMatchesForActionType(Class<? extends Matcher> matcherType, Class<? extends Action> actionType) {
         return matchers.stream()
+                .filter(m -> m.getClass().isAssignableFrom(matcherType))
                 .filter(m -> m.getAction().getClass().isAssignableFrom(actionType))
                 .collect(Collectors.toList());
     }
