@@ -49,6 +49,18 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>config-api</artifactId>
     </dependency>
@@ -56,6 +68,7 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>config-api-modules</artifactId>
     </dependency>
+
   </dependencies>
 
 </project>

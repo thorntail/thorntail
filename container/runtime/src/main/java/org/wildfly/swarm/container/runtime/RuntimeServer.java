@@ -45,6 +45,10 @@ import javax.xml.namespace.QName;
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.naming.ImmediateManagedReferenceFactory;
+import org.jboss.as.naming.ServiceBasedNamingStore;
+import org.jboss.as.naming.deployment.ContextNames;
+import org.jboss.as.naming.service.BinderService;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
@@ -211,6 +215,19 @@ public class RuntimeServer implements Server {
             // Provide the main command line args as a value service
             context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(config.getArgs())))
                     .install();
+
+            // make the stage config available through jndi
+            if(enabledStage.isPresent()) {
+
+                BinderService binderService = new BinderService("swarm/stage-config", null, true);
+
+                context.getServiceTarget().addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, "swarm/stage-config"), binderService)
+                        .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
+                        .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(new StageConfig(enabledStage.get())))
+                        .setInitialMode(ServiceController.Mode.ACTIVE)
+                        .install();
+            }
+
         });
 
         for (ServerConfiguration<Fraction> eachConfig : this.configList) {

@@ -32,5 +32,8 @@
     <module name="javax.api" export="true"/>
     <module name="org.jboss.staxmapper" export="true"/>
     <module name="org.jboss.as.logging" export="true"/>
+
+    <!-- to support service activators that expose container components through JNDI -->
+    <module name="org.jboss.as.naming"/>
   </dependencies>
 </module>
