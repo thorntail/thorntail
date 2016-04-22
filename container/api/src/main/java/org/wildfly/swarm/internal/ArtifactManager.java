@@ -112,7 +112,7 @@ public class ArtifactManager implements ArtifactLookup {
                 Set<String> providedGAVs = new HashSet<>();
 
                 for (final String element : classpath.split(File.pathSeparator)) {
-                    if (!element.startsWith(javaHome) && !element.startsWith(pwd)) {
+                    if (!element.startsWith(javaHome) && !element.startsWith(pwd) && !element.endsWith(".pom")) {
                         if (element.contains("org.wildfly.swarm".replace('.', File.separatorChar))) {
                             // Read wildfly-swarm-classpath.conf entries
                             try (JarFile jar = new JarFile(new File(element))) {
