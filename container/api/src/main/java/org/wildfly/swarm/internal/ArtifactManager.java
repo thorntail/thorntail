@@ -20,10 +20,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.maven.ArtifactCoordinates;
@@ -33,6 +39,7 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+import org.wildfly.swarm.bootstrap.util.WildFlySwarmClasspathConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 
@@ -100,8 +107,40 @@ public class ArtifactManager implements ArtifactLookup {
             final String pwd = System.getProperty("user.dir");
             exclusions.replaceAll(s -> s.replace('.', File.separatorChar));
             if (classpath != null) {
+                WildFlySwarmClasspathConf classpathConf = new WildFlySwarmClasspathConf();
+                Set<String> classpathElements = new HashSet<>();
+                Set<String> providedGAVs = new HashSet<>();
+
                 for (final String element : classpath.split(File.pathSeparator)) {
-                    if (!element.startsWith(javaHome) && !element.startsWith(pwd) && !excluded(exclusions, element)) {
+                    if (!element.startsWith(javaHome) && !element.startsWith(pwd)) {
+                        if (element.contains("org.wildfly.swarm".replace('.', File.separatorChar))) {
+                            // Read wildfly-swarm-classpath.conf entries
+                            try (JarFile jar = new JarFile(new File(element))) {
+                                ZipEntry entry = jar.getEntry(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
+                                if (entry != null) {
+                                    classpathConf.read(jar.getInputStream(entry));
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        if (!excluded(exclusions, element)) {
+                            classpathElements.add(element);
+                        }
+                    }
+                }
+
+                providedGAVs.addAll(
+                        classpathConf.getMatchesForActionType(WildFlySwarmClasspathConf.MavenMatcher.class, WildFlySwarmClasspathConf.RemoveAction.class).stream()
+                                .map(m -> (WildFlySwarmClasspathConf.MavenMatcher) m)
+                                .map(m -> m.groupId + "." + m.artifactId)
+                                .map(m -> m.replace('.', File.separatorChar))
+                                .collect(Collectors.toList())
+                );
+
+                for (final String element : classpathElements) {
+                    if (!excluded(providedGAVs, element)) {
                         final File artifact = new File(element);
 
                         if (artifact.isFile()) {
@@ -129,7 +168,7 @@ public class ArtifactManager implements ArtifactLookup {
         return archives;
     }
 
-    private boolean excluded(List<String> exclusions, String classPathElement) {
+    private boolean excluded(Collection<String> exclusions, String classPathElement) {
         for (String exclusion : exclusions) {
             if (classPathElement.contains(exclusion)) {
                 return true;
