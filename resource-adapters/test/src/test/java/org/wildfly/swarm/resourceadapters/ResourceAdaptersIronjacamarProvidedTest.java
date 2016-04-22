@@ -32,18 +32,18 @@ import org.wildfly.swarm.container.Container;
  * @author Ralf Battenfeld
  */
 @RunWith(Arquillian.class)
-public class ResourceAdaptersArquillianTest implements ContainerFactory {
+public class ResourceAdaptersIronjacamarProvidedTest implements ContainerFactory {
 
-	@Deployment(testable = false)
-    public static Archive<?> createDeployment1() {    	
-    	final File[] files = Maven.resolver().resolve("net.java.xadisk:xadisk:jar:1.2.2").withoutTransitivity().asFile();
-    	final RARArchive deploymentRar = ShrinkWrap.create(RARArchive.class, "xadisk.rar");
-    	deploymentRar.addAsLibraries(files[0]);
-    	deploymentRar.addAsManifestResource("ironjacamar.xml", "ironjacamar.xml");   
-    	deploymentRar.setResourceAdapterXML("ra.xml");    	
+    @Deployment(testable = false)
+    public static Archive<?> createDeployment1() {
+        final File[] files = Maven.resolver().resolve("net.java.xadisk:xadisk:jar:1.2.2").withoutTransitivity().asFile();
+        final RARArchive deploymentRar = ShrinkWrap.create(RARArchive.class, "xadisk.rar");
+        deploymentRar.addAsLibraries(files[0]);
+        deploymentRar.addAsManifestResource("ironjacamar.xml", "ironjacamar.xml");
+        deploymentRar.setResourceAdapterXML("ra.xml");
         return deploymentRar;
     }
-    
+
     @Override
     public Container newContainer(String... args) throws Exception {
         return new Container().fraction(new ResourceAdapterFraction());

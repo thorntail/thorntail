@@ -39,7 +39,6 @@ public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
         final RARArchive archive = ShrinkWrap.create(RARArchive.class, determineName());
         final DefaultDeploymentFactory factory = new DefaultRarDeploymentFactory();
         factory.setup(archive);
-//        archive.addAsLibrary("org.wildfly.swarm.resourceadapters", "runtime");
         return archive;
     }
 
@@ -58,6 +57,7 @@ public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
         return archiveFromCurrentApp();
     }
 
+    @Override
     public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {
         final DependenciesContainer<?> archive = (DependenciesContainer<?>) givenArchive;
 
@@ -74,11 +74,6 @@ public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     Path simple = classes.relativize(file);
                     archive.add(new FileAsset(file.toFile()), "WEB-INF/classes/" + convertSeparators(simple));
-                    // If the user's maven output is a jar then they may place
-                    // static content under src/main/resources, in which case
-                    // we need to hoist anything under WEB-INF out of there
-                    // and put it into the root of this archive instead of
-                    // under WEB-INF/classes/WEB-INF/foo
                     if (simple.toString().contains("WEB-INF")) {
                         archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
                     }
@@ -88,7 +83,6 @@ public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
         }
 
         final Path webapp = pwd.resolve("src").resolve("main").resolve("webapp");
-
         if (Files.exists(webapp)) {
             success = true;
             Files.walkFileTree(webapp, new SimpleFileVisitor<Path>() {
@@ -102,7 +96,6 @@ public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
         }
 
         archive.addAllDependencies();
-
         return success;
     }
 

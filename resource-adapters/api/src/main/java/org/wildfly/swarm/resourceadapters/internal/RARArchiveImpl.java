@@ -15,26 +15,28 @@
  */
 package org.wildfly.swarm.resourceadapters.internal;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.impl.base.container.ResourceAdapterContainerBase;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
-import org.jboss.shrinkwrap.impl.base.spec.ResourceAdapterArchiveImpl;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapterConsumer;
 import org.wildfly.swarm.resourceadapters.IronJacamarXmlAsset;
 import org.wildfly.swarm.resourceadapters.RARArchive;
 
 /**
- * @author Bob McWhirter
+ * @author Ralf Battenfeld
  */
 public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> implements RARArchive {
 
+    @Override
     @SuppressWarnings("unchecked")
     public RARArchiveImpl resourceAdapter(final String key, final ResourceAdapterConsumer consumer) {
-    	final ResourceAdapter<?> ra = new ResourceAdapter(key);
+        final ResourceAdapter<?> ra = new ResourceAdapter(key);
         consumer.accept(ra);
         resourceAdapter(ra);
         return this;
@@ -42,16 +44,19 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
 
     @Override
     public RARArchive resourceAdapter(final ResourceAdapter ra) {
-//        if (ra.jndiName() == null) {
-//            ra.jndiName("java:jboss/datasources/" + ra.getKey());
-//        }
-        String name = "ironjacamar.xml";
-        getArchive().add(new IronJacamarXmlAsset(ra), "META-INF/" + name);
+        getArchive().add(new IronJacamarXmlAsset(ra), "META-INF/ironjacamar.xml");
+        return this;
+    }
+
+    @Override
+    public RARArchive resourceAdapter(final File ironjacamarFile) {
+        getArchive().add(new FileAsset(ironjacamarFile), "META-INF/ironjacamar.xml");
         return this;
     }
 
     // -------------------------------------------------------------------------------------||
-    // Class Members ----------------------------------------------------------------------||
+    // Class Members
+    // ----------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
 
     @SuppressWarnings("unused")
@@ -73,11 +78,13 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
     private static final ArchivePath PATH_LIBRARY = new BasicPath("/");
 
     // -------------------------------------------------------------------------------------||
-    // Constructor ------------------------------------------------------------------------||
+    // Constructor
+    // ------------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
 
     /**
-     * Create a new ResourceAdapterArchive with any type storage engine as backing.
+     * Create a new ResourceAdapterArchive with any type storage engine as
+     * backing.
      *
      * @param delegate
      *            The storage backing.
@@ -87,12 +94,13 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
     }
 
     // -------------------------------------------------------------------------------------||
-    // Required Implementations -----------------------------------------------------------||
+    // Required Implementations
+    // -----------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.jboss.declarchive.impl.base.ContainerBase#getLibraryPath()
      */
     @Override
@@ -102,7 +110,7 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.jboss.declarchive.impl.base.ContainerBase#getResourcePath()
      */
     @Override
@@ -112,7 +120,7 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.jboss.declarchive.impl.base.ContainerBase#getManifestPath()
      */
     @Override
@@ -130,4 +138,5 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
     protected ArchivePath getClassesPath() {
         throw new UnsupportedOperationException("ResourceAdapterArchive does not support classes");
     }
+
 }

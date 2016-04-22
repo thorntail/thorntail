@@ -23,10 +23,7 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
 /**
  * @author Ralf Battenfeld
  */
-@Configuration(
-        marshal = true,
-        parserFactoryClassName = "org.wildfly.swarm.resourceadapters.runtime.ResourceAdapterParserFactory"
-)
+@Configuration(marshal = true, parserFactoryClassName = "org.wildfly.swarm.resourceadapters.runtime.ResourceAdapterParserFactory")
 public class ResourceAdapterFraction extends ResourceAdapters<ResourceAdapterFraction> implements Fraction {
 
     @Override

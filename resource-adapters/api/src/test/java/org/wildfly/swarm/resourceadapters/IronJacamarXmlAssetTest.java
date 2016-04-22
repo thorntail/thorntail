@@ -9,7 +9,7 @@ import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConnectionDef
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConnectionDefinitions.FlushStrategy;
 
 public class IronJacamarXmlAssetTest {
-
+ 
 	@Test
 	public void test() {		
 		final ResourceAdapter<?> ra = new ResourceAdapter("key")

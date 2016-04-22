@@ -15,21 +15,24 @@
  */
 package org.wildfly.swarm.resourceadapters;
 
+import java.io.File;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.container.ManifestContainer;
 import org.jboss.shrinkwrap.api.container.ResourceAdapterContainer;
 import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
+import org.wildfly.swarm.config.resource.adapters.ResourceAdapterConsumer;
 
 /**
  * @author Ralf Battenfeld
  */
-public interface RARArchive extends Archive<RARArchive>,
-		ManifestContainer<RARArchive>,
-		LibraryContainer<RARArchive>,
-		ResourceContainer<RARArchive>,
-		ResourceAdapterContainer<RARArchive> {
+public interface RARArchive extends Archive<RARArchive>, ManifestContainer<RARArchive>, LibraryContainer<RARArchive>, ResourceContainer<RARArchive>, ResourceAdapterContainer<RARArchive> {
 
-	RARArchive resourceAdapter(final ResourceAdapter ra);
+    RARArchive resourceAdapter(final String key, final ResourceAdapterConsumer consumer);
+
+    RARArchive resourceAdapter(final ResourceAdapter ra);
+
+    RARArchive resourceAdapter(final File ironjacamarFile);
 }
