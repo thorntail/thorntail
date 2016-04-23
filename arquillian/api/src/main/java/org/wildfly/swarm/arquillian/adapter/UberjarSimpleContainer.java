@@ -17,7 +17,6 @@ package org.wildfly.swarm.arquillian.adapter;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -25,20 +24,11 @@ import java.util.stream.Stream;
 
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
-import org.jboss.arquillian.container.spi.context.DeploymentContext;
-import org.jboss.arquillian.core.api.Instance;
-import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.wildfly.swarm.arquillian.WithMain;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
@@ -86,7 +76,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         if (isContainerFactory(this.testClass)) {
             archive.as(JavaArchive.class)
                     .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                            this.testClass.getName())
+                                          this.testClass.getName())
                     .addClass(this.testClass)
                     .as(JARArchive.class)
                     .addModule("org.wildfly.swarm.container")
@@ -113,34 +103,14 @@ public class UberjarSimpleContainer implements SimpleContainer {
                     .collect(Collectors.toList()));
         }
 
-        MavenRemoteRepository jbossPublic =
-                MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
-                        "http://repository.jboss.org/nexus/content/groups/public/",
-                        "default");
-        jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
-        jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
-
-
-        final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
-                .withMavenCentralRepo(true)
-                .withRemoteRepo(jbossPublic);
-
         final SwarmExecutor executor = new SwarmExecutor().withDefaultSystemProperties();
 
         final String additionalRepos = System.getProperty(SwarmProperties.BUILD_REPOS);
         if (additionalRepos != null) {
             executor.withProperty("remote.maven.repo", additionalRepos);
-            Arrays.asList(additionalRepos.split(","))
-                    .forEach(r -> {
-                        MavenRemoteRepository repo =
-                                MavenRemoteRepositories.createRemoteRepository(r, r, "default");
-                        repo.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
-                        repo.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
-                        resolver.withRemoteRepo(repo);
-                    });
         }
 
-        final ShrinkwrapArtifactResolvingHelper resolvingHelper = new ShrinkwrapArtifactResolvingHelper(resolver);
+        final ShrinkwrapArtifactResolvingHelper resolvingHelper = ShrinkwrapArtifactResolvingHelper.defaultInstance();
         tool.artifactResolvingHelper(resolvingHelper);
 
         boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;
@@ -184,16 +154,16 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", BootstrapProperties.DEBUG_PORT, debug),
-                        e);
+                                                   e);
             }
         }
 
-        if ( mainSpecifier != null ) {
-            tool.mainClass( mainSpecifier.getClassName() );
+        if (mainSpecifier != null) {
+            tool.mainClass(mainSpecifier.getClassName());
             String[] args = mainSpecifier.getArgs();
 
             for (String arg : args) {
-                executor.withArgument( arg );
+                executor.withArgument(arg);
             }
         } else {
             WithMain withMainAnno = this.testClass.getAnnotation(WithMain.class);

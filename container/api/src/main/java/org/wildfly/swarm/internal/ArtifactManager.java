@@ -105,11 +105,19 @@ public class ArtifactManager implements ArtifactLookup {
             final String classpath = System.getProperty("java.class.path");
             final String javaHome = System.getProperty("java.home");
             final String pwd = System.getProperty("user.dir");
+            final String testClasspath = System.getProperty("swarm.test.dependencies");
             exclusions.replaceAll(s -> s.replace('.', File.separatorChar));
             if (classpath != null) {
                 WildFlySwarmClasspathConf classpathConf = new WildFlySwarmClasspathConf();
                 Set<String> classpathElements = new HashSet<>();
                 Set<String> providedGAVs = new HashSet<>();
+                List<String> testClasspathElements;
+
+                if (testClasspath != null && testClasspath.trim().length() > 0) {
+                    testClasspathElements = Arrays.asList(testClasspath.split(File.pathSeparator));
+                } else {
+                    testClasspathElements = new ArrayList<>();
+                }
 
                 for (final String element : classpath.split(File.pathSeparator)) {
                     if (!element.startsWith(javaHome) && !element.startsWith(pwd) && !element.endsWith(".pom")) {
@@ -140,7 +148,7 @@ public class ArtifactManager implements ArtifactLookup {
                 );
 
                 for (final String element : classpathElements) {
-                    if (!excluded(providedGAVs, element)) {
+                    if (!excluded(providedGAVs, element) && !excluded(testClasspathElements, element)) {
                         final File artifact = new File(element);
 
                         if (artifact.isFile()) {

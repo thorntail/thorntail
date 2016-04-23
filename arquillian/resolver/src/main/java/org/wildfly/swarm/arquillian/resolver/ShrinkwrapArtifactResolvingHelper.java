@@ -20,23 +20,67 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositoryListener;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
+import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.jboss.shrinkwrap.resolver.impl.maven.ConfigurableMavenWorkingSessionImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelper {
+
+    private static AtomicReference<ShrinkwrapArtifactResolvingHelper> INSTANCE = new AtomicReference<>();
+
+    public static ShrinkwrapArtifactResolvingHelper defaultInstance() {
+        return INSTANCE.updateAndGet(e -> {
+            if (e != null) {
+                return e;
+            }
+
+            MavenRemoteRepository jbossPublic =
+                    MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
+                                                                   "http://repository.jboss.org/nexus/content/groups/public/",
+                                                                   "default");
+            jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
+            jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
+
+
+            final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
+                    .withMavenCentralRepo(true)
+                    .withRemoteRepo(jbossPublic);
+
+            final String additionalRepos = System.getProperty(SwarmProperties.BUILD_REPOS);
+            if (additionalRepos != null) {
+                Arrays.asList(additionalRepos.split(","))
+                        .forEach(r -> {
+                            MavenRemoteRepository repo =
+                                    MavenRemoteRepositories.createRemoteRepository(r, r, "default");
+                            repo.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
+                            repo.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
+                            resolver.withRemoteRepo(repo);
+                        });
+            }
+
+            return new ShrinkwrapArtifactResolvingHelper(resolver);
+        });
+    }
 
     public ShrinkwrapArtifactResolvingHelper(ConfigurableMavenResolverSystem resolver) {
         this.resolver = resolver;

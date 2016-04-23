@@ -24,6 +24,10 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>tools</artifactId>
     </dependency>
     <dependency>
