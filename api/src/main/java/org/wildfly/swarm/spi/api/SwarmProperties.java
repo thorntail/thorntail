@@ -114,7 +114,7 @@ public class SwarmProperties {
      *
      * @param property     the property to be formatted
      * @param defaultValue
-     * @return the formatted value as ${property}:Default
+     * @return the formatted value as ${property:defaultValue}
      */
     public static String propertyVar(final String property, final String defaultValue) {
         return String.format("${%s:%s}", property, defaultValue);
