@@ -71,4 +71,16 @@ public class JBossDeploymentStructureAssetTest {
         assertThat(lines).contains("<module name=\"com.mycorp\" slot=\"main\"/>");
         assertThat(lines).contains("<module name=\"com.mycorp.more\" slot=\"special\"/>");
     }
+
+    @Test
+    public void testExportAndServices() throws Exception {
+        JBossDeploymentStructureAsset asset = new JBossDeploymentStructureAsset();
+        asset.addModule("com.mycorp", true, "import");
+        asset.addModule("com.mycorp.special", "sloty", false, null);
+
+        List<String> lines = read(asset.openStream());
+
+        assertThat(lines).contains("<module export=\"true\" name=\"com.mycorp\" services=\"import\" slot=\"main\"/>");
+        assertThat(lines).contains("<module export=\"false\" name=\"com.mycorp.special\" slot=\"sloty\"/>");
+    }
 }

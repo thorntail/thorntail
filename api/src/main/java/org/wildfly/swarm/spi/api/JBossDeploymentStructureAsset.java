@@ -18,6 +18,7 @@ package org.wildfly.swarm.spi.api;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
@@ -49,24 +50,45 @@ public class JBossDeploymentStructureAsset implements Asset {
                                  .fromStream(fromStream));
     }
 
-    public void addModule(final String name, final String slot) {
-        DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>> dependencies = this.descriptor
-                .getOrCreateDeployment()
-                .getOrCreateDependencies();
-        List<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> modules = dependencies.getAllModule();
-        for (ModuleDependencyType each : modules) {
-            final String existingSlot = each.getSlot();
-            if (name.equals(each.getName()) &&
-                    slot.equals(existingSlot == null ? "main" : existingSlot)) {
+    public void addModule(final String name) {
+        addModule(name, "main");
+    }
 
-                //module exists
-                return;
-            }
+    public void addModule(final String name, final String slot) {
+        if (moduleExists(name, slot)) {
+            return;
         }
 
-        dependencies.createModule()
+        this.descriptor
+                .getOrCreateDeployment()
+                .getOrCreateDependencies()
+                .createModule()
                 .name(name)
                 .slot(slot);
+    }
+
+    public void addModule(final String name, final boolean export, final String services) {
+        addModule(name, "main", export, services);
+    }
+
+    public void addModule(final String name, final String slot, final boolean export, final String services) {
+        if (moduleExists(name, slot, export, services)) {
+            return;
+        }
+
+
+        ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>> module =
+                this.descriptor
+                        .getOrCreateDeployment()
+                        .getOrCreateDependencies()
+                        .createModule()
+                        .name(name)
+                        .slot(slot)
+                        .export(export);
+
+        if (services != null && services.length() > 0) {
+            module.services(services);
+        }
     }
 
     public void excludeModule(final String name, final String slot) {
@@ -94,6 +116,27 @@ public class JBossDeploymentStructureAsset implements Asset {
         String output = this.descriptor.exportAsString();
 
         return new ByteArrayInputStream(output.getBytes());
+    }
+
+    private boolean moduleExists(final String name, final String slot) {
+        return findModules(name, slot).size() > 0;
+    }
+
+    private boolean moduleExists(final String name, final String slot, final boolean export, final String services) {
+        return findModules(name, slot)
+                .stream()
+                .filter(m -> m.isExport() == export && m.getServicesAsString().equals(services))
+                .collect(Collectors.toList()).size() > 0;
+    }
+
+    private List<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> findModules(final String name, final String slot) {
+        return this.descriptor
+                .getOrCreateDeployment()
+                .getOrCreateDependencies()
+                .getAllModule()
+                .stream()
+                .filter(m -> m.getName().equals(name) && m.getSlot().equals(slot))
+                .collect(Collectors.toList());
     }
 
     private final JBossDeploymentStructureDescriptor descriptor;

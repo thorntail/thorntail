@@ -27,14 +27,34 @@ public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends
     String PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH = "META-INF/jboss-deployment-structure.xml";
     String SECONDARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH = "WEB-INF/jboss-deployment-structure.xml";
 
+    @SuppressWarnings("unchecked")
     default T addModule(String name) {
-        return addModule(name, "main");
+        getDescriptorAsset()
+                .addModule(name);
+
+        return (T) this;
     }
 
     @SuppressWarnings("unchecked")
     default T addModule(String name, String slot) {
         getDescriptorAsset()
                 .addModule(name, slot);
+
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    default T addModule(String name, boolean export, String services) {
+        getDescriptorAsset()
+                .addModule(name, export, services);
+
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    default T addModule(String name, String slot, boolean export, String services) {
+        getDescriptorAsset()
+                .addModule(name, slot, export, services);
 
         return (T) this;
     }
