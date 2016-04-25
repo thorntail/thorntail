@@ -125,8 +125,7 @@ public class JBossDeploymentStructureAsset implements Asset {
     private boolean moduleExists(final String name, final String slot, final boolean export, final String services) {
         return findModules(name, slot)
                 .stream()
-                .filter(m -> m.isExport() == export && m.getServicesAsString().equals(services))
-                .collect(Collectors.toList()).size() > 0;
+                .anyMatch(m -> m.isExport() == export && m.getServicesAsString().equals(services));
     }
 
     private List<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> findModules(final String name, final String slot) {
