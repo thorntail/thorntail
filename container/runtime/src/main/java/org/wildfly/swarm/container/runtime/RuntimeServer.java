@@ -161,6 +161,10 @@ public class RuntimeServer implements Server {
     @Override
     public Deployer start(Container config, boolean eagerlyOpen) throws Exception {
 
+        if ( System.getProperty( SwarmProperties.HTTP_EAGER) != null ) {
+            eagerlyOpen = true;
+        }
+
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
 
