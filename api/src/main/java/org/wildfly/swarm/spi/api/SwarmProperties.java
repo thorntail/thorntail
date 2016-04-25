@@ -42,6 +42,9 @@ public class SwarmProperties {
     public static final String BIND_ADDRESS = "swarm.bind.address";
 
     //public
+    public static final String HTTP_EAGER = "swarm.http.eager";
+
+    //public
     public static final String ENVIRONMENT = "swarm.environment";
 
     /**
