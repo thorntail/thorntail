@@ -15,50 +15,109 @@
  */
 package org.wildfly.swarm.spi.api;
 
+/**
+ * This class defines all system properties used by Swarm
+ */
 public class SwarmProperties {
+
+    /**
+     * Internal property
+     */
     public static final String VERSION = "swarm.version";
 
-    //public
+    /**
+     * Causes a deployed artifact to be dumped to disk when swarm starts, for debugging. Defaults to <code>false</code>
+     */
     public static final String EXPORT_DEPLOYMENT = "swarm.export.deployment";
 
-    //public
+    /**
+     * Internal property
+     */
     public static final String BUILD_MODULES = "swarm.build.modules";
 
-    //public
+    /**
+     * Internal property
+     */
     public static final String BUILD_REPOS = "swarm.build.repos";
 
-    //public
+    /**
+     * Internal property
+     */
     public static final String EXPORT_UBERJAR = "swarm.export.uberjar";
 
+    /**
+     * Internal property
+     */
     public static final String CURRENT_DEPLOYMENT = "swarm.current.deployment";
 
-    //public
+    /**
+     * Internal property
+     */
     public static final String NODE_ID = "swarm.node.id";
 
-    //public
+    /**
+     * Sets a global port adjustment, defaults to 0
+     */
     public static final String PORT_OFFSET = "swarm.port.offset";
 
-    //public
+    /**
+     * Interface to bind servers, defaults to 0.0.0.0
+     */
     public static final String BIND_ADDRESS = "swarm.bind.address";
 
-    //public
+    /**
+     * Since introducing the delayed open HTTP listeners, it has been determined
+     * that maybe it'd be useful to be able to eagerly open the listeners through usage of a property.
+     * If non-<code>null</code>, will cause the http listeners to not be lazy.
+     */
     public static final String HTTP_EAGER = "swarm.http.eager";
 
-    //public
+    /**
+     * If provided, the swarm process will pause for debugging on the given port.
+     * This option is only available when running an Arquillian test or mvn wildfly-swarm:run, not when executing java -jar.
+     * The latter requires normal Java debug agent parameters.
+     */
+    public static final String DEBUG_PORT = "swarm.debug.port";
+
+    /**
+     * The environment this process is running on (eg. openshift)
+     */
     public static final String ENVIRONMENT = "swarm.environment";
+
+    /**
+     * Activates a stage in project-stages.yml
+     */
+    public static final String PROJECT_STAGE = "swarm.project.stage";
 
     /**
      * Full qualified http address, i.e. 'http://localhost:8500/
      */
     public static final String CONSUL_URL = "swarm.consul.url";
 
-
-    public static String propertyVar(final String prop) {
-        return String.format("${%s}", prop);
+    /**
+     * Timeout, in seconds, to wait for a deployment to occur, defaults to 300
+     */
+    public static final String DEPLOYMENT_TIMEOUT = "swarm.deployment.timeout";
+    
+    /**
+     * Formats a property as ${property}
+     *
+     * @param property the property to be formatted
+     * @return the formatted value as ${property}
+     */
+    public static String propertyVar(final String property) {
+        return String.format("${%s}", property);
     }
 
-    public static String propertyVar(final String prop, final String defaultValue) {
-        return String.format("${%s:%s}", prop, defaultValue);
+    /**
+     * Formats a property as ${property:defaultValue}
+     *
+     * @param property     the property to be formatted
+     * @param defaultValue
+     * @return the formatted value as ${property}:Default
+     */
+    public static String propertyVar(final String property, final String defaultValue) {
+        return String.format("${%s:%s}", property, defaultValue);
     }
 
 }
