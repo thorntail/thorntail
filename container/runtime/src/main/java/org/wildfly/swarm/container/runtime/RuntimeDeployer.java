@@ -134,7 +134,7 @@ public class RuntimeDeployer implements Deployer {
         deploymentAdd.get(RUNTIME_NAME).set(deployment.getName());
         deploymentAdd.get(ENABLED).set(true);
 
-        int deploymentTimeout = Integer.parseInt(System.getProperty("swarm.deployment.timeout", "300"));
+        int deploymentTimeout = Integer.getInteger(SwarmProperties.DEPLOYMENT_TIMEOUT, 300);
 
         final ModelNode opHeaders = new ModelNode();
         opHeaders.get(BLOCKING_TIMEOUT).set(deploymentTimeout);
