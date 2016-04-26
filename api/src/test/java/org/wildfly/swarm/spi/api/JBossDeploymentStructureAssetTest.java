@@ -76,11 +76,23 @@ public class JBossDeploymentStructureAssetTest {
     public void testExportAndServices() throws Exception {
         JBossDeploymentStructureAsset asset = new JBossDeploymentStructureAsset();
         asset.addModule("com.mycorp", true, "import");
-        asset.addModule("com.mycorp.special", "sloty", false, null);
+        asset.addModule("com.mycorp.special", "sloty", false, null, null);
 
         List<String> lines = read(asset.openStream());
 
         assertThat(lines).contains("<module export=\"true\" name=\"com.mycorp\" services=\"import\" slot=\"main\"/>");
         assertThat(lines).contains("<module export=\"false\" name=\"com.mycorp.special\" slot=\"sloty\"/>");
+    }
+
+    @Test
+    public void testExportAndMetaInf() throws Exception {
+        JBossDeploymentStructureAsset asset = new JBossDeploymentStructureAsset();
+        asset.addModule("com.mycorp", true, "import");
+        asset.addModule("com.mycorp.special", "sloty", false, null, "import");
+
+        List<String> lines = read(asset.openStream());
+
+        assertThat(lines).contains("<module export=\"true\" name=\"com.mycorp\" services=\"import\" slot=\"main\"/>");
+        assertThat(lines).contains("<module export=\"false\" meta-inf=\"import\" name=\"com.mycorp.special\" slot=\"sloty\"/>");
     }
 }

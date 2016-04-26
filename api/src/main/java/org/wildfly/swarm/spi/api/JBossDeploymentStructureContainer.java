@@ -54,8 +54,14 @@ public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends
     @SuppressWarnings("unchecked")
     default T addModule(String name, String slot, boolean export, String services) {
         getDescriptorAsset()
-                .addModule(name, slot, export, services);
+                .addModule(name, slot, export, services, null);
 
+        return (T) this;
+    }
+
+    default T addModule(String name, String slot, boolean export, String services, String metaInf) {
+        getDescriptorAsset()
+                .addModule(name, slot, export, services, metaInf);
         return (T) this;
     }
 

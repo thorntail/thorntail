@@ -55,11 +55,12 @@ public class JBossDeploymentStructureAsset implements Asset {
     }
 
     public void addModule(final String name, final String slot) {
+
         if (moduleExists(name, slot)) {
             return;
         }
 
-        this.descriptor
+        ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>> d = this.descriptor
                 .getOrCreateDeployment()
                 .getOrCreateDependencies()
                 .createModule()
@@ -68,10 +69,10 @@ public class JBossDeploymentStructureAsset implements Asset {
     }
 
     public void addModule(final String name, final boolean export, final String services) {
-        addModule(name, "main", export, services);
+        addModule(name, "main", export, services, null);
     }
 
-    public void addModule(final String name, final String slot, final boolean export, final String services) {
+    public void addModule(final String name, final String slot, final boolean export, final String services, String metaInf) {
         if (moduleExists(name, slot, export, services)) {
             return;
         }
@@ -88,6 +89,10 @@ public class JBossDeploymentStructureAsset implements Asset {
 
         if (services != null && services.length() > 0) {
             module.services(services);
+        }
+
+        if (metaInf != null && metaInf.length() > 0) {
+            module.metaInf(metaInf);
         }
     }
 
