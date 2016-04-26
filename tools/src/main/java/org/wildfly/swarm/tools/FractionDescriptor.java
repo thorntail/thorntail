@@ -65,31 +65,55 @@ public class FractionDescriptor {
         this.dependencies.add(dep);
     }
 
+    /**
+     * @deprecated Replaced with {@link #getGroupId()}
+     */
+    @Deprecated
     public String groupId() {
         return this.groupId;
     }
 
+    /**
+     * @deprecated Replaced with {@link #getArtifactId()}
+     */
+    @Deprecated
     public String artifactId() {
         return this.artifactId;
     }
 
+    /**
+     * @deprecated Replaced with {@link #getVersion()}
+     */
+    @Deprecated
     public String version() {
         return this.version;
     }
 
-    public String name() {
-        return this.name;
+    public String getGroupId() {
+        return groupId;
     }
 
-    public String description() {
-        return this.description;
+    public String getArtifactId() {
+        return artifactId;
     }
 
-    public String tags() {
+    public String getVersion() {
+        return version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTags() {
         return tags;
     }
 
-    public boolean internal() {
+    public boolean isInternal() {
         return internal;
     }
 
