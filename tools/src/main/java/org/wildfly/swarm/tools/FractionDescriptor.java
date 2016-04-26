@@ -24,10 +24,18 @@ import java.util.Set;
  */
 public class FractionDescriptor {
 
-    public FractionDescriptor(String groupId, String artifactId, String version) {
+    public FractionDescriptor(String groupId, String artifactId, String version, String name, String description, String tags, boolean internal) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
+        this.name = name;
+        this.description = description;
+        this.tags = tags;
+        this.internal = internal;
+    }
+
+    public FractionDescriptor(String groupId, String artifactId, String version) {
+        this(groupId, artifactId, version, null, null, null, false);
     }
 
     public static FractionDescriptor fromGav(final FractionList fractionList, final String gav) {
@@ -57,16 +65,56 @@ public class FractionDescriptor {
         this.dependencies.add(dep);
     }
 
+    /**
+     * @deprecated Replaced with {@link #getGroupId()}
+     */
+    @Deprecated
     public String groupId() {
         return this.groupId;
     }
 
+    /**
+     * @deprecated Replaced with {@link #getArtifactId()}
+     */
+    @Deprecated
     public String artifactId() {
         return this.artifactId;
     }
 
+    /**
+     * @deprecated Replaced with {@link #getVersion()}
+     */
+    @Deprecated
     public String version() {
         return this.version;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public boolean isInternal() {
+        return internal;
     }
 
     public Set<FractionDescriptor> getDependencies() {
@@ -141,6 +189,14 @@ public class FractionDescriptor {
     private final String artifactId;
 
     private final String version;
+
+    private final String name;
+
+    private final String description;
+
+    private final String tags;
+
+    private final boolean internal;
 
     private final Set<FractionDescriptor> dependencies = new HashSet<>();
 }
