@@ -29,7 +29,7 @@
     <version>1.0.3-SNAPSHOT</version>
   </parent>
 
-    <name>Wildfly Swarm :: Camel Core</name>
+    <name>Wildfly Swarm :: Camel Core :: Root</name>
     
     <artifactId>camel-core</artifactId>
 

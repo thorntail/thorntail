@@ -29,7 +29,7 @@
     <version>1.0.3-SNAPSHOT</version>
   </parent>
 
-    <name>Wildfly Swarm :: Camel Web</name>
+    <name>Wildfly Swarm :: Camel Web :: Root</name>
     
     <artifactId>camel-web</artifactId>
 

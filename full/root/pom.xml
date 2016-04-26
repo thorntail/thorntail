@@ -29,7 +29,7 @@
     <version>1.0.3-SNAPSHOT</version>
   </parent>
 
-    <name>Wildfly Swarm :: Camel Full</name>
+    <name>Wildfly Swarm :: Camel Full :: Root</name>
     
     <artifactId>camel-full</artifactId>
 
