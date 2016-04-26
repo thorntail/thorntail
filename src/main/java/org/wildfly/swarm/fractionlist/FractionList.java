@@ -27,6 +27,8 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
@@ -34,7 +36,7 @@ import org.wildfly.swarm.tools.PropertiesUtil;
  * @author Bob McWhirter
  */
 public class FractionList implements org.wildfly.swarm.tools.FractionList {
-    
+
     private final Map<String, FractionDescriptor> descriptors = new TreeMap<>();
 
     private static final AtomicReference<FractionList> INSTANCE = new AtomicReference<>();
@@ -44,6 +46,23 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
     }
 
     private FractionList() {
+        try (InputStreamReader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("fraction-list.json"))) {
+            Json.parse(reader).asArray().forEach(entry -> {
+                JsonObject fraction = entry.asObject();
+                String groupId = fraction.getString("groupId", null);
+                String artifactId = fraction.getString("artifactId", null);
+                String version = fraction.getString("version", null);
+                String name = fraction.getString("name", null);
+                String description = fraction.getString("description", null);
+                String tags = fraction.getString("tags", null);
+                boolean internal = fraction.getBoolean("internal", false);
+                FractionDescriptor fd = new FractionDescriptor(groupId, artifactId, version, name, description, tags, internal);
+                descriptors.put(groupId + ":" + artifactId, fd);
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // Set up dependencies
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("fraction-list.txt")))) {
 
             String line = null;
@@ -79,6 +98,7 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                         if (depDesc == null) {
                             String[] gavParts = dep.split(":");
                             depDesc = new FractionDescriptor(gavParts[0], gavParts[1], gavParts[2]);
+                            this.descriptors.put(gavParts[0] + ":" + gavParts[1], depDesc);
                         }
                         desc.addDependency(depDesc);
                     }

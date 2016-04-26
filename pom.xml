@@ -27,6 +27,11 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>tools</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.eclipsesource.minimal-json</groupId>
+      <artifactId>minimal-json</artifactId>
+      <version>0.9.4</version>
+    </dependency>
   </dependencies>
 
   <build>
