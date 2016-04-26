@@ -31,7 +31,7 @@
   <properties>
     <version.wildfly.swarm.fraction.plugin>18</version.wildfly.swarm.fraction.plugin>
 
-    <version.swarm.spi>1.0.0.Beta16</version.swarm.spi>
+    <version.swarm.spi>1.0.0.Beta17</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>

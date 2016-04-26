@@ -12,11 +12,10 @@ import javax.xml.namespace.QName;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
-import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.cdi.CDIFraction;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
-import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Heiko Braun
@@ -30,17 +29,7 @@ public class CDIConfiguration extends MarshallingServerConfiguration<CDIFraction
 
     @Override
     public void prepareArchive(Archive<?> a) {
-
-        if(a.getName().endsWith(".war")) { // TODO: fix this
-            try {
-                WARArchive warArchive = a.as(WARArchive.class);
-                warArchive.addModule("org.wildfly.swarm.spi");
-                warArchive.addAsLibraries(Swarm.artifact("org.wildfly.swarm:cdi-ext:jar:"+VERSION));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
+        a.as(JARArchive.class).addModule("org.wildfly.swarm.cdi", "ext", false, null, "import");
     }
 
     @Override

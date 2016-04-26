@@ -32,11 +32,11 @@
       <artifactId>cdi-modules</artifactId>
     </dependency>
 
-    <dependency>
+  <!--  <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>cdi-ext</artifactId>
       <version>${project.version}</version>
-    </dependency>
+    </dependency>-->
 
     <!-- Provided APIs -->
     <dependency>

@@ -21,8 +21,6 @@ import javax.naming.NamingException;
 import org.wildfly.swarm.spi.api.StageConfig;
 
 /**
- * @author Gavin King
- * @author Adam Warski
  * @author Heiko Braun
  */
 public class ConfigExtension implements Extension {
