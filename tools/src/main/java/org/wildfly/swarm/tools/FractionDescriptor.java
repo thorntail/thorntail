@@ -65,14 +65,26 @@ public class FractionDescriptor {
         this.dependencies.add(dep);
     }
 
+    /**
+     * @deprecated Replaced with {@link #getGroupId()}
+     */
+    @Deprecated
     public String groupId() {
         return this.groupId;
     }
 
+    /**
+     * @deprecated Replaced with {@link #getArtifactId()}
+     */
+    @Deprecated
     public String artifactId() {
         return this.artifactId;
     }
 
+    /**
+     * @deprecated Replaced with {@link #getVersion()}
+     */
+    @Deprecated
     public String version() {
         return this.version;
     }
