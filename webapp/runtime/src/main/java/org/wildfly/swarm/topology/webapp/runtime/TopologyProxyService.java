@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import javax.naming.NamingException;
 
+import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.proxy.LoadBalancingProxyClient;
 import io.undertow.server.handlers.proxy.ProxyHandler;
 import org.jboss.msc.inject.Injector;
@@ -51,7 +52,7 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
 
     public ServiceName mscServiceNameForServiceProxy(String serviceName) {
         return ServiceName.of("jboss", "undertow", "handler",
-                              TopologyWebAppFraction.proxyHandlerName(serviceName));
+                TopologyWebAppFraction.proxyHandlerName(serviceName));
     }
 
     @Override
@@ -87,8 +88,8 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
         }
     }
 
-    public Injector<ProxyHandler> getHandlerInjectorFor(String serviceName) {
-        InjectedValue<ProxyHandler> injector = proxyHandlerMap.get(serviceName);
+    public Injector<HttpHandler> getHandlerInjectorFor(String serviceName) {
+        InjectedValue<HttpHandler> injector = proxyHandlerMap.get(serviceName);
         if (injector == null) {
             injector = new InjectedValue<>();
             proxyHandlerMap.put(serviceName, injector);
@@ -97,8 +98,8 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
     }
 
     private void updateProxyHosts(String serviceName, List<Topology.Entry> entries) {
-        ProxyHandler proxyHandler = proxyHandlerMap.get(serviceName).getValue();
-        LoadBalancingProxyClient proxyClient = (LoadBalancingProxyClient) proxyHandler.getProxyClient();
+        HttpHandler proxyHandler = proxyHandlerMap.get(serviceName).getValue();
+        LoadBalancingProxyClient proxyClient = (LoadBalancingProxyClient) ((ProxyHandler) proxyHandler).getProxyClient();
         List<Topology.Entry> oldEntries = proxyEntries.get(serviceName);
         List<Topology.Entry> entriesToRemove = new ArrayList<>();
         List<Topology.Entry> entriesToAdd = new ArrayList<>();
@@ -146,7 +147,7 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
 
     private final Set<String> serviceNames;
 
-    private Map<String, InjectedValue<ProxyHandler>> proxyHandlerMap = new HashMap<>();
+    private Map<String, InjectedValue<HttpHandler>> proxyHandlerMap = new HashMap<>();
 
     private Map<String, List<Topology.Entry>> proxyEntries = new HashMap<>();
 }

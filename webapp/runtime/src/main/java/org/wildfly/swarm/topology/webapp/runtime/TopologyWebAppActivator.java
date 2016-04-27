@@ -17,7 +17,7 @@ package org.wildfly.swarm.topology.webapp.runtime;
 
 import java.util.Set;
 
-import io.undertow.server.handlers.proxy.ProxyHandler;
+import io.undertow.server.HttpHandler;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceBuilder;
@@ -41,7 +41,7 @@ public class TopologyWebAppActivator implements ServiceActivator {
                 .addDependency(TopologyConnector.SERVICE_NAME);
         for (String serviceName : serviceNames) {
             serviceBuilder.addDependency(proxyService.mscServiceNameForServiceProxy(serviceName),
-                                         ProxyHandler.class, proxyService.getHandlerInjectorFor(serviceName));
+                                         HttpHandler.class, proxyService.getHandlerInjectorFor(serviceName));
         }
         serviceBuilder.install();
     }
