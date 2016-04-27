@@ -31,8 +31,8 @@
   </scm>
 
   <properties>
-    <version.swarm.spi>1.0.0.Beta12</version.swarm.spi>
-    <version.swarm.core>1.0.0.Beta5</version.swarm.core>
+    <version.swarm.spi>1.0.0.Beta17</version.swarm.spi>
+    <version.swarm.core>1.0.0.Beta6</version.swarm.core>
     <version.swarm.fraction-plugin>18</version.swarm.fraction-plugin>
 
     <version.io.swagger>1.5.5</version.io.swagger>
