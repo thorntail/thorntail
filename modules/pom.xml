@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>logstash-parent</artifactId>
-    <version>1.0.0.CR2-SNAPSHOT</version>
+    <version>1.0.0.CR2</version>
     <relativePath>../</relativePath>
   </parent>
 
