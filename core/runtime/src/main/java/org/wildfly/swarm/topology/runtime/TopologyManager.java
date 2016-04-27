@@ -127,6 +127,7 @@ public class TopologyManager implements Topology {
                 try {
                     e.onChange(this);
                 } catch (Throwable t) {
+                    t.printStackTrace();
                     removeListener(e);
                 }
             });
