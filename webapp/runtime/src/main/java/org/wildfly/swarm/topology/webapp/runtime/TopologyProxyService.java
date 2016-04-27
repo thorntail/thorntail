@@ -38,6 +38,7 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.extension.undertow.deployment.GlobalRequestControllerHandler;
 import org.wildfly.swarm.topology.Topology;
 import org.wildfly.swarm.topology.TopologyListener;
 import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;
@@ -99,7 +100,19 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
 
     private void updateProxyHosts(String serviceName, List<Topology.Entry> entries) {
         HttpHandler proxyHandler = proxyHandlerMap.get(serviceName).getValue();
-        LoadBalancingProxyClient proxyClient = (LoadBalancingProxyClient) ((ProxyHandler) proxyHandler).getProxyClient();
+        LoadBalancingProxyClient proxyClient = null;
+
+        // with SWARM-189 the request controller subsystem does replace
+        // all HttpHandler (including ProxyHandler) with GlobalRequestControllerHandler,
+        // which then wraps the next handler in the chain
+        if(proxyHandler instanceof GlobalRequestControllerHandler) {
+            ProxyHandler proxy = (ProxyHandler)((GlobalRequestControllerHandler)proxyHandler).getNext(); // next in the chain of handlers
+            proxyClient = (LoadBalancingProxyClient) proxy.getProxyClient();
+        }
+        else {
+            proxyClient = (LoadBalancingProxyClient) ((ProxyHandler) proxyHandler).getProxyClient();
+        }
+
         List<Topology.Entry> oldEntries = proxyEntries.get(serviceName);
         List<Topology.Entry> entriesToRemove = new ArrayList<>();
         List<Topology.Entry> entriesToAdd = new ArrayList<>();

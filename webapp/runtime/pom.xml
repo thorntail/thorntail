@@ -67,6 +67,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-undertow</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
