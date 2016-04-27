@@ -12,6 +12,7 @@
     <module name="org.wildfly.swarm.topology" slot="runtime"/>
 
     <module name="io.undertow.core"/>
+    <module name="org.wildfly.extension.undertow"/>
     <module name="javax.servlet.api"/>
     <module name="org.jboss.msc"/>
     <module name="org.jboss.shrinkwrap"/>
