@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import org.fest.assertions.ObjectAssert;
 import org.junit.Test;
 import org.wildfly.swarm.tools.FractionDescriptor;
 
@@ -56,6 +57,22 @@ public class FractionListTest {
         assertThat(l1).isNotNull();
         assertThat(l1).isSameAs(l2);
         assertThat(l2).isSameAs(l3);
+    }
+
+    @Test
+    public void testGroupIdAndArtifactIdAndNameAndDescriptionAreNeverNull() throws Exception {
+        Collection<FractionDescriptor> descriptors = FractionList.get().getFractionDescriptors();
+        assertThat(descriptors).onProperty("groupId").isNotNull();
+        assertThat(descriptors).onProperty("artifactId").isNotNull();
+        assertThat(descriptors).onProperty("version").isNotNull();
+        assertThat(descriptors).onProperty("name").isNotNull();
+        assertThat(descriptors).onProperty("description").isNotNull();
+    }
+    @Test
+    public void testNameAndDescription() throws Exception {
+        FractionDescriptor cdi = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "cdi");
+        assertThat(cdi.getName()).isEqualTo("CDI");
+        assertThat(cdi.getDescription()).isEqualTo("CDI with Weld");
     }
 
 }

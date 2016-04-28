@@ -76,12 +76,12 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                 String[] sides = line.split("=");
 
                 String lhs = sides[0].trim();
-
-                FractionDescriptor desc = this.descriptors.get(lhs);
+                String lhsKey = toKey(lhs);
+                FractionDescriptor desc = this.descriptors.get(lhsKey);
                 if (desc == null) {
                     String[] gavParts = lhs.split(":");
                     desc = new FractionDescriptor(gavParts[0], gavParts[1], gavParts[2]);
-                    this.descriptors.put(gavParts[0] + ":" + gavParts[1], desc);
+                    this.descriptors.put(lhsKey, desc);
                 }
 
                 if (sides.length > 1) {
@@ -93,12 +93,12 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                         if (dep.isEmpty()) {
                             continue;
                         }
-
-                        FractionDescriptor depDesc = this.descriptors.get(dep);
+                        String depKey = toKey(dep);
+                        FractionDescriptor depDesc = this.descriptors.get(depKey);
                         if (depDesc == null) {
                             String[] gavParts = dep.split(":");
                             depDesc = new FractionDescriptor(gavParts[0], gavParts[1], gavParts[2]);
-                            this.descriptors.put(gavParts[0] + ":" + gavParts[1], depDesc);
+                            this.descriptors.put(depKey, depDesc);
                         }
                         desc.addDependency(depDesc);
                     }
@@ -107,6 +107,14 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * @param a groupId:artifactId:version string
+     * @return the groupId:artifactId
+     */
+    private String toKey(String gav) {
+        return gav.substring(0, gav.lastIndexOf(':'));
     }
 
     @Override
