@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm.servers</groupId>
     <artifactId>servers-parent</artifactId>
-    <version>1.0.0.CR1-SNAPSHOT</version>
+    <version>1.0.0.Beta8</version>
     <relativePath>../</relativePath>
   </parent>
 

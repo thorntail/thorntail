@@ -56,3 +56,6 @@ tmp
 log
 *.log
 embedded-cassandra.log*
+version-bump.sh
+
+versionBump.sh
