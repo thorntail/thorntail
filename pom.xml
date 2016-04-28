@@ -11,7 +11,7 @@
 
   <groupId>org.wildfly.swarm.servers</groupId>
   <artifactId>servers-parent</artifactId>
-  <version>1.0.0.Beta8</version>
+  <version>1.0.0.CR1-SNAPSHOT</version>
 
   <name>WildFly Swarm: Servers Parent</name>
   <description>WildFly Swarm: Servers Parent</description>
@@ -19,7 +19,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.wildfly-swarm>1.0.0.Beta8</version.wildfly-swarm>
+    <version.wildfly-swarm>1.0.0.CR1-SNAPSHOT</version.wildfly-swarm>
   </properties>
 
   <scm>
