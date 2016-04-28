@@ -17,6 +17,7 @@ package org.wildfly.swarm.fractionlist;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.fest.assertions.ObjectAssert;
@@ -73,6 +74,15 @@ public class FractionListTest {
         FractionDescriptor cdi = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "cdi");
         assertThat(cdi.getName()).isEqualTo("CDI");
         assertThat(cdi.getDescription()).isEqualTo("CDI with Weld");
+    }
+
+    @Test
+    public void testEEFractionDependsOnNamingAndContainer() {
+        FractionDescriptor ee = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "ee");
+        FractionDescriptor naming = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "naming");
+        FractionDescriptor container = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "container");
+        Set<FractionDescriptor> dependencies = ee.getDependencies();
+        assertThat(dependencies).contains(naming, container);
     }
 
 }
