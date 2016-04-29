@@ -137,6 +137,7 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                                           fd -> fd));
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Map<String, String> loadPackageSpecs() {
         try {
             final InputStream in = FractionList.class.getClassLoader()
