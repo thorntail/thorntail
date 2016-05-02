@@ -31,6 +31,8 @@ public class SwarmExtension {
 
     private Boolean bundleDependencies = true;
 
+    private Boolean executable = false;
+
     private Properties properties = new Properties();
 
     private File propertiesFile;
@@ -67,6 +69,14 @@ public class SwarmExtension {
 
     public void setBundleDependencies(Boolean bundleDependencies) {
         this.bundleDependencies = bundleDependencies;
+    }
+
+    public Boolean getExecutable() {
+        return executable;
+    }
+
+    public void setExecutable(Boolean executable) {
+        this.executable = executable;
     }
 
     public File getPropertiesFile() {
