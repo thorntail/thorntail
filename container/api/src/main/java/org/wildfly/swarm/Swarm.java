@@ -16,6 +16,7 @@
 package org.wildfly.swarm;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -49,6 +50,16 @@ public class Swarm extends Container {
 
     public Swarm(boolean debugBootstrap) throws Exception {
         super( debugBootstrap );
+    }
+
+    @Override
+    public Swarm withStageConfig(URL url) {
+        return (Swarm) super.withStageConfig(url);
+    }
+
+    @Override
+    public Swarm withXmlConfig(URL url) {
+        return (Swarm) super.withXmlConfig(url);
     }
 
     @Override
