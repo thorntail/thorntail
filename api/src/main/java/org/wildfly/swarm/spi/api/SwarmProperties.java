@@ -73,11 +73,31 @@ public class SwarmProperties {
     public static final String HTTP_EAGER = "swarm.http.eager";
 
     /**
+     * Sets the HTTP port to be used, defaults to 8080
+     */
+    public static final String HTTP_PORT = "swarm.http.port";
+
+    /**
+     * Sets the HTTPS port to be used, defaults to 8443
+     */
+    public static final String HTTPS_PORT = "swarm.https.port";
+
+    /**
+     * The context path to be used, defaults to /
+     */
+    public static final String CONTEXT_PATH = "swarm.context.path";
+
+    /**
      * If provided, the swarm process will pause for debugging on the given port.
      * This option is only available when running an Arquillian test or mvn wildfly-swarm:run, not when executing java -jar.
      * The latter requires normal Java debug agent parameters.
      */
     public static final String DEBUG_PORT = "swarm.debug.port";
+
+    /**
+     * If provided, the swarm container will log bootstrap information
+     */
+    public static final String DEBUG_BOOTSTRAP= "swarm.debug.bootstrap";
 
     /**
      * The environment this process is running on (eg. openshift)
