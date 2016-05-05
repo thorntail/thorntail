@@ -17,6 +17,7 @@ package org.wildfly.swarm.tools;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -150,6 +151,12 @@ public class BuildTool {
 
     public BuildTool executable(boolean executable) {
         this.executable = executable;
+
+        return this;
+    }
+
+    public BuildTool executableScript(File executableScript) {
+        this.executableScript = executableScript;
 
         return this;
     }
@@ -358,8 +365,9 @@ public class BuildTool {
         return out;
     }
 
-    private InputStream getLaunchScript() {
-        return getClass().getResourceAsStream("launch.sh");
+    private InputStream getLaunchScript() throws IOException {
+        return (executableScript != null) ? new FileInputStream(executableScript) :
+                getClass().getResourceAsStream("launch.sh");
     }
 
 
@@ -395,6 +403,8 @@ public class BuildTool {
     private boolean resolveTransitiveDependencies = false;
 
     private boolean executable;
+
+    private File executableScript;
 
     private DependencyManager dependencyManager = new DependencyManager();
 
