@@ -33,6 +33,8 @@ public class SwarmExtension {
 
     private Boolean executable = false;
 
+    private File executableScript;
+
     private Properties properties = new Properties();
 
     private File propertiesFile;
@@ -77,6 +79,14 @@ public class SwarmExtension {
 
     public void setExecutable(Boolean executable) {
         this.executable = executable;
+    }
+
+    public File getExecutableScript() {
+        return executableScript;
+    }
+
+    public void setExecutableScript(File executableScript) {
+        this.executableScript = executableScript;
     }
 
     public File getPropertiesFile() {
