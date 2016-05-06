@@ -217,7 +217,9 @@ public class BuildTool {
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
         final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer(this.fractionList)
                 .source(tmpFile);
-        this.dependencyManager.getDependencies().forEach(d -> analyzer.source(d.file));
+        this.dependencyManager.getDependencies().stream()
+                .filter(d -> !"provided".equals(d.scope) && !"test".equals(d.scope))
+                .forEach(d -> analyzer.source(d.file));
 
         final Set<FractionDescriptor> detectedFractions = analyzer.detectNeededFractions();
         this.log.info("Detected fractions: " + String.join(", ",
