@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>mod_cluster-parent</artifactId>
+    <version>1.0.2.Final-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>mod_cluster-api</artifactId>
+
+  <name>WildFly Swarm: Modcluster API</name>
+  <description>WildFly Swarm: Modcluster API</description>
+
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>mod_cluster-modules</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow-api</artifactId>
+    </dependency>
+
+    <!-- MOVE TO A MODULE? -->
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-mod_cluster-extension</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-mod_cluster-undertow</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>
