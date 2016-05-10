@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -44,6 +45,8 @@ import org.jboss.staxmapper.XMLMapper;
  * @since 27/11/15
  */
 public class StandaloneXmlParser {
+
+    private List<ModelNode> usedExtensions;
 
     public StandaloneXmlParser() {
 
@@ -76,7 +79,7 @@ public class StandaloneXmlParser {
      * @param parser      creates ModelNode's from XML input
      * @return
      */
-    public StandaloneXmlParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>> parser) {
+    public StandaloneXmlParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>>  parser) {
         xmlMapper.registerRootElement(elementName, parser);
         return this;
     }

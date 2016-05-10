@@ -52,6 +52,8 @@ import org.jboss.as.naming.service.BinderService;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
+import org.jboss.dmr.ModelType;
+import org.jboss.dmr.Property;
 import org.jboss.dmr.ValueExpression;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
@@ -161,7 +163,7 @@ public class RuntimeServer implements Server {
     @Override
     public Deployer start(Container config, boolean eagerlyOpen) throws Exception {
 
-        if ( System.getProperty( SwarmProperties.HTTP_EAGER) != null ) {
+        if (System.getProperty(SwarmProperties.HTTP_EAGER) != null) {
             eagerlyOpen = true;
         }
 
@@ -176,12 +178,12 @@ public class RuntimeServer implements Server {
             fraction.postInitialize(config.createPostInitContext());
         }
 
-        if (!xmlConfig.isPresent())
-            applySocketBindingGroupDefaults(config);
+        //if (!xmlConfig.isPresent())
+        applySocketBindingGroupDefaults(config);
 
         LinkedList<ModelNode> bootstrapOperations = new LinkedList<>();
 
-        if(enabledStage.isPresent())
+        if (enabledStage.isPresent())
             getSystemProperties(enabledStage, bootstrapOperations);
 
         // the extensions
@@ -221,7 +223,7 @@ public class RuntimeServer implements Server {
                     .install();
 
             // make the stage config available through jndi
-            if(enabledStage.isPresent()) {
+            if (enabledStage.isPresent()) {
 
                 BinderService binderService = new BinderService("swarm/stage-config", null, true);
 
@@ -262,7 +264,7 @@ public class RuntimeServer implements Server {
         ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
-        if ( eagerlyOpen ) {
+        if (eagerlyOpen) {
             opener.open();
         }
 
@@ -270,7 +272,7 @@ public class RuntimeServer implements Server {
         this.deployer = new RuntimeDeployer(opener, this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
 
-        this.serviceContainer.addService( ServiceName.of( "swarm", "deployer"), new ValueService<>( new ImmediateValue<Object>( this.deployer ))).install();
+        this.serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Object>(this.deployer))).install();
 
         List<Archive> implicitDeployments = new ArrayList<>();
 
@@ -291,7 +293,7 @@ public class RuntimeServer implements Server {
     }
 
     private void getSystemProperties(Optional<ProjectStage> enabledStage, LinkedList<ModelNode> bootstrapOperations) {
-        if(!enabledStage.isPresent())
+        if (!enabledStage.isPresent())
             throw new IllegalArgumentException("No stage config present");
 
         ProjectStage projectStage = enabledStage.get();
@@ -331,7 +333,7 @@ public class RuntimeServer implements Server {
                             Method method = methods[i];
                             if (method.getName().equals("addWrapperHandler")) {
                                 method.setAccessible(true);
-                                method.invoke(value, wrapperInstance );
+                                method.invoke(value, wrapperInstance);
                                 break OUTER;
                             }
                         }
@@ -375,9 +377,7 @@ public class RuntimeServer implements Server {
 
     private void applyDefaults(Container config) throws Exception {
         config.applyFractionDefaults(this);
-        if (!xmlConfig.isPresent()) {
-            applyInterfaceDefaults(config);
-        }
+        applyInterfaceDefaults(config);
     }
 
     private void applyInterfaceDefaults(Container config) {
@@ -664,11 +664,11 @@ public class RuntimeServer implements Server {
 
         if (xmlConfig.isPresent()) {
             configureFractionsFromXML(config, list);
-        } else {
-            configureInterfaces(config, list);
-            configureSocketBindingGroups(config, list);
-            configureFractions(config, list);
         }
+
+        configureFractions(config, list);
+        configureInterfaces(config, list);
+        configureSocketBindingGroups(config, list);
     }
 
     private void configureInterfaces(Container config, List<ModelNode> list) {
@@ -680,6 +680,10 @@ public class RuntimeServer implements Server {
     }
 
     private void configureInterface(Interface iface, List<ModelNode> list) {
+        if ( hasInterface( iface, list ) ) {
+            System.err.println( "has interface, not adding" );
+            return;
+        }
         ModelNode node = new ModelNode();
 
         node.get(OP).set(ADD);
@@ -687,6 +691,35 @@ public class RuntimeServer implements Server {
         node.get(INET_ADDRESS).set(new ValueExpression(iface.getExpression()));
 
         list.add(node);
+    }
+
+    private boolean hasInterface(Interface iface, List<ModelNode> list) {
+        return list.stream()
+                .anyMatch( e->{
+                    if ( ! e.get( OP ).asString().equals( ADD ) ) {
+                        return false;
+                    }
+
+                    ModelNode addr = e.get(OP_ADDR);
+
+                    if ( addr.getType() != ModelType.LIST ) {
+                        return false;
+                    }
+
+                    List<ModelNode> addrList = addr.asList();
+
+                    if ( addrList.size() != 1 ) {
+                        return false;
+                    }
+
+                    Property addrProp = addrList.get(0).asProperty();
+
+                    String propName = addrProp.getName();
+                    String propValue = addrProp.getValue().asString();
+
+                    boolean result = (propName.equals( "interface" ) && propValue.equals( iface.getName() ) );
+                    return result;
+                });
     }
 
     private void configureSocketBindingGroups(Container config, List<ModelNode> list) {
@@ -698,6 +731,9 @@ public class RuntimeServer implements Server {
     }
 
     private void configureSocketBindingGroup(SocketBindingGroup group, List<ModelNode> list) {
+        if ( hasSocketBindingGroup( list ) ) {
+            return;
+        }
         ModelNode node = new ModelNode();
 
         PathAddress address = PathAddress.pathAddress("socket-binding-group", group.name());
@@ -709,6 +745,34 @@ public class RuntimeServer implements Server {
 
         configureSocketBindings(address, group, list);
 
+    }
+
+    private boolean hasSocketBindingGroup(List<ModelNode> list) {
+        return list.stream()
+                .anyMatch( e->{
+                    if ( ! e.get( OP ).asString().equals( ADD ) ) {
+                        return false;
+                    }
+
+                    ModelNode addr = e.get(OP_ADDR);
+
+                    if ( addr.getType() != ModelType.LIST ) {
+                        return false;
+                    }
+                    List<ModelNode> addrList = addr.asList();
+
+                    if ( addrList.size() != 1 ) {
+                        return false;
+                    }
+
+                    Property addrProp = addrList.get(0).asProperty();
+
+                    String propName = addrProp.getName();
+                    String propValue = addrProp.getValue().asString();
+
+                    boolean result = propName.equals( "socket-binding-group" );
+                    return result;
+                });
     }
 
     private void configureSocketBindings(PathAddress address, SocketBindingGroup group, List<ModelNode> list) {
@@ -765,7 +829,10 @@ public class RuntimeServer implements Server {
                     Map<QName, XMLElementReader<List<ModelNode>>> fractionParsers =
                             (Map<QName, XMLElementReader<List<ModelNode>>>) cfg.getSubsystemParsers().get();
 
-                    fractionParsers.forEach(p::addDelegate);
+
+                    fractionParsers.forEach((k, v) -> {
+                        parser.addDelegate(k, new TrackableParser(cfg.getExtension(), v));
+                    });
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -778,7 +845,6 @@ public class RuntimeServer implements Server {
         // parse the configurations
         List<ModelNode> parseResult = parser.parse(xmlConfig.get());
         operationList.addAll(parseResult);
-
     }
 
     private void configureFractions(Container config, List<ModelNode> list) throws Exception {
@@ -787,7 +853,12 @@ public class RuntimeServer implements Server {
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
                     found = true;
-                    list.addAll(eachConfig.getList(eachFraction));
+                    List<ModelNode> subList = eachConfig.getList(eachFraction);
+                    if ( !isAlreadyConfigured(subList, list) ) {
+                        list.addAll(subList);
+                    } else {
+                        // skip because it was configured via XML
+                    }
                     break;
                 }
             }
@@ -795,6 +866,16 @@ public class RuntimeServer implements Server {
                 System.err.println("*** unable to find fraction for: " + eachConfig.getType());
             }
         }
+    }
+
+    private boolean isAlreadyConfigured(List<ModelNode> subList, List<ModelNode> list) {
+        if ( subList.isEmpty() ) {
+            return false;
+        }
+
+        ModelNode head = subList.get(0);
+
+        return list.contains( head );
     }
 
     /**
