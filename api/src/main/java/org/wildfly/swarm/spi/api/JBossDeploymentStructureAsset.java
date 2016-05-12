@@ -17,6 +17,7 @@ package org.wildfly.swarm.spi.api;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,9 +26,11 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptors;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.DependenciesType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.DeploymentType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ExclusionsType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.FilterType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.JBossDeploymentStructureDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ModuleDependencyType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ModuleExclusionType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.PathSpecType;
 
 import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
 
@@ -48,100 +51,204 @@ public class JBossDeploymentStructureAsset implements Asset {
                 withTCCL(Descriptors.class.getClassLoader(),
                          () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
                                  .fromStream(fromStream));
+
+        // Import dependencies and exclusions into internal structure
+        DeploymentType<JBossDeploymentStructureDescriptor> deployment = this.descriptor.getAllDeployment().get(0);
+        if (deployment != null) {
+            DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>> dependencies = deployment.getOrCreateDependencies();
+            if (dependencies != null) {
+                this.deploymentModules.addAll(
+                        dependencies.getAllModule()
+                                .stream()
+                                .map(this::convert)
+                                .collect(Collectors.toList())
+                );
+
+                dependencies.removeAllModule();
+            }
+
+            ExclusionsType<DeploymentType<JBossDeploymentStructureDescriptor>> exclusions = deployment.getOrCreateExclusions();
+            if (exclusions != null) {
+                this.deploymentExclusions.addAll(
+                        exclusions.getAllModule()
+                                .stream()
+                                .map(this::convert)
+                                .collect(Collectors.toList())
+                );
+            }
+        }
     }
 
-    public void addModule(final String name) {
-        addModule(name, "main");
+    public Module addModule(final String name) {
+        Module module = new Module(name);
+
+        if (moduleDependencyExists(module)) {
+            return module;
+        }
+
+        this.deploymentModules.add(module);
+        return module;
     }
 
-    public void addModule(final String name, final String slot) {
+    public Module addModule(final String name, final String slot) {
+        Module module = new Module(name, slot);
 
-        if (moduleExists(name, slot)) {
-            return;
+        if (moduleDependencyExists(module)) {
+            return module;
         }
 
-        ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>> d = this.descriptor
-                .getOrCreateDeployment()
-                .getOrCreateDependencies()
-                .createModule()
-                .name(name)
-                .slot(slot);
+        this.deploymentModules.add(module);
+        return module;
     }
 
-    public void addModule(final String name, final boolean export, final String services) {
-        addModule(name, "main", export, services, null);
-    }
-
-    public void addModule(final String name, final String slot, final boolean export, final String services, String metaInf) {
-        if (moduleExists(name, slot, export, services)) {
-            return;
-        }
-
-
-        ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>> module =
-                this.descriptor
-                        .getOrCreateDeployment()
-                        .getOrCreateDependencies()
-                        .createModule()
-                        .name(name)
-                        .slot(slot)
-                        .export(export);
-
-        if (services != null && services.length() > 0) {
-            module.services(services);
-        }
-
-        if (metaInf != null && metaInf.length() > 0) {
-            module.metaInf(metaInf);
-        }
+    public void excludeModule(final String name) {
+        this.excludeModule(name, "main");
     }
 
     public void excludeModule(final String name, final String slot) {
-        ExclusionsType<DeploymentType<JBossDeploymentStructureDescriptor>> exclusions = this.descriptor
-                .getOrCreateDeployment()
-                .getOrCreateExclusions();
-        List<ModuleExclusionType<ExclusionsType<DeploymentType<JBossDeploymentStructureDescriptor>>>> modules = exclusions.getAllModule();
-        for (ModuleExclusionType each : modules) {
-            final String existingSlot = each.getSlot();
-            if (name.equals(each.getName()) &&
-                    slot.equals(existingSlot == null ? "main" : existingSlot)) {
+        Module module = new Module(name, slot);
 
-                // module already excluded
-                return;
-            }
+        if (moduleExclusionExists(module)) {
+            return;
         }
 
-        exclusions.createModule()
-                .name(name)
-                .slot(slot);
+        this.deploymentExclusions.add(module);
+    }
+
+    public List<Module> deploymentModules() {
+        return this.deploymentModules;
+    }
+
+    public List<Module> deploymentExclusions() {
+        return this.deploymentExclusions;
     }
 
     @Override
     public InputStream openStream() {
-        String output = this.descriptor.exportAsString();
+        // Add modules
+        DeploymentType<JBossDeploymentStructureDescriptor> deployment;
 
-        return new ByteArrayInputStream(output.getBytes());
+        if (this.deploymentExclusions.size() > 0 || this.deploymentModules.size() > 0) {
+            deployment = this.descriptor.getOrCreateDeployment();
+
+            for (Module deploymentModule : this.deploymentModules) {
+                ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>> module =
+                        deployment.getOrCreateDependencies()
+                                .createModule()
+                                .name(deploymentModule.name())
+                                .slot(deploymentModule.slot());
+
+                if (deploymentModule.export() != null) {
+                    module.export(deploymentModule.export());
+                }
+
+                if (deploymentModule.services() != null) {
+                    module.services(deploymentModule.services().value());
+                }
+
+                if (deploymentModule.optional() != null) {
+                    module.optional(deploymentModule.optional());
+                }
+
+                if (deploymentModule.metaInf() != null) {
+                    module.metaInf(deploymentModule.metaInf());
+                }
+
+                if (deploymentModule.importIncludePaths() != null || deploymentModule.importExcludePaths() != null) {
+                    FilterType<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> imports = module.getOrCreateImports();
+
+                    for (String importPath : deploymentModule.importIncludePaths()) {
+                        imports.createInclude()
+                                .path(importPath);
+                    }
+
+                    for (String importPath : deploymentModule.importExcludePaths()) {
+                        imports.createExclude()
+                                .path(importPath);
+                    }
+                }
+
+                if (deploymentModule.exportIncludePaths() != null || deploymentModule.exportExcludePaths() != null) {
+                    FilterType<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> exports = module.getOrCreateExports();
+
+                    for (String exportPath : deploymentModule.exportIncludePaths()) {
+                        exports.createInclude()
+                                .path(exportPath);
+                    }
+
+                    for (String exportPath : deploymentModule.exportExcludePaths()) {
+                        exports.createExclude()
+                                .path(exportPath);
+                    }
+                }
+            }
+
+            for (Module excludedModule : this.deploymentExclusions) {
+                deployment.getOrCreateExclusions()
+                        .createModule()
+                        .name(excludedModule.name())
+                        .slot(excludedModule.slot());
+            }
+        }
+
+        return new ByteArrayInputStream(this.descriptor.exportAsString().getBytes());
     }
 
-    private boolean moduleExists(final String name, final String slot) {
-        return findModules(name, slot).size() > 0;
+    private boolean moduleDependencyExists(Module module) {
+        return this.deploymentModules.stream()
+                .anyMatch(m -> m.name().equals(module.name()) && m.slot().equals(module.slot()));
     }
 
-    private boolean moduleExists(final String name, final String slot, final boolean export, final String services) {
-        return findModules(name, slot)
-                .stream()
-                .anyMatch(m -> m.isExport() == export && m.getServicesAsString().equals(services));
+    private boolean moduleExclusionExists(Module module) {
+        return this.deploymentExclusions.stream()
+                .anyMatch(m -> m.name().equals(module.name()) && m.slot().equals(module.slot()));
     }
 
-    private List<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> findModules(final String name, final String slot) {
-        return this.descriptor
-                .getOrCreateDeployment()
-                .getOrCreateDependencies()
-                .getAllModule()
-                .stream()
-                .filter(m -> m.getName().equals(name) && m.getSlot().equals(slot))
-                .collect(Collectors.toList());
+    private Module convert(ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>> descriptorModule) {
+        Module module = new Module(descriptorModule.getName(), descriptorModule.getSlot());
+        module.withOptional(descriptorModule.isOptional());
+        module.withExport(descriptorModule.isExport());
+
+        if (descriptorModule.getServices() != null) {
+            module.withServices(Module.ServiceHandling.valueOf(descriptorModule.getServicesAsString().toUpperCase()));
+        }
+
+        if (descriptorModule.getMetaInf() != null) {
+            module.withMetaInf(descriptorModule.getMetaInfAsString());
+        }
+
+        for (FilterType<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> moduleImport : descriptorModule.getAllImports()) {
+            moduleImport.getAllInclude()
+                    .stream()
+                    .map(PathSpecType::getPath)
+                    .forEach(module::withImportIncludePath);
+            moduleImport.getAllExclude()
+                    .stream()
+                    .map(PathSpecType::getPath)
+                    .forEach(module::withImportExcludePath);
+        }
+
+        for (FilterType<ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>>> moduleExport : descriptorModule.getAllExports()) {
+            moduleExport.getAllInclude()
+                    .stream()
+                    .map(PathSpecType::getPath)
+                    .forEach(module::withExportIncludePath);
+            moduleExport.getAllExclude()
+                    .stream()
+                    .map(PathSpecType::getPath)
+                    .forEach(module::withExportExcludePath);
+        }
+
+        return module;
+    }
+
+    private Module convert(ModuleExclusionType<ExclusionsType<DeploymentType<JBossDeploymentStructureDescriptor>>> descriptorModule) {
+        return new Module(descriptorModule.getName(), descriptorModule.getSlot());
     }
 
     private final JBossDeploymentStructureDescriptor descriptor;
+
+    private List<Module> deploymentModules = new ArrayList<>();
+
+    private List<Module> deploymentExclusions = new ArrayList<>();
 }
