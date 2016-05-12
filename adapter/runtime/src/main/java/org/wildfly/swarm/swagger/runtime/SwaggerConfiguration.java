@@ -47,7 +47,8 @@ public class SwaggerConfiguration extends AbstractServerConfiguration<SwaggerFra
     public void prepareArchive(Archive<?> a) {
         try {
             // Create a JAX-RS deployment archive
-            JAXRSArchive deployment = a.as(JAXRSArchive.class).addModule("io.swagger");
+            JAXRSArchive deployment = a.as(JAXRSArchive.class);
+            deployment.addModule("io.swagger");
 
             // Make the deployment a swagger archive
             SwaggerArchive swaggerArchive = deployment.as(SwaggerArchive.class);

@@ -34,7 +34,8 @@ public class SwaggerWebAppConfiguration extends AbstractServerConfiguration<Swag
     }
 
     @Override
-    public List<Archive> getImplicitDeployments(SwaggerWebAppFraction fraction, ArtifactLookup lookup) throws Exception {
+    public List<Archive> getImplicitDeployments(SwaggerWebAppFraction fraction) throws Exception {
+        ArtifactLookup lookup = ArtifactLookup.get();
         List<Archive> list = new ArrayList<>();
         try {
             // Get the swagger-ui bits as an Archive
