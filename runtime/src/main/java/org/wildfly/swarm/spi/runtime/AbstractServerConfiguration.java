@@ -34,12 +34,14 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
     }
 
     @Override
-    public List<Archive> getImplicitDeployments(T fraction, ArtifactLookup lookup) throws Exception {
+    public List<Archive> getImplicitDeployments(T fraction) throws Exception {
         if (this.deployments.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<Archive> archives = new ArrayList<>();
+
+        ArtifactLookup lookup = ArtifactLookup.get();
 
         for (DeploymentSpec deployment : this.deployments) {
             archives.add(deployment.toArchive(fraction, lookup));

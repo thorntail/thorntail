@@ -51,10 +51,6 @@ public interface ServerConfiguration<T extends Fraction> {
 
     }
 
-    default List<Archive> getImplicitDeployments(T fraction, ArtifactLookup lookup) throws Exception {
-        return getImplicitDeployments( fraction );
-    }
-
     default List<Archive> getImplicitDeployments(T fraction) throws Exception {
         return Collections.emptyList();
     }
