@@ -1,0 +1,21 @@
+logger:
+    level: DEBUG
+swarm:
+  port:
+    offset: 10
+---
+project:
+    stage: development
+logger:
+    level: DEBUG
+swarm:
+  port:
+    offset: 50
+---
+project:
+    stage: production
+logger:
+    level: INFO
+swarm:
+  port:
+    offset: 100

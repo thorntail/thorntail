@@ -17,7 +17,6 @@ package org.wildfly.swarm.cdi;
 
 import org.wildfly.swarm.config.Weld;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
