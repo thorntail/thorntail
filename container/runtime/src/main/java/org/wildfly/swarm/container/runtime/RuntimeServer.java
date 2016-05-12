@@ -279,7 +279,7 @@ public class RuntimeServer implements Server {
         for (ServerConfiguration<Fraction> eachConfig : this.configList) {
             for (Fraction eachFraction : config.fractions()) {
                 if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-                    implicitDeployments.addAll(eachConfig.getImplicitDeployments(eachFraction, Swarm.artifactManager()));
+                    implicitDeployments.addAll(eachConfig.getImplicitDeployments(eachFraction));
                     break;
                 }
             }
