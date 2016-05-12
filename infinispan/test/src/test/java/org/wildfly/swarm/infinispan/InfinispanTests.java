@@ -31,9 +31,10 @@ import static org.junit.Assert.assertEquals;
 public class InfinispanTests {
     @Deployment
     public static Archive createDeployment() {
-        return ShrinkWrap.create(JARArchive.class)
-                .addModule("org.infinispan")
+        JARArchive archive = ShrinkWrap.create(JARArchive.class)
                 .addClass(InfinispanTests.class);
+        archive.addModule("org.infinispan");
+        return archive;
     }
 
     @Test

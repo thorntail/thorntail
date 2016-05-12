@@ -77,17 +77,15 @@ public class UberjarSimpleContainer implements SimpleContainer {
             archive.as(JavaArchive.class)
                     .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
                                           this.testClass.getName())
-                    .addClass(this.testClass)
-                    .as(JARArchive.class)
-                    .addModule("org.wildfly.swarm.container")
-                    .addModule("org.wildfly.swarm.configuration");
+                    .addClass(this.testClass);
+            archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
+            archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
         }
         archive.as(ServiceActivatorArchive.class)
                 .addServiceActivator(DaemonServiceActivator.class);
-        archive.as(JARArchive.class)
-                .addModule("org.wildfly.swarm.arquillian.daemon")
-                .addModule("org.jboss.modules")
-                .addModule("org.jboss.msc");
+        archive.as(JARArchive.class).addModule("org.wildfly.swarm.arquillian.daemon");
+        archive.as(JARArchive.class).addModule("org.jboss.modules");
+        archive.as(JARArchive.class).addModule("org.jboss.msc");
 
         BuildTool tool = new BuildTool()
                 .projectArchive(archive)

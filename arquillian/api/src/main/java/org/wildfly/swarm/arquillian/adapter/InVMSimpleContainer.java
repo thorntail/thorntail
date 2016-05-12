@@ -41,9 +41,8 @@ public class InVMSimpleContainer implements SimpleContainer {
         System.setProperty(BootstrapProperties.APP_ARTIFACT, archive.getName());
 
         if (isContainerFactory(this.testClass)) {
-            archive.as(JARArchive.class)
-                    .addModule("org.wildfly.swarm.container")
-                    .addModule("org.wildfly.swarm.configuration");
+            archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
+            archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
             Object factory = this.testClass.newInstance();
             this.container = ((ContainerFactory) factory).newContainer();
         } else {

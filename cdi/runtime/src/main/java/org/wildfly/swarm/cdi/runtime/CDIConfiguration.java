@@ -14,6 +14,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.cdi.CDIFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
@@ -29,7 +30,9 @@ public class CDIConfiguration extends MarshallingServerConfiguration<CDIFraction
 
     @Override
     public void prepareArchive(Archive<?> a) {
-        a.as(JARArchive.class).addModule("org.wildfly.swarm.cdi", "ext", false, null, "import");
+        Module module = a.as(JARArchive.class).addModule("org.wildfly.swarm.cdi", "ext");
+        module.withExport(false);
+        module.withMetaInf("import");
     }
 
     @Override

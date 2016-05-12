@@ -17,15 +17,15 @@ package org.wildfly.swarm.container;
 
 import java.util.List;
 
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.junit.Test;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.JBossDeploymentStructureAsset;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
+import org.wildfly.swarm.spi.api.Module;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.wildfly.swarm.container.InputStreamHelper.read;
 
 /**
  * @author Bob McWhirter
@@ -39,28 +39,37 @@ public class JARArchiveTest {
         archive.addModule("com.foo");
         archive.addModule("com.bar", "api");
 
-        Node node = archive.get(JBossDeploymentStructureContainer.PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
+        JBossDeploymentStructureAsset asset = archive.getDescriptorAsset();
 
-        assertThat(node).isNotNull();
-        assertThat(node.getAsset()).isNotNull();
+        assertThat(asset).isNotNull();
 
-        List<String> lines = read(node.getAsset().openStream());
+        List<Module> modules = asset.deploymentModules();
+        assertThat(modules.size()).isEqualTo(2);
 
-        assertThat(lines).contains("<module name=\"com.foo\" slot=\"main\"/>");
-        assertThat(lines).contains("<module name=\"com.bar\" slot=\"api\"/>");
+        Module module = modules.get(0);
+        assertThat(module.name()).isEqualTo("com.foo");
+        assertThat(module.slot()).isEqualTo("main");
+
+        module = modules.get(1);
+        assertThat(module.name()).isEqualTo("com.bar");
+        assertThat(module.slot()).isEqualTo("api");
 
         archive = archive.as(JARArchive.class);
 
-        node = archive.get(JBossDeploymentStructureContainer.PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
+        asset = archive.getDescriptorAsset();
 
-        assertThat(node).isNotNull();
-        assertThat(node.getAsset()).isNotNull();
+        assertThat(asset).isNotNull();
 
-        lines = read(node.getAsset().openStream());
+        modules = asset.deploymentModules();
+        assertThat(modules.size()).isEqualTo(2);
 
-        assertThat(lines).contains("<module name=\"com.foo\" slot=\"main\"/>");
-        assertThat(lines).contains("<module name=\"com.bar\" slot=\"api\"/>");
+        module = modules.get(0);
+        assertThat(module.name()).isEqualTo("com.foo");
+        assertThat(module.slot()).isEqualTo("main");
 
+        module = modules.get(1);
+        assertThat(module.name()).isEqualTo("com.bar");
+        assertThat(module.slot()).isEqualTo("api");
     }
 
 
@@ -82,28 +91,45 @@ public class JARArchiveTest {
 
         archive.addModule("com.baz", "api");
 
-        Node node = archive.get(JBossDeploymentStructureContainer.PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
+        JBossDeploymentStructureAsset asset = archive.getDescriptorAsset();
 
-        assertThat(node).isNotNull();
-        assertThat(node.getAsset()).isNotNull();
+        assertThat(asset).isNotNull();
 
-        List<String> lines = read(node.getAsset().openStream());
+        List<Module> modules = asset.deploymentModules();
+        assertThat(modules.size()).isEqualTo(3);
 
-        assertThat(lines).contains("<module name=\"com.foo\" slot=\"main\"/>");
-        assertThat(lines).contains("<module name=\"com.bar\" slot=\"api\"/>");
-        assertThat(lines).contains("<module name=\"com.baz\" slot=\"api\"/>");
+        Module module = modules.get(0);
+        assertThat(module.name()).isEqualTo("com.foo");
+        assertThat(module.slot()).isEqualTo("main");
+
+        module = modules.get(1);
+        assertThat(module.name()).isEqualTo("com.bar");
+        assertThat(module.slot()).isEqualTo("api");
+
+        module = modules.get(2);
+        assertThat(module.name()).isEqualTo("com.baz");
+        assertThat(module.slot()).isEqualTo("api");
 
         archive = archive.as(JARArchive.class);
 
-        node = archive.get(JBossDeploymentStructureContainer.PRIMARY_JBOSS_DEPLOYMENT_DESCRIPTOR_PATH);
+        asset = archive.getDescriptorAsset();
 
-        assertThat(node).isNotNull();
-        assertThat(node.getAsset()).isNotNull();
+        assertThat(asset).isNotNull();
 
-        lines = read(node.getAsset().openStream());
+        modules = asset.deploymentModules();
+        assertThat(modules.size()).isEqualTo(3);
 
-        assertThat(lines).contains("<module name=\"com.foo\" slot=\"main\"/>");
-        assertThat(lines).contains("<module name=\"com.bar\" slot=\"api\"/>");
+        module = modules.get(0);
+        assertThat(module.name()).isEqualTo("com.foo");
+        assertThat(module.slot()).isEqualTo("main");
+
+        module = modules.get(1);
+        assertThat(module.name()).isEqualTo("com.bar");
+        assertThat(module.slot()).isEqualTo("api");
+
+        module = modules.get(2);
+        assertThat(module.name()).isEqualTo("com.baz");
+        assertThat(module.slot()).isEqualTo("api");
 
     }
 
