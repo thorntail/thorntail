@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>remoting-parent</artifactId>
-    <version>1.0.0.Beta7</version>
+    <version>1.0.0.Beta8-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
