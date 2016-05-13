@@ -31,10 +31,10 @@
   </scm>
 
   <properties>
-    <version.swarm.spi>1.0.0.Beta17</version.swarm.spi>
-    <version.swarm.topology>1.0.0.CR3</version.swarm.topology>
-    <version.swarm.keycloak>1.0.0.CR2</version.swarm.keycloak>
-    <version.swarm.core>1.0.0.Beta6</version.swarm.core>
+    <version.swarm.spi>1.0.0.CR2</version.swarm.spi>
+    <version.swarm.topology>1.0.0.Final</version.swarm.topology>
+    <version.swarm.keycloak>1.0.0.Final</version.swarm.keycloak>
+    <version.swarm.core>1.0.0.Beta7</version.swarm.core>
     <version.swarm.fraction-plugin>18</version.swarm.fraction-plugin>
 
     <version.netflix.commons>0.1.1</version.netflix.commons>
