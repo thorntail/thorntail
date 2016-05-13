@@ -10,13 +10,13 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>topology-parent</artifactId>
-    <version>1.0.0.Final</version>
+    <version>1.0.1.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-webapp-parent</artifactId>
-  <version>1.0.0.Final</version>
+  <version>1.0.1.Final-SNAPSHOT</version>
 
   <name>WildFly Swarm: Topology Web App</name>
   <description>WildFly Swarm: Topology Web App</description>
