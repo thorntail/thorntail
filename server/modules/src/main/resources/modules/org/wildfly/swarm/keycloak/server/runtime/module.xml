@@ -24,6 +24,7 @@
     <module name="org.keycloak.keycloak-saml-core"/>
     <module name="org.keycloak.keycloak-server-spi"/>
     <module name="org.keycloak.keycloak-server-subsystem"/>
+    <module name="org.keycloak.keycloak-server-subsystem.dependencies"/>
     <module name="org.keycloak.keycloak-services"/>
     <module name="org.keycloak.keycloak-themes"/>
     <module name="org.keycloak.keycloak-wildfly-adduser"/>
@@ -31,7 +32,6 @@
     <module name="org.keycloak.keycloak-wildfly-server-subsystem"/>
 
     <module name="org.jboss.resteasy.resteasy-jackson-provider"/>
-    <module name="org.keycloak.keycloak-server-subsystem.infinispan"/>
     <module name="com.h2database.h2"/>
   </dependencies>
 </module>

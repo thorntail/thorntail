@@ -29,7 +29,7 @@
     <version.swarm.spi>1.0.0.CR2</version.swarm.spi>
     <version.swarm.core>1.0.0.Beta7</version.swarm.core>
     <version.swarm.fraction-plugin>18</version.swarm.fraction-plugin>
-    <version.keycloak>1.9.1.Final</version.keycloak>
+    <version.keycloak>1.9.4.Final</version.keycloak>
     <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
   </properties>
 
