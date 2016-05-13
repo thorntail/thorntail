@@ -71,8 +71,7 @@
             <execution>
               <phase>process-classes</phase>
               <goals>
-                <goal>generate</goal>
-                <goal>jandex</goal>
+                <goal>process</goal>
               </goals>
             </execution>
           </executions>
