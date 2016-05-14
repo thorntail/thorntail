@@ -17,10 +17,14 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>resource-adapters</artifactId>
 
-  <name>WildFly Swarm: Resource Adapters</name>
-  <description>WildFly Swarm: Resource Adapters</description>
+  <name>Resource Adapters</name>
+  <description>Resource Adapters deployed with .rar files</description>
 
   <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.tags>JavaEE,Integration</swarm.fraction.tags>
+  </properties>
 
   <dependencies>
     <dependency>
