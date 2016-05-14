@@ -83,7 +83,7 @@
    {"name": "remoting",                "doc": "remoting-api"},
    {"name": "remoting-modules"},
    {"name": "remoting-api"},
-   {"name": "resource-adapters",       "doc": "resource-adapters"},
+   {"name": "resource-adapters",       "doc": "resource-adapters-api"},
    {"name": "resource-adapters-modules"},
    {"name": "resource-adapters-api"},
    {"name": "security",                "doc": "security-api"},
