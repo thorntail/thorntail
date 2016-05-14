@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.resourceadapters;
+package org.wildfly.swarm.resource.adapters;
 
 import org.wildfly.swarm.config.ResourceAdapters;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
@@ -23,7 +23,7 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
 /**
  * @author Ralf Battenfeld
  */
-@Configuration(marshal = true, parserFactoryClassName = "org.wildfly.swarm.resourceadapters.runtime.ResourceAdapterParserFactory")
+@Configuration(marshal = true, parserFactoryClassName = "org.wildfly.swarm.resource.adapters.runtime.ResourceAdapterParserFactory")
 public class ResourceAdapterFraction extends ResourceAdapters<ResourceAdapterFraction> implements Fraction {
 
     @Override

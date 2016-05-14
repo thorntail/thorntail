@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.resourceadapters.internal;
+package org.wildfly.swarm.resource.adapters.internal;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -26,7 +26,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.wildfly.swarm.resourceadapters.RARArchive;
+import org.wildfly.swarm.resource.adapters.RARArchive;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 

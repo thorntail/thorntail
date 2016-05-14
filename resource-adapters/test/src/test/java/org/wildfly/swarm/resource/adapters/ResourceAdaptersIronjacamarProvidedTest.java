@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.resourceadapters;
+package org.wildfly.swarm.resource.adapters;
 
 import java.io.File;
 
@@ -26,33 +26,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.config.resource.adapters.ResourceAdapter.TransactionSupport;
-import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
 import org.wildfly.swarm.container.Container;
 
 /**
  * @author Ralf Battenfeld
  */
 @RunWith(Arquillian.class)
-public class ResourceAdaptersIronjacamarFromRaTest implements ContainerFactory {
+public class ResourceAdaptersIronjacamarProvidedTest implements ContainerFactory {
 
     @Deployment(testable = false)
     public static Archive<?> createDeployment1() {
         final File[] files = Maven.resolver().resolve("net.java.xadisk:xadisk:jar:1.2.2").withoutTransitivity().asFile();
         final RARArchive deploymentRar = ShrinkWrap.create(RARArchive.class, "xadisk.rar");
-        deploymentRar.as(RARArchive.class).resourceAdapter("", (rar) -> {
-            rar.archive("xadisk-1.2.2.rar");
-            rar.transactionSupport(TransactionSupport.XATRANSACTION);
-            rar.configProperties(new ConfigProperties("xaDiskHome").value("diskHome"));
-            rar.configProperties(new ConfigProperties("instanceId").value("instance1"));
-            rar.connectionDefinitions("XADiskConnectionFactoryPool", (connDef) -> {
-                connDef.className("org.xadisk.connector.outbound.XADiskManagedConnectionFactory");
-                connDef.jndiName("java:global/XADiskCF");
-                connDef.configProperties(new ConfigProperties("instanceId").value("instance1"));
-            });
-        });
-
         deploymentRar.addAsLibraries(files[0]);
+        deploymentRar.addAsManifestResource("ironjacamar.xml", "ironjacamar.xml");
         deploymentRar.setResourceAdapterXML("ra.xml");
         return deploymentRar;
     }

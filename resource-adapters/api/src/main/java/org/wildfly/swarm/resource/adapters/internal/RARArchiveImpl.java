@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.resourceadapters.internal;
+package org.wildfly.swarm.resource.adapters.internal;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -25,8 +25,8 @@ import org.jboss.shrinkwrap.impl.base.container.ResourceAdapterContainerBase;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapterConsumer;
-import org.wildfly.swarm.resourceadapters.IronJacamarXmlAsset;
-import org.wildfly.swarm.resourceadapters.RARArchive;
+import org.wildfly.swarm.resource.adapters.IronJacamarXmlAsset;
+import org.wildfly.swarm.resource.adapters.RARArchive;
 
 /**
  * @author Ralf Battenfeld

@@ -1,4 +1,4 @@
-<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.resourceadapters" slot="api">
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.resource.adapters" slot="api">
   <resources>
     <artifact name="org.wildfly.swarm:resource-adapters-api:${project.version}"/>
   </resources>

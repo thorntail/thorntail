@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.resourceadapters;
+package org.wildfly.swarm.resource.adapters;
 
 import java.io.File;
 
