@@ -853,22 +853,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>resource-adapters</artifactId>
-        <version>1.0.0.Beta7-SNAPSHOT</version>
+        <version>1.0.0.Beta8-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>resource-adapters-api</artifactId>
-        <version>1.0.0.Beta7-SNAPSHOT</version>
+        <version>1.0.0.Beta8-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>resource-adapters-modules</artifactId>
-        <version>1.0.0.Beta7-SNAPSHOT</version>
+        <version>1.0.0.Beta8-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>resource-adapters-runtime</artifactId>
-        <version>1.0.0.Beta7-SNAPSHOT</version>
+        <version>1.0.0.Beta8-SNAPSHOT</version>
       </dependency>      
       
       <dependency>
