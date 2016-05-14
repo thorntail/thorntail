@@ -25,8 +25,6 @@ import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
  * @author Ralf Battenfeld
  */
 public class IronJacamarXmlAsset implements Asset {
-    private final ResourceAdapter<?> ra;
-
     public IronJacamarXmlAsset(final ResourceAdapter<?> ra) {
         this.ra = ra;
     }
@@ -35,4 +33,6 @@ public class IronJacamarXmlAsset implements Asset {
     public InputStream openStream() {
         return new ByteArrayInputStream(IronJacamarXmlAssetImpl.INSTANCE.transform(ra).getBytes());
     }
+
+    private final ResourceAdapter<?> ra;
 }

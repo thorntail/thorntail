@@ -82,11 +82,12 @@ enum IronJacamarXmlAssetImpl {
                     }
 
                     XmlWriter.Element timeoutElement = null;
-                    timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "blocking-timeout-millis", connDef.blockingTimeoutWaitMillis()); // TODO
-                                                                                                                                                               // check
-                                                                                                                                                               // why
-                                                                                                                                                               // not
-                                                                                                                                                               // blockingTimeoutMillis())
+                    timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "blocking-timeout-millis", connDef.blockingTimeoutWaitMillis());
+                    // TODO
+                    // check
+                    // why
+                    // not
+                    // blockingTimeoutMillis())
                     timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "idle-timeout-minutes", connDef.idleTimeoutMinutes());
                     timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "allocation-retry", connDef.allocationRetry());
                     timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "allocation-retry-wait-millis", connDef.allocationRetryWaitMillis());

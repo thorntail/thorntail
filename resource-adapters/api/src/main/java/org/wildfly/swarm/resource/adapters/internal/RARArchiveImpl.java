@@ -33,6 +33,26 @@ import org.wildfly.swarm.resource.adapters.RARArchive;
  */
 public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> implements RARArchive {
 
+    // -------------------------------------------------------------------------------------||
+    // Constructor
+    // ------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
+    /**
+     * Create a new ResourceAdapterArchive with any type storage engine as
+     * backing.
+     *
+     * @param delegate The storage backing.
+     */
+    public RARArchiveImpl(final Archive<?> delegate) {
+        super(RARArchive.class, delegate);
+    }
+
+    // -------------------------------------------------------------------------------------||
+    // Required Implementations
+    // -----------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+
     @Override
     @SuppressWarnings("unchecked")
     public RARArchiveImpl resourceAdapter(final String key, final ResourceAdapterConsumer consumer) {
@@ -52,6 +72,46 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
     public RARArchive resourceAdapter(final File ironjacamarFile) {
         getArchive().add(new FileAsset(ironjacamarFile), "META-INF/ironjacamar.xml");
         return this;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.declarchive.impl.base.ContainerBase#getLibraryPath()
+     */
+    @Override
+    public ArchivePath getLibraryPath() {
+        return PATH_LIBRARY;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.declarchive.impl.base.ContainerBase#getResourcePath()
+     */
+    @Override
+    protected ArchivePath getResourcePath() {
+        return PATH_RESOURCE;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.declarchive.impl.base.ContainerBase#getManifestPath()
+     */
+    @Override
+    protected ArchivePath getManifestPath() {
+        return PATH_MANIFEST;
+    }
+
+    /**
+     * Classes are not supported by ResourceAdapterArchive.
+     *
+     * @throws UnsupportedOperationException ResourceAdapterArchive does not support classes
+     */
+    @Override
+    protected ArchivePath getClassesPath() {
+        throw new UnsupportedOperationException("ResourceAdapterArchive does not support classes");
     }
 
     // -------------------------------------------------------------------------------------||
@@ -76,67 +136,5 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
      * Path to the application libraries.
      */
     private static final ArchivePath PATH_LIBRARY = new BasicPath("/");
-
-    // -------------------------------------------------------------------------------------||
-    // Constructor
-    // ------------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
-
-    /**
-     * Create a new ResourceAdapterArchive with any type storage engine as
-     * backing.
-     *
-     * @param delegate
-     *            The storage backing.
-     */
-    public RARArchiveImpl(final Archive<?> delegate) {
-        super(RARArchive.class, delegate);
-    }
-
-    // -------------------------------------------------------------------------------------||
-    // Required Implementations
-    // -----------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jboss.declarchive.impl.base.ContainerBase#getLibraryPath()
-     */
-    @Override
-    public ArchivePath getLibraryPath() {
-        return PATH_LIBRARY;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jboss.declarchive.impl.base.ContainerBase#getResourcePath()
-     */
-    @Override
-    protected ArchivePath getResourcePath() {
-        return PATH_RESOURCE;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jboss.declarchive.impl.base.ContainerBase#getManifestPath()
-     */
-    @Override
-    protected ArchivePath getManifestPath() {
-        return PATH_MANIFEST;
-    }
-
-    /**
-     * Classes are not supported by ResourceAdapterArchive.
-     *
-     * @throws UnsupportedOperationException
-     *             ResourceAdapterArchive does not support classes
-     */
-    @Override
-    protected ArchivePath getClassesPath() {
-        throw new UnsupportedOperationException("ResourceAdapterArchive does not support classes");
-    }
 
 }
