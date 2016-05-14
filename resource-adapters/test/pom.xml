@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ Copyright 2015 Red Hat, Inc. and/or its affiliates. ~ ~ Licensed under 
+	the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.wildfly.swarm</groupId>
+		<artifactId>resource-adapters-parent</artifactId>
+        <version>1.0.0.Beta7-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+
+	<groupId>org.wildfly.swarm</groupId>
+	<artifactId>resource-adapters-test</artifactId>
+
+	<name>WildFly Swarm: Resource Adapters Test</name>
+	<description>WildFly Swarm: Resource Adapters Test</description>
+
+	<packaging>jar</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>resource-adapters</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>ejb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>undertow</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>jaxrs</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.java.xadisk</groupId>
+			<artifactId>xadisk</artifactId>
+			<version>1.2.2</version>
+			<type>rar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.java.xadisk</groupId>
+			<artifactId>xadisk</artifactId>
+			<version>1.2.2</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>arquillian</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wildfly</groupId>
+			<artifactId>wildfly-connector</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.spec</groupId>
+			<artifactId>jboss-javaee-all-7.0</artifactId>
+			<version>1.0.3.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.testenricher</groupId>
+			<artifactId>arquillian-testenricher-ejb</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>staxmapper</artifactId>
+			<version>1.2.0.Final</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+
+
+	</dependencies>
+
+</project>

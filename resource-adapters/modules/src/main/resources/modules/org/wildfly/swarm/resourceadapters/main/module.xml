@@ -1,0 +1,16 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.resourceadapters">
+
+  <dependencies>
+    <!-- For when run with bonafide IDE classpath -->
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/resourceadapters"/>
+        <path name="org/wildfly/swarm/resourceadapters/internal"/>
+      </paths>
+    </system>
+
+    <!-- For when bootstrapped through a fat-jar -->
+    <module name="org.wildfly.swarm.resourceadapters" slot="api" export="true" services="export"/>
+
+  </dependencies>
+</module>

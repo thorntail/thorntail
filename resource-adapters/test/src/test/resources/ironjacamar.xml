@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ironjacamar>
+	<transaction-support>XATransaction</transaction-support>
+	<config-property name="xaDiskHome">
+		diskHome
+	</config-property>
+	<config-property name="instanceId">
+		xadisk1
+	</config-property>
+	<connection-definitions>
+		<connection-definition
+			class-name="org.xadisk.connector.outbound.XADiskManagedConnectionFactory"
+			jndi-name="java:global/XADiskCF" pool-name="XADiskConnectionFactoryPool">
+			<config-property name="instanceId">
+				xadisk1
+			</config-property>
+			<xa-pool>
+				<min-pool-size>1</min-pool-size>
+				<max-pool-size>5</max-pool-size>
+			</xa-pool>
+		</connection-definition>
+	</connection-definitions>
+</ironjacamar>

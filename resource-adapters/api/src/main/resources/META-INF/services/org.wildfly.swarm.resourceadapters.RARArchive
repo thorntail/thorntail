@@ -1,0 +1,3 @@
+implementingClassName=org.wildfly.swarm.resourceadapters.internal.RARArchiveImpl
+extension=.rar
+archiveFormat=ZIP
