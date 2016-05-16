@@ -25,6 +25,8 @@ public class BootstrapProperties {
 
     public static final String APP_ARTIFACT = "swarm.app.artifact";
 
+    public static final String DEFAULT_DEPLOYMENT_TYPE = "swarm.default.deployment.type";
+
     //public
     public static final String DEBUG_PORT = "swarm.debug.port";
 

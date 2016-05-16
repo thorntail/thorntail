@@ -103,6 +103,7 @@ public class Container {
 
         createServer(debugBootstrap);
         createShrinkWrapDomain();
+        determineDeploymentType();
     }
 
     public Container withXmlConfig(URL url) {
@@ -531,6 +532,14 @@ public class Container {
     }
 
     protected String determineDeploymentType() throws IOException {
+        if ( this.defaultDeploymentType == null ) {
+            this.defaultDeploymentType = determineDeploymentTypeInternal();
+            System.setProperty(BootstrapProperties.DEFAULT_DEPLOYMENT_TYPE, this.defaultDeploymentType);
+        }
+        return this.defaultDeploymentType;
+    }
+
+    protected String determineDeploymentTypeInternal() throws IOException {
         String artifact = System.getProperty(BootstrapProperties.APP_PATH);
         if (artifact != null) {
             int dotLoc = artifact.lastIndexOf('.');
@@ -646,6 +655,8 @@ public class Container {
     private Domain domain;
 
     private boolean running = false;
+
+    private String defaultDeploymentType;
 
     /**
      * Command line args if any
