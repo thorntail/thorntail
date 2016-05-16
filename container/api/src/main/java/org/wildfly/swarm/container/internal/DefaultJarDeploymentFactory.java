@@ -71,8 +71,6 @@ public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
             });
         }
 
-        //archive.addAllDependencies();
-
         return success;
     }
 

@@ -133,7 +133,6 @@ public class RuntimeServer implements Server {
                 //force logging init
                 LogManager.getLogManager();
                 BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());
-                //System.clearProperty( "org.jboss.logmanager.configurator" );
             } finally {
                 Thread.currentThread().setContextClassLoader(originalCl);
             }

@@ -17,20 +17,14 @@ package org.wildfly.swarm.bootstrap.modules;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 
 import com.sun.org.apache.bcel.internal.util.ClassLoader;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
@@ -38,10 +32,7 @@ import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
-import org.jboss.modules.filter.ClassFilters;
-import org.jboss.modules.filter.PathFilters;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmClasspathConf;
 
 /**
@@ -71,13 +62,6 @@ public class FlattishApplicationModuleFinder extends ApplicationModuleFinder {
         String classPath = System.getProperty("java.class.path");
 
         StringTokenizer tokenizer = new StringTokenizer(classPath, File.pathSeparator);
-
-        //builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.slf4j")));
-        //builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.slf4j.impl")));
-        //builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.slf4j.jcl-over-slf4j")));
-
-        //builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.logging.jul-to-slf4j-stub" )));
-
 
         try {
 
