@@ -9,6 +9,5 @@
     <module name="org.wildfly.swarm.container" slot="runtime"/>
     <module name="org.wildfly.swarm.configuration"/>
     <module name="org.jboss.as.connector"/>
-    <module name="javax.jms.api"/>
   </dependencies>
 </module>
