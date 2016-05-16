@@ -17,7 +17,9 @@ package org.wildfly.swarm.swarmtool;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
@@ -117,6 +119,16 @@ public class Main {
                 System.err.println(msg);
             }
 
+            if (e.printHelp) {
+                if (msg != null) {
+                    System.err.println();
+                }
+                System.err.println("Usage: java -jar swarmtool-standalone.jar <options> war-path\n");
+                try {
+                    OPT_PARSER.printHelpOn(System.err);
+                } catch (IOException ignored) {}
+            }
+
             System.exit(e.status);
         }
     }
@@ -130,9 +142,8 @@ public class Main {
             System.err.println(e.getMessage() + "\n");
         }
 
-        if (foundOptions == null || foundOptions.has(HELP_OPT)) {
-            OPT_PARSER.printHelpOn(System.err);
-            exit(null);
+        if  (foundOptions.has(HELP_OPT)) {
+            exit(null, 0, true);
         }
 
         if (foundOptions.has(VERSION_OPT)) {
@@ -141,10 +152,10 @@ public class Main {
 
         final List<File> nonOptArgs = foundOptions.valuesOf(SOURCE_OPT);
         if (nonOptArgs.isEmpty()) {
-            exit("No source artifact specified.");
+            exit("No source artifact specified.", true);
         }
         if (nonOptArgs.size() > 1) {
-            exit("Too many source artifacts provided (" + nonOptArgs + ")");
+            exit("Too many source artifacts provided (" + nonOptArgs + ")", true);
         }
 
         final File source = nonOptArgs.get(0);
@@ -190,8 +201,15 @@ public class Main {
         exit(message, 1);
     }
 
+    private static void exit(String message, boolean printHelp) {
+        exit(message, 1, printHelp);
+    }
+
     private static void exit(String message, int code) {
-        throw new ExitException(code, message);
+        exit(message, code, false);
+    }
+    private static void exit(String message, int code, boolean printHelp) {
+        throw new ExitException(code, printHelp, message);
     }
 
     private static ArtifactResolvingHelper getResolvingHelper() {
@@ -218,9 +236,11 @@ public class Main {
 
     static class ExitException extends RuntimeException {
         public int status;
+        public boolean printHelp;
 
-        ExitException(final int status, final String message) {
+        ExitException(final int status, final boolean printHelp, final String message) {
             super(message);
+            this.printHelp = printHelp;
             this.status = status;
         }
     }
