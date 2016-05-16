@@ -123,7 +123,7 @@ public class Main {
                 if (msg != null) {
                     System.err.println();
                 }
-                System.err.println("Usage: java -jar swarmtool-standalone.jar <options> war-path\n");
+                System.err.println(String.format("Usage: %s <options> artifact-path\n", executableName()));
                 try {
                     OPT_PARSER.printHelpOn(System.err);
                 } catch (IOException ignored) {}
@@ -131,6 +131,15 @@ public class Main {
 
             System.exit(e.status);
         }
+    }
+
+    protected static String executableName() {
+        String name = System.getenv("SWARMTOOL_NAME");
+        if (name == null) {
+            name = "java -jar swarmtool-standalone.jar";
+        }
+
+        return name;
     }
 
     protected static File generateSwarmJar(final String[] args) throws Exception {
