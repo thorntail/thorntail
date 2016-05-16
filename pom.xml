@@ -75,22 +75,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- <plugin>
-       <groupId>org.codehaus.mojo</groupId>
-       <artifactId>exec-maven-plugin</artifactId>
-       <executions>
-         <execution>
-           <id>generate-executable</id>
-           <phase>package</phase>
-           <goals>
-             <goal>exec</goal>
-           </goals>
-         </execution>
-       </executions>
-       <configuration>
-         <executable>src/main/assembly/genexe.sh</executable>
-       </configuration>
-     </plugin> -->
     </plugins>
   </build>
 
@@ -121,4 +105,37 @@
 
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>when-not-windows</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-executable</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>src/main/assembly/genexe.sh</executable>
+              <arguments>
+                <argument>target/${uberjar.name}.jar</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
