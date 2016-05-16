@@ -17,7 +17,10 @@ package org.wildfly.swarm.tools;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -36,6 +39,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
+import org.jboss.shrinkwrap.impl.base.io.IOUtil;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
@@ -141,6 +145,18 @@ public class BuildTool {
 
     public BuildTool fractionDetectionMode(FractionDetectionMode v) {
         this.fractionDetectionMode = v;
+
+        return this;
+    }
+
+    public BuildTool executable(boolean executable) {
+        this.executable = executable;
+
+        return this;
+    }
+
+    public BuildTool executableScript(File executableScript) {
+        this.executableScript = executableScript;
 
         return this;
     }
@@ -337,9 +353,25 @@ public class BuildTool {
         File out = new File(dir.toFile(), baseName + "-swarm.jar");
         out.getParentFile().mkdirs();
         ZipExporter exporter = this.archive.as(ZipExporter.class);
-        exporter.exportTo(out, true);
+        try (FileOutputStream fos = new FileOutputStream(out)) {
+            if (executable) {
+                try (InputStream is = getLaunchScript()) {
+                    IOUtil.copy(is, fos);
+                }
+            }
+            exporter.exportTo(fos);
+        }
+        if (executable) {
+            out.setExecutable(true);
+        }
         return out;
     }
+
+    private InputStream getLaunchScript() throws IOException {
+        return (executableScript != null) ? new FileInputStream(executableScript) :
+                getClass().getResourceAsStream("launch.sh");
+    }
+
 
     private void addAdditionalModules() throws IOException {
         for (String additionalModule : additionalModules) {
@@ -371,6 +403,10 @@ public class BuildTool {
     private boolean bundleDependencies = true;
 
     private boolean resolveTransitiveDependencies = false;
+
+    private boolean executable;
+
+    private File executableScript;
 
     private DependencyManager dependencyManager = new DependencyManager();
 
