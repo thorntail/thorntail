@@ -54,10 +54,10 @@ public class Main {
             OPT_PARSER.acceptsAll(asList("v", "version"), "print version and exit")
                     .forHelp();
 
-    private static final OptionSpec<Void> DISABLE_AUTO_DETECT =
+    private static final OptionSpec<Void> DISABLE_AUTO_DETECT_OPT =
             OPT_PARSER.accepts("no-fraction-detect", "disable auto fraction detection");
 
-    private static final OptionSpec<Void> DISABLE_BUNDLE_DEPS =
+    private static final OptionSpec<Void> DISABLE_BUNDLE_DEPS_OPT =
             OPT_PARSER.accepts("no-bundle-deps", "disable bundling of dependencies");
 
     private static final OptionSpec<String> FRACTIONS_OPT =
@@ -206,10 +206,10 @@ public class Main {
                 .artifactResolvingHelper(getResolvingHelper())
                 .projectArtifact("", baseName, "", type, source)
                 .fractionList(FractionList.get())
-                .fractionDetectionMode(foundOptions.has(DISABLE_AUTO_DETECT) ?
+                .fractionDetectionMode(foundOptions.has(DISABLE_AUTO_DETECT_OPT) ?
                                              BuildTool.FractionDetectionMode.never :
                                              BuildTool.FractionDetectionMode.force)
-                .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS))
+                .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS_OPT))
                 .resolveTransitiveDependencies(true)
                 .properties(properties);
         if (foundOptions.has(MAIN_OPT)) {
