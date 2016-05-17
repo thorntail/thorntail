@@ -27,6 +27,7 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
@@ -66,6 +67,13 @@ public class Main {
                     .ofType(String.class)
                     .withValuesSeparatedBy(',')
                     .describedAs("undertow,jaxrs,...");
+
+    private static final OptionSpec<String> REPOS_OPT =
+            OPT_PARSER.accepts("repos", "additional maven repos to resolve against")
+                    .withRequiredArg()
+                    .ofType(String.class)
+                    .withValuesSeparatedBy(',')
+                    .describedAs("url1,url2,...");
 
     private static final OptionSpec<String> OUTPUT_DIR_OPT =
             OPT_PARSER.acceptsAll(asList("o", "output-dir"), "directory where the final jar will be written")
@@ -203,7 +211,7 @@ public class Main {
         final String outDir = new File(foundOptions.valueOf(OUTPUT_DIR_OPT)).getCanonicalPath();
 
         final BuildTool tool = new BuildTool()
-                .artifactResolvingHelper(getResolvingHelper())
+                .artifactResolvingHelper(getResolvingHelper(foundOptions.valuesOf(REPOS_OPT)))
                 .projectArtifact("", baseName, "", type, source)
                 .fractionList(FractionList.get())
                 .fractionDetectionMode(foundOptions.has(DISABLE_AUTO_DETECT_OPT) ?
@@ -239,18 +247,20 @@ public class Main {
         throw new ExitException(code, printHelp, message);
     }
 
-    private static ArtifactResolvingHelper getResolvingHelper() {
-        final MavenRemoteRepository jbossPublic =
-                MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
-                        "http://repository.jboss.org/nexus/content/groups/public/",
-                        "default");
-        jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
-        jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
+    private static ArtifactResolvingHelper getResolvingHelper(final List<String> repos) {
+        final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
+                .withMavenCentralRepo(true)
+                .withRemoteRepo(MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
+                                                                               "http://repository.jboss.org/nexus/content/groups/public/",
+                                                                               "default")
+                                        .setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE)
+                                        .setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER));
 
-        return new ShrinkwrapArtifactResolvingHelper(
-                Maven.configureResolver()
-                        .withMavenCentralRepo(true)
-                        .withRemoteRepo(jbossPublic));
+        repos.forEach(r -> resolver.withRemoteRepo(MavenRemoteRepositories.createRemoteRepository(r, r, "default")
+                                                           .setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE)
+                                                           .setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER)));
+
+        return new ShrinkwrapArtifactResolvingHelper(resolver);
     }
 
     private static void addSwarmFractions(BuildTool tool, final List<String> deps) {

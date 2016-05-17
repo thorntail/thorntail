@@ -105,7 +105,8 @@ public class MainTest {
                              "-Dfoo=bar",
                              "-Dham=biscuit",
                              "--property-file=" + getResourcePath("test.properties"),
-                             "--fractions=blarg,a:b:c:d");
+                             "--fractions=blarg,a:b:c:d",
+                             "--repos=https://repository-projectodd.forge.cloudbees.com/snapshot");
             assertThat(bigJar.exitStatus).isEqualTo(0);
         }
         return bigJar;
@@ -117,7 +118,8 @@ public class MainTest {
                                 "--name=little",
                                 "--no-bundle-deps",
                                 "--main=org.foo.bar.Main",
-                                "--modules", getResourcePath("modules"));
+                                "--modules", getResourcePath("modules"),
+                                "--repos=https://repository-projectodd.forge.cloudbees.com/snapshot");
             assertThat(littleJar.exitStatus).isEqualTo(0);
         }
         return littleJar;
