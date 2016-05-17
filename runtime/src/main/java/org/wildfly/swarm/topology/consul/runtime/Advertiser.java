@@ -64,10 +64,26 @@ public class Advertiser implements Service<Advertiser>, Runnable {
         client.register(consulReg);
 
         this.advertisements.add(registration);
+
+        log.info("Registered service " + consulReg.getId());
     }
 
     public void unadvertise(String name, String address, int port) {
+
+        AgentClient client = this.agentClientInjector.getValue();
+
+        this.advertisements
+                .stream()
+                .forEach(e -> {
+                    String serviceId = serviceId(e);
+                    log.info("Deregister service " + serviceId);
+                    client.deregister(serviceId);
+                });
+
+
         this.advertisements.removeIf(e -> e.getName().equals(name) && e.getAddress().equals(address) && e.getPort() == port);
+
+
     }
 
     @Override
@@ -104,7 +120,7 @@ public class Advertiser implements Service<Advertiser>, Runnable {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                // ignore
                 break;
             }
         }
