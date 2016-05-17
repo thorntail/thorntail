@@ -61,6 +61,10 @@ public class FractionDescriptor {
         return desc;
     }
 
+    public static FractionDescriptor fromArtifactSpec(final ArtifactSpec spec) {
+        return new FractionDescriptor(spec.groupId(), spec.artifactId(), spec.version());
+    }
+
     public void addDependency(FractionDescriptor dep) {
         this.dependencies.add(dep);
     }

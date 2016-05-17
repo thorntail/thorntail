@@ -227,7 +227,7 @@ public class BuildTool {
         this.archive.add(this.projectAsset);
     }
 
-    private void detectFractions() throws Exception {
+    private boolean detectFractions() throws Exception {
         final File tmpFile = File.createTempFile("buildtool", this.projectAsset.getName().replace("/", "_"));
         tmpFile.deleteOnExit();
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
@@ -238,14 +238,24 @@ public class BuildTool {
                 .forEach(d -> analyzer.source(d.file));
 
         final Set<FractionDescriptor> detectedFractions = analyzer.detectNeededFractions();
-        this.log.info("Detected fractions: " + String.join(", ",
-                                                           detectedFractions.stream()
-                                                                   .map(FractionDescriptor::av)
-                                                                   .sorted()
-                                                                   .collect(Collectors.toList())));
+
+        //don't overwrite fractions added by the user
+        detectedFractions.removeAll(this.fractions.stream()
+                                            .map(x -> FractionDescriptor.fromArtifactSpec(x))
+                                            .collect(Collectors.toSet()));
+
+        this.log.info(String.format("Detected %sfractions: %s",
+                                    this.fractions.isEmpty() ? "" : "additional ",
+                                    String.join(", ",
+                                                detectedFractions.stream()
+                                                        .map(FractionDescriptor::av)
+                                                        .sorted()
+                                                        .collect(Collectors.toList()))));
         detectedFractions.stream()
                 .map(FractionDescriptor::toArtifactSpec)
                 .forEach(this::fraction);
+
+        return !detectedFractions.isEmpty();
     }
 
     static String strippedSwarmGav(MavenArtifactDescriptor desc) {
@@ -278,6 +288,11 @@ public class BuildTool {
     }
 
     private void addWildflySwarmBootstrapJar() throws Exception {
+        // add any user-specified fractions to the dependencies before attempting to find bootstrap and auto-detecting
+        if (!this.fractions.isEmpty()) {
+            addFractions();
+        }
+
         ArtifactSpec artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
 
         if (this.fractionDetectionMode != FractionDetectionMode.never) {
@@ -288,9 +303,10 @@ public class BuildTool {
             if (this.fractionDetectionMode == FractionDetectionMode.force ||
                     artifact == null) {
                 this.log.info("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
-                detectFractions();
-                addFractions();
-                artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
+                if (detectFractions()) {
+                    addFractions();
+                    artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
+                }
             }
         } else if (artifact == null) {
             this.log.error("No WildFly Swarm dependencies found and fraction detection disabled");
