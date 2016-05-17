@@ -75,6 +75,19 @@ public class Main {
                     .defaultsTo(".")
                     .describedAs("path");
 
+    private static final OptionSpec<String> MAIN_OPT =
+            OPT_PARSER.accepts("main", "The name of the custom main class")
+            .withRequiredArg()
+            .ofType(String.class)
+            .describedAs("main-class");
+
+    private static final OptionSpec<String> MODULES_OPT =
+            OPT_PARSER.accepts("modules", "A list of JBoss Modules module dirs to include")
+                    .withRequiredArg()
+                    .ofType(String.class)
+                    .withValuesSeparatedBy(',')
+                    .describedAs("module-dir1,module-dir2,...");
+
     private static final OptionSpec<String> NAME_OPT =
             OPT_PARSER.acceptsAll(asList("n", "name"), "The name of the final jar sans the -swarm.jar suffix (default: <source name>)")
                     .withRequiredArg()
@@ -200,6 +213,12 @@ public class Main {
                 .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS))
                 .resolveTransitiveDependencies(true)
                 .properties(properties);
+        if (foundOptions.has(MAIN_OPT)) {
+            tool.mainClass(foundOptions.valueOf(MAIN_OPT));
+        }
+        if (foundOptions.has(MODULES_OPT)) {
+            tool.additionalModules(foundOptions.valuesOf(MODULES_OPT));
+        }
         addSwarmFractions(tool, foundOptions.valuesOf(FRACTIONS_OPT));
 
         System.err.println(String.format("Building %s/%s-swarm.jar", outDir, jarName));

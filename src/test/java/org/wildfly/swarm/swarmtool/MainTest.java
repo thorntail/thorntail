@@ -26,10 +26,12 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.jar.Manifest;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.wildfly.swarm.bootstrap.util.UberJarManifest;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -48,7 +50,9 @@ public class MainTest {
             final String[] fullArgs = Arrays.copyOf(args, args.length + 1);
             fullArgs[fullArgs.length - 1] = "--output-dir=target/test-output";
 
+            final long t = System.currentTimeMillis();
             result.jarFile(Main.generateSwarmJar(fullArgs));
+            //origErr.println("generateSwarmJar took " + (System.currentTimeMillis() - t) + "ms");
 
         } catch (Main.ExitException e) {
             result.exitStatus = e.status;
@@ -82,6 +86,16 @@ public class MainTest {
         return props;
     }
 
+    UberJarManifest manifest(Result result) throws IOException {
+        try (InputStream in = result.archive
+                .get("META-INF/MANIFEST.MF")
+                .getAsset()
+                .openStream()) {
+
+            return new UberJarManifest(new Manifest(in));
+        }
+    }
+
     static synchronized Result getBigJar() throws Exception {
         if (bigJar == null) {
             bigJar = runTool(getResourcePath("simple-servlet.war"), "--name=big",
@@ -93,7 +107,12 @@ public class MainTest {
 
     static synchronized Result getLittleJar() throws Exception {
         if (littleJar == null) {
-            littleJar = runTool(getResourcePath("simple-servlet.war"), "--name=little", "--no-bundle-deps");
+            littleJar = runTool(getResourcePath("simple-servlet.war"),
+                                "--name=little",
+                                "--no-bundle-deps",
+                                "--main=org.foo.bar.Main",
+                                "--modules",
+                                getResourcePath("modules"));
             assertThat(littleJar.exitStatus).isEqualTo(0);
         }
         return littleJar;
@@ -117,6 +136,18 @@ public class MainTest {
     public void dependencies() throws Exception {
         assertThat(getBigJar().archive.contains("/m2repo")).isTrue();
         assertThat(getLittleJar().archive.contains("/m2repo")).isFalse();
+    }
+
+    @Test
+    public void settingMain() throws Exception {
+        assertThat(manifest(getLittleJar()).getMainClassName()).isEqualTo("org.foo.bar.Main");
+        assertThat(manifest(getBigJar()).getMainClassName()).isNull();
+    }
+
+    @Test
+    public void addingModules() throws Exception {
+        assertThat(getLittleJar().archive.contains("/modules/sun/jdk/main/module.xml")).isTrue();
+        assertThat(getBigJar().archive.contains("/modules/sun/jdk/main/module.xml")).isFalse();
     }
 
     static class Result {
