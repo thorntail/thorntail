@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.swarmtool;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +61,10 @@ public class MainTest {
             System.setOut(origOut);
         }
 
-        //TODO: add output to result
+        //result.err = err.toString();
+        //result.out = out.toString();
+
+        System.out.println(result.err);
 
         return result;
     }
@@ -98,8 +100,12 @@ public class MainTest {
 
     static synchronized Result getBigJar() throws Exception {
         if (bigJar == null) {
-            bigJar = runTool(getResourcePath("simple-servlet.war"), "--name=big",
-                    "-Dfoo=bar", "-Dham=biscuit", "--property-file=" + getResourcePath("test.properties"));
+            bigJar = runTool(getResourcePath("simple-servlet.war"),
+                             "--name=big",
+                             "-Dfoo=bar",
+                             "-Dham=biscuit",
+                             "--property-file=" + getResourcePath("test.properties"),
+                             "--fractions=blarg,a:b:c:d");
             assertThat(bigJar.exitStatus).isEqualTo(0);
         }
         return bigJar;
@@ -111,8 +117,7 @@ public class MainTest {
                                 "--name=little",
                                 "--no-bundle-deps",
                                 "--main=org.foo.bar.Main",
-                                "--modules",
-                                getResourcePath("modules"));
+                                "--modules", getResourcePath("modules"));
             assertThat(littleJar.exitStatus).isEqualTo(0);
         }
         return littleJar;
@@ -150,6 +155,15 @@ public class MainTest {
         assertThat(getBigJar().archive.contains("/modules/sun/jdk/main/module.xml")).isFalse();
     }
 
+    @Test
+    public void invalidFractions() throws Exception {
+        final Result result = getBigJar();
+
+        assertThat(result.err).contains("Invalid fraction specifier: a:b:c:d");
+        assertThat(result.err).contains("Unknown fraction: blarg");
+
+    }
+
     static class Result {
         public int exitStatus = 0;
 
@@ -158,6 +172,10 @@ public class MainTest {
         public File jarFile = null;
 
         public WebArchive archive = null;
+
+        public String err = null;
+
+        public String out = null;
 
         public void jarFile(File f) {
             this.jarFile = f;

@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
@@ -256,9 +255,32 @@ public class Main {
 
     private static void addSwarmFractions(BuildTool tool, final List<String> deps) {
         deps.stream().map(f -> f.split(":"))
-                .map(parts -> parts.length == 3 ?
-                        new FractionDescriptor(parts[0], parts[1], parts[2]) :
-                        new FractionDescriptor("org.wildfly.swarm", parts[0], parts[1]))
+                .map(parts -> {
+                    switch (parts.length) {
+                        case 1:
+                            final FractionDescriptor desc = FractionList.get()
+                                    .getFractionDescriptor("org.wildfly.swarm", parts[0]);
+                            if (desc != null) {
+
+                                return desc;
+                            } else {
+                                System.err.println("Warning: Unknown fraction: " + parts[0]);
+
+                                return null;
+                            }
+                        case 2:
+
+                            return new FractionDescriptor("org.wildfly.swarm", parts[0], parts[1]);
+                        case 3:
+
+                            return new FractionDescriptor(parts[0], parts[1], parts[2]);
+                        default:
+                            System.err.println("Warning: Invalid fraction specifier: " + String.join(":", parts));
+
+                            return null;
+                    }
+                })
+                .filter(f -> f != null)
                 .forEach(f -> tool.fraction(f.toArtifactSpec()));
     }
 
