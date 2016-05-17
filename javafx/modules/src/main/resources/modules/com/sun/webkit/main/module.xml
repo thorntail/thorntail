@@ -1,0 +1,18 @@
+<module xmlns="urn:jboss:module:1.3" name="com.sun.webkit">
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="com/sun/webkit"/>
+        <path name="com/sun/webkit/dom"/>
+        <path name="com/sun/webkit/event"/>
+        <path name="com/sun/webkit/graphics"/>
+        <path name="com/sun/webkit/network"/>
+        <path name="com/sun/webkit/network/about"/>
+        <path name="com/sun/webkit/network/data"/>
+        <path name="com/sun/webkit/perf"/>
+        <path name="com/sun/webkit/plugin"/>
+        <path name="com/sun/webkit/text"/>
+      </paths>
+    </system>
+  </dependencies>
+</module>

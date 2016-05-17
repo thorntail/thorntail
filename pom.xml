@@ -510,6 +510,27 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>javafx</artifactId>
+        <version>1.0.0.Beta8-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>javafx-api</artifactId>
+        <version>1.0.0.Beta8-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>javafx-modules</artifactId>
+        <version>1.0.0.Beta8-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>javafx-runtime</artifactId>
+        <version>1.0.0.Beta8-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs</artifactId>
         <version>1.0.0.Beta8-SNAPSHOT</version>
       </dependency>
@@ -1083,6 +1104,7 @@
     <module>hibernate-validator</module>
     <module>infinispan</module>
     <module>io</module>
+    <module>javafx</module>
     <module>jaxrs</module>
     <module>jaxrs-cdi</module>
     <module>jaxrs-jaxb</module>
