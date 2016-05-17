@@ -161,7 +161,7 @@ public class Main {
         try {
             foundOptions = OPT_PARSER.parse(args);
         } catch (OptionException e) {
-            System.err.println(e.getMessage() + "\n");
+            exit(e.getMessage(), true);
         }
 
         if  (foundOptions.has(HELP_OPT)) {
