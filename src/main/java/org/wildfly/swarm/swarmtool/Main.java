@@ -61,6 +61,9 @@ public class Main {
     private static final OptionSpec<Void> DISABLE_BUNDLE_DEPS_OPT =
             OPT_PARSER.accepts("no-bundle-deps", "disable bundling of dependencies");
 
+    private static final OptionSpec<Void> EXECUTABLE_OPT =
+            OPT_PARSER.accepts("executable", "make the swarm jar executable");
+
     private static final OptionSpec<String> FRACTIONS_OPT =
             OPT_PARSER.acceptsAll(asList("f", "fractions"), "swarm fractions to include")
                     .withRequiredArg()
@@ -218,6 +221,7 @@ public class Main {
                                              BuildTool.FractionDetectionMode.never :
                                              BuildTool.FractionDetectionMode.force)
                 .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS_OPT))
+                .executable(foundOptions.has(EXECUTABLE_OPT))
                 .resolveTransitiveDependencies(true)
                 .properties(properties);
         if (foundOptions.has(MAIN_OPT)) {
