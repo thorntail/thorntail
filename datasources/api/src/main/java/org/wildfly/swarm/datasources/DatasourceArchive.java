@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.datasources;
 
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Assignable;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.DataSourceConsumer;
@@ -22,7 +23,7 @@ import org.wildfly.swarm.config.datasources.DataSourceConsumer;
 /**
  * @author Bob McWhirter
  */
-public interface DatasourceArchive extends Assignable {
+public interface DatasourceArchive extends Assignable, Archive<DatasourceArchive> {
 
     DatasourceArchive dataSource(String key, DataSourceConsumer consumer);
 

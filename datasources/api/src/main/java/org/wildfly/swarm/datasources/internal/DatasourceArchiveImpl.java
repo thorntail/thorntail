@@ -15,8 +15,9 @@
  */
 package org.wildfly.swarm.datasources.internal;
 
-import org.jboss.shrinkwrap.impl.base.ArchiveBase;
-import org.jboss.shrinkwrap.impl.base.AssignableBase;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.DataSourceConsumer;
 import org.wildfly.swarm.datasources.DSXmlAsset;
@@ -25,14 +26,14 @@ import org.wildfly.swarm.datasources.DatasourceArchive;
 /**
  * @author Bob McWhirter
  */
-public class DatasourceArchiveImpl extends AssignableBase<ArchiveBase<?>> implements DatasourceArchive {
+public class DatasourceArchiveImpl extends ContainerBase<DatasourceArchive> implements DatasourceArchive {
     /**
      * Constructs a new instance using the underlying specified archive, which is required
      *
      * @param archive
      */
-    public DatasourceArchiveImpl(ArchiveBase<?> archive) {
-        super(archive);
+    public DatasourceArchiveImpl(Archive<?> archive) {
+        super(DatasourceArchive.class, archive);
     }
 
 
@@ -55,5 +56,25 @@ public class DatasourceArchiveImpl extends AssignableBase<ArchiveBase<?>> implem
         getArchive().add(new DSXmlAsset(ds), "META-INF/" + name);
 
         return this;
+    }
+
+    @Override
+    protected ArchivePath getManifestPath() {
+        return null;
+    }
+
+    @Override
+    protected ArchivePath getResourcePath() {
+        return null;
+    }
+
+    @Override
+    protected ArchivePath getClassesPath() {
+        return null;
+    }
+
+    @Override
+    protected ArchivePath getLibraryPath() {
+        return null;
     }
 }
