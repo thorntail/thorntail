@@ -61,10 +61,10 @@ public class MainTest {
             System.setOut(origOut);
         }
 
-        //result.err = err.toString();
-        //result.out = out.toString();
+        result.err = err.toString();
+        result.out = out.toString();
 
-        System.out.println(result.err);
+        //System.out.println(result.err);
 
         return result;
     }
