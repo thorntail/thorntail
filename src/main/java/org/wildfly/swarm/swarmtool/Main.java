@@ -31,7 +31,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
-import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.fractionlist.FractionList;
