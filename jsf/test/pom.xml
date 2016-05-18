@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>jsf-parent</artifactId>
-    <version>1.0.0.Beta8-SNAPSHOT</version>
+    <version>1.0.0.CR1</version>
     <relativePath>../</relativePath>
   </parent>
 
