@@ -1,45 +1,73 @@
 package org.wildfly.swarm.cli;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
+ * A single option specification.
+ *
+ * <p>An option may have a short (single-dash) or long (double-dash) variant.</p>
+ *
+ * <p>Each option may optionally take a value, which may or may not be allowed
+ * to be separated from the option.</p>
+ *
+ * <p>For instance, if {@link #valueMayBeSeparate(boolean)} is specified as false,
+ * then only <code>-Dwhatever</code> would be allowed, while <code>-D whatever</code>
+ * would not.</p>
+ *
+ * <p>Upon successful match, each <code>Option</code> has an {@link Action} associated
+ * which is called with the value (if any) and the state-holding {@link CommandLine}
+ * object.</p>
+ *
  * @author Bob McWhirter
  */
-public class Option {
+public class Option<T> {
 
-    private Character shortArg;
-
-    private String longArg;
-
-    private String valueDescription;
-
-    private boolean valueMayBeSeparate = true;
-
-    private Action action;
-
-    private String description;
-
-    public static interface Action {
-        void set(CommandLine commandLine, String value);
+    /**
+     * Callback functional interface for matched options.
+     */
+    public interface Action<T> {
+        /**
+         * Perform some action, being passed the value and the <code>CommandLine</code>.
+         *
+         * @param commandLine The state-holding <code>CommandLine</code> object.
+         * @param option      The matched option.
+         * @param value       The value to the option, if any.  Possibly <code>null</code>.
+         * @throws if an error occurs
+         */
+        void set(CommandLine commandLine, Option<T> option, String value) throws Exception;
     }
 
-    public Option(Action action) {
-        this.action = action;
-    }
-
+    /**
+     * Construct an empty option.
+     */
     public Option() {
 
     }
 
-    public Option then(Action action) {
+    /**
+     * Associate an action with this option.
+     *
+     * @param action The action to call when matched.
+     * @return This <code>Option</code> object.
+     */
+    public Option<T> then(Action<T> action) {
         this.action = action;
         return this;
     }
 
+    /**
+     * Display formatted help associated with this option.
+     *
+     * @param out The output stream to display the help upon.
+     */
     public void displayHelp(PrintStream out) {
         out.println(merge(summary(), description()));
     }
@@ -142,22 +170,58 @@ public class Option {
     }
 
 
-    public Option withShort(Character shortArg) {
+    /**
+     * Specify a short (single-dash) variant.
+     *
+     * <p>A single character following a single dash, such as <code>-c</code>.</p>
+     *
+     * @param shortArg The character.
+     * @return This <code>Option</code> object.
+     */
+    public Option<T> withShort(Character shortArg) {
         this.shortArg = shortArg;
         return this;
     }
 
-    public Option withDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public Option withLong(String longArg) {
+    /**
+     * Specify a long (double-dash) variant.
+     *
+     * <p>A string following a double-dash, such as <code>--help</code>.</p>
+     *
+     * @param longArg The string (without dashes).
+     * @return This <code>Option</code> object.
+     */
+    public Option<T> withLong(String longArg) {
         this.longArg = longArg;
         return this;
     }
 
-    public Option hasValue(String valueDescription) {
+
+    /**
+     * Set a human-readable description of this option.
+     *
+     * @param description The description.
+     * @return This <code>Option</code> object.
+     */
+    public Option<T> withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * Specify that this option takes an argument value.
+     *
+     * <p>A non-null string passed to this method will be used to signify
+     * that this option may take an argument, and to describe its format.</p>
+     *
+     * <p>For instance a string of <code>name[=value]</code></p> would indicate
+     * that a <code>name</code> is expected, with an optional <code>value</code>
+     * which should follow an equal sign.</p>
+     *
+     * @param valueDescription
+     * @return
+     */
+    public Option<T> hasValue(String valueDescription) {
         this.valueDescription = valueDescription;
         return this;
     }
@@ -166,12 +230,40 @@ public class Option {
         return this.valueDescription != null;
     }
 
-    public Option valueMayBeSeparate(boolean valueMayBeSeparate) {
+    /**
+     * Indicate if the value to the option may be separated by whitespace. (defaults to <code>true</code>).
+     *
+     * <p>In some cases, because of ambiguity, it may be required to indicate that an
+     * argument may <b>not</b> be separate from the option.  If an argument is to be
+     * provided, it must immediately follow the option without whitespace.</p>
+     *
+     * @param valueMayBeSeparate <code>true</code> (the default) if value may be separate, or <code>false</code> to indicate it must be conjoined.
+     * @return This <code>Option</code> object.
+     */
+    public Option<T> valueMayBeSeparate(boolean valueMayBeSeparate) {
         this.valueMayBeSeparate = valueMayBeSeparate;
         return this;
     }
 
-    public boolean parse(ParseState state, CommandLine commandLine) {
+    /**
+     * Specify a default value supplier for this option.
+     *
+     * @param supplier The supplier.
+     * @return This <code>Option</code> object.
+     */
+    public Option<T> withDefault(Supplier<T> supplier) {
+        this.supplier = supplier;
+        return this;
+    }
+
+    T defaultValue() {
+        if (this.supplier == null) {
+            return null;
+        }
+        return this.supplier.get();
+    }
+
+    boolean parse(ParseState state, CommandLine commandLine) throws Exception {
         String cur = state.la();
 
         if (cur == null) {
@@ -221,14 +313,48 @@ public class Option {
             value = state.consume();
         }
 
-        this.action.set(commandLine, value);
+        this.action.set(commandLine, this, value);
 
         return true;
     }
 
     public String toString() {
         return "[Option: short=" + this.shortArg + "; long=" + this.longArg + "; valueDescription=" + this.valueDescription + "]";
-
     }
+
+    /**
+     * Helper to attempt forming a URL from a String in a sensible fashion.
+     *
+     * @param value The input string.
+     * @return The correct URL, if possible.
+     */
+    public static URL toURL(String value) throws MalformedURLException {
+        try {
+            URL url = new URL(value);
+            return url;
+        } catch (MalformedURLException e) {
+            try {
+                return new File(value).toURI().toURL();
+            } catch (MalformedURLException e2) {
+                // throw the original
+                throw e;
+            }
+        }
+    }
+
+    private Character shortArg;
+
+    private String longArg;
+
+    private String valueDescription;
+
+    private boolean valueMayBeSeparate = true;
+
+    private Action<T> action;
+
+    private String description;
+
+    private Supplier<T> supplier;
+
 
 }

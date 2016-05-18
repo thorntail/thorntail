@@ -27,14 +27,12 @@ import org.jboss.modules.ModuleIdentifier;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.cli.CommandLine;
-import org.wildfly.swarm.cli.CommandLineParser;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * Default {@code main(...)} if an application does not provide one.
@@ -130,7 +128,7 @@ public class Swarm extends Container {
         ServiceLoader<ContainerFactory> factory = bootstrap.loadService(ContainerFactory.class);
         Iterator<ContainerFactory> factoryIter = factory.iterator();
 
-        CommandLine cmd = CommandLineParser.parse(args);
+        CommandLine cmd = CommandLine.parse(args);
 
         if (cmd.get(CommandLine.HELP)) {
             cmd.displayVersion(System.err);

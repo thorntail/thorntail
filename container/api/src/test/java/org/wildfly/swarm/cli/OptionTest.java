@@ -15,14 +15,16 @@ import static org.fest.assertions.Fail.fail;
 public class OptionTest {
 
     @Test
-    public void testLongNoArgs() {
+    public void testLongNoArgs() throws Exception {
         ParseState state = new ParseState("--help");
 
         AtomicBoolean helpSet = new AtomicBoolean(false);
 
-        Option help = new Option((cmd, value) -> {
-            helpSet.set(true);
-        }).withLong("help");
+        Option<Boolean> help = new Option<Boolean>()
+                .withLong("help")
+                .then((cmd, opt, value) -> {
+                    helpSet.set(true);
+                });
 
         assertThat(help.parse(state, null)).isTrue();
 
@@ -30,14 +32,16 @@ public class OptionTest {
     }
 
     @Test
-    public void testShortNoArgs() {
+    public void testShortNoArgs() throws Exception {
         ParseState state = new ParseState("-h");
 
         AtomicBoolean helpSet = new AtomicBoolean(false);
 
-        Option help = new Option((cmd, value) -> {
-            helpSet.set(true);
-        }).withShort('h');
+        Option help = new Option<Boolean>()
+                .withShort('h')
+                .then((cmd, opt, value) -> {
+                    helpSet.set(true);
+                });
 
         assertThat(help.parse(state, null)).isTrue();
 
@@ -45,14 +49,17 @@ public class OptionTest {
     }
 
     @Test
-    public void testShortWithValueTogether() {
+    public void testShortWithValueTogether() throws Exception {
         ParseState state = new ParseState("-c=standalone.xml");
 
         AtomicReference<String> config = new AtomicReference<>(null);
 
-        Option configOpt = new Option((cmd, value) -> {
-            config.set(value);
-        }).withShort('c').hasValue("<value>");
+        Option configOpt = new Option<String>()
+                .withShort('c')
+                .hasValue("<value>")
+                .then((cmd, opt, value) -> {
+                    config.set(value);
+                });
 
         assertThat(configOpt.parse(state, null)).isTrue();
 
@@ -60,14 +67,17 @@ public class OptionTest {
     }
 
     @Test
-    public void testShortWithValueApart() {
+    public void testShortWithValueApart() throws Exception {
         ParseState state = new ParseState("-c", "standalone.xml");
 
         AtomicReference<String> config = new AtomicReference<>(null);
 
-        Option configOpt = new Option((cmd, value) -> {
-            config.set(value);
-        }).withShort('c').hasValue("<value>");
+        Option configOpt = new Option<String>()
+                .withShort('c')
+                .hasValue("<value>")
+                .then((cmd, opt, value) -> {
+                    config.set(value);
+                });
 
         assertThat(configOpt.parse(state, null)).isTrue();
 
@@ -75,14 +85,17 @@ public class OptionTest {
     }
 
     @Test
-    public void testShortWithValueMissing() {
+    public void testShortWithValueMissing() throws Exception {
         ParseState state = new ParseState("-c");
 
         AtomicReference<String> config = new AtomicReference<>(null);
 
-        Option configOpt = new Option((cmd, value) -> {
-            config.set(value);
-        }).withShort('c').hasValue("<value>");
+        Option<String> configOpt = new Option<String>()
+                .withShort('c')
+                .hasValue("<value>")
+                .then((cmd, opt, value) -> {
+                    config.set(value);
+                });
 
         try {
             configOpt.parse(state, null);
@@ -93,32 +106,36 @@ public class OptionTest {
     }
 
     @Test
-    public void testPropertiesLike() {
+    public void testPropertiesLike() throws Exception {
 
         ParseState state = new ParseState("-Dfoo", "-Dbar=cheese");
 
         Properties props = new Properties();
 
-        Option configOpt = new Option((cmd, value) -> {
-            String[] keyValue = value.split("=");
+        Option configOpt = new Option<Object>()
+                .withShort('D')
+                .hasValue("<value>")
+                .valueMayBeSeparate(false)
+                .then((cmd, opt, value) -> {
+                    String[] keyValue = value.split("=");
 
-            if (keyValue.length == 1) {
-                props.setProperty(keyValue[0], "true");
-            } else {
-                props.setProperty(keyValue[0], keyValue[1]);
-            }
-        }).withShort('D').hasValue("<value>").valueMayBeSeparate(false);
+                    if (keyValue.length == 1) {
+                        props.setProperty(keyValue[0], "true");
+                    } else {
+                        props.setProperty(keyValue[0], keyValue[1]);
+                    }
+                });
 
         while (configOpt.parse(state, null)) {
             // do it again
         }
 
-        assertThat( props ).hasSize( 2 );
+        assertThat(props).hasSize(2);
 
-        System.err.println( props );
+        System.err.println(props);
 
-        assertThat( props.getProperty( "foo" ) ).isEqualTo( "true" );
-        assertThat( props.getProperty( "bar" ) ).isEqualTo( "cheese" );
+        assertThat(props.getProperty("foo")).isEqualTo("true");
+        assertThat(props.getProperty("bar")).isEqualTo("cheese");
 
     }
 }

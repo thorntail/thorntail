@@ -4,36 +4,46 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/** Options for command-line parsing.
+ *
+ * Options are matched in the order in which they are added.
+ *
  * @author Bob McWhirter
  */
 public class Options {
 
-    private List<Option> options = new ArrayList<>();
 
-    public Options() {
-
-    }
-
+    /** Construct.
+     *
+     * @param options Zero or more options use initially.
+     */
     public Options(Option... options) {
         for (Option option : options) {
-            withOption(option);
+            this.options.add(option);
         }
     }
 
+    /** Fluent method to add more options.
+     *
+     * @param option The option to add.
+     * @return This options object.
+     */
     public Options withOption(Option option) {
         this.options.add(option);
         return this;
     }
 
+    /** Display the help to the specified output stream.
+     *
+     * @param out The output stream.
+     */
     public void displayHelp(PrintStream out) {
-
         for (Option option : this.options) {
             option.displayHelp(out);
         }
     }
 
-    public void parse(ParseState state, CommandLine commandLine) {
+    void parse(ParseState state, CommandLine commandLine) throws Exception {
         OUTER:
         while (state.la() != null) {
             INNER:
@@ -49,5 +59,8 @@ public class Options {
             commandLine.extraArgument( arg );
         }
     }
+
+    private final List<Option> options = new ArrayList<>();
+
 
 }

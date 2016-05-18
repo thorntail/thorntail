@@ -3,24 +3,24 @@ package org.wildfly.swarm.cli;
 /**
  * @author Bob McWhirter
  */
-public class ParseState {
+class ParseState {
 
     private final String[] args;
     private int cur;
 
-    public ParseState(String...args) {
+    ParseState(String...args) {
         this.args = args;
         this.cur = 0;
     }
 
-    public String la() {
+    String la() {
         if ( this.cur >= this.args.length ) {
             return null;
         }
         return this.args[this.cur];
     }
 
-    public String consume() {
+    String consume() {
         if ( la() == null ) {
             throw new RuntimeException( "parse error" );
         }
