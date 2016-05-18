@@ -26,12 +26,15 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.wildfly.swarm.cli.CommandLine;
+import org.wildfly.swarm.cli.CommandLineParser;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * Default {@code main(...)} if an application does not provide one.
@@ -49,7 +52,7 @@ public class Swarm extends Container {
     }
 
     public Swarm(boolean debugBootstrap) throws Exception {
-        super( debugBootstrap );
+        super(debugBootstrap);
     }
 
     @Override
@@ -127,20 +130,39 @@ public class Swarm extends Container {
         ServiceLoader<ContainerFactory> factory = bootstrap.loadService(ContainerFactory.class);
         Iterator<ContainerFactory> factoryIter = factory.iterator();
 
+        CommandLine cmd = CommandLineParser.parse(args);
+
+        if (cmd.get(CommandLine.HELP)) {
+            cmd.displayVersion(System.err);
+            System.err.println("");
+            cmd.displayHelp(System.err);
+            return;
+        }
+
+        if (cmd.get(CommandLine.VERSION)) {
+            cmd.displayVersion(System.err);
+        }
+
+        cmd.applyProperties();
+
         if (!factoryIter.hasNext()) {
-            simpleMain(args);
+            simpleMain(cmd);
         } else {
-            factoryMain(factoryIter.next(), args);
+            factoryMain(factoryIter.next(), cmd);
         }
     }
 
-    public static void simpleMain(String... args) throws Exception {
-        Container container = new Swarm().start();
+    public static void simpleMain(CommandLine cmd) throws Exception {
+        Container container = new Swarm();
+        cmd.applyConfigurations(container);
+        container.start();
         container.deploy();
     }
 
-    public static void factoryMain(ContainerFactory factory, String... args) throws Exception {
-        Container container = factory.newContainer(args).start();
+    public static void factoryMain(ContainerFactory factory, CommandLine cmd) throws Exception {
+        Container container = factory.newContainer(cmd.extraArgumentsArray());
+        cmd.applyConfigurations(container);
+        container.start();
         container.deploy();
     }
 
