@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -101,6 +102,14 @@ public class Container {
     public Container(boolean debugBootstrap) throws Exception {
         System.setProperty(SwarmProperties.VERSION, VERSION);
 
+        try {
+            String stageFile = System.getProperty("swarm.project.stage.file");
+            loadStageConfiguration(new URL(stageFile));
+
+        } catch (MalformedURLException e) {
+            System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: "+e.getMessage());
+        }
+
         createServer(debugBootstrap);
         createShrinkWrapDomain();
         determineDeploymentType();
@@ -112,7 +121,12 @@ public class Container {
     }
 
     public Container withStageConfig(URL url) {
-        loadStageConfiguration(url);
+        if(null==System.getProperty("swarm.project.stage.file")) {
+            loadStageConfiguration(url);
+        } else {
+            System.out.println("[INFO] Project stage superseded by external configuration "+ System.getProperty("swarm.project.stage.file"));
+        }
+
         return this;
     }
 
@@ -657,6 +671,7 @@ public class Container {
     private boolean running = false;
 
     private String defaultDeploymentType;
+
 
     /**
      * Command line args if any
