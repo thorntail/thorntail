@@ -288,12 +288,13 @@ public class BuildTool {
     }
 
     private void addWildflySwarmBootstrapJar() throws Exception {
-        // add any user-specified fractions to the dependencies before attempting to find bootstrap and auto-detecting
+        ArtifactSpec artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
+
+        // add any user-specified fractions to the dependencies before auto-detecting, allowing them
+        // to override any auto-detected ones
         if (!this.fractions.isEmpty()) {
             addFractions();
         }
-
-        ArtifactSpec artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
 
         if (this.fractionDetectionMode != FractionDetectionMode.never) {
             if (this.fractionList == null) {
@@ -305,10 +306,14 @@ public class BuildTool {
                 this.log.info("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
                 if (detectFractions()) {
                     addFractions();
-                    artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
                 }
             }
-        } else if (artifact == null) {
+        }
+
+        artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
+
+        if (this.fractionDetectionMode == FractionDetectionMode.never &&
+                artifact == null) {
             this.log.error("No WildFly Swarm dependencies found and fraction detection disabled");
         }
 
