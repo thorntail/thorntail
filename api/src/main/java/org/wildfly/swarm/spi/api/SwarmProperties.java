@@ -110,6 +110,12 @@ public class SwarmProperties {
     public static final String PROJECT_STAGE = "swarm.project.stage";
 
     /**
+     * A comma separated list of full qualifier URL's
+     * @see java.net.URL
+     */
+    public static final String PROJECT_STAGE_FILES = "swarm.project.stage.files";
+
+    /**
      * Full qualified http address, i.e. 'http://localhost:8500/
      */
     public static final String CONSUL_URL = "swarm.consul.url";
