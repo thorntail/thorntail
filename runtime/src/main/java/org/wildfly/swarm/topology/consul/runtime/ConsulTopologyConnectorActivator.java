@@ -15,10 +15,9 @@
  */
 package org.wildfly.swarm.topology.consul.runtime;
 
-import java.net.URL;
-
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
+import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.runtime.TopologyConnector;
@@ -29,24 +28,27 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  *
  * @author John Hovell
  * @author Bob McWhirter
+ * @author Heiko Braun
+ *
+ * @see AgentActivator
  */
 public class ConsulTopologyConnectorActivator implements ServiceActivator {
 
-    public ConsulTopologyConnectorActivator(URL url) {
-        this.url = url;
+    public ConsulTopologyConnectorActivator() {
+
     }
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
         ServiceTarget target = context.getServiceTarget();
 
-        ConsulTopologyConnector connector = new ConsulTopologyConnector(this.url);
+        ConsulTopologyConnector connector = new ConsulTopologyConnector();
 
         target.addService(TopologyConnector.SERVICE_NAME, connector)
-                //.addDependency(ServiceName.parse("org.wildfly.network.socket-binding.http"), SocketBinding.class, connector.getSocketBindingInjector())
                 .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
+                .addDependency(Advertiser.SERVICE_NAME, Advertiser.class, connector.getAdvertiserInjector())
+                .setInitialMode(ServiceController.Mode.ACTIVE)
                 .install();
     }
 
-    private final URL url;
 }

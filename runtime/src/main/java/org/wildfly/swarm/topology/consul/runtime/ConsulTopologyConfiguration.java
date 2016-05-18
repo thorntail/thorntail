@@ -37,7 +37,8 @@ public class ConsulTopologyConfiguration extends AbstractServerConfiguration<Con
     @Override
     public List<ServiceActivator> getServiceActivators(ConsulTopologyFraction fraction) {
         List<ServiceActivator> activators = new ArrayList<>();
-        activators.add(new ConsulTopologyConnectorActivator(fraction.url()));
+        activators.add(new AgentActivator(fraction.url()));
+        activators.add(new ConsulTopologyConnectorActivator());
         return activators;
     }
 

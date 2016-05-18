@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.topology.consul.runtime;
 
-import java.net.URL;
-
-import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.CatalogClient;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.HealthClient;
@@ -45,53 +42,36 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  */
 public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>, TopologyConnector {
 
-    public ConsulTopologyConnector(URL url) {
-        this.url = url;
+    public ConsulTopologyConnector() {
+
     }
 
     public Injector<TopologyManager> getTopologyManagerInjector() {
         return this.topologyManagerInjector;
     }
 
+    public Injector<Advertiser> getAdvertiserInjector() {
+        return this.advertiser;
+    }
+
     @Override
     public void advertise(String name, SocketBinding binding, String... tags) {
         Registration registration = new Registration("consul", name, binding.getAddress().getHostAddress(), binding.getAbsolutePort(), tags);
-        this.advertiser.advertise(registration);
+        getAdvertiser().advertise(registration);
+    }
+
+    private Advertiser getAdvertiser() {
+        return this.advertiser.getValue();
     }
 
     @Override
     public void unadvertise(String name, SocketBinding binding) {
-        this.advertiser.unadvertise(name, binding.getAddress().getHostAddress(), binding.getAbsolutePort());
+        getAdvertiser().unadvertise(name, binding.getAddress().getHostAddress(), binding.getAbsolutePort());
     }
 
     @Override
     public void start(StartContext startContext) throws StartException {
         ServiceTarget target = startContext.getChildTarget();
-
-        ConsulService consul = new ConsulService(this.url);
-        target.addService(ConsulService.SERVICE_NAME, consul)
-                .install();
-
-        HealthClientService healthClient = new HealthClientService();
-        target.addService(HealthClientService.SERIVCE_NAME, healthClient)
-                .addDependency(ConsulService.SERVICE_NAME, Consul.class, healthClient.getConsulInjector())
-                .install();
-
-        AgentClientService agentClient = new AgentClientService();
-        target.addService(AgentClientService.SERVICE_NAME, agentClient)
-                .addDependency(ConsulService.SERVICE_NAME, Consul.class, agentClient.getConsulInjector())
-                .install();
-
-        CatalogClientService catalogClient = new CatalogClientService();
-        target.addService(CatalogClientService.SERVICE_NAME, catalogClient)
-                .addDependency(ConsulService.SERVICE_NAME, Consul.class, catalogClient.getConsulInjector())
-                .install();
-
-
-        this.advertiser = new Advertiser();
-        target.addService(Advertiser.SERVICE_NAME, advertiser)
-                .addDependency(AgentClientService.SERVICE_NAME, AgentClient.class, advertiser.getAgentClientInjector())
-                .install();
 
         CatalogWatcher watcher = new CatalogWatcher();
         target.addService(CatalogWatcher.SERVICE_NAME, watcher)
@@ -99,11 +79,14 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
                 .addDependency(HealthClientService.SERIVCE_NAME, HealthClient.class, watcher.getHealthClientInjector())
                 .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, watcher.getTopologyManagerInjector())
                 .install();
+
+
     }
 
     @Override
     public void stop(StopContext stopContext) {
         // all sub-services will be stopped prior.
+        System.out.println(">>");
     }
 
     @Override
@@ -111,9 +94,7 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
         return this;
     }
 
-    private final URL url;
-
     private InjectedValue<TopologyManager> topologyManagerInjector = new InjectedValue<>();
 
-    private Advertiser advertiser;
+    private InjectedValue<Advertiser> advertiser = new InjectedValue<>();
 }
