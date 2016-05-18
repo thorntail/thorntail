@@ -104,7 +104,9 @@ public class Container {
 
         try {
             String stageFile = System.getProperty("swarm.project.stage.file");
-            loadStageConfiguration(new URL(stageFile));
+            if(stageFile !=null) {
+                loadStageConfiguration(new URL(stageFile));
+            }
 
         } catch (MalformedURLException e) {
             System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: "+e.getMessage());
