@@ -45,7 +45,7 @@
     <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
 
     <version.h2>1.4.187</version.h2>
-    <version.mysql>6.0.2</version.mysql>
+    <version.mysql>5.1.39</version.mysql>
 
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
