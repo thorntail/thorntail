@@ -28,7 +28,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
 @Configuration(
         marshal = true,
         extension = "org.jboss.as.jpa",
-        parserFactoryClassName = "org.wildfly.swarm.jpa.jpa.ParserFactory"
+        parserFactoryClassName = "org.wildfly.swarm.jpa.ParserFactory"
 )
 public class JPAFraction extends JPA<JPAFraction> implements Fraction {
 
@@ -64,7 +64,6 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
                     });
 
             initContext.fraction(datasources);
-            System.err.println("setting default Datasource to ExampleDS");
             defaultDatasource("jboss/datasources/ExampleDS");
         }
     }
