@@ -48,19 +48,18 @@ public class MySQLJPAFraction extends JPA<MySQLJPAFraction> implements Fraction 
         if (!inhibitDefaultDatasource) {
             final DatasourcesFraction datasources = new DatasourcesFraction()
                     .jdbcDriver("mysql", (d) -> {
-                        d.driverClassName("com.mysql.cj.jdbc.Driver");
+                        d.driverClassName("com.mysql.jdbc.Driver");
                         d.xaDatasourceClass("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
-                        d.driverModuleName("com.mysql.jdbc.driver");
+                        d.driverModuleName("com.mysql");
                     })
                     .dataSource("ExampleDS", (ds) -> {
                         ds.driverName("mysql");
                         ds.connectionUrl("jdbc:mysql://localhost:3306/test");
                         ds.userName("root");
-                        ds.password("password");
+                        ds.password("root");
                     });
 
             initContext.fraction(datasources);
-            System.err.println("setting default Datasource to ExampleDS");
             defaultDatasource("jboss/datasources/ExampleDS");
         }
     }

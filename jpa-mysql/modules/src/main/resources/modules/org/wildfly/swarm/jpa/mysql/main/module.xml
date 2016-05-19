@@ -4,7 +4,7 @@
     <!-- For when run with bonafide IDE classpath -->
     <system export="true">
       <paths>
-        <path name="org/wildfly/swarm/jpa-mysql"/>
+        <path name="org/wildfly/swarm/jpa/mysql"/>
       </paths>
     </system>
 
