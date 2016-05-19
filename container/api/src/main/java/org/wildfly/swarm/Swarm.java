@@ -53,6 +53,15 @@ public class Swarm extends Container {
         super(debugBootstrap);
     }
 
+
+    public Swarm(String...args) throws Exception {
+        super( args );
+    }
+
+    public Swarm(boolean debugBootstrap, String...args) throws Exception {
+        super( debugBootstrap, args );
+    }
+
     @Override
     public Swarm withStageConfig(URL url) {
         return (Swarm) super.withStageConfig(url);
@@ -128,38 +137,21 @@ public class Swarm extends Container {
         ServiceLoader<ContainerFactory> factory = bootstrap.loadService(ContainerFactory.class);
         Iterator<ContainerFactory> factoryIter = factory.iterator();
 
-        CommandLine cmd = CommandLine.parse(args);
-
-        if (cmd.get(CommandLine.HELP)) {
-            cmd.displayVersion(System.err);
-            System.err.println("");
-            cmd.displayHelp(System.err);
-            return;
-        }
-
-        if (cmd.get(CommandLine.VERSION)) {
-            cmd.displayVersion(System.err);
-        }
-
-        cmd.applyProperties();
-
         if (!factoryIter.hasNext()) {
-            simpleMain(cmd);
+            simpleMain(args);
         } else {
-            factoryMain(factoryIter.next(), cmd);
+            factoryMain(factoryIter.next(), args);
         }
     }
 
-    public static void simpleMain(CommandLine cmd) throws Exception {
-        Container container = new Swarm();
-        cmd.applyConfigurations(container);
+    public static void simpleMain(String...args) throws Exception {
+        Container container = new Swarm(args);
         container.start();
         container.deploy();
     }
 
-    public static void factoryMain(ContainerFactory factory, CommandLine cmd) throws Exception {
-        Container container = factory.newContainer(cmd.extraArgumentsArray());
-        cmd.applyConfigurations(container);
+    public static void factoryMain(ContainerFactory factory, String...args) throws Exception {
+        Container container = factory.newContainer(args);
         container.start();
         container.deploy();
     }

@@ -58,6 +58,7 @@ import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.ProjectStageFactory;
 import org.wildfly.swarm.container.internal.Server;
@@ -104,17 +105,27 @@ public class Container {
 
         try {
             String stageFile = System.getProperty("swarm.project.stage.file");
-            if(stageFile !=null) {
+            if (stageFile != null) {
                 loadStageConfiguration(new URL(stageFile));
             }
 
         } catch (MalformedURLException e) {
-            System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: "+e.getMessage());
+            System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: " + e.getMessage());
         }
 
         createServer(debugBootstrap);
         createShrinkWrapDomain();
         determineDeploymentType();
+    }
+
+    public Container(String... args) throws Exception {
+        this(false, args);
+    }
+
+    public Container(boolean debugBootstrap, String... args) throws Exception {
+        this(debugBootstrap);
+        CommandLine cmd = CommandLine.parse(args);
+        cmd.apply(this);
     }
 
     public Container withXmlConfig(URL url) {
@@ -123,19 +134,23 @@ public class Container {
     }
 
     public Container withStageConfig(URL url) {
-        if(null==System.getProperty("swarm.project.stage.file")) {
+        if (null == System.getProperty("swarm.project.stage.file")) {
             loadStageConfiguration(url);
         } else {
-            System.out.println("[INFO] Project stage superseded by external configuration "+ System.getProperty("swarm.project.stage.file"));
+            System.out.println("[INFO] Project stage superseded by external configuration " + System.getProperty("swarm.project.stage.file"));
         }
 
         return this;
     }
 
     public StageConfig stageConfig() {
-        if(!enabledStage.isPresent())
+        if (!enabledStage.isPresent())
             throw new RuntimeException("Stage config is not present");
         return new StageConfig(enabledStage.get());
+    }
+
+    public boolean hasStageConfig() {
+        return enabledStage.isPresent();
     }
 
     public static boolean isFatJar() throws IOException {
@@ -160,7 +175,7 @@ public class Container {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -199,9 +214,9 @@ public class Container {
         if (!this.dependentFractions.isEmpty()) {
             this.dependentFractions.stream()
                     .filter(dependentFraction ->
-                                    this.fractions.get(dependentFraction.getClass()) == null
-                                            || (this.fractions.get(dependentFraction.getClass()) != null
-                                            && this.defaultFractionTypes.contains(dependentFraction.getClass())))
+                            this.fractions.get(dependentFraction.getClass()) == null
+                                    || (this.fractions.get(dependentFraction.getClass()) != null
+                                    && this.defaultFractionTypes.contains(dependentFraction.getClass())))
                     .forEach(this::fraction);
             this.dependentFractions.clear();
         }
@@ -292,7 +307,7 @@ public class Container {
     public Container start(boolean eagerlyOpen) throws Exception {
         if (!this.running) {
 
-            if(enabledStage.isPresent())
+            if (enabledStage.isPresent())
                 this.server.setStageConfig(enabledStage.get());
 
             this.deployer = this.server.start(this, eagerlyOpen);
@@ -548,7 +563,7 @@ public class Container {
     }
 
     protected String determineDeploymentType() throws IOException {
-        if ( this.defaultDeploymentType == null ) {
+        if (this.defaultDeploymentType == null) {
             this.defaultDeploymentType = determineDeploymentTypeInternal();
             System.setProperty(BootstrapProperties.DEFAULT_DEPLOYMENT_TYPE, this.defaultDeploymentType);
         }
@@ -611,7 +626,7 @@ public class Container {
         try {
             enableStageConfiguration(url.openStream());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load stage configuration from URL :"+url.toExternalForm(), e);
+            throw new RuntimeException("Failed to load stage configuration from URL :" + url.toExternalForm(), e);
         }
     }
 
@@ -620,16 +635,16 @@ public class Container {
         String stageName = System.getProperty("swarm.project.stage", "default");
         ProjectStage stage = null;
         for (ProjectStage projectStage : projectStages) {
-            if(projectStage.getName().equals(stageName)) {
+            if (projectStage.getName().equals(stageName)) {
                 stage = projectStage;
                 break;
             }
         }
 
-        if(null==stage)
-            throw new RuntimeException("Project stage '"+stageName+"' cannot be found");
+        if (null == stage)
+            throw new RuntimeException("Project stage '" + stageName + "' cannot be found");
 
-        System.out.println("[INFO] Using project stage: "+stageName);
+        System.out.println("[INFO] Using project stage: " + stageName);
 
         this.enabledStage = Optional.of(stage);
     }
@@ -645,7 +660,6 @@ public class Container {
 
         VERSION = props.getProperty("version", "unknown");
     }
-
 
 
     private Map<Class<? extends Fraction>, Fraction> fractions = new ConcurrentHashMap<>();

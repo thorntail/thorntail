@@ -4,13 +4,21 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.spi.api.ClassLoading;
+import org.wildfly.swarm.spi.api.StageConfig;
 
 /** A parsed command-line.
  *
@@ -69,6 +77,7 @@ public class CommandLine {
             .withDescription("URL of the server configuration (e.g. standalone.xml)")
             .then( (cmd, opt, value)-> cmd.put( opt, Option.toURL(value)));
 
+
     /** Default option for parsing -s and --stage-config */
     public static final Option<URL> STAGE_CONFIG = new Option<URL>()
             .withShort('s')
@@ -76,7 +85,39 @@ public class CommandLine {
             .hasValue("<config>")
             .valueMayBeSeparate(true)
             .withDescription("URL to the stage configuration (e.g. config.yaml")
+            .withDefault( ()->{
+                Path candidate = Paths.get( "project-stages.yml" );
+                if (Files.exists(candidate)) {
+                    try {
+                        return candidate.toUri().toURL();
+                    } catch (MalformedURLException e) {
+                        // ignore
+                    }
+                }
+
+                URL yml = null;
+                try {
+                    Module appModule = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "swarm.application" ) );
+                    yml = appModule.getClassLoader().getResource( "project-stages.yml" );
+                    if ( yml != null ) {
+                        return yml;
+                    }
+                } catch (ModuleLoadException e) {
+                    // ignore;
+                }
+
+                yml = ClassLoader.getSystemClassLoader().getResource( "project-stages.yml" );
+                return yml;
+            })
             .then( (cmd, opt, value)-> cmd.put( opt, Option.toURL( value ) ));
+
+    public static final Option<String> ACTIVE_STAGE = new Option<String>()
+            .withShort('S')
+            .withLong("stage")
+            .hasValue("<active-stage>")
+            .valueMayBeSeparate(true)
+            .withDescription( "When using a stage-config, set the active stage" )
+            .then(CommandLine::put);
 
     /** Default option for parsing -b */
     public static final Option<String> BIND = new Option<String>()
@@ -95,6 +136,7 @@ public class CommandLine {
                 PROPERTIES_URL,
                 SERVER_CONFIG,
                 STAGE_CONFIG,
+                ACTIVE_STAGE,
                 BIND
         );
     }
@@ -137,6 +179,19 @@ public class CommandLine {
         this.options.displayHelp(out);
     }
 
+    public void displayHelp(PrintStream out, StageConfig stageConfig) {
+        displayHelp( out );
+        if ( stageConfig != null ) {
+            out.println();
+            out.println("Stage configuration options:" );
+            out.println();
+            for (String key : stageConfig.keys()) {
+                out.println( "  " + key );
+            }
+            out.println();
+        }
+    }
+
     /** Display the version.
      *
      * @param out The output stream to display help upon.
@@ -173,6 +228,10 @@ public class CommandLine {
         if (get(BIND) != null) {
             System.setProperty("swarm.bind.address", get(BIND));
         }
+
+        if ( get(ACTIVE_STAGE) != null ) {
+            System.setProperty("swarm.project.stage", get(ACTIVE_STAGE));
+        }
     }
 
     /** Apply configuration to the container.
@@ -188,6 +247,27 @@ public class CommandLine {
         }
         if (get(STAGE_CONFIG) != null) {
             container.withStageConfig(get(STAGE_CONFIG));
+        }
+    }
+
+    /** Apply properties and configuration from the parsed commandline to a container.
+     *
+     * @param container The container to apply configuration to.
+     * @throws IOException If an error occurs resolving any URL.
+     */
+    public void apply(Container container) throws IOException {
+        applyProperties();
+        applyConfigurations(container);
+
+        if ( get(HELP) ) {
+            displayVersion( System.err );
+            System.err.println();
+            displayHelp( System.err, container.hasStageConfig() ? container.stageConfig() : null  );
+            System.exit(0);
+        }
+
+        if ( get(VERSION) ) {
+            displayVersion( System.err );
         }
     }
 
