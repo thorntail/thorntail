@@ -1138,6 +1138,7 @@
     <module>jmx</module>
     <module>jpa</module>
     <module>jpa-mysql</module>
+    <module>jpa-postgresql</module>
     <module>jsf</module>
     <module>logging</module>
     <module>mail</module>
@@ -1155,7 +1156,6 @@
     <module>webservices</module>
 
     <module>integration-tests</module>
-    <module>jpa-postgresql</module>
   </modules>
 
   <profiles>
