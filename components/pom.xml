@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Core
+  Wildfly Swarm :: Camel Full
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -29,14 +29,20 @@
     <version>1.0.4-SNAPSHOT</version>
   </parent>
 
-  <name>Wildfly Swarm :: Camel Core</name>
+    <name>Wildfly Swarm :: Camel Components</name>
+    
+    <artifactId>camel-components</artifactId>
+    <packaging>pom</packaging>
 
-  <artifactId>camel-core-parent</artifactId>
-  <packaging>pom</packaging>
-
-  <modules>
-    <module>main</module>
-    <module>tests</module>
-  </modules>
+    <modules>
+        <module>cdi</module>
+        <module>cxf-rs</module>
+        <module>cxf-ws</module>
+        <module>ejb</module>
+        <module>jms</module>
+        <module>jmx</module>
+        <module>jpa</module>
+        <module>other</module>
+    </modules>
 
 </project>

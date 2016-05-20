@@ -46,8 +46,8 @@
     <properties>
         <version.apache.camel>2.17.0</version.apache.camel>
         <version.wildfly.camel>4.0.0</version.wildfly.camel>
-        <version.wildfly.swarm.core>1.0.0.Beta5</version.wildfly.swarm.core>
-        <version.wildfly.swarm.spi>1.0.0.Beta12</version.wildfly.swarm.spi>
+        <version.wildfly.swarm.core>1.0.0.CR1</version.wildfly.swarm.core>
+        <version.wildfly.swarm.spi>1.0.0.CR2</version.wildfly.swarm.spi>
         
         <version.eclipse.egit.github>2.1.5</version.eclipse.egit.github>
         
@@ -67,8 +67,7 @@
     <modules>
         <module>docs</module>
         <module>core</module>
-        <module>web</module>
-        <module>full</module>
+        <module>components</module>
     </modules>
 
     <!-- DependencyManagement -->
@@ -100,7 +99,22 @@
             </dependency>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
+                <artifactId>bean-validation</artifactId>
+                <version>${version.wildfly.swarm.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>cdi</artifactId>
+                <version>${version.wildfly.swarm.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
                 <artifactId>container-runtime</artifactId>
+                <version>${version.wildfly.swarm.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>ee</artifactId>
                 <version>${version.wildfly.swarm.core}</version>
             </dependency>
             <dependency>
@@ -112,6 +126,11 @@
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>jpa</artifactId>
                 <version>${version.wildfly.swarm.core}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.wildfly.swarm</groupId>
+              <artifactId>jaxrs</artifactId>
+              <version>${version.wildfly.swarm.core}</version>
             </dependency>
             <dependency>
               <groupId>org.wildfly.swarm</groupId>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Core
+  Wildfly Swarm :: Camel Web
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -25,13 +25,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>camel</artifactId>
+    <artifactId>camel-components</artifactId>
     <version>1.0.4-SNAPSHOT</version>
   </parent>
 
-  <name>Wildfly Swarm :: Camel Core</name>
+  <name>Wildfly Swarm :: Camel CXFRS</name>
 
-  <artifactId>camel-core-parent</artifactId>
+  <artifactId>camel-cxf-rs-parent</artifactId>
   <packaging>pom</packaging>
 
   <modules>
