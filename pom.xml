@@ -46,6 +46,7 @@
 
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
+    <version.postgresql>9.4.1208</version.postgresql>
 
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
@@ -657,6 +658,27 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-postgresql</artifactId>
+        <version>1.0.0.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-postgresql-api</artifactId>
+        <version>1.0.0.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-postgresql-modules</artifactId>
+        <version>1.0.0.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-postgresql-runtime</artifactId>
+        <version>1.0.0.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf</artifactId>
         <version>1.0.0.Final-SNAPSHOT</version>
       </dependency>
@@ -1116,6 +1138,7 @@
     <module>jmx</module>
     <module>jpa</module>
     <module>jpa-mysql</module>
+    <module>jpa-postgresql</module>
     <module>jsf</module>
     <module>logging</module>
     <module>mail</module>
