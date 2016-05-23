@@ -14,7 +14,7 @@
   </parent>
 
   <artifactId>core</artifactId>
-  <version>1.0.0.Final-SNAPSHOT</version>
+  <version>1.0.0.CR2</version>
 
   <name>WildFly Swarm: Root</name>
   <description>WildFly Swarm: Root</description>
@@ -25,7 +25,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-core.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-core.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-core</url>
-    <tag>HEAD</tag>
+    <tag>1.0.0.CR2</tag>
   </scm>
 
   <properties>
@@ -262,461 +262,461 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>tools</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian-daemon</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian-daemon-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bean-validation-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bootstrap</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>container</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>container-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>container-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>container-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ee-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>hibernate-search</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>hibernate-validator</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>infinispan-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>io</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>io-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>io-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>io-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>javafx</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>javafx-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>javafx-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>javafx-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jaxrs-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jgroups-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-mysql</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-mysql-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-mysql-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-mysql-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-postgresql</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-postgresql-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-postgresql-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-postgresql-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jsf-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
@@ -728,295 +728,295 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>mail-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>monitor</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>monitor-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>monitor-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>monitor-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>msc-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>request-controller</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>request-controller-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>request-controller-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>request-controller-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>resource-adapters</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>resource-adapters-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>resource-adapters-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>resource-adapters-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>      
       
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>security</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>security-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>security-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>security-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>transactions-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>undertow-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>cdi</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>cdi-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>cdi-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>cdi-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.0.CR2</version>
       </dependency>
 
       <!-- Feature Packs -->
