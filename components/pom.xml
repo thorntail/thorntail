@@ -36,12 +36,14 @@
 
     <modules>
         <module>cdi</module>
-        <module>cxf-rs</module>
-        <module>cxf-ws</module>
+        <module>cxf</module>
         <module>ejb</module>
+        <module>jaxb</module>
         <module>jms</module>
         <module>jmx</module>
         <module>jpa</module>
+        <module>mail</module>
+        <module>undertow</module>
         <module>other</module>
     </modules>
 

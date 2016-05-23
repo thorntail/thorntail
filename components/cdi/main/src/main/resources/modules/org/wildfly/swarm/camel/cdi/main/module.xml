@@ -24,6 +24,7 @@
     </resources>
 
     <dependencies>
+        <module name="javax.ejb.api" export="true"/>
         <module name="org.wildfly.extension.camel.cdi"/>
         <module name="org.wildfly.extension.camel.ee"/>
         <module name="org.wildfly.swarm.camel.core" />

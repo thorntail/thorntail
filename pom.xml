@@ -133,13 +133,13 @@
               <version>${version.wildfly.swarm.core}</version>
             </dependency>
             <dependency>
-              <groupId>org.wildfly.swarm</groupId>
-              <artifactId>jaxrs-cdi</artifactId>
-              <version>${version.wildfly.swarm.core}</version>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>logging</artifactId>
+                <version>${version.wildfly.swarm.core}</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
-                <artifactId>logging</artifactId>
+                <artifactId>mail</artifactId>
                 <version>${version.wildfly.swarm.core}</version>
             </dependency>
             <dependency>
@@ -151,6 +151,11 @@
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>webservices</artifactId>
                 <version>${version.wildfly.swarm.core}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.wildfly.swarm</groupId>
+              <artifactId>undertow</artifactId>
+              <version>${version.wildfly.swarm.core}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
