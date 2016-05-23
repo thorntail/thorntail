@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.impl.base.container.ResourceAdapterContainerBase;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
@@ -71,6 +72,12 @@ public class RARArchiveImpl extends ResourceAdapterContainerBase<RARArchive> imp
     @Override
     public RARArchive resourceAdapter(final File ironjacamarFile) {
         getArchive().add(new FileAsset(ironjacamarFile), "META-INF/ironjacamar.xml");
+        return this;
+    }
+
+    @Override
+    public RARArchive resourceAdapter(final Asset ironjacamarAsset) {
+        getArchive().add(ironjacamarAsset, "META-INF/ironjacamar.xml");
         return this;
     }
 

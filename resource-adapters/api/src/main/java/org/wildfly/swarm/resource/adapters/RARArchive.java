@@ -18,6 +18,7 @@ package org.wildfly.swarm.resource.adapters;
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.container.ManifestContainer;
 import org.jboss.shrinkwrap.api.container.ResourceAdapterContainer;
@@ -35,4 +36,6 @@ public interface RARArchive extends Archive<RARArchive>, ManifestContainer<RARAr
     RARArchive resourceAdapter(final ResourceAdapter ra);
 
     RARArchive resourceAdapter(final File ironjacamarFile);
+
+    RARArchive resourceAdapter(final Asset ironjacamarAsset);
 }
