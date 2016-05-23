@@ -118,10 +118,25 @@ public class Container {
         determineDeploymentType();
     }
 
+    /**
+     * Construct a new, un-started container, configured using command-line arguments.
+     *
+     * @param args The command-line arguments arguments
+     * @throws Exception If an error occurs performing classloading and initialization magic.
+     */
     public Container(String... args) throws Exception {
         this(false, args);
     }
 
+    /**
+     * Construct a new, un-started container, configured using command-line arguments.
+     *
+     * @param debugBootstrap - flag to indicate if the module layer should be put into bootstrap debug mode. Same as
+     *                       the jboss-module -debuglog mode which enables trace logging to System.out during the
+     *                       initial bootstrap of the module layer.
+     * @param args The command-line arguments arguments
+     * @throws Exception If an error occurs performing classloading and initialization magic.
+     */
     public Container(boolean debugBootstrap, String... args) throws Exception {
         this(debugBootstrap);
         CommandLine cmd = CommandLine.parse(args);
