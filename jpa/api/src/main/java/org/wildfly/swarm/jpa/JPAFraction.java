@@ -50,21 +50,22 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
     @Override
     public void initialize(Fraction.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
+            String dsName = System.getProperty( "swarm.ds.name", "ExampleDS" );
             final DatasourcesFraction datasources = new DatasourcesFraction()
                     .jdbcDriver("h2", (d) -> {
                         d.driverClassName("org.h2.Driver");
                         d.xaDatasourceClass("org.h2.jdbcx.JdbcDataSource");
                         d.driverModuleName("com.h2database.h2");
                     })
-                    .dataSource("ExampleDS", (ds) -> {
-                        ds.driverName("h2");
-                        ds.connectionUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
-                        ds.userName("sa");
-                        ds.password("sa");
+                    .dataSource(dsName, (ds) -> {
+                        ds.driverName("${swarm.jdbc.driver:h2}");
+                        ds.connectionUrl("${swarm.ds.connection.url:jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}");
+                        ds.userName("${swarm.ds.username:sa}");
+                        ds.password("${swarm.ds.password:sa}");
                     });
 
             initContext.fraction(datasources);
-            defaultDatasource("jboss/datasources/ExampleDS");
+            defaultDatasource("jboss/datasources/" + dsName );
         }
     }
 
