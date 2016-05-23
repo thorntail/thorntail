@@ -30,22 +30,23 @@ public class PostgreSQLJPAFraction extends JPA<PostgreSQLJPAFraction> implements
     @Override
     public void initialize(Fraction.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
+            String dsName = System.getProperty( "swarm.ds.name", "ExampleDS" );
             final DatasourcesFraction datasources = new DatasourcesFraction()
                     .jdbcDriver("postgresql", (d) -> {
                         d.driverClassName("org.postgresql.Driver");
                         d.xaDatasourceClass("org.postgresql.xa.PGXADataSource");
                         d.driverModuleName("org.postgresql");
                     })
-                    .dataSource("ExampleDS", (ds) -> {
-                        ds.driverName("postgresql");
-                        ds.connectionUrl("jdbc:postgresql://localhost:5432/test");
-                        ds.userName("postgres");
-                        ds.password("postgres");
+                    .dataSource(dsName, (ds) -> {
+                        ds.driverName("${swarm.jdbc.driver:postgresql}");
+                        ds.connectionUrl("${swarm.ds.connection.url:jdbc:postgresql://localhost:5432/test}");
+                        ds.userName("${swarm.ds.username:postgres}");
+                        ds.password("${swarm.ds.password:postgres}");
                     });
 
             initContext.fraction(datasources);
             System.err.println("setting default Datasource to ExampleDS");
-            defaultDatasource("jboss/datasources/ExampleDS");
+            defaultDatasource("jboss/datasources/" + dsName );
         }
     }
 

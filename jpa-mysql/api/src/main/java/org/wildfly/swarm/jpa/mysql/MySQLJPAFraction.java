@@ -46,21 +46,22 @@ public class MySQLJPAFraction extends JPA<MySQLJPAFraction> implements Fraction 
     @Override
     public void initialize(Fraction.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
+            String dsName = System.getProperty( "swarm.ds.name", "ExampleDS" );
             final DatasourcesFraction datasources = new DatasourcesFraction()
                     .jdbcDriver("mysql", (d) -> {
                         d.driverClassName("com.mysql.jdbc.Driver");
                         d.xaDatasourceClass("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
                         d.driverModuleName("com.mysql");
                     })
-                    .dataSource("ExampleDS", (ds) -> {
-                        ds.driverName("mysql");
-                        ds.connectionUrl("jdbc:mysql://localhost:3306/test");
-                        ds.userName("root");
-                        ds.password("root");
+                    .dataSource(dsName, (ds) -> {
+                        ds.driverName("${swarm.jdbc.driver:mysql}");
+                        ds.connectionUrl("${swarm.ds.connection.url:jdbc:mysql://localhost:3306/test}");
+                        ds.userName("${swarm.ds.username:root}");
+                        ds.password("${swarm.ds.password:root}");
                     });
 
             initContext.fraction(datasources);
-            defaultDatasource("jboss/datasources/ExampleDS");
+            defaultDatasource("jboss/datasources/" + dsName );
         }
     }
 
