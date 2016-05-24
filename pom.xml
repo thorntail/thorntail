@@ -15,7 +15,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-openshift-parent</artifactId>
-  <version>1.0.0.Final</version>
+  <version>1.0.1.Final-SNAPSHOT</version>
 
   <name>WildFly Swarm: Topology via OpenShift</name>
   <description>WildFly Swarm: Topology via OpenShift</description>
@@ -26,7 +26,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-openshift.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-openshift.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-topology-openshift</url>
-    <tag>1.0.0.Final</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -102,22 +102,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-openshift</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-openshift-api</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-openshift-modules</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-openshift-runtime</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.openshift</groupId>
