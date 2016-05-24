@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Full :: Tests
+  Camel Full :: Tests
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -29,7 +29,7 @@
     <version>1.0.4-SNAPSHOT</version>
   </parent>
 
-  <name>Wildfly Swarm :: Camel EJB :: Tests</name>
+  <name>Camel EJB :: Tests</name>
 
   <artifactId>camel-ejb-tests</artifactId>
 

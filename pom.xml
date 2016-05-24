@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel
+  Camel
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -23,7 +23,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Wildfly Swarm :: Camel</name>
+    <name>WildFly Swarm Camel</name>
+    <description>WildFly Swarm Camel Integration</description>
 
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>camel</artifactId>
@@ -31,7 +32,6 @@
 
     <version>1.0.4-SNAPSHOT</version>
 
-    <description>WildFly Swarm Camel Integration</description>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-camel</url>
 
     <!-- Source Control -->

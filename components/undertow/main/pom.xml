@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Full :: API
+  Camel Full :: API
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -29,7 +29,7 @@
     <version>1.0.4-SNAPSHOT</version>
   </parent>
 
-  <name>Wildfly Swarm :: Camel Undertow :: Main</name>
+  <name>Camel Undertow :: Main</name>
 
   <artifactId>camel-undertow</artifactId>
 

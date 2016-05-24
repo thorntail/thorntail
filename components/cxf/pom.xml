@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Web
+  Camel Web
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -29,7 +29,8 @@
     <version>1.0.4-SNAPSHOT</version>
   </parent>
 
-  <name>Wildfly Swarm :: Camel CXF</name>
+  <name>Camel CXF</name>
+  <description>Camel CXF Integration</description>
 
   <artifactId>camel-cxf-parent</artifactId>
   <packaging>pom</packaging>

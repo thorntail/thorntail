@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Full
+  Camel Full
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -29,15 +29,16 @@
     <version>1.0.4-SNAPSHOT</version>
   </parent>
 
-    <name>Wildfly Swarm :: Camel EJB</name>
-    
-    <artifactId>camel-ejb-parent</artifactId>
-    <packaging>pom</packaging>
+  <name>Camel EJB</name>
+  <description>Camel EJB Integration</description>
 
-    <modules>
-        <module>main</module>
-        <module>tests</module>
-    </modules>
+  <artifactId>camel-ejb-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>main</module>
+    <module>tests</module>
+  </modules>
 
   <build>
     <plugins>

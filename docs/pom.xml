@@ -27,7 +27,7 @@
     <version>1.0.4-SNAPSHOT</version>
     </parent>
     
-    <name>Wildfly Swarm :: Docs</name>
+    <name>WildFly Swarm Camel :: Docs</name>
 
     <artifactId>camel-docs</artifactId>
     <packaging>pom</packaging>

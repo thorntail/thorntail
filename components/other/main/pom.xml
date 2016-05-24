@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Wildfly Swarm :: Camel Full :: API
+  Camel Full :: API
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -29,7 +29,7 @@
     <version>1.0.4-SNAPSHOT</version>
   </parent>
 
-  <name>Wildfly Swarm :: Camel Other :: Main</name>
+  <name>Camel Other :: Main</name>
 
   <artifactId>camel-other</artifactId>
 
