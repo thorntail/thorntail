@@ -44,13 +44,13 @@ import org.wildfly.swarm.tools.FractionDescriptor;
 )
 public class PackageMojo extends AbstractSwarmMojo {
 
-    @Parameter(alias = "bundleDependencies", defaultValue = "true")
+    @Parameter(alias = "bundleDependencies", defaultValue = "true", property = "swarm.bundleDependencies")
     protected boolean bundleDependencies;
 
     /**
      * Make a fully executable jar for *nix machines by prepending a launch script to the jar.
      */
-    @Parameter(alias = "executable", defaultValue = "false")
+    @Parameter(alias = "executable", defaultValue = "false", property = "swarm.executable")
     protected boolean executable;
 
     /**

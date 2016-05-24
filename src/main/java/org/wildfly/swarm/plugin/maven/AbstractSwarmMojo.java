@@ -59,19 +59,19 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession mavenSession;
 
-    @Parameter(alias = "mainClass")
+    @Parameter(alias = "mainClass", property = "swarm.mainClass")
     protected String mainClass;
 
     @Parameter(alias = "properties")
     protected Properties properties;
 
-    @Parameter(alias = "propertiesFile")
+    @Parameter(alias = "propertiesFile", property = "swarm.propertiesFile")
     protected String propertiesFile;
 
     @Parameter(alias = "environment")
     protected Properties environment;
 
-    @Parameter(alias = "environmentFile")
+    @Parameter(alias = "environmentFile", property = "swarm.environmentFile")
     protected String environmentFile;
 
     @Parameter(alias = "modules")
@@ -80,7 +80,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "fractions")
     protected List<String> additionalFractions = new ArrayList<>();
 
-    @Parameter(defaultValue = "when_missing")
+    @Parameter(defaultValue = "when_missing", property = "swarm.detect.mode")
     protected BuildTool.FractionDetectionMode fractionDetectMode;
 
     @Inject

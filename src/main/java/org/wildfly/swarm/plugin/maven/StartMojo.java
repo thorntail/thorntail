@@ -53,10 +53,10 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class StartMojo extends AbstractSwarmMojo {
 
-    @Parameter(alias = "stdoutFile")
+    @Parameter(alias = "stdoutFile", property = "swarm.stdout")
     public File stdoutFile;
 
-    @Parameter(alias = "stderrFile")
+    @Parameter(alias = "stderrFile", property = "swarm.stderr" )
     public File stderrFile;
 
     @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
@@ -65,7 +65,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "debug", property = BootstrapProperties.DEBUG_PORT)
     public Integer debugPort;
 
-    @Parameter(alias = "jvmArguments" )
+    @Parameter(alias = "jvmArguments", property = "swarm.jvmArguments")
     public List<String> jvmArguments = new ArrayList<>();
 
     boolean waitForProcess;
