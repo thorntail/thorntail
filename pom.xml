@@ -16,7 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-jgroups-parent</artifactId>
-  <version>1.0.0.CR3-SNAPSHOT</version>
+  <version>1.0.0.Final</version>
 
   <name>WildFly Swarm: Topology via JGroups</name>
   <description>WildFly Swarm: Topology via JGroups</description>
@@ -27,7 +27,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-jgroups.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology-jgroups.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-topology-jgroups</url>
-    <tag>HEAD</tag>
+    <tag>1.0.0.Final</tag>
   </scm>
 
   <properties>
@@ -100,22 +100,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups</artifactId>
-        <version>1.0.0.CR3-SNAPSHOT</version>
+        <version>1.0.0.Final</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups-api</artifactId>
-        <version>1.0.0.CR3-SNAPSHOT</version>
+        <version>1.0.0.Final</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups-modules</artifactId>
-        <version>1.0.0.CR3-SNAPSHOT</version>
+        <version>1.0.0.Final</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups-runtime</artifactId>
-        <version>1.0.0.CR3-SNAPSHOT</version>
+        <version>1.0.0.Final</version>
       </dependency>
 
       <dependency>
