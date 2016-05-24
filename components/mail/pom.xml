@@ -29,14 +29,15 @@
     <version>1.0.4-SNAPSHOT</version>
   </parent>
 
-    <name>Camel Mail</name>
-    
-    <artifactId>camel-mail-parent</artifactId>
-    <packaging>pom</packaging>
+  <name>Camel Mail</name>
+  <description>Camel Mail Integration</description>
 
-    <modules>
-        <module>main</module>
-    </modules>
+  <artifactId>camel-mail-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>main</module>
+  </modules>
 
   <build>
     <plugins>

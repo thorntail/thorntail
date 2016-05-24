@@ -1,6 +1,6 @@
 /*
  * #%L
- * Wildfly Swarm :: Camel Full Test
+ * Camel EJB :: Tests
  * %%
  * Copyright (C) 2016 RedHat
  * %%

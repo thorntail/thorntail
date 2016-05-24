@@ -1,6 +1,6 @@
 /*
  * #%L
- * Wildfly Swarm :: Camel Web Test
+ * Camel CXF :: Tests
  * %%
  * Copyright (C) 2016 RedHat
  * %%
