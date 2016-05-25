@@ -10,12 +10,12 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>bom-parent</artifactId>
-    <version>1.0.0.CR1-SNAPSHOT</version>
+    <version>1.0.0.CR1</version>
     <relativePath>../</relativePath>
   </parent>
 
   <artifactId>public-javadoc</artifactId>
-  <version>1.0.0.CR1-SNAPSHOT</version>
+  <version>1.0.0.CR1</version>
 
   <name>WildFly Swarm: Public javadocs</name>
   <description>WildFly Swarm: public javadocs</description>
