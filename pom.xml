@@ -19,7 +19,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.wildfly-swarm>1.0.0.CR1-SNAPSHOT</version.wildfly-swarm>
+    <version.wildfly-swarm>1.0.0.CR1</version.wildfly-swarm>
   </properties>
 
   <scm>
