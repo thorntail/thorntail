@@ -26,7 +26,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.drools.server.DroolsServerFraction;
-import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 
 /**
@@ -46,7 +45,7 @@ public class DroolsServerConfiguration extends AbstractServerConfiguration<Drool
     }
 
     @Override
-    public List<Archive> getImplicitDeployments(DroolsServerFraction fraction, ArtifactLookup lookup) throws Exception {
+    public List<Archive> getImplicitDeployments(DroolsServerFraction fraction) throws Exception {
         if (System.getProperty("org.drools.server.swarm.web.conf") == null) {
             try {
                 //Path dir = Files.createTempDirectory("swarm-keycloak-config");
