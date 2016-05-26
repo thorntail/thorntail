@@ -41,6 +41,7 @@ public class JAXRSArquillianTest implements ContainerFactory {
     public static Archive createDeployment() {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
         deployment.addClass(HealthCheckResource.class);
+        deployment.addClass(CustomJsonProvider.class);
         return deployment;
     }
 
