@@ -92,6 +92,15 @@ public class WebXmlAsset implements NamedAsset {
                 .realmName(realmName);
     }
 
+    public void setFormLoginConfig(String realmName, String loginPage, String errorPage) {
+        this.descriptor.createLoginConfig()
+                .authMethod("FORM")
+                .realmName(realmName)
+                .getOrCreateFormLoginConfig()
+                .formLoginPage(loginPage)
+                .formErrorPage(errorPage);
+    }
+
     public String getLoginRealm(String authMethod) {
         if (authMethod == null || authMethod.length() == 0) {
             return null;

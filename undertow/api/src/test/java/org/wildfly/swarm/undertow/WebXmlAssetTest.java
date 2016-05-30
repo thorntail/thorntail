@@ -95,4 +95,12 @@ public class WebXmlAssetTest {
         assertThat(realm).isNotEmpty();
         assertThat(realm).isEqualTo("myRealm");
     }
+
+    @Test
+    public void testFormLoginConfig() throws Exception {
+        WebXmlAsset asset = new WebXmlAsset();
+
+        asset.setFormLoginConfig("myRealm", "/login", "/error");
+        assertThat(asset.getLoginRealm("FORM")).isEqualTo("myRealm");
+    }
 }
