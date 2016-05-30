@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -68,6 +69,12 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "jvmArguments", property = "swarm.jvmArguments")
     public List<String> jvmArguments = new ArrayList<>();
 
+    @Parameter(alias = "arguments" )
+    public List<String> arguments = new ArrayList<>();
+
+    @Parameter(property = "swarm.arguments", defaultValue = "")
+    public String argumentsProp;
+
     boolean waitForProcess;
 
     @SuppressWarnings({"unchecked", "ThrowableResultOfMethodCallIgnored"})
@@ -89,6 +96,16 @@ public class StartMojo extends AbstractSwarmMojo {
         }
 
         executor.withJVMArguments( this.jvmArguments );
+
+        if ( this.argumentsProp != null ) {
+            StringTokenizer args = new StringTokenizer(this.argumentsProp);
+            while ( args.hasMoreTokens() ) {
+                this.arguments.add( args.nextToken() );
+            }
+        }
+
+        System.err.println( "args: " + this.arguments );
+        executor.withArguments( this.arguments );
 
         final SwarmProcess process;
         try {
