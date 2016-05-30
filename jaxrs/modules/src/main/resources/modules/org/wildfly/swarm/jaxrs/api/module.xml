@@ -6,8 +6,6 @@
   <dependencies>
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.undertow"/>
-    <module name="org.wildfly.swarm.configuration"/>
-    <module name="org.jboss.shrinkwrap"/>
     <module name="org.ow2.asm"/>
     <module name="javax.ws.rs.api"/>
   </dependencies>

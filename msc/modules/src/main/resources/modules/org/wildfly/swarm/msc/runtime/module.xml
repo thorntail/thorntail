@@ -5,9 +5,7 @@
 
   <dependencies>
     <module name="org.wildfly.swarm.msc"/>
-    <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
     <module name="org.jboss.msc"/>
-    <module name="org.jboss.shrinkwrap"/>
   </dependencies>
 </module>

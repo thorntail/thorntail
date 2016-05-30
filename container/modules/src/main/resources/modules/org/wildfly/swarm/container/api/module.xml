@@ -10,10 +10,11 @@
     <artifact name="org.wildfly.swarm:container-api:${project.version}"/>
   </resources>
   <dependencies>
+    <module name="org.wildfly.swarm.configuration" export="true"/>
     <module name="org.wildfly.swarm.spi" export="true" services="export"/>
-    <module name="org.jboss.modules"/>
-    <module name="org.jboss.shrinkwrap"/>
-    <module name="org.jboss.shrinkwrap.descriptors"/>
+    <module name="org.jboss.modules" export="true"/>
+    <module name="org.jboss.shrinkwrap" export="true"/>
+    <module name="org.jboss.shrinkwrap.descriptors" export="true"/>
     <module name="org.wildfly.swarm.bootstrap" optional="true"/>
     <module name="org.yaml.snakeyaml"/>
   </dependencies>

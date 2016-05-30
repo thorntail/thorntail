@@ -9,9 +9,6 @@
     <artifact name="org.wildfly.swarm:webservices-api:${project.version}"/>
   </resources>
   <dependencies>
-
     <module name="org.wildfly.swarm.container"/>
-    <module name="org.wildfly.swarm.configuration"/>
-
   </dependencies>
 </module>

@@ -6,9 +6,7 @@
   <dependencies>
     <module name="org.wildfly.swarm.security"/>
 
-    <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
-    <module name="org.wildfly.swarm.configuration"/>
 
     <module name="org.jboss.as.security"/>
     <module name="org.jboss.security.negotiation"/>

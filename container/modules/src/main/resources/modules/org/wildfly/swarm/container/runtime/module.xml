@@ -11,13 +11,13 @@
   </resources>
 
   <dependencies>
-    <module name="org.wildfly.swarm.container"/>
+    <module name="org.wildfly.swarm.container" export="true"/>
     <module name="org.wildfly.swarm.bootstrap" optional="true"/>
-    <module name="org.wildfly.swarm.configuration"/>
+    <module name="org.wildfly.swarm.configuration" export="true"/>
     <module name="org.wildfly.swarm.spi" export="true" services="export"/>
     <module name="org.wildfly.swarm.spi" slot="runtime" export="true"/>
 
-    <module name="org.jboss.modules"/>
+    <module name="org.jboss.modules" export="true"/>
     <module name="org.jboss.vfs"/>
     <module name="org.jboss.jandex"/>
     <module name="org.jboss.logging"/>
