@@ -104,7 +104,6 @@ public class StartMojo extends AbstractSwarmMojo {
             }
         }
 
-        System.err.println( "args: " + this.arguments );
         executor.withArguments( this.arguments );
 
         final SwarmProcess process;
