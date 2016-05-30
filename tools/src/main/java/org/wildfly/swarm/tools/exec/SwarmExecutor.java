@@ -185,6 +185,11 @@ public class SwarmExecutor {
         return this;
     }
 
+    public SwarmExecutor withArguments(List<String> args) {
+        this.arguments.addAll( args );
+        return this;
+    }
+
     public SwarmExecutor withJVMArgument(String arg) {
         this.jvmArguments.add(arg);
         return this;
