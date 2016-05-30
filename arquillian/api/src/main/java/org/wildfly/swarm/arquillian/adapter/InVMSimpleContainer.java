@@ -17,14 +17,20 @@ package org.wildfly.swarm.arquillian.adapter;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.arquillian.ReflectionUtil;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.spi.api.JARArchive;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
+
 /**
  * @author Toby Crawley
+ * @author alexsoto
  */
 public class InVMSimpleContainer implements SimpleContainer {
     public InVMSimpleContainer(Class<?> testClass) {
@@ -41,12 +47,37 @@ public class InVMSimpleContainer implements SimpleContainer {
         System.setProperty(BootstrapProperties.APP_ARTIFACT, archive.getName());
 
         if (isContainerFactory(this.testClass)) {
+
             archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
             archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
             Object factory = this.testClass.newInstance();
             this.container = ((ContainerFactory) factory).newContainer();
+
         } else {
-            this.container = new Container();
+
+            Method containerMethod = getAnnotatedMethodWithContainer(this.testClass);
+
+            if (containerMethod != null) {
+                if (Modifier.isStatic(containerMethod.getModifiers())) {
+                    final Object container = containerMethod.invoke(null, new Object[0]);
+
+                    if (container instanceof Container) {
+                        this.container = (Container) container;
+                    } else {
+                        throw new IllegalArgumentException(
+                                String.format("Method annotated with %s does not return an instace of %s",
+                                        org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
+                                        Container.class.getSimpleName()));
+                    }
+                } else {
+                    throw new IllegalArgumentException(
+                            String.format("Method annotated with %s is %s but it is not static",
+                                    org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
+                                    containerMethod));
+                }
+            } else {
+                this.container = new Container();
+            }
         }
         this.container.start().deploy(archive);
     }

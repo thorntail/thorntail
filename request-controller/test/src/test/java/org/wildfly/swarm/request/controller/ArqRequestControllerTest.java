@@ -31,7 +31,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class ArqRequestControllerTest implements ContainerFactory {
+public class ArqRequestControllerTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -40,8 +40,8 @@ public class ArqRequestControllerTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
+    @org.wildfly.swarm.arquillian.adapter.Container
+    public static Container newContainer() throws Exception {
         return new Container().fraction(RequestControllerFraction.createDefaultFraction());
     }
 
