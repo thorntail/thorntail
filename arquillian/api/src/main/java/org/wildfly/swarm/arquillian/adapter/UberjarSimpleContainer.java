@@ -16,6 +16,8 @@
 package org.wildfly.swarm.arquillian.adapter;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -73,13 +75,38 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         MainSpecifier mainSpecifier = containerContext.getObjectStore().get(MainSpecifier.class);
 
+        boolean annotatedContainerFactory = false;
+
         if (isContainerFactory(this.testClass)) {
+            System.err.println("is container factory: " + this.testClass.getName());
             archive.as(JavaArchive.class)
                     .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                                          this.testClass.getName())
+                            this.testClass.getName())
                     .addClass(this.testClass);
             archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
             archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
+        } else {
+            Method containerMethod = getAnnotatedMethodWithContainer(this.testClass);
+            // preflight check it
+            if (containerMethod != null) {
+                if (Modifier.isStatic(containerMethod.getModifiers())) {
+                    // good to go
+                    annotatedContainerFactory = true;
+                    archive.as(JARArchive.class)
+                            .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
+                                    AnnotationBasedContainerFactory.class.getName())
+                            .addClass(AnnotationBasedContainerFactory.class)
+                            .addClass(Container.class)
+                            .addClass(this.testClass);
+                    archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
+                    archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
+                } else {
+                    throw new IllegalArgumentException(
+                            String.format("Method annotated with %s is %s but it is not static",
+                                    org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
+                                    containerMethod));
+                }
+            }
         }
         archive.as(ServiceActivatorArchive.class)
                 .addServiceActivator(DaemonServiceActivator.class);
@@ -102,6 +129,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
         }
 
         final SwarmExecutor executor = new SwarmExecutor().withDefaultSystemProperties();
+
+        if (annotatedContainerFactory) {
+            executor.withProperty(AnnotationBasedContainerFactory.ANNOTATED_CLASS_NAME, this.testClass.getName());
+        }
 
         final String additionalRepos = System.getProperty(SwarmProperties.BUILD_REPOS);
         if (additionalRepos != null) {
@@ -152,7 +183,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", BootstrapProperties.DEBUG_PORT, debug),
-                                                   e);
+                        e);
             }
         }
 

@@ -82,28 +82,6 @@ public class InVMSimpleContainer implements SimpleContainer {
         this.container.start().deploy(archive);
     }
 
-    /**
-     * Returns the method that is annotated with @{@link org.wildfly.swarm.arquillian.adapter.Container}.
-     * Throws an exception if more than one method is found annotated.
-     * @param testClass where annotation is searched.
-     * @return Method annotated with @{@link org.wildfly.swarm.arquillian.adapter.Container}
-     * or null if no method annotated.
-     */
-    private Method getAnnotatedMethodWithContainer(Class<?> testClass) {
-        final List<Method> methodsWithContainerAnnotation = ReflectionUtil.getMethodsWithAnnotation(testClass,
-                org.wildfly.swarm.arquillian.adapter.Container.class);
-
-        if (methodsWithContainerAnnotation.size() > 1 ) {
-            throw new IllegalArgumentException(
-                    String.format("More than one %s annotation found and only one was expected. Methods where %s was found are; %s",
-                            org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
-                            org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
-                            methodsWithContainerAnnotation));
-        }
-
-        return methodsWithContainerAnnotation.size() == 1 ? methodsWithContainerAnnotation.get(0) : null;
-    }
-
     @Override
     public void stop() throws Exception {
         if (container != null) {
