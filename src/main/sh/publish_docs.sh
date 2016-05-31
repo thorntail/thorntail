@@ -14,7 +14,7 @@ git pull
 rsync -avz $site_dir/ $tmp_dir
 git add $version
 
-if grep -q $version _data/versions.yml; then
+if grep -q "$version\$" _data/versions.yml; then
     echo "$version exists in _data/versions.yml"
 else
     echo -e "\n- $version" >> _data/versions.yml
