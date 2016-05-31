@@ -55,8 +55,9 @@ public class InVMSimpleContainer implements SimpleContainer {
 
         } else {
 
-            Method containerMethod = getAnnotatedMethodWithContainer(this.testClass);
-
+            Method containerMethod = getAnnotatedMethodWithAnnotation(this.testClass,
+                    org.wildfly.swarm.arquillian.adapter.Container.class);
+            // If there is a method annotated with @Container
             if (containerMethod != null) {
                 if (Modifier.isStatic(containerMethod.getModifiers())) {
                     final Object container = containerMethod.invoke(null, new Object[0]);
@@ -65,7 +66,7 @@ public class InVMSimpleContainer implements SimpleContainer {
                         this.container = (Container) container;
                     } else {
                         throw new IllegalArgumentException(
-                                String.format("Method annotated with %s does not return an instace of %s",
+                                String.format("Method annotated with %s does not return an instance of %s",
                                         org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
                                         Container.class.getSimpleName()));
                     }
@@ -76,7 +77,42 @@ public class InVMSimpleContainer implements SimpleContainer {
                                     containerMethod));
                 }
             } else {
-                this.container = new Container();
+
+                Method containerFactoryMethod = getAnnotatedMethodWithAnnotation(this.testClass,
+                        org.wildfly.swarm.arquillian.adapter.ContainerFactory.class);
+
+                // If there is a method annotated with @ContainerFactory
+                if (containerFactoryMethod != null) {
+                    if (Modifier.isStatic(containerFactoryMethod.getModifiers())) {
+                        final Object containerFactory = containerFactoryMethod.invoke(null, new Object[0]);
+
+                        if (containerFactory instanceof Class) {
+                            Class containerFactoryClass = (Class) containerFactory;
+                            if (ContainerFactory.class.isAssignableFrom(containerFactoryClass)) {
+                                Object factory = containerFactoryClass.newInstance();
+                                this.container = ((ContainerFactory) factory).newContainer();
+                            } else {
+                                throw new IllegalArgumentException(
+                                        String.format("Method annotated with %s does not return a class of %s",
+                                                org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
+                                                ContainerFactory.class.getSimpleName()));
+                            }
+
+                        } else {
+                            throw new IllegalArgumentException(
+                                    String.format("Method annotated with %s does not return a class of %s",
+                                            org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
+                                            ContainerFactory.class.getSimpleName()));
+                        }
+                    } else {
+                        throw new IllegalArgumentException(
+                                String.format("Method annotated with %s is %s but it is not static",
+                                        org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
+                                        containerMethod));
+                    }
+                } else {
+                    this.container = new Container();
+                }
             }
         }
         this.container.start().deploy(archive);

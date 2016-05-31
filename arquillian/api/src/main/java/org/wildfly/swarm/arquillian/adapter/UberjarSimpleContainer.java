@@ -78,15 +78,9 @@ public class UberjarSimpleContainer implements SimpleContainer {
         boolean annotatedContainerFactory = false;
 
         if (isContainerFactory(this.testClass)) {
-            System.err.println("is container factory: " + this.testClass.getName());
-            archive.as(JavaArchive.class)
-                    .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                            this.testClass.getName())
-                    .addClass(this.testClass);
-            archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
-            archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
+            registerContainerFactory(archive, this.testClass);
         } else {
-            Method containerMethod = getAnnotatedMethodWithContainer(this.testClass);
+            Method containerMethod = getAnnotatedMethodWithAnnotation(this.testClass, Container.class);
             // preflight check it
             if (containerMethod != null) {
                 if (Modifier.isStatic(containerMethod.getModifiers())) {
@@ -106,6 +100,42 @@ public class UberjarSimpleContainer implements SimpleContainer {
                                     org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
                                     containerMethod));
                 }
+            } else {
+
+                Method containerFactoryMethod = getAnnotatedMethodWithAnnotation(this.testClass,
+                        org.wildfly.swarm.arquillian.adapter.ContainerFactory.class);
+
+                // If there is a method annotated with @ContainerFactory
+
+                if (containerFactoryMethod != null) {
+                    if (Modifier.isStatic(containerFactoryMethod.getModifiers())) {
+                        final Object containerFactory = containerFactoryMethod.invoke(null, new Object[0]);
+
+                        if (containerFactory instanceof Class) {
+                            Class containerFactoryClass = (Class) containerFactory;
+                            if (org.wildfly.swarm.ContainerFactory.class.isAssignableFrom(containerFactoryClass)) {
+                                registerContainerFactory(archive, containerFactoryClass);
+                            } else {
+                                throw new IllegalArgumentException(
+                                        String.format("Method annotated with %s does not return a class of %s",
+                                                org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
+                                                org.wildfly.swarm.ContainerFactory.class.getSimpleName()));
+                            }
+
+                        } else {
+                            throw new IllegalArgumentException(
+                                    String.format("Method annotated with %s does not return a class of %s",
+                                            org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
+                                            org.wildfly.swarm.ContainerFactory.class.getSimpleName()));
+                        }
+                    } else {
+                        throw new IllegalArgumentException(
+                                String.format("Method annotated with %s is %s but it is not static",
+                                        org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
+                                        containerMethod));
+                    }
+                }
+
             }
         }
         archive.as(ServiceActivatorArchive.class)
@@ -236,6 +266,16 @@ public class UberjarSimpleContainer implements SimpleContainer {
         if (this.process.getError() != null) {
             throw new DeploymentException("Error starting process", this.process.getError());
         }
+    }
+
+    private void registerContainerFactory(Archive<?> archive, Class<?> clazz) {
+        System.err.println("is container factory: " + clazz.getName());
+        archive.as(JavaArchive.class)
+                .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
+                        clazz.getName())
+                .addClass(clazz);
+        archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
+        archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
     }
 
     @Override

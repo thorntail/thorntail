@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
@@ -46,25 +47,26 @@ public interface SimpleContainer {
     }
 
     /**
-     * Returns the method that is annotated with @{@link org.wildfly.swarm.arquillian.adapter.Container}.
+     * Returns the method that is annotated with given annotation.
      * Throws an exception if more than one method is found annotated.
      * @param testClass where annotation is searched.
-     * @return Method annotated with @{@link org.wildfly.swarm.arquillian.adapter.Container}
+     * @param annotation type of annotation
+     * @return Method annotated with given annotation
      * or null if no method annotated.
      */
-    default Method getAnnotatedMethodWithContainer(Class<?> testClass) {
-        final List<Method> methodsWithContainerAnnotation = ReflectionUtil.getMethodsWithAnnotation(testClass,
-                org.wildfly.swarm.arquillian.adapter.Container.class);
+    default Method getAnnotatedMethodWithAnnotation(Class<?> testClass, Class<? extends Annotation> annotation) {
+        final List<Method> methodsWithAnnotation = ReflectionUtil.getMethodsWithAnnotation(testClass,
+                annotation);
 
-        if (methodsWithContainerAnnotation.size() > 1 ) {
+        if (methodsWithAnnotation.size() > 1 ) {
             throw new IllegalArgumentException(
                     String.format("More than one %s annotation found and only one was expected. Methods where %s was found are; %s",
-                            org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
-                            org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
-                            methodsWithContainerAnnotation));
+                            annotation.getSimpleName(),
+                            annotation.getSimpleName(),
+                            methodsWithAnnotation));
         }
 
-        return methodsWithContainerAnnotation.size() == 1 ? methodsWithContainerAnnotation.get(0) : null;
+        return methodsWithAnnotation.size() == 1 ? methodsWithAnnotation.get(0) : null;
     }
 
 }

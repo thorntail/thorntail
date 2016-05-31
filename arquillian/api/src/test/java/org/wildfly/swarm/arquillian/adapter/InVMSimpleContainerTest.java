@@ -51,6 +51,35 @@ public class InVMSimpleContainerTest {
         Assertions.assertThat(mockContainer.getArgs()).isEqualTo(new String[] {"This is a test with container annotation"});
     }
 
+    @Test
+    public void shouldCreateContainerUsingContainerFactoryAnnotation() throws Exception {
+        final InVMSimpleContainer inVMSimpleContainer
+                = new InVMSimpleContainer(InVMClassAnnotatedWithContainerFactory.class);
+        inVMSimpleContainer.start(ShrinkWrap.create(JavaArchive.class));
+
+        Assertions.assertThat(mockContainer.getArgs()).isEqualTo(new String[] {"This is a test with container factory annotation"});
+    }
+
+    static class MockedContainerFactoryAnnotation implements ContainerFactory {
+
+        @Override
+        public Container newContainer(String... args) throws Exception {
+            Mockito.reset(mockContainer);
+            Mockito.when(mockContainer.getArgs()).thenReturn(new String[]{"This is a test with container factory annotation"});
+            Mockito.when(mockContainer.start()).thenReturn(mockContainer);
+            return mockContainer;
+        }
+    }
+
+
+    static class InVMClassAnnotatedWithContainerFactory {
+
+        @org.wildfly.swarm.arquillian.adapter.ContainerFactory
+        public static Class<? extends ContainerFactory> getContainerFactory() {
+            return MockedContainerFactoryAnnotation.class;
+        }
+    }
+
     static class InVMClassAnnotatedWithContainer {
 
         @org.wildfly.swarm.arquillian.adapter.Container
