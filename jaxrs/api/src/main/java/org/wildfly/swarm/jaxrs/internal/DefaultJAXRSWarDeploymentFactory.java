@@ -39,6 +39,6 @@ public class DefaultJAXRSWarDeploymentFactory extends DefaultWarDeploymentFactor
     public Archive create() throws Exception {
         JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class, determineName());
         setup(archive);
-        return archive;
+        return archive.staticContent();
     }
 }
