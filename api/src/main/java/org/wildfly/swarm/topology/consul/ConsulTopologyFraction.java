@@ -52,6 +52,7 @@ public class ConsulTopologyFraction implements Fraction {
     }
 
     public ConsulTopologyFraction() {
+        this(DEFAULT_URL);
     }
 
     /**
