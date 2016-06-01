@@ -33,26 +33,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
  */
 public class SimpleHttp {
 
-    public class Response {
-        int status;
-        String body;
-
-        public Response(int status, String body) {
-            this.status = status;
-            this.body = body;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public String getBody() {
-            return body;
-        }
-    }
-
-
-
     protected Response getUrlContents(String theUrl) {
         return getUrlContents(theUrl, true);
     }
@@ -69,7 +49,7 @@ public class SimpleHttp {
             provider.setCredentials(AuthScope.ANY, credentials);
 
             HttpClientBuilder builder = HttpClientBuilder.create();
-            if(useAuth) builder.setDefaultCredentialsProvider(provider);
+            if (useAuth) builder.setDefaultCredentialsProvider(provider);
             HttpClient client = builder.build();
 
             HttpResponse response = client.execute(new HttpGet(theUrl));
@@ -90,5 +70,24 @@ public class SimpleHttp {
         }
 
         return new Response(code, content.toString());
+    }
+
+    public class Response {
+        public Response(int status, String body) {
+            this.status = status;
+            this.body = body;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        int status;
+
+        String body;
     }
 }

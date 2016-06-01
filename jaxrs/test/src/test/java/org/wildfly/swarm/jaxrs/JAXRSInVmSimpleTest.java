@@ -19,6 +19,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
+
 /**
  * @author Heiko Braun
  * @since 29/03/16
