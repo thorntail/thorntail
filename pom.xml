@@ -45,9 +45,9 @@
     <!-- Properties -->
     <properties>
         <version.apache.camel>2.17.0</version.apache.camel>
-        <version.wildfly.camel>4.0.0</version.wildfly.camel>
-        <version.wildfly.swarm.core>1.0.0.CR1</version.wildfly.swarm.core>
-        <version.wildfly.swarm.spi>1.0.0.CR2</version.wildfly.swarm.spi>
+        <version.wildfly.camel>4.1.0</version.wildfly.camel>
+        <version.wildfly.swarm.core>1.0.0.CR3</version.wildfly.swarm.core>
+        <version.wildfly.swarm.spi>1.0.0.Final</version.wildfly.swarm.spi>
         
         <version.eclipse.egit.github>2.1.5</version.eclipse.egit.github>
         
