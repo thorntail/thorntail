@@ -1,5 +1,25 @@
 ### Changelog
 
+#### WildFly-Swarm-Camel 1.1.0
+
+**Features**
+
+
+For details see [1.1.0 features](https://github.com/wildfly-swarm/wildfly-swarm-camel/issues?q=milestone%3A"1.1.0"+label%3Afeature)
+
+**Tasks**
+
+* [#48][48] Upgrade to wildfly-camel-4.1.0
+
+For details see [1.1.0 tasks](https://github.com/wildfly-swarm/wildfly-swarm-camel/issues?q=milestone%3A"1.1.0"+label%3Atask)
+
+**Bugs**
+
+
+For details see [1.1.0 bugs](https://github.com/wildfly-swarm/wildfly-swarm-camel/issues?q=milestone%3A"1.1.0"+label%3Abug)
+
+[48]: https://github.com/wildfly-swarm/wildfly-swarm-camel/issues/48
+
 #### WildFly-Swarm-Camel 1.0.4
 
 **Features**
