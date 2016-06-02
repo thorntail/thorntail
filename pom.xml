@@ -30,7 +30,7 @@
     <artifactId>camel</artifactId>
     <packaging>pom</packaging>
 
-    <version>1.1.0</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <url>https://github.com/wildfly-swarm/wildfly-swarm-camel</url>
 
@@ -39,7 +39,7 @@
         <connection>scm:git:git://github.com/wildfly-swarm/wildfly-swarm-camel.git</connection>
         <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-camel.git</developerConnection>
         <url>http://github.com/wildfly-swarm/wildfly-swarm-camel</url>
-        <tag>1.1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- Properties -->
