@@ -38,10 +38,11 @@ import org.wildfly.swarm.container.Container;
 public class JAXRSArquillianTest implements ContainerFactory {
 
     @Deployment(testable = false)
-    public static Archive createDeployment() {
+    public static Archive createDeployment() throws Exception {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
         deployment.addClass(HealthCheckResource.class);
-//        deployment.addClass(CustomJsonProvider.class);
+        deployment.addClass(CustomJsonProvider.class);
+        deployment.addAllDependencies();
         return deployment;
     }
 
