@@ -74,7 +74,7 @@ public class ArtifactManager implements ArtifactLookup {
         final File file = findFile(gav);
 
         if (file == null) {
-            throw new RuntimeException("Artifact not found.");
+            throw new RuntimeException("Artifact '"+gav+"' not found.");
         }
 
         return ShrinkWrap.create(ZipImporter.class, asName == null ? file.getName() : asName)
