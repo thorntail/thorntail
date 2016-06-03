@@ -89,7 +89,7 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container() throws Exception {
-        this(Boolean.getBoolean("swarm.debug.bootstrap"));
+        this(Boolean.getBoolean(SwarmProperties.DEBUG_BOOTSTRAP));
     }
 
     /**
