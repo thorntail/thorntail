@@ -66,8 +66,11 @@ public class TempFileManager {
             return;
         }
         if (file.isDirectory()) {
-            for (File child : file.listFiles()) {
-                deleteRecursively(child);
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File child : files) {
+                    deleteRecursively(child);
+                }
             }
         }
 
