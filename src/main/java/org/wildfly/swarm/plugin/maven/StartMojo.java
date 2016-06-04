@@ -37,6 +37,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.fractionlist.FractionList;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DependencyManager;
@@ -63,7 +64,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
     public boolean useUberJar;
 
-    @Parameter(alias = "debug", property = BootstrapProperties.DEBUG_PORT)
+    @Parameter(alias = "debug", property = SwarmProperties.DEBUG_PORT)
     public Integer debugPort;
 
     @Parameter(alias = "jvmArguments", property = "swarm.jvmArguments")
