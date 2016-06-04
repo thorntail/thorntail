@@ -71,6 +71,7 @@ import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
 /**
  * A WildFly-Swarm container.
@@ -101,10 +102,10 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container(boolean debugBootstrap) throws Exception {
-        System.setProperty(SwarmProperties.VERSION, VERSION);
+        System.setProperty(SwarmInternalProperties.VERSION, VERSION);
 
         try {
-            String stageFile = System.getProperty("swarm.project.stage.file");
+            String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
             if (stageFile != null) {
                 loadStageConfiguration(new URL(stageFile));
             }
@@ -149,10 +150,10 @@ public class Container {
     }
 
     public Container withStageConfig(URL url) {
-        if (null == System.getProperty("swarm.project.stage.file")) {
+        if (null == System.getProperty(SwarmProperties.PROJECT_STAGE_FILE)) {
             loadStageConfiguration(url);
         } else {
-            System.out.println("[INFO] Project stage superseded by external configuration " + System.getProperty("swarm.project.stage.file"));
+            System.out.println("[INFO] Project stage superseded by external configuration " + System.getProperty(SwarmProperties.PROJECT_STAGE_FILE));
         }
 
         return this;
@@ -647,7 +648,7 @@ public class Container {
 
     private void enableStageConfiguration(InputStream input) {
         List<ProjectStage> projectStages = new ProjectStageFactory().loadStages(input);
-        String stageName = System.getProperty("swarm.project.stage", "default");
+        String stageName = System.getProperty(SwarmProperties.PROJECT_STAGE, "default");
         ProjectStage stage = null;
         for (ProjectStage projectStage : projectStages) {
             if (projectStage.getName().equals(stageName)) {

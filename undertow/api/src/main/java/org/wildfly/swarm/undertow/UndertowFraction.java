@@ -168,10 +168,10 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     public void initialize(Fraction.InitContext initContext) {
         initContext.socketBinding(
                 new SocketBinding("http")
-                        .port(SwarmProperties.propertyVar(UndertowProperties.HTTP_PORT, "8080")));
+                        .port(SwarmProperties.propertyVar(SwarmProperties.HTTP_PORT, "8080")));
         initContext.socketBinding(
                 new SocketBinding("https")
-                        .port(SwarmProperties.propertyVar(UndertowProperties.HTTPS_PORT, "8443")));
+                        .port(SwarmProperties.propertyVar(SwarmProperties.HTTPS_PORT, "8443")));
     }
 
     @Override
@@ -205,7 +205,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         if (this.enableAJP) {
             initContext.socketBinding(
                 new SocketBinding("ajp")
-                    .port(SwarmProperties.propertyVar(UndertowProperties.AJP_PORT, "8009")));
+                    .port(SwarmProperties.propertyVar(SwarmProperties.AJP_PORT, "8009")));
 
             subresources().servers().stream()
                     .filter(server -> server.subresources().ajpListeners().isEmpty())

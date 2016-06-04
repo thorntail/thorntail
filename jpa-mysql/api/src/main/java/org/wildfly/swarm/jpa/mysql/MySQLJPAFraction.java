@@ -18,6 +18,7 @@ package org.wildfly.swarm.jpa.mysql;
 import org.wildfly.swarm.config.JPA;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
 
@@ -46,7 +47,7 @@ public class MySQLJPAFraction extends JPA<MySQLJPAFraction> implements Fraction 
     @Override
     public void initialize(Fraction.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
-            String dsName = System.getProperty( "swarm.ds.name", "ExampleDS" );
+            String dsName = System.getProperty(SwarmProperties.DATASOURCE_NAME, "ExampleDS");
             final DatasourcesFraction datasources = new DatasourcesFraction()
                     .jdbcDriver("mysql", (d) -> {
                         d.driverClassName("com.mysql.jdbc.Driver");
@@ -54,14 +55,14 @@ public class MySQLJPAFraction extends JPA<MySQLJPAFraction> implements Fraction 
                         d.driverModuleName("com.mysql");
                     })
                     .dataSource(dsName, (ds) -> {
-                        ds.driverName("${swarm.jdbc.driver:mysql}");
-                        ds.connectionUrl("${swarm.ds.connection.url:jdbc:mysql://localhost:3306/test}");
-                        ds.userName("${swarm.ds.username:root}");
-                        ds.password("${swarm.ds.password:root}");
+                        ds.driverName(System.getProperty(SwarmProperties.DATABASE_DRIVER, "mysql"));
+                        ds.connectionUrl(System.getProperty(SwarmProperties.DATASOURCE_CONNECTION_URL, "jdbc:mysql://localhost:3306/test"));
+                        ds.userName(System.getProperty(SwarmProperties.DATASOURCE_USERNAME, "root"));
+                        ds.password(System.getProperty(SwarmProperties.DATASOURCE_PASSWORD, "root"));
                     });
 
             initContext.fraction(datasources);
-            defaultDatasource("jboss/datasources/" + dsName );
+            defaultDatasource("jboss/datasources/" + dsName);
         }
     }
 

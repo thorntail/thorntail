@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.spi.api.StageConfig.Resolver;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  *
@@ -28,7 +29,7 @@ import org.wildfly.swarm.spi.api.StageConfig.Resolver;
 public class ConfigAwareBean {
 
     @Inject
-    @ConfigValue("swarm.port.offset")
+    @ConfigValue(SwarmProperties.PORT_OFFSET)
     private Integer portOffset;
 
     private String logLevel;
@@ -37,7 +38,7 @@ public class ConfigAwareBean {
 
     @Inject
     ConfigAwareBean(@ConfigValue("logger.level") String logLevel,
-            @ConfigValue("swarm.port.offset") Resolver<String> resolver) {
+            @ConfigValue(SwarmProperties.PORT_OFFSET) Resolver<String> resolver) {
         this.logLevel = logLevel;
         this.portOffsetResolver = resolver;
     }

@@ -18,6 +18,7 @@ package org.wildfly.swarm.jpa;
 import org.wildfly.swarm.config.JPA;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
 
@@ -50,7 +51,7 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
     @Override
     public void initialize(Fraction.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
-            String dsName = System.getProperty( "swarm.ds.name", "ExampleDS" );
+            String dsName = System.getProperty(SwarmProperties.DATASOURCE_NAME, "ExampleDS");
             final DatasourcesFraction datasources = new DatasourcesFraction()
                     .jdbcDriver("h2", (d) -> {
                         d.driverClassName("org.h2.Driver");
@@ -58,14 +59,14 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
                         d.driverModuleName("com.h2database.h2");
                     })
                     .dataSource(dsName, (ds) -> {
-                        ds.driverName("${swarm.jdbc.driver:h2}");
-                        ds.connectionUrl("${swarm.ds.connection.url:jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}");
-                        ds.userName("${swarm.ds.username:sa}");
-                        ds.password("${swarm.ds.password:sa}");
+                        ds.driverName(System.getProperty(SwarmProperties.DATABASE_DRIVER, "h2"));
+                        ds.connectionUrl(System.getProperty(SwarmProperties.DATASOURCE_CONNECTION_URL, "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"));
+                        ds.userName(System.getProperty(SwarmProperties.DATASOURCE_USERNAME, "sa"));
+                        ds.password(System.getProperty(SwarmProperties.DATASOURCE_PASSWORD, "sa"));
                     });
 
             initContext.fraction(datasources);
-            defaultDatasource("jboss/datasources/" + dsName );
+            defaultDatasource("jboss/datasources/" + dsName);
         }
     }
 

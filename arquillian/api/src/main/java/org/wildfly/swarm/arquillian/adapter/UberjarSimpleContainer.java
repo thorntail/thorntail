@@ -38,6 +38,7 @@ import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
@@ -149,7 +150,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.never)
                 .bundleDependencies(false);
 
-        final String additionalModules = System.getProperty(SwarmProperties.BUILD_MODULES);
+        final String additionalModules = System.getProperty(SwarmInternalProperties.BUILD_MODULES);
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
                     .map(File::new)
@@ -164,7 +165,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
             executor.withProperty(AnnotationBasedContainerFactory.ANNOTATED_CLASS_NAME, this.testClass.getName());
         }
 
-        final String additionalRepos = System.getProperty(SwarmProperties.BUILD_REPOS);
+        final String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
         if (additionalRepos != null) {
             executor.withProperty("remote.maven.repo", additionalRepos);
         }
@@ -207,12 +208,12 @@ public class UberjarSimpleContainer implements SimpleContainer {
             }
         }
 
-        final String debug = System.getProperty(BootstrapProperties.DEBUG_PORT);
+        final String debug = System.getProperty(SwarmProperties.DEBUG_PORT);
         if (debug != null) {
             try {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", BootstrapProperties.DEBUG_PORT, debug),
+                throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", SwarmProperties.DEBUG_PORT, debug),
                         e);
             }
         }
@@ -233,7 +234,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         Archive<?> wrapped = tool.build();
 
-        if (BootstrapProperties.flagIsSet(SwarmProperties.EXPORT_UBERJAR)) {
+        if (BootstrapProperties.flagIsSet(SwarmInternalProperties.EXPORT_UBERJAR)) {
             final File out = new File(wrapped.getName());
             System.err.println("Exporting swarm jar to " + out.getAbsolutePath());
             wrapped.as(ZipExporter.class).exportTo(out, true);

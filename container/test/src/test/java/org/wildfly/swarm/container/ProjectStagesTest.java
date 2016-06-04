@@ -26,6 +26,7 @@ import org.wildfly.swarm.container.internal.ProjectStageFactory;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Heiko Braun
@@ -50,7 +51,7 @@ public class ProjectStagesTest {
             }
         }
 
-        System.clearProperty("swarm.project.stage");
+        System.clearProperty(SwarmProperties.PROJECT_STAGE);
     }
 
     @Test
@@ -69,7 +70,7 @@ public class ProjectStagesTest {
             Assert.assertEquals(6, properties.keySet().size());
 
             Assert.assertTrue("Property is missing", properties.keySet().contains("swarm.magic.enabled"));
-            Assert.assertTrue("Property is missing", properties.keySet().contains("swarm.port.offset"));
+            Assert.assertTrue("Property is missing", properties.keySet().contains(SwarmProperties.PORT_OFFSET));
             properties.entrySet().forEach(e -> System.out.println(e.getKey()+"="+e.getValue()));
         }
 
@@ -78,7 +79,7 @@ public class ProjectStagesTest {
     @Test
     public void testStageConfigurationLoading() throws Exception {
 
-        System.setProperty("swarm.project.stage", "development");
+        System.setProperty(SwarmProperties.PROJECT_STAGE, "development");
 
         Container container = new Container()
                 .withStageConfig(
@@ -87,7 +88,7 @@ public class ProjectStagesTest {
         container.start();
 
 
-        Assert.assertEquals("50", System.getProperty("swarm.port.offset"));
+        Assert.assertEquals("50", System.getProperty(SwarmProperties.PORT_OFFSET));
         Assert.assertEquals("DEBUG", System.getProperty("logger.level"));
 
         container.stop();
@@ -98,8 +99,8 @@ public class ProjectStagesTest {
     @Test
     public void testArgsPrecendence() throws Exception {
 
-        System.setProperty("swarm.project.stage", "development");
-        System.setProperty("swarm.port.offset", "150");
+        System.setProperty(SwarmProperties.PROJECT_STAGE, "development");
+        System.setProperty(SwarmProperties.PORT_OFFSET, "150");
 
         Container container = new Container()
                 .withStageConfig(
@@ -107,7 +108,7 @@ public class ProjectStagesTest {
                 );
         container.start();
 
-        Assert.assertEquals("150", System.getProperty("swarm.port.offset"));
+        Assert.assertEquals("150", System.getProperty(SwarmProperties.PORT_OFFSET));
 
         container.stop();
 
@@ -116,7 +117,7 @@ public class ProjectStagesTest {
     @Test
     public void testFractionStageAccess() throws Exception {
 
-        System.setProperty("swarm.project.stage", "development");
+        System.setProperty(SwarmProperties.PROJECT_STAGE, "development");
 
         Container container = new Container()
                 .withStageConfig(
@@ -139,7 +140,7 @@ public class ProjectStagesTest {
     @Test
     public void testUnknownStageConfiguration() throws Exception {
 
-        System.setProperty("swarm.project.stage", "foobar");
+        System.setProperty(SwarmProperties.PROJECT_STAGE, "foobar");
 
         Container container = new Container();
         boolean yieldException = false;
@@ -177,7 +178,7 @@ public class ProjectStagesTest {
                         Assert.assertEquals("DEBUG", stageConfig.resolve("logger.level").getValue());
 
                         Integer intVal = stageConfig
-                                .resolve("swarm.port.offset")
+                                .resolve(SwarmProperties.PORT_OFFSET)
                                 .as(Integer.class)
                                 .getValue();
 

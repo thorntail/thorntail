@@ -36,7 +36,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.jboss.shrinkwrap.resolver.impl.maven.ConfigurableMavenWorkingSessionImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
-import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
@@ -66,7 +66,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
                     .withMavenCentralRepo(true)
                     .withRemoteRepo(jbossPublic);
 
-            final String additionalRepos = System.getProperty(SwarmProperties.BUILD_REPOS);
+            final String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
             if (additionalRepos != null) {
                 Arrays.asList(additionalRepos.split(","))
                         .forEach(r -> {

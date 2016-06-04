@@ -27,9 +27,6 @@ public class BootstrapProperties {
 
     public static final String DEFAULT_DEPLOYMENT_TYPE = "swarm.default.deployment.type";
 
-    //public
-    public static final String DEBUG_PORT = "swarm.debug.port";
-
     public static boolean flagIsSet(final String prop) {
         return flagIsSet(prop, false);
     }

@@ -34,6 +34,7 @@ import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.ClassLoading;
 import org.wildfly.swarm.spi.api.StageConfig;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /** A parsed command-line.
  *
@@ -139,7 +140,7 @@ public class CommandLine {
             .withShort('b')
             .hasValue("<value>")
             .valueMayBeSeparate(true)
-            .withDescription("Set the property swarm.bind.address to <value>")
+            .withDescription("Set the property " + SwarmProperties.BIND_ADDRESS + " to <value>")
             .then(CommandLine::put);
 
     /** Default set of options */
@@ -241,11 +242,11 @@ public class CommandLine {
         }
 
         if (get(BIND) != null) {
-            System.setProperty("swarm.bind.address", get(BIND));
+            System.setProperty(SwarmProperties.BIND_ADDRESS, get(BIND));
         }
 
         if ( get(ACTIVE_STAGE) != null ) {
-            System.setProperty("swarm.project.stage", get(ACTIVE_STAGE));
+            System.setProperty(SwarmProperties.PROJECT_STAGE, get(ACTIVE_STAGE));
         }
     }
 

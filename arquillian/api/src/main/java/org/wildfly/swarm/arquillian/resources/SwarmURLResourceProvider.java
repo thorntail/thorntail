@@ -43,12 +43,12 @@ public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider 
 
         int port = 8080;
 
-        final String portString = System.getProperty("swarm.http.port");
+        final String portString = System.getProperty(SwarmProperties.HTTP_PORT);
         if (portString != null) {
             port = Integer.parseInt(portString);
         }
 
-        String contextPath = System.getProperty("swarm.context.path");
+        String contextPath = System.getProperty(SwarmProperties.CONTEXT_PATH);
         if (contextPath == null) {
             contextPath = "/";
         }

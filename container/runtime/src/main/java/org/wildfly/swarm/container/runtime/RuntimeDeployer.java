@@ -22,16 +22,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
-import org.jboss.msc.service.AbstractServiceListener;
 import org.jboss.msc.service.ServiceContainer;
-import org.jboss.msc.service.ServiceController;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
@@ -45,6 +41,7 @@ import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -145,7 +142,7 @@ public class RuntimeDeployer implements Deployer {
 
         BootstrapLogger.logger("org.wildfly.swarm.runtime.deployer")
                 .info("deploying " + deployment.getName());
-        System.setProperty(SwarmProperties.CURRENT_DEPLOYMENT, deployment.getName());
+        System.setProperty(SwarmInternalProperties.CURRENT_DEPLOYMENT, deployment.getName());
         try {
             ModelNode result = client.execute(deploymentAdd);
 
@@ -166,13 +163,13 @@ public class RuntimeDeployer implements Deployer {
     }
 
     public void openConnections(Archive<?> archive) {
-        if ( archive.getName().endsWith( ".war" ) || archive.getName().endsWith( ".ear" ) ) {
+        if (archive.getName().endsWith(".war") || archive.getName().endsWith(".ear")) {
             openConnections();
         }
     }
 
     public void openConnections() {
-        if ( this.opener != null ) {
+        if (this.opener != null) {
             this.opener.open();
         }
     }
