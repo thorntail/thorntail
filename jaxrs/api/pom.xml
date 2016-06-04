@@ -29,10 +29,6 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs-modules</artifactId>
     </dependency>
 

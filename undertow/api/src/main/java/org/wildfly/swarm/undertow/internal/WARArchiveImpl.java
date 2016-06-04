@@ -20,11 +20,9 @@ import java.util.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
 import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
-import org.wildfly.swarm.container.internal.AddPackageWarning;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
@@ -116,48 +114,6 @@ public class WARArchiveImpl extends WebContainerBase<WARArchive> implements WARA
     @Override
     protected ArchivePath getServiceProvidersPath() {
         return PATH_SERVICE_PROVIDERS;
-    }
-
-    @Override
-    public WARArchive addPackage(Package pack) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackage(pack);
-    }
-
-    @Override
-    public WARArchive addPackage(String pack) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackage(pack);
-    }
-
-    @Override
-    public WARArchive addPackages(boolean recursive, Filter<ArchivePath> filter, String... packageNames) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, filter, packageNames);
-    }
-
-    @Override
-    public WARArchive addPackages(boolean recursive, Filter<ArchivePath> filter, Package... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, filter, packages);
-    }
-
-    @Override
-    public WARArchive addPackages(boolean recursive, Package... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, packages);
-    }
-
-    @Override
-    public WARArchive addPackages(boolean recursive, String... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, packages);
-    }
-
-    @Override
-    public WARArchive addDefaultPackage() {
-        AddPackageWarning.addPackage();
-        return super.addDefaultPackage();
     }
 
     // -------------------------------------------------------------------------------------||

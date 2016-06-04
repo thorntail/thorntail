@@ -17,7 +17,6 @@ package org.wildfly.swarm.container.internal;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.spi.api.JARArchive;
@@ -76,48 +75,6 @@ public class JARArchiveImpl extends ContainerBase<JARArchive> implements JARArch
     @Override
     protected ArchivePath getClassesPath() {
         return PATH_CLASSES;
-    }
-
-    @Override
-    public JARArchive addPackage(Package pack) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackage(pack);
-    }
-
-    @Override
-    public JARArchive addPackage(String pack) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackage(pack);
-    }
-
-    @Override
-    public JARArchive addPackages(boolean recursive, Filter<ArchivePath> filter, String... packageNames) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, filter, packageNames);
-    }
-
-    @Override
-    public JARArchive addPackages(boolean recursive, Filter<ArchivePath> filter, Package... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, filter, packages);
-    }
-
-    @Override
-    public JARArchive addPackages(boolean recursive, Package... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, packages);
-    }
-
-    @Override
-    public JARArchive addPackages(boolean recursive, String... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, packages);
-    }
-
-    @Override
-    public JARArchive addDefaultPackage() {
-        AddPackageWarning.addPackage();
-        return super.addDefaultPackage();
     }
 
     // -------------------------------------------------------------------------------------||

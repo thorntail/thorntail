@@ -26,7 +26,6 @@ import org.jboss.shrinkwrap.api.ArchiveEvent;
 import org.jboss.shrinkwrap.api.ArchiveEventHandler;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.ArchiveAsset;
 import org.jboss.shrinkwrap.api.asset.Asset;
@@ -34,7 +33,6 @@ import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.objectweb.asm.ClassReader;
-import org.wildfly.swarm.container.internal.AddPackageWarning;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 /**
@@ -196,48 +194,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     @Override
     protected ArchivePath getServiceProvidersPath() {
         return PATH_SERVICE_PROVIDERS;
-    }
-
-    @Override
-    public JAXRSArchive addPackage(Package pack) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackage(pack);
-    }
-
-    @Override
-    public JAXRSArchive addPackage(String pack) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackage(pack);
-    }
-
-    @Override
-    public JAXRSArchive addPackages(boolean recursive, Filter<ArchivePath> filter, String... packageNames) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, filter, packageNames);
-    }
-
-    @Override
-    public JAXRSArchive addPackages(boolean recursive, Filter<ArchivePath> filter, Package... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, filter, packages);
-    }
-
-    @Override
-    public JAXRSArchive addPackages(boolean recursive, Package... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, packages);
-    }
-
-    @Override
-    public JAXRSArchive addPackages(boolean recursive, String... packages) throws IllegalArgumentException {
-        AddPackageWarning.addPackage();
-        return super.addPackages(recursive, packages);
-    }
-
-    @Override
-    public JAXRSArchive addDefaultPackage() {
-        AddPackageWarning.addPackage();
-        return super.addDefaultPackage();
     }
 
     // -------------------------------------------------------------------------------------||
