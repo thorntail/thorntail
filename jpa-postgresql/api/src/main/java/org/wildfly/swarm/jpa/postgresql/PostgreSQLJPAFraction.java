@@ -47,14 +47,15 @@ public class PostgreSQLJPAFraction extends JPA<PostgreSQLJPAFraction> implements
     public void initialize(Fraction.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
             String dsName = System.getProperty(SwarmProperties.DATASOURCE_NAME, "ExampleDS");
+            String driverName = System.getProperty(SwarmProperties.DATABASE_DRIVER, "postgresql");
             final DatasourcesFraction datasources = new DatasourcesFraction()
-                    .jdbcDriver("postgresql", (d) -> {
+                    .jdbcDriver(driverName, (d) -> {
                         d.driverClassName("org.postgresql.Driver");
                         d.xaDatasourceClass("org.postgresql.xa.PGXADataSource");
                         d.driverModuleName("org.postgresql");
                     })
                     .dataSource(dsName, (ds) -> {
-                        ds.driverName(System.getProperty(SwarmProperties.DATABASE_DRIVER, "postgresql"));
+                        ds.driverName(driverName);
                         ds.connectionUrl(System.getProperty(SwarmProperties.DATASOURCE_CONNECTION_URL, "jdbc:postgresql://localhost:5432/test"));
                         ds.userName(System.getProperty(SwarmProperties.DATASOURCE_USERNAME, "postgres"));
                         ds.password(System.getProperty(SwarmProperties.DATASOURCE_PASSWORD, "postgres"));

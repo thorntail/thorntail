@@ -52,14 +52,15 @@ public class JPAFraction extends JPA<JPAFraction> implements Fraction {
     public void initialize(Fraction.InitContext initContext) {
         if (!inhibitDefaultDatasource) {
             String dsName = System.getProperty(SwarmProperties.DATASOURCE_NAME, "ExampleDS");
+            String driverName = System.getProperty(SwarmProperties.DATABASE_DRIVER, "h2");
             final DatasourcesFraction datasources = new DatasourcesFraction()
-                    .jdbcDriver("h2", (d) -> {
+                    .jdbcDriver(driverName, (d) -> {
                         d.driverClassName("org.h2.Driver");
                         d.xaDatasourceClass("org.h2.jdbcx.JdbcDataSource");
                         d.driverModuleName("com.h2database.h2");
                     })
                     .dataSource(dsName, (ds) -> {
-                        ds.driverName(System.getProperty(SwarmProperties.DATABASE_DRIVER, "h2"));
+                        ds.driverName(driverName);
                         ds.connectionUrl(System.getProperty(SwarmProperties.DATASOURCE_CONNECTION_URL, "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"));
                         ds.userName(System.getProperty(SwarmProperties.DATASOURCE_USERNAME, "sa"));
                         ds.password(System.getProperty(SwarmProperties.DATASOURCE_PASSWORD, "sa"));
