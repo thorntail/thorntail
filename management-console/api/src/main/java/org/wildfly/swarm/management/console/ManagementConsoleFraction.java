@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.undertow.UndertowProperties;
 
 /**
  * Created by ggastald on 02/06/16.
@@ -15,7 +14,6 @@ public class ManagementConsoleFraction implements Fraction {
     public static final String VERSION;
 
     public ManagementConsoleFraction() {
-        context = System.getProperty(UndertowProperties.CONTEXT_PATH, DEFAULT_CONTEXT);
     }
 
     public ManagementConsoleFraction contextRoot(String context) {
