@@ -11,8 +11,6 @@
     <module name="org.jboss.shrinkwrap"/>
 
     <module name="org.wildfly.swarm.vertx"/>
-
-    <module name="org.jboss.as.logging"/>
   </dependencies>
 
 </module>

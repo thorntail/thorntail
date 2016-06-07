@@ -42,6 +42,10 @@
       <artifactId>resource-adapters</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>messaging</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-jca-adapter</artifactId>
       <type>rar</type>
