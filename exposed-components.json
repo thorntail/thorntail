@@ -1,0 +1,4 @@
+{"Vert.x": [
+  {"name": "vertx",        "doc": "vertx-api"},
+  {"name": "vertx-modules"}
+]}
