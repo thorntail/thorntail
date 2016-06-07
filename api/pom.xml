@@ -20,6 +20,12 @@
   <description>WildFly Swarm: Vert.x API</description>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
@@ -27,7 +33,6 @@
       </plugin>
     </plugins>
   </build>
-
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

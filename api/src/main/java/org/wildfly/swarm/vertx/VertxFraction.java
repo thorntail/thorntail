@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.vertx;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -22,8 +26,16 @@ import org.wildfly.swarm.spi.api.Fraction;
  */
 public class VertxFraction implements Fraction
 {
-    public VertxFraction()
-    {
+    public static final String VERSION;
 
-    }
-}
+    static {
+        InputStream in = VertxFraction.class.getClassLoader().getResourceAsStream("vertx.properties");
+        Properties props = new Properties();
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty("version", "unknown");
+    }}
