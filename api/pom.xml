@@ -57,10 +57,6 @@
       <artifactId>vertx-jca-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-hazelcast</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>vertx-jca-adapter</artifactId>
       <type>rar</type>
