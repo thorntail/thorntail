@@ -28,6 +28,19 @@ public class VertxFraction implements Fraction
 {
     public static final String VERSION;
 
+    private boolean inhibitAdapterDeployment;
+
+    public VertxFraction inhibitAdapterDeployment()
+    {
+        this.inhibitAdapterDeployment = true;
+        return this;
+    }
+
+    public boolean isAdapterDeploymentInhibited()
+    {
+        return inhibitAdapterDeployment;
+    }
+
     static {
         InputStream in = VertxFraction.class.getClassLoader().getResourceAsStream("vertx.properties");
         Properties props = new Properties();

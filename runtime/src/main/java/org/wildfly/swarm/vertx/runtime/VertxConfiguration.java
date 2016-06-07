@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.vertx.runtime;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.resource.adapters.RARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.vertx.VertxFraction;
@@ -26,8 +30,16 @@ public class VertxConfiguration extends AbstractServerConfiguration<VertxFractio
 
     public VertxConfiguration() {
         super(VertxFraction.class);
-        deployment("org.wildfly.swarm:vertx-jca-adapter:rar:"+VertxFraction.VERSION)
-                 .as("vertx-jca-adapter.rar");
+    }
+
+    @Override public List<Archive> getImplicitDeployments(VertxFraction fraction) throws Exception
+    {
+        if (!fraction.isAdapterDeploymentInhibited())
+        {
+            deployment("org.wildfly.swarm:vertx-jca-adapter:rar:" + VertxFraction.VERSION)
+                     .as("vertx-jca-adapter.rar");
+        }
+        return super.getImplicitDeployments(fraction);
     }
 
     @Override
