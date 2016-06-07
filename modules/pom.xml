@@ -40,23 +40,6 @@
       <artifactId>container-modules</artifactId>
     </dependency>
 
-    <!-- io.vertx module -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
-    </dependency>
-
-    <!-- io.vertx.jca module -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-jca-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-hazelcast</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-feature-pack</artifactId>

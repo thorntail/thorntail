@@ -6,9 +6,8 @@
   <dependencies>
     <module name="org.wildfly.swarm.spi" slot="api"/>
 
-    <module name="io.netty"/>
     <module name="io.vertx"/>
-    <module name="io.vertx.jca"/>
+    <module name="io.vertx.jca" slot="api"/>
     <!--
     <module name="io.vertx.hazelcast"/>
     -->

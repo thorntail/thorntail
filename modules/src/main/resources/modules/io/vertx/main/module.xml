@@ -67,5 +67,8 @@
         <path name="io/vertx/core/streams/impl"/>
       </paths>
     </system>
+
+    <module name="io.netty"/>
+
   </dependencies>
 </module>
