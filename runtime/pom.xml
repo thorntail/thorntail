@@ -19,8 +19,6 @@
   <name>WildFly Swarm: Vert.x Runtime</name>
   <description>WildFly Swarm: Vert.x Runtime</description>
 
-  <packaging>jar</packaging>
-
   <build>
     <plugins>
       <plugin>
