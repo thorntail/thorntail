@@ -40,9 +40,26 @@
       <artifactId>container-modules</artifactId>
     </dependency>
 
+    <!-- io.vertx module -->
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-core-feature-pack</artifactId>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+    </dependency>
+
+    <!-- io.vertx.jca module -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-jca-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-hazelcast</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
       <exclusions>
@@ -52,6 +69,7 @@
         </exclusion>
       </exclusions>
     </dependency>
+
   </dependencies>
 
 </project>

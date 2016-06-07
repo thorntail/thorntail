@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.3" name="io.vertx.jca">
+  <resources>
+    <artifact name="io.vertx:vertx-jca-api:${version.vertx}"/>
+  </resources>
+
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="io/vertx/resourceadapter"/>
+        <path name="io/vertx/resourceadapter/inflow"/>
+      </paths>
+    </system>
+  </dependencies>
+</module>

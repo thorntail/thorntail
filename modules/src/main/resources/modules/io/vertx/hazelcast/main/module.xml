@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.3" name="io.vertx.hazelcast">
+  <resources>
+    <artifact name="io.vertx:vertx-hazelcast:${version.vertx}"/>
+  </resources>
+
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="io/vertx/spi/cluster/hazelcast"/>
+        <path name="io/vertx/spi/cluster/hazelcast/impl"/>
+      </paths>
+    </system>
+  </dependencies>
+</module>
