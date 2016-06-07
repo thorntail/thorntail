@@ -95,7 +95,7 @@
         <artifactId>vertx-runtime</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
-<!--
+
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-dependencies</artifactId>
@@ -103,7 +103,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
--->
+
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-jca-adapter</artifactId>
@@ -120,6 +120,7 @@
     <module>runtime</module>
     <module>modules</module>
     <module>test</module>
+    <module>demo</module>
   </modules>
 
   <dependencies>
