@@ -97,18 +97,18 @@
       </dependency>
 
       <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>vertx-jca-adapter</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <type>rar</type>
+      </dependency>
+
+      <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-dependencies</artifactId>
         <version>${version.vertx}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-jca-adapter</artifactId>
-        <version>${version.vertx}</version>
-        <type>rar</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -120,6 +120,11 @@
     <module>runtime</module>
     <module>modules</module>
     <module>test</module>
+
+    <!-- See if this is really needed. The RAR is not added because it doesn't have the org.wildfly.swarm groupId
+    See: https://github.com/wildfly-swarm/wildfly-swarm-fraction-plugin/blob/master/src/main/java/org/wildfly/swarm/plugin/ProvidedDependenciesGenerator.java#L84
+    -->
+    <module>jca-adapter</module>
     <module>demo</module>
   </modules>
 

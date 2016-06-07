@@ -26,7 +26,7 @@ public class VertxConfiguration extends AbstractServerConfiguration<VertxFractio
 
     public VertxConfiguration() {
         super(VertxFraction.class);
-        deployment("io.vertx:vertx-jca-adapter:rar:3.2.1");
+        deployment("org.wildfly.swarm:vertx-jca-adapter:rar:1.0.0-SNAPSHOT");
     }
 
     @Override

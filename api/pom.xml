@@ -56,7 +56,7 @@
       <artifactId>vertx-hazelcast</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.vertx</groupId>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>vertx-jca-adapter</artifactId>
       <type>rar</type>
     </dependency>
