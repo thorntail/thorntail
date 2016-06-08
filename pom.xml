@@ -96,11 +96,11 @@
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
 
+      <!--TODO: Remove this when vert.x 3.3.0.m1 is released -->
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx-jca-adapter</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <type>rar</type>
       </dependency>
 
       <dependency>

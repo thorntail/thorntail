@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
+import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConnectionDefinitions;
+import org.wildfly.swarm.resource.adapters.ResourceAdapterFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -29,6 +32,10 @@ public class VertxFraction implements Fraction
     public static final String VERSION;
 
     private boolean inhibitAdapterDeployment;
+    private String jndiName = "java:/eis/VertxConnectionFactory";
+    private String clusterHost = "localhost";
+    private Integer clusterPort = 0;
+    private Long timeout = 30000L;
 
     public VertxFraction inhibitAdapterDeployment()
     {
@@ -39,6 +46,23 @@ public class VertxFraction implements Fraction
     public boolean isAdapterDeploymentInhibited()
     {
         return inhibitAdapterDeployment;
+    }
+
+    @Override public void initialize(InitContext initContext)
+    {
+        if (!isAdapterDeploymentInhibited())
+        {
+            ResourceAdapter adapter = new ResourceAdapter("vertx-rar.rar");
+            adapter.transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION);
+            adapter.module("io.vertx.jca");
+            ConnectionDefinitions definitions = new ConnectionDefinitions("VertxConnectionFactory")
+                     .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
+                     .jndiName(jndiName);
+            definitions.put("clusterHost", clusterHost);
+            definitions.put("clusterPort", clusterPort);
+            adapter.connectionDefinitions(definitions);
+            initContext.fraction(new ResourceAdapterFraction().resourceAdapter(adapter));
+        }
     }
 
     static {

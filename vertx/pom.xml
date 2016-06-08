@@ -49,7 +49,6 @@
       <artifactId>resource-adapters</artifactId>
     </dependency>
 
-
   </dependencies>
 
 </project>

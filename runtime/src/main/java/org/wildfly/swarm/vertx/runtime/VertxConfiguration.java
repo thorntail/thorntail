@@ -32,15 +32,6 @@ public class VertxConfiguration extends AbstractServerConfiguration<VertxFractio
         super(VertxFraction.class);
     }
 
-    @Override public List<Archive> getImplicitDeployments(VertxFraction fraction) throws Exception
-    {
-        if (!fraction.isAdapterDeploymentInhibited())
-        {
-            deployment("org.wildfly.swarm:vertx-jca-adapter:rar:" + VertxFraction.VERSION)
-                     .as("vertx-jca-adapter.rar");
-        }
-        return super.getImplicitDeployments(fraction);
-    }
 
     @Override
     public VertxFraction defaultFraction() {

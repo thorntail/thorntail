@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.3" name="io.vertx.jca">
+  <resources>
+    <artifact name="org.wildfly.swarm:vertx-jca-adapter:${project.version}"/>
+  </resources>
+
+  <dependencies>
+    <module name="io.vertx.jca" slot="api"/>
+    <module name="io.vertx"/>
+
+    <module name="javax.api"/>
+    <module name="javax.resource.api"/>
+    <module name="javax.jms.api"/>
+    <module name="javax.management.j2ee.api"/>
+  </dependencies>
+</module>

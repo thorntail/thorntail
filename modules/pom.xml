@@ -39,6 +39,10 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container-modules</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>resource-adapters-modules</artifactId>
+    </dependency>
 
     <!-- io.vertx module -->
     <dependency>
@@ -52,12 +56,11 @@
       <artifactId>vertx-jca-api</artifactId>
     </dependency>
 
-    <!--
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-hazelcast</artifactId>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>vertx-jca-adapter</artifactId>
     </dependency>
-    -->
+
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-feature-pack</artifactId>
