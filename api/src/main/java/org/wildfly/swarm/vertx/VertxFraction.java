@@ -29,8 +29,6 @@ import org.wildfly.swarm.spi.api.Fraction;
  */
 public class VertxFraction implements Fraction
 {
-    public static final String VERSION;
-
     private boolean inhibitAdapterDeployment;
     private String jndiName = "java:/eis/VertxConnectionFactory";
     private String clusterHost = "localhost";
@@ -97,15 +95,4 @@ public class VertxFraction implements Fraction
             ));
         }
     }
-
-    static {
-        InputStream in = VertxFraction.class.getClassLoader().getResourceAsStream("vertx.properties");
-        Properties props = new Properties();
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        VERSION = props.getProperty("version", "unknown");
-    }}
+}

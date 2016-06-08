@@ -13,10 +13,6 @@
 
   <name>WildFly Swarm: Vert.x JCA Adapter</name>
 
-  <properties>
-    <version.org.jboss.ironjacamar>1.2.0.Final</version.org.jboss.ironjacamar>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>io.vertx</groupId>
