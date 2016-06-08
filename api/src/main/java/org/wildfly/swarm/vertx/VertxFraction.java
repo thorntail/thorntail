@@ -52,16 +52,17 @@ public class VertxFraction implements Fraction
     {
         if (!isAdapterDeploymentInhibited())
         {
-            ResourceAdapter adapter = new ResourceAdapter("vertx-rar.rar");
-            adapter.transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION);
-            adapter.module("io.vertx.jca");
             ConnectionDefinitions definitions = new ConnectionDefinitions("VertxConnectionFactory")
                      .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
                      .jndiName(jndiName);
             definitions.put("clusterHost", clusterHost);
             definitions.put("clusterPort", clusterPort);
-            adapter.connectionDefinitions(definitions);
-            initContext.fraction(new ResourceAdapterFraction().resourceAdapter(adapter));
+            initContext.fraction(new ResourceAdapterFraction().resourceAdapter(
+                     new ResourceAdapter("vertx-rar.rar")
+                              .module("io.vertx.jca")
+                              .transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION)
+                              .connectionDefinitions(definitions)
+            ));
         }
     }
 
