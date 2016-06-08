@@ -34,8 +34,7 @@ public class VertxFraction implements Fraction
     private boolean inhibitAdapterDeployment;
     private String jndiName = "java:/eis/VertxConnectionFactory";
     private String clusterHost = "localhost";
-    private Integer clusterPort = 0;
-    private Long timeout = 30000L;
+    private int clusterPort;
 
     public VertxFraction inhibitAdapterDeployment()
     {
@@ -65,12 +64,12 @@ public class VertxFraction implements Fraction
       return this;
    }
 
-   public Integer clusterPort()
+   public int clusterPort()
    {
       return clusterPort;
    }
 
-   public VertxFraction clusterPort(Integer clusterPort)
+   public VertxFraction clusterPort(int clusterPort)
    {
       this.clusterPort = clusterPort;
       return this;
