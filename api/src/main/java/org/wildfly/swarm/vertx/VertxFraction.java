@@ -43,7 +43,40 @@ public class VertxFraction implements Fraction
         return this;
     }
 
-    public boolean isAdapterDeploymentInhibited()
+   public String jndiName()
+   {
+      return jndiName;
+   }
+
+   public VertxFraction jndiName(String jndiName)
+   {
+      this.jndiName = jndiName;
+      return this;
+   }
+
+   public String clusterHost()
+   {
+      return clusterHost;
+   }
+
+   public VertxFraction clusterHost(String clusterHost)
+   {
+      this.clusterHost = clusterHost;
+      return this;
+   }
+
+   public Integer clusterPort()
+   {
+      return clusterPort;
+   }
+
+   public VertxFraction clusterPort(Integer clusterPort)
+   {
+      this.clusterPort = clusterPort;
+      return this;
+   }
+
+   public boolean isAdapterDeploymentInhibited()
     {
         return inhibitAdapterDeployment;
     }
