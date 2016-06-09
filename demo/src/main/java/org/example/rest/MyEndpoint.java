@@ -13,16 +13,16 @@ import io.vertx.core.Vertx;
 @Stateless
 public class MyEndpoint {
 
-   //java.lang.ClassCastException: io.vertx.resourceadapter.impl.VertxConnectionFactoryImpl cannot be cast to io.vertx.resourceadapter.VertxConnectionFactory
+    //java.lang.ClassCastException: io.vertx.resourceadapter.impl.VertxConnectionFactoryImpl cannot be cast to io.vertx.resourceadapter.VertxConnectionFactory
 //   @Resource(mappedName = "java:/eis/VertxConnectionFactory")
 //	VertxConnectionFactory connectionFactory;
 
-	@GET
-	@Produces("text/plain")
-	public Response doGet() throws Exception {
-      //FIXME: java.lang.ClassCastException: io.vertx.resourceadapter.impl.VertxConnectionFactoryImpl cannot be cast to io.vertx.resourceadapter.VertxConnectionFactory
-      Object connectionFactory = new InitialContext().lookup("java:/eis/VertxConnectionFactory");
-		System.out.println(Vertx.vertx());
-		return Response.ok("Lookup: "+connectionFactory).build();
-	}
+    @GET
+    @Produces("text/plain")
+    public Response doGet() throws Exception {
+        //FIXME: java.lang.ClassCastException: io.vertx.resourceadapter.impl.VertxConnectionFactoryImpl cannot be cast to io.vertx.resourceadapter.VertxConnectionFactory
+        Object connectionFactory = new InitialContext().lookup("java:/eis/VertxConnectionFactory");
+        System.out.println(Vertx.vertx());
+        return Response.ok("Lookup: " + connectionFactory).build();
+    }
 }

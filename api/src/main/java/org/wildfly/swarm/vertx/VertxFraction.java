@@ -15,86 +15,72 @@
  */
 package org.wildfly.swarm.vertx;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConnectionDefinitions;
-import org.wildfly.swarm.resource.adapters.RARArchive;
 import org.wildfly.swarm.resource.adapters.ResourceAdapterFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author George Gastaldi
  */
-public class VertxFraction implements Fraction
-{
-    private boolean inhibitAdapterDeployment;
-    private String jndiName = "java:/eis/VertxConnectionFactory";
-    private String clusterHost = "localhost";
-    private int clusterPort;
-
-    public VertxFraction inhibitAdapterDeployment()
-    {
+public class VertxFraction implements Fraction {
+    public VertxFraction inhibitAdapterDeployment() {
         this.inhibitAdapterDeployment = true;
         return this;
     }
 
-   public String jndiName()
-   {
-      return jndiName;
-   }
+    public String jndiName() {
+        return jndiName;
+    }
 
-   public VertxFraction jndiName(String jndiName)
-   {
-      this.jndiName = jndiName;
-      return this;
-   }
+    public VertxFraction jndiName(String jndiName) {
+        this.jndiName = jndiName;
+        return this;
+    }
 
-   public String clusterHost()
-   {
-      return clusterHost;
-   }
+    public String clusterHost() {
+        return clusterHost;
+    }
 
-   public VertxFraction clusterHost(String clusterHost)
-   {
-      this.clusterHost = clusterHost;
-      return this;
-   }
+    public VertxFraction clusterHost(String clusterHost) {
+        this.clusterHost = clusterHost;
+        return this;
+    }
 
-   public int clusterPort()
-   {
-      return clusterPort;
-   }
+    public int clusterPort() {
+        return clusterPort;
+    }
 
-   public VertxFraction clusterPort(int clusterPort)
-   {
-      this.clusterPort = clusterPort;
-      return this;
-   }
+    public VertxFraction clusterPort(int clusterPort) {
+        this.clusterPort = clusterPort;
+        return this;
+    }
 
-   public boolean isAdapterDeploymentInhibited()
-    {
+    public boolean isAdapterDeploymentInhibited() {
         return inhibitAdapterDeployment;
     }
 
-    @Override public void initialize(InitContext initContext)
-    {
-        if (!isAdapterDeploymentInhibited())
-        {
-           ResourceAdapter resourceAdapter = new ResourceAdapter("vertx-ra")
+    @Override
+    public void initialize(InitContext initContext) {
+        if (!isAdapterDeploymentInhibited()) {
+            ResourceAdapter resourceAdapter = new ResourceAdapter("vertx-ra")
                     .module("io.vertx.jca")
                     .transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION)
                     .connectionDefinitions(new ConnectionDefinitions("VertxConnectionFactory")
-                             .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
-                             .jndiName(jndiName())
-                             .configProperties(new ConfigProperties("clusterHost").value(clusterHost()))
-                             .configProperties(
-                                      new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))));
+                                                   .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
+                                                   .jndiName(jndiName())
+                                                   .configProperties(new ConfigProperties("clusterHost").value(clusterHost()))
+                                                   .configProperties(new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))));
             initContext.fraction(new ResourceAdapterFraction().resourceAdapter(resourceAdapter));
         }
     }
+
+    private boolean inhibitAdapterDeployment;
+
+    private String jndiName = "java:/eis/VertxConnectionFactory";
+
+    private String clusterHost = "localhost";
+
+    private int clusterPort;
 }

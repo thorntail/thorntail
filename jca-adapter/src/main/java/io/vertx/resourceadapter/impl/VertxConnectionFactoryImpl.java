@@ -1,8 +1,5 @@
 package io.vertx.resourceadapter.impl;
 
-import io.vertx.resourceadapter.VertxConnection;
-import io.vertx.resourceadapter.VertxConnectionFactory;
-
 import java.util.logging.Logger;
 
 import javax.naming.NamingException;
@@ -10,66 +7,65 @@ import javax.naming.Reference;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionManager;
 
+import io.vertx.resourceadapter.VertxConnection;
+import io.vertx.resourceadapter.VertxConnectionFactory;
+
 /**
- * 
  * Implementation of VertxPlatformFactory.
- * 
+ *
  * It delegates the ConnectionManager to allocate the connection to the Vertx
  * Platform.
- * 
- * @author Lin Gao <lgao@redhat.com>
  *
+ * @author Lin Gao <lgao@redhat.com>
  */
 public class VertxConnectionFactoryImpl implements VertxConnectionFactory {
 
-  private static final long serialVersionUID = -3548251896235579548L;
+    public VertxConnectionFactoryImpl() {
+    }
 
-  private static Logger log = Logger.getLogger(VertxConnectionFactoryImpl.class.getName());
+    public VertxConnectionFactoryImpl(VertxManagedConnectionFactory mcf,
+                                      ConnectionManager cxManager) {
+        this.mcf = mcf;
+        this.connectionManager = cxManager;
+    }
 
-  private Reference reference;
+    @Override
+    public VertxConnection getVertxConnection() throws ResourceException {
+        log.finest("Get VertxPlatform");
+        return (VertxConnection) connectionManager.allocateConnection(mcf, null);
+    }
 
-  private VertxManagedConnectionFactory mcf;
+    /**
+     * Get the Reference instance.
+     *
+     * @return Reference instance
+     * @throws NamingException Thrown if a reference can't be obtained
+     */
+    @Override
+    public Reference getReference() throws NamingException {
+        log.finest("getReference()");
+        return reference;
+    }
 
-  private ConnectionManager connectionManager;
+    /**
+     * Set the Reference instance.
+     *
+     * @param reference A Reference instance
+     */
+    @Override
+    public void setReference(Reference reference) {
+        log.finest("setReference()");
+        this.reference = reference;
+    }
 
-  public VertxConnectionFactoryImpl() {
-  }
+    private static final long serialVersionUID = -3548251896235579548L;
 
-  public VertxConnectionFactoryImpl(VertxManagedConnectionFactory mcf,
-      ConnectionManager cxManager) {
-    this.mcf = mcf;
-    this.connectionManager = cxManager;
-  }
+    private static Logger log = Logger.getLogger(VertxConnectionFactoryImpl.class.getName());
 
-  @Override
-  public VertxConnection getVertxConnection() throws ResourceException {
-    log.finest("Get VertxPlatform");
-    return (VertxConnection) connectionManager.allocateConnection(mcf, null);
-  }
+    private Reference reference;
 
-  /**
-   * Get the Reference instance.
-   *
-   * @return Reference instance
-   * @exception NamingException
-   *              Thrown if a reference can't be obtained
-   */
-  @Override
-  public Reference getReference() throws NamingException {
-    log.finest("getReference()");
-    return reference;
-  }
+    private VertxManagedConnectionFactory mcf;
 
-  /**
-   * Set the Reference instance.
-   *
-   * @param reference
-   *          A Reference instance
-   */
-  @Override
-  public void setReference(Reference reference) {
-    log.finest("setReference()");
-    this.reference = reference;
-  }
+    private ConnectionManager connectionManager;
 
 }

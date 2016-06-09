@@ -22,15 +22,16 @@
  */
 -->
 
-<ironjacamar xmlns="http://www.ironjacamar.org/doc/schema"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ironjacamar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://www.ironjacamar.org/doc/schema"
              xsi:schemaLocation="http://www.ironjacamar.org/doc/schema
              http://www.ironjacamar.org/doc/schema/ironjacamar_1_1.xsd">
 
   <transaction-support>NoTransaction</transaction-support>
 
   <connection-definitions>
-    <connection-definition class-name="io.vertx.resourceadapter.impl.VertxManagedConnectionFactory" jndi-name="java:/eis/VertxConnectionFactory" pool-name="VertxConnectionFactory">
+    <connection-definition class-name="io.vertx.resourceadapter.impl.VertxManagedConnectionFactory"
+                           jndi-name="java:/eis/VertxConnectionFactory" pool-name="VertxConnectionFactory">
       <config-property name="clusterHost">localhost</config-property>
       <config-property name="clusterPort">0</config-property>
     </connection-definition>

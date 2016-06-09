@@ -15,11 +15,6 @@
  */
 package org.wildfly.swarm.vertx.runtime;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.resource.adapters.RARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.vertx.VertxFraction;
 
