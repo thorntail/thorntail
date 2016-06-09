@@ -20,6 +20,8 @@
 
 package org.wildfly.swarm.camel.test.jpa;
 
+import java.net.URL;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -40,6 +42,7 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.camel.test.jpa.subA.Account;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.jpa.JPAFraction;
 
 @RunWith(Arquillian.class)
@@ -48,17 +51,21 @@ public class JPATransactionManagerIntegrationTest implements ContainerFactory {
     @Deployment
     public static JavaArchive deployment() {
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "camel-jpa-tests.jar");
-        archive.addClass(Account.class);
+        archive.addClasses(Account.class);
         archive.addAsResource("jpa/persistence-local.xml", "META-INF/persistence.xml");
         archive.addAsResource("jpa/jpa-camel-context.xml", "META-INF/jpa-camel-context.xml");
+        archive.addAsResource("standalone.xml");
         archive.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;
     }
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        Container container = new Container().fraction(new CamelCoreFraction());
+        Container container = new Container();
+        container.fraction(new CamelCoreFraction());
+        container.fraction(new DatasourcesFraction());
         container.fraction(new JPAFraction());
+		container.withXmlConfig(getClass().getResource("/standalone.xml"));
         return container;
     }
 
