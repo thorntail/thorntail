@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.vertx;
 
+import java.util.Arrays;
+
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConnectionDefinitions;
@@ -70,8 +72,10 @@ public class VertxFraction implements Fraction {
                     .connectionDefinitions(new ConnectionDefinitions("VertxConnectionFactory")
                                                    .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
                                                    .jndiName(jndiName())
-                                                   .configProperties(new ConfigProperties("clusterHost").value(clusterHost()))
-                                                   .configProperties(new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))));
+                                                   .configProperties(Arrays.asList(
+                                                           new ConfigProperties("clusterHost").value(clusterHost()),
+                                                           new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))
+                                                   ));
             initContext.fraction(new ResourceAdapterFraction().resourceAdapter(resourceAdapter));
         }
     }
