@@ -7,9 +7,11 @@
   <dependencies>
     <system export="true">
       <paths>
-        <path name="io/vertx/resourceadapter"/>
-        <path name="io/vertx/resourceadapter/inflow"/>
+        <path name="io/vertx/resourceadapter/"/>
+        <path name="io/vertx/resourceadapter/inflow/"/>
       </paths>
     </system>
+
+    <module name="javax.resource.api"/>
   </dependencies>
 </module>

@@ -7,7 +7,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		Swarm swarm = new Swarm();
-		swarm.fraction(LoggingFraction.createDebugLoggingFraction());
+//		swarm.fraction(LoggingFraction.createDebugLoggingFraction());
 		swarm.start();
 		swarm.deploy();
 	}
