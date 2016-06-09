@@ -16,12 +16,14 @@
 package org.wildfly.swarm.container;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,12 +54,14 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.base.exporter.ExplodedExporterImpl;
 import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.ProjectStageFactory;
@@ -79,7 +83,6 @@ import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
-@SuppressWarnings("unused")
 public class Container {
 
     public static final String VERSION;
@@ -145,7 +148,7 @@ public class Container {
     }
 
     public Container withXmlConfig(URL url) {
-        this.server.setXmlConfig(url);
+        this.xmlConfig = Optional.of(url);
         return this;
     }
 
@@ -160,13 +163,13 @@ public class Container {
     }
 
     public StageConfig stageConfig() {
-        if (!enabledStage.isPresent())
+        if (!stageConfig.isPresent())
             throw new RuntimeException("Stage config is not present");
-        return new StageConfig(enabledStage.get());
+        return new StageConfig(stageConfig.get());
     }
 
     public boolean hasStageConfig() {
-        return enabledStage.isPresent();
+        return stageConfig.isPresent();
     }
 
     public static boolean isFatJar() throws IOException {
@@ -323,14 +326,47 @@ public class Container {
     public Container start(boolean eagerlyOpen) throws Exception {
         if (!this.running) {
 
-            if (enabledStage.isPresent())
-                this.server.setStageConfig(enabledStage.get());
+            setupXmlConfig();
+            setupStageConfig();
 
             this.deployer = this.server.start(this, eagerlyOpen);
             this.running = true;
         }
 
         return this;
+    }
+
+    private void setupStageConfig() throws Exception {
+        ProjectStage projectStage = stageConfig.isPresent() ? stageConfig.get() : null;
+
+        // auto discover META-INF/project-stages.yml in default deployment
+        if (projectStage == null && System.getProperty(SwarmProperties.PROJECT_STAGE_FILE) == null) {
+            String resourcePath = "META-INF/project-stages.yml";
+            ClassLoader classLoader = getDefaultDeploymentClassLoader();
+            URL configURL = classLoader.getResource(resourcePath);
+            if (configURL != null) {
+                projectStage = loadStageConfiguration(configURL);
+            }
+        }
+
+        if (projectStage != null) {
+            this.server.setStageConfig(projectStage);
+        }
+    }
+
+    private void setupXmlConfig() throws Exception {
+        URL configURL = xmlConfig.isPresent() ? xmlConfig.get() : null;
+
+        // auto discover META-INF/standalone.xml in default deployment
+        if (configURL == null) {
+            String resourcePath = "META-INF/standalone.xml";
+            ClassLoader classLoader = getDefaultDeploymentClassLoader();
+            configURL = classLoader.getResource(resourcePath);
+        }
+
+        if (configURL != null) {
+            this.server.setXmlConfig(configURL);
+        }
     }
 
     /**
@@ -372,7 +408,7 @@ public class Container {
      * @throws DeploymentException if an error occurs.
      */
     public Container deploy() throws DeploymentException {
-        Archive deployment = createDefaultDeployment();
+        Archive<?> deployment = createDefaultDeployment();
         if (deployment == null) {
             throw new DeploymentException("Unable to create default deployment");
         } else {
@@ -422,10 +458,8 @@ public class Container {
 
     /**
      * Provides access to the default ShrinkWrap deployment.
-     *
-     * @return the default deployment
      */
-    public Archive createDefaultDeployment() {
+    public Archive<?> createDefaultDeployment() {
         try {
             Iterator<DefaultDeploymentFactory> providerIter = Module.getBootModuleLoader()
                     .loadModule(ModuleIdentifier.create("swarm.application"))
@@ -445,19 +479,69 @@ public class Container {
                 if (current == null) {
                     factories.put(factory.getType(), factory);
                 } else {
-                    // if this one is high priority than the previously-seen
-                    // factory, replace it.
+                    // if this one is high priority than the previously-seen factory, replace it.
                     if (factory.getPriority() > current.getPriority()) {
                         factories.put(factory.getType(), factory);
                     }
                 }
             }
-            final DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
-
+            
+            DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
             return factory != null ? factory.create() : ShrinkWrap.create(JARArchive.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * @return The default deployment or null
+     */
+    private Archive<?> getDefaultDeployment() {
+        if (defaultDeployment == null) {
+            try {
+                defaultDeployment = createDefaultDeployment();
+            } catch (RuntimeException ex) {
+                // ignore
+            }
+        }
+        return defaultDeployment;
+    }
+
+    /**
+     * @return The URL to the default deployment or null
+     */
+    private URL getDefaultDeploymentURL() throws IOException {
+        if (defaultDeploymentURL == null) {
+            Archive<?> archive = getDefaultDeployment();
+            if (archive != null) {
+                File tmpdir = TempFileManager.INSTANCE.newTempDirectory("deployment", ".d");
+                
+                // [SWARM-511] Shrinkwrap UnknownExtensionTypeException for ExplodedExporter
+                //archive.as(ExplodedExporter.class).exportExploded(tmpdir);
+                
+                new ExplodedExporterImpl(archive).exportExploded(tmpdir);
+                defaultDeploymentURL = new File(tmpdir, archive.getName()).toURI().toURL();
+            }
+        }
+        return defaultDeploymentURL;
+    }
+
+    private ClassLoader getDefaultDeploymentClassLoader() throws Exception {
+        if (defaultDeploymentClassLoader == null) {
+            List<URL> urllist = new ArrayList<>();
+            URL archiveURL = getDefaultDeploymentURL();
+            if (archiveURL != null) { 
+                urllist.add(archiveURL);
+                File webpath = new File(new File(archiveURL.toURI()), "WEB-INF/classes");
+                if (webpath.exists()) {
+                    urllist.add(webpath.toURI().toURL());
+                } 
+            }
+            URL[] urls = urllist.toArray(new URL[urllist.size()]);
+            Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            defaultDeploymentClassLoader = new URLClassLoader(urls, m1.getClassLoader());
+        }
+        return defaultDeploymentClassLoader;
     }
 
     private void createShrinkWrapDomain() throws ModuleLoadException {
@@ -637,16 +721,15 @@ public class Container {
         return "jar";
     }
 
-    private void loadStageConfiguration(URL url) {
-
+    private ProjectStage loadStageConfiguration(URL url) {
         try {
-            enableStageConfiguration(url.openStream());
+            return enableStageConfiguration(url.openStream());
         } catch (IOException e) {
             throw new RuntimeException("Failed to load stage configuration from URL :" + url.toExternalForm(), e);
         }
     }
 
-    private void enableStageConfiguration(InputStream input) {
+    private ProjectStage enableStageConfiguration(InputStream input) {
         List<ProjectStage> projectStages = new ProjectStageFactory().loadStages(input);
         String stageName = System.getProperty(SwarmProperties.PROJECT_STAGE, "default");
         ProjectStage stage = null;
@@ -662,7 +745,8 @@ public class Container {
 
         System.out.println("[INFO] Using project stage: " + stageName);
 
-        this.enabledStage = Optional.of(stage);
+        this.stageConfig = Optional.of(stage);
+        return stage;
     }
 
     static {
@@ -704,13 +788,17 @@ public class Container {
 
     private String defaultDeploymentType;
 
-
-    /**
-     * Command line args if any
-     */
     private String[] args;
 
-    private Optional<ProjectStage> enabledStage = Optional.empty();
+    private Optional<ProjectStage> stageConfig = Optional.empty();
+
+    private Optional<URL> xmlConfig = Optional.empty();
+
+    private Archive<?> defaultDeployment;
+
+    private URL defaultDeploymentURL;
+
+    private ClassLoader defaultDeploymentClassLoader;
 
     /**
      * Initialization Context to be passed to Fractions to allow them to provide
@@ -739,8 +827,8 @@ public class Container {
 
         @Override
         public Optional<StageConfig> projectStage() {
-            Optional<StageConfig> cfg = enabledStage.isPresent() ?
-                    Optional.of(new StageConfig(enabledStage.get())) : Optional.empty();
+            Optional<StageConfig> cfg = stageConfig.isPresent() ?
+                    Optional.of(new StageConfig(stageConfig.get())) : Optional.empty();
 
             return cfg;
         }

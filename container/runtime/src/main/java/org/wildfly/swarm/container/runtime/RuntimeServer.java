@@ -79,7 +79,6 @@ import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.vfs.TempFileProvider;
-import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.container.Container;
@@ -120,7 +119,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
 @SuppressWarnings("unused")
 public class RuntimeServer implements Server {
 
-    @SuppressWarnings("unused")
     public RuntimeServer() {
         try {
             Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
@@ -189,7 +187,7 @@ public class RuntimeServer implements Server {
         getExtensions(config, bootstrapOperations);
 
         // the subsystem configurations
-        getList(config, bootstrapOperations);
+        getSubsystemConfigurations(config, bootstrapOperations);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(bootstrapOperations);
@@ -198,7 +196,6 @@ public class RuntimeServer implements Server {
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
 
         UUID grist = java.util.UUID.randomUUID();
-        String tmpDir = System.getProperty("java.io.tmpdir");
 
         File serverTmp = TempFileManager.INSTANCE.newTempDirectory("wildfly-swarm", ".d");
         System.setProperty("jboss.server.temp.dir", serverTmp.getAbsolutePath());
@@ -659,12 +656,10 @@ public class RuntimeServer implements Server {
 
     }
 
-    private void getList(Container config, List<ModelNode> list) throws Exception {
-
+    private void getSubsystemConfigurations(Container config, List<ModelNode> list) throws Exception {
         if (xmlConfig.isPresent()) {
             configureFractionsFromXML(config, list);
         }
-
         configureFractions(config, list);
         configureInterfaces(config, list);
         configureSocketBindingGroups(config, list);
