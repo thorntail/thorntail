@@ -31,14 +31,14 @@
   <properties>
     <version.wildfly.swarm.fraction.plugin>18</version.wildfly.swarm.fraction.plugin>
 
-    <version.swarm.spi>1.0.1.Final</version.swarm.spi>
+    <version.swarm.spi>1.0.2.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
     <version.org.arquillian>1.1.10.Final</version.org.arquillian>
-    <version.org.jboss.shrinkwrap>1.2.4</version.org.jboss.shrinkwrap>
+    <version.org.jboss.shrinkwrap>1.2.5</version.org.jboss.shrinkwrap>
     <version.org.jboss.arquillian.drone>2.0.0.Alpha4</version.org.jboss.arquillian.drone>
     <version.org.arquillian.graphene>2.1.0.Alpha2</version.org.arquillian.graphene>
     <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-9</version.org.jboss.shrinkwrap.descriptors>
