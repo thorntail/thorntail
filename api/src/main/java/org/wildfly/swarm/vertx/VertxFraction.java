@@ -72,10 +72,14 @@ public class VertxFraction implements Fraction {
                     .connectionDefinitions(new ConnectionDefinitions("VertxConnectionFactory")
                                                    .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
                                                    .jndiName(jndiName())
-                                                   .configProperties(Arrays.asList(
-                                                           new ConfigProperties("clusterHost").value(clusterHost()),
-                                                           new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))
-                                                   ));
+                                                   .enabled(true)
+                                                   .configProperties(
+                                                           Arrays.asList(
+                                                                   new ConfigProperties("clusterHost").value(clusterHost()),
+                                                                   new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))
+                                                           )
+                                                   )
+                    );
             initContext.fraction(new ResourceAdapterFraction().resourceAdapter(resourceAdapter));
         }
     }
