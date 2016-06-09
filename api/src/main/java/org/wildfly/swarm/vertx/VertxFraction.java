@@ -19,8 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
+import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConnectionDefinitions;
+import org.wildfly.swarm.resource.adapters.RARArchive;
 import org.wildfly.swarm.resource.adapters.ResourceAdapterFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
@@ -82,17 +85,16 @@ public class VertxFraction implements Fraction
     {
         if (!isAdapterDeploymentInhibited())
         {
-            ConnectionDefinitions definitions = new ConnectionDefinitions("VertxConnectionFactory")
-                     .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
-                     .jndiName(jndiName);
-            definitions.put("clusterHost", clusterHost);
-            definitions.put("clusterPort", clusterPort);
-            initContext.fraction(new ResourceAdapterFraction().resourceAdapter(
-                     new ResourceAdapter("vertx-rar.rar")
-                              .module("io.vertx.jca")
-                              .transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION)
-                              .connectionDefinitions(definitions)
-            ));
+           ResourceAdapter resourceAdapter = new ResourceAdapter("vertx-ra")
+                    .module("io.vertx.jca")
+                    .transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION)
+                    .connectionDefinitions(new ConnectionDefinitions("VertxConnectionFactory")
+                             .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
+                             .jndiName(jndiName())
+                             .configProperties(new ConfigProperties("clusterHost").value(clusterHost()))
+                             .configProperties(
+                                      new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))));
+            initContext.fraction(new ResourceAdapterFraction().resourceAdapter(resourceAdapter));
         }
     }
 }
