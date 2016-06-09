@@ -23,7 +23,6 @@ import javax.xml.namespace.QName;
 
 import org.jboss.dmr.ModelNode;
 import org.jboss.staxmapper.XMLElementReader;
-import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.logging.InitialLoggerManager;
 import org.wildfly.swarm.bootstrap.logging.LevelNode;
 import org.wildfly.swarm.config.logging.Level;
