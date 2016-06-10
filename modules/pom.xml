@@ -45,23 +45,6 @@
       <artifactId>resource-adapters-modules</artifactId>
     </dependency>
 
-    <!-- io.vertx module -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
-    </dependency>
-
-    <!-- io.vertx.jca module -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-jca-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>vertx-jca-adapter</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-feature-pack</artifactId>
