@@ -50,6 +50,7 @@ import org.jboss.modules.log.StreamModuleLogger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Domain;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -485,7 +486,7 @@ public class Container {
                     }
                 }
             }
-            
+
             DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
             return factory != null ? factory.create() : ShrinkWrap.create(JARArchive.class);
         } catch (Exception e) {
@@ -515,11 +516,9 @@ public class Container {
             Archive<?> archive = getDefaultDeployment();
             if (archive != null) {
                 File tmpdir = TempFileManager.INSTANCE.newTempDirectory("deployment", ".d");
-                
-                // [SWARM-511] Shrinkwrap UnknownExtensionTypeException for ExplodedExporter
-                //archive.as(ExplodedExporter.class).exportExploded(tmpdir);
-                
-                new ExplodedExporterImpl(archive).exportExploded(tmpdir);
+
+                archive.as(ExplodedExporter.class).exportExploded(tmpdir);
+
                 defaultDeploymentURL = new File(tmpdir, archive.getName()).toURI().toURL();
             }
         }
@@ -530,12 +529,12 @@ public class Container {
         if (defaultDeploymentClassLoader == null) {
             List<URL> urllist = new ArrayList<>();
             URL archiveURL = getDefaultDeploymentURL();
-            if (archiveURL != null) { 
+            if (archiveURL != null) {
                 urllist.add(archiveURL);
                 File webpath = new File(new File(archiveURL.toURI()), "WEB-INF/classes");
                 if (webpath.exists()) {
                     urllist.add(webpath.toURI().toURL());
-                } 
+                }
             }
             URL[] urls = urllist.toArray(new URL[urllist.size()]);
             Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
@@ -555,6 +554,7 @@ public class Container {
             this.domain = ShrinkWrap.getDefaultDomain();
             this.domain.getConfiguration().getExtensionLoader().addOverride(ZipExporter.class, ZipExporterImpl.class);
             this.domain.getConfiguration().getExtensionLoader().addOverride(ZipImporter.class, ZipImporterImpl.class);
+            this.domain.getConfiguration().getExtensionLoader().addOverride(ExplodedExporter.class, ExplodedExporterImpl.class);
             this.domain.getConfiguration().getExtensionLoader().addOverride(JavaArchive.class, JavaArchiveImpl.class);
             this.domain.getConfiguration().getExtensionLoader().addOverride(WebArchive.class, WebArchiveImpl.class);
         } catch (IOException e) {
