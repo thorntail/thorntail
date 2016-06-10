@@ -31,6 +31,12 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>connector-modules</artifactId>
     </dependency>
+
+    <!-- Provided APIs -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.resource</groupId>
+      <artifactId>jboss-connector-api_1.7_spec</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
