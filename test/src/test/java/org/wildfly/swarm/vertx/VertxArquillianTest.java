@@ -15,17 +15,26 @@
  */
 package org.wildfly.swarm.vertx;
 
+import javax.inject.Inject;
+
+import io.vertx.resourceadapter.VertxConnectionFactory;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.cdi.CDIFraction;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.ejb.EJBFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
 /**
  * @author George Gastaldi
@@ -33,22 +42,32 @@ import org.wildfly.swarm.spi.api.JARArchive;
 @RunWith(Arquillian.class)
 public class VertxArquillianTest implements ContainerFactory {
 
-    @Deployment(testable = false)
+    @Deployment
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
+        deployment.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        deployment.addClass(VertxProvider.class);
+        deployment.addModule("io.vertx.jca", "api");
         return deployment;
     }
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new VertxFraction());
+        return new Container()
+                .fraction(new CDIFraction())
+                .fraction(new VertxFraction())
+                .fraction(EJBFraction.createDefaultFraction());
     }
 
-    @Test
-    @RunAsClient
-    public void testNothing() {
+    @Inject
+    VertxProvider vertxProvider;
 
+    @Test
+    public void testVertxConnectionFactoryIsInjected() {
+        Assert.assertThat(vertxProvider, notNullValue());
+        VertxConnectionFactory connectionFactory = vertxProvider.getConnectionFactory();
+        Assert.assertThat(connectionFactory, notNullValue());
+        Assert.assertThat(connectionFactory.getClass().getClassLoader(), not(equalTo(getClass().getClassLoader())));
     }
 
 }
