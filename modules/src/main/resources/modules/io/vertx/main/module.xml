@@ -68,7 +68,7 @@
       </paths>
     </system>
 
-    <module name="io.netty"/>
+    <module name="io.netty" export="true"/>
 
   </dependencies>
 </module>

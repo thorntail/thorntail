@@ -7,11 +7,7 @@
 
   <dependencies>
     <module name="io.vertx.jca" slot="api"/>
-    <module name="io.vertx"/>
 
     <module name="javax.api"/>
-    <module name="javax.resource.api"/>
-    <module name="javax.jms.api"/>
-    <module name="javax.management.j2ee.api"/>
   </dependencies>
 </module>

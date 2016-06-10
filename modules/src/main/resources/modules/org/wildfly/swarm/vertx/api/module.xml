@@ -8,7 +8,6 @@
     <module name="org.wildfly.swarm.configuration" slot="api"/>
     <module name="org.wildfly.swarm.resource.adapters"/>
 
-    <module name="io.vertx"/>
     <module name="io.vertx.jca" slot="api"/>
     <!--
     <module name="io.vertx.hazelcast"/>

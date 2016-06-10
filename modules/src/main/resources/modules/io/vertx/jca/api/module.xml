@@ -12,6 +12,7 @@
       </paths>
     </system>
 
-    <module name="javax.resource.api"/>
+    <module name="javax.resource.api" export="true"/>
+    <module name="io.vertx" export="true"/>
   </dependencies>
 </module>
