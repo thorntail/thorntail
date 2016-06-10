@@ -57,12 +57,6 @@
       <artifactId>resource-adapters</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--Remove this dependency once SWARM-510 is fixed-->
-    <dependency>
-      <groupId>org.jboss.ironjacamar</groupId>
-      <artifactId>ironjacamar-spec-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>arquillian</artifactId>
