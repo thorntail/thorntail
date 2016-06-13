@@ -25,6 +25,7 @@ public class VertxInVmTest {
 
     @Test
     public void testSimple() throws Exception {
+        System.setProperty("java.util.logging.manager","org.jboss.logmanager.LogManager");
         Container container = new Container();
         container.fraction(new VertxFraction());
         container.start().stop();
