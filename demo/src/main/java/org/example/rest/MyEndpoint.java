@@ -9,24 +9,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import io.vertx.core.Vertx;
+import io.vertx.resourceadapter.VertxConnection;
 import io.vertx.resourceadapter.VertxConnectionFactory;
 
 @Path("/my")
 @Stateless
 public class MyEndpoint {
 
-    private static final String JNDI_NAME = "java:/eis/VertxConnectionFactory";
-
-    @Resource(mappedName = JNDI_NAME)
+    @Resource(mappedName = "java:/eis/VertxConnectionFactory")
     VertxConnectionFactory connectionFactory;
 
     @GET
     @Produces("text/plain")
     public Response doGet() throws Exception {
-        Object obj = new InitialContext().lookup(JNDI_NAME);
-        System.out.println(connectionFactory instanceof VertxConnectionFactory);
-        System.out.println("VERTX: "+Vertx.class.getClassLoader());
-        System.out.println("VCF: "+VertxConnectionFactory.class.getClassLoader());
-        return Response.ok("Lookup: " + obj.getClass().getClassLoader()).build();
+        VertxConnection vertxConnection = connectionFactory.getVertxConnection();
+        try {
+            vertxConnection.vertxEventBus().send("taco","A message");
+        } finally {
+            vertxConnection.close();
+        }
+        return Response.ok("OK!").build();
     }
 }

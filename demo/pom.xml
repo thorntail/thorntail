@@ -42,6 +42,15 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>ejb</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>cdi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-ejb3</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>

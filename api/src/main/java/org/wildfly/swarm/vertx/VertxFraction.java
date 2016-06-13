@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
-import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConnectionDefinitions;
 import org.wildfly.swarm.resource.adapters.ResourceAdapterFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
@@ -66,21 +65,21 @@ public class VertxFraction implements Fraction {
     @Override
     public void initialize(InitContext initContext) {
         if (!isAdapterDeploymentInhibited()) {
-            ResourceAdapter resourceAdapter = new ResourceAdapter("vertx-ra")
-                    .module("io.vertx.jca")
-                    .transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION)
-                    .connectionDefinitions(new ConnectionDefinitions("VertxConnectionFactory")
-                                                   .className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
-                                                   .jndiName(jndiName())
-                                                   .enabled(true)
-                                                   .configProperties(
-                                                           Arrays.asList(
-                                                                   new ConfigProperties("clusterHost").value(clusterHost()),
-                                                                   new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))
-                                                           )
-                                                   )
-                    );
-            initContext.fraction(new ResourceAdapterFraction().resourceAdapter(resourceAdapter));
+            initContext.fraction(new ResourceAdapterFraction().resourceAdapter("vertx-ra", ra -> {
+                ra.module("io.vertx.jca:ra")
+                        .transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION)
+                        .connectionDefinitions("VertxConnectionFactory", c -> {
+                            c.className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
+                                    .jndiName(jndiName())
+                                    .enabled(true)
+                                    .configProperties(
+                                            Arrays.asList(
+                                                    new ConfigProperties("clusterHost").value(clusterHost()),
+                                                    new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))
+                                            )
+                                    );
+                        });
+            }));
         }
     }
 
