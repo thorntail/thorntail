@@ -5,13 +5,6 @@
   </resources>
 
   <dependencies>
-    <system export="true">
-      <paths>
-        <path name="io/vertx/resourceadapter"/>
-        <path name="io/vertx/resourceadapter/inflow"/>
-      </paths>
-    </system>
-
     <module name="javax.resource.api" export="true"/>
     <module name="io.vertx" export="true"/>
   </dependencies>

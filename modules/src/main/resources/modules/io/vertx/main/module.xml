@@ -5,69 +5,6 @@
   </resources>
 
   <dependencies>
-    <system export="true">
-      <paths>
-        <path name="io/vertx/core"/>
-
-        <path name="io/vertx/core/buffer"/>
-        <path name="io/vertx/core/buffer/impl"/>
-
-        <path name="io/vertx/core/cli"/>
-        <path name="io/vertx/core/cli/annotations"/>
-        <path name="io/vertx/core/cli/converters"/>
-        <path name="io/vertx/core/cli/impl"/>
-
-        <path name="io/vertx/core/datagram"/>
-        <path name="io/vertx/core/datagram/impl"/>
-
-        <path name="io/vertx/core/dns"/>
-        <path name="io/vertx/core/dns/impl"/>
-
-        <path name="io/vertx/core/eventbus"/>
-        <path name="io/vertx/core/eventbus/impl"/>
-        <path name="io/vertx/core/eventbus/impl/clustered"/>
-        <path name="io/vertx/core/eventbus/impl/codecs"/>
-
-        <path name="io/vertx/core/file"/>
-        <path name="io/vertx/core/file/impl"/>
-
-        <path name="io/vertx/core/http"/>
-        <path name="io/vertx/core/http/impl"/>
-        <path name="io/vertx/core/http/impl/cgbystrom"/>
-        <path name="io/vertx/core/http/impl/ws"/>
-
-        <path name="io/vertx/core/impl"/>
-        <path name="io/vertx/core/impl/launcher"/>
-        <path name="io/vertx/core/impl/launcher/commands"/>
-        <path name="io/vertx/core/impl/verticle"/>
-
-        <path name="io/vertx/core/json"/>
-
-        <path name="io/vertx/core/logging"/>
-
-        <path name="io/vertx/core/metrics"/>
-        <path name="io/vertx/core/metrics/impl"/>
-
-        <path name="io/vertx/core/net"/>
-        <path name="io/vertx/core/net/impl"/>
-
-        <path name="io/vertx/core/parsetools"/>
-        <path name="io/vertx/core/parsetools/impl"/>
-
-        <path name="io/vertx/core/shareddata"/>
-        <path name="io/vertx/core/shareddata/impl"/>
-
-        <path name="io/vertx/core/spi"/>
-        <path name="io/vertx/core/spi/metrics"/>
-        <path name="io/vertx/core/spi/metrics/logging"/>
-        <path name="io/vertx/core/spi/metrics/launcher"/>
-        <path name="io/vertx/core/spi/metrics/cluster"/>
-
-        <path name="io/vertx/core/streams"/>
-        <path name="io/vertx/core/streams/impl"/>
-      </paths>
-    </system>
-
     <module name="io.netty" export="true"/>
     <module name="javax.api"/>
     <module name="com.fasterxml.jackson.core.jackson-annotations" export="true"/>
