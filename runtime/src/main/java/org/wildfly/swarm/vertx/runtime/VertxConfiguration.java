@@ -16,6 +16,7 @@
 package org.wildfly.swarm.vertx.runtime;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.vertx.VertxFraction;
 
@@ -28,10 +29,10 @@ public class VertxConfiguration extends AbstractServerConfiguration<VertxFractio
         super(VertxFraction.class);
     }
 
-//    @Override
-//    public void processArchiveMetaData(Archive<?> a, org.jboss.jandex.Index idx) {
-//
-//    }
+    @Override
+    public void prepareArchive(Archive<?> a) {
+        a.as(JARArchive.class).addModule("io.vertx.jca", "api");
+    }
 
     @Override
     public VertxFraction defaultFraction() {

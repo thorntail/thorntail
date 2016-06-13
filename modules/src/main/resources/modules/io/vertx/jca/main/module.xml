@@ -6,7 +6,7 @@
   </resources>
 
   <dependencies>
-    <module name="io.vertx.jca" slot="api"/>
+    <module name="io.vertx.jca" slot="api" export="true"/>
 
     <module name="javax.api"/>
   </dependencies>
