@@ -28,10 +28,10 @@ public class VertxConfiguration extends AbstractServerConfiguration<VertxFractio
         super(VertxFraction.class);
     }
 
-    @Override
-    public void processArchiveMetaData(Archive<?> a, org.jboss.jandex.Index idx) {
-
-    }
+//    @Override
+//    public void processArchiveMetaData(Archive<?> a, org.jboss.jandex.Index idx) {
+//
+//    }
 
     @Override
     public VertxFraction defaultFraction() {
