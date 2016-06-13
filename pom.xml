@@ -31,7 +31,7 @@
 
   <properties>
     <version.wildfly>10.0.0.Final</version.wildfly>
-    <version.wildfly.config-api>0.4.2</version.wildfly.config-api>
+    <version.wildfly.config-api>0.4.3</version.wildfly.config-api>
     <version.org.jboss.shrinkwrap>1.2.5</version.org.jboss.shrinkwrap>
     <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-9</version.org.jboss.shrinkwrap.descriptors>
     <version.maven.aether>3.2.5</version.maven.aether>
