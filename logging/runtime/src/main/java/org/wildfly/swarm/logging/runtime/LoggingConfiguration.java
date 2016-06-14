@@ -47,13 +47,16 @@ public class LoggingConfiguration extends MarshallingServerConfiguration<Logging
     public LoggingFraction defaultFraction() {
         String prop = System.getProperty(LoggingProperties.LOGGING);
         if (prop != null) {
-            prop = prop.trim().toLowerCase();
+            prop = prop.trim().toUpperCase();
 
-            if (prop.equals("debug")) {
-                return LoggingFraction.createDebugLoggingFraction();
-            } else if (prop.equals("trace")) {
-                return LoggingFraction.createTraceLoggingFraction();
+            Level level;
+            try {
+                level = Level.valueOf(prop);
+            } catch (IllegalArgumentException e) {
+                return LoggingFraction.createDefaultLoggingFraction();
             }
+
+            return LoggingFraction.createDefaultLoggingFraction(level);
         }
 
         return LoggingFraction.createDefaultLoggingFraction();
