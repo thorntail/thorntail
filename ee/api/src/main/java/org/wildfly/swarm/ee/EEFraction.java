@@ -18,6 +18,7 @@ package org.wildfly.swarm.ee;
 import org.wildfly.swarm.config.EE;
 import org.wildfly.swarm.config.ee.ContextService;
 import org.wildfly.swarm.config.ee.DefaultBindingsService;
+import org.wildfly.swarm.config.ee.DefaultBindingsServiceConsumer;
 import org.wildfly.swarm.config.ee.ManagedExecutorService;
 import org.wildfly.swarm.config.ee.ManagedScheduledExecutorService;
 import org.wildfly.swarm.config.ee.ManagedThreadFactory;
@@ -47,33 +48,40 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
 
     @Default
     public static EEFraction createDefaultFraction() {
+        return createDefaultFraction( null );
+    }
+
+    public static EEFraction createDefaultFraction(DefaultBindingsServiceConsumer config) {
         EEFraction fraction = new EEFraction();
         fraction.specDescriptorPropertyReplacement(false)
                 .contextService(new ContextService(DEFAULT_KEY)
-                                        .jndiName(CONCURRENCY_CONTEXT_DEFAULT)
-                                        .useTransactionSetupProvider(false))
+                        .jndiName(CONCURRENCY_CONTEXT_DEFAULT)
+                        .useTransactionSetupProvider(false))
                 .managedThreadFactory(new ManagedThreadFactory(DEFAULT_KEY)
-                                              .jndiName(CONCURRENCY_FACTORY_DEFAULT)
-                                              .contextService(DEFAULT_KEY))
+                        .jndiName(CONCURRENCY_FACTORY_DEFAULT)
+                        .contextService(DEFAULT_KEY))
                 .managedExecutorService(new ManagedExecutorService(DEFAULT_KEY)
-                                                .jndiName(CONCURRENCY_EXECUTOR_DEFAULT)
-                                                .contextService(DEFAULT_KEY)
-                                                .hungTaskThreshold(60000L)
-                                                .coreThreads(5)
-                                                .maxThreads(25)
-                                                .keepaliveTime(5000L))
+                        .jndiName(CONCURRENCY_EXECUTOR_DEFAULT)
+                        .contextService(DEFAULT_KEY)
+                        .hungTaskThreshold(60000L)
+                        .coreThreads(5)
+                        .maxThreads(25)
+                        .keepaliveTime(5000L))
                 .managedScheduledExecutorService(new ManagedScheduledExecutorService(DEFAULT_KEY)
-                                                         .jndiName(CONCURRENCY_SCHEDULER_DEFAULT)
-                                                         .contextService(DEFAULT_KEY)
-                                                         .hungTaskThreshold(60000L)
-                                                         .coreThreads(5)
-                                                         .keepaliveTime(3000L));
+                        .jndiName(CONCURRENCY_SCHEDULER_DEFAULT)
+                        .contextService(DEFAULT_KEY)
+                        .hungTaskThreshold(60000L)
+                        .coreThreads(5)
+                        .keepaliveTime(3000L));
 
         fraction.defaultBindingsService((bindings) -> {
             bindings.contextService("java:jboss/ee/concurrency/context/default");
             bindings.managedExecutorService("java:jboss/ee/concurrency/executor/default");
             bindings.managedScheduledExecutorService("java:jboss/ee/concurrency/scheduler/default");
             bindings.managedThreadFactory("java:jboss/ee/concurrency/factory/default");
+            if( config != null ) {
+                config.accept( bindings );
+            }
         });
 
         return fraction;
@@ -85,8 +93,10 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
             if (this.subresources().defaultBindingsService() == null) {
                 this.defaultBindingsService(new DefaultBindingsService());
             }
-            this.subresources().defaultBindingsService()
-                    .jmsConnectionFactory("java:jboss/DefaultJMSConnectionFactory");
+            if ( this.subresources().defaultBindingsService().jmsConnectionFactory() == null ) {
+                this.subresources().defaultBindingsService()
+                        .jmsConnectionFactory("java:jboss/DefaultJMSConnectionFactory");
+            }
         }
     }
 }

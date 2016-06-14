@@ -24,25 +24,55 @@ import org.wildfly.swarm.spi.api.Fraction;
  */
 public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> implements Fraction {
 
-    private MessagingFraction() {
+    /** Construct a completely unconfigured and empty fraction.
+     */
+    public MessagingFraction() {
     }
 
+    /** Create a fraction with the default local server.
+     *
+     * @return This fraction.
+     */
     public static MessagingFraction createDefaultFraction() {
         return new MessagingFraction().defaultServer();
     }
 
+    /** Create a fraction and configure the default local server.
+     *
+     * @param config The configurator.
+     * @return This fraction.
+     */
+    public static MessagingFraction createDefaultFraction(EnhancedServerConsumer config) {
+        return new MessagingFraction().defaultServer(config);
+    }
+
+    /** Create the default local server if required.
+     *
+     * @return This fraction.
+     */
     public MessagingFraction defaultServer() {
         findOrCreateDefaultServer();
 
         return this;
     }
 
+    /** Configure the default local server, creating it first if required.
+     *
+     * @param config The configurator.
+     * @return This fraction.
+     */
     public MessagingFraction defaultServer(EnhancedServerConsumer config) {
         config.accept(findOrCreateDefaultServer());
 
         return this;
     }
 
+    /** Configure a named server.
+     *
+     * @param childKey The key (name) of the server.
+     * @param config The configurator.
+     * @return This fraction.
+     */
     public MessagingFraction server(String childKey, EnhancedServerConsumer config) {
         super.server(() -> {
             final EnhancedServer s = new EnhancedServer(childKey);
