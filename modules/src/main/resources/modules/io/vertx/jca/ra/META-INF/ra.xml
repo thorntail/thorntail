@@ -6,6 +6,7 @@
   <eis-type>Vert.x JCA Adapter</eis-type>
   <resourceadapter-version>1.0</resourceadapter-version>
   <resourceadapter>
+    <resourceadapter-class>io.vertx.resourceadapter.impl.VertxResourceAdapter</resourceadapter-class>
     <outbound-resourceadapter>
       <connection-definition>
         <managedconnectionfactory-class>io.vertx.resourceadapter.impl.VertxManagedConnectionFactory</managedconnectionfactory-class>
@@ -34,5 +35,15 @@
       </authentication-mechanism>
       <reauthentication-support>false</reauthentication-support>
     </outbound-resourceadapter>
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener>
+          <messagelistener-type>io.vertx.resourceadapter.inflow.VertxListener</messagelistener-type>
+          <activationspec>
+            <activationspec-class>io.vertx.resourceadapter.inflow.impl.VertxActivationSpec</activationspec-class>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
   </resourceadapter>
 </connector>
