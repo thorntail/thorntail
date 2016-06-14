@@ -24,7 +24,7 @@ public class MyEndpoint {
     public Response doGet() throws Exception {
         VertxConnection vertxConnection = connectionFactory.getVertxConnection();
         try {
-            vertxConnection.vertxEventBus().send("taco","A message");
+            vertxConnection.vertxEventBus().send("tacos","A message");
         } finally {
             vertxConnection.close();
         }
