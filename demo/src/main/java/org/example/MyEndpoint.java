@@ -1,4 +1,4 @@
-package org.example.rest;
+package org.example;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
