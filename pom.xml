@@ -35,7 +35,7 @@
     <version.swarm.core>1.0.0.Final-SNAPSHOT</version.swarm.core>
     <version.swarm.spi>1.0.2.Final</version.swarm.spi>
     <version.swarm.fraction-plugin>19</version.swarm.fraction-plugin>
-    <version.vertx>3.2.1</version.vertx>
+    <version.vertx>3.3.0.CR2</version.vertx>
   </properties>
 
   <build>
@@ -95,14 +95,6 @@
         <artifactId>vertx-runtime</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
-
-      <!--TODO: Remove this when vert.x 3.3.0.m1 is released -->
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>vertx-jca-adapter</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-      </dependency>
-
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-dependencies</artifactId>
@@ -120,11 +112,6 @@
     <module>runtime</module>
     <module>modules</module>
     <module>test</module>
-
-    <!-- See if this is really needed. The RAR is not added because it doesn't have the org.wildfly.swarm groupId
-    See: https://github.com/wildfly-swarm/wildfly-swarm-fraction-plugin/blob/master/src/main/java/org/wildfly/swarm/plugin/ProvidedDependenciesGenerator.java#L84
-    -->
-    <module>jca-adapter</module>
   </modules>
 
   <dependencies>
