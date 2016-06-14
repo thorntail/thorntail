@@ -54,7 +54,6 @@
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jandex</artifactId>
-      <scope>provided</scope>
     </dependency>
     
   </dependencies>
