@@ -125,7 +125,6 @@
     See: https://github.com/wildfly-swarm/wildfly-swarm-fraction-plugin/blob/master/src/main/java/org/wildfly/swarm/plugin/ProvidedDependenciesGenerator.java#L84
     -->
     <module>jca-adapter</module>
-    <module>demo</module>
   </modules>
 
   <dependencies>
