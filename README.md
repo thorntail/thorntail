@@ -1,6 +1,8 @@
 # WildFly Swarm - Vert.x
 
 [![Build Status](https://projectodd.ci.cloudbees.com/buildStatus/icon?job=wildfly-swarm-vertx)](https://projectodd.ci.cloudbees.com/job/wildfly-swarm-vertx)
+[![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/vertx/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/vertx)
 
 This fraction adds support for the Vert.x API in Java EE applications by enabling the [Vert.x JCA adapter](https://github.com/vert-x3/vertx-jca).
 
