@@ -22,11 +22,8 @@ public class MyEndpoint {
     @GET
     @Produces("text/plain")
     public Response doGet() throws Exception {
-        VertxConnection vertxConnection = connectionFactory.getVertxConnection();
-        try {
+        try(VertxConnection vertxConnection = connectionFactory.getVertxConnection()) {
             vertxConnection.vertxEventBus().send("tacos","A message");
-        } finally {
-            vertxConnection.close();
         }
         return Response.ok("OK!").build();
     }
