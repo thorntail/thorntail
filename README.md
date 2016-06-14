@@ -33,11 +33,8 @@ Usage:
 VertxConnectionFactory connFactory;
 
 public void sendMessage() throws Exception { 
-    VertxConnection conn = connFactory.getVertxConnection();
-    try {
+    try (VertxConnection conn = connFactory.getVertxConnection()) {
         conn.vertxEventBus().send("tacos", "Hello from JCA");
-    } finally {
-        conn.close();
     }
 }
 ````
