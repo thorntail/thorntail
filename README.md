@@ -6,11 +6,13 @@ This fraction adds support for the Vert.x API in Java EE applications by enablin
 
 ## Enable Vert.x
 
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>vertx</artifactId>
-    </dependency>
-    
+````xml 
+<dependency>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>vertx</artifactId>
+</dependency>
+````
+
 Overview
 --------
 
@@ -23,7 +25,7 @@ An application component (e.g Servlet, EJB), can send messages to a Vert.x insta
 
 Usage:
 
-<pre>
+````java
 
 @Resource(mappedName="java:/eis/VertxConnectionFactory")
 VertxConnectionFactory connFactory;
@@ -36,8 +38,7 @@ public void sendMessage() throws Exception {
         conn.close();
     }
 }
-
-</pre>
+````
 
    * NOTE: as with any JCA resource, always call the close() method when your work is complete to allow the connection to be returned to the pool. This will **not** close the underly Vert.x instance. Please see the JCA specification for my details.
 
@@ -48,8 +49,7 @@ Since the JCA 1.5 specification, inbound connectivity is provided via a listener
 
 The endpoint of the MDB implements interface: <b>io.vertx.resourceadapter.inflow.VertxListener</b>.
 
-<pre>
-
+````java
 package io.vertx.resourceadapter.examples.mdb;
 
 import io.vertx.resourceadapter.inflow.VertxListener;
@@ -94,4 +94,4 @@ public class VertxMonitor implements VertxListener {
    }
 }
 
-</pre>
+````
