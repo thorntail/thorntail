@@ -233,8 +233,10 @@ public class BuildTool {
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
         final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer(this.fractionList)
                 .source(tmpFile);
+
         this.dependencyManager.getDependencies().stream()
                 .filter(d -> !"provided".equals(d.scope) && !"test".equals(d.scope))
+                .filter(d -> this.fractionList.getFractionDescriptor(d.groupId(), d.artifactId()) == null)
                 .forEach(d -> analyzer.source(d.file));
 
         final Set<FractionDescriptor> detectedFractions = analyzer.detectNeededFractions();
@@ -290,12 +292,6 @@ public class BuildTool {
     private void addWildflySwarmBootstrapJar() throws Exception {
         ArtifactSpec artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
 
-        // add any user-specified fractions to the dependencies before auto-detecting, allowing them
-        // to override any auto-detected ones
-        if (!this.fractions.isEmpty()) {
-            addFractions();
-        }
-
         if (this.fractionDetectionMode != FractionDetectionMode.never) {
             if (this.fractionList == null) {
                 throw new IllegalStateException("Fraction detection requested, but no FractionList provided");
@@ -307,6 +303,11 @@ public class BuildTool {
                 if (detectFractions()) {
                     addFractions();
                 }
+            }
+        } else {
+            // Ensure user added fractions have dependencies resolved when FractionDetectionMode.never
+            if (!this.fractions.isEmpty()) {
+                addFractions();
             }
         }
 
