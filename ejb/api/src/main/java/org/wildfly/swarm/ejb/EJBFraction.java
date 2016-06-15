@@ -47,10 +47,6 @@ import org.wildfly.swarm.spi.api.annotations.Default;
 )
 public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
-    protected EJBFraction() {
-
-    }
-
     @Default
     public static EJBFraction createDefaultFraction() {
 
