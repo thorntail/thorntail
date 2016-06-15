@@ -35,12 +35,12 @@ public class FractionUsageAnalyzerTest {
         final Map<String, String> specs = loadPackageSpecs();
 
         specs.forEach((name, spec) -> {
-            final Set<String> packages = Stream.of(spec.split(","))
+            final Set<String> potentialMatches = Stream.of(spec.split(","))
                     .flatMap(pkgs -> Stream.of(pkgs.split("\\+")))
                     .map(p -> p.endsWith("*") ? p.substring(0, p.length() - 1) + ".foo" : p)
                     .collect(Collectors.toSet());
             assertThat(new FractionUsageAnalyzer(fractionList())
-                               .findFractions(packages))
+                               .findFractions(potentialMatches))
                     .contains(new FractionDescriptor("org.wildfly.swarm", name, "0"));
 
         });

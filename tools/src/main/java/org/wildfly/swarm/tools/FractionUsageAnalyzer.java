@@ -52,14 +52,16 @@ public class FractionUsageAnalyzer {
 
     public Set<FractionDescriptor> detectNeededFractions() throws IOException {
         if (this.fractionList == null) {
+
             return Collections.emptySet();
         }
         final Set<FractionDescriptor> specs = new HashSet<>();
-        for (File f : this.sources) {
-            specs.addAll(findFractions(PackageDetector
-                                               .detectPackages(f)
-                                               .keySet()));
-        }
+        final ClassAndPackageDetector detector = new ClassAndPackageDetector().detect(this.sources);
+        final Set<String> detectables = new HashSet<>(detector.packages());
+        detectables.addAll(detector.classes().stream()
+                                   .map(FractionUsageAnalyzer::asClassNameMatch)
+                                   .collect(Collectors.toSet()));
+        specs.addAll(findFractions(detectables));
 
         // Remove fractions that have a dependency on each other
         Iterator<FractionDescriptor> it = specs.iterator();
@@ -74,25 +76,33 @@ public class FractionUsageAnalyzer {
         if (specs.isEmpty()) {
             specs.add(this.fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, "container"));
         }
+
         return specs;
     }
 
-    protected Set<FractionDescriptor> findFractions(Set<String> packages) {
-        final List<StatefulPackageMatcher> fractionPackages = fractionMatchers();
+    private static String asClassNameMatch(final String n) {
+        final int idx = n.lastIndexOf('.');
 
-        return packages.stream()
+        return n.substring(0, idx) + ":" + n.substring(idx + 1);
+    }
+
+    protected Set<FractionDescriptor> findFractions(Set<String> classesOrPackages) {
+        final List<StatefulMatcher> fractionPackages = fractionMatchers();
+
+        return classesOrPackages.stream()
                 .flatMap(p -> fractionPackages.stream().map(m -> m.fraction(p)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
-    private List<StatefulPackageMatcher> fractionMatchers() {
-        final List<StatefulPackageMatcher> matchers = new ArrayList<>();
+    private List<StatefulMatcher> fractionMatchers() {
+        final List<StatefulMatcher> matchers = new ArrayList<>();
 
-        this.fractionList.getPackageSpecs().forEach((spec, fd) ->
-                                                            Stream.of(spec.split(","))
-                                                                    .forEach(s -> matchers.add(new StatefulPackageMatcher(fd,
-                                                                                                                          s.split("\\+")))));
+        this.fractionList.getPackageSpecs()
+                .forEach((spec, fd) ->
+                                 Stream.of(spec.split(","))
+                                         .forEach(s -> matchers.add(new StatefulMatcher(fd,
+                                                                                        s.split("\\+")))));
 
         return matchers;
     }
@@ -102,36 +112,36 @@ public class FractionUsageAnalyzer {
     private final FractionList fractionList;
 
 
-    private static class StatefulPackageMatcher {
-        StatefulPackageMatcher(FractionDescriptor desc, String... packages) {
+    private static class StatefulMatcher {
+        StatefulMatcher(FractionDescriptor desc, String... matchSpecs) {
             this.descriptor = desc;
-            this.packageSpecs = new HashSet<>(Arrays.asList(packages));
+            this.matchSpecs = new HashSet<>(Arrays.asList(matchSpecs));
         }
 
         /**
-         * Returns the fraction name for the given package.
-         * If the matcher requires multiple packages for a fraction, the last matching package
+         * Returns the fraction name for the given class or package.
+         * If the matcher requires multiple matches for a fraction, the last match
          * will cause the fraction name to be returned.
          *
-         * @param pkg the package to match against
+         * @param name the class or package to match against
          * @return the matching fraction descriptor or null
          */
-        public FractionDescriptor fraction(final String pkg) {
-            final String match = matchingSpec(pkg);
+        public FractionDescriptor fraction(final String name) {
+            final String match = matchingSpec(name);
             if (match != null) {
-                this.matchedPackages.add(match);
+                this.matches.add(match);
             }
 
-            return this.matchedPackages.equals(packageSpecs) ? this.descriptor : null;
+            return this.matches.equals(matchSpecs) ? this.descriptor : null;
         }
 
-        private String matchingSpec(final String pkg) {
-            return this.packageSpecs.stream()
+        private String matchingSpec(final String name) {
+            return this.matchSpecs.stream()
                     .filter(spec -> {
                         if (spec.endsWith("*")) {
-                            return pkg.startsWith(spec.substring(0, spec.length() - 1));
+                            return name.startsWith(spec.substring(0, spec.length() - 1));
                         } else {
-                            return pkg.equals(spec);
+                            return name.equals(spec);
                         }
                     })
                     .findFirst()
@@ -140,8 +150,8 @@ public class FractionUsageAnalyzer {
 
         private final FractionDescriptor descriptor;
 
-        private final Set<String> packageSpecs;
+        private final Set<String> matchSpecs;
 
-        private final Set<String> matchedPackages = new HashSet<>();
+        private final Set<String> matches = new HashSet<>();
     }
 }

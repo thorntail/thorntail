@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -43,29 +44,39 @@ import org.objectweb.asm.TypePath;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
 
-public class PackageDetector {
-    public static Map<String, Set<String>> detectPackages(final File file) throws IOException {
-        final PackageCollector visitor = new PackageCollector();
+public class ClassAndPackageDetector {
 
-        return detectPackages(file, visitor);
-    }
-
-    protected static Map<String, Set<String>> detectPackages(final File file,
-                                                             final PackageCollector visitor) throws IOException {
-        if (file.isDirectory()) {
-
-            return detectPackagesInDir(file, visitor);
-        } else if (file.getName().endsWith(".jar") || file.getName().endsWith(".war")) {
-
-            return detectPackagesInZip(new ZipFile(file), visitor);
-        } else {
-
-            return Collections.emptyMap();
+    public ClassAndPackageDetector detect(final List<File> files) throws IOException {
+        for (File f : files) {
+            detect(f);
         }
+
+        return this;
     }
 
-    protected static Map<String, Set<String>> detectPackagesInZip(final ZipFile file,
-                                                                  final PackageCollector visitor) throws IOException {
+    public ClassAndPackageDetector detect(final File file) throws IOException {
+        if (file.isDirectory()) {
+            detectInDir(file);
+        } else if (file.getName().endsWith(".jar") || file.getName().endsWith(".war")) {
+            detectInZip(new ZipFile(file));
+        }
+
+        return this;
+    }
+
+    public Set<String> packages() {
+        return this.visitor.packages();
+    }
+
+    public Map<String, Set<String>> packageSources() {
+        return this.visitor.packageSources();
+    }
+
+    public Set<String> classes() {
+        return this.visitor.classes();
+    }
+
+    private void detectInZip(final ZipFile file) throws IOException {
         final Enumeration<? extends ZipEntry> entries = file.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
@@ -81,35 +92,37 @@ public class PackageDetector {
                     IOUtils.copy(in, out);
                 }
 
-                detectPackagesInZip(new ZipFile(jarFile), visitor);
+                detectInZip(new ZipFile(jarFile));
             } else if (name.endsWith(".class")) {
-                try (InputStream in = file.getInputStream(entry)) {
-                    new ClassReader(in).accept(visitor, 0);
-                }
+                detectInClass(file.getInputStream(entry));
             }
         }
-
-        return visitor.packageSources();
     }
 
-    protected static Map<String, Set<String>> detectPackagesInDir(final File dir,
-                                                                  final PackageCollector visitor) throws IOException {
+    private void detectInDir(final File dir) throws IOException {
         final File[] entries = dir.listFiles();
         for (File entry : entries) {
             String name = entry.getName();
 
 
             if (name.endsWith(".class")) {
-                try (InputStream in = new FileInputStream(entry)) {
-                    new ClassReader(in).accept(visitor, 0);
-                }
+                detectInClass(new FileInputStream(entry));
             } else {
-                detectPackages(entry, visitor);
+                detect(entry);
             }
         }
-
-        return visitor.packageSources();
     }
+
+    // closes the stream for you
+    private void detectInClass(final InputStream classStream) throws IOException {
+        try {
+            new ClassReader(classStream).accept(visitor, 0);
+        } finally {
+            classStream.close();
+        }
+    }
+
+    final private PackageCollector visitor = new PackageCollector();
 
     static class PackageCollector extends ClassVisitor {
 
@@ -119,6 +132,10 @@ public class PackageDetector {
 
         public Set<String> packages() {
             return Collections.unmodifiableSet(packages.keySet());
+        }
+
+        public Set<String> classes() {
+            return Collections.unmodifiableSet(this.classes);
         }
 
         public Map<String, Set<String>> packageSources() {
@@ -133,6 +150,7 @@ public class PackageDetector {
                           final String superName,
                           final String[] interfaces) {
             this.currentClass = name.replace('/', '.');
+
             addPackage(name);
 
             if (signature == null) {
@@ -377,8 +395,13 @@ public class PackageDetector {
             };
         }
 
+        private void addClass(String name) {
+            this.classes.add(name.replace('/', '.'));
+        }
+
         private String addPackage(String name) {
             if (name != null) {
+                addClass(name);
                 final int pos = name.lastIndexOf('/');
                 if (pos > -1) {
                     name = name.substring(0, pos);
@@ -460,6 +483,8 @@ public class PackageDetector {
         }
 
         private final Map<String, Set<String>> packages = new HashMap<>();
+
+        private final Set<String> classes = new HashSet<>();
 
         private String currentClass = null;
 
