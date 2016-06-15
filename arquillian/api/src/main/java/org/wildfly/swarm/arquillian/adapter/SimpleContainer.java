@@ -28,6 +28,8 @@ public interface SimpleContainer {
 
     void stop() throws Exception;
 
+    SimpleContainer setJavaVmArguments(String javaVmArguments);
+
     default SimpleContainer requestedMavenArtifacts(Set<String> artifacts) {
         return this;
     }

@@ -66,9 +66,19 @@ public class DaemonContainerConfigurationBase implements ContainerConfiguration 
         this.port = port;
     }
 
+    public String getJavaVmArguments() {
+        return javaVmArguments;
+    }
+
+    public void setJavaVmArguments(String javaVmArguments) {
+        this.javaVmArguments = javaVmArguments;
+    }
+
     // Properties
     private String host;
 
     private String port;
+
+    private String javaVmArguments;
 
 }

@@ -45,12 +45,14 @@ import org.wildfly.swarm.arquillian.daemon.protocol.WireProtocol;
 public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonContainerConfigurationBase> implements
         DeployableContainer<CONFIGTYPE> {
 
+
     @Override
     public void setup(final CONFIGTYPE configuration) {
         final String remoteHost = configuration.getHost();
         final String remotePort = configuration.getPort();
         final InetSocketAddress address = new InetSocketAddress(remoteHost, Integer.parseInt(remotePort));
         this.remoteAddress = address;
+        this.javaVmArguments = configuration.getJavaVmArguments();
     }
 
     public void setTimeout(int timeout) {
@@ -215,6 +217,10 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
         }
     }
 
+    protected String getJavaVmArguments() {
+        return this.javaVmArguments;
+    }
+
     private static final Logger log = Logger.getLogger(DaemonDeployableContainerBase.class.getName());
 
     private static final String ERROR_MESSAGE_DESCRIPTORS_UNSUPPORTED = "Descriptor deployment not supported";
@@ -232,5 +238,7 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
     private PrintWriter writer;
 
     private int timeout = 10;
+
+    private String javaVmArguments;
 
 }

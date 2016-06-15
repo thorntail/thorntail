@@ -19,7 +19,11 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,6 +61,11 @@ public class UberjarSimpleContainer implements SimpleContainer {
     public UberjarSimpleContainer requestedMavenArtifacts(Set<String> artifacts) {
         this.requestedMavenArtifacts = artifacts;
 
+        return this;
+    }
+
+    public UberjarSimpleContainer setJavaVmArguments(String javaVmArguments) {
+        this.javaVmArguments = javaVmArguments;
         return this;
     }
 
@@ -248,8 +257,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
         wrapped.as(ZipExporter.class).exportTo(executable, true);
         executable.deleteOnExit();
 
-
         executor.withProperty("java.net.preferIPv4Stack", "true");
+        executor.withJVMArguments( getJavaVmArgumentsList() );
         executor.withExecutableJar(executable.toPath());
 
         File workingDirectory = Files.createTempDirectory("arquillian").toFile();
@@ -296,12 +305,30 @@ public class UberjarSimpleContainer implements SimpleContainer {
         return String.format("%s:%s:%s", group, artifact, version);
     }
 
+    private List<String> getJavaVmArgumentsList() {
+        if ( this.javaVmArguments == null ) {
+            return Collections.emptyList();
+        }
+
+        List<String> args = new ArrayList<>();
+
+        StringTokenizer tokens = new StringTokenizer( this.javaVmArguments );
+
+        while ( tokens.hasMoreTokens() ) {
+            args.add( tokens.nextToken() );
+        }
+
+        return args;
+
+    }
+
     private final Class<?> testClass;
 
     private SwarmProcess process;
 
     private Set<String> requestedMavenArtifacts;
 
+    private String javaVmArguments;
 
 }
 

@@ -27,14 +27,21 @@ import org.wildfly.swarm.spi.api.JARArchive;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * @author Toby Crawley
  * @author alexsoto
  */
 public class InVMSimpleContainer implements SimpleContainer {
+
     public InVMSimpleContainer(Class<?> testClass) {
         this.testClass = testClass;
+    }
+
+    public InVMSimpleContainer setJavaVmArguments(String javaVmArguments) {
+        this.javaVmArguments = javaVmArguments;
+        return this;
     }
 
     @Override
@@ -115,7 +122,36 @@ public class InVMSimpleContainer implements SimpleContainer {
                 }
             }
         }
+
+        handleJavaVmArguments();
         this.container.start().deploy(archive);
+    }
+
+    private void handleJavaVmArguments() {
+        if ( this.javaVmArguments == null ) {
+            return;
+        }
+
+        StringTokenizer tokens = new StringTokenizer( this.javaVmArguments );
+
+        while ( tokens.hasMoreTokens() ) {
+            String each = tokens.nextToken();
+            if ( ! each.startsWith( "-D" ) ) {
+                System.err.println( "ignoring non-property Java VM argument for InVM test: " + each );
+                continue;
+            }
+
+            each = each.substring( 2 );
+
+            int equalLoc = each.indexOf( "=" );
+            if ( equalLoc < 0 ) {
+                System.setProperty( each, "true" );
+            } else {
+                String key = each.substring(0,equalLoc);
+                String value = each.substring(equalLoc+1);
+                System.setProperty( key, value );
+            }
+        }
     }
 
     @Override
@@ -128,4 +164,6 @@ public class InVMSimpleContainer implements SimpleContainer {
     private final Class<?> testClass;
 
     private Container container;
+
+    private String javaVmArguments;
 }

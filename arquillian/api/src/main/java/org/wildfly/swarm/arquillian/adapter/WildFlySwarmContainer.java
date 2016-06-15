@@ -78,6 +78,7 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
         }
         try {
             this.delegateContainer
+                    .setJavaVmArguments(this.getJavaVmArguments())
                     .requestedMavenArtifacts(this.requestedMavenArtifacts)
                     .start(archive);
             // start wants to connect to the remote container, which isn't up until now, so
