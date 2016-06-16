@@ -1,0 +1,12 @@
+some:
+  prop:
+    value: a
+another:
+  prop:
+    value: b
+---
+project:
+  stage: other-stage
+some:
+  prop:
+    value: c

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.yaml.snakeyaml.Yaml;
@@ -52,6 +53,28 @@ public class ProjectStageFactory {
                 stages.add(stage.initialize());
 
             }
+
+
+            Optional<ProjectStage> defaultStage = stages.stream()
+                    .filter(stage -> DEFAULT.equals(stage.getName()))
+                    .findFirst();
+
+            if(!defaultStage.isPresent())
+                throw new RuntimeException("Missing stage 'default' in project-stages.yml");
+
+            // inherit values from default stage
+            final Map<String, String> defaults = defaultStage.get().getProperties();
+            stages.stream()
+                    .filter(stage -> !stage.getName().equals(DEFAULT))
+                    .forEach(stage -> {
+                        defaults.keySet().forEach(
+                                key -> {
+                                    Map<String, String> current = stage.getProperties();
+                                    if(!current.keySet().contains(key))
+                                        current.put(key, defaults.get(key));
+                                }
+                        );
+                    });
 
             return stages;
         } finally {
