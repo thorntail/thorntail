@@ -7,5 +7,7 @@
     <module name="org.wildfly.swarm.ejb.remote"/>
     <module name="org.wildfly.swarm.ejb" slot="runtime"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
+
+    <module name="org.wildfly.clustering.ejb.infinispan"/>
   </dependencies>
 </module>
