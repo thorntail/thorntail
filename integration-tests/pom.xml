@@ -22,6 +22,7 @@
 
   <properties>
     <browser>phantomjs</browser>
+    <version.resteasy>3.0.11.Final</version.resteasy>
   </properties>
 
   <dependencies>
@@ -37,6 +38,46 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs-jsonp</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs-jaxb</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+   <!-- <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+      <version>${version.resteasy}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-multipart-provider</artifactId>
+        <version>${version.resteasy}</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
+      <version>${version.resteasy}</version>
+      <scope>test</scope>
+    </dependency>-->
+
+    <dependency>
+        <groupId>com.squareup.okhttp</groupId>
+        <artifactId>okhttp</artifactId>
+        <version>2.7.5</version>
+      <scope>test</scope>
+    </dependency>
+
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jca</artifactId>
@@ -99,6 +140,8 @@
         <filtering>true</filtering>
         <includes>
           <include>arquillian.xml</include>
+          <include>META-INF/persistence.xml</include>
+          <include>META-INF/import.sql</include>
         </includes>
       </testResource>
     </testResources>
