@@ -15,10 +15,25 @@
  */
 package org.wildfly.swarm.monitor;
 
+import junit.framework.Assert;
+import org.junit.Test;
+
 /**
  * @author Heiko Braun
  */
 public class MonitorTest {
 
+    // see https://issues.jboss.org/browse/SWARM-505
+    @Test
+    public void testAttributes() {
 
+        HealthStatus healthStatus = HealthStatus.up()
+                .withAttribute("a", "b")
+                .withAttribute("c", "d");
+
+        String message = healthStatus.getMessage().get();
+        Assert.assertTrue("Expected a", message.contains("a"));
+        Assert.assertTrue("Expected c", message.contains("c"));
+        System.out.println(message);
+    }
 }

@@ -42,19 +42,19 @@ public class HealthStatus implements Status {
 
     public HealthStatus withAttribute(String key, String value) {
         ModelNode payload = getPayloadWrapper();
-        payload.set(key, value);
+        payload.get(key).set(value);
         return this;
     }
 
     public HealthStatus withAttribute(String key, long value) {
-            ModelNode payload = getPayloadWrapper();
-            payload.set(key, value);
-            return this;
-        }
+        ModelNode payload = getPayloadWrapper();
+        payload.get(key).set(value);
+        return this;
+    }
 
     public HealthStatus withAttribute(String key, boolean b) {
         ModelNode payload = getPayloadWrapper();
-        payload.set(key, b);
+        payload.get(key).set(b);
         return this;
     }
 
