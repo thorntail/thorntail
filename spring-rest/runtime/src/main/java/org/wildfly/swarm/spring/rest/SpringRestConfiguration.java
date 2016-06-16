@@ -18,7 +18,6 @@ package org.wildfly.swarm.spring.rest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
-import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Ken Finnigan
@@ -35,14 +34,8 @@ public class SpringRestConfiguration extends AbstractServerConfiguration<SpringR
 
     @Override
     public void prepareArchive(Archive<?> archive) {
-        if (JARArchive.class.isAssignableFrom(archive.getClass())) {
-            archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-core");
-            archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-databind");
-            archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-annotations");
-        } else if (WARArchive.class.isAssignableFrom(archive.getClass())) {
-            archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-core");
-            archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-databind");
-            archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-annotations");
-        }
+        archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-core");
+        archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-databind");
+        archive.as(JARArchive.class).addModule("com.fasterxml.jackson.core.jackson-annotations");
     }
 }
