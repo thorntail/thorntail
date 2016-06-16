@@ -16,9 +16,13 @@
 package org.wildfly.swarm.remoting;
 
 import org.wildfly.swarm.config.Remoting;
+import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.remoting.EndpointConfiguration;
 import org.wildfly.swarm.config.remoting.HTTPConnector;
+import org.wildfly.swarm.config.undertow.Server;
+import org.wildfly.swarm.config.undertow.server.HTTPListener;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
 
@@ -37,7 +41,24 @@ public class RemotingFraction extends Remoting<RemotingFraction> implements Frac
         RemotingFraction fraction = new RemotingFraction();
         fraction.endpointConfiguration(new EndpointConfiguration())
                 .httpConnector(new HTTPConnector("http-remoting-connector")
-                                       .connectorRef("default"));
+                        .connectorRef("default") );
         return fraction;
+    }
+
+    @Override
+    public void postInitialize(PostInitContext initContext) {
+        System.setProperty(SwarmProperties.HTTP_EAGER, "true" );
+        Undertow undertow = (Undertow) initContext.fraction( "undertow" );
+
+        if ( undertow != null ) {
+            Server server = undertow.subresources().server("default-server");
+            if ( server != null ) {
+                HTTPListener listener = server.subresources().httpListener("default");
+                if ( listener != null ) {
+                    listener.enabled(true);
+                }
+            }
+        }
+
     }
 }

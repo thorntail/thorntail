@@ -54,11 +54,13 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     public static UndertowFraction createDefaultFraction() {
         UndertowFraction fraction = new UndertowFraction();
 
+        final boolean enabled = ( System.getProperty( SwarmProperties.HTTP_EAGER ) != null );
+
         fraction.server(
                 new Server("default-server")
                         .httpListener("default", (listener) -> {
                             listener.socketBinding("http")
-                                    .enabled(false);
+                                    .enabled(enabled);
                         })
                         .host(new Host("default-host")))
                 .bufferCache(new BufferCache("default"))
