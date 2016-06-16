@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.yaml.snakeyaml.Yaml;
@@ -67,10 +68,11 @@ public class ProjectStageFactory {
             stages.stream()
                     .filter(stage -> !stage.getName().equals(DEFAULT))
                     .forEach(stage -> {
+                        Map<String, String> current = stage.getProperties();
+                        Set<String> currentKeys = current.keySet();
                         defaults.keySet().forEach(
                                 key -> {
-                                    Map<String, String> current = stage.getProperties();
-                                    if(!current.keySet().contains(key))
+                                    if(!currentKeys.contains(key))
                                         current.put(key, defaults.get(key));
                                 }
                         );
