@@ -18,11 +18,14 @@ package org.wildfly.swarm.internal;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.jar.JarFile;
@@ -88,7 +91,7 @@ public class ArtifactManager implements ArtifactLookup {
 
     @Override
     public List<JavaArchive> allArtifacts(String... groupIdExclusions) throws IOException {
-        final List<JavaArchive> archives = new ArrayList<>();
+        final Map<String, JavaArchive> archives = new HashMap<>();
         final List<String> exclusions = Arrays.asList(groupIdExclusions);
 
         if (this.deps != null) {
@@ -97,7 +100,7 @@ public class ArtifactManager implements ArtifactLookup {
                     continue;
                 }
                 final File artifact = MavenResolvers.get().resolveJarArtifact(each.mscCoordinates());
-                archives.add(ShrinkWrap.create(ZipImporter.class, artifact.getName())
+                archives.put(artifact.getName(), ShrinkWrap.create(ZipImporter.class, artifact.getName())
                                      .importFrom(artifact)
                                      .as(JavaArchive.class));
             }
@@ -120,8 +123,8 @@ public class ArtifactManager implements ArtifactLookup {
                 }
 
                 for (final String element : classpath.split(File.pathSeparator)) {
-                    if (!element.startsWith(javaHome) && !element.startsWith(pwd) && !element.endsWith(".pom")) {
-                        if (element.contains("org.wildfly.swarm".replace('.', File.separatorChar))) {
+                    if (!element.startsWith(javaHome) && !element.startsWith(pwd + File.separatorChar) && !element.endsWith(".pom")) {
+                        if (/* .m2 */ element.contains("org.wildfly.swarm".replace('.', File.separatorChar)) || /* .gradle */ element.contains("org.wildfly.swarm")) {
                             // Read wildfly-swarm-classpath.conf entries
                             try (JarFile jar = new JarFile(new File(element))) {
                                 ZipEntry entry = jar.getEntry(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
@@ -152,20 +155,20 @@ public class ArtifactManager implements ArtifactLookup {
                         final File artifact = new File(element);
 
                         if (artifact.isFile()) {
-                            archives.add(ShrinkWrap.create(ZipImporter.class, artifact.getName())
-                                                 .importFrom(artifact)
-                                                 .as(JavaArchive.class));
+                            archives.put(artifact.getName(), ShrinkWrap.create(ZipImporter.class, artifact.getName())
+                                    .importFrom(artifact)
+                                    .as(JavaArchive.class));
                         } else {
-                            final String archiveName;
-                            if (element.endsWith("/target/classes")) {
-                                String[] parts = element.split("/");
-                                archiveName = parts[parts.length - 3] + ".jar";
+                            final String archiveName = archiveNameForClassesDir(artifact.toPath());
+
+                            // pack resources and classes of the same project into one archive
+                            if (archives.containsKey(archiveName)) {
+                                archives.get(archiveName).as(ExplodedImporter.class).importDirectory(artifact);
                             } else {
-                                archiveName = UUID.randomUUID().toString() + ".jar";
+                                archives.put(archiveName, ShrinkWrap.create(ExplodedImporter.class, archiveName)
+                                        .importDirectory(artifact)
+                                        .as(JavaArchive.class));
                             }
-                            archives.add(ShrinkWrap.create(ExplodedImporter.class, archiveName)
-                                                 .importDirectory(artifact)
-                                                 .as(JavaArchive.class));
                         }
                     }
                 }
@@ -173,7 +176,19 @@ public class ArtifactManager implements ArtifactLookup {
 
         }
 
-        return archives;
+        return new ArrayList<>(archives.values());
+    }
+
+    String archiveNameForClassesDir(Path element) {
+        if (element.endsWith("target/classes")) {
+            // Maven
+            return element.subpath(element.getNameCount() -3, element.getNameCount() -2).toString() + ".jar";
+        } else if (element.endsWith("build/classes/main") || element.endsWith("build/resources/main")) {
+            // Gradle
+            return element.subpath(element.getNameCount() -4, element.getNameCount() -3).toString() + ".jar";
+        } else {
+            return UUID.randomUUID().toString() + ".jar";
+        }
     }
 
     private boolean excluded(Collection<String> exclusions, String classPathElement) {

@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.internal;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -136,6 +137,21 @@ public class ArtifactManagerTest {
     public void noDependenciesExcluded() throws Exception {
         List<JavaArchive> archives = manager.allArtifacts();
         assertThat(archives.size()).isEqualTo(5);
+    }
+
+    @Test
+    public void testArchiveNameForGradleClassesOutputDir() {
+        assertThat(manager.archiveNameForClassesDir(Paths.get("/test/projectname/build/resources/main"))).isEqualTo("projectname.jar");
+    }
+
+    @Test
+    public void testArchiveNameForGradleResourcesOutputDir() {
+        assertThat(manager.archiveNameForClassesDir(Paths.get("/test/projectname/build/classes/main"))).isEqualTo("projectname.jar");
+    }
+
+    @Test
+    public void testArchiveNameForMavenOutputDir() {
+        assertThat(manager.archiveNameForClassesDir(Paths.get("/test/projectname/target/classes"))).isEqualTo("projectname.jar");
     }
 
     private static WildFlySwarmDependenciesConf conf = new WildFlySwarmDependenciesConf();
