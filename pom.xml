@@ -16,7 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>jolokia-parent</artifactId>
-  <version>1.0.1.Final</version>
+  <version>1.0.2.Final-SNAPSHOT</version>
 
   <name>WildFly Swarm: Jolokia</name>
   <description>WildFly Swarm: Jolokia</description>
@@ -27,7 +27,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-jolokia.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-jolokia.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-jolokia</url>
-    <tag>1.0.1.Final</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -67,22 +67,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jolokia</artifactId>
-        <version>1.0.1.Final</version>
+        <version>1.0.2.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jolokia-api</artifactId>
-        <version>1.0.1.Final</version>
+        <version>1.0.2.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jolokia-modules</artifactId>
-        <version>1.0.1.Final</version>
+        <version>1.0.2.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jolokia-runtime</artifactId>
-        <version>1.0.1.Final</version>
+        <version>1.0.2.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
