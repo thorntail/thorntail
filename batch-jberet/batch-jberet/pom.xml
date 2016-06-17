@@ -45,10 +45,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Fraction Dependencies -->
+    <!-- All batch deployments require CDI for WildFly Swarm -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>cdi</artifactId>
     </dependency>
+    <!-- Batch (JBeret) requires datasources for JDBC repositories -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>datasources</artifactId>

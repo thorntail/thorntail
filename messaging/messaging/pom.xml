@@ -44,6 +44,8 @@
       <artifactId>messaging-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Fraction Dependencies -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>connector</artifactId>
