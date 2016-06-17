@@ -16,7 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-parent</artifactId>
-  <version>1.0.2.Final</version>
+  <version>1.0.3.Final-SNAPSHOT</version>
 
   <name>WildFly Swarm: Topology</name>
   <description>WildFly Swarm: Topology</description>
@@ -27,7 +27,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-topology.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-topology</url>
-    <tag>1.0.2.Final</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -90,43 +90,43 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology</artifactId>
-        <version>1.0.2.Final</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-api</artifactId>
-        <version>1.0.2.Final</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-modules</artifactId>
-        <version>1.0.2.Final</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-runtime</artifactId>
-        <version>1.0.2.Final</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-webapp</artifactId>
-        <version>1.0.2.Final</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-webapp-api</artifactId>
-        <version>1.0.2.Final</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-webapp-modules</artifactId>
-        <version>1.0.2.Final</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-webapp-runtime</artifactId>
-        <version>1.0.2.Final</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
