@@ -16,7 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>swagger-parent</artifactId>
-  <version>1.0.0.Final</version>
+  <version>1.0.1.Final-SNAPSHOT</version>
 
   <name>WildFly Swarm: Swagger</name>
   <description>WildFly Swarm: Swagger</description>
@@ -27,7 +27,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-swagger.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-swagger.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-swagger</url>
-    <tag>1.0.0.Final</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -108,50 +108,50 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-api</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-modules</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-runtime</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-webapp</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-webapp-api</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-webapp-modules</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-webapp-runtime</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger-webapp-ui</artifactId>
         <type>war</type>
-        <version>1.0.0.Final</version>
+        <version>1.0.1.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
