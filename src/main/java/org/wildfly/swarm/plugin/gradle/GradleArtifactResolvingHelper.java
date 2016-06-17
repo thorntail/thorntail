@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,9 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.internal.artifacts.DefaultExcludeRule;
 import org.gradle.api.internal.artifacts.dependencies.DefaultDependencyArtifact;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
+import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency;
+import org.gradle.api.internal.project.DefaultProjectAccessListener;
+import org.gradle.api.internal.project.ProjectInternal;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
@@ -41,9 +45,11 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
 
 
     private final Project project;
+    Map<String, Project> projects;
 
     public GradleArtifactResolvingHelper(Project project) {
         this.project = project;
+        this.projects = project.getRootProject().getAllprojects().stream().collect(Collectors.toMap(p -> p.getGroup() + ":" + p.getName() + ":" + p.getVersion(), p -> p));
         this.project.getRepositories().maven(new Action<MavenArtifactRepository>() {
             @Override
             public void execute(MavenArtifactRepository repo) {
@@ -83,7 +89,7 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         final Set<ArtifactSpec> resolvedSpecs = new HashSet<>();
 
-        doResolve(specs).forEach(dep -> dep.getAllModuleArtifacts()
+        doResolve(specs).forEach(dep -> dep.getModuleArtifacts()
                 .forEach(artifact -> resolvedSpecs
                         .add(new ArtifactSpec(dep.getConfiguration(),
                                               dep.getModuleGroup(),
@@ -102,15 +108,20 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
         final Configuration config = this.project.getConfigurations().detachedConfiguration();
         final DependencySet dependencySet = config.getDependencies();
 
-        deps.forEach(spec -> {
-            final DefaultExternalModuleDependency d =
-                    new DefaultExternalModuleDependency(spec.groupId(), spec.artifactId(), spec.version());
-            final DefaultDependencyArtifact da =
-                    new DefaultDependencyArtifact(spec.artifactId(), spec.type(), spec.type(), spec.classifier(), null);
-            d.addArtifact(da);
-            d.getExcludeRules().add(new DefaultExcludeRule());
-            dependencySet.add(d);
-        });
+        deps.stream()
+                .forEach(spec -> {
+                    if (projects.containsKey(spec.groupId() + ":" + spec.artifactId() + ":" + spec.version())) {
+                        dependencySet.add(new DefaultProjectDependency((ProjectInternal) projects.get(spec.groupId() + ":" + spec.artifactId() + ":" + spec.version()), new DefaultProjectAccessListener(), false));
+                    } else {
+                        final DefaultExternalModuleDependency d =
+                                new DefaultExternalModuleDependency(spec.groupId(), spec.artifactId(), spec.version());
+                        final DefaultDependencyArtifact da =
+                                new DefaultDependencyArtifact(spec.artifactId(), spec.type(), spec.type(), spec.classifier(), null);
+                        d.addArtifact(da);
+                        d.getExcludeRules().add(new DefaultExcludeRule());
+                        dependencySet.add(d);
+                    }
+                });
 
         return config.getResolvedConfiguration().getFirstLevelModuleDependencies();
     }
