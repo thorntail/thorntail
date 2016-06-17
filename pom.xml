@@ -32,29 +32,27 @@
 
   <properties>
     <version.jolokia>1.3.1</version.jolokia>
-    <version.swarm.core>1.0.0.CR3</version.swarm.core>
-    <version.swarm.spi>1.0.0.Final</version.swarm.spi>
-    <version.swarm.fraction-plugin>18</version.swarm.fraction-plugin>
+    <version.swarm.core>1.0.0.Final</version.swarm.core>
+    <version.swarm.spi>1.0.3.Final</version.swarm.spi>
+    <version.swarm.fraction-plugin>19</version.swarm.fraction-plugin>
   </properties>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-          <version>${version.swarm.fraction-plugin}</version>
-          <executions>
-            <execution>
-              <phase>process-classes</phase>
-              <goals>
-                <goal>process</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+        <version>${version.swarm.fraction-plugin}</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>process</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <dependencyManagement>
     <dependencies>
