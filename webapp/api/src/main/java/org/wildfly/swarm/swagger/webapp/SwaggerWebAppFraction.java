@@ -26,7 +26,7 @@ import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.undertow.UndertowProperties;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 
 /**
@@ -37,7 +37,7 @@ public class SwaggerWebAppFraction implements Fraction {
     public static final String VERSION;
 
     public SwaggerWebAppFraction() {
-        context = System.getProperty(UndertowProperties.CONTEXT_PATH, DEFAULT_CONTEXT);
+        context = System.getProperty(SwarmProperties.CONTEXT_PATH, DEFAULT_CONTEXT);
     }
 
     public String getContext() {
