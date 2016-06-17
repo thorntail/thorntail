@@ -16,7 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>logstash-parent</artifactId>
-  <version>1.0.1.Final-SNAPSHOT</version>
+  <version>1.0.1.Final</version>
 
   <name>WildFly Swarm: Logstash Parent</name>
   <description>WildFly Swarm: Logstash Parent</description>
@@ -27,7 +27,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-logstash.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-logstash.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-logstash</url>
-    <tag>HEAD</tag>
+    <tag>1.0.1.Final</tag>
   </scm>
 
   <properties>
@@ -95,22 +95,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logstash</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.1.Final</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logstash-api</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.1.Final</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logstash-modules</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.1.Final</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logstash-runtime</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.1.Final</version>
       </dependency>
 
       <dependency>
