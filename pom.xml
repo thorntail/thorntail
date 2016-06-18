@@ -30,10 +30,10 @@
   </scm>
 
   <properties>
-    <version.swarm.spi>1.0.0.Final</version.swarm.spi>
-    <version.swarm.topology>1.0.1.Final</version.swarm.topology>
-    <version.swarm.core>1.0.0.CR3</version.swarm.core>
-    <version.swarm.fraction-plugin>18</version.swarm.fraction-plugin>
+    <version.swarm.spi>1.0.3.Final</version.swarm.spi>
+    <version.swarm.topology>1.0.2.Final</version.swarm.topology>
+    <version.swarm.core>1.0.0.Final</version.swarm.core>
+    <version.swarm.fraction-plugin>19</version.swarm.fraction-plugin>
     <version.openshift.client>3.0.1.Final</version.openshift.client>
   </properties>
 
