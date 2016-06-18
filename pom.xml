@@ -16,7 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>vertx-parent</artifactId>
-  <version>1.0.0.Alpha1</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>WildFly Swarm: Vert.x Parent</name>
   <description>WildFly Swarm: Vert.x Parent</description>
@@ -27,7 +27,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-vertx.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-vertx.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-vertx</url>
-    <tag>1.0.0.Alpha1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -77,22 +77,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx</artifactId>
-        <version>1.0.0.Alpha1</version>
+        <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx-api</artifactId>
-        <version>1.0.0.Alpha1</version>
+        <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx-modules</artifactId>
-        <version>1.0.0.Alpha1</version>
+        <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx-runtime</artifactId>
-        <version>1.0.0.Alpha1</version>
+        <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
