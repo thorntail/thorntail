@@ -4,20 +4,19 @@
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>parent</artifactId>
     <version>7</version>
-    <relativePath/>
+    <relativePath />
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>vertx-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0.Alpha1</version>
 
   <name>WildFly Swarm: Vert.x Parent</name>
   <description>WildFly Swarm: Vert.x Parent</description>
@@ -28,7 +27,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-vertx.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-vertx.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-vertx</url>
-    <tag>HEAD</tag>
+    <tag>1.0.0.Alpha1</tag>
   </scm>
 
   <properties>
@@ -78,22 +77,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx-api</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx-modules</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>vertx-runtime</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
