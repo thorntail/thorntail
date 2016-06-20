@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>drools-parent</artifactId>
-        <version>1.0.0.Alpha1</version>
+        <version>1.0.0.Alpha2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
