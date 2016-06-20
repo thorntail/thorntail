@@ -257,6 +257,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
         config.addChild(convert(process.getChild("properties")));
         config.addChild(convert(process.getChild("environment")));
+        config.addChild(convert(process.getChild("jvmArguments")));
 
         return config;
     }
