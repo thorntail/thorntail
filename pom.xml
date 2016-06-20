@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>parent</artifactId>
     <version>7</version>
-    <relativePath/>
+    <relativePath />
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>drools-parent</artifactId>
-  <version>1.0.0.Beta3-SNAPSHOT</version>
+  <version>1.0.0.Alpha1</version>
 
   <name>WildFly Swarm: Drools Parent</name>
   <description>WildFly Swarm: Drools Parent</description>
@@ -23,7 +22,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-drools.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-drools.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-drools</url>
-    <tag>HEAD</tag>
+    <tag>1.0.0.Alpha1</tag>
   </scm>
 
   <properties>
@@ -116,22 +115,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>drools-server</artifactId>
-        <version>1.0.0.Beta3-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>drools-server-api</artifactId>
-        <version>1.0.0.Beta3-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>drools-server-modules</artifactId>
-        <version>1.0.0.Beta3-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>drools-server-runtime</artifactId>
-        <version>1.0.0.Beta3-SNAPSHOT</version>
+        <version>1.0.0.Alpha1</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
