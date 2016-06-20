@@ -17,7 +17,7 @@
   <artifactId>hibernate-search</artifactId>
 
   <name>Hibernate Search</name>
-  <description>WildFly Swarm: Hibernate Search</description>
+  <description>Hibernate Search transparently indexes your objects and offers fast regular, full-text and geolocation search. Ease of use and easy clustering are core.</description>
 
   <properties>
     <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
