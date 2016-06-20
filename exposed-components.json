@@ -1,4 +1,5 @@
-[
+{ "Drools": [
   {"name": "drools-server",              "doc": "drools-server-api"},
   {"name": "drools-server-modules"}
 ]
+}
