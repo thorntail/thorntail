@@ -18,7 +18,7 @@ This fraction adds support for the Vert.x API in Java EE applications by enablin
 Overview
 --------
 
-The general purpose of a JCA resource adapter is to provide connectivity to an Enterprise Information System (EIS) from a Java EE application server. Specifically, the Vert.x JCA adapter provides both outbound and inbound connectivy with a Vert.x instance.
+The general purpose of a JCA resource adapter is to provide connectivity to an Enterprise Information System (EIS) from a Java EE application server. Specifically, the Vert.x JCA adapter provides both outbound and inbound connectivity with a Vert.x instance.
 
 Outbound Connectivity
 ---------------------
