@@ -11,7 +11,7 @@
 
   <groupId>org.wildfly.swarm.servers</groupId>
   <artifactId>servers-parent</artifactId>
-  <version>1.0.0.CR2</version>
+  <version>1.0.0.Final-SNAPSHOT</version>
 
   <name>WildFly Swarm: Servers Parent</name>
   <description>WildFly Swarm: Servers Parent</description>
@@ -26,7 +26,7 @@
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-servers.git</connection>
     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-servers.git</developerConnection>
     <url>https://github.com/wildfly-swarm/wildfly-swarm-servers</url>
-    <tag>1.0.0.CR2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <repositories>
