@@ -34,7 +34,7 @@
     <version.jolokia>1.3.1</version.jolokia>
     <version.swarm.core>1.0.0.Final</version.swarm.core>
     <version.swarm.spi>1.0.3.Final</version.swarm.spi>
-    <version.swarm.fraction-plugin>19</version.swarm.fraction-plugin>
+    <version.swarm.fraction-plugin>20</version.swarm.fraction-plugin>
   </properties>
 
   <build>
@@ -108,6 +108,7 @@
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
+    <module>test</module>
   </modules>
 
   <profiles>

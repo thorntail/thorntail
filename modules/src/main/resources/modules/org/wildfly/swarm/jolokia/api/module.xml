@@ -4,6 +4,6 @@
     <artifact name="org.wildfly.swarm:jolokia-api:${project.version}"/>
   </resources>
   <dependencies>
-    <module name="org.wildfly.swarm.spi" slot="api"/>
+    <module name="org.wildfly.swarm.container" slot="api"/>
   </dependencies>
 </module>
