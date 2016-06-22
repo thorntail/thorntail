@@ -19,7 +19,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.wildfly-swarm>1.0.0.CR2</version.wildfly-swarm>
+    <version.wildfly-swarm>${project.version}</version.wildfly-swarm>
   </properties>
 
   <scm>
