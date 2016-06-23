@@ -23,9 +23,8 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
 
 @Configuration(
-        marshal = true,
         extension = "org.jboss.as.jpa",
-        parserFactoryClassName = "org.wildfly.swarm.jpa.postgresql.ParserFactory"
+        marshal = true
 )
 public class PostgreSQLJPAFraction extends JPA<PostgreSQLJPAFraction> implements Fraction {
 

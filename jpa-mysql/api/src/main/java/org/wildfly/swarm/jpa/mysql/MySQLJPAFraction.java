@@ -24,8 +24,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
 
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.jpa",
-        parserFactoryClassName = "org.wildfly.swarm.jpa.mysql.ParserFactory"
+        extension = "org.jboss.as.jpa"
 )
 public class MySQLJPAFraction extends JPA<MySQLJPAFraction> implements Fraction {
 

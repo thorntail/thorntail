@@ -37,8 +37,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         marshal = true,
-        extension = "org.wildfly.extension.undertow",
-        parserFactoryClassName = "org.wildfly.swarm.undertow.runtime.UndertowParserFactory"
+        extension = "org.wildfly.extension.undertow"
 )
 public class UndertowFraction extends Undertow<UndertowFraction> implements Fraction {
 

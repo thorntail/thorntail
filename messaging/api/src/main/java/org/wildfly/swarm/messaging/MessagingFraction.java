@@ -17,11 +17,18 @@ package org.wildfly.swarm.messaging;
 
 import org.wildfly.swarm.config.MessagingActiveMQ;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
  * @author Lance Ball
  */
+@Configuration(
+        marshal = true,
+        extension = "org.wildfly.extension.messaging-activemq",
+        deploymentModules = { "javax.jms.api" }
+)
 public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> implements Fraction {
 
     /** Construct a completely unconfigured and empty fraction.
@@ -33,6 +40,7 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
      *
      * @return This fraction.
      */
+    @Default
     public static MessagingFraction createDefaultFraction() {
         return new MessagingFraction().defaultServer();
     }

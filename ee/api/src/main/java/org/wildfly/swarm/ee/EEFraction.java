@@ -31,8 +31,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.ee",
-        parserFactoryClassName = "org.wildfly.swarm.ee.runtime.EEParserFactory"
+        extension = "org.jboss.as.ee"
 )
 public class EEFraction extends EE<EEFraction> implements Fraction {
 

@@ -26,7 +26,8 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  */
 @Configuration(
         marshal = true,
-        parserFactoryClassName = "org.wildfly.swarm.datasources.runtime.DatasourceParserFactory"
+        extension="org.jboss.as.connector",
+        extensionClassName = "org.jboss.as.connector.subsystems.datasources.DataSourcesExtension"
 )
 public class DatasourcesFraction extends Datasources<DatasourcesFraction> implements Fraction {
     @Override

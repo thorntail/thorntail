@@ -28,8 +28,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.jpa",
-        parserFactoryClassName = "org.wildfly.swarm.jpa.ParserFactory"
+        extension = "org.jboss.as.jpa"
 )
 public class JPAFraction extends JPA<JPAFraction> implements Fraction {
 

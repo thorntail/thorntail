@@ -31,8 +31,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.remoting",
-        parserFactoryClassName = "org.wildfly.swarm.remoting.runtime.RemotingParserFactory"
+        extension = "org.jboss.as.remoting"
 )
 public class RemotingFraction extends Remoting<RemotingFraction> implements Fraction {
 

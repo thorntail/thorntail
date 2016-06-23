@@ -22,7 +22,8 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  * @author Bob McWhirter
  */
 @Configuration(
-        extension="org.jboss.as.connector"
+        extension="org.jboss.as.connector",
+        extensionClassName = "none"
 )
 public class ConnectorFraction implements Fraction {
 

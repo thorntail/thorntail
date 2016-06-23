@@ -17,10 +17,15 @@ package org.wildfly.swarm.bean.validation;
 
 import org.wildfly.swarm.config.BeanValidation;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        extension="org.wildfly.extension.bean-validation",
+        marshal = true
+)
 public class BeanValidationFraction extends BeanValidation<BeanValidationFraction> implements Fraction {
 
     public BeanValidationFraction() {

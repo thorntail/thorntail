@@ -35,7 +35,8 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         marshal = true,
-        parserFactoryClassName = "org.wildfly.swarm.jca.runtime.JCAParserFactory"
+        extension="org.jboss.as.connector",
+        extensionClassName = "org.jboss.as.connector.subsystems.jca.JcaExtension"
 )
 public class JCAFraction extends JCA<JCAFraction> implements Fraction {
 

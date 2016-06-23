@@ -31,9 +31,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.security",
-        parserFactoryClassName = "org.wildfly.swarm.security.runtime.SecurityParserFactory"
-
+        extension = "org.jboss.as.security"
 )
 public class SecurityFraction extends Security<SecurityFraction> implements Fraction {
 

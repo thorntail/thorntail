@@ -25,12 +25,18 @@ import org.wildfly.swarm.config.batch.jberet.JDBCJobRepository;
 import org.wildfly.swarm.config.batch.jberet.ThreadPool;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * A batch (JSR-352) fraction implemented by JBeret.
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
+@Configuration(
+        extension = "org.wildfly.extension.batch.jberet",
+        marshal = true
+)
 public class BatchFraction extends BatchJBeret<BatchFraction> implements Fraction {
     public static final String DEFAULT_JOB_REPOSITORY_NAME = "in-memory";
 
@@ -49,6 +55,7 @@ public class BatchFraction extends BatchJBeret<BatchFraction> implements Fractio
      *
      * @return a new default batch fraction
      */
+    @Default
     public static BatchFraction createDefaultFraction() {
         final BatchFraction fraction = new BatchFraction();
         final InMemoryJobRepository<?> jobRepository = new InMemoryJobRepository<>(DEFAULT_JOB_REPOSITORY_NAME);

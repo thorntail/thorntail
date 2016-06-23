@@ -18,10 +18,17 @@ package org.wildfly.swarm.transactions;
 import org.wildfly.swarm.config.Transactions;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBinding;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        marshal = true,
+        extension = "org.jboss.as.transactions",
+        deploymentModules = { "org.jboss.jts" }
+)
 public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction {
 
     protected TransactionsFraction() {
@@ -30,6 +37,7 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
                 .processIdUuid(true);
     }
 
+    @Default
     public static TransactionsFraction createDefaultFraction() {
         return new TransactionsFraction()
                 .socketBinding("txn-recovery-environment")

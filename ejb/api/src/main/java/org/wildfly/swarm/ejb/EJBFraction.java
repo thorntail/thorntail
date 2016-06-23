@@ -41,8 +41,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         extension = "org.jboss.as.ejb3",
-        marshal = true,
-        parserFactoryClassName = "org.wildfly.swarm.ejb.runtime.EJBParserFactory"
+        marshal = true
 
 )
 public class EJBFraction extends EJB3<EJBFraction> implements Fraction {

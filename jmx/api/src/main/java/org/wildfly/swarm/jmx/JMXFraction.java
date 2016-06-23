@@ -24,8 +24,7 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.jmx",
-        parserFactoryClassName = "org.wildfly.swarm.jmx.runtime.ParserFactory"
+        extension = "org.jboss.as.jmx"
 )
 public class JMXFraction extends JMX<JMXFraction> implements Fraction {
 

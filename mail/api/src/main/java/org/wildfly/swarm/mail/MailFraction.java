@@ -28,8 +28,7 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.mail",
-        parserFactoryClassName = "org.wildfly.swarm.mail.runtime.ParserFactory"
+        extension = "org.jboss.as.mail"
 )
 public class MailFraction extends Mail<MailFraction> implements Fraction {
 

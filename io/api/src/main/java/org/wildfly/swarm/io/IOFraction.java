@@ -19,14 +19,21 @@ import org.wildfly.swarm.config.IO;
 import org.wildfly.swarm.config.io.BufferPool;
 import org.wildfly.swarm.config.io.Worker;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.Default;
 
 /**
  * @author Bob McWhirter
  */
+@Configuration(
+        extension = "org.wildfly.extension.io",
+        marshal = true
+)
 public class IOFraction extends IO<IOFraction> implements Fraction {
     public IOFraction() {
     }
 
+    @Default
     public static IOFraction createDefaultFraction() {
         return new IOFraction().worker(new Worker("default"))
                 .bufferPool(new BufferPool("default"));

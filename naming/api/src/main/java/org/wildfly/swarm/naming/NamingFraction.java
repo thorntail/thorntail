@@ -24,8 +24,7 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.naming",
-        parserFactoryClassName = "org.wildfly.swarm.naming.runtime.NamingParserFactory"
+        extension = "org.jboss.as.naming"
 )
 public class NamingFraction extends Naming<NamingFraction> implements Fraction {
 

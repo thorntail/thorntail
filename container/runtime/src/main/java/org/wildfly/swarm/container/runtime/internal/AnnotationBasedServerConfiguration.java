@@ -26,8 +26,10 @@ import java.util.Optional;
 import javax.xml.namespace.QName;
 
 import org.jboss.dmr.ModelNode;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
@@ -52,8 +54,11 @@ public class AnnotationBasedServerConfiguration implements ServerConfiguration {
     private List<Configurator> configurators = new ArrayList<>();
 
     private Class<? extends AbstractParserFactory> parserFactoryClass;
+    private AbstractParserFactory parserFactory;
 
     private String defaultFractionMethodName;
+
+    private String[] deploymentModules;
 
     public AnnotationBasedServerConfiguration(Class<? extends Fraction> type) {
         this.type = type;
@@ -76,6 +81,31 @@ public class AnnotationBasedServerConfiguration implements ServerConfiguration {
 
     public void parserFactoryClass(Class<? extends AbstractParserFactory> parserFactoryClass) {
         this.parserFactoryClass = parserFactoryClass;
+    }
+
+    public void parserFactory(AbstractParserFactory parserFactory) {
+        this.parserFactory = parserFactory;
+    }
+
+    public void setDeploymentModules(String[] deploymentModules) {
+        this.deploymentModules = deploymentModules;
+    }
+
+    @Override
+    public void prepareArchive(Archive a) {
+        if ( this.deploymentModules != null ) {
+            for (String each : this.deploymentModules) {
+                int colonLoc = each.indexOf(':');
+                if ( colonLoc > 0 ) {
+                    String moduleName = each.substring(0, colonLoc );
+                    String moduleSlot = each.substring(colonLoc+1);
+                    a.as(JARArchive.class).addModule( moduleName, moduleSlot );
+                } else {
+                    String moduleName = each;
+                    a.as(JARArchive.class).addModule( moduleName );
+                }
+            }
+        }
     }
 
     @Override
@@ -102,10 +132,13 @@ public class AnnotationBasedServerConfiguration implements ServerConfiguration {
 
     @Override
     public Optional<Map<QName, XMLElementReader<List<ModelNode>>>> getSubsystemParsers() throws Exception {
-        if (this.parserFactoryClass == null) {
-            return Optional.empty();
+        if (this.parserFactoryClass != null) {
+            return AbstractParserFactory.mapParserNamespaces(this.parserFactoryClass.newInstance());
         }
-        return AbstractParserFactory.mapParserNamespaces(this.parserFactoryClass.newInstance());
+        if ( this.parserFactory != null ) {
+            return AbstractParserFactory.mapParserNamespaces(this.parserFactory);
+        }
+        return Optional.empty();
     }
 
     @Override

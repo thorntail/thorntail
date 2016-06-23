@@ -26,11 +26,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,6 +44,7 @@ import java.util.logging.LogManager;
 
 import javax.xml.namespace.QName;
 
+import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
@@ -547,11 +550,15 @@ public class RuntimeServer implements Server {
         AnnotationValue ignorableValue = anno.value("ignorable");
         AnnotationValue extensionValue = anno.value("extension");
         AnnotationValue parserFactoryClassNameValue = anno.value("parserFactoryClassName");
+        AnnotationValue extensionClassNameValue = anno.value("extensionClassName");
+        AnnotationValue deploymentModulesValue = anno.value( "deploymentModules" );
 
         boolean marshal = (marshalValue != null) ? marshalValue.asBoolean() : false;
         boolean ignorable = (ignorableValue != null) ? ignorableValue.asBoolean() : false;
         String extension = (extensionValue != null) ? extensionValue.asString() : null;
         String parserFactoryClass = (parserFactoryClassNameValue != null) ? parserFactoryClassNameValue.asString() : null;
+        String extensionClass = (extensionClassNameValue != null) ? extensionClassNameValue.asString() : null;
+        String[] deploymentModules = (deploymentModulesValue != null) ? deploymentModulesValue.asStringArray() : new String[]{};
 
         Module mainModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(apiModule.getIdentifier().getName(), "main"));
 
@@ -568,6 +575,41 @@ public class RuntimeServer implements Server {
             Class<? extends AbstractParserFactory> parserFractoryClass = (Class<? extends AbstractParserFactory>) runtimeModule.getClassLoader().loadClass(parserFactoryClass);
 
             serverConfig.parserFactoryClass(parserFractoryClass);
+        } else if ( extension != null && !extension.equals("")) {
+            Module extensionModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(extension));
+            //Class<? extends AbstractParserFactory> parserFractoryClass = (Class<? extends AbstractParserFactory>) runtimeModule.getClassLoader().loadClass(parserFactoryClass);
+
+
+            if ( extensionClass != null && extensionClass.equalsIgnoreCase( "none" ) ) {
+                // skip it all
+            } else if ( extensionClass != null && !extensionClass.equals("")) {
+                Class<?> extCls = extensionModule.getClassLoader().loadClass(extensionClass);
+                try {
+                    Extension ext = (Extension) extCls.newInstance();
+                    GenericParserFactory parserFactory = new GenericParserFactory(ext);
+                    serverConfig.parserFactory(parserFactory);
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                ServiceLoader<Extension> extensions = extensionModule.loadService(Extension.class);
+
+                Iterator<Extension> extensionIter = extensions.iterator();
+                if (extensionIter.hasNext()) {
+                    Extension ext = extensionIter.next();
+                    GenericParserFactory parserFactory = new GenericParserFactory(ext);
+                    serverConfig.parserFactory(parserFactory);
+                }
+
+                if ( extensionIter.hasNext()) {
+                    throw new RuntimeException( "Fraction \"" + fractionClass.getName() + "\" was configured using @Configuration with an extension='',"
+                            + " but has multiple extension classes.  Please use extensionClassName='' to specify exactly one." );
+                }
+            }
+
         }
 
         List<MethodInfo> fractionMethods = anno.target().asClass().methods();
@@ -596,6 +638,7 @@ public class RuntimeServer implements Server {
             }
         }
 
+        serverConfig.setDeploymentModules( deploymentModules );
 
         return serverConfig;
     }
@@ -643,10 +686,12 @@ public class RuntimeServer implements Server {
 
     private void getExtensions(Container container, List<ModelNode> list) throws Exception {
 
+        Set<ModelNode> extensionNodes = new HashSet<>();
+
         FractionProcessor<List<ModelNode>> consumer = (context, cfg, fraction) -> {
             try {
                 Optional<ModelNode> extension = cfg.getExtension();
-                extension.map(modelNode -> list.add(modelNode));
+                extension.map(modelNode -> extensionNodes.add(modelNode));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -654,6 +699,7 @@ public class RuntimeServer implements Server {
 
         visitFractions(container, list, consumer);
 
+        list.addAll( extensionNodes );
     }
 
     private void getSubsystemConfigurations(Container config, List<ModelNode> list) throws Exception {
@@ -825,7 +871,12 @@ public class RuntimeServer implements Server {
 
 
                     fractionParsers.forEach((k, v) -> {
-                        parser.addDelegate(k, new TrackableParser(cfg.getExtension(), v));
+                        try {
+                            System.err.println( "Registered parser: " + k.getNamespaceURI() );
+                            parser.addDelegate(k, v);
+                        } catch (IllegalArgumentException e) {
+                            // ignore, double-add, ignorable
+                        }
                     });
                 }
             } catch (Exception e) {
@@ -869,7 +920,9 @@ public class RuntimeServer implements Server {
 
         ModelNode head = subList.get(0);
 
-        return list.contains( head );
+        return list.stream().anyMatch( e->{
+            return e.get( OP_ADDR ).equals( head.get(OP_ADDR) );
+        });
     }
 
     /**

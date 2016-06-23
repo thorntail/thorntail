@@ -26,8 +26,7 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  */
 @Configuration(
         extension = "org.jboss.as.jaxrs",
-        marshal = true,
-        parserFactoryClassName = "org.wildfly.swarm.jaxrs.runtime.JAXRSParserFactory"
+        marshal = true
 )
 public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
 
