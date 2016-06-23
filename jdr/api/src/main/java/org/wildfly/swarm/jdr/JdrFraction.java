@@ -24,8 +24,7 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  */
 @Configuration(
         marshal = true,
-        extension = "org.jboss.as.jdr",
-        parserFactoryClassName = "org.wildfly.swarm.jdr.runtime.JdrParserFactory"
+        extension = "org.jboss.as.jdr"
 )
 
 public class JdrFraction extends Jdr<JdrFraction> implements Fraction {
