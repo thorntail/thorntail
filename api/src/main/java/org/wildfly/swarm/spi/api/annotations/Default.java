@@ -20,7 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
+/** Denotes method to use to create a default Fraction if none is explicitly created by the user.
+ *
  * @author Bob McWhirter
  */
 @Retention(RetentionPolicy.RUNTIME)
