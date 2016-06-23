@@ -119,7 +119,7 @@ public interface SwarmProperties {
     /**
      * JDBC Connection URL
      */
-    String DATASOURCE_CONNECTION_URL = "swam.ds.connection.url";
+    String DATASOURCE_CONNECTION_URL = "swarm.ds.connection.url";
 
     /**
      * Database Driver name
