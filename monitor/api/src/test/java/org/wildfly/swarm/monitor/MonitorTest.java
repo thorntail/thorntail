@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.monitor;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

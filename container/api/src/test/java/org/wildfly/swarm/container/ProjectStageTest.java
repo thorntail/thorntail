@@ -3,7 +3,7 @@ package org.wildfly.swarm.container;
 import java.io.InputStream;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.wildfly.swarm.container.internal.ProjectStageFactory;
 import org.wildfly.swarm.spi.api.ProjectStage;
