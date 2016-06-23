@@ -127,22 +127,24 @@ public class UberjarSimpleContainer implements SimpleContainer {
                                 registerContainerFactory(archive, containerFactoryClass);
                             } else {
                                 throw new IllegalArgumentException(
-                                        String.format("Method annotated with %s does not return a class of %s",
+                                        String.format("Method annotated with %s is %s but it does not return an instance of %s",
                                                 org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
+                                                containerFactoryMethod,
                                                 org.wildfly.swarm.ContainerFactory.class.getSimpleName()));
                             }
 
                         } else {
                             throw new IllegalArgumentException(
-                                    String.format("Method annotated with %s does not return a class of %s",
+                                    String.format("Method annotated with %s is %s but it does not return an instance of %s",
                                             org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
+                                            containerFactoryMethod,
                                             org.wildfly.swarm.ContainerFactory.class.getSimpleName()));
                         }
                     } else {
                         throw new IllegalArgumentException(
                                 String.format("Method annotated with %s is %s but it is not static",
                                         org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
-                                        containerMethod));
+                                        containerFactoryMethod));
                     }
                 }
 
