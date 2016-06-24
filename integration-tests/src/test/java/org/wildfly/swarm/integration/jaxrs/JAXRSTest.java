@@ -31,6 +31,7 @@ import org.openqa.selenium.WebDriver;
 import org.wildfly.swarm.arquillian.ArtifactDependencies;
 import org.wildfly.swarm.integration.base.TestConstants;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
 
 import static org.fest.assertions.Assertions.assertThat;
 

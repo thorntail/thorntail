@@ -145,5 +145,20 @@
         </includes>
       </testResource>
     </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>process</id>
+            <phase>never-ever</phase>
+            <goals>
+              <goal>process</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

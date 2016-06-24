@@ -26,7 +26,8 @@ import org.wildfly.swarm.spi.api.annotations.Configuration;
  */
 @Configuration(
         extension = "org.jboss.as.jaxrs",
-        marshal = true
+        marshal = true,
+        deploymentModules = {"com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"}
 )
 public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
 

@@ -137,6 +137,7 @@
         <version>${version.wildfly.swarm.fraction.plugin}</version>
         <executions>
           <execution>
+            <id>process</id>
             <phase>process-classes</phase>
             <goals>
               <goal>process</goal>

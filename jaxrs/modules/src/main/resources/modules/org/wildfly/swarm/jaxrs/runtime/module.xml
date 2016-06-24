@@ -10,5 +10,6 @@
     <module name="org.jboss.as.jaxrs"/>
     <module name="org.jboss.resteasy.resteasy-jaxrs"/>
     <module name="org.jboss.resteasy.resteasy-jackson2-provider"/>
+    <module name="org.jboss.resteasy.resteasy-jackson-provider"/>
   </dependencies>
 </module>
