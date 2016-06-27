@@ -34,7 +34,7 @@
     <version.swarm.core>1.0.1.Final</version.swarm.core>
     <version.swarm.spi>1.0.3.Final</version.swarm.spi>
     <version.swarm.fraction-plugin>20</version.swarm.fraction-plugin>
-    <version.vertx>3.3.0.CR2</version.vertx>
+    <version.vertx>3.3.0</version.vertx>
   </properties>
 
   <build>
