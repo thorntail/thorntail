@@ -1237,6 +1237,7 @@
     <module>webservices</module>
 
     <module>integration-tests</module>
+    <module>testsuite</module>
   </modules>
 
   <profiles>

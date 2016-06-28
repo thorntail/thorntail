@@ -462,7 +462,12 @@ public class RuntimeServer implements Server {
                         }
                     }
 
-                    module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "api"));
+                    try {
+                        // TODO: remove once all things are smooshed
+                        module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "api"));
+                    } catch (ModuleLoadException e) {
+                        module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "runtime"));
+                    }
                     List<ServerConfiguration> serverConfigInstances = findAnnotationServerConfigurations(module, indexes);
 
                     for (ServerConfiguration serverConfigInstance : serverConfigInstances) {

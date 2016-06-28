@@ -9,15 +9,15 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>jdr-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>jdr-test</artifactId>
+  <artifactId>testsuite-jdr</artifactId>
 
-  <name>WildFly Swarm: JDR Test</name>
-  <description>WildFly Swarm: JDR Test</description>
+  <name>WildFly Swarm: JDR Test Suite</name>
+  <description>WildFly Swarm: JDR Test Suite</description>
 
   <build>
     <plugins>

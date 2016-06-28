@@ -18,6 +18,12 @@ package org.wildfly.swarm.jdr;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.as.controller.PathAddress;
+import org.jboss.as.controller.PathElement;
+import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.controller.client.helpers.Operations;
+import org.jboss.dmr.ModelNode;
+import org.jboss.dmr.ModelType;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -26,6 +32,8 @@ import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.JARArchive;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author George Gastaldi
@@ -47,8 +55,25 @@ public class JdrArquillianTest implements ContainerFactory {
 
     @Test
     @RunAsClient
-    public void testNothing() {
+    public void testClient() throws Exception {
 
+        ModelControllerClient client = ModelControllerClient.Factory.create(
+                "localhost", 9990
+        );
+
+        ModelNode response = client.execute(
+                Operations.createOperation("generate-jdr-report",
+                        Operations.createAddress("subsystem", "jdr")
+                )
+        );
+
+        assertThat(response.get("outcome").asString()).isEqualTo("success");
+
+        ModelNode result = response.get("result");
+
+        String reportLocation = result.get( "report-location" ).asString();
+
+        assertThat( reportLocation ).endsWith( ".zip" );
     }
 
 }

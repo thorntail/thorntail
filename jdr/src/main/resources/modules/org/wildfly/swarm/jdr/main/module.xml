@@ -8,7 +8,7 @@
       </paths>
     </system>
 
-    <module name="org.wildfly.swarm.jdr" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.jdr" slot="runtime" export="true" services="export"/>
 
   </dependencies>
 </module>
