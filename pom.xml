@@ -771,27 +771,27 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-console</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-console-api</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-console-modules</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-console-runtime</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>management-console-ui</artifactId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
         <type>war</type>
       </dependency>
 
