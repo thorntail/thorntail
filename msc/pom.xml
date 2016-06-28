@@ -15,20 +15,37 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>msc-parent</artifactId>
+  <artifactId>msc</artifactId>
 
-  <name>WildFly Swarm: MSC Parent</name>
-  <description>WildFly Swarm: MSC Parent</description>
+  <name>MSC</name>
+  <description>WildFly Swarm: MSC</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>msc</module>
+  <properties>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
+  </properties>
 
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
-  </modules>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+
+    <!-- Provided APIs -->
+    <dependency>
+      <groupId>org.jboss.msc</groupId>
+      <artifactId>jboss-msc</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

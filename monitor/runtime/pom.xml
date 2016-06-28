@@ -35,7 +35,7 @@
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc-runtime</artifactId>
+      <artifactId>msc</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

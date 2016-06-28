@@ -41,7 +41,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc-modules</artifactId>
+      <artifactId>msc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
