@@ -9,34 +9,18 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>jmx-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jmx-test</artifactId>
+  <artifactId>testsuite-jmx</artifactId>
 
-  <name>WildFly Swarm: JMX Test</name>
-  <description>WildFly Swarm: JMX Test</description>
+  <name>WildFly Swarm: JMX Test Suite</name>
+  <description>WildFly Swarm: JMX Test Suite</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>

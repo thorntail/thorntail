@@ -15,6 +15,16 @@
  */
 package org.wildfly.swarm.jmx;
 
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -27,13 +37,15 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.JARArchive;
 
+import static org.junit.Assert.*;
+
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
 public class JMXArquillianTest implements ContainerFactory {
 
-    @Deployment(testable = false)
+    @Deployment
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
@@ -46,9 +58,15 @@ public class JMXArquillianTest implements ContainerFactory {
     }
 
     @Test
-    @RunAsClient
-    public void testNothing() {
+    public void testNothing() throws InterruptedException, MalformedObjectNameException, InstanceNotFoundException {
+        MBeanServer server = locateMBeanServer();
+        ObjectInstance result = server.getObjectInstance(ObjectName.getInstance("jboss.msc:type=container,name=jboss-as"));
+        assertNotNull( result );
+    }
 
+    private MBeanServer locateMBeanServer() {
+        ArrayList<MBeanServer> al = MBeanServerFactory.findMBeanServer(null);
+        return al.get(0);
     }
 
 }
