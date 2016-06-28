@@ -4,7 +4,8 @@
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -34,7 +35,8 @@
     <version.swarm.spi>1.0.5.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
-    <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
+    <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final
+    </version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
     <version.org.arquillian>1.1.10.Final</version.org.arquillian>
@@ -65,7 +67,7 @@
     <maven.min.version>3.2.1</maven.min.version>
 
     <!-- Surefire args -->
-    <surefire.jpda.args />
+    <surefire.jpda.args/>
     <surefire.system.args>-da ${surefire.jpda.args}</surefire.system.args>
 
     <!-- Checkstyle configuration -->
@@ -570,6 +572,27 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca-runtime</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jdr</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jdr-api</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jdr-modules</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jdr-runtime</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
 
@@ -1167,6 +1190,7 @@
     <module>jaxrs-multipart</module>
     <module>jaxrs-validator</module>
     <module>jca</module>
+    <module>jdr</module>
     <module>jgroups</module>
     <module>jmx</module>
     <module>jpa</module>
