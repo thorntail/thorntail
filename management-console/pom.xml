@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>core</artifactId>
+    <version>1.0.3.Final-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <artifactId>management-console-parent</artifactId>
+  <name>WildFly Swarm: Management Console Parent</name>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>management-console</module>
+
+    <module>api</module>
+    <module>modules</module>
+    <module>runtime</module>
+    <module>test</module>
+    <module>ui</module>
+  </modules>
+
+</project>

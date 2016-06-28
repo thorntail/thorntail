@@ -770,6 +770,33 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>management-console</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>management-console-api</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>management-console-modules</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>management-console-runtime</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>management-console-ui</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+        <type>war</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>messaging</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -1148,6 +1175,7 @@
     <module>jsf</module>
     <module>logging</module>
     <module>mail</module>
+    <module>management-console</module>
     <module>messaging</module>
     <module>msc</module>
     <module>monitor</module>
