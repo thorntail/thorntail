@@ -30,5 +30,5 @@ public class JdrInVmTest {
         container.start().stop();
     }
 
-    
+
 }

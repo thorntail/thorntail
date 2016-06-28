@@ -57,5 +57,6 @@
 
   <modules>
     <module>testsuite-jdr</module>
+    <module>testsuite-naming</module>
   </modules>
 </project>

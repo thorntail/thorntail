@@ -9,27 +9,33 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>naming-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>naming-api</artifactId>
+  <artifactId>testsuite-naming</artifactId>
 
-  <name>WildFly Swarm: Naming API</name>
-  <description>WildFly Swarm: Naming API</description>
+  <name>WildFly Swarm: Naming Test Suite</name>
+  <description>WildFly Swarm: Naming Test Suite</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-api</artifactId>
+      <artifactId>naming</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming-modules</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
