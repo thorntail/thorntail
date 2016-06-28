@@ -14,19 +14,21 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>jpa-postgresql-parent</artifactId>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>mod_cluster-parent</artifactId>
 
-  <name>WildFly Swarm: JPA PostgreSQL Parent</name>
-  <description>WildFly Swarm: JPA PostgreSQL Parent</description>
+  <name>WildFly Swarm: Modcluster Parent</name>
+  <description>WildFly Swarm: Modcluster Parent</description>
 
   <packaging>pom</packaging>
 
   <modules>
-    <module>jpa-postgresql</module>
+    <module>mod_cluster</module>
 
     <module>api</module>
     <module>runtime</module>
     <module>modules</module>
     <module>test</module>
   </modules>
+
 </project>
