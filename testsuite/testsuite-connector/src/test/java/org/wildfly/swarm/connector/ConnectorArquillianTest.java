@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.connector;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -47,7 +49,7 @@ public class ConnectorArquillianTest implements ContainerFactory {
 
     @Test
     @RunAsClient
-    public void testNothing() {
+    public void testNothing() throws Exception {
 
     }
 

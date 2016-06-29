@@ -33,7 +33,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>connector-runtime</artifactId>
+      <artifactId>connector</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
