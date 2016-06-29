@@ -49,35 +49,6 @@
       <version>${project.version}</version>
     </dependency>
 
-   <!-- <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
-      <version>${version.resteasy}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-multipart-provider</artifactId>
-        <version>${version.resteasy}</version>
-        <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxb-provider</artifactId>
-      <version>${version.resteasy}</version>
-      <scope>test</scope>
-    </dependency>-->
-
-    <dependency>
-        <groupId>com.squareup.okhttp</groupId>
-        <artifactId>okhttp</artifactId>
-        <version>2.7.5</version>
-      <scope>test</scope>
-    </dependency>
-
-
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jca</artifactId>
@@ -103,6 +74,22 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>2.7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

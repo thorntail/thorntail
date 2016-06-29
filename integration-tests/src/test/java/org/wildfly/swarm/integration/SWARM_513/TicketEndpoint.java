@@ -37,7 +37,7 @@ public class TicketEndpoint {
     }
 
     @GET
-    @Produces("text/xml")
+    @Produces({"text/xml", "application/json"})
     public List<TicketDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult)
     {
         TypedQuery<Ticket> findAllQuery = em.createQuery("SELECT DISTINCT t FROM Ticket t ORDER BY t.id", Ticket.class);

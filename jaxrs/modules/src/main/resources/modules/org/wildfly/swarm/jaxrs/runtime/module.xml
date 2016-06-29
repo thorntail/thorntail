@@ -9,7 +9,8 @@
 
     <module name="org.jboss.as.jaxrs"/>
     <module name="org.jboss.resteasy.resteasy-jaxrs"/>
-    <module name="org.jboss.resteasy.resteasy-jackson2-provider"/>
-    <module name="org.jboss.resteasy.resteasy-jackson-provider"/>
+    <module name="org.jboss.resteasy.resteasy-jaxb-provider" services="export"/>
+    <module name="org.jboss.resteasy.resteasy-jackson2-provider" services="export"/>
+    <module name="org.jboss.resteasy.resteasy-jackson-provider" services="export"/>
   </dependencies>
 </module>
