@@ -15,9 +15,15 @@
  */
 package org.wildfly.swarm.remoting;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceRegistry;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -27,13 +33,15 @@ import org.wildfly.swarm.ContainerFactory;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.JARArchive;
 
+import static org.junit.Assert.*;
+
 /**
  * @author Ken Finnigan
  */
 @RunWith(Arquillian.class)
 public class RemotingArquillianTest implements ContainerFactory {
 
-    @Deployment(testable = false)
+    @Deployment
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
@@ -45,10 +53,13 @@ public class RemotingArquillianTest implements ContainerFactory {
         return new Container().fraction(new RemotingFraction());
     }
 
-    @Test
-    @RunAsClient
-    public void testNothing() {
+    @ArquillianResource
+    ServiceRegistry registry;
 
+    @Test
+    public void testNothing() throws Exception {
+        ServiceController<?> endpoint = this.registry.getService(ServiceName.parse("org.wildfly.remoting.endpoint"));
+        assertNotNull( endpoint );
     }
 
 }

@@ -4,29 +4,34 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>remoting-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>remoting-api</artifactId>
+  <artifactId>testsuite-remoting</artifactId>
 
-  <name>WildFly Swarm: Remoting API</name>
-  <description>WildFly Swarm: Remoting API</description>
+  <name>WildFly Swarm: Remoting Test Suite</name>
+  <description>WildFly Swarm: Remoting Test Suite</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-api</artifactId>
+      <artifactId>remoting</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>remoting-modules</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

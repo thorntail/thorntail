@@ -65,5 +65,6 @@
     <module>testsuite-management</module>
     <module>testsuite-msc</module>
     <module>testsuite-naming</module>
+    <module>testsuite-remoting</module>
   </modules>
 </project>
