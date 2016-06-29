@@ -18,6 +18,7 @@ package org.wildfly.swarm.arquillian.adapter;
 import org.jboss.arquillian.container.test.impl.RemoteExtensionLoader;
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
 import org.jboss.arquillian.container.test.spi.client.deployment.CachedAuxilliaryArchiveAppender;
+import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ExtensionLoader;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -32,7 +33,9 @@ public class WildFlySwarmDeploymentAppender extends CachedAuxilliaryArchiveAppen
                         "org.jboss.arquillian.container.test.spi",
                         "org.wildfly.swarm.arquillian.resources")
                 .addClass(WildFlySwarmRemoteExtension.class)
+                .addClass(ServiceRegistryServiceActivator.class)
                 .addAsServiceProvider(RemoteLoadableExtension.class, WildFlySwarmRemoteExtension.class)
+                .addAsServiceProvider(ServiceActivator.class, ServiceRegistryServiceActivator.class)
                 .addAsServiceProvider(ExtensionLoader.class, RemoteExtensionLoader.class);
     }
 }
