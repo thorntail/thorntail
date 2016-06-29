@@ -15,20 +15,31 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>io-parent</artifactId>
+  <artifactId>io</artifactId>
 
   <name>WildFly Swarm: IO</name>
   <description>WildFly Swarm: IO</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>io</module>
+  <properties>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
+  </properties>
 
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
-  </modules>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

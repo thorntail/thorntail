@@ -496,21 +496,6 @@
         <artifactId>io</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>io-api</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>io-modules</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>io-runtime</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
