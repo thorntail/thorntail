@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
@@ -49,13 +50,13 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
         try (InputStreamReader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("fraction-list.json"))) {
             Json.parse(reader).asArray().forEach(entry -> {
                 JsonObject fraction = entry.asObject();
-                String groupId = fraction.getString("groupId", null);
-                String artifactId = fraction.getString("artifactId", null);
-                String version = fraction.getString("version", null);
-                String name = fraction.getString("name", null);
-                String description = fraction.getString("description", null);
-                String tags = fraction.getString("tags", null);
-                boolean internal = fraction.getBoolean("internal", false);
+                String groupId = toString(fraction.get("groupId"));
+                String artifactId = toString(fraction.get("artifactId"));
+                String version = toString(fraction.get("version"));
+                String name = toString(fraction.get("name"));
+                String description = toString(fraction.get("description"));
+                String tags = toString(fraction.get("tags"));
+                boolean internal = toBoolean(fraction.get("internal"));
                 FractionDescriptor fd = new FractionDescriptor(groupId, artifactId, version, name, description, tags, internal);
                 descriptors.put(groupId + ":" + artifactId, fd);
             });
@@ -109,6 +110,13 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
         }
     }
 
+    private boolean toBoolean(JsonValue jsonValue) {
+        return jsonValue.isNull() ? false : jsonValue.asBoolean();
+    }
+
+    private String toString(JsonValue jsonValue) {
+        return jsonValue.isNull() ? null : jsonValue.asString();
+    }
     /**
      * @param a groupId:artifactId:version string
      * @return the groupId:artifactId
