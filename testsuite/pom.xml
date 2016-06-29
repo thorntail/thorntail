@@ -56,6 +56,7 @@
   </build>
 
   <modules>
+    <module>testsuite-datasources</module>
     <module>testsuite-ee</module>
     <module>testsuite-io</module>
     <module>testsuite-jdr</module>

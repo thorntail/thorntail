@@ -47,7 +47,7 @@ public class DatasourcesArquillianTest implements ContainerFactory {
 
     @Test
     @RunAsClient
-    public void testNothing() {
+    public void testDatasource() {
 
     }
 

@@ -56,7 +56,7 @@
     <!-- Batch (JBeret) requires datasources for JDBC repositories -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources-modules</artifactId>
+      <artifactId>datasources</artifactId>
     </dependency>
     <!-- All batch deployments require CDI for WildFly Swarm -->
     <dependency>

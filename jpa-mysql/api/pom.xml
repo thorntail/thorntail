@@ -34,7 +34,7 @@
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources-api</artifactId>
+      <artifactId>datasources</artifactId>
     </dependency>
 
     <!-- Provided APIs -->

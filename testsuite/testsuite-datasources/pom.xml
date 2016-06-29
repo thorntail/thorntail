@@ -9,34 +9,18 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>datasources-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>datasources-test</artifactId>
+  <artifactId>testsuite-datasources</artifactId>
 
-  <name>WildFly Swarm: Datasources Test</name>
-  <description>WildFly Swarm: Datasources Test</description>
+  <name>WildFly Swarm: Datasources Test Suite</name>
+  <description>WildFly Swarm: Datasources Test Suite</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
