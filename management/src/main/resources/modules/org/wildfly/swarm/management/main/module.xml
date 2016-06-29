@@ -7,7 +7,7 @@
       </paths>
     </system>
 
-    <module name="org.wildfly.swarm.management" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.management" slot="runtime" export="true" services="export"/>
 
   </dependencies>
 </module>
