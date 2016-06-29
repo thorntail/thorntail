@@ -43,6 +43,7 @@ public class JAXRSArquillianTest implements ContainerFactory {
         deployment.addClass(HealthCheckResource.class);
         deployment.addClass(CustomJsonProvider.class);
         deployment.addAllDependencies();
+        deployment.setContextRoot("myapp");
         return deployment;
     }
 
@@ -54,7 +55,7 @@ public class JAXRSArquillianTest implements ContainerFactory {
     @Test
     @RunAsClient
     public void testResource() {
-        Assert.assertTrue(getUrlContents("http://localhost:8080/health/app/health-secure").contains("UP"));
+        Assert.assertTrue(getUrlContents("http://localhost:8080/myapp/health/app/health-secure").contains("UP"));
     }
 
     static String getUrlContents(String theUrl) {
