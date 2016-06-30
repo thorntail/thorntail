@@ -41,7 +41,18 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jmx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>naming</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>transactions</artifactId>

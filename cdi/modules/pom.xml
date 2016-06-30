@@ -59,7 +59,7 @@
     <!--
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>transactions-modules</artifactId>
+      <artifactId>transactions</artifactId>
     </dependency>
     -->
     <dependency>

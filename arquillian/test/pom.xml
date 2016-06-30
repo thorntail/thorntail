@@ -60,7 +60,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jgroups</artifactId>
+      <artifactId>jgroups-module</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -439,6 +439,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jgroups-module</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -794,6 +800,7 @@
     <module>jca</module>
     <module>jdr</module>
     <module>jgroups</module>
+    <module>jgroups-module</module>
     <module>jmx</module>
     <module>jpa</module>
     <module>jpa-mysql</module>
