@@ -647,21 +647,6 @@
         <artifactId>security</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>security-api</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>security-modules</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>security-runtime</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>

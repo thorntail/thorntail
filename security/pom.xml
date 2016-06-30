@@ -14,20 +14,64 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>security-parent</artifactId>
+  <artifactId>security</artifactId>
 
-  <name>WildFly Swarm: Security</name>
+  <name>Security</name>
   <description>WildFly Swarm: Security</description>
 
-  <packaging>pom</packaging>
+  <properties>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
+  </properties>
 
-  <modules>
-    <module>security</module>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>ee</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- provided dependencies -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+    </dependency>
+
+  </dependencies>
 
 </project>
