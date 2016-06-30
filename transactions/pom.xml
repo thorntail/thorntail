@@ -14,21 +14,88 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>transactions-parent</artifactId>
+  <artifactId>transactions</artifactId>
 
-  <name>WildFly Swarm: Transactions Parent</name>
-  <description>WildFly Swarm: Transactions Parent</description>
+  <name>Transactions</name>
+  <description>JTA distributed transactions with Narayana</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>transactions</module>
+  <properties>
+    <swarm.fraction.tags>JavaEE</swarm.fraction.tags>
+  </properties>
 
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
-  </modules>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>naming</artifactId>
+    </dependency>
+
+    <!-- make sure our overridden jgroups module gets used -->
+    <!--<dependency>-->
+      <!--<groupId>org.wildfly.swarm</groupId>-->
+      <!--<artifactId>jgroups</artifactId>-->
+    <!--</dependency>-->
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Provided APIs -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.jts</groupId>
+      <artifactId>narayana-jts-idlj</artifactId>
+    </dependency>
+  </dependencies>
 </project>
