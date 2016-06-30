@@ -586,22 +586,7 @@
         <artifactId>resource-adapters</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>resource-adapters-api</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>resource-adapters-modules</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>resource-adapters-runtime</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>      
-      
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>security</artifactId>

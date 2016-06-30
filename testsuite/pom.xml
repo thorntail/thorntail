@@ -81,6 +81,7 @@
     <module>testsuite-naming</module>
     <module>testsuite-remoting</module>
     <module>testsuite-request-controller</module>
+    <module>testsuite-resource-adapters</module>
     <module>testsuite-security</module>
     <module>testsuite-transactions</module>
     <module>testsuite-webservices</module>
