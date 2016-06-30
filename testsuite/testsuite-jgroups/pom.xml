@@ -9,48 +9,31 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>jgroups-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jgroups</artifactId>
+  <artifactId>testsuite-jgroups</artifactId>
 
-  <name>JGroups</name>
-  <description>Reliable messaging for creating a cluster</description>
-
-  <packaging>jar</packaging>
-
-  <properties>
-    <swarm.fraction.tags>JavaEE</swarm.fraction.tags>
-  </properties>
+  <name>WildFly Swarm: JGroups Test Suite</name>
+  <description>WildFly Swarm: JGroups Test Suite</description>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>jgroups</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jgroups-api</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jgroups-modules</artifactId>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jgroups-runtime</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Fraction Dependencies -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jmx</artifactId>
-    </dependency>
-
   </dependencies>
 
 </project>
