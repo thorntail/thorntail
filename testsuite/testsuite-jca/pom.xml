@@ -14,13 +14,10 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jca-test</artifactId>
+  <artifactId>testsuite-jca</artifactId>
 
   <name>WildFly Swarm: JCA Test Suite</name>
   <description>WildFly Swarm: JCA Test Suite</description>
-
-  <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
