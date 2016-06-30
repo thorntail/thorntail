@@ -5,7 +5,9 @@
 
   <dependencies>
     <module name="org.wildfly.swarm.jpa"/>
+    <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
+    <module name="org.wildfly.swarm.datasources"/>
 
     <module name="org.jboss.as.jpa"/>
   </dependencies>

@@ -7,9 +7,8 @@
         <path name="org/wildfly/swarm/jpa/mysql"/>
       </paths>
     </system>
-
     <!-- For when bootstrapped through a fat-jar -->
-    <module name="org.wildfly.swarm.jpa.mysql" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.jpa.mysql" slot="runtime" export="true" services="export"/>
 
   </dependencies>
 </module>

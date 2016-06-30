@@ -8,9 +8,6 @@
       </paths>
     </system>
 
-    <module name="org.wildfly.swarm.container"/>
-    <module name="org.wildfly.swarm.datasources"/>
-
     <!-- For when bootstrapped through a fat-jar -->
     <module name="org.wildfly.swarm.jpa" slot="runtime" export="true" services="export"/>
 

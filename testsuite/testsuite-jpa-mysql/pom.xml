@@ -9,38 +9,30 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>jpa-mysql-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jpa-mysql-api</artifactId>
+  <artifactId>testsuite-jpa-mysql</artifactId>
 
-  <name>WildFly Swarm: MySQL JPA API</name>
-  <description>WildFly Swarm: MySQL JPA API</description>
-
-  <packaging>jar</packaging>
+  <name>WildFly Swarm: JPA MySQL Test Suite</name>
+  <description>WildFly Swarm: JPA MySQL Test Suite</description>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-api</artifactId>
+      <artifactId>jpa-mysql</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jpa-mysql-modules</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources</artifactId>
-    </dependency>
-
-    <!-- Provided APIs -->
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
