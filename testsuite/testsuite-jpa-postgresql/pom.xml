@@ -9,37 +9,30 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>jpa-postgresql-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>jpa-postgresql-api</artifactId>
+  <artifactId>testsuite-jpa-postgresql</artifactId>
 
-  <name>WildFly Swarm: PostgreSQL JPA API</name>
-  <description>WildFly Swarm: PostgreSQL JPA API</description>
-
-  <packaging>jar</packaging>
+  <name>WildFly Swarm: JPA PostgreSQL Test Suite</name>
+  <description>WildFly Swarm: JPA PostgreSQL Test Suite</description>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-api</artifactId>
+      <artifactId>jpa-postgresql</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jpa-postgresql-modules</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources</artifactId>
-    </dependency>
-
-    <!-- Provided APIs -->
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
