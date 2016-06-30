@@ -29,7 +29,7 @@
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ejb-api</artifactId>
+      <artifactId>ejb</artifactId>
     </dependency>
   </dependencies>
 

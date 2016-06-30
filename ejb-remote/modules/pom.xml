@@ -37,7 +37,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ejb-modules</artifactId>
+      <artifactId>ejb</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
