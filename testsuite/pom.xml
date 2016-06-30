@@ -66,6 +66,7 @@
     <module>testsuite-jca</module>
     <module>testsuite-jdr</module>
     <module>testsuite-jmx</module>
+    <module>testsuite-jpa</module>
     <module>testsuite-mail</module>
     <module>testsuite-management</module>
     <module>testsuite-mod_cluster</module>
