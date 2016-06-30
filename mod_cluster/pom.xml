@@ -14,13 +14,10 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>mod_cluster</artifactId>
 
   <name>Modcluster</name>
   <description>Modcluster support</description>
-
-  <packaging>jar</packaging>
 
   <properties>
     <swarm.fraction.tags>Web</swarm.fraction.tags>
