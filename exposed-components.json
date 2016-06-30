@@ -62,6 +62,7 @@
    {"name": "messaging",               "doc": "messaging-api"},
    {"name": "messaging-modules"},
    {"name": "messaging-api"},
+   {"name": "mod_cluster",             "doc": "mod_cluster"},
    {"name": "msc",                     "doc": "msc"},
    {"name": "monitor",                 "doc": "monitor-api"},
    {"name": "monitor-modules"},

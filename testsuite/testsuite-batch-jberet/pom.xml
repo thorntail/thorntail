@@ -28,7 +28,7 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>batch-jberet-test</artifactId>
+  <artifactId>testsuite-batch-jberet</artifactId>
 
   <name>WildFly Swarm: Batch (JBeret) Test Suite</name>
   <description>WildFly Swarm: Batch (JBeret) Test Suite</description>

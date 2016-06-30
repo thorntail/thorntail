@@ -650,21 +650,6 @@
         <artifactId>mod_cluster</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>mod_cluster-api</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>mod_cluster-modules</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>mod_cluster-runtime</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -985,7 +970,7 @@
     <module>messaging</module>
     <module>msc</module>
     <module>monitor</module>
-    <module>modcluster</module>
+    <module>mod_cluster</module>
     <module>naming</module>
     <module>remoting</module>
     <module>request-controller</module>

@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>ejb-remote-test</artifactId>
+  <artifactId>testsuite-ejb-remote</artifactId>
 
   <name>WildFly Swarm: EJB Remote Test Suite</name>
   <description>WildFly Swarm: EJB Remote Test Suite</description>
