@@ -755,21 +755,6 @@
         <artifactId>webservices</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>webservices-api</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>webservices-modules</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>webservices-runtime</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
