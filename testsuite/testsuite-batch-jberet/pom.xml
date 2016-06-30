@@ -23,30 +23,38 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>batch-jberet-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>batch-jberet-runtime</artifactId>
+  <artifactId>batch-jberet-test</artifactId>
 
-  <name>WildFly Swarm: Batch Runtime</name>
-  <description>WildFly Swarm: Batch Runtime (JBeret)</description>
+  <name>WildFly Swarm: Batch (JBeret) Test Suite</name>
+  <description>WildFly Swarm: Batch (JBeret) Test Suite</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>batch-jberet-api</artifactId>
+      <artifactId>batch-jberet</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-batch</artifactId>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>ejb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

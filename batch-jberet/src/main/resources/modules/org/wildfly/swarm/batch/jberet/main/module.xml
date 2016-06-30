@@ -17,15 +17,15 @@
   ~ limitations under the License.
   -->
 
-<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.batch.jberet" slot="runtime">
-  <resources>
-    <artifact name="org.wildfly.swarm:batch-jberet-runtime:${project.version}"/>
-  </resources>
-
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.batch.jberet">
   <dependencies>
-    <module name="org.wildfly.swarm.batch.jberet"/>
-    <module name="org.wildfly.swarm.container" slot="runtime"/>
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/batch/jberet"/>
+      </paths>
+    </system>
 
-    <module name="org.wildfly.extension.batch.jberet"/>
+    <module name="org.wildfly.swarm.batch.jberet" slot="runtime" export="true" services="export"/>
+
   </dependencies>
 </module>

@@ -28,20 +28,87 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>batch-jberet-parent</artifactId>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>batch-jberet</artifactId>
 
-  <name>WildFly Swarm: Batch Parent</name>
-  <description>WildFly Swarm: JSR-352 - Batch (JBeret)</description>
+  <name>Batch</name>
+  <description>Java EE Batch with JBeret</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>batch-jberet</module>
+  <properties>
+    <swarm.fraction.tags>JavaEE,Batch</swarm.fraction.tags>
+  </properties>
 
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
-  </modules>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>cdi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>datasources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.common</groupId>
+      <artifactId>wildfly-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.batch</groupId>
+      <artifactId>jboss-batch-api_1.0_spec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+  </dependencies>
 
 </project>
