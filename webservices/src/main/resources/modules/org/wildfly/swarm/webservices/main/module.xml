@@ -15,7 +15,7 @@
     </system>
 
     <!-- For when bootstrapped through a fat-jar -->
-    <module name="org.wildfly.swarm.webservices" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.webservices" slot="runtime" export="true" services="export"/>
 
   </dependencies>
 </module>

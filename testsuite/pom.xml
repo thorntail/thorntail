@@ -75,5 +75,6 @@
     <module>testsuite-msc</module>
     <module>testsuite-naming</module>
     <module>testsuite-remoting</module>
+    <module>testsuite-webservices</module>
   </modules>
 </project>
