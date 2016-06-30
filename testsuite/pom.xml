@@ -63,6 +63,7 @@
     <module>testsuite-ejb</module>
     <module>testsuite-ejb-remote</module>
     <module>testsuite-io</module>
+    <module>testsuite-jca</module>
     <module>testsuite-jdr</module>
     <module>testsuite-jmx</module>
     <module>testsuite-mail</module>

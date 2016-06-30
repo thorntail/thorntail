@@ -439,21 +439,6 @@
         <artifactId>jca</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jca-api</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jca-modules</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jca-runtime</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
