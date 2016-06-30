@@ -9,40 +9,33 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>logging-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>logging</artifactId>
+  <artifactId>testsuite-logging</artifactId>
 
-  <name>Logging</name>
-  <description>Customizing the Logging for WildFly</description>
+  <name>WildFly Swarm: Logging Test Suite</name>
+  <description>WildFly Swarm: Logging Test Suite</description>
 
   <packaging>jar</packaging>
-
-  <properties>
-    <swarm.fraction.tags>Logging</swarm.fraction.tags>
-  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>logging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>logging-api</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>logging-modules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>logging-runtime</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

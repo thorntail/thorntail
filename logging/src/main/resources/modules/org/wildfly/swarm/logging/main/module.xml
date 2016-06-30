@@ -9,7 +9,7 @@
       </paths>
     </system>
 
-    <module name="org.wildfly.swarm.logging" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.logging" slot="runtime" export="true" services="export"/>
 
   </dependencies>
 </module>
