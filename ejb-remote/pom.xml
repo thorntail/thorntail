@@ -10,20 +10,44 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>ejb-remote-parent</artifactId>
+  <artifactId>ejb-remote</artifactId>
 
-  <name>WildFly Swarm: EJB Remote Parent</name>
-  <description>WildFly Swarm: EJB Remote Parent</description>
+  <name>EJB Remote</name>
+  <description>Access EJBs in remote containers</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>ejb-remote</module>
+  <properties>
+    <swarm.fraction.tags>JavaEE</swarm.fraction.tags>
+  </properties>
 
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
-  </modules>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>ejb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>remoting</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+
+  </dependencies>
 
 </project>
