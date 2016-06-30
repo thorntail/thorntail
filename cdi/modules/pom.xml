@@ -56,9 +56,15 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container-modules</artifactId>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>transactions-modules</artifactId>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>transactions</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

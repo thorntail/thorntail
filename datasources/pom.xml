@@ -54,13 +54,6 @@
       <artifactId>security</artifactId>
     </dependency>
 
-
-    <!-- Dependent APIs -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>security-api</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>

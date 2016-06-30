@@ -48,9 +48,13 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>naming</artifactId>
     </dependency>
+    <!--<dependency>-->
+    <!--<groupId>org.wildfly.swarm</groupId>-->
+    <!--<artifactId>security-modules</artifactId>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>security-modules</artifactId>
+      <artifactId>security</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

@@ -40,7 +40,7 @@
     <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>security-api</artifactId>
+      <artifactId>security</artifactId>
     </dependency>
   </dependencies>
 
