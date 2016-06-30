@@ -9,7 +9,6 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-remoting</artifactId>
 
   <name>WildFly Swarm: Remoting Test Suite</name>
