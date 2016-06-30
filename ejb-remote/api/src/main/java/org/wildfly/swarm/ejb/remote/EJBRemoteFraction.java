@@ -18,10 +18,12 @@ package org.wildfly.swarm.ejb.remote;
 import org.wildfly.swarm.config.ejb3.RemoteService;
 import org.wildfly.swarm.ejb.EJBFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Ken Finnigan
  */
+@Configuration
 public class EJBRemoteFraction implements Fraction {
 
     @Override
