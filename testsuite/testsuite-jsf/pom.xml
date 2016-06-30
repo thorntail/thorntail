@@ -9,46 +9,30 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>jsf-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jsf</artifactId>
+  <artifactId>testsuite-jsf</artifactId>
 
-  <name>JSF</name>
-  <description>Java Server Faces for developing UIs</description>
-
-  <packaging>jar</packaging>
-
-  <properties>
-    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
-  </properties>
+  <name>WildFly Swarm: JSF Test Suite</name>
+  <description>WildFly Swarm: JSF Test Suite</description>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
+      <artifactId>jsf</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jsf-api</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jsf-modules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jsf-runtime</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Fraction Dependencies -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow</artifactId>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

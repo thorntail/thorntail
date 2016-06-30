@@ -71,6 +71,7 @@
     <module>testsuite-jpa</module>
     <module>testsuite-jpa-mysql</module>
     <module>testsuite-jpa-postgresql</module>
+    <module>testsuite-jsf</module>
     <module>testsuite-mail</module>
     <module>testsuite-management</module>
     <module>testsuite-mod_cluster</module>
