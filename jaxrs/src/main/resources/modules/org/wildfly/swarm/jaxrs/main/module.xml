@@ -7,7 +7,7 @@
       </paths>
     </system>
 
-    <module name="org.wildfly.swarm.jaxrs" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.jaxrs" slot="runtime" export="true" services="export"/>
 
   </dependencies>
 </module>
