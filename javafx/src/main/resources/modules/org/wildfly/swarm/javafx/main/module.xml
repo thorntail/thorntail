@@ -6,7 +6,7 @@
       </paths>
     </system>
 
-    <module name="org.wildfly.swarm.javafx" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.javafx" slot="runtime" export="true" services="export"/>
 
   </dependencies>
 </module>

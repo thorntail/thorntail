@@ -65,6 +65,7 @@
     <module>testsuite-ejb-remote</module>
     <module>testsuite-infinispan</module>
     <module>testsuite-io</module>
+    <module>testsuite-javafx</module>
     <module>testsuite-jaxrs</module>
     <module>testsuite-jca</module>
     <module>testsuite-jdr</module>

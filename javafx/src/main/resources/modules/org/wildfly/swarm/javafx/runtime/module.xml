@@ -1,6 +1,6 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.javafx" slot="runtime">
   <resources>
-    <artifact name="org.wildfly.swarm:javafx-runtime:${project.version}"/>
+    <artifact name="org.wildfly.swarm:javafx:${project.version}"/>
   </resources>
 
   <dependencies>
