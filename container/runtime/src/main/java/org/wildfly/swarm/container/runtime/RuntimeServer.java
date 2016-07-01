@@ -249,6 +249,7 @@ public class RuntimeServer implements Server {
             }
         }
 
+        System.err.println( "BOOT: " + bootstrapOperations );
         this.serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
         for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
             ServiceController<?> serviceController = this.serviceContainer.getService(serviceName);

@@ -91,6 +91,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
           <runOrder>alphabetical</runOrder>
           <failIfNoTests>false</failIfNoTests>
@@ -488,21 +489,6 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>monitor</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>monitor-api</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>monitor-modules</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>monitor-runtime</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
 

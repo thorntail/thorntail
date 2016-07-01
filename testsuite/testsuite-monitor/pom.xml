@@ -9,34 +9,18 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>monitor-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>monitor-test</artifactId>
+  <artifactId>testsuite-monitor</artifactId>
 
-  <name>WildFly Swarm: Monitor Test</name>
-  <description>WildFly Swarm: Monitor Test</description>
+  <name>WildFly Swarm: Monitor Test Suite</name>
+  <description>WildFly Swarm: Monitor Test Suite</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>

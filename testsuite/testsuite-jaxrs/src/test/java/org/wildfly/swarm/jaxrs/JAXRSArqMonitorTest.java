@@ -17,23 +17,40 @@ package org.wildfly.swarm.jaxrs;
 
 import java.util.Properties;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.monitor.MonitorFraction;
 
 /**
  * @author Bob McWhirter
  */
-public class JAXRSInVmTest extends SimpleHttp {
+@RunWith(Arquillian.class)
+public class JAXRSArqMonitorTest extends SimpleHttp {
 
-    @Test
-    public void testHealthIntegration() throws Exception {
+    @Deployment
+    public static Archive getDeployment() throws Exception {
+        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
+        deployment.addClass(TimeResource.class);
+        deployment.addClass(SimpleHttp.class);
+        deployment.addClass(HealthCheckResource.class);
+        deployment.addAllDependencies();
+        return deployment;
+    }
 
+    @org.wildfly.swarm.arquillian.adapter.Container
+    public static Container getContainer() throws Exception {
         Container container = new Container();
         container.fraction(new JAXRSFraction());
+        container.fraction(LoggingFraction.createDebugLoggingFraction());
         container.fraction(new MonitorFraction().securityRealm("TestRealm"));
         container.fraction(
                 new ManagementFraction()
@@ -46,25 +63,28 @@ public class JAXRSInVmTest extends SimpleHttp {
                             realm.inMemoryAuthorization();
                         })
         );
-        container.start();
 
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
-        deployment.addClass(TimeResource.class);
-        deployment.addClass(HealthCheckResource.class);
+        return container;
+    }
 
-        container.deploy(deployment);
+    @Test
+    @RunAsClient
+    public void testHealthIntegration() throws Exception {
 
         // verify listing of subresources
-        SimpleHttp.Response endpointList = getUrlContents("http://localhost:8080/health");
-        Assert.assertTrue(endpointList.getBody().contains("links")); //hateos structure
+        Response endpointList = getUrlContents("http://localhost:8080/health");
+
+        Assert.assertTrue(endpointList.getBody(). contains("links") ); //hateos structure
 
         // verify direct access to secure resources
-        SimpleHttp.Response response = getUrlContents("http://localhost:8080/app/health-secure"); // 403
+        Response response = getUrlContents("http://localhost:8080/app/health-secure"); // 403
+
         Assert.assertTrue("Expected 403 when directly accessing secured health endpoint", response.getStatus() == 403);
 
         // verify indirect access to secure resources
         response = getUrlContents("http://localhost:8080/health/app/health-secure");
-        Assert.assertTrue(response.getBody().contains("UP"));
+
+        Assert.assertTrue(response.getBody(). contains("UP") );
 
         // verify indirect access, without auth, to secure resources
         response = getUrlContents("http://localhost:8080/health/app/health-secure", false);
@@ -72,21 +92,22 @@ public class JAXRSInVmTest extends SimpleHttp {
 
         // verify direct access to insecure resources
         response = getUrlContents("http://localhost:8080/app/health-insecure");
-        Assert.assertTrue(response.getBody().contains("UP"));
+        Assert.assertTrue(response.getBody(). contains("UP") );
 
         // verify indirect access, without auth, to insecure resources
         response = getUrlContents("http://localhost:8080/health/app/health-insecure", false);
+
         Assert.assertEquals(200, response.getStatus());
 
         // verify indirect access to insecure resources
         response = getUrlContents("http://localhost:8080/health/app/health-insecure");
-        Assert.assertTrue(response.getBody().contains("UP"));
+        Assert.assertTrue(response.getBody(). contains("UP") );
 
         // verify other resources remain untouched
         response = getUrlContents("http://localhost:8080/another-app/time");
-        Assert.assertTrue(response.getBody().contains("Time"));
 
-        container.stop();
+        Assert.assertTrue(response.getBody(). contains("Time") );
+
 
     }
 }
