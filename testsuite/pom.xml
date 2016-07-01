@@ -14,7 +14,6 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite</artifactId>
   <packaging>pom</packaging>
 
@@ -78,6 +77,7 @@
     <module>testsuite-logging</module>
     <module>testsuite-mail</module>
     <module>testsuite-management</module>
+    <module>testsuite-management-console</module>
     <module>testsuite-messaging</module>
     <module>testsuite-mod_cluster</module>
     <module>testsuite-msc</module>

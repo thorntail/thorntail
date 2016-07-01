@@ -9,19 +9,50 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>management-console-parent</artifactId>
-  <name>WildFly Swarm: Management Console Parent</name>
+  <artifactId>management-console</artifactId>
 
-  <packaging>pom</packaging>
+  <name>Management Console</name>
+  <description>UI to manage a running WildFly/Swarm server</description>
 
-  <modules>
-    <module>management-console</module>
+  <properties>
+    <swarm.fraction.tags>Web,Management</swarm.fraction.tags>
+  </properties>
 
-    <module>api</module>
-    <module>modules</module>
-    <module>runtime</module>
-    <module>test</module>
-    <module>ui</module>
-  </modules>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
 
 </project>
