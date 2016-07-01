@@ -633,21 +633,6 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>cdi-modules</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>cdi-runtime</artifactId>
-        <version>1.0.3.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>cdi-ext</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -750,6 +735,7 @@
     <module>batch-jberet</module>
     <module>bean-validation</module>
     <module>cdi</module>
+    <module>cdi-ext</module>
     <module>connector</module>
     <module>datasources</module>
     <module>ee</module>

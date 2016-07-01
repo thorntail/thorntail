@@ -1,8 +1,6 @@
 {"Core": [
    {"name": "bootstrap"},
-   {"name": "cdi",                    "doc": "cdi-api"},
-   {"name": "cdi-modules"},
-   {"name": "cdi-api"},
+   {"name": "cdi",                     "doc": "cdi"},
    {"name": "container",               "doc": "container-api"},
    {"name": "container-modules"},
    {"name": "container-api"},
