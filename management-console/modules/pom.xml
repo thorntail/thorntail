@@ -40,7 +40,7 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow-modules</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

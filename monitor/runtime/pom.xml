@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow-runtime</artifactId>
+      <artifactId>undertow</artifactId>
       <scope>provided</scope>
     </dependency>
 

@@ -87,6 +87,7 @@
     <module>testsuite-resource-adapters</module>
     <module>testsuite-security</module>
     <module>testsuite-transactions</module>
+    <module>testsuite-undertow</module>
     <module>testsuite-webservices</module>
   </modules>
 </project>

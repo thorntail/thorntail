@@ -11,7 +11,7 @@
     </system>
 
     <!-- For when bootstrapped through a fat-jar -->
-    <module name="org.wildfly.swarm.undertow" slot="api" export="true" services="export"/>
+    <module name="org.wildfly.swarm.undertow" slot="runtime" export="true" services="export"/>
 
   </dependencies>
 </module>

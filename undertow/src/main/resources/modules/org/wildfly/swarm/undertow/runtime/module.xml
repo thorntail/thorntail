@@ -1,14 +1,18 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.undertow" slot="runtime">
   <resources>
-    <artifact name="org.wildfly.swarm:undertow-runtime:${project.version}"/>
+    <artifact name="org.wildfly.swarm:undertow:${project.version}"/>
   </resources>
 
   <dependencies>
     <module name="org.wildfly.swarm.undertow"/>
+    <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
 
     <module name="org.wildfly.extension.undertow"/>
     <module name="io.undertow.core"/>
+    <module name="io.undertow.servlet"/>
+
+    <module name="org.ow2.asm"/>
 
     <!--
     TODO: I need to talk to Bob why he added this and the inconsistencies this creates when the maven dep is not attached to this maven module

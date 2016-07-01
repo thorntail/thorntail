@@ -49,8 +49,6 @@
    {"name": "security",                "doc": "security"},
    {"name": "transactions",            "doc": "transactions"},
    {"name": "tools"},
-   {"name": "undertow",                "doc": "undertow-api"},
-   {"name": "undertow-modules"},
-   {"name": "undertow-api"},
+   {"name": "undertow",                "doc": "undertow"},
    {"name": "webservices",             "doc": "webservices"}
 ]}
