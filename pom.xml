@@ -44,7 +44,7 @@
 
     <!-- Properties -->
     <properties>
-        <version.apache.camel>2.17.0</version.apache.camel>
+        <version.apache.camel>2.17.1</version.apache.camel>
         <version.wildfly.camel>4.1.0</version.wildfly.camel>
         <version.wildfly.swarm.core>1.0.2.Final</version.wildfly.swarm.core>
         <version.wildfly.swarm.spi>1.0.5.Final</version.wildfly.swarm.spi>
