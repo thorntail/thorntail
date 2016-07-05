@@ -446,7 +446,7 @@ public class DependencyManager {
         for (ArtifactSpec each : analyzer.getDependencies()) {
             if (analyzer.getName().startsWith("org.wildfly.swarm") && analyzer.getSlot().equals("api")) {
                 providedGAVs.add(each.groupId() + ":" + each.artifactId());
-                providedGAVs.add(each.groupId() + ":" + each.artifactId().substring(0, each.artifactId().length() - "-api".length()));
+                //providedGAVs.add(each.groupId() + ":" + each.artifactId().substring(0, each.artifactId().length() - "-api".length()));
             } else {
                 providedGAVToModuleMappings.put(
                         each.groupId() + ":" + each.artifactId(),

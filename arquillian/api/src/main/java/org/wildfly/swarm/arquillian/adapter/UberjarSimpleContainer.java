@@ -243,7 +243,13 @@ public class UberjarSimpleContainer implements SimpleContainer {
             }
         }
 
-        Archive<?> wrapped = tool.build();
+        Archive<?> wrapped = null;
+        try {
+            wrapped = tool.build();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
+        }
 
         if (BootstrapProperties.flagIsSet(SwarmInternalProperties.EXPORT_UBERJAR)) {
             final File out = new File(wrapped.getName());
@@ -260,7 +266,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         executable.deleteOnExit();
 
         executor.withProperty("java.net.preferIPv4Stack", "true");
-        executor.withJVMArguments( getJavaVmArgumentsList() );
+        executor.withJVMArguments(getJavaVmArgumentsList());
         executor.withExecutableJar(executable.toPath());
 
         File workingDirectory = Files.createTempDirectory("arquillian").toFile();
@@ -281,7 +287,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
     }
 
     private void registerContainerFactory(Archive<?> archive, Class<?> clazz) {
-        System.err.println("is container factory: " + clazz.getName());
         archive.as(JavaArchive.class)
                 .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
                         clazz.getName())
@@ -308,16 +313,16 @@ public class UberjarSimpleContainer implements SimpleContainer {
     }
 
     private List<String> getJavaVmArgumentsList() {
-        if ( this.javaVmArguments == null ) {
+        if (this.javaVmArguments == null) {
             return Collections.emptyList();
         }
 
         List<String> args = new ArrayList<>();
 
-        StringTokenizer tokens = new StringTokenizer( this.javaVmArguments );
+        StringTokenizer tokens = new StringTokenizer(this.javaVmArguments);
 
-        while ( tokens.hasMoreTokens() ) {
-            args.add( tokens.nextToken() );
+        while (tokens.hasMoreTokens()) {
+            args.add(tokens.nextToken());
         }
 
         return args;

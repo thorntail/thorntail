@@ -30,7 +30,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>20</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>21</version.wildfly.swarm.fraction.plugin>
 
     <version.swarm.spi>1.0.5.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
