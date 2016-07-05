@@ -24,16 +24,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.forge.furnace</groupId>
-      <artifactId>furnace-proxy</artifactId>
-      <version>2.23.5.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib-nodep</artifactId>
-      <version>2.2.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>spi-api</artifactId>
     </dependency>
