@@ -11,7 +11,7 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>core</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
-    <relativePath />
+    <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
