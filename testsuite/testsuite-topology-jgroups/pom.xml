@@ -9,36 +9,24 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>topology-jgroups-parent</artifactId>
-    <version>1.0.2.Final-SNAPSHOT</version>
+    <artifactId>testsuite</artifactId>
+    <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology-jgroups-test</artifactId>
+  <artifactId>testsuite-topology-jgroups</artifactId>
 
-  <name>WildFly Swarm: Topology via JGroups Test</name>
-  <description>WildFly Swarm: Topology via JGroups Test</description>
+  <name>WildFly Swarm: Topology via JGroups Test Suite</name>
+  <description>WildFly Swarm: Topology via JGroups Test Suite</description>
 
   <packaging>jar</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>logging</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>topology-jgroups</artifactId>

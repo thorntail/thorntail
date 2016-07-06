@@ -543,6 +543,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-jgroups</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-webapp</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -722,6 +728,7 @@
     <module>resource-adapters</module>
     <module>security</module>
     <module>topology</module>
+    <module>topology-jgroups</module>
     <module>topology-webapp</module>
     <module>transactions</module>
     <module>undertow</module>

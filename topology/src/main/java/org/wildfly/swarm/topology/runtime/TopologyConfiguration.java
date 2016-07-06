@@ -22,6 +22,7 @@ import java.util.List;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
 import org.wildfly.swarm.topology.TopologyFraction;
 
@@ -53,5 +54,6 @@ public class TopologyConfiguration extends AbstractServerConfiguration<TopologyF
 
     @Override
     public void prepareArchive(Archive<?> archive) {
+        archive.as(JARArchive.class).addModule("org.wildfly.swarm.topology" );
     }
 }
