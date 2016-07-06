@@ -9,27 +9,33 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>logstash-parent</artifactId>
-    <version>1.0.2.Final-SNAPSHOT</version>
+    <artifactId>testsuite</artifactId>
+    <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>logstash-runtime</artifactId>
+  <artifactId>testsuite-logstash</artifactId>
 
-  <name>WildFly Swarm: Logstash Runtime</name>
-  <description>WildFly Swarm: Logstash Runtime</description>
+  <name>WildFly Swarm: Logstash Test Suite</name>
+  <description>WildFly Swarm: Logstash Test Suite</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>logstash-api</artifactId>
+      <artifactId>logstash</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

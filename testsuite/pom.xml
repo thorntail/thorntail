@@ -76,6 +76,7 @@
     <module>testsuite-jpa-postgresql</module>
     <module>testsuite-jsf</module>
     <module>testsuite-logging</module>
+    <module>testsuite-logstash</module>
     <module>testsuite-mail</module>
     <module>testsuite-management</module>
     <module>testsuite-management-console</module>
