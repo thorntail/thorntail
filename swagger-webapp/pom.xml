@@ -15,10 +15,10 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>swagger</artifactId>
+  <artifactId>swagger-webapp</artifactId>
 
-  <name>Swagger</name>
-  <description>Generate swagger.json for all JAX-RS endpoints in your application</description>
+  <name>Swagger Webapp</name>
+  <description>UI for Swagger to visualize the generated swagger.json</description>
 
   <packaging>jar</packaging>
 
@@ -33,6 +33,25 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>swagger-ui</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.webjars</includeGroupIds>
+              <outputDirectory>${project.build.directory}/classes/modules/org/webjars/swagger-ui/main/</outputDirectory>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -46,34 +65,12 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>bean-validation</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
       <artifactId>undertow</artifactId>
     </dependency>
-
-    <!-- Provided dependencies -->
     <dependency>
-      <groupId>io.swagger</groupId>
-      <artifactId>swagger-annotations</artifactId>
+      <groupId>org.webjars</groupId>
+      <artifactId>swagger-ui</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>io.swagger</groupId>
-      <artifactId>swagger-jaxrs</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-
   </dependencies>
 
 </project>
