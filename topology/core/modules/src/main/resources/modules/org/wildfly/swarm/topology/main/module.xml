@@ -1,0 +1,16 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.topology">
+
+  <dependencies>
+    <!-- For when run with bonafide IDE classpath -->
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/topology"/>
+        <path name="org/wildfly/swarm/topology/internal"/>
+      </paths>
+    </system>
+
+    <!-- For when bootstrapped through a fat-jar -->
+    <module name="org.wildfly.swarm.topology" slot="api" export="true" services="export"/>
+
+  </dependencies>
+</module>

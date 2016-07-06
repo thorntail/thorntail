@@ -1,0 +1,15 @@
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.topology" slot="runtime">
+  <resources>
+    <artifact name="org.wildfly.swarm:topology-runtime:${project.version}"/>
+  </resources>
+
+  <dependencies>
+    <module name="org.wildfly.swarm.topology"/>
+    <module name="org.wildfly.swarm.container"/>
+    <module name="org.wildfly.swarm.container" slot="runtime"/>
+    <module name="org.jboss.msc"/>
+    <module name="org.jboss.as.naming"/>
+    <module name="org.jboss.shrinkwrap"/>
+    <module name="org.jboss.as.network"/>
+  </dependencies>
+</module>
