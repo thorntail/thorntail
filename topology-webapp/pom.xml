@@ -15,40 +15,43 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology</artifactId>
+  <artifactId>topology-webapp</artifactId>
 
-  <name>Topology</name>
-  <description>WildFly Swarm: Topology</description>
+  <name>Topology UI</name>
+  <description>Server-Sent Events of instances being added/removed from cluster</description>
 
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.internal>true</swarm.fraction.internal>
+    <swarm.fraction.tags>Service Discovery</swarm.fraction.tags>
   </properties>
-
+  
   <dependencies>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-runtime</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
+      <artifactId>topology</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-naming</artifactId>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-undertow</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
