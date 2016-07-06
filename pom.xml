@@ -35,8 +35,7 @@
     <version.swarm.spi>1.0.5.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
-    <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final
-    </version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
+    <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
     <version.org.arquillian>1.1.10.Final</version.org.arquillian>
@@ -45,6 +44,8 @@
     <version.org.arquillian.graphene>2.1.0.Alpha2</version.org.arquillian.graphene>
     <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-9</version.org.jboss.shrinkwrap.descriptors>
     <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
+
+    <version.jolokia>1.3.1</version.jolokia>
 
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
@@ -422,6 +423,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jolokia</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -609,6 +616,14 @@
         <type>pom</type>
         <scope>test</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.jolokia</groupId>
+        <artifactId>jolokia-war</artifactId>
+        <type>war</type>
+        <version>${version.jolokia}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -677,6 +692,7 @@
     <module>jgroups</module>
     <module>jgroups-module</module>
     <module>jmx</module>
+    <module>jolokia</module>
     <module>jpa</module>
     <module>jpa-mysql</module>
     <module>jpa-postgresql</module>

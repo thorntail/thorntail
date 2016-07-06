@@ -9,34 +9,18 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>jolokia-parent</artifactId>
-    <version>1.0.2.Final-SNAPSHOT</version>
+    <artifactId>testsuite</artifactId>
+    <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jolokia-test</artifactId>
+  <artifactId>testsuite-jolokia</artifactId>
 
-  <name>WildFly Swarm: Jolokia Test</name>
-  <description>WildFly Swarm: Jolokia Test</description>
+  <name>WildFly Swarm: Jolokia Test Suite</name>
+  <description>WildFly Swarm: Jolokia Test Suite</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>

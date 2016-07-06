@@ -27,6 +27,7 @@
    {"name": "jdr",                     "doc": "jdr"},
    {"name": "jgroups",                 "doc": "jgroups"},
    {"name": "jmx",                     "doc": "jmx"},
+   {"name": "jolokia",                 "doc": "jolokia"},
    {"name": "jpa",                     "doc": "jpa"},
    {"name": "jpa-mysql",               "doc": "jpa-mysql"},
    {"name": "jpa-postgresql",          "doc": "jpa-postgresql"},
