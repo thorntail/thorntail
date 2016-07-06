@@ -51,12 +51,16 @@ public class SwaggerActivator implements ServiceActivator {
 
         // some type inconsistencies in the API (String vs String[])
         String[] packages = (String[]) config.get(SwaggerConfig.Key.PACKAGES);
-        StringBuffer sb = new StringBuffer();
-        for (String s : packages) {
-            sb.append(s).append(',');
+
+        if(packages!=null) {
+            StringBuffer sb = new StringBuffer();
+            for (String s : packages) {
+                sb.append(s).append(',');
+            }
+
+            beanConfig.setResourcePackage(sb.toString());
         }
 
-        beanConfig.setResourcePackage(sb.toString());
         beanConfig.setVersion((String) config.get(SwaggerConfig.Key.VERSION));
         beanConfig.setBasePath((String) config.get(SwaggerConfig.Key.ROOT));
         beanConfig.setContact((String) config.get(SwaggerConfig.Key.CONTACT));
