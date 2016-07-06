@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.swagger;
 
+import java.util.Arrays;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.junit.Test;
@@ -71,6 +73,6 @@ public class SwaggerArchiveTest {
         SwaggerConfig config = new SwaggerConfig(asset.openStream());
         assertThat(config.get(SwaggerConfig.Key.VERSION)).isEqualTo("1.0");
         assertThat(config.get(SwaggerConfig.Key.TERMS_OF_SERVICE_URL)).isEqualTo("http://myapplication.com/tos.txt");
-        assertThat(config.get(SwaggerConfig.Key.PACKAGES)).isEqualTo("com.tester.resource,com.tester.other.resource");
+        assertThat(Arrays.toString((String[])config.get(SwaggerConfig.Key.PACKAGES))).isEqualTo("[com.tester.resource, com.tester.other.resource]");
     }
 }
