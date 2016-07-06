@@ -33,11 +33,14 @@ public class SwaggerActivator implements ServiceActivator {
 
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(SwaggerArchive.SWAGGER_CONFIGURATION_PATH);
 
+
         if (in == null) {
+
             // No config available. Print a warning and return
             System.err.println("WARN: No swagger configuration found. Swagger not activated.");
             return;
         }
+
         SwaggerConfig config = new SwaggerConfig(in);
 
         BeanConfig beanConfig = new BeanConfig();
@@ -45,7 +48,15 @@ public class SwaggerActivator implements ServiceActivator {
         beanConfig.setLicense((String) config.get(SwaggerConfig.Key.LICENSE));
         beanConfig.setLicenseUrl((String) config.get(SwaggerConfig.Key.LICENSE_URL));
         beanConfig.setTermsOfServiceUrl((String) config.get(SwaggerConfig.Key.TERMS_OF_SERVICE_URL));
-        beanConfig.setResourcePackage((String) config.get(SwaggerConfig.Key.PACKAGES));
+
+        // some type inconsistencies in the API (String vs String[])
+        String[] packages = (String[]) config.get(SwaggerConfig.Key.PACKAGES);
+        StringBuffer sb = new StringBuffer();
+        for (String s : packages) {
+            sb.append(s).append(',');
+        }
+
+        beanConfig.setResourcePackage(sb.toString());
         beanConfig.setVersion((String) config.get(SwaggerConfig.Key.VERSION));
         beanConfig.setBasePath((String) config.get(SwaggerConfig.Key.ROOT));
         beanConfig.setContact((String) config.get(SwaggerConfig.Key.CONTACT));

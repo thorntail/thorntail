@@ -122,8 +122,14 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
         return getConfigurationAsset().getResourcePackages() != null;
     }
 
+    @Override
+    public String[] getResourcePackages() {
+        return getConfigurationAsset().getResourcePackages();
+    }
+
     private void loadOrCreateConfigurationAsset() {
         Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
+
         if (node != null) {
             Asset asset = node.getAsset();
             if (asset instanceof SwaggerConfigurationAsset) {

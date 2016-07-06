@@ -35,17 +35,21 @@ public class SwaggerConfig {
         try {
             while ((line = in.readLine()) != null) {
                 int separatorIndex = line.indexOf(":");
-                Key key = Key.valueOf(line.substring(0, separatorIndex));
+                Key key = Key.valueOf(line.substring(0, separatorIndex).toUpperCase());
                 Object value = line.substring(separatorIndex + 1);
 
                 // SCHEMES is meant to be a String[]
                 // everything else is a String
-                if (key == Key.SCHEMES) {
+                if (key == Key.SCHEMES || key == Key.PACKAGES) {
                     value = ((String) value).split(",");
                 }
                 put(key, value);
             }
-        } catch (IOException e) {
+        }
+        catch (IllegalArgumentException ia) {
+            throw new RuntimeException("Invalid key: "+ ia.getMessage());
+        }
+        catch (IOException e) {
             System.err.println("ERROR reading SwaggerConfigurationAsset" + e);
             e.printStackTrace();
         } finally {

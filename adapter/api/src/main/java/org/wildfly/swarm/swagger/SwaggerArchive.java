@@ -120,4 +120,6 @@ public interface SwaggerArchive extends Assignable {
      * @return true if the packages to be scanned have been configured
      */
     public boolean hasResourcePackages();
+
+    public String[] getResourcePackages();
 }
