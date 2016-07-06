@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.swagger.runtime;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -45,52 +46,57 @@ public class SwaggerConfiguration extends AbstractServerConfiguration<SwaggerFra
 
     @Override
     public void prepareArchive(Archive<?> a) {
-        try {
-            // Create a JAX-RS deployment archive
-            JAXRSArchive deployment = a.as(JAXRSArchive.class);
-            deployment.addModule("io.swagger");
+        if(a instanceof JAXRSArchive) {
+            try {
+                // Create a JAX-RS deployment archive
+                JAXRSArchive deployment = a.as(JAXRSArchive.class);
+                deployment.addModule("io.swagger");
 
-            // Make the deployment a swagger archive
-            SwaggerArchive swaggerArchive = deployment.as(SwaggerArchive.class);
+                // Make the deployment a swagger archive
+                SwaggerArchive swaggerArchive = deployment.as(SwaggerArchive.class);
 
-            // Get the context root from the deployment and tell swagger about it
-            swaggerArchive.setContextRoot(deployment.getContextRoot());
+                // Get the context root from the deployment and tell swagger about it
+                swaggerArchive.setContextRoot(deployment.getContextRoot());
 
-            // If the archive has not been configured with packages for swagger to scan
-            // try to be smart about it, and find the topmost package that's not in the
-            // org.wildfly.swarm package space
-            if (!swaggerArchive.hasResourcePackages()) {
-                String packageName = null;
-                for (Map.Entry<ArchivePath, Node> entry : deployment.getContent().entrySet()) {
-                    final ArchivePath key = entry.getKey();
-                    if (key.get().endsWith(".class")) {
-                        String parentPath = key.getParent().get();
-                        parentPath = parentPath.replaceFirst("/", "");
+                // If the archive has not been configured with packages for swagger to scan
+                // try to be smart about it, and find the topmost package that's not in the
+                // org.wildfly.swarm package space
+                if (!swaggerArchive.hasResourcePackages()) {
+                    String packageName = null;
+                    for (Map.Entry<ArchivePath, Node> entry : deployment.getContent().entrySet()) {
+                        final ArchivePath key = entry.getKey();
+                        if (key.get().endsWith(".class")) {
+                            String parentPath = key.getParent().get();
+                            parentPath = parentPath.replaceFirst("/", "");
 
-                        String parentPackage = parentPath.replaceFirst(".*/classes/", "");
-                        parentPackage = parentPackage.replaceAll("/", ".");
+                            String parentPackage = parentPath.replaceFirst(".*/classes/", "");
+                            parentPackage = parentPackage.replaceAll("/", ".");
 
-                        if (parentPackage.startsWith("org.wildfly.swarm")) {
-                            System.out.println("[Swagger] Ignoring swarm package " + parentPackage);
-                        } else {
-                            packageName = parentPackage;
-                            break;
+                            if (parentPackage.startsWith("org.wildfly.swarm")) {
+                                System.out.println("[Swagger] Ignoring swarm package " + parentPackage);
+                            } else {
+                                packageName = parentPackage;
+                                break;
+                            }
                         }
                     }
+                    if (packageName == null) {
+                        System.err.println("[Swagger] No eligible packages for Swagger to scan.");
+                    } else {
+                        System.out.println("[Swagger] Configuring Swagger with package " + packageName);
+                        swaggerArchive.setResourcePackages(packageName);
+                    }
                 }
-                if (packageName == null) {
-                    System.err.println("[Swagger] No eligible packages for Swagger to scan.");
-                } else {
-                    System.out.println("[Swagger] Configuring Swagger with " + packageName);
-                    swaggerArchive.setResourcePackages(packageName);
+                else {
+                    System.out.println("[SWAGGER] Configuring Swagger with packages "+ Arrays.toString(swaggerArchive.getResourcePackages()));
                 }
-            }
 
-            // Now add the swagger resources to our deployment
-            deployment.addResource(io.swagger.jaxrs.listing.ApiListingResource.class);
-            deployment.addResource(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-        } catch (Exception e) {
-            e.printStackTrace();
+                // Now add the swagger resources to our deployment
+                deployment.addResource(io.swagger.jaxrs.listing.ApiListingResource.class);
+                deployment.addResource(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
