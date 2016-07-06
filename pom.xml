@@ -59,6 +59,8 @@
     <version.mysql>5.1.39</version.mysql>
     <version.postgresql>9.4.1208</version.postgresql>
 
+    <version.com.orbitz.consul>0.9.16</version.com.orbitz.consul>
+
     <version.openshift.client>3.0.1.Final</version.openshift.client>
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
@@ -588,6 +590,18 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-consul</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.orbitz.consul</groupId>
+        <artifactId>consul-client</artifactId>
+        <version>${version.com.orbitz.consul}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-jgroups</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -788,6 +802,7 @@
     <module>swagger</module>
     <module>swagger-webapp</module>
     <module>topology</module>
+    <module>topology-consul</module>
     <module>topology-jgroups</module>
     <module>topology-openshift</module>
     <module>topology-webapp</module>
