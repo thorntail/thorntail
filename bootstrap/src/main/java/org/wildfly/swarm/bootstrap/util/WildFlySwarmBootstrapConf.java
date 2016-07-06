@@ -25,12 +25,19 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.modules.ModuleSpec;
+import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
+import org.jboss.modules.filter.PathFilter;
+import org.jboss.modules.filter.PathFilters;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 
@@ -128,11 +135,32 @@ public class WildFlySwarmBootstrapConf {
             LOG.trace("adding bootstrap artifact: " + artifact.getAbsolutePath());
         }
 
+        JarFile jar = new JarFile(artifact);
+        ResourceLoader originaloader = ResourceLoaders.createJarResourceLoader(artifact.getName(), jar);
+
+        PathFilter filter = getModuleFilter( jar );
         builder.addResourceRoot(
                 ResourceLoaderSpec.createResourceLoaderSpec(
-                        ResourceLoaders.createJarResourceLoader(artifact.getName(), new JarFile(artifact))
+                        ResourceLoaders.createFilteredResourceLoader( filter, originaloader )
                 )
         );
+    }
+
+    private PathFilter getModuleFilter(JarFile jar) {
+        Set<String> paths = new HashSet<>();
+
+        Enumeration<JarEntry> jarEntries = jar.entries();
+
+        while (jarEntries.hasMoreElements()) {
+            JarEntry jarEntry = jarEntries.nextElement();
+            if ( ! jarEntry.isDirectory() ) {
+                String name = jarEntry.getName();
+                if ( name.endsWith( "/module.xml" ) ) {
+                    paths.add( name );
+                }
+            }
+        }
+        return PathFilters.in( paths );
     }
 
     private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.bootstrap");
