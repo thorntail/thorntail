@@ -51,6 +51,7 @@
     <version.mysql>5.1.39</version.mysql>
     <version.postgresql>9.4.1208</version.postgresql>
 
+    <version.openshift.client>3.0.1.Final</version.openshift.client>
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
 
@@ -549,6 +550,18 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>topology-openshift</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.openshift</groupId>
+        <artifactId>openshift-restclient-java</artifactId>
+        <version>${version.openshift.client}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>topology-webapp</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -729,6 +742,7 @@
     <module>security</module>
     <module>topology</module>
     <module>topology-jgroups</module>
+    <module>topology-openshift</module>
     <module>topology-webapp</module>
     <module>transactions</module>
     <module>undertow</module>
