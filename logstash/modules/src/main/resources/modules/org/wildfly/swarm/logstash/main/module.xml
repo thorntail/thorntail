@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.logstash">
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="org/wildfly/swarm/logstash"/>
+      </paths>
+    </system>
+
+    <module name="org.wildfly.swarm.logstash" slot="api" export="true" services="export"/>
+
+  </dependencies>
+</module>
