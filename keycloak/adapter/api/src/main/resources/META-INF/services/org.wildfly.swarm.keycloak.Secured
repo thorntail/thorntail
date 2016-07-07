@@ -1,0 +1,3 @@
+implementingClassName=org.wildfly.swarm.keycloak.internal.SecuredImpl
+extension=.war
+archiveFormat=ZIP
