@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+~
+~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>drools-server-parent</artifactId>
+        <version>1.0.0.Alpha2-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>drools-server</artifactId>
+
+    <name>WildFly Swarm: Drools Server</name>
+    <description>WildFly Swarm: Drools Server</description>
+
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>drools-server-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>drools-server-modules</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>drools-server-runtime</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- kie drools server dependencies -->
+        <dependency>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-services-common</artifactId>
+            <version>${version.org.kie}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.spec.javax.security.jacc</groupId>
+                    <artifactId>jboss-jacc-api_1.4_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jaxrs-api</artifactId>
+                    <groupId>org.jboss.resteasy</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>resteasy-jaxrs</artifactId>
+                    <groupId>org.jboss.resteasy</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>resteasy-jaxb-provider</artifactId>
+                    <groupId>org.jboss.resteasy</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-rest-common</artifactId>
+            <version>${version.org.kie}</version>
+        </dependency>
+
+        <!-- drools kie server dependencies -->
+        <dependency>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-services-drools</artifactId>
+            <version>${version.org.kie}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-rest-drools</artifactId>
+            <version>${version.org.kie}</version>
+        </dependency>
+    </dependencies>
+
+</project>
