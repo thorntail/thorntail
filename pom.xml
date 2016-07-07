@@ -606,6 +606,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spring</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>swagger</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -867,6 +873,7 @@
     <module>request-controller</module>
     <module>resource-adapters</module>
     <module>security</module>
+    <module>spring</module>
     <module>swagger</module>
     <module>swagger-webapp</module>
     <module>topology</module>

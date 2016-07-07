@@ -91,6 +91,7 @@
     <module>testsuite-request-controller</module>
     <module>testsuite-resource-adapters</module>
     <module>testsuite-security</module>
+    <module>testsuite-spring</module>
     <module>testsuite-swagger</module>
     <module>testsuite-swagger-webapp</module>
     <module>testsuite-topology</module>
