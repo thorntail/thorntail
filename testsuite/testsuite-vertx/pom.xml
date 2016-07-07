@@ -9,57 +9,46 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>vertx-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>testsuite</artifactId>
+    <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>vertx-api</artifactId>
+  <artifactId>testsuite-vertx</artifactId>
 
-  <name>WildFly Swarm: Vert.x API</name>
-  <description>WildFly Swarm: Vert.x API</description>
+  <name>WildFly Swarm: Vert.x Test Suite</name>
+  <description>WildFly Swarm: Vert.x Test Suite</description>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>vertx-modules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>resource-adapters-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>messaging-api</artifactId>
-    </dependency>
-    <!-- io.vertx module -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
+      <artifactId>vertx</artifactId>
     </dependency>
 
-    <!-- io.vertx.jca module -->
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-jca-api</artifactId>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>cdi</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>ejb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>resource-adapters</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

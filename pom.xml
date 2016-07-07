@@ -30,7 +30,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>21</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>22</version.wildfly.swarm.fraction.plugin>
 
     <version.swarm.spi>1.0.5.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
@@ -64,6 +64,8 @@
     <version.openshift.client>3.0.1.Final</version.openshift.client>
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
+
+    <version.vertx>3.3.0</version.vertx>
 
     <version.gradle>2.4</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
@@ -653,6 +655,20 @@
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>vertx</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-dependencies</artifactId>
+        <version>${version.vertx}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <!-- Feature Packs -->
       <dependency>
         <groupId>org.wildfly</groupId>
@@ -809,6 +825,7 @@
     <module>transactions</module>
     <module>undertow</module>
     <module>undertow-js</module>
+    <module>vertx</module>
     <module>webservices</module>
 
     <module>integration-tests</module>
