@@ -70,6 +70,8 @@
     <version.keycloak>1.9.8.Final</version.keycloak>
     <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
 
+    <version.org.kie>6.4.0.Final</version.org.kie>
+
     <version.gradle>2.4</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
     <version.groovy>2.4.3</version.groovy>
@@ -351,6 +353,34 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>datasources</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>drools-server</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.server</groupId>
+        <artifactId>kie-server-services-common</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.server</groupId>
+        <artifactId>kie-server-rest-common</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.server</groupId>
+        <artifactId>kie-server-services-drools</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.server</groupId>
+        <artifactId>kie-server-rest-drools</artifactId>
+        <version>${version.org.kie}</version>
       </dependency>
 
       <dependency>
@@ -834,6 +864,7 @@
     <module>cdi-ext</module>
     <module>connector</module>
     <module>datasources</module>
+    <module>drools-server</module>
     <module>ee</module>
     <module>ejb</module>
     <module>ejb-remote</module>

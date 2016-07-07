@@ -9,38 +9,34 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>drools-server-parent</artifactId>
-    <version>1.0.0.Alpha2-SNAPSHOT</version>
+    <artifactId>testsuite</artifactId>
+    <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>drools-server-runtime</artifactId>
+  <artifactId>testsuite-drools-server</artifactId>
 
-  <name>WildFly Swarm: Drools Server Runtime</name>
-  <description>WildFly Swarm: Drools Server Runtime</description>
+  <name>WildFly Swarm: Drools Server Test Suite</name>
+  <description>WildFly Swarm: Drools Server Test Suite</description>
 
   <packaging>jar</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>drools-server-api</artifactId>
+      <artifactId>drools-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>
