@@ -15,27 +15,20 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>ribbon-secured</artifactId>
+  <artifactId>ribbon-secured-client</artifactId>
 
-  <name>Ribbon Secured</name>
-  <description>Provides security token propagation across invocations when using Netflix Ribbon and Keycloak</description>
+  <name>WildFly Swarm: Ribbon Secured Client</name>
+  <description>WildFly Swarm: Ribbon Secured Client</description>
 
   <packaging>jar</packaging>
 
-  <properties>
-    <swarm.fraction.tags>Service Discovery,Netflix OSS,Security</swarm.fraction.tags>
-  </properties>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
-
   <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+
+    <!-- Dependent APIs -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>ribbon</artifactId>
@@ -44,9 +37,7 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>keycloak</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-secured-client</artifactId>
-    </dependency>
+
   </dependencies>
+
 </project>

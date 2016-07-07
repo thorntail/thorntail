@@ -10,25 +10,129 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>netflix-parent</artifactId>
-    <version>1.0.1.Final-SNAPSHOT</version>
+    <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>ribbon-parent</artifactId>
+  <artifactId>ribbon</artifactId>
 
-  <name>WildFly Swarm: Ribbon Parent</name>
-  <description>WildFly Swarm: Ribbon Parent</description>
+  <name>Ribbon</name>
+  <description>Client side load balancing with Netflix Ribbon</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>ribbon</module>
+  <properties>
+    <swarm.fraction.tags>Service Discovery,Netflix OSS</swarm.fraction.tags>
+  </properties>
 
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
-  </modules>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>msc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>hystrix</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>netflix-rxjava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>netflix-rxnetty</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>archaius</artifactId>
+    </dependency>
+
+    <!-- Provided APIs -->
+    <dependency>
+      <groupId>com.netflix.ribbon</groupId>
+      <artifactId>ribbon</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.netflix.ribbon</groupId>
+      <artifactId>ribbon-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.netflix.ribbon</groupId>
+      <artifactId>ribbon-transport</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.netflix.ribbon</groupId>
+      <artifactId>ribbon-loadbalancer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 
 </project>

@@ -10,25 +10,103 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>netflix-parent</artifactId>
-    <version>1.0.1.Final-SNAPSHOT</version>
+    <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>hystrix-parent</artifactId>
+  <artifactId>hystrix</artifactId>
 
-  <name>WildFly Swarm: Hystrix Parent</name>
-  <description>WildFly Swarm: Hystrix Parent</description>
+  <name>Hystrix</name>
+  <description>Latency and Fault Tolerance, such as Circuit Breaker, with Hystrix from Netflix OSS</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>hystrix</module>
+  <properties>
+    <swarm.fraction.tags>Fault Tolerance,Netflix OSS</swarm.fraction.tags>
+  </properties>
 
-    <module>api</module>
-    <module>runtime</module>
-    <module>modules</module>
-    <module>test</module>
-  </modules>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container-runtime</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>archaius</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>netflix-rxjava</artifactId>
+    </dependency>
+
+    <!-- Provided APIs -->
+    <dependency>
+      <groupId>com.netflix.hystrix</groupId>
+      <artifactId>hystrix-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.netflix.hystrix</groupId>
+      <artifactId>hystrix-metrics-event-stream</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+  </dependencies>
 
 </project>

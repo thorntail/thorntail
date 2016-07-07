@@ -630,6 +630,24 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>hystrix</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>ribbon</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>ribbon-secured</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>security</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
@@ -900,6 +918,7 @@
     <module>monitor</module>
     <module>mod_cluster</module>
     <module>naming</module>
+    <module>netflix</module>
     <module>remoting</module>
     <module>request-controller</module>
     <module>resource-adapters</module>

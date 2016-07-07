@@ -9,44 +9,41 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>netflix-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>ribbon-secured</artifactId>
+  <artifactId>testsuite-ribbon</artifactId>
 
-  <name>Ribbon Secured</name>
-  <description>Provides security token propagation across invocations when using Netflix Ribbon and Keycloak</description>
+  <name>WildFly Swarm: Ribbon Test Suite</name>
+  <description>WildFly Swarm: Ribbon Test Suite</description>
 
   <packaging>jar</packaging>
-
-  <properties>
-    <swarm.fraction.tags>Service Discovery,Netflix OSS,Security</swarm.fraction.tags>
-  </properties>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>ribbon</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>keycloak</artifactId>
+      <artifactId>undertow</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ribbon-secured-client</artifactId>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
+
 </project>

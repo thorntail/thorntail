@@ -9,34 +9,20 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>parent</artifactId>
-    <version>7</version>
-    <relativePath />
+    <artifactId>core</artifactId>
+    <version>1.0.3.Final-SNAPSHOT</version>
+    <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>netflix-parent</artifactId>
-  <version>1.0.1.Final-SNAPSHOT</version>
 
   <name>WildFly Swarm: Netflix</name>
   <description>WildFly Swarm: Netflix</description>
 
   <packaging>pom</packaging>
 
-  <scm>
-    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-netflix.git</connection>
-    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-netflix.git</developerConnection>
-    <url>https://github.com/wildfly-swarm/wildfly-swarm-netflix</url>
-    <tag>HEAD</tag>
-  </scm>
-
   <properties>
-    <version.swarm.spi>1.0.3.Final</version.swarm.spi>
-    <version.swarm.topology>1.0.2.Final</version.swarm.topology>
-    <version.swarm.keycloak>1.0.0.Final</version.swarm.keycloak>
-    <version.swarm.core>1.0.0.Final</version.swarm.core>
-    <version.swarm.fraction-plugin>19</version.swarm.fraction-plugin>
-
     <version.netflix.commons>0.1.1</version.netflix.commons>
     <version.archaius>0.6.6</version.archaius>
     <version.ribbon>2.1.0</version.ribbon>
@@ -49,160 +35,54 @@
 
     <version.commons-configuration>1.8</version.commons-configuration>
 
-    <version.fest-assert>1.4</version.fest-assert>
   </properties>
-
-  <repositories>
-    <repository>
-      <id>projectodd-snapshots</id>
-      <name>Project:odd Snapshots from CI</name>
-      <url>https://repository-projectodd.forge.cloudbees.com/snapshot</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-          <version>${version.swarm.fraction-plugin}</version>
-          <executions>
-            <execution>
-              <phase>process-classes</phase>
-              <goals>
-                <goal>process</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <reuseForks>false</reuseForks>
-          <runOrder>alphabetical</runOrder>
-          <failIfNoTests>false</failIfNoTests>
-          <systemPropertyVariables>
-            <swarm.bind.address>127.0.0.1</swarm.bind.address>
-            <project.version>${project.version}</project.version>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>archaius</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-guava</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>hystrix</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>hystrix-api</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>hystrix-modules</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>hystrix-runtime</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-api</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-modules</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-runtime</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-secured-api</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured-client</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-secured-modules</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>ribbon-secured-runtime</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-rxjava</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-rxnetty</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>servo</artifactId>
-        <version>1.0.1.Final-SNAPSHOT</version>
+        <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -286,55 +166,13 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>core</artifactId>
-        <version>${version.swarm.core}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>keycloak</artifactId>
-        <version>${version.swarm.keycloak}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>topology</artifactId>
-        <version>${version.swarm.topology}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
         <version>3.2.5</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.easytesting</groupId>
-        <artifactId>fest-assert</artifactId>
-        <version>${version.fest-assert}</version>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
   <modules>
     <module>archaius</module>
@@ -342,45 +180,10 @@
     <module>hystrix</module>
     <module>ribbon</module>
     <module>ribbon-secured</module>
+    <module>ribbon-secured-client</module>
     <module>rxjava</module>
     <module>rxnetty</module>
     <module>servo</module>
   </modules>
 
-    <profiles>
-    <profile>
-      <id>attach-exposed-components</id>
-      <activation>
-        <file>
-          <exists>exposed-components.json</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>add-exposed-components</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <configuration>
-                  <artifacts>
-                    <artifact>
-                      <file>exposed-components.json</file>
-                      <type>json</type>
-                      <classifier>exposed-components</classifier>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
