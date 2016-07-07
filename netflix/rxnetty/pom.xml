@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>netflix-parent</artifactId>
+    <version>1.0.1.Final-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>netflix-rxnetty</artifactId>
+
+  <name>WildFly Swarm: RX-Netty</name>
+  <description>WildFly Swarm: RX-Netty</description>
+
+  <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>bootstrap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container-modules</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>netflix-rxjava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>servo</artifactId>
+    </dependency>
+
+    <!-- Provided APIs -->
+    <dependency>
+      <groupId>io.reactivex</groupId>
+      <artifactId>rxnetty</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.reactivex</groupId>
+      <artifactId>rxnetty-contexts</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.reactivex</groupId>
+      <artifactId>rxnetty-servo</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+</project>

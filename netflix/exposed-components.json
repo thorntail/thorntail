@@ -1,0 +1,13 @@
+{"Netflix": [
+  {"name": "archaius"},
+  {"name": "netflix-guava"},
+  {"name": "hystrix"},
+  {"name": "ribbon",                 "doc": "ribbon-api"},
+  {"name": "ribbon-modules"},
+  {"name": "ribbon-secured",         "doc": "ribbon-secured-api"},
+  {"name": "ribbon-secured-modules"},
+  {"name": "ribbon-secured-client",  "doc": "ribbon-secured-client"},
+  {"name": "netflix-rxjava"},
+  {"name": "netflix-rxnetty"},
+  {"name": "servo"}
+]}

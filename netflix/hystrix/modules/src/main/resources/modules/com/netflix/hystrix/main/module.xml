@@ -1,0 +1,17 @@
+<module xmlns="urn:jboss:module:1.3" name="com.netflix.hystrix">
+  <resources>
+    <artifact name="com.netflix.hystrix:hystrix-core:${version.hystrix}"/>
+    <artifact name="com.netflix.hystrix:hystrix-metrics-event-stream:${version.hystrix}"/>
+  </resources>
+
+  <dependencies>
+    <module name="org.wildfly.swarm.undertow" slot="runtime"/>
+    <module name="javax.servlet.api"/>
+    <module name="org.codehaus.jackson.jackson-core-asl"/>
+    <module name="com.netflix.archaius"/>
+    <module name="io.reactivex.rxjava"/>
+    <module name="org.slf4j"/>
+    <module name="sun.jdk"/>
+  </dependencies>
+
+</module>
