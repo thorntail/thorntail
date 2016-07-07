@@ -60,7 +60,7 @@
         <version-maven-release-plugin>2.5</version-maven-release-plugin>
         <version-maven-source-plugin>2.3</version-maven-source-plugin>
         <version-maven-surefire-plugin>2.18.1</version-maven-surefire-plugin>
-        <version-wildfly-swarm-fraction-plugin>18</version-wildfly-swarm-fraction-plugin>
+        <version-wildfly-swarm-fraction-plugin>22</version-wildfly-swarm-fraction-plugin>
     </properties>
 
     <!-- Modules -->

@@ -39,6 +39,8 @@ import org.wildfly.swarm.spi.api.JARArchive;
 
 
 /**
+ * Verifiy usage of a system camel context
+ * 
  * @author thomas.diesler@jboss.com
  * @since 09-Mar-2016
  */

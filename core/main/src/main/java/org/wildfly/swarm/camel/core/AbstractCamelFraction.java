@@ -19,7 +19,28 @@
  */
 package org.wildfly.swarm.camel.core;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.camel.builder.RouteBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wildfly.swarm.spi.api.Fraction;
 
-public final class CamelCoreFraction extends AbstractCamelFraction<CamelCoreFraction> implements Fraction {
+public abstract class AbstractCamelFraction<T extends AbstractCamelFraction<T>> implements Fraction {
+
+    public final static Logger LOGGER = LoggerFactory.getLogger("org.wildfly.swarm.camel");
+
+    private final List<RouteBuilder> routeBuilders = new ArrayList<>();
+
+    @SuppressWarnings("unchecked")
+    public T addRouteBuilder(RouteBuilder builder) {
+        routeBuilders.add(builder);
+        return (T)this;
+    }
+
+    public List<RouteBuilder> getRouteBuilders() {
+        return Collections.unmodifiableList(routeBuilders);
+    }
 }

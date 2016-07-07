@@ -17,9 +17,10 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.swarm.camel.core;
+package org.wildfly.swarm.camel.cxf;
 
-import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.camel.core.AbstractCamelFraction;
 
-public final class CamelCoreFraction extends AbstractCamelFraction<CamelCoreFraction> implements Fraction {
+public final class CamelCXFFraction extends AbstractCamelFraction<CamelCXFFraction> {
+
 }
