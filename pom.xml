@@ -30,7 +30,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>22</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>23</version.wildfly.swarm.fraction.plugin>
 
     <version.swarm.spi>1.0.5.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
@@ -66,6 +66,9 @@
     <version.org.jgroups>3.6.6.Final</version.org.jgroups>
 
     <version.vertx>3.3.0</version.vertx>
+
+    <version.keycloak>1.9.8.Final</version.keycloak>
+    <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
 
     <version.gradle>2.4</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
@@ -466,9 +469,56 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak-server</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-adapter-feature-pack</artifactId>
+        <type>zip</type>
+        <version>${version.keycloak}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-server-feature-pack</artifactId>
+        <type>zip</type>
+        <version>${version.keycloak}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-core</artifactId>
+        <version>${version.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-undertow-adapter</artifactId>
+        <version>${version.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak.secretstore</groupId>
+        <artifactId>secret-store</artifactId>
+        <version>${version.keycloak-secretstore}</version>
+        <type>war</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging</artifactId>
         <version>1.0.3.Final-SNAPSHOT</version>
       </dependency>
+
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -802,6 +852,8 @@
     <module>jpa-mysql</module>
     <module>jpa-postgresql</module>
     <module>jsf</module>
+    <module>keycloak</module>
+    <module>keycloak-server</module>
     <module>logging</module>
     <module>logstash</module>
     <module>mail</module>

@@ -1,6 +1,0 @@
-{"Keycloak": [
-  {"name": "keycloak",                "doc": "keycloak-api"},
-  {"name": "keycloak-modules"},
-  {"name": "keycloak-server",         "doc": "keycloak-server-api"},
-  {"name": "keycloak-server-modules"}
-]}

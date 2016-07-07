@@ -15,25 +15,16 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>keycloak</artifactId>
+  <artifactId>keycloak-server</artifactId>
 
-  <name>Keycloak</name>
-  <description>Securing your RESTful services</description>
+  <name>Keycloak Server</name>
+  <description>Running Keycloak in an uber jar</description>
 
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.tags>Security,Web</swarm.fraction.tags>
+    <swarm.fraction.tags>Security</swarm.fraction.tags>
   </properties>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
 
   <dependencies>
     <dependency>
@@ -43,26 +34,23 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>undertow</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>security</artifactId>
-    </dependency>
-
-    <!-- Provided APIs -->
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-undertow-adapter</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>infinispan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>datasources</artifactId>
     </dependency>
 
     <dependency>
@@ -103,7 +91,7 @@
     </dependency>
     <dependency>
       <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-adapter-feature-pack</artifactId>
+      <artifactId>keycloak-server-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
       <exclusions>
@@ -113,6 +101,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
+
 </project>
