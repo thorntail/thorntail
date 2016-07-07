@@ -1,0 +1,6 @@
+{"Spring": [
+  {"name": "spring",              "doc": "spring-api"},
+  {"name": "spring-modules"},
+  {"name": "spring-rest",         "doc": "spring-rest-api"},
+  {"name": "spring-rest-modules"}
+]}
