@@ -30,7 +30,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>23</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>24</version.wildfly.swarm.fraction.plugin>
 
     <version.swarm.spi>1.0.5.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
@@ -939,6 +939,8 @@
 
     <module>integration-tests</module>
     <module>testsuite</module>
+
+    <module>fraction-list</module>
   </modules>
 
   <profiles>
