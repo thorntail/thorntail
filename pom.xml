@@ -446,6 +446,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jaxrs-jaxb</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jca</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
