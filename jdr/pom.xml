@@ -14,8 +14,10 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <packaging>jar</packaging>
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>jdr</artifactId>
+
+  <packaging>jar</packaging>
 
   <name>JBoss Diagnostic Reporting</name>
   <description> Enables the gathering of diagnostic data for use in remote analysis of error conditions. Although the data is in a simple format and could be useful to anyone, primarily useful for JBoss EAP subscribers who would provide the data to Red Hat when requesting support</description>

@@ -14,6 +14,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>request-controller</artifactId>
 
   <name>Request Controller</name>

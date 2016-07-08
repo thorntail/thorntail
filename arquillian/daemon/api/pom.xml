@@ -14,6 +14,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>arquillian-daemon</artifactId>
 
   <name>WildFly Swarm: Arquillian Daemon API</name>

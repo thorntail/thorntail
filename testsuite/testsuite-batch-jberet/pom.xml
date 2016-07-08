@@ -28,6 +28,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-batch-jberet</artifactId>
 
   <name>WildFly Swarm: Batch (JBeret) Test Suite</name>

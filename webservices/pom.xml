@@ -13,6 +13,7 @@
     <version>1.0.3.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
+
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>webservices</artifactId>
 

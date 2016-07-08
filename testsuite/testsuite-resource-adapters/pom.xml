@@ -9,6 +9,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-resource-adapters</artifactId>
 
   <name>WildFly Swarm: Resource Adapters Test Suite</name>

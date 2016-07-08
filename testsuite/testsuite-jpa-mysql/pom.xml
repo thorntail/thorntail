@@ -14,6 +14,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jpa-mysql</artifactId>
 
   <name>WildFly Swarm: JPA MySQL Test Suite</name>

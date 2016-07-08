@@ -15,6 +15,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>jsf</artifactId>
 
   <name>JSF</name>

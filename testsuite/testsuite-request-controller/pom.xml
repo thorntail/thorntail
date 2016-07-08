@@ -9,6 +9,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-request-controller</artifactId>
 
   <name>WildFly Swarm: Request Controller Test Suite</name>

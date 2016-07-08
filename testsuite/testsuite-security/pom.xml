@@ -14,6 +14,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-security</artifactId>
 
   <name>WildFly Swarm: Security Test Suite</name>

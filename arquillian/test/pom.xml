@@ -14,6 +14,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>arquillian-test</artifactId>
 
   <name>WildFly Swarm: Arquillian Test</name>

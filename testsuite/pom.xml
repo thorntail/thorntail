@@ -14,7 +14,9 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite</artifactId>
+
   <packaging>pom</packaging>
 
   <name>WildFly Swarm: Test Suite</name>

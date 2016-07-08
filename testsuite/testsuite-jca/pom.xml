@@ -14,6 +14,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jca</artifactId>
 
   <name>WildFly Swarm: JCA Test Suite</name>

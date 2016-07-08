@@ -15,6 +15,7 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-management-console</artifactId>
 
   <name>WildFly Swarm: Management Console Test Suite</name>
