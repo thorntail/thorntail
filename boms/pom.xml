@@ -55,6 +55,8 @@
     <module>bom-stable</module>
     <module>bom-frozen</module>
     <module>bom-locked</module>
+
+    <module>bom-all</module>
   </modules>
 
 </project>
