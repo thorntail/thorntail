@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>parent</artifactId>
+    <version>${project.parent.parent.version}</version>
+    <relativePath />
+  </parent>
+
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>#{bom-artifactId}</artifactId>
+  <version>${project.version}</version>
+
+  <name>#{bom-name}</name>
+  <description>#{bom-description}</description>
+
+  <packaging>pom</packaging>
+
+  <url>http://wildfly-swarm.io/</url>
+  <developers>
+    <developer>
+      <id>wildfly-swarm.io</id>
+      <name>WildFly Swarm Community</name>
+      <organization>WildFly Swarm</organization>
+      <organizationUrl>http://wildfly-swarm.io/</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
+    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
+    <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
+    <tag>${project.scm.tag}</tag>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>AL2</name>
+    </license>
+  </licenses>
+
+  <properties>
+    <version.shrinkwrap>${version.org.jboss.shrinkwrap}</version.shrinkwrap>
+    <version.shrinkwrap-descriptors>${version.org.jboss.shrinkwrap.descriptors}</version.shrinkwrap-descriptors>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+#{dependencies}
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-bom</artifactId>
+        <version>${version.shrinkwrap}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-bom</artifactId>
+        <version>${version.shrinkwrap-descriptors}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav-jackrabbit</artifactId>
+        <version>2.10</version>
+      </extension>
+    </extensions>
+  </build>
+
+</project>
