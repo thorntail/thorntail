@@ -833,6 +833,12 @@
         <version>${version.jolokia}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>fraction-list</artifactId>
+        <version>1.0.3.Final-SNAPSHOT</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -941,6 +947,7 @@
     <module>testsuite</module>
 
     <module>fraction-list</module>
+    <module>plugin</module>
   </modules>
 
   <profiles>
