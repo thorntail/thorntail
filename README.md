@@ -1,10 +1,15 @@
 
-# WildFly Swarm Core
 
 [![Build Status](https://projectodd.ci.cloudbees.com/buildStatus/icon?job=wildfly-swarm-core)](https://projectodd.ci.cloudbees.com/job/wildfly-swarm-core)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/core)
 [![Join the chat at freenode:wildfly-swarm](https://img.shields.io/badge/irc-freenode%3A%20%23wildfly--swarm-blue.svg)](http://webchat.freenode.net/?channels=%23wildfly-swarm)
+
+We rely on the [Java profiler from EJ Technologies](http://www.ej-technologies.com/products/jprofiler/overview.html)
+
+![Supported by JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)
+
+# WildFly Swarm Core
 
 WildFly Swarm provides a mechanism for building
 applications as *uber jars*, with just enough of the
