@@ -304,6 +304,11 @@
         <artifactId>arquillian-daemon-modules</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>arquillian-resolver</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -955,6 +960,7 @@
 
     <module>fraction-list</module>
     <module>plugin</module>
+    <module>swarmtool</module>
     <module>boms</module>
   </modules>
 
