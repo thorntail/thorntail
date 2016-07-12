@@ -57,6 +57,7 @@
     <module>bom-locked</module>
 
     <module>bom-all</module>
+    <module>bom</module>
   </modules>
 
 </project>

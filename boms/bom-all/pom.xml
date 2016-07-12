@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom-all</artifactId>
 
-  <name>BOM: All (*)</name>
-  <description>BOM: All (*)</description>
+  <name>BOM: *  :: All</name>
+  <description>BOM: *  :: All</description>
 
   <packaging>jar</packaging>
 
@@ -41,7 +41,7 @@
               <goal>generate-bom</goal>
             </goals>
             <configuration>
-              <stabilityIndex>0</stabilityIndex>
+              <stabilityIndex>*</stabilityIndex>
               <template>${project.parent.build.directory}/bom-template.xml</template>
             </configuration>
           </execution>

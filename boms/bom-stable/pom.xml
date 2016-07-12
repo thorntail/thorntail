@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom-stable</artifactId>
 
-  <name>BOM: Stable (3)</name>
-  <description>BOM: Stable (3)</description>
+  <name>BOM: 3  :: Stable</name>
+  <description>BOM: 3  :: Stable</description>
 
   <packaging>jar</packaging>
 

@@ -15,10 +15,10 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>bom-unstable</artifactId>
+  <artifactId>bom</artifactId>
 
-  <name>BOM: 2  :: Unstable</name>
-  <description>BOM: 2  :: Unstable</description>
+  <name>BOM: 3+ :: Recommended</name>
+  <description>BOM: 3+ :: Recommended</description>
 
   <packaging>jar</packaging>
 
@@ -41,7 +41,7 @@
               <goal>generate-bom</goal>
             </goals>
             <configuration>
-              <stabilityIndex>2</stabilityIndex>
+              <stabilityIndex>3+</stabilityIndex>
               <template>${project.parent.build.directory}/bom-template.xml</template>
             </configuration>
           </execution>
