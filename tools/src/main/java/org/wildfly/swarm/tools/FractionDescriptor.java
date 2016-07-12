@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public class FractionDescriptor {
 
-    public FractionDescriptor(String groupId, String artifactId, String version, String name, String description, String tags, boolean internal) {
+    public FractionDescriptor(String groupId, String artifactId, String version, String name, String description, String tags, boolean internal, FractionStability stability) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
@@ -32,10 +32,11 @@ public class FractionDescriptor {
         this.description = description;
         this.tags = tags;
         this.internal = internal;
+        this.stability = stability;
     }
 
     public FractionDescriptor(String groupId, String artifactId, String version) {
-        this(groupId, artifactId, version, null, null, null, false);
+        this(groupId, artifactId, version, null, null, null, false, FractionStability.UNSTABLE);
     }
 
     public static FractionDescriptor fromGav(final FractionList fractionList, final String gav) {
@@ -203,4 +204,6 @@ public class FractionDescriptor {
     private final boolean internal;
 
     private final Set<FractionDescriptor> dependencies = new HashSet<>();
+
+    private final FractionStability stability;
 }

@@ -31,6 +31,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import org.wildfly.swarm.tools.FractionDescriptor;
+import org.wildfly.swarm.tools.FractionStability;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
@@ -57,7 +58,11 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                 String description = toString(fraction.get("description"));
                 String tags = toString(fraction.get("tags"));
                 boolean internal = toBoolean(fraction.get("internal"));
-                FractionDescriptor fd = new FractionDescriptor(groupId, artifactId, version, name, description, tags, internal);
+
+                JsonValue stabilityJson = fraction.get("stability");
+                FractionStability stability = stabilityJson.isNull() ? FractionStability.UNSTABLE : FractionStability.values()[stabilityJson.asInt()];
+
+                FractionDescriptor fd = new FractionDescriptor(groupId, artifactId, version, name, description, tags, internal, stability);
                 descriptors.put(groupId + ":" + artifactId, fd);
             });
         } catch (IOException e) {
