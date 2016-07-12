@@ -21,11 +21,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.jboss.arquillian.container.spi.Container;
 import org.jboss.arquillian.container.test.impl.enricher.resource.OperatesOnDeploymentAwareProvider;
+import org.jboss.arquillian.core.api.Instance;
+import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider {
+
+    @Inject
+    Instance<Container> containerInstance;
+
     @Override
     public boolean canProvide(Class<?> type) {
         return URL.class.isAssignableFrom(type);
@@ -34,6 +41,30 @@ public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider 
     @Override
     public Object doLookup(ArquillianResource resource, Annotation... __) {
 
+        Container container = containerInstance.get();
+        String javaVmArguments = null;
+        String portDefinedInProperties = null;
+        String offsetDefinedInProperties = null;
+        if (container != null) {
+            javaVmArguments = container.getContainerConfiguration().getContainerProperties().get("javaVmArguments");
+        }
+        if (javaVmArguments != null) {
+            if (javaVmArguments.contains(SwarmProperties.HTTP_PORT) || javaVmArguments.contains(SwarmProperties.PORT_OFFSET)) {
+                String[] properties = javaVmArguments.split("=| ");
+                // each property must have a value
+                if (properties.length % 2 != 0) {
+                    throw new IllegalArgumentException("Cannot parse java VM arguments " + javaVmArguments);
+                }
+                for (int i = 0; i < properties.length; i++) {
+                    if (properties[i].contains(SwarmProperties.HTTP_PORT)) {
+                        portDefinedInProperties = properties[i + 1];
+                    }
+                    if (properties[i].contains(SwarmProperties.PORT_OFFSET)) {
+                        offsetDefinedInProperties = properties[i + 1];
+                    }
+                }
+            }
+        }
         // first cut - try to get the data from the sysprops
         // this will fail if the user sets any of these via code
         String host = System.getProperty(SwarmProperties.BIND_ADDRESS);
@@ -43,12 +74,12 @@ public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider 
 
         int port = 8080;
 
-        final String portString = System.getProperty(SwarmProperties.HTTP_PORT);
-        final String portOffset = System.getProperty(SwarmProperties.PORT_OFFSET);
+        final String portString = portDefinedInProperties != null ? portDefinedInProperties : System.getProperty(SwarmProperties.HTTP_PORT);
+        final String portOffset = offsetDefinedInProperties != null ? offsetDefinedInProperties : System.getProperty(SwarmProperties.PORT_OFFSET);
         if (portString != null) {
             port = Integer.parseInt(portString);
         }
-        if(portOffset != null){
+        if (portOffset != null) {
             port = port + Integer.parseInt(portOffset);
         }
 
