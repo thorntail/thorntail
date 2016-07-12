@@ -9,11 +9,12 @@
 
   <parent>
     <groupId>org.wildfly.swarm.servers</groupId>
-    <artifactId>servers-parent</artifactId>
-    <version>1.0.1.Final-SNAPSHOT</version>
+    <artifactId>standalone-servers</artifactId>
+    <version>2016.7-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
+  <groupId>org.wildfly.swarm.servers</groupId>
   <artifactId>management-console</artifactId>
 
   <name>WildFly Swarm Servers: Management Console</name>

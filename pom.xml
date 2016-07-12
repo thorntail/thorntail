@@ -1004,6 +1004,8 @@
     <module>plugin</module>
     <module>swarmtool</module>
     <module>boms</module>
+
+    <module>standalone-servers</module>
   </modules>
 
   <profiles>
