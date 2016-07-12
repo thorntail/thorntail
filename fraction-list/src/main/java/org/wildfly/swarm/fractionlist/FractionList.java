@@ -60,8 +60,14 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                 boolean internal = toBoolean(fraction.get("internal"));
 
                 JsonValue stabilityJson = fraction.get("stability");
-                FractionStability stability = stabilityJson.isNull() ? FractionStability.UNSTABLE : FractionStability.values()[stabilityJson.asInt()];
-
+                int stabilityIndex = stabilityJson.isNull() ? FractionStability.UNSTABLE.ordinal() : stabilityJson.asInt();
+                FractionStability stability;
+                if (stabilityIndex < 0 || stabilityIndex >= FractionStability.values().length) {
+                    stability = FractionStability.UNSTABLE;
+                } else {
+                    stability = FractionStability.values()[stabilityIndex];
+                }
+                
                 FractionDescriptor fd = new FractionDescriptor(groupId, artifactId, version, name, description, tags, internal, stability);
                 descriptors.put(groupId + ":" + artifactId, fd);
             });
@@ -122,6 +128,7 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
     private String toString(JsonValue jsonValue) {
         return jsonValue.isNull() ? null : jsonValue.asString();
     }
+
     /**
      * @param a groupId:artifactId:version string
      * @return the groupId:artifactId
@@ -150,7 +157,7 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                                           fd -> fd));
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static Map<String, String> loadPackageSpecs() {
         try {
             final InputStream in = FractionList.class.getClassLoader()
