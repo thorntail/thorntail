@@ -67,7 +67,7 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                 } else {
                     stability = FractionStability.values()[stabilityIndex];
                 }
-                
+
                 FractionDescriptor fd = new FractionDescriptor(groupId, artifactId, version, name, description, tags, internal, stability);
                 descriptors.put(groupId + ":" + artifactId, fd);
             });

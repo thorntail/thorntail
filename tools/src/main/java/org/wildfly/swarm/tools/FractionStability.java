@@ -23,7 +23,7 @@ package org.wildfly.swarm.tools;
 public enum FractionStability {
 
     DEPRECATED("Expect no more changes. Avoid using this fraction."),
-    EXPERIMENTAL("Expect the unexpected. Please provide feedback on api and your use-case."),
+    EXPERIMENTAL("Expect the unexpected. Please provide feedback on API and your use-case."),
     UNSTABLE("Expect patches and features, possible API changes."),
     STABLE("Expect patches, possible features additions."),
     FROZEN("Expect only patches. Please do not make feature requests."),
