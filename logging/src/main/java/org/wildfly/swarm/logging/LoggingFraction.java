@@ -113,7 +113,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return This fraction.
      */
     public LoggingFraction defaultColorFormatter() {
-        return formatter(COLOR_PATTERN, "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
+        return formatter(COLOR_PATTERN, "%K{level}%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
     }
 
 
