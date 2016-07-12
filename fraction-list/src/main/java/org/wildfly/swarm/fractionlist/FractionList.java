@@ -60,7 +60,7 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                 boolean internal = toBoolean(fraction.get("internal"));
 
                 JsonValue stabilityJson = fraction.get("stability");
-                int stabilityIndex = stabilityJson.isNull() ? FractionStability.UNSTABLE.ordinal() : stabilityJson.asInt();
+                int stabilityIndex = stabilityJson == null || stabilityJson.isNull() ? FractionStability.UNSTABLE.ordinal() : stabilityJson.asInt();
                 FractionStability stability;
                 if (stabilityIndex < 0 || stabilityIndex >= FractionStability.values().length) {
                     stability = FractionStability.UNSTABLE;
