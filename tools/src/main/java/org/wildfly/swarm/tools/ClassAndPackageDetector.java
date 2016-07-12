@@ -92,7 +92,9 @@ public class ClassAndPackageDetector {
                     IOUtils.copy(in, out);
                 }
 
-                detectInZip(new ZipFile(jarFile));
+                try (ZipFile zipFile = new ZipFile(jarFile)) {
+                    detectInZip(zipFile);
+                }
             } else if (name.endsWith(".class")) {
                 detectInClass(file.getInputStream(entry));
             }
