@@ -35,7 +35,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-runtime</artifactId>
+      <artifactId>spi-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
 

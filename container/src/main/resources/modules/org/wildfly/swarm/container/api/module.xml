@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<module xmlns="urn:jboss:module:1.5" name="org.wildfly.swarm.container" slot="api">
+  <resources>
+    <artifact name="org.wildfly.swarm:container:${project.version}">
+      <filter>
+        <include-set>
+          <path name="org/wildfly/swarm"/>
+          <path name="org/wildfly/swarm/cli"/>
+          <path name="org/wildfly/swarm/container"/>
+          <path name="org/wildfly/swarm/container/internal"/>
+          <path name="org/wildfly/swarm/container/util"/>
+        </include-set>
+        <exclude-set>
+          <path name="org/wildfly/container/runtime"/>
+          <path name="org/wildfly/container/runtime/internal"/>
+        </exclude-set>
+      </filter>
+    </artifact>
+  </resources>
+  <dependencies>
+    <module name="org.wildfly.swarm.configuration" export="true"/>
+    <module name="org.wildfly.swarm.spi" export="true" services="export"/>
+    <module name="org.jboss.modules" export="true"/>
+    <module name="org.jboss.shrinkwrap" export="true"/>
+    <module name="org.jboss.shrinkwrap.descriptors" export="true"/>
+    <module name="org.wildfly.swarm.bootstrap" optional="true"/>
+    <module name="org.yaml.snakeyaml"/>
+  </dependencies>
+</module>

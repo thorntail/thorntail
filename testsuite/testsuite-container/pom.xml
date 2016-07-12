@@ -9,22 +9,18 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>2016.7-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>topology</artifactId>
+  <artifactId>testsuite-container</artifactId>
 
-  <name>Topology</name>
-  <description>WildFly Swarm: Topology</description>
+  <name>WildFly Swarm: Container Test Suite</name>
+  <description>WildFly Swarm: Container Test Suite</description>
 
   <packaging>jar</packaging>
-
-  <properties>
-    <swarm.fraction.internal>true</swarm.fraction.internal>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -33,22 +29,13 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
-      <scope>provided</scope>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>msc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>naming</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-naming</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

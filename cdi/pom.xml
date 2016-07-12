@@ -48,6 +48,11 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>bean-validation</artifactId>
     </dependency>
     <dependency>
@@ -61,12 +66,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>undertow</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container-runtime</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Provided APIs -->
