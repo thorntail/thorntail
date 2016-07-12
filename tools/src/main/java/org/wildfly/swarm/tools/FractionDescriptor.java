@@ -122,6 +122,10 @@ public class FractionDescriptor {
         return internal;
     }
 
+    public FractionStability getStability() {
+        return stability;
+    }
+
     public Set<FractionDescriptor> getDependencies() {
         return Collections.unmodifiableSet(this.dependencies);
     }
