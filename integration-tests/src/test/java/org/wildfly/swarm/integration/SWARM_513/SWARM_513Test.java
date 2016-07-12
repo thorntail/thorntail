@@ -7,7 +7,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -15,6 +14,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.ContainerFactory;
@@ -108,7 +108,7 @@ public class SWARM_513Test implements ContainerFactory {
         javax.ws.rs.core.Response response = target.request(MediaType.TEXT_XML)
                 .post(Entity.entity(sb.toString(), MediaType.TEXT_XML));
 
-        Assert.assertEquals(201,response.getStatus());
+        Assert.assertEquals(201, response.getStatus());
         Assert.assertTrue(response.getHeaders().keySet().contains("Location"));
     }
 
@@ -123,7 +123,7 @@ public class SWARM_513Test implements ContainerFactory {
         Response response = target.request(MediaType.APPLICATION_JSON).get();
         Assert.assertEquals(200, response.getStatus());
 
-        Assert.assertEquals("[{\"id\":1,\"price\":12.0}]",response.readEntity(String.class));
+        Assert.assertEquals("[{\"id\":1,\"price\":12.0}]", response.readEntity(String.class));
 
     }
 }
