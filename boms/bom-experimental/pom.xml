@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom-experimental</artifactId>
 
-  <name>BOM: 1  :: Experimental</name>
-  <description>BOM: 1  :: Experimental</description>
+  <name>BOM:  1 : Experimental</name>
+  <description>BOM:  1 : Experimental</description>
 
   <packaging>jar</packaging>
 

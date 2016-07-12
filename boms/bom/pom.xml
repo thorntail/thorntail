@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom</artifactId>
 
-  <name>BOM: 3+ :: Recommended</name>
-  <description>BOM: 3+ :: Recommended</description>
+  <name>BOM: 3+ : Recommended</name>
+  <description>BOM: 3+ : Recommended</description>
 
   <packaging>jar</packaging>
 

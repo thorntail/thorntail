@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom-frozen</artifactId>
 
-  <name>BOM: 4  :: Frozen</name>
-  <description>BOM: 4  :: Frozen</description>
+  <name>BOM:  4 : Frozen</name>
+  <description>BOM:  4 : Frozen</description>
 
   <packaging>jar</packaging>
 

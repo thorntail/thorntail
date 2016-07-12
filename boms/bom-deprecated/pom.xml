@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom-deprecated</artifactId>
 
-  <name>BOM: 0  :: Deprecated</name>
-  <description>BOM: 0  :: Deprecated</description>
+  <name>BOM:  0 : Deprecated</name>
+  <description>BOM:  0 : Deprecated</description>
 
   <packaging>jar</packaging>
 

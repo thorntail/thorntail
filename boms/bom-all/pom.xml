@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom-all</artifactId>
 
-  <name>BOM: *  :: All</name>
-  <description>BOM: *  :: All</description>
+  <name>BOM:  * : All</name>
+  <description>BOM:  * : All</description>
 
   <packaging>jar</packaging>
 

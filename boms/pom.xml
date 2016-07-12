@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>boms</artifactId>
 
-  <name>BOM Parent</name>
-  <description>BOM Parent</description>
+  <name>BOMs</name>
+  <description>BOMs</description>
 
   <packaging>pom</packaging>
 
