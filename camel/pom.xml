@@ -23,6 +23,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>core</artifactId>
+    <version>2016.7-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
     <name>WildFly Swarm Camel</name>
     <description>WildFly Swarm Camel Integration</description>
 
@@ -30,24 +37,10 @@
     <artifactId>camel</artifactId>
     <packaging>pom</packaging>
 
-    <version>1.2.0-SNAPSHOT</version>
-
-    <url>https://github.com/wildfly-swarm/wildfly-swarm-camel</url>
-
-    <!-- Source Control -->
-    <scm>
-        <connection>scm:git:git://github.com/wildfly-swarm/wildfly-swarm-camel.git</connection>
-        <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-camel.git</developerConnection>
-        <url>http://github.com/wildfly-swarm/wildfly-swarm-camel</url>
-        <tag>HEAD</tag>
-    </scm>
-
     <!-- Properties -->
     <properties>
         <version.apache.camel>2.17.1</version.apache.camel>
         <version.wildfly.camel>4.1.0</version.wildfly.camel>
-        <version.wildfly.swarm.core>1.0.2.Final</version.wildfly.swarm.core>
-        <version.wildfly.swarm.spi>1.0.5.Final</version.wildfly.swarm.spi>
         
         <version.eclipse.egit.github>2.1.5</version.eclipse.egit.github>
         
@@ -60,7 +53,6 @@
         <version-maven-release-plugin>2.5</version-maven-release-plugin>
         <version-maven-source-plugin>2.3</version-maven-source-plugin>
         <version-maven-surefire-plugin>2.18.1</version-maven-surefire-plugin>
-        <version-wildfly-swarm-fraction-plugin>22</version-wildfly-swarm-fraction-plugin>
     </properties>
 
     <!-- Modules -->
@@ -84,83 +76,6 @@
                 <groupId>org.wildfly.camel</groupId>
                 <artifactId>wildfly-camel-subsystem-core</artifactId>
                 <version>${version.wildfly.camel}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>spi</artifactId>
-                <version>${version.wildfly.swarm.spi}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>arquillian</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>bean-validation</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>cdi</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>container-runtime</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>datasources</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>ee</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>ejb</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>jpa</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.wildfly.swarm</groupId>
-              <artifactId>jaxrs</artifactId>
-              <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>logging</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>mail</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>messaging</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>webservices</artifactId>
-                <version>${version.wildfly.swarm.core}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.wildfly.swarm</groupId>
-              <artifactId>undertow</artifactId>
-              <version>${version.wildfly.swarm.core}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -240,19 +155,6 @@
                         -->
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-                    <version>${version-wildfly-swarm-fraction-plugin}</version>
-                    <executions>
-                        <execution>
-                            <phase>process-classes</phase>
-                            <goals>
-                                <goal>process</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -295,51 +197,8 @@
         </plugins>
     </build>
 
-    <!-- Licenses -->
-    <licenses>
-        <license>
-            <name>apache_v2</name>
-            <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
-        </license>
-    </licenses>
-
-    <!-- Developers -->
-    <developers>
-        <developer>
-            <name>WildFly Camel Committers</name>
-        </developer>
-    </developers>
-
-    <!-- Distribution Management -->
-    <distributionManagement>
-        <repository>
-            <id>jboss-releases-repository</id>
-            <name>JBoss Releases Repository</name>
-            <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2</url>
-        </repository>
-        <snapshotRepository>
-            <id>jboss-snapshots-repository</id>
-            <name>JBoss Snapshots Repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <!-- Issue Management -->
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/wildfly-swarm/wildfly-swarm-camel</url>
-    </issueManagement>
-    
     <!-- Repositories -->
     <repositories>
-        <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>http://repo.maven.apache.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>jboss-public-repository</id>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>

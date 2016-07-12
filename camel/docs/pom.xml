@@ -24,7 +24,7 @@
     <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>camel</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>2016.7-SNAPSHOT</version>
     </parent>
     
     <name>WildFly Swarm Camel :: Docs</name>

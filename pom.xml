@@ -330,6 +330,62 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-core</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-cdi</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-cxf</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-ejb</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-jaxb</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-jms</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-jmx</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-jpa</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-mail</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-other</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-undertow</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>connector</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
@@ -896,6 +952,7 @@
     <!-- fractions -->
     <module>batch-jberet</module>
     <module>bean-validation</module>
+    <module>camel</module>
     <module>cdi</module>
     <module>cdi-ext</module>
     <module>connector</module>
