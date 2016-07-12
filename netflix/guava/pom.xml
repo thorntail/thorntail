@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>netflix-guava</artifactId>
 
-  <name>WildFly Swarm: Guava</name>
-  <description>WildFly Swarm: Guava</description>
+  <name> Guava</name>
+  <description> Guava</description>
 
   <packaging>jar</packaging>
 

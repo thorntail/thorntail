@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>io</artifactId>
 
-  <name>WildFly Swarm: IO</name>
-  <description>WildFly Swarm: IO</description>
+  <name>IO</name>
+  <description>IO</description>
 
   <packaging>jar</packaging>
 

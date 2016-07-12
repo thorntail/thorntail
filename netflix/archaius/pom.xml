@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>archaius</artifactId>
 
-  <name>WildFly Swarm: Archaius</name>
-  <description>WildFly Swarm: Archaius</description>
+  <name> Archaius</name>
+  <description> Archaius</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-logstash</artifactId>
 
-  <name>WildFly Swarm: Logstash Test Suite</name>
-  <description>WildFly Swarm: Logstash Test Suite</description>
+  <name>Test Suite: Logstash</name>
+  <description>Test Suite: Logstash</description>
 
   <packaging>jar</packaging>
 

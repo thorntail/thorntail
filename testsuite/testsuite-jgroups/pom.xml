@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jgroups</artifactId>
 
-  <name>WildFly Swarm: JGroups Test Suite</name>
-  <description>WildFly Swarm: JGroups Test Suite</description>
+  <name>Test Suite: JGroups</name>
+  <description>Test Suite: JGroups</description>
 
   <dependencies>
     <dependency>

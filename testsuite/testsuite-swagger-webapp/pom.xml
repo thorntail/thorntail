@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-swagger-webapp</artifactId>
 
-  <name>WildFly Swarm: Swagger Web App Test Suite</name>
-  <description>WildFly Swarm: Swagger Web App Test Suite</description>
+  <name>Test Suite: Swagger Web App</name>
+  <description>Test Suite: Swagger Web App</description>
 
   <packaging>jar</packaging>
 

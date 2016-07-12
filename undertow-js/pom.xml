@@ -13,7 +13,7 @@
   <artifactId>undertow-js</artifactId>
 
   <name>Undertow.js</name>
-  <description>WildFly Swarm: Undertow.js</description>
+  <description>Undertow.js</description>
 
   <packaging>jar</packaging>
 

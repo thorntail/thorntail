@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm.servers</groupId>
   <artifactId>swagger-ui</artifactId>
 
-  <name>WildFly Swarm Servers: Swagger UI</name>
-  <description>WildFly Swarm Servers: Swagger UI</description>
+  <name>Standalone Server: Swagger UI</name>
+  <description>Standalone Server: Swagger UI</description>
 
   <packaging>jar</packaging>
 

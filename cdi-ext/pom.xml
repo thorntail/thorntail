@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>cdi-ext</artifactId>
 
-  <name>WildFly Swarm: CDI Extensions</name>
-  <description>WildFly Swarm: CDI Extensions</description>
+  <name>CDI Extensions</name>
+  <description>CDI Extensions</description>
 
   <packaging>jar</packaging>
 

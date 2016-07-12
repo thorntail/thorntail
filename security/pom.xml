@@ -18,7 +18,7 @@
   <artifactId>security</artifactId>
 
   <name>Security</name>
-  <description>WildFly Swarm: Security</description>
+  <description>Security</description>
 
   <properties>
     <swarm.fraction.internal>true</swarm.fraction.internal>

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-plugin</artifactId>
 
-  <name>WildFly Swarm: Plugin</name>
-  <description>WildFly Swarm: Plugin</description>
+  <name>Plugins for Maven and Gradle</name>
+  <description>Plugins for Maven and Gradle</description>
 
   <packaging>maven-plugin</packaging>
 

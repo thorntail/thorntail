@@ -18,7 +18,7 @@
   <artifactId>request-controller</artifactId>
 
   <name>Request Controller</name>
-  <description>WildFly Swarm: Request Controller</description>
+  <description>Request Controller</description>
 
   <packaging>jar</packaging>
 

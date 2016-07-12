@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-vertx</artifactId>
 
-  <name>WildFly Swarm: Vert.x Test Suite</name>
-  <description>WildFly Swarm: Vert.x Test Suite</description>
+  <name>Test Suite: Vert.x</name>
+  <description>Test Suite: Vert.x</description>
 
   <dependencies>
     <dependency>

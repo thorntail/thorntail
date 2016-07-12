@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jdr</artifactId>
 
-  <name>WildFly Swarm: JDR Test Suite</name>
-  <description>WildFly Swarm: JDR Test Suite</description>
+  <name>Test Suite: JDR</name>
+  <description>Test Suite: JDR</description>
 
   <build>
     <plugins>

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-monitor</artifactId>
 
-  <name>WildFly Swarm: Monitor Test Suite</name>
-  <description>WildFly Swarm: Monitor Test Suite</description>
+  <name>Test Suite: Monitor</name>
+  <description>Test Suite: Monitor</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>arquillian</artifactId>
 
-  <name>WildFly Swarm: Arquillian</name>
-  <description>WildFly Swarm: Arquillian</description>
+  <name> Arquillian</name>
+  <description> Arquillian</description>
 
   <packaging>jar</packaging>
 

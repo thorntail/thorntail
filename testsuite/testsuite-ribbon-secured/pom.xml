@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-ribbon-secured</artifactId>
 
-  <name>WildFly Swarm: Ribbon Secured Test Suite</name>
-  <description>WildFly Swarm: Ribbon Secured Test Suite</description>
+  <name>Test Suite: Ribbon Secured</name>
+  <description>Test Suite: Ribbon Secured</description>
 
   <packaging>jar</packaging>
 

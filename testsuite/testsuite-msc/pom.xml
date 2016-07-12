@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-msc</artifactId>
 
-  <name>WildFly Swarm: MSC Test Suite</name>
-  <description>WildFly Swarm: MSC Test Suite</description>
+  <name>Test Suite: MSC</name>
+  <description>Test Suite: MSC</description>
 
   <packaging>jar</packaging>
 

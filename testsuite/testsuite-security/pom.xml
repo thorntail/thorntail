@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-security</artifactId>
 
-  <name>WildFly Swarm: Security Test Suite</name>
-  <description>WildFly Swarm: Security Test Suite</description>
+  <name>Test Suite: Security</name>
+  <description>Test Suite: Security</description>
 
   <dependencies>
     <dependency>

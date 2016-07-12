@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-logging</artifactId>
 
-  <name>WildFly Swarm: Logging Test Suite</name>
-  <description>WildFly Swarm: Logging Test Suite</description>
+  <name>Test Suite: Logging</name>
+  <description>Test Suite: Logging</description>
 
   <packaging>jar</packaging>
 

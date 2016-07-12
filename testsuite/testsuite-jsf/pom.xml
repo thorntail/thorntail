@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jsf</artifactId>
 
-  <name>WildFly Swarm: JSF Test Suite</name>
-  <description>WildFly Swarm: JSF Test Suite</description>
+  <name>Test Suite: JSF</name>
+  <description>Test Suite: JSF</description>
 
   <dependencies>
     <dependency>

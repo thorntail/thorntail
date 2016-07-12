@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-mod_cluster</artifactId>
 
-  <name>WildFly Swarm: mod_cluster Test Suite</name>
-  <description>WildFly Swarm: mod_cluster Test Suite</description>
+  <name>Test Suite: mod_cluster</name>
+  <description>Test Suite: mod_cluster</description>
 
   <packaging>jar</packaging>
 

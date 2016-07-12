@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-connector</artifactId>
 
-  <name>WildFly Swarm: Connector Test Suite</name>
-  <description>WildFly Swarm: Connector Test Suite</description>
+  <name>Test Suite: Connector</name>
+  <description>Test Suite: Connector</description>
 
   <packaging>jar</packaging>
 

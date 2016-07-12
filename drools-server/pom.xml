@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>drools-server</artifactId>
 
-  <name>WildFly Swarm: Drools Server</name>
-  <description>WildFly Swarm: Drools Server</description>
+  <name>Drools Server</name>
+  <description>Drools Server</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>arquillian-parent</artifactId>
 
-  <name>WildFly Swarm: Arquillian Parent</name>
-  <description>WildFly Swarm: Arquillian Parent</description>
+  <name>Arquillian Parent</name>
+  <description>Arquillian Parent</description>
 
   <packaging>pom</packaging>
 

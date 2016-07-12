@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>bootstrap</artifactId>
 
-  <name>WildFly Swarm: Bootstrap</name>
-  <description>WildFly Swarm: Bootstrap</description>
+  <name>Bootstrap</name>
+  <description>Bootstrap</description>
 
   <packaging>jar</packaging>
 

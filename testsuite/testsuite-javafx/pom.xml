@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-javafx</artifactId>
 
-  <name>WildFly Swarm: JavaFX Test Suite</name>
-  <description>WildFly Swarm: JavaFX Test Suite</description>
+  <name>Test Suite: JavaFX</name>
+  <description>Test Suite: JavaFX</description>
 
   <dependencies>
     <dependency>

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>fraction-list</artifactId>
 
-  <name>WildFly Swarm: Fraction List</name>
-  <description>WildFly Swarm: Fraction List</description>
+  <name>Fraction List</name>
+  <description>Fraction List</description>
 
   <packaging>jar</packaging>
 

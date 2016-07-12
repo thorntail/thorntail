@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>arquillian-daemon-modules</artifactId>
 
-  <name>WildFly Swarm: Arquillian Daemon Modules</name>
-  <description>WildFly Swarm: Arquillian Daemon Modules</description>
+  <name> Arquillian Daemon Modules</name>
+  <description> Arquillian Daemon Modules</description>
 
   <packaging>jar</packaging>
 

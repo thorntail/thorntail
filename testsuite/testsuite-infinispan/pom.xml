@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-infinispan</artifactId>
 
-  <name>WildFly Swarm: Infinispan Test Suite</name>
-  <description>WildFly Swarm: Infinispan Test Suite</description>
+  <name>Test Suite: Infinispan</name>
+  <description>Test Suite: Infinispan</description>
 
   <packaging>jar</packaging>
 

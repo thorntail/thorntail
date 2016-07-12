@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-topology-consul</artifactId>
 
-  <name>WildFly Swarm: Topology via Consul Test Suite</name>
-  <description>WildFly Swarm: Topology via Consul Test Suite</description>
+  <name>Test Suite: Topology via Consul</name>
+  <description>Test Suite: Topology via Consul</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-topology-openshift</artifactId>
 
-  <name>WildFly Swarm: Topology via OpenShift Test Suite</name>
-  <description>WildFly Swarm: Topology via OpenShift Test Suite</description>
+  <name>Test Suite: Topology via OpenShift</name>
+  <description>Test Suite: Topology via OpenShift</description>
 
   <packaging>jar</packaging>
 

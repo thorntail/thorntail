@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-cdi</artifactId>
 
-  <name>WildFly Swarm: CDI Test Suite</name>
-  <description>WildFly Swarm: CDI Test Suite</description>
+  <name>Test Suite: CDI</name>
+  <description>Test Suite: CDI</description>
 
   <packaging>jar</packaging>
 

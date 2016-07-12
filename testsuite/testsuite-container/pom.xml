@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-container</artifactId>
 
-  <name>WildFly Swarm: Container Test Suite</name>
-  <description>WildFly Swarm: Container Test Suite</description>
+  <name>Test Suite: Container</name>
+  <description>Test Suite: Container</description>
 
   <packaging>jar</packaging>
 

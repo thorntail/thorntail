@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>netflix-rxjava</artifactId>
 
-  <name>WildFly Swarm: RX-Java</name>
-  <description>WildFly Swarm: RX-Java</description>
+  <name> RX-Java</name>
+  <description> RX-Java</description>
 
   <packaging>jar</packaging>
 

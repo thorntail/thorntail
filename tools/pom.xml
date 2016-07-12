@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>tools</artifactId>
 
-  <name>WildFly Swarm: Build Tools</name>
-  <description>WildFly Swarm: Build Tools</description>
+  <name>Build Tools</name>
+  <description>Build Tools</description>
 
   <packaging>jar</packaging>
 

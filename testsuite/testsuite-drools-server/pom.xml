@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-drools-server</artifactId>
 
-  <name>WildFly Swarm: Drools Server Test Suite</name>
-  <description>WildFly Swarm: Drools Server Test Suite</description>
+  <name>Test Suite: Drools Server</name>
+  <description>Test Suite: Drools Server</description>
 
   <packaging>jar</packaging>
 

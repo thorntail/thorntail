@@ -12,8 +12,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-remoting</artifactId>
 
-  <name>WildFly Swarm: Remoting Test Suite</name>
-  <description>WildFly Swarm: Remoting Test Suite</description>
+  <name>Test Suite: Remoting</name>
+  <description>Test Suite: Remoting</description>
 
   <packaging>jar</packaging>
 

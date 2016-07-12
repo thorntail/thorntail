@@ -17,7 +17,7 @@
   <groupId>org.wildfly.swarm.servers</groupId>
   <artifactId>keycloak</artifactId>
 
-  <name>WildFly Swarm Servers: Keycloak</name>
+  <name>Standalone Server: Keycloak</name>
   <description>WildFly Servers: Keycloak</description>
 
   <packaging>jar</packaging>

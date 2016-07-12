@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-ejb</artifactId>
 
-  <name>WildFly Swarm: EJB Test Suite</name>
-  <description>WildFly Swarm: EJB Test Suite</description>
+  <name>Test Suite: EJB</name>
+  <description>Test Suite: EJB</description>
 
   <packaging>jar</packaging>
 

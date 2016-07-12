@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-keycloak-server</artifactId>
 
-  <name>WildFly Swarm: Keycloak Server Test Suite</name>
-  <description>WildFly Swarm: Keycloak Server Test Suite</description>
+  <name>Test Suite: Keycloak Server</name>
+  <description>Test Suite: Keycloak Server</description>
 
   <packaging>jar</packaging>
 

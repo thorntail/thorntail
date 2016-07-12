@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jolokia</artifactId>
 
-  <name>WildFly Swarm: Jolokia Test Suite</name>
-  <description>WildFly Swarm: Jolokia Test Suite</description>
+  <name>Test Suite: Jolokia</name>
+  <description>Test Suite: Jolokia</description>
 
   <packaging>jar</packaging>
 

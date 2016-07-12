@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-mail</artifactId>
 
-  <name>WildFly Swarm: Mail Test Suite</name>
-  <description>WildFly Swarm: Mail Test Suite</description>
+  <name>Test Suite: Mail</name>
+  <description>Test Suite: Mail</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-topology</artifactId>
 
-  <name>WildFly Swarm: Topology Core Test Suite</name>
-  <description>WildFly Swarm: Topology Core Test Suite</description>
+  <name>Test Suite: Topology Core</name>
+  <description>Test Suite: Topology Core</description>
 
   <packaging>jar</packaging>
 

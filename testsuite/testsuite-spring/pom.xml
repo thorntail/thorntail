@@ -12,8 +12,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-spring</artifactId>
 
-  <name>WildFly Swarm: Spring Test Suite</name>
-  <description>WildFly Swarm: Spring Test Suite</description>
+  <name>Test Suite: Spring</name>
+  <description>Test Suite: Spring</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>arquillian-resolver</artifactId>
 
-  <name>WildFly Swarm: Arquillian Resolver</name>
-  <description>WildFly Swarm: Arquillian Resolver</description>
+  <name> Arquillian Resolver</name>
+  <description> Arquillian Resolver</description>
 
   <packaging>jar</packaging>
 

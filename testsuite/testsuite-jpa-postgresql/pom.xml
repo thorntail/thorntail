@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jpa-postgresql</artifactId>
 
-  <name>WildFly Swarm: JPA PostgreSQL Test Suite</name>
-  <description>WildFly Swarm: JPA PostgreSQL Test Suite</description>
+  <name>Test Suite: JPA PostgreSQL</name>
+  <description>Test Suite: JPA PostgreSQL</description>
 
   <dependencies>
     <dependency>

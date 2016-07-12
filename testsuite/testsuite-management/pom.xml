@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-management</artifactId>
 
-  <name>WildFly Swarm: Management Test Suite</name>
-  <description>WildFly Swarm: Management Test Suite</description>
+  <name>Test Suite: Management</name>
+  <description>Test Suite: Management</description>
 
   <packaging>jar</packaging>
 

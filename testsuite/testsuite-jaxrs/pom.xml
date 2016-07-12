@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jaxrs</artifactId>
 
-  <name>WildFly Swarm: JAX-RS Test Suite</name>
-  <description>WildFly Swarm: JAX-RS Test Suite</description>
+  <name>Test Suite: JAX-RS</name>
+  <description>Test Suite: JAX-RS</description>
 
   <packaging>jar</packaging>
 

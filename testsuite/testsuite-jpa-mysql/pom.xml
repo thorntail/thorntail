@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jpa-mysql</artifactId>
 
-  <name>WildFly Swarm: JPA MySQL Test Suite</name>
-  <description>WildFly Swarm: JPA MySQL Test Suite</description>
+  <name>Test Suite: JPA MySQL</name>
+  <description>Test Suite: JPA MySQL</description>
 
   <dependencies>
     <dependency>

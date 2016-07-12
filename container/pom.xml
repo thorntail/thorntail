@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>container</artifactId>
 
-  <name>WildFly Swarm: Container</name>
-  <description>WildFly Swarm: Container</description>
+  <name>Container</name>
+  <description>Container</description>
 
   <packaging>jar</packaging>
 

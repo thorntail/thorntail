@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-hystrix</artifactId>
 
-  <name>WildFly Swarm: Hystrix Test Suite</name>
-  <description>WildFly Swarm: Hystrix Test Suite</description>
+  <name>Test Suite: Hystrix</name>
+  <description>Test Suite: Hystrix</description>
 
   <packaging>jar</packaging>
 

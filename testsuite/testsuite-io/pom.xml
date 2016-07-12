@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-io</artifactId>
 
-  <name>WildFly Swarm: IO Test Suite</name>
-  <description>WildFly Swarm: IO Test Suite</description>
+  <name>Test Suite: IO</name>
+  <description>Test Suite: IO</description>
 
   <packaging>jar</packaging>
 

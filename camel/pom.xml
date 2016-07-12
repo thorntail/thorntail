@@ -30,8 +30,8 @@
     <relativePath>../</relativePath>
   </parent>
 
-    <name>WildFly Swarm Camel</name>
-    <description>WildFly Swarm Camel Integration</description>
+    <name>Camel Integration</name>
+    <description>Camel Integration</description>
 
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>camel</artifactId>

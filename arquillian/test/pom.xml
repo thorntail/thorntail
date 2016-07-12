@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>arquillian-test</artifactId>
 
-  <name>WildFly Swarm: Arquillian Test</name>
-  <description>WildFly Swarm: Arquillian Test</description>
+  <name> Arquillian Test</name>
+  <description> Arquillian Test</description>
 
   <packaging>jar</packaging>
 

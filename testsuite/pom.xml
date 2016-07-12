@@ -19,8 +19,8 @@
 
   <packaging>pom</packaging>
 
-  <name>WildFly Swarm: Test Suite</name>
-  <description>WildFly Swarm: Test Suite</description>
+  <name>Test Suite</name>
+  <description>Test Suite</description>
 
   <properties>
     <browser>phantomjs</browser>

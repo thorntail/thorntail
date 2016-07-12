@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-topology-webapp</artifactId>
 
-  <name>WildFly Swarm: Topology Web App Test Suite</name>
-  <description>WildFly Swarm: Topology Web App Test Suite</description>
+  <name>Test Suite: Topology Web App</name>
+  <description>Test Suite: Topology Web App</description>
 
   <packaging>jar</packaging>
 

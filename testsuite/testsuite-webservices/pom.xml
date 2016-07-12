@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-webservices</artifactId>
 
-  <name>WildFly Swarm: WebServices Test Suite</name>
-  <description>WildFly Swarm: WebServices Test Suite</description>
+  <name>Test Suite: WebServices</name>
+  <description>Test Suite: WebServices</description>
 
   <dependencies>
     <dependency>

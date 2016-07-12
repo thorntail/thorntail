@@ -18,7 +18,7 @@
   <artifactId>topology</artifactId>
 
   <name>Topology</name>
-  <description>WildFly Swarm: Topology</description>
+  <description>Topology</description>
 
   <packaging>jar</packaging>
 

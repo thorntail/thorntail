@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-jca</artifactId>
 
-  <name>WildFly Swarm: JCA Test Suite</name>
-  <description>WildFly Swarm: JCA Test Suite</description>
+  <name>Test Suite: JCA</name>
+  <description>Test Suite: JCA</description>
 
   <dependencies>
     <dependency>

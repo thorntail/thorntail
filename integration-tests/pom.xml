@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>integration-tests</artifactId>
 
-  <name>WildFly Swarm: Integration Tests</name>
-  <description>WildFly Swarm: Integration Tests</description>
+  <name>Integration Tests</name>
+  <description>Integration Tests</description>
 
   <properties>
     <browser>phantomjs</browser>

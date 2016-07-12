@@ -17,8 +17,8 @@
   <artifactId>public-javadoc</artifactId>
   <version>1.0.1-SNAPSHOT</version>
 
-  <name>WildFly Swarm: Public javadocs</name>
-  <description>WildFly Swarm: public javadocs</description>
+  <name>Public javadocs</name>
+  <description>Public javadocs</description>
 
   <packaging>jar</packaging>
 

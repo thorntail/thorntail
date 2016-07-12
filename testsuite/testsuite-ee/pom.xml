@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-ee</artifactId>
 
-  <name>WildFly Swarm: EE Test Suite</name>
-  <description>WildFly Swarm: EE Test Suite</description>
+  <name>Test Suite: EE</name>
+  <description>Test Suite: EE</description>
 
   <packaging>jar</packaging>
 

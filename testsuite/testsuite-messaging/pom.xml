@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-messaging</artifactId>
 
-  <name>WildFly Swarm: Messaging Test Suite</name>
-  <description>WildFly Swarm: Messaging Test Suite</description>
+  <name>Test Suite: Messaging</name>
+  <description>Test Suite: Messaging</description>
 
   <packaging>jar</packaging>
 

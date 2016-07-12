@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-datasources</artifactId>
 
-  <name>WildFly Swarm: Datasources Test Suite</name>
-  <description>WildFly Swarm: Datasources Test Suite</description>
+  <name>Test Suite: Datasources</name>
+  <description>Test Suite: Datasources</description>
 
   <packaging>jar</packaging>
 

@@ -16,8 +16,8 @@
 
   <artifactId>swarmtool</artifactId>
 
-  <name>WildFly Swarm: SwarmTool</name>
-  <description>WildFly Swarm: SwarmTool</description>
+  <name>SwarmTool</name>
+  <description>SwarmTool</description>
 
   <packaging>jar</packaging>
 

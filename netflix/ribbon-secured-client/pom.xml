@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>ribbon-secured-client</artifactId>
 
-  <name>WildFly Swarm: Ribbon Secured Client</name>
-  <description>WildFly Swarm: Ribbon Secured Client</description>
+  <name> Ribbon Secured Client</name>
+  <description> Ribbon Secured Client</description>
 
   <packaging>jar</packaging>
 

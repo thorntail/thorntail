@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-naming</artifactId>
 
-  <name>WildFly Swarm: Naming Test Suite</name>
-  <description>WildFly Swarm: Naming Test Suite</description>
+  <name>Test Suite: Naming</name>
+  <description>Test Suite: Naming</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>ee</artifactId>
 
-  <name>WildFly Swarm: EE</name>
-  <description>WildFly Swarm: EE</description>
+  <name>EE</name>
+  <description>EE</description>
 
   <packaging>jar</packaging>
 

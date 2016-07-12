@@ -31,8 +31,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-batch-jberet</artifactId>
 
-  <name>WildFly Swarm: Batch (JBeret) Test Suite</name>
-  <description>WildFly Swarm: Batch (JBeret) Test Suite</description>
+  <name>Test Suite: Batch (JBeret)</name>
+  <description>Test Suite: Batch (JBeret)</description>
 
   <packaging>jar</packaging>
 

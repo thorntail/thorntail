@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm.servers</groupId>
   <artifactId>management-console</artifactId>
 
-  <name>WildFly Swarm Servers: Management Console</name>
-  <description>WildFly Swarm Servers: Management Console</description>
+  <name>Standalone Server: Management Console</name>
+  <description>Standalone Server: Management Console</description>
 
   <build>
     <plugins>

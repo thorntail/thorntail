@@ -12,8 +12,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-ejb-remote</artifactId>
 
-  <name>WildFly Swarm: EJB Remote Test Suite</name>
-  <description>WildFly Swarm: EJB Remote Test Suite</description>
+  <name>Test Suite: EJB Remote</name>
+  <description>Test Suite: EJB Remote</description>
 
   <packaging>jar</packaging>
 

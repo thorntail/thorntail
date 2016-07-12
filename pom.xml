@@ -18,8 +18,8 @@
   <artifactId>core</artifactId>
   <version>2016.7-SNAPSHOT</version>
 
-  <name>WildFly Swarm: Root</name>
-  <description>WildFly Swarm: Root</description>
+  <name>Root</name>
+  <description>Root</description>
 
   <packaging>pom</packaging>
 
