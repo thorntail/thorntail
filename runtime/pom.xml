@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>spi</artifactId>
-    <version>1.0.6.Final-SNAPSHOT</version>
+    <version>1.0.6.Final</version>
     <relativePath>../</relativePath>
   </parent>
 
