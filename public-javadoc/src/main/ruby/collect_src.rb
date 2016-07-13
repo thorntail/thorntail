@@ -32,24 +32,25 @@ def collect_src(input_dir, output_dir)
       FileUtils.mkdir_p(File.dirname(dest))
       FileUtils.cp(path, dest)
       packages << File.split(rel_path).first.slice(1..-1).gsub("/", ".")
-    end
+  end
 
   packages
 end
 
 def process(input_dir, output_dir)
   packages = {}
-  versions = {}
+  metadata = {}
   Dir.glob("#{input_dir}/*").each do |dir|
-    version_file = File.join(dir, "_version")
-    if File.exist?(version_file)
+    metadata_file = File.join(dir, "_metadata")
+    if File.exist?(metadata_file)
       dirname = File.basename(dir)
       packages[dirname] = collect_src(dir, output_dir)
-      versions[dirname] = File.read(version_file).strip
+      name, stability = File.read(metadata_file).strip.split(/::::/)
+      metadata[dirname] = {:name => name, :stability => stability}
     end
   end
 
-  [packages, versions]
+  [packages, metadata]
 end
 
 def marshal(x, f)
@@ -58,17 +59,17 @@ def marshal(x, f)
   end
 end
 
-target_dir, output_dir, dep_src_dir = $ARGV
+target_dir, output_dir, dep_src_dir = ARGV
 
 puts "Copying dependency src to the javadoc tree"
 
 clean(output_dir)
-packages, versions = process(dep_src_dir, output_dir)
+packages, metadata = process(dep_src_dir, output_dir)
 
 f = File.join(target_dir, "packages.dat")
 puts "Marshaling package list to #{f}"
 marshal(packages, f)
 
-f = File.join(target_dir, "versions.dat")
-puts "Marshaling version list to #{f}"
-marshal(versions, f)
+f = File.join(target_dir, "metadata.dat")
+puts "Marshaling metadata list to #{f}"
+marshal(metadata, f)

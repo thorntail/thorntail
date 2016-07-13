@@ -9,18 +9,29 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>bom-parent</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <artifactId>core</artifactId>
+    <version>2016.7-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <artifactId>public-javadoc</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>2016.7-SNAPSHOT</version>
 
   <name>Public javadocs</name>
   <description>Public javadocs</description>
 
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
+
+<dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>bom-all</artifactId>
+        <version>${project.version}</version>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+</dependencyManagement>
 
   <build>
     <plugins>
@@ -35,6 +46,10 @@
             </goals>
             <configuration>
               <sourceOutputDir>${project.build.directory}/depSources</sourceOutputDir>
+              <extraModules>
+                <extraModule>config-api:Config API</extraModule>
+                <extraModule>spi-api:SPI</extraModule>
+              </extraModules>
             </configuration>
           </execution>
         </executions>

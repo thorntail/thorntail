@@ -31,7 +31,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>28</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>30</version.wildfly.swarm.fraction.plugin>
 
     <version.swarm.spi>1.0.5.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
@@ -1055,6 +1055,12 @@
           </plugins>
         </pluginManagement>
       </build>
+    </profile>
+    <profile>
+      <id>javadocs</id>
+      <modules>
+        <module>public-javadoc</module>
+      </modules>
     </profile>
     <profile>
       <id>attach-exposed-components</id>
