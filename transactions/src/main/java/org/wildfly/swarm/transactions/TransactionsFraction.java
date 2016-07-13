@@ -20,15 +20,16 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration(
-        marshal = true,
-        extension = "org.jboss.as.transactions",
-        deploymentModules = { "org.jboss.jts" }
-)
+@ExtensionModule("org.jboss.as.transactions")
+@MarshalDMR
+@DeploymentModule(name="org.jboss.jts")
 public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction {
 
     protected TransactionsFraction() {

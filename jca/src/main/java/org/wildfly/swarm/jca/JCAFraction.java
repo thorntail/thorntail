@@ -29,15 +29,16 @@ import org.wildfly.swarm.config.jca.Workmanager;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionClassName;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration(
-        marshal = true,
-        extension="org.jboss.as.connector",
-        extensionClassName = "org.jboss.as.connector.subsystems.jca.JcaExtension"
-)
+@ExtensionModule("org.jboss.as.connector")
+@ExtensionClassName("org.jboss.as.connector.subsystems.jca.JcaExtension")
+@MarshalDMR
 public class JCAFraction extends JCA<JCAFraction> implements Fraction {
 
     private JCAFraction() {

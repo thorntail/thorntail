@@ -21,14 +21,14 @@ import org.wildfly.swarm.config.io.Worker;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration(
-        extension = "org.wildfly.extension.io",
-        marshal = true
-)
+@ExtensionModule("org.wildfly.extension.io")
+@MarshalDMR
 public class IOFraction extends IO<IOFraction> implements Fraction {
     public IOFraction() {
     }

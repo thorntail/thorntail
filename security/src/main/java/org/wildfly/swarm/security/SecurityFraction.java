@@ -25,14 +25,14 @@ import org.wildfly.swarm.config.security.security_domain.authentication.LoginMod
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration(
-        marshal = true,
-        extension = "org.jboss.as.security"
-)
+@ExtensionModule("org.jboss.as.security")
+@MarshalDMR
 public class SecurityFraction extends Security<SecurityFraction> implements Fraction {
 
     public SecurityFraction() {

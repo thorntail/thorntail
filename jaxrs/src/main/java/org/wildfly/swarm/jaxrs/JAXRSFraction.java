@@ -19,16 +19,16 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.config.JAXRS;
 import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration(
-        extension = "org.jboss.as.jaxrs",
-        marshal = true,
-        deploymentModules = {"com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"}
-)
+@ExtensionModule("org.jboss.as.jaxrs")
+@MarshalDMR
+@DeploymentModule(name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider")
 public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
 
     public JAXRSFraction() {

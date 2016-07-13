@@ -89,6 +89,7 @@ import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.internal.AnnotationBasedServerConfiguration;
+import org.wildfly.swarm.container.runtime.internal.ServerConfigurationBuilder;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
@@ -515,7 +516,7 @@ public class RuntimeServer implements Server {
         return impls;
     }
 
-    protected List<ServerConfiguration> findAnnotationServerConfigurations(Module apiModule, List<Index> parentIndexes) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException {
+    protected List<ServerConfiguration> findAnnotationServerConfigurations(Module apiModule, List<Index> parentIndexes) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
 
         List<Index> indexes = new ArrayList<>();
 
@@ -533,120 +534,20 @@ public class RuntimeServer implements Server {
         Set<ClassInfo> infos = compositeIndex.getAllKnownImplementors(DotName.createSimple(Fraction.class.getName()));
 
         for (ClassInfo info : infos) {
-
-            for (AnnotationInstance anno : info.classAnnotations()) {
-                if (anno.name().equals(configAnno)) {
-                    try {
-                        ServerConfiguration config = fromAnnotation(apiModule, anno);
-                        impls.add(config);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
+            ServerConfiguration config = fromAnnotation(apiModule, info);
+            if ( config != null ) {
+                impls.add(config);
             }
-
         }
 
         return impls;
     }
 
-    protected ServerConfiguration fromAnnotation(Module apiModule, AnnotationInstance anno) throws ClassNotFoundException, ModuleLoadException {
-        AnnotationValue marshalValue = anno.value("marshal");
-        AnnotationValue ignorableValue = anno.value("ignorable");
-        AnnotationValue extensionValue = anno.value("extension");
-        AnnotationValue parserFactoryClassNameValue = anno.value("parserFactoryClassName");
-        AnnotationValue extensionClassNameValue = anno.value("extensionClassName");
-        AnnotationValue deploymentModulesValue = anno.value( "deploymentModules" );
-
-        boolean marshal = (marshalValue != null) ? marshalValue.asBoolean() : false;
-        boolean ignorable = (ignorableValue != null) ? ignorableValue.asBoolean() : false;
-        String extension = (extensionValue != null) ? extensionValue.asString() : null;
-        String parserFactoryClass = (parserFactoryClassNameValue != null) ? parserFactoryClassNameValue.asString() : null;
-        String extensionClass = (extensionClassNameValue != null) ? extensionClassNameValue.asString() : null;
-        String[] deploymentModules = (deploymentModulesValue != null) ? deploymentModulesValue.asStringArray() : new String[]{};
-
-        Module mainModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(apiModule.getIdentifier().getName(), "main"));
-
-        Class<? extends Fraction> fractionClass = (Class<? extends Fraction>) mainModule.getClassLoader().loadClass(anno.target().asClass().name().toString());
-
-        AnnotationBasedServerConfiguration serverConfig = new AnnotationBasedServerConfiguration(fractionClass);
-
-        serverConfig.ignorable(ignorable);
-        serverConfig.extension(extension);
-        serverConfig.marshal(marshal);
-
-        if (parserFactoryClass != null && !parserFactoryClass.equals("")) {
-            Module runtimeModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(apiModule.getIdentifier().getName(), "runtime"));
-            Class<? extends AbstractParserFactory> parserFractoryClass = (Class<? extends AbstractParserFactory>) runtimeModule.getClassLoader().loadClass(parserFactoryClass);
-
-            serverConfig.parserFactoryClass(parserFractoryClass);
-        } else if ( extension != null && !extension.equals("")) {
-            Module extensionModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(extension));
-            //Class<? extends AbstractParserFactory> parserFractoryClass = (Class<? extends AbstractParserFactory>) runtimeModule.getClassLoader().loadClass(parserFactoryClass);
-
-
-            if ( extensionClass != null && extensionClass.equalsIgnoreCase( "none" ) ) {
-                // skip it all
-            } else if ( extensionClass != null && !extensionClass.equals("")) {
-                Class<?> extCls = extensionModule.getClassLoader().loadClass(extensionClass);
-                try {
-                    Extension ext = (Extension) extCls.newInstance();
-                    GenericParserFactory parserFactory = new GenericParserFactory(ext);
-                    serverConfig.parserFactory(parserFactory);
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                ServiceLoader<Extension> extensions = extensionModule.loadService(Extension.class);
-
-                Iterator<Extension> extensionIter = extensions.iterator();
-                if (extensionIter.hasNext()) {
-                    Extension ext = extensionIter.next();
-                    GenericParserFactory parserFactory = new GenericParserFactory(ext);
-                    serverConfig.parserFactory(parserFactory);
-                }
-
-                if ( extensionIter.hasNext()) {
-                    throw new RuntimeException( "Fraction \"" + fractionClass.getName() + "\" was configured using @Configuration with an extension='',"
-                            + " but has multiple extension classes.  Please use extensionClassName='' to specify exactly one." );
-                }
-            }
-
-        }
-
-        List<MethodInfo> fractionMethods = anno.target().asClass().methods();
-
-        DotName defaultAnno = DotName.createSimple(Default.class.getName());
-
-        boolean foundDefault = false;
-
-        for (MethodInfo each : fractionMethods) {
-            if (each.hasAnnotation(defaultAnno)) {
-                if (!each.parameters().isEmpty()) {
-                    throw new RuntimeException("Method marked @Default must require zero parameters");
-                }
-
-                if (!Modifier.isStatic(each.flags())) {
-                    throw new RuntimeException("Method marked @Default must be static");
-                }
-
-                if (foundDefault) {
-                    throw new RuntimeException("Multiple methods found marked as @Default");
-                }
-
-                foundDefault = true;
-
-                serverConfig.defaultFraction(each.name());
-            }
-        }
-
-        serverConfig.setDeploymentModules( deploymentModules );
-
-        return serverConfig;
+    private ServerConfiguration fromAnnotation(Module module, ClassInfo info) throws ModuleLoadException, ClassNotFoundException {
+        ServerConfigurationBuilder builder = new ServerConfigurationBuilder(module, info);
+        return builder.build();
     }
+
 
     private void resolveBuildTimeIndex(Module module, List<Index> indexes) {
         try {

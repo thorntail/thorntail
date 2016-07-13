@@ -22,14 +22,14 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Ken Finnigan
  */
-@Configuration(
-        marshal = true,
-        extension = "org.jboss.as.mail"
-)
+@ExtensionModule("org.jboss.as.mail")
+@MarshalDMR
 public class MailFraction extends Mail<MailFraction> implements Fraction {
 
     public MailFraction() {

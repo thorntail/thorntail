@@ -34,16 +34,15 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Ken Finnigan
  * @author Lance Ball
  */
-@Configuration(
-        extension = "org.jboss.as.ejb3",
-        marshal = true
-
-)
+@ExtensionModule("org.jboss.as.ejb3")
+@MarshalDMR
 public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
     @Default

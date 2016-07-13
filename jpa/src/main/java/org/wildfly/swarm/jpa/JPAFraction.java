@@ -21,15 +21,15 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Ken Finnigan
  * @author Lance Ball
  */
-@Configuration(
-        marshal = true,
-        extension = "org.jboss.as.jpa"
-)
+@ExtensionModule("org.jboss.as.jpa")
+@MarshalDMR
 public class JPAFraction extends JPA<JPAFraction> implements Fraction {
 
     public JPAFraction() {

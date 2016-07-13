@@ -19,6 +19,8 @@ import org.wildfly.swarm.config.RequestController;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
@@ -26,10 +28,8 @@ import org.wildfly.swarm.spi.api.annotations.Default;
  * @author Lance Ball
  */
 @SuppressWarnings("unused")
-@Configuration(
-        extension = "org.wildfly.extension.request-controller",
-        marshal = true
-)
+@ExtensionModule("org.wildfly.extension.request-controller")
+@MarshalDMR
 public class RequestControllerFraction extends RequestController<RequestControllerFraction> implements Fraction {
 
     private RequestControllerFraction() {

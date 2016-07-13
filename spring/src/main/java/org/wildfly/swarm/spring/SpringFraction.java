@@ -16,17 +16,13 @@
 package org.wildfly.swarm.spring;
 
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Ken Finnigan
  */
-@Configuration(
-        deploymentModules = {
-                "com.fasterxml.jackson.core.jackson-core",
-                "com.fasterxml.jackson.core.jackson-databind",
-                "com.fasterxml.jackson.core.jackson-annotations"
-        }
-)
+@DeploymentModule(name="com.fasterxml.jackson.core.jackson-core")
+@DeploymentModule(name="com.fasterxml.jackson.core.jackson-databind")
+@DeploymentModule(name="com.fasterxml.jackson.core.jackson-annotations")
 public class SpringFraction implements Fraction {
 }

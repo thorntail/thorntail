@@ -19,16 +19,15 @@ import org.wildfly.swarm.config.Modcluster;
 import org.wildfly.swarm.config.modcluster.ConfigurationModClusterConfig;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Stuart Douglas
  */
-@Configuration(
-        extension = "org.wildfly.extension.mod_cluster",
-        marshal = true
-)
+@ExtensionModule("org.wildfly.extension.mod_cluster")
+@MarshalDMR
 public class ModclusterFraction extends Modcluster<ModclusterFraction> implements Fraction {
 
     public ModclusterFraction() {

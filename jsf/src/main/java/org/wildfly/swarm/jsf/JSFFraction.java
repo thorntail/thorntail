@@ -18,15 +18,15 @@ package org.wildfly.swarm.jsf;
 import org.wildfly.swarm.config.JSF;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Ken Finnigan
  * @author Lance Ball
  */
-@Configuration(
-        marshal = true,
-        extension = "org.jboss.as.jsf"
-)
+@ExtensionModule("org.jboss.as.jsf")
+@MarshalDMR
 public class JSFFraction extends JSF<JSFFraction> implements Fraction {
 
     public JSFFraction() {

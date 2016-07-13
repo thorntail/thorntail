@@ -22,13 +22,12 @@ import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration(
-        marshal = true
-)
+@MarshalDMR
 public class ManagementFraction extends ManagementCoreService<ManagementFraction> implements Fraction {
 
     public ManagementFraction() {

@@ -22,14 +22,14 @@ import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration(
-        marshal = true,
-        extension = "org.jboss.as.clustering.jgroups"
-)
+@ExtensionModule("org.jboss.as.clustering.jgroups")
+@MarshalDMR
 public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fraction {
 
     public JGroupsFraction() {

@@ -25,14 +25,14 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Ken Finnigan
  */
-@Configuration(
-        marshal = true,
-        extension = "org.jboss.as.remoting"
-)
+@ExtensionModule("org.jboss.as.remoting")
+@MarshalDMR
 public class RemotingFraction extends Remoting<RemotingFraction> implements Fraction {
 
     @Default
