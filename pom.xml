@@ -998,6 +998,7 @@
     <module>mail</module>
     <module>management-console</module>
     <module>messaging</module>
+    <module>microprofile</module>
     <module>msc</module>
     <module>monitor</module>
     <module>mod_cluster</module>
