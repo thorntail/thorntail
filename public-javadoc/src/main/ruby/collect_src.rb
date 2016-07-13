@@ -44,9 +44,12 @@ def process(input_dir, output_dir)
     metadata_file = File.join(dir, "_metadata")
     if File.exist?(metadata_file)
       dirname = File.basename(dir)
-      packages[dirname] = collect_src(dir, output_dir)
-      name, stability = File.read(metadata_file).strip.split(/::::/)
-      metadata[dirname] = {:name => name, :stability => stability}
+      packages_for_module = collect_src(dir, output_dir)
+      unless packages_for_module.empty?
+        packages[dirname] = packages_for_module
+        name, stability = File.read(metadata_file).strip.split(/::::/)
+        metadata[dirname] = {:name => name, :stability => stability}
+      end
     end
   end
 
