@@ -29,6 +29,15 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Repeatable(DeploymentModules.class)
 public @interface DeploymentModule {
+
     String name() default "";
     String slot() default "main";
+    boolean export() default false;
+    MetaInfDisposition metaInf() default MetaInfDisposition.NONE;
+
+    public static enum MetaInfDisposition {
+        NONE,
+        IMPORT,
+        EXPORT
+    }
 }
