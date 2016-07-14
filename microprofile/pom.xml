@@ -23,7 +23,6 @@
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
     <swarm.fraction.tags>JavaEE,Web,MicroProfile</swarm.fraction.tags>
   </properties>
 
