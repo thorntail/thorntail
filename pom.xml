@@ -20,7 +20,7 @@
   <name>WildFly Swarm: SPI</name>
   <description>WildFly Swarm: SPI</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <scm>
     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-spi.git</connection>
@@ -91,6 +91,54 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-impl-base</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.msc</groupId>
+      <artifactId>jboss-msc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>staxmapper</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-dmr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-controller</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>config-api-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jandex</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -104,16 +152,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>spi-api</artifactId>
-        <version>1.0.7.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>spi-runtime</artifactId>
-        <version>1.0.7.Final-SNAPSHOT</version>
-      </dependency>
       <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-parent</artifactId>
@@ -240,10 +278,5 @@
       </build>
     </profile>
   </profiles>
-
-  <modules>
-    <module>api</module>
-    <module>runtime</module>
-  </modules>
 
 </project>
