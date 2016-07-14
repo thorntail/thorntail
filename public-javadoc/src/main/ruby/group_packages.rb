@@ -110,7 +110,7 @@ content = read_overview_frame("#{doc_path}/overview-frame.html")
 content[:packages] = group_packages(content[:packages], module_packages)
 write_content(content, module_metadata,
               "#{doc_path}/overview-frame.html") do |f, title, stability, packages|
-  f.puts "<h4>#{title} #{stability_badge(stability)}</h4><ul>"
+  f.puts "<h4>#{title}<div>#{stability_badge(stability)}</div></h4><ul>"
   packages.each {|line| f.puts(line)}
   f.puts "</ul>"
 end
@@ -120,7 +120,7 @@ content[:packages] = group_packages(content[:packages], module_packages)
 write_content(content, module_metadata,
               "#{doc_path}/overview-summary.html") do |f, title, stability, packages|
   f.puts %Q{<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="#{title} table, listing packages, and an explanation">
-<caption><span>#{title} #{stability_badge(stability)}</span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span style="background-color: #ffffff; padding-left: 0">#{title} #{stability_badge(stability)}</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Package</th>
 <th class="colLast" scope="col">Description</th>
