@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -347,39 +346,6 @@ public class Container {
 
         return this;
     }
-
-   /* private void setupStageConfig() throws Exception {
-        ProjectStage projectStage = stageConfig.isPresent() ? stageConfig.get() : null;
-
-        // auto discover META-INF/project-stages.yml in default deployment
-        if (projectStage == null && System.getProperty(SwarmProperties.PROJECT_STAGE_FILE) == null) {
-            String resourcePath = "META-INF/project-stages.yml";
-            ClassLoader classLoader = getDefaultDeploymentClassLoader();
-            URL configURL = classLoader.getResource(resourcePath);
-            if (configURL != null) {
-                projectStage = loadStageConfiguration(configURL);
-            }
-        }
-
-        if (projectStage != null) {
-            this.server.setStageConfig(projectStage);
-        }
-    }
-
-    private void setupXmlConfig() throws Exception {
-        URL configURL = xmlConfig.isPresent() ? xmlConfig.get() : null;
-
-        // auto discover META-INF/standalone.xml in default deployment
-        if (configURL == null) {
-            String resourcePath = "META-INF/standalone.xml";
-            ClassLoader classLoader = getDefaultDeploymentClassLoader();
-            configURL = classLoader.getResource(resourcePath);
-        }
-
-        if (configURL != null) {
-            this.server.setXmlConfig(configURL);
-        }
-    }*/
 
     /**
      * Stop the container, undeploying all deployments.
