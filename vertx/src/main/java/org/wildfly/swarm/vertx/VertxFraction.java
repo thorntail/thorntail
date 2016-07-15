@@ -21,11 +21,14 @@ import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
 import org.wildfly.swarm.resource.adapters.ResourceAdapterFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author George Gastaldi
  */
+@DeploymentModule(name = "io.vertx.jca", slot = "api")
 public class VertxFraction implements Fraction {
+
     public VertxFraction inhibitAdapterDeployment() {
         this.inhibitAdapterDeployment = true;
         return this;
