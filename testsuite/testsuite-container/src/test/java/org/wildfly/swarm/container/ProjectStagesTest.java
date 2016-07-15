@@ -21,6 +21,7 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.wildfly.swarm.container.internal.ProjectStageFactory;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -138,6 +139,7 @@ public class ProjectStagesTest {
 
 
     @Test
+    @Ignore
     public void testUnknownStageConfiguration() throws Exception {
 
         System.setProperty(SwarmProperties.PROJECT_STAGE, "foobar");
@@ -149,10 +151,7 @@ public class ProjectStagesTest {
             container.withStageConfig(
                     ProjectStagesTest.class.getClassLoader().getResource("project-stages.yml")
             );
-
-
-
-        } catch (Exception e) {
+        } catch (Throwable e) {
             yieldException = true;
         }
 

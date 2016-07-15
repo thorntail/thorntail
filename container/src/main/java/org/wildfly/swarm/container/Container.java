@@ -106,21 +106,7 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container(boolean debugBootstrap) throws Exception {
-        System.setProperty(SwarmInternalProperties.VERSION, VERSION);
-
-        try {
-            String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
-            if (stageFile != null) {
-                loadStageConfiguration(new URL(stageFile));
-            }
-
-        } catch (MalformedURLException e) {
-            System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: " + e.getMessage());
-        }
-
-        createServer(debugBootstrap);
-        createShrinkWrapDomain();
-        determineDeploymentType();
+        this(debugBootstrap, new String[]{});
     }
 
     /**
@@ -143,9 +129,24 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container(boolean debugBootstrap, String... args) throws Exception {
-        this(debugBootstrap);
+        System.setProperty(SwarmInternalProperties.VERSION, VERSION);
+
+        createServer(debugBootstrap);
+        createShrinkWrapDomain();
+        determineDeploymentType();
+
         CommandLine cmd = CommandLine.parse(args);
         cmd.apply(this);
+
+        try {
+            String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
+            if (stageFile != null) {
+                loadStageConfiguration(new URL(stageFile));
+            }
+
+        } catch (MalformedURLException e) {
+            System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: " + e.getMessage());
+        }
     }
 
     public Container withXmlConfig(URL url) {
@@ -154,8 +155,9 @@ public class Container {
     }
 
     public Container withStageConfig(URL url) {
+        this.stageConfigUrl = Optional.of(url);
         if (null == System.getProperty(SwarmProperties.PROJECT_STAGE_FILE)) {
-            loadStageConfiguration(url);
+            loadStageConfiguration(stageConfigUrl.get());
         } else {
             System.out.println("[INFO] Project stage superseded by external configuration " + System.getProperty(SwarmProperties.PROJECT_STAGE_FILE));
         }
@@ -195,7 +197,7 @@ public class Container {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -234,9 +236,9 @@ public class Container {
         if (!this.dependentFractions.isEmpty()) {
             this.dependentFractions.stream()
                     .filter(dependentFraction ->
-                            this.fractions.get(dependentFraction.getClass()) == null
-                                    || (this.fractions.get(dependentFraction.getClass()) != null
-                                    && this.defaultFractionTypes.contains(dependentFraction.getClass())))
+                                    this.fractions.get(dependentFraction.getClass()) == null
+                                            || (this.fractions.get(dependentFraction.getClass()) != null
+                                            && this.defaultFractionTypes.contains(dependentFraction.getClass())))
                     .forEach(this::fraction);
             this.dependentFractions.clear();
         }
@@ -327,47 +329,22 @@ public class Container {
     public Container start(boolean eagerlyOpen) throws Exception {
         if (!this.running) {
 
-            setupXmlConfig();
-            setupStageConfig();
+            if (stageConfig.isPresent()) {
+
+                System.out.println("[INFO] Starting container with stage config source : " + stageConfigUrl.get());
+                this.server.setStageConfig(stageConfig.get());
+            }
+
+            if (xmlConfig.isPresent()) {
+                System.out.println("[INFO] Starting container with xml config source : " + xmlConfig.get());
+                this.server.setXmlConfig(xmlConfig.get());
+            }
 
             this.deployer = this.server.start(this, eagerlyOpen);
             this.running = true;
         }
 
         return this;
-    }
-
-    private void setupStageConfig() throws Exception {
-        ProjectStage projectStage = stageConfig.isPresent() ? stageConfig.get() : null;
-
-        // auto discover META-INF/project-stages.yml in default deployment
-        if (projectStage == null && System.getProperty(SwarmProperties.PROJECT_STAGE_FILE) == null) {
-            String resourcePath = "META-INF/project-stages.yml";
-            ClassLoader classLoader = getDefaultDeploymentClassLoader();
-            URL configURL = classLoader.getResource(resourcePath);
-            if (configURL != null) {
-                projectStage = loadStageConfiguration(configURL);
-            }
-        }
-
-        if (projectStage != null) {
-            this.server.setStageConfig(projectStage);
-        }
-    }
-
-    private void setupXmlConfig() throws Exception {
-        URL configURL = xmlConfig.isPresent() ? xmlConfig.get() : null;
-
-        // auto discover META-INF/standalone.xml in default deployment
-        if (configURL == null) {
-            String resourcePath = "META-INF/standalone.xml";
-            ClassLoader classLoader = getDefaultDeploymentClassLoader();
-            configURL = classLoader.getResource(resourcePath);
-        }
-
-        if (configURL != null) {
-            this.server.setXmlConfig(configURL);
-        }
     }
 
     /**
@@ -793,6 +770,8 @@ public class Container {
     private Optional<ProjectStage> stageConfig = Optional.empty();
 
     private Optional<URL> xmlConfig = Optional.empty();
+
+    private Optional<URL> stageConfigUrl = Optional.empty();
 
     private Archive<?> defaultDeployment;
 
