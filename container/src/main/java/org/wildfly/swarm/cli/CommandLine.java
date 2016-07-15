@@ -91,6 +91,9 @@ public class CommandLine {
             .hasValue("<config>")
             .valueMayBeSeparate(true)
             .withDescription("URL of the server configuration (e.g. standalone.xml)")
+            .withDefault( ()->{
+                return resolveResource("standalone.xml");
+            })
             .then( (cmd, opt, value)-> cmd.put( opt, Option.toURL(value)));
 
 
@@ -102,30 +105,11 @@ public class CommandLine {
             .valueMayBeSeparate(true)
             .withDescription("URL to the stage configuration (e.g. config.yaml")
             .withDefault( ()->{
-                Path candidate = Paths.get( "project-stages.yml" );
-                if (Files.exists(candidate)) {
-                    try {
-                        return candidate.toUri().toURL();
-                    } catch (MalformedURLException e) {
-                        // ignore
-                    }
-                }
-
-                URL yml = null;
-                try {
-                    Module appModule = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "swarm.application" ) );
-                    yml = appModule.getClassLoader().getResource( "project-stages.yml" );
-                    if ( yml != null ) {
-                        return yml;
-                    }
-                } catch (ModuleLoadException e) {
-                    // ignore;
-                }
-
-                yml = ClassLoader.getSystemClassLoader().getResource( "project-stages.yml" );
-                return yml;
+                return resolveResource("project-stages.yml");
             })
             .then( (cmd, opt, value)-> cmd.put( opt, Option.toURL( value ) ));
+
+
 
     public static final Option<String> ACTIVE_STAGE = new Option<String>()
             .withShort('S')
@@ -344,6 +328,31 @@ public class CommandLine {
      */
     public static CommandLine parse(Options options, String... args) throws Exception {
         return CommandLineParser.parse(options, args);
+    }
+
+    private static URL resolveResource(String path) {
+        Path candidate = Paths.get(path);
+        if (Files.exists(candidate)) {
+            try {
+                return candidate.toUri().toURL();
+            } catch (MalformedURLException e) {
+                // ignore
+            }
+        }
+
+        URL yml = null;
+        try {
+            Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application" ) );
+            yml = appModule.getClassLoader().getResource( path );
+            if ( yml != null ) {
+                return yml;
+            }
+        } catch (ModuleLoadException e) {
+            // ignore;
+        }
+
+        yml = ClassLoader.getSystemClassLoader().getResource( path );
+        return yml;
     }
 
     private final Options options;
