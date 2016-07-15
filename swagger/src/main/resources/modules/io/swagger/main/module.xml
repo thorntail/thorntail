@@ -8,7 +8,6 @@
     <artifact name="com.google.guava:guava:${version.swagger.guava}"/>
     <artifact name="org.reflections:reflections:${version.swagger.reflections}"/>
     <artifact name="org.javassist:javassist:${version.swagger.javassist}"/>
-    <artifact name="org.slf4j:slf4j-api:${version.swagger.slf4j}"/>
     <artifact name="org.apache.commons:commons-lang3:${version.swagger.commons.lang}"/>
 
   </resources>
@@ -18,6 +17,7 @@
     <module name="javax.servlet.api"/>
     <module name="javax.xml.bind.api"/>
     <module name="javax.validation.api"/>
+    <module name="org.slf4j"/>
 
     <module name="com.fasterxml.jackson" slot="swagger"/>
     <module name="org.wildfly.swarm.swagger" slot="runtime"/>
