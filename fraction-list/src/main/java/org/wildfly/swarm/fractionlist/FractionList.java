@@ -59,8 +59,8 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
                 String tags = toString(fraction.get("tags"));
                 boolean internal = toBoolean(fraction.get("internal"));
 
-                JsonValue stabilityJson = fraction.get("stability");
-                int stabilityIndex = stabilityJson == null || stabilityJson.isNull() ? FractionStability.UNSTABLE.ordinal() : stabilityJson.asInt();
+                JsonValue stabilityIndexJson = fraction.get("stabilityIndex");
+                int stabilityIndex = stabilityIndexJson == null || stabilityIndexJson.isNull() ? FractionStability.UNSTABLE.ordinal() : stabilityIndexJson.asInt();
                 FractionStability stability;
                 if (stabilityIndex < 0 || stabilityIndex >= FractionStability.values().length) {
                     stability = FractionStability.UNSTABLE;
