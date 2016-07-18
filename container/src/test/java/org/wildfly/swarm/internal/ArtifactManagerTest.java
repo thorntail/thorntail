@@ -15,17 +15,31 @@
  */
 package org.wildfly.swarm.internal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import junit.framework.Assert;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 /**
@@ -141,17 +155,49 @@ public class ArtifactManagerTest {
 
     @Test
     public void testArchiveNameForGradleClassesOutputDir() {
-        assertThat(manager.archiveNameForClassesDir(Paths.get("/test/projectname/build/resources/main"))).isEqualTo("projectname.jar");
+        assertThat(ArtifactManager.archiveNameForClassesDir(Paths.get("/test/projectname/build/resources/main"))).isEqualTo("projectname.jar");
     }
 
     @Test
     public void testArchiveNameForGradleResourcesOutputDir() {
-        assertThat(manager.archiveNameForClassesDir(Paths.get("/test/projectname/build/classes/main"))).isEqualTo("projectname.jar");
+        assertThat(ArtifactManager.archiveNameForClassesDir(Paths.get("/test/projectname/build/classes/main"))).isEqualTo("projectname.jar");
     }
 
     @Test
     public void testArchiveNameForMavenOutputDir() {
-        assertThat(manager.archiveNameForClassesDir(Paths.get("/test/projectname/target/classes"))).isEqualTo("projectname.jar");
+        assertThat(ArtifactManager.archiveNameForClassesDir(Paths.get("/test/projectname/target/classes"))).isEqualTo("projectname.jar");
+    }
+
+    @Test
+    public void testIDEClasspath() throws Exception {
+
+        InputStream in = ArtifactManagerTest.class.getClassLoader().getResourceAsStream("system-cp.txt");
+        List<String> classpath = read(in); // usually it's System.getProperty("java.class.path")
+
+        final String javaHome = "/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre";
+        final String pwd = "/Users/hbraun/dev/prj/wfs/wildfly-swarm-examples/jaxrs/jaxrs-shrinkwrap";
+
+        Set<String> archives = new SystemDependencyResolution(classpath, javaHome, pwd, Collections.EMPTY_LIST)
+                .resolve(Collections.emptyList());
+
+        assertFalse("Dependencies contain JDK libraries", archives.contains("/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/lib/jconsole.jar")); // part of JDK libs, should not be included
+        assertEquals("Number of libs doesn't match", 52, archives.size());
+
+        //archives.forEach(a -> System.out.println(a));
+    }
+
+    static List<String> read(java.io.InputStream is) {
+        List<String> result = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                result.add(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return result;
     }
 
     private static WildFlySwarmDependenciesConf conf = new WildFlySwarmDependenciesConf();
