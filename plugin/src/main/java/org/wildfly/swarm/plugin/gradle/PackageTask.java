@@ -18,20 +18,18 @@ package org.wildfly.swarm.plugin.gradle;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.ResolvedArtifact;
-import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
 import org.wildfly.swarm.fractionlist.FractionList;
-import org.wildfly.swarm.tools.PropertiesUtil;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
  * @author Bob McWhirter
@@ -106,8 +104,8 @@ public class PackageTask extends DefaultTask {
         project.getConfigurations()
                 .getByName("compile")
                 .getResolvedConfiguration()
-                .getFirstLevelModuleDependencies()
-                .forEach(this::walk);
+                .getResolvedArtifacts()
+                .forEach(this::addDependency);
 
         final Boolean bundleDependencies = ext.getBundleDependencies();
         if (bundleDependencies != null) {
@@ -117,17 +115,14 @@ public class PackageTask extends DefaultTask {
         this.tool.build(project.getName(), project.getBuildDir().toPath().resolve("libs"));
     }
 
-    private void walk(final ResolvedDependency dep) {
-        Set<ResolvedArtifact> artifacts = dep.getModuleArtifacts();
-        for (ResolvedArtifact each : artifacts) {
-            String[] parts = dep.getName().split(":");
-            String groupId = parts[0];
-            String artifactId = parts[1];
-            String version = parts[2];
-            this.tool.dependency("compile", groupId, artifactId, version, each.getExtension(),
-                                 each.getClassifier(), each.getFile());
-        }
+    private void addDependency(final ResolvedArtifact artifact) {
+        String groupId = artifact.getModuleVersion().getId().getGroup();
+        String artifactId = artifact.getModuleVersion().getId().getName();
+        String version = artifact.getModuleVersion().getId().getVersion();
+        String extension = artifact.getExtension();
+        String classifier = artifact.getClassifier();
+        File file = artifact.getFile();
 
-        dep.getChildren().forEach(this::walk);
+        this.tool.dependency("compile", groupId, artifactId, version, extension, classifier, file);
     }
 }
