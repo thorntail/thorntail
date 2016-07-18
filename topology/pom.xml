@@ -24,6 +24,7 @@
 
   <properties>
     <swarm.fraction.internal>true</swarm.fraction.internal>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
   </properties>
 
   <dependencies>

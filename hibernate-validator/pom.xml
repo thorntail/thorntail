@@ -24,6 +24,7 @@
 
   <properties>
     <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>JavaEE,Validation,Hibernate</swarm.fraction.tags>
   </properties>
 

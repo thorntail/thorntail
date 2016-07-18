@@ -21,6 +21,7 @@
   <description>Java Persistence API with Hibernate and H2 datasource</description>
 
   <properties>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>JavaEE,Data</swarm.fraction.tags>
   </properties>
 
