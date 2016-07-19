@@ -1,6 +1,6 @@
 
 
-[![Build Status](https://projectodd.ci.cloudbees.com/buildStatus/icon?job=wildfly-swarm-core)](https://projectodd.ci.cloudbees.com/job/wildfly-swarm-core)
+[![Build Status](https://projectodd.ci.cloudbees.com/buildStatus/icon?job=wildfly-swarm)](https://projectodd.ci.cloudbees.com/job/wildfly-swarm)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/core)
 [![Join the chat at freenode:wildfly-swarm](https://img.shields.io/badge/irc-freenode%3A%20%23wildfly--swarm-blue.svg)](http://webchat.freenode.net/?channels=%23wildfly-swarm)
