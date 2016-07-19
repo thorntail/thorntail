@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 
-import com.sun.org.apache.bcel.internal.util.ClassLoader;
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
