@@ -64,12 +64,6 @@
       <artifactId>snakeyaml</artifactId>
       <version>${version.org.snakeyaml}</version>
     </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-runtime</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-server</artifactId>
