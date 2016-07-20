@@ -162,6 +162,8 @@ public class Swarm extends Container {
             System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
 
+        // Need to setup Logging here so that Weld doesn't default to JUL.
+        // TODO Is there a better way?
         try {
             Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
 

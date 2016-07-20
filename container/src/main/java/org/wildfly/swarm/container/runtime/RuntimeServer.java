@@ -117,23 +117,24 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
 public class RuntimeServer implements Server {
 
     public RuntimeServer() {
-        try {
-            Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
-
-            ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
-                System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
-                System.setProperty("org.jboss.logmanager.configurator", LoggingConfigurator.class.getName());
-                //force logging init
-                LogManager.getLogManager();
-                BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());
-            } finally {
-                Thread.currentThread().setContextClassLoader(originalCl);
-            }
-        } catch (ModuleLoadException e) {
-            System.err.println("[WARN] logging not available, logging will not be configured");
-        }
+        // TODO Logic has been moved to Swarm.java, safe to remove?
+//        try {
+//            Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
+//
+//            ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+//            try {
+//                Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
+//                System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
+//                System.setProperty("org.jboss.logmanager.configurator", LoggingConfigurator.class.getName());
+//                //force logging init
+//                LogManager.getLogManager();
+//                BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());
+//            } finally {
+//                Thread.currentThread().setContextClassLoader(originalCl);
+//            }
+//        } catch (ModuleLoadException e) {
+//            System.err.println("[WARN] logging not available, logging will not be configured");
+//        }
     }
 
     @Override
