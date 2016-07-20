@@ -15,15 +15,10 @@
  */
 package org.wildfly.swarm.management.console.runtime;
 
-import java.net.URL;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleLoader;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.management.console.ManagementConsoleFraction;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
@@ -40,11 +35,15 @@ public class ManagementConsoleConfiguration extends AbstractServerConfiguration<
 
     @Override
     public List<Archive> getImplicitDeployments(ManagementConsoleFraction fraction) throws Exception {
-        WARArchive war = ArtifactLookup.get()
-                .artifact("org.jboss.as:jboss-as-console:jar:2.8.25.Final:resources", "management-console-ui.war")
-                .as(WARArchive.class)
-                .setContextRoot(fraction.getContextRoot());
-        return Collections.singletonList(war);
+        if (!fraction.isInhibitStandaloneDeployment()) {
+            WARArchive war = ArtifactLookup.get()
+                    .artifact("org.jboss.as:jboss-as-console:jar:2.8.25.Final:resources", "management-console-ui.war")
+                    .as(WARArchive.class)
+                    .setContextRoot(fraction.getContextRoot());
+            return Collections.singletonList(war);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override

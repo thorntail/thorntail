@@ -3,13 +3,13 @@
     <artifact name="org.wildfly.swarm:management-console:${project.version}"/>
     <artifact name="org.jboss.as:jboss-as-console:2.8.25.Final:resources"/>
   </resources>
-
   <dependencies>
     <module name="org.wildfly.swarm.management.console"/>
     <module name="org.wildfly.swarm.container"/>
     <module name="org.wildfly.swarm.container" slot="runtime"/>
     <module name="org.wildfly.swarm.undertow"/>
+    <module name="org.wildfly.swarm.management"/>
+    <module name="org.wildfly.swarm.management" slot="runtime"/>
     <module name="javax.servlet.api"/>
-    <module name="org.jboss.shrinkwrap"/>
   </dependencies>
 </module>
