@@ -228,7 +228,17 @@ public class SwarmExecutor {
         if (!this.classpath.isEmpty()) {
             cli.add("-classpath");
             cli.add(String.join(File.pathSeparator,
-                                this.classpath.stream().map(e -> e.toString()).collect(Collectors.toList())));
+                                this.classpath.stream()
+                                        .sorted((o1, o2) -> {
+                                            if (o1.toString().contains("weld-se-shaded")) {
+                                                return -1;
+                                            } else if (o2.toString().contains("weld-se-shaded")) {
+                                                return 1;
+                                            }
+                                            return o1.compareTo(o2);
+                                        })
+                                        .map(e -> e.toString())
+                                        .collect(Collectors.toList())));
         }
 
         cli.addAll(this.executable.toArguments());
