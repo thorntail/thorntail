@@ -17,18 +17,23 @@ package org.wildfly.swarm;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.function.Supplier;
+import java.util.logging.LogManager;
+
+import javax.inject.Singleton;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.wildfly.swarm.cli.CommandLine;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.DeploymentException;
+import org.wildfly.swarm.container.runtime.JBossLoggingManager;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -41,7 +46,9 @@ import org.wildfly.swarm.spi.api.SocketBindingGroup;
  * a default deployment.  Typically only useful for barren WAR applications.</p>
  *
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
+@Singleton
 public class Swarm extends Container {
 
     public static ArtifactManager ARTIFACT_MANAGER;
@@ -62,62 +69,79 @@ public class Swarm extends Container {
         super( debugBootstrap, args );
     }
 
+    public void initiate() throws Exception {
+        super.start();
+        super.deploy();
+    }
+
     @Override
+    @Deprecated
     public Swarm withStageConfig(URL url) {
         return (Swarm) super.withStageConfig(url);
     }
 
     @Override
+    @Deprecated
     public Swarm withXmlConfig(URL url) {
         return (Swarm) super.withXmlConfig(url);
     }
 
     @Override
+    @Deprecated
     public Swarm fraction(Supplier<Fraction> supplier) {
         return (Swarm) super.fraction(supplier);
     }
 
     @Override
+    @Deprecated
     public Swarm fraction(Fraction fraction) {
         return (Swarm) super.fraction(fraction);
     }
 
     @Override
+    @Deprecated
     public Swarm iface(String name, String expression) {
         return (Swarm) super.iface(name, expression);
     }
 
     @Override
+    @Deprecated
     public Swarm socketBindingGroup(SocketBindingGroup group) {
         return (Swarm) super.socketBindingGroup(group);
     }
 
     @Override
+    @Deprecated
     public Swarm start(boolean eagerlyOpen) throws Exception {
         return (Swarm) super.start(eagerlyOpen);
     }
 
     @Override
+    @Deprecated
     public Swarm stop() throws Exception {
         return (Swarm) super.stop();
     }
 
     @Override
+    @Deprecated
     public Swarm start() throws Exception {
         return (Swarm) super.start();
     }
 
     @Override
+    @Deprecated
     public Swarm start(Archive<?> deployment) throws Exception {
         return (Swarm) super.start(deployment);
     }
 
     @Override
+    @Deprecated
     public Swarm deploy() throws DeploymentException {
         return (Swarm) super.deploy();
     }
 
     @Override
+    @Deprecated
     public Swarm deploy(Archive<?> deployment) throws DeploymentException {
         return (Swarm) super.deploy(deployment);
     }
@@ -129,31 +153,38 @@ public class Swarm extends Container {
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
+        if (args == null) {
+            args = new String[]{};
+        }
+        ParameterFactory.PARAMETERS = args;
+
         if (System.getProperty("boot.module.loader") == null) {
             System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
-        Module bootstrap = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
 
-        ServiceLoader<ContainerFactory> factory = bootstrap.loadService(ContainerFactory.class);
-        Iterator<ContainerFactory> factoryIter = factory.iterator();
+        try {
+            Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
 
-        if (!factoryIter.hasNext()) {
-            simpleMain(args);
-        } else {
-            factoryMain(factoryIter.next(), args);
+            ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
+                System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
+                System.setProperty("org.jboss.logmanager.configurator", "org.wildfly.swarm.container.runtime.LoggingConfigurator");
+                //force logging init
+                LogManager.getLogManager();
+                BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());
+            } finally {
+                Thread.currentThread().setContextClassLoader(originalCl);
+            }
+        } catch (ModuleLoadException e) {
+            System.err.println("[WARN] logging not available, logging will not be configured");
         }
-    }
 
-    public static void simpleMain(String...args) throws Exception {
-        Container container = new Swarm(args);
-        container.start();
-        container.deploy();
-    }
+        Weld weld = new Weld();
+        WeldContainer weldContainer = weld.initialize();
+        weldContainer.select(Swarm.class).get().initiate();
 
-    public static void factoryMain(ContainerFactory factory, String...args) throws Exception {
-        Container container = factory.newContainer(args);
-        container.start();
-        container.deploy();
+        //TODO Support user constructed container via annotations for testing and custom use
     }
 
     public static ArtifactManager artifactManager() throws IOException {

@@ -25,6 +25,7 @@
   <properties>
     <swarm.fraction.internal>true</swarm.fraction.internal>
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
+    <version.weld>3.0.0.Alpha16</version.weld>
   </properties>
 
   <build>
@@ -52,6 +53,12 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-shaded</artifactId>
+      <version>${version.weld}</version>
     </dependency>
 
     <dependency>
