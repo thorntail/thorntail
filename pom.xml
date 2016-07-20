@@ -1042,78 +1042,78 @@
     <module>management</module>
 
     <!-- fractions -->
-    <module>batch-jberet</module>
-    <module>bean-validation</module>
-    <module>camel</module>
-    <module>cdi</module>
-    <module>cdi-ext</module>
-    <module>connector</module>
-    <module>datasources</module>
-    <module>drools-server</module>
-    <module>ee</module>
-    <module>ejb</module>
-    <module>ejb-remote</module>
-    <module>hibernate-search</module>
-    <module>hibernate-validator</module>
-    <module>infinispan</module>
+    <!--<module>batch-jberet</module>-->
+    <!--<module>bean-validation</module>-->
+    <!--<module>camel</module>-->
+    <!--<module>cdi</module>-->
+    <!--<module>cdi-ext</module>-->
+    <!--<module>connector</module>-->
+    <!--<module>datasources</module>-->
+    <!--<module>drools-server</module>-->
+    <!--<module>ee</module>-->
+    <!--<module>ejb</module>-->
+    <!--<module>ejb-remote</module>-->
+    <!--<module>hibernate-search</module>-->
+    <!--<module>hibernate-validator</module>-->
+    <!--<module>infinispan</module>-->
     <module>io</module>
-    <module>javafx</module>
-    <module>jaxrs</module>
-    <module>jaxrs-cdi</module>
-    <module>jaxrs-jaxb</module>
-    <module>jaxrs-jsonp</module>
-    <module>jaxrs-multipart</module>
-    <module>jaxrs-validator</module>
-    <module>jca</module>
-    <module>jdr</module>
-    <module>jgroups</module>
-    <module>jgroups-module</module>
-    <module>jmx</module>
-    <module>jolokia</module>
-    <module>jpa</module>
-    <module>jpa-mysql</module>
-    <module>jpa-postgresql</module>
-    <module>jsf</module>
-    <module>keycloak</module>
-    <module>keycloak-server</module>
-    <module>logging</module>
-    <module>logstash</module>
-    <module>mail</module>
-    <module>management-console</module>
-    <module>messaging</module>
-    <module>microprofile</module>
-    <module>msc</module>
-    <module>monitor</module>
-    <module>mod_cluster</module>
-    <module>naming</module>
-    <module>netflix</module>
-    <module>remoting</module>
-    <module>request-controller</module>
-    <module>resource-adapters</module>
-    <module>security</module>
-    <module>spring</module>
-    <module>swagger</module>
-    <module>swagger-webapp</module>
-    <module>topology</module>
-    <module>topology-consul</module>
-    <module>topology-jgroups</module>
-    <module>topology-openshift</module>
-    <module>topology-webapp</module>
-    <module>transactions</module>
-    <module>undertow</module>
-    <module>undertow-js</module>
-    <module>vertx</module>
-    <module>webservices</module>
+    <!--<module>javafx</module>-->
+    <!--<module>jaxrs</module>-->
+    <!--<module>jaxrs-cdi</module>-->
+    <!--<module>jaxrs-jaxb</module>-->
+    <!--<module>jaxrs-jsonp</module>-->
+    <!--<module>jaxrs-multipart</module>-->
+    <!--<module>jaxrs-validator</module>-->
+    <!--<module>jca</module>-->
+    <!--<module>jdr</module>-->
+    <!--<module>jgroups</module>-->
+    <!--<module>jgroups-module</module>-->
+    <!--<module>jmx</module>-->
+    <!--<module>jolokia</module>-->
+    <!--<module>jpa</module>-->
+    <!--<module>jpa-mysql</module>-->
+    <!--<module>jpa-postgresql</module>-->
+    <!--<module>jsf</module>-->
+    <!--<module>keycloak</module>-->
+    <!--<module>keycloak-server</module>-->
+    <!--<module>logging</module>-->
+    <!--<module>logstash</module>-->
+    <!--<module>mail</module>-->
+    <!--<module>management-console</module>-->
+    <!--<module>messaging</module>-->
+    <!--<module>microprofile</module>-->
+    <!--<module>msc</module>-->
+    <!--<module>monitor</module>-->
+    <!--<module>mod_cluster</module>-->
+    <!--<module>naming</module>-->
+    <!--<module>netflix</module>-->
+    <!--<module>remoting</module>-->
+    <!--<module>request-controller</module>-->
+    <!--<module>resource-adapters</module>-->
+    <!--<module>security</module>-->
+    <!--<module>spring</module>-->
+    <!--<module>swagger</module>-->
+    <!--<module>swagger-webapp</module>-->
+    <!--<module>topology</module>-->
+    <!--<module>topology-consul</module>-->
+    <!--<module>topology-jgroups</module>-->
+    <!--<module>topology-openshift</module>-->
+    <!--<module>topology-webapp</module>-->
+    <!--<module>transactions</module>-->
+    <!--<module>undertow</module>-->
+    <!--<module>undertow-js</module>-->
+    <!--<module>vertx</module>-->
+    <!--<module>webservices</module>-->
 
-    <module>integration-tests</module>
-    <module>testsuite</module>
+    <!--<module>integration-tests</module>-->
+    <module>testsuite/testsuite-io</module>
 
     <module>fraction-list</module>
     <module>plugin</module>
     <module>swarmtool</module>
     <module>boms</module>
 
-    <module>standalone-servers</module>
+    <!--<module>standalone-servers</module>-->
   </modules>
 
   <profiles>
