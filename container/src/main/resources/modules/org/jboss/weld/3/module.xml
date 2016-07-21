@@ -4,4 +4,8 @@
     <artifact name="org.jboss.weld.se:weld-se-shaded:${version.weld}"/>
   </resources>
 
+  <dependencies>
+    <module name="javax.api"/>
+    <module name="org.jboss.jandex"/>
+  </dependencies>
 </module>
