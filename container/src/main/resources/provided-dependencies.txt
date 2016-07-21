@@ -13,3 +13,4 @@ org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-jboss
 org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-javaee
 org.yaml:snakeyaml
 org.wildfly:wildfly-naming
+org.jboss.weld.se:weld-se-shaded
