@@ -16,5 +16,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Qualifier
 @Retention(RUNTIME)
 @Target({ METHOD, PARAMETER, FIELD })
-public @interface Parameters {
+public @interface CommandLineArgs {
 }

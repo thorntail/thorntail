@@ -8,19 +8,19 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import org.wildfly.swarm.Parameters;
+import org.wildfly.swarm.CommandLineArgs;
 import org.wildfly.swarm.Swarm;
 
 /**
  * @author Ken Finnigan
  */
 @ApplicationScoped
-public class ParameterFactory {
+public class CommandLineArgsFactory {
 
     private String[] args;
     private List<String> argsList;
 
-    public ParameterFactory() {
+    public CommandLineArgsFactory() {
         String[] args = Swarm.COMMAND_LINE_ARGS;
         if (args == null) {
             args = new String[]{};
@@ -30,13 +30,13 @@ public class ParameterFactory {
     }
 
     @Produces
-    @Parameters
+    @CommandLineArgs
     public String[] getArgsAsArray() {
         return this.args;
     }
 
     @Produces
-    @Parameters
+    @CommandLineArgs
     public List<String> getArgsAsList() {
         return this.argsList;
     }
