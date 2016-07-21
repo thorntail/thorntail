@@ -187,8 +187,9 @@ public class Swarm extends Container {
 
         Weld weld = new Weld()
                 .setClassLoader(module.getClassLoader());
-        WeldContainer weldContainer = weld.initialize();
-        weldContainer.select(Swarm.class).get().initiate();
+        try (WeldContainer weldContainer = weld.initialize()) {
+            weldContainer.select(Swarm.class).get().initiate();
+        }
 
         //TODO Support user constructed container via annotations for testing and custom use
     }
