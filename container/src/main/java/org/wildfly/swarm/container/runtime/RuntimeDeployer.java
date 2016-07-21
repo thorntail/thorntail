@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.jandex.Index;
@@ -57,6 +59,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class RuntimeDeployer implements Deployer {
 
     public RuntimeDeployer(RuntimeServer.Opener opener, ServiceContainer serviceContainer, List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {

@@ -25,6 +25,8 @@ import java.util.StringTokenizer;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  * A single option specification.
  *
@@ -43,6 +45,7 @@ import java.util.function.Supplier;
  *
  * @author Bob McWhirter
  */
+@Vetoed
 public class Option<T> {
 
     /**

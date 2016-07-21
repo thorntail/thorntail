@@ -19,12 +19,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.wildfly.swarm.spi.api.ProjectStage;
 
 /**
  * @author Heiko Braun
  * @since 07/04/16
  */
+@Vetoed
 public class ProjectStageImpl implements ProjectStage {
 
     private String name;

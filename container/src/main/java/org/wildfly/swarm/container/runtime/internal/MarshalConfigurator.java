@@ -17,6 +17,8 @@ package org.wildfly.swarm.container.runtime.internal;
 
 import java.util.List;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -24,6 +26,7 @@ import org.wildfly.swarm.spi.api.Fraction;
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class MarshalConfigurator implements Configurator {
 
     @Override

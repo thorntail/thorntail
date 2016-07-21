@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
@@ -40,6 +42,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
  *
  * @author Bob McWhirter
  */
+@Vetoed
 public class CommandLine {
 
     /** Default option for parsing -h and --help */

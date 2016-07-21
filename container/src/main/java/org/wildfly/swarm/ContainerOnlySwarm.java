@@ -18,6 +18,8 @@ package org.wildfly.swarm;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.container.Container;
@@ -30,6 +32,7 @@ import org.wildfly.swarm.container.Container;
  *
  * @author Bob McWhirter
  */
+@Vetoed
 public class ContainerOnlySwarm {
 
     /**

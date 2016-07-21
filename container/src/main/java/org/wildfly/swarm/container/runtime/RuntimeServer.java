@@ -41,6 +41,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.LogManager;
 
+import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
 
 import org.jboss.as.controller.ModelController;
@@ -114,6 +115,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
  * @author Ken Finnigan
  */
 @SuppressWarnings("unused")
+@Vetoed
 public class RuntimeServer implements Server {
 
     public RuntimeServer() {
@@ -871,6 +873,7 @@ public class RuntimeServer implements Server {
         void accept(T t, ServerConfiguration config, Fraction fraction);
     }
 
+    @Vetoed
     private static class ExtensionOpPriorityComparator implements Comparator<ModelNode> {
         @Override
         public int compare(ModelNode left, ModelNode right) {

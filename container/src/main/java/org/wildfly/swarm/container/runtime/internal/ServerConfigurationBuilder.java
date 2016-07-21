@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.as.controller.Extension;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
@@ -32,6 +34,7 @@ import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class ServerConfigurationBuilder {
 
     private final Module module;

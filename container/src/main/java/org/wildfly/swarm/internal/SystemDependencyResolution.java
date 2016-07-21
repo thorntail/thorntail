@@ -11,12 +11,15 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmClasspathConf;
 
 /**
  * @author Heiko Braun
  * @since 18/07/16
  */
+@Vetoed
 public class SystemDependencyResolution implements DependencyResolution {
 
 

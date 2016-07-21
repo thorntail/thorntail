@@ -53,6 +53,8 @@ public class Swarm extends Container {
 
     public static ArtifactManager ARTIFACT_MANAGER;
 
+    public static String[] COMMAND_LINE_ARGS;
+
     public Swarm() throws Exception {
     }
 
@@ -153,10 +155,7 @@ public class Swarm extends Container {
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
-        if (args == null) {
-            args = new String[]{};
-        }
-        ParameterFactory.PARAMETERS = args;
+        COMMAND_LINE_ARGS = args;
 
         if (System.getProperty("boot.module.loader") == null) {
             System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");

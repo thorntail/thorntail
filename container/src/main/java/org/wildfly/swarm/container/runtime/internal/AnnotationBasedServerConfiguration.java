@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
 
 import org.jboss.dmr.ModelNode;
@@ -41,6 +42,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class AnnotationBasedServerConfiguration implements ServerConfiguration {
 
     private final Class<? extends Fraction> type;

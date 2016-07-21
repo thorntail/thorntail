@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -42,6 +44,7 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
+@Vetoed
 public class ArtifactManager implements ArtifactLookup {
 
     public ArtifactManager(WildFlySwarmDependenciesConf deps) {

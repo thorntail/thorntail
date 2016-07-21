@@ -3,6 +3,7 @@ package org.wildfly.swarm.container.runtime;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
 
 import org.jboss.as.controller.Extension;
@@ -13,6 +14,7 @@ import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class GenericParserFactory extends AbstractParserFactory {
 
     private final Extension extension;

@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.yaml.snakeyaml.Yaml;
 
@@ -30,6 +32,7 @@ import org.yaml.snakeyaml.Yaml;
  * @author Heiko Braun
  * @since 07/04/16
  */
+@Vetoed
 public class ProjectStageFactory {
 
     public List<ProjectStage> loadStages(InputStream inputStream) {

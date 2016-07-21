@@ -15,9 +15,12 @@
  */
 package org.wildfly.swarm.container;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class Interface {
 
     public Interface(String name, String expression) {

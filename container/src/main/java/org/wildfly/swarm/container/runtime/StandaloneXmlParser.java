@@ -45,6 +45,7 @@ import org.jboss.staxmapper.XMLMapper;
  * @author Heiko Braun
  * @since 27/11/15
  */
+@Vetoed
 public class StandaloneXmlParser {
 
     private List<ModelNode> usedExtensions;

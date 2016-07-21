@@ -17,11 +17,14 @@ package org.wildfly.swarm.container.runtime;
 
 import java.util.UUID;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class UUIDFactory {
 
     public static UUID getUUID() {

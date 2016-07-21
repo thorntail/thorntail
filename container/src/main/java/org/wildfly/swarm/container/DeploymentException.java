@@ -15,11 +15,14 @@
  */
 package org.wildfly.swarm.container;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.shrinkwrap.api.Archive;
 
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class DeploymentException extends Exception {
 
     public DeploymentException(String message) {

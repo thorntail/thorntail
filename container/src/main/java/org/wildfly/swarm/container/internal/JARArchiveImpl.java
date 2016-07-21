@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.container.internal;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
@@ -24,6 +26,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class JARArchiveImpl extends ContainerBase<JARArchive> implements JARArchive {
 
     // -------------------------------------------------------------------------------------||
