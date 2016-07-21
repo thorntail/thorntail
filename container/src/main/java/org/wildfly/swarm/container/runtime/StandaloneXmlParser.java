@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -115,6 +116,7 @@ public class StandaloneXmlParser {
 
     private final StandaloneXml parserDelegate;
 
+    @Vetoed
     private static class NoopXMLElementReader implements XMLElementReader<List<ModelNode>> {
         @Override
         public void readElement(XMLExtendedStreamReader reader, List<ModelNode> modelNode) throws XMLStreamException {
