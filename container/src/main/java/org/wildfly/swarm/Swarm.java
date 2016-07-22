@@ -157,7 +157,10 @@ public class Swarm extends Container {
     public static void main(String... args) throws Exception {
         COMMAND_LINE_ARGS = args;
 
+        boolean isUberJar = true;
+
         if (System.getProperty("boot.module.loader") == null) {
+            isUberJar = false;
             System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
 
@@ -182,10 +185,12 @@ public class Swarm extends Container {
             System.err.println("[WARN] logging not available, logging will not be configured");
         }
 
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+        Weld weld = new Weld();
+        if (isUberJar) {
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            weld.setClassLoader(module.getClassLoader());
+        }
 
-        Weld weld = new Weld()
-                .setClassLoader(module.getClassLoader());
         try (WeldContainer weldContainer = weld.initialize()) {
             weldContainer.select(Swarm.class).get().initiate();
         }
