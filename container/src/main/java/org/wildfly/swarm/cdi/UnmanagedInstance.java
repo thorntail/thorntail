@@ -31,17 +31,25 @@ import javax.enterprise.inject.spi.InjectionTarget;
  */
 public class UnmanagedInstance {
 
-    private final CreationalContext ctx;
-    private final InjectionTarget injectionTarget;
+    private CreationalContext ctx;
+    private InjectionTarget injectionTarget;
     private Object instance;
     private boolean disposed = false;
+    private boolean inWeld = true;
 
     public UnmanagedInstance(Object instance) {
-        BeanManager beanManager = CDI.current().getBeanManager();
-        AnnotatedType type = beanManager.createAnnotatedType(instance.getClass());
-        this.instance = instance;
-        this.injectionTarget = beanManager.getInjectionTargetFactory(type).createInjectionTarget(null);
-        this.ctx = beanManager.createCreationalContext(null);
+        // Handle case where CDI hasn't been initialized, typically `new Container()` in a custom main()
+        try {
+            this.instance = instance;
+
+            BeanManager beanManager = CDI.current().getBeanManager();
+            AnnotatedType type = beanManager.createAnnotatedType(instance.getClass());
+            this.injectionTarget = beanManager.getInjectionTargetFactory(type).createInjectionTarget(null);
+            this.ctx = beanManager.createCreationalContext(null);
+        } catch (IllegalStateException ise) {
+            // Do Nothing, we're not executing in Weld
+            this.inWeld = false;
+        }
     }
 
     public Object get() {
@@ -49,6 +57,10 @@ public class UnmanagedInstance {
     }
 
     public UnmanagedInstance produce() {
+        if (!inWeld) {
+            return this;
+        }
+
         if (this.instance != null) {
             throw new IllegalStateException("Trying to call produce() on already constructed instance");
         }
@@ -60,6 +72,10 @@ public class UnmanagedInstance {
     }
 
     public UnmanagedInstance inject() {
+        if (!inWeld) {
+            return this;
+        }
+
         if (this.instance == null) {
             throw new IllegalStateException("Trying to call inject() before produce() was called");
         }
@@ -71,6 +87,10 @@ public class UnmanagedInstance {
     }
 
     public UnmanagedInstance postConstruct() {
+        if (!inWeld) {
+            return this;
+        }
+
         if (this.instance == null) {
             throw new IllegalStateException("Trying to call postConstruct() before produce() was called");
         }
@@ -82,6 +102,10 @@ public class UnmanagedInstance {
     }
 
     public UnmanagedInstance preDestroy() {
+        if (!inWeld) {
+            return this;
+        }
+
         if (this.instance == null) {
             throw new IllegalStateException("Trying to call preDestroy() before produce() was called");
         }
@@ -93,6 +117,10 @@ public class UnmanagedInstance {
     }
 
     public UnmanagedInstance dispose() {
+        if (!inWeld) {
+            return this;
+        }
+
         if (this.instance == null) {
             throw new IllegalStateException("Trying to call dispose() before produce() was called");
         }
