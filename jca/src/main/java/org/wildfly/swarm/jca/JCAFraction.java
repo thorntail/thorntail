@@ -27,7 +27,6 @@ import org.wildfly.swarm.config.jca.LongRunningThreads;
 import org.wildfly.swarm.config.jca.ShortRunningThreads;
 import org.wildfly.swarm.config.jca.Workmanager;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.ExtensionClassName;
 import org.wildfly.swarm.spi.api.annotations.ExtensionModule;

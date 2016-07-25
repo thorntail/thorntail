@@ -234,7 +234,7 @@ public class StartMojo extends AbstractSwarmMojo {
             existingDeps.forEach(d -> analyzer.source(d.getFile()));
         }
         final Predicate<FractionDescriptor> notExistingDep =
-                d -> !existingDepGASet.contains(String.format("%s:%s", d.groupId(), d.artifactId()));
+                d -> !existingDepGASet.contains(String.format("%s:%s", d.getGroupId(), d.getArtifactId()));
         try {
             fractions = analyzer.detectNeededFractions().stream()
                     .filter(notExistingDep)

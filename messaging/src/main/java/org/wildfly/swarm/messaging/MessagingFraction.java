@@ -17,7 +17,6 @@ package org.wildfly.swarm.messaging;
 
 import org.wildfly.swarm.config.MessagingActiveMQ;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.ExtensionModule;

@@ -3,6 +3,7 @@ package org.wildfly.swarm.container.runtime.internal;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -13,7 +14,6 @@ import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.MethodInfo;
-import org.jboss.jandex.Type;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
@@ -68,7 +68,6 @@ public class ServerConfigurationBuilder {
 
     protected AnnotationInstance findAnnotation(Class<?> annotationType) {
         Collection<AnnotationInstance> all = this.classInfo.classAnnotations();
-        List<AnnotationInstance> selected = new ArrayList<>();
 
         for (AnnotationInstance each : all) {
             if (each.name().toString().equals(annotationType.getName())) {
@@ -79,6 +78,7 @@ public class ServerConfigurationBuilder {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     protected void determineMarshal() {
         AnnotationInstance anno = findAnnotation(MarshalDMR.class);
         if (anno != null) {
@@ -96,6 +96,7 @@ public class ServerConfigurationBuilder {
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected void determineIgnorable() {
         AnnotationInstance anno = findAnnotation(Ignorable.class);
         if (anno != null) {
@@ -113,6 +114,7 @@ public class ServerConfigurationBuilder {
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected void determineExtensionModule() {
         AnnotationInstance anno = findAnnotation(ExtensionModule.class);
         if (anno != null) {
@@ -133,6 +135,7 @@ public class ServerConfigurationBuilder {
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected void determineExtensionClassName() {
         AnnotationInstance anno = findAnnotation(ExtensionClassName.class);
         if (anno != null) {
@@ -153,6 +156,7 @@ public class ServerConfigurationBuilder {
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected void determineDeploymentModules() {
         AnnotationInstance anno = findAnnotation(DeploymentModules.class);
 
@@ -191,13 +195,12 @@ public class ServerConfigurationBuilder {
             if (value != null) {
                 String[] descs = value.asStringArray();
 
-                for (String each : descs) {
-                    this.deploymentModules.add(each);
-                }
+                Collections.addAll(this.deploymentModules, descs);
             }
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected ServerConfiguration internalBuild() throws ClassNotFoundException, ModuleLoadException {
 
         determineMarshal();
@@ -229,9 +232,7 @@ public class ServerConfigurationBuilder {
                     Extension ext = (Extension) extCls.newInstance();
                     GenericParserFactory parserFactory = new GenericParserFactory(ext);
                     serverConfig.parserFactory(parserFactory);
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
+                } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
 
@@ -306,6 +307,7 @@ public class ServerConfigurationBuilder {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     private static Class<?>[] CLASS_ANNOTATIONS = {
             Configuration.class,
             DeploymentModule.class,

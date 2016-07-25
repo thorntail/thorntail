@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.jaxrs.internal;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -82,14 +81,13 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
             AnnotationSeekingClassVisitor visitor = new AnnotationSeekingClassVisitor();
             reader.accept(visitor, 0);
             return visitor.isFound();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
 
         return false;
     }
 
-    private static boolean hasApplicationPathAnnotation(Archive archive) {
+    private static boolean hasApplicationPathAnnotation(Archive<?> archive) {
         Map<ArchivePath, Node> content = archive.getContent();
         for (Map.Entry<ArchivePath, Node> entry : content.entrySet()) {
             Node node = entry.getValue();
@@ -107,7 +105,7 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
             String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
             String path = "WEB-INF/classes/" + name.replace('.', '/') + ".class";
 
-            byte[] generatedApp = new byte[0];
+            byte[] generatedApp;
             try {
                 generatedApp = ApplicationFactory2.create(name, "/");
                 add(new ByteArrayAsset(generatedApp), path);
