@@ -116,7 +116,7 @@ public class Container {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Container(String... args) throws Exception {
-        this(false, args);
+        this(Boolean.getBoolean(SwarmProperties.DEBUG_BOOTSTRAP), args);
     }
 
     /**
