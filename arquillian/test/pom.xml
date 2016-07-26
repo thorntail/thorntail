@@ -56,7 +56,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi-api</artifactId>
+      <artifactId>spi</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>

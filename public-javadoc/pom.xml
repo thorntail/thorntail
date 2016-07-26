@@ -48,7 +48,7 @@
               <sourceOutputDir>${project.build.directory}/depSources</sourceOutputDir>
               <extraModules>
                 <extraModule>config-api:Config API</extraModule>
-                <extraModule>spi-api:SPI</extraModule>
+                <extraModule>spi:SPI</extraModule>
               </extraModules>
             </configuration>
           </execution>
