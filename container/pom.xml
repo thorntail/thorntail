@@ -25,7 +25,9 @@
   <properties>
     <swarm.fraction.internal>true</swarm.fraction.internal>
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
+    <version.weld-api>3.0.Alpha19</version.weld-api>
     <version.weld>3.0.0.Alpha16</version.weld>
+    <version.cdi2>2.0.Alpha4</version.cdi2>
   </properties>
 
   <build>
@@ -56,6 +58,26 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <version>${version.cdi2}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.el</groupId>
+          <artifactId>javax.el-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.interceptor</groupId>
+          <artifactId>javax.interceptor-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-api</artifactId>
+      <version>${version.weld-api}</version>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-shaded</artifactId>
       <version>${version.weld}</version>
@@ -85,6 +107,18 @@
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
       <exclusions>

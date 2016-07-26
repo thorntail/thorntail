@@ -31,6 +31,7 @@
     <module name="org.jboss.shrinkwrap.descriptors" export="true"/>
     <module name="org.wildfly.swarm.bootstrap" optional="true"/>
     <module name="org.yaml.snakeyaml"/>
-    <module name="org.jboss.weld" export="true" slot="3"/>
+    <module name="javax.enterprise.api" slot="cdi2"/>
+    <module name="org.jboss.weld.se" export="true" slot="3"/>
   </dependencies>
 </module>

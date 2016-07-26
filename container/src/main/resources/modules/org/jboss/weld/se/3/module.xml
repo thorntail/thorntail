@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.5" name="org.jboss.weld.se" slot="3">
+  <resources>
+    <artifact name="org.jboss.weld.environment:weld-environment-common:${version.weld}"/>
+    <artifact name="org.jboss.weld.se:weld-se-core:${version.weld}"/>
+  </resources>
+
+  <dependencies>
+    <module name="javax.api"/>
+    <module name="javax.enterprise.api" slot="cdi2"/>
+    <module name="org.jboss.logging" export="true"/>
+    <module name="org.jboss.weld.spi" slot="3"/>
+    <module name="org.jboss.weld.core" slot="3"/>
+    <module name="org.jboss.jandex"/>
+  </dependencies>
+</module>
