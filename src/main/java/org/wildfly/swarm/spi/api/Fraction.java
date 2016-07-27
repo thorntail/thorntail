@@ -37,19 +37,6 @@ public interface Fraction {
     }
 
     interface PostInitContext extends InitContext {
-
-        boolean hasFraction(String simpleName);
-
-        Fraction fraction(String simpleName);
-
-    }
-
-    default String simpleName() {
-        String name = getClass().getSimpleName();
-        if (name.endsWith("Fraction")) {
-            name = name.substring(0, name.length() - "Fraction".length());
-        }
-        return name;
     }
 
     default void initialize(InitContext initContext) {
