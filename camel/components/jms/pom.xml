@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Camel Full
+  Camel Full :: API
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -30,41 +30,83 @@
   </parent>
 
   <name>Camel JMS</name>
-  <description>Camel JMS Integration</description>
 
-  <artifactId>camel-jms-parent</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>camel-jms</artifactId>
 
-  <modules>
-    <module>main</module>
-    <module>tests</module>
-  </modules>
+  <properties>
+    <swarm.fraction.tags>Camel</swarm.fraction.tags>
+  </properties>
 
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>camel-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-camel</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-jms</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>messaging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <scope>provided</scope>
+      <type>zip</type>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.camel</groupId>
+      <artifactId>wildfly-camel-feature-pack</artifactId>
+      <version>${version.wildfly.camel}</version>
+      <scope>provided</scope>
+      <type>zip</type>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <inherited>false</inherited>
-        <executions>
-          <execution>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <configuration>
-              <artifacts>
-                <artifact>
-                  <file>exposed-components.json</file>
-                  <classifier>exposed-components</classifier>
-                  <type>json</type>
-                </artifact>
-              </artifacts>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
-
 </project>

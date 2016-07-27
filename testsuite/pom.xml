@@ -62,6 +62,7 @@
     <module>testsuite-camel-cdi</module>
     <module>testsuite-camel-cxf</module>
     <module>testsuite-camel-ejb</module>
+    <module>testsuite-camel-jms</module>
     <module>testsuite-connector</module>
     <module>testsuite-container</module>
     <module>testsuite-datasources</module>
