@@ -36,6 +36,7 @@
     <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-9</version.org.jboss.shrinkwrap.descriptors>
     <version.maven.aether>3.2.5</version.maven.aether>
     <version.fest-assert>1.4</version.fest-assert>
+    <version.cdi2-api>2.0.Alpha4</version.cdi2-api>
 
     <!-- Surefire args -->
     <surefire.jpda.args />
@@ -107,6 +108,12 @@
       <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <version>${version.cdi2-api}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.jboss.msc</groupId>
       <artifactId>jboss-msc</artifactId>
