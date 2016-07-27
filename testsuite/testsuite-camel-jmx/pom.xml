@@ -25,13 +25,13 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>camel-jmx-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>2016.7-SNAPSHOT</version>
   </parent>
 
-  <name>Camel JMX :: Tests</name>
+  <name>Test Suite: Camel JMX</name>
 
-  <artifactId>camel-jmx-tests</artifactId>
+  <artifactId>testsuite-camel-jmx</artifactId>
 
   <dependencies>
     <dependency>
@@ -55,21 +55,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
