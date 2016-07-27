@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Camel Full :: API
+  Camel Full :: Tests
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -25,65 +25,35 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>camel-ejb-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>2016.7-SNAPSHOT</version>
   </parent>
 
-  <name>Camel EJB :: Main</name>
+  <name>Test Suite: Camel EJB</name>
 
-  <artifactId>camel-ejb</artifactId>
-
-  <properties>
-    <swarm.fraction.tags>Camel</swarm.fraction.tags>
-  </properties>
+  <artifactId>testsuite-camel-ejb</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>camel-core</artifactId>
+      <artifactId>camel-ejb</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-ejb</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ejb</artifactId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.camel</groupId>
-      <artifactId>wildfly-camel-feature-pack</artifactId>
-      <version>${version.wildfly.camel}</version>
-      <scope>provided</scope>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-  
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+
 </project>
