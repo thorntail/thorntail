@@ -25,11 +25,11 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>camel-jpa-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>2016.7-SNAPSHOT</version>
   </parent>
 
-  <name>Camel JPA :: Tests</name>
+  <name>Test Suite: Camel JPA</name>
 
   <artifactId>camel-jpa-tests</artifactId>
 
@@ -59,21 +59,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
