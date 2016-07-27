@@ -31,11 +31,11 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>30</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>31-SNAPSHOT</version.wildfly.swarm.fraction.plugin>
 
     <version.maven.aether>3.2.5</version.maven.aether>
     <version.wildfly.config-api>0.4.4</version.wildfly.config-api>
-    <version.swarm.spi>1.0.8.Final</version.swarm.spi>
+    <version.swarm.spi>1.0.9.Final-SNAPSHOT</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
@@ -1082,10 +1082,10 @@
     <!--<module>management-console</module>-->
     <!--<module>messaging</module>-->
     <!--<module>microprofile</module>-->
-    <!--<module>msc</module>-->
+    <module>msc</module>
     <!--<module>monitor</module>-->
     <!--<module>mod_cluster</module>-->
-    <!--<module>naming</module>-->
+    <module>naming</module>
     <!--<module>netflix</module>-->
     <!--<module>remoting</module>-->
     <!--<module>request-controller</module>-->

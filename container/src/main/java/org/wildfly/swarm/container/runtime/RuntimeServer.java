@@ -15,19 +15,13 @@
  */
 package org.wildfly.swarm.container.runtime;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,35 +33,25 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.LogManager;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
+import javax.inject.Inject;
 import javax.xml.namespace.QName;
 
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.as.naming.ImmediateManagedReferenceFactory;
-import org.jboss.as.naming.ServiceBasedNamingStore;
-import org.jboss.as.naming.deployment.ContextNames;
-import org.jboss.as.naming.service.BinderService;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 import org.jboss.dmr.Property;
 import org.jboss.dmr.ValueExpression;
-import org.jboss.jandex.ClassInfo;
-import org.jboss.jandex.CompositeIndex;
-import org.jboss.jandex.DotName;
-import org.jboss.jandex.Index;
-import org.jboss.jandex.IndexReader;
-import org.jboss.jandex.Indexer;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.modules.Resource;
-import org.jboss.modules.filter.PathFilters;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceContainer;
 import org.jboss.msc.service.ServiceController;
@@ -84,16 +68,14 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
-import org.wildfly.swarm.container.runtime.internal.AnnotationBasedServerConfiguration;
-import org.wildfly.swarm.container.runtime.internal.ServerConfigurationBuilder;
+import org.wildfly.swarm.spi.api.DefaultFraction;
+import org.wildfly.swarm.spi.api.DependentFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -118,25 +100,20 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
 @Vetoed
 public class RuntimeServer implements Server {
 
+    @Inject
+    @DefaultFraction
+    private Instance<Fraction> allDefaultFractions;
+
+    @Inject
+    @Any
+    private Instance<Fraction> allFractions;
+
+    @Inject
+    @DefaultFraction
+    @DependentFraction
+    private Instance<Fraction> defaultDependentFractions;
+
     public RuntimeServer() {
-        // TODO Logic has been moved to Swarm.java, safe to remove?
-//        try {
-//            Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
-//
-//            ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
-//            try {
-//                Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
-//                System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
-//                System.setProperty("org.jboss.logmanager.configurator", LoggingConfigurator.class.getName());
-//                //force logging init
-//                LogManager.getLogManager();
-//                BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());
-//            } finally {
-//                Thread.currentThread().setContextClassLoader(originalCl);
-//            }
-//        } catch (ModuleLoadException e) {
-//            System.err.println("[WARN] logging not available, logging will not be configured");
-//        }
     }
 
     @Override
@@ -158,7 +135,7 @@ public class RuntimeServer implements Server {
     }
 
     @Override
-    public Deployer start(Container config, boolean eagerlyOpen) throws Exception {
+    public Deployer start(boolean eagerlyOpen) throws Exception {
 
         if (System.getProperty(SwarmProperties.HTTP_EAGER) != null) {
             eagerlyOpen = true;
@@ -167,16 +144,14 @@ public class RuntimeServer implements Server {
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
 
-        loadFractionConfigurations();
-
-        applyDefaults(config);
-
-        for (Fraction fraction : config.fractions()) {
-            fraction.postInitialize(config.createPostInitContext());
-        }
+//        applyDefaults(config);
+//
+//        for (Fraction fraction : config.fractions()) {
+//            fraction.postInitialize(config.createPostInitContext());
+//        }
 
         //if (!xmlConfig.isPresent())
-        applySocketBindingGroupDefaults(config);
+//        applySocketBindingGroupDefaults(config);
 
         LinkedList<ModelNode> bootstrapOperations = new LinkedList<>();
 
@@ -184,10 +159,10 @@ public class RuntimeServer implements Server {
             getSystemProperties(enabledStage, bootstrapOperations);
 
         // the extensions
-        getExtensions(config, bootstrapOperations);
+//        getExtensions(config, bootstrapOperations);
 
         // the subsystem configurations
-        getSubsystemConfigurations(config, bootstrapOperations);
+//        getSubsystemConfigurations(config, bootstrapOperations);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(bootstrapOperations);
@@ -211,40 +186,40 @@ public class RuntimeServer implements Server {
             }
         }));
         List<ServiceActivator> activators = new ArrayList<>();
-        activators.add(context -> {
-            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<>(tempFileProvider)))
-                    .install();
-            // Provide the main command line args as a value service
-            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(config.getArgs())))
-                    .install();
+//        activators.add(context -> {
+//            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<>(tempFileProvider)))
+//                    .install();
+//            // Provide the main command line args as a value service
+//            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(config.getArgs())))
+//                    .install();
+//
+//            // make the stage config available through jndi
+//            if (enabledStage.isPresent()) {
+//
+//                BinderService binderService = new BinderService("swarm/stage-config", null, true);
+//
+//                context.getServiceTarget().addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, "swarm/stage-config"), binderService)
+//                        .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
+//                        .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(new StageConfig(enabledStage.get())))
+//                        .setInitialMode(ServiceController.Mode.ACTIVE)
+//                        .install();
+//            }
+//
+//        });
 
-            // make the stage config available through jndi
-            if (enabledStage.isPresent()) {
-
-                BinderService binderService = new BinderService("swarm/stage-config", null, true);
-
-                context.getServiceTarget().addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, "swarm/stage-config"), binderService)
-                        .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
-                        .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(new StageConfig(enabledStage.get())))
-                        .setInitialMode(ServiceController.Mode.ACTIVE)
-                        .install();
-            }
-
-        });
-
-        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
-            boolean found = false;
-            for (Fraction eachFraction : config.fractions()) {
-                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-                    found = true;
-                    activators.addAll(eachConfig.getServiceActivators(eachFraction));
-                    break;
-                }
-            }
-            if (!found && !eachConfig.isIgnorable()) {
-                System.err.println("*** unable to find fraction for: " + eachConfig.getType());
-            }
-        }
+//        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
+//            boolean found = false;
+//            for (Fraction eachFraction : config.fractions()) {
+//                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+//                    found = true;
+//                    activators.addAll(eachConfig.getServiceActivators(eachFraction));
+//                    break;
+//                }
+//            }
+//            if (!found && !eachConfig.isIgnorable()) {
+//                System.err.println("*** unable to find fraction for: " + eachConfig.getType());
+//            }
+//        }
 
         this.serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
         for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
@@ -272,14 +247,14 @@ public class RuntimeServer implements Server {
 
         List<Archive> implicitDeployments = new ArrayList<>();
 
-        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
-            for (Fraction eachFraction : config.fractions()) {
-                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-                    implicitDeployments.addAll(eachConfig.getImplicitDeployments(eachFraction));
-                    break;
-                }
-            }
-        }
+//        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
+//            for (Fraction eachFraction : config.fractions()) {
+//                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+//                    implicitDeployments.addAll(eachConfig.getImplicitDeployments(eachFraction));
+//                    break;
+//                }
+//            }
+//        }
 
         for (Archive each : implicitDeployments) {
             this.deployer.deploy(each);
@@ -369,15 +344,10 @@ public class RuntimeServer implements Server {
         return this.configByFractionType.get(fractionClazz).defaultFraction();
     }
 
-    private void applyDefaults(Container config) throws Exception {
-        config.applyFractionDefaults(this);
-        applyInterfaceDefaults(config);
-    }
-
     private void applyInterfaceDefaults(Container config) {
         if (config.ifaces().isEmpty()) {
             config.iface("public",
-                    SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
+                         SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
         }
     }
 
@@ -385,7 +355,7 @@ public class RuntimeServer implements Server {
         if (config.socketBindingGroups().isEmpty()) {
             config.socketBindingGroup(
                     new SocketBindingGroup("default-sockets", "public",
-                            SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
+                                           SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"))
             );
         }
 
@@ -418,171 +388,6 @@ public class RuntimeServer implements Server {
                 group.outboundSocketBinding(binding);
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void loadFractionConfigurations() throws Exception {
-        Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-
-        List<Index> indexes = new ArrayList<>();
-
-        // required for composite index
-        resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container", "runtime")), indexes);
-        resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.spi", "runtime")), indexes);
-        resolveBuildTimeIndex(Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.spi", "main")), indexes);
-
-        Enumeration<URL> bootstraps = m1.getClassLoader().getResources("wildfly-swarm-bootstrap.conf");
-        if (!bootstraps.hasMoreElements()) {
-            bootstraps = ClassLoader.getSystemClassLoader().getResources("wildfly-swarm-bootstrap.conf");
-        }
-
-        while (bootstraps.hasMoreElements()) {
-            URL each = bootstraps.nextElement();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(each.openStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
-                    if (line.isEmpty()) {
-                        continue;
-                    }
-                    Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "runtime"));
-
-                    List<Class<? extends ServerConfiguration>> serverConfigs = findServerConfigurationImpls(module, indexes);
-
-                    for (Class<? extends ServerConfiguration> cls : serverConfigs) {
-                        if (!this.configList.stream().anyMatch((e) -> e.getClass().equals(cls))) {
-                            ServerConfiguration serverConfig = cls.newInstance();
-                            this.configByFractionType.put(serverConfig.getType(), serverConfig);
-                            this.configList.add(serverConfig);
-                        }
-                    }
-
-                    try {
-                        // TODO: remove once all things are smooshed
-                        module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "api"));
-                    } catch (ModuleLoadException e) {
-                        module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(line, "runtime"));
-                    }
-                    List<ServerConfiguration> serverConfigInstances = findAnnotationServerConfigurations(module, indexes);
-
-                    for (ServerConfiguration serverConfigInstance : serverConfigInstances) {
-                        if (!this.configList.stream().anyMatch((e) -> e.getType().equals(serverConfigInstance.getType()))) {
-                            this.configByFractionType.put(serverConfigInstance.getType(), serverConfigInstance);
-                            this.configList.add(serverConfigInstance);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected List<Class<? extends ServerConfiguration>> findServerConfigurationImpls(Module module, List<Index> parentIndexes) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException {
-
-        List<Index> indexes = new ArrayList<>();
-
-        resolveBuildTimeIndex(module, indexes);
-
-        //resolveRuntimeIndex(module, indexes);
-
-        indexes.addAll(parentIndexes);
-        CompositeIndex compositeIndex = CompositeIndex.create(indexes.toArray(new Index[indexes.size()]));
-
-        List<Class<? extends ServerConfiguration>> impls = new ArrayList<>();
-
-        Set<ClassInfo> infos = compositeIndex.getAllKnownImplementors(DotName.createSimple(ServerConfiguration.class.getName()));
-
-        for (ClassInfo info : infos) {
-            if (info.name().toString().equals(AnnotationBasedServerConfiguration.class.getName())) {
-                continue;
-            }
-            try {
-                Class<? extends ServerConfiguration> cls = (Class<? extends ServerConfiguration>) module.getClassLoader().loadClass(info.name().toString());
-
-                if (!Modifier.isAbstract(cls.getModifiers())) {
-                    impls.add(cls);
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        return impls;
-    }
-
-    protected List<ServerConfiguration> findAnnotationServerConfigurations(Module apiModule, List<Index> parentIndexes) throws ModuleLoadException, IOException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
-
-        List<Index> indexes = new ArrayList<>();
-
-        resolveBuildTimeIndex(apiModule, indexes);
-
-        //resolveRuntimeIndex(module, indexes);
-
-        indexes.addAll(parentIndexes);
-        CompositeIndex compositeIndex = CompositeIndex.create(indexes.toArray(new Index[indexes.size()]));
-
-        List<ServerConfiguration> impls = new ArrayList<>();
-
-        DotName configAnno = DotName.createSimple(Configuration.class.getName());
-
-        Set<ClassInfo> infos = compositeIndex.getAllKnownImplementors(DotName.createSimple(Fraction.class.getName()));
-
-        for (ClassInfo info : infos) {
-            ServerConfiguration config = fromAnnotation(apiModule, info);
-            if (config != null) {
-                impls.add(config);
-            }
-        }
-
-        return impls;
-    }
-
-    private ServerConfiguration fromAnnotation(Module module, ClassInfo info) throws ModuleLoadException, ClassNotFoundException {
-        ServerConfigurationBuilder builder = new ServerConfigurationBuilder(module, info);
-        return builder.build();
-    }
-
-
-    private void resolveBuildTimeIndex(Module module, List<Index> indexes) {
-        try {
-            Enumeration<URL> indexFiles = module.getClassLoader().findResources(BUILD_TIME_INDEX_NAME, false);
-
-            while (indexFiles.hasMoreElements()) {
-                URL next = indexFiles.nextElement();
-                //System.out.println("Found : "+ next);
-                InputStream input = next.openStream();
-                IndexReader reader = new IndexReader(input);
-                Index index = reader.read();
-                try {
-                    indexes.add(index);
-                } finally {
-                    input.close();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void resolveRuntimeIndex(Module module, List<Index> indexes) throws ModuleLoadException {
-        Indexer indexer = new Indexer();
-
-        Iterator<Resource> resources = module.iterateResources(PathFilters.acceptAll());
-
-        while (resources.hasNext()) {
-            Resource each = resources.next();
-
-            if (each.getName().endsWith(".class")) {
-                try {
-                    ClassInfo clsInfo = indexer.index(each.openStream());
-                } catch (IOException e) {
-                    //System.err.println("error: " + each.getName() + ": " + e.getMessage());
-                }
-            }
-        }
-
-        indexes.add(indexer.complete());
     }
 
     @SuppressWarnings("unchecked")
@@ -791,17 +596,17 @@ public class RuntimeServer implements Server {
     private void configureFractions(Container config, List<ModelNode> list) throws Exception {
         for (ServerConfiguration<Fraction> eachConfig : this.configList) {
             boolean found = false;
-            for (Fraction eachFraction : config.fractions()) {
-                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-                    found = true;
-                    List<ModelNode> subList = eachConfig.getList(eachFraction);
-                    if (!isAlreadyConfigured(subList, list)) {
-                        list.addAll(subList);
-                    }
-                    // else skip because it was configured via XML
-                    break;
-                }
-            }
+//            for (Fraction eachFraction : config.fractions()) {
+//                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+//                    found = true;
+//                    List<ModelNode> subList = eachConfig.getList(eachFraction);
+//                    if (!isAlreadyConfigured(subList, list)) {
+//                        list.addAll(subList);
+//                    }
+//                    // else skip because it was configured via XML
+//                    break;
+//                }
+//            }
             if (!found && !eachConfig.isIgnorable()) {
                 System.err.println("*** unable to find fraction for: " + eachConfig.getType());
             }
@@ -828,13 +633,13 @@ public class RuntimeServer implements Server {
     private <T> void visitFractions(Container container, T context, FractionProcessor<T> fn) {
         for (ServerConfiguration eachConfig : this.configList) {
             boolean found = false;
-            for (Fraction eachFraction : container.fractions()) {
-                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-                    found = true;
-                    fn.accept(context, eachConfig, eachFraction);
-                    break;
-                }
-            }
+//            for (Fraction eachFraction : container.fractions()) {
+//                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
+//                    found = true;
+//                    fn.accept(context, eachConfig, eachFraction);
+//                    break;
+//                }
+//            }
             if (!found && !eachConfig.isIgnorable()) {
                 System.err.println("*** unable to find fraction for: " + eachConfig.getType());
             }

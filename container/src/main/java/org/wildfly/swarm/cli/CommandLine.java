@@ -33,8 +33,7 @@ import javax.enterprise.inject.Vetoed;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.spi.api.ClassLoading;
+import org.wildfly.swarm.container.internal.SwarmConfigurator;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
@@ -244,7 +243,7 @@ public class CommandLine {
      * @param container The container to configure.
      * @throws MalformedURLException If a URL is attempted to be read and fails.
      */
-    public void applyConfigurations(Container container) throws MalformedURLException {
+    public void applyConfigurations(SwarmConfigurator container) throws MalformedURLException {
         if (get(SERVER_CONFIG) != null) {
             container.withXmlConfig(get(SERVER_CONFIG));
         }
@@ -258,7 +257,7 @@ public class CommandLine {
      * @param container The container to apply configuration to.
      * @throws IOException If an error occurs resolving any URL.
      */
-    public void apply(Container container) throws IOException {
+    public void apply(SwarmConfigurator container) throws IOException {
         applyProperties();
         applyConfigurations(container);
 

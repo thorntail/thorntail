@@ -15,7 +15,10 @@
  */
 package org.wildfly.swarm.naming;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.wildfly.swarm.config.Naming;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -25,9 +28,7 @@ import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
  */
 @ExtensionModule("org.jboss.as.naming")
 @MarshalDMR
+@DefaultFraction
+@ApplicationScoped
 public class NamingFraction extends Naming<NamingFraction> implements Fraction {
-
-    public NamingFraction() {
-    }
-
 }

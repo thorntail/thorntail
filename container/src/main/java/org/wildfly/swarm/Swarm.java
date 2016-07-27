@@ -16,12 +16,14 @@
 package org.wildfly.swarm;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Map;
+import java.util.Properties;
 import java.util.logging.LogManager;
 
-import javax.inject.Singleton;
+import javax.enterprise.inject.Vetoed;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
@@ -31,13 +33,19 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.DeploymentException;
+import org.wildfly.swarm.container.Interface;
+import org.wildfly.swarm.container.internal.SwarmConfigurator;
 import org.wildfly.swarm.container.runtime.JBossLoggingManager;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.StageConfig;
+import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
 /**
  * Default {@code main(...)} if an application does not provide one.
@@ -48,125 +56,60 @@ import org.wildfly.swarm.spi.api.SocketBindingGroup;
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
-@Singleton
-public class Swarm extends Container {
+@Vetoed
+public class Swarm {
+
+    public static final String VERSION;
 
     public static ArtifactManager ARTIFACT_MANAGER;
 
     public static String[] COMMAND_LINE_ARGS;
 
+    /**
+     * Construct a new, un-started container.
+     *
+     * @throws Exception If an error occurs performing classloading and initialization magic.
+     */
     public Swarm() throws Exception {
-    }
-
-    public Swarm(boolean debugBootstrap) throws Exception {
-        super(debugBootstrap);
-    }
-
-
-    public Swarm(String...args) throws Exception {
-        super( args );
-    }
-
-    public Swarm(boolean debugBootstrap, String...args) throws Exception {
-        super( debugBootstrap, args );
-    }
-
-    public void initiate() throws Exception {
-        super.start();
-        super.deploy();
-    }
-
-    @Override
-    @Deprecated
-    public Swarm withStageConfig(URL url) {
-        return (Swarm) super.withStageConfig(url);
-    }
-
-    @Override
-    @Deprecated
-    public Swarm withXmlConfig(URL url) {
-        return (Swarm) super.withXmlConfig(url);
-    }
-
-    @Override
-    @Deprecated
-    public Swarm fraction(Supplier<Fraction> supplier) {
-        return (Swarm) super.fraction(supplier);
-    }
-
-    @Override
-    @Deprecated
-    public Swarm fraction(Fraction fraction) {
-        return (Swarm) super.fraction(fraction);
-    }
-
-    @Override
-    @Deprecated
-    public Swarm iface(String name, String expression) {
-        return (Swarm) super.iface(name, expression);
-    }
-
-    @Override
-    @Deprecated
-    public Swarm socketBindingGroup(SocketBindingGroup group) {
-        return (Swarm) super.socketBindingGroup(group);
-    }
-
-    @Override
-    @Deprecated
-    public Swarm start(boolean eagerlyOpen) throws Exception {
-        return (Swarm) super.start(eagerlyOpen);
-    }
-
-    @Override
-    @Deprecated
-    public Swarm stop() throws Exception {
-        return (Swarm) super.stop();
-    }
-
-    @Override
-    @Deprecated
-    public Swarm start() throws Exception {
-        return (Swarm) super.start();
-    }
-
-    @Override
-    @Deprecated
-    public Swarm start(Archive<?> deployment) throws Exception {
-        return (Swarm) super.start(deployment);
-    }
-
-    @Override
-    @Deprecated
-    public Swarm deploy() throws DeploymentException {
-        return (Swarm) super.deploy();
-    }
-
-    @Override
-    @Deprecated
-    public Swarm deploy(Archive<?> deployment) throws DeploymentException {
-        return (Swarm) super.deploy(deployment);
+        this(Boolean.getBoolean(SwarmProperties.DEBUG_BOOTSTRAP));
     }
 
     /**
-     * Main entry-point.
+     * Construct a new, un-started container.
      *
-     * @param args Ignored.
-     * @throws Exception if an error occurs.
+     * @param debugBootstrap - flag to indicate if the module layer should be put into bootstrap debug mode. Same as
+     *                       the jboss-module -debuglog mode which enables trace logging to System.out during the
+     *                       initial bootstrap of the module layer.
+     * @throws Exception If an error occurs performing classloading and initialization magic.
      */
-    public static void main(String... args) throws Exception {
+    public Swarm(boolean debugBootstrap) throws Exception {
+        this(debugBootstrap, new String[]{});
+    }
+
+    /**
+     * Construct a new, un-started container, configured using command-line arguments.
+     *
+     * @param args The command-line arguments arguments
+     * @throws Exception If an error occurs performing classloading and initialization magic.
+     */
+    public Swarm(String... args) throws Exception {
+        this(false, args);
+    }
+
+    /**
+     * Construct a new, un-started container, configured using command-line arguments.
+     *
+     * @param debugBootstrap - flag to indicate if the module layer should be put into bootstrap debug mode. Same as
+     *                       the jboss-module -debuglog mode which enables trace logging to System.out during the
+     *                       initial bootstrap of the module layer.
+     * @param args           The command-line arguments arguments
+     * @throws Exception If an error occurs performing classloading and initialization magic.
+     */
+    public Swarm(boolean debugBootstrap, String... args) throws Exception {
+        System.setProperty(SwarmInternalProperties.VERSION, VERSION);
         COMMAND_LINE_ARGS = args;
 
-        boolean isUberJar = true;
-
-        if (System.getProperty("boot.module.loader") == null) {
-            isUberJar = false;
-            System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
-        }
-
         // Need to setup Logging here so that Weld doesn't default to JUL.
-        // TODO Is there a better way?
-
         try {
             Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
 
@@ -185,17 +128,182 @@ public class Swarm extends Container {
             System.err.println("[WARN] logging not available, logging will not be configured");
         }
 
+
         Weld weld = new Weld();
-        if (isUberJar) {
+        if (Boolean.getBoolean("swarm.isuberjar")) {
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
             weld.setClassLoader(module.getClassLoader());
         }
 
-        try (WeldContainer weldContainer = weld.initialize()) {
-            weldContainer.select(Swarm.class).get().initiate();
+        WeldContainer weldContainer = weld.initialize();
+        swarmConfigurator = weldContainer.select(SwarmConfigurator.class).get();
+        swarmConfigurator.setWeld(weldContainer);
+        swarmConfigurator.setDebugBootstrap(debugBootstrap);
+        swarmConfigurator.init();
+    }
+
+    public Swarm withXmlConfig(URL url) {
+        swarmConfigurator.withXmlConfig(url);
+        return this;
+    }
+
+    public Swarm withStageConfig(URL url) {
+        swarmConfigurator.withStageConfig(url);
+        return this;
+    }
+
+    public StageConfig stageConfig() {
+        return swarmConfigurator.stageConfig();
+    }
+
+    public boolean hasStageConfig() {
+        return swarmConfigurator.hasStageConfig();
+    }
+
+    /**
+     * Add a fraction to the container.
+     *
+     * @param fraction The fraction to add.
+     * @return The container.
+     */
+    public Swarm fraction(Fraction fraction) {
+        //TODO Store them in a static that Weld Extension can access to make them Beans
+        return this;
+    }
+
+    /**
+     * Configure a network interface.
+     *
+     * @param name       The name of the interface.
+     * @param expression The expression to define the interface.
+     * @return The container.
+     */
+    public Swarm iface(String name, String expression) {
+        swarmConfigurator.iface(name, expression);
+        return this;
+    }
+
+    public List<Interface> ifaces() {
+        return swarmConfigurator.ifaces();
+    }
+
+    /**
+     * Configure a socket-binding-group.
+     *
+     * @param group The socket-binding group to add.
+     * @return The container.
+     */
+    public Swarm socketBindingGroup(SocketBindingGroup group) {
+        swarmConfigurator.socketBindingGroup(group);
+        return this;
+    }
+
+    public List<SocketBindingGroup> socketBindingGroups() {
+        return swarmConfigurator.socketBindingGroups();
+    }
+
+    public SocketBindingGroup getSocketBindingGroup(String name) {
+        return swarmConfigurator.getSocketBindingGroup(name);
+    }
+
+    public Map<String, List<SocketBinding>> socketBindings() {
+        return swarmConfigurator.socketBindings();
+    }
+
+    public Map<String, List<OutboundSocketBinding>> outboundSocketBindings() {
+        return swarmConfigurator.outboundSocketBindings();
+    }
+
+    /**
+     * Start the container.
+     *
+     * @return The container.
+     * @throws Exception if an error occurs.
+     */
+    public Swarm start() throws Exception {
+        swarmConfigurator.start(false);
+        return this;
+    }
+
+    public Swarm start(boolean eagerlyOpen) throws Exception {
+        swarmConfigurator.start(eagerlyOpen);
+        return this;
+    }
+
+    /**
+     * Start the container with a deployment.
+     * <p/>
+     * <p>Effectively calls {@code start().deploy(deployment)}</p>
+     *
+     * @param deployment The deployment to deploy.
+     * @return The container.
+     * @throws Exception if an error occurs.
+     * @see #start()
+     * @see #deploy(Archive)
+     */
+    public Swarm start(Archive<?> deployment) throws Exception {
+        return start().deploy(deployment);
+    }
+
+    /**
+     * Stop the container, undeploying all deployments.
+     *
+     * @return THe container.
+     * @throws Exception If an error occurs.
+     */
+    public Swarm stop() throws Exception {
+        swarmConfigurator.stop();
+        return this;
+    }
+
+    /**
+     * Deploy the default WAR deployment.
+     * <p/>
+     * <p>For WAR-based applications, the primary WAR artifact iwll be deployed.</p>
+     *
+     * @return The container.
+     * @throws DeploymentException if an error occurs.
+     */
+    public Swarm deploy() throws DeploymentException {
+        swarmConfigurator.deploy();
+        return this;
+    }
+
+    /**
+     * Deploy an archive.
+     *
+     * @param deployment The ShrinkWrap archive to deploy.
+     * @return The container.
+     * @throws DeploymentException if an error occurs.
+     */
+    public Swarm deploy(Archive<?> deployment) throws DeploymentException {
+        swarmConfigurator.deploy(deployment);
+        return this;
+    }
+
+    /**
+     * Provides access to the default ShrinkWrap deployment.
+     */
+    public Archive<?> createDefaultDeployment() {
+        return swarmConfigurator.createDefaultDeployment();
+    }
+
+    /**
+     * Main entry-point.
+     *
+     * @param args Ignored.
+     * @throws Exception if an error occurs.
+     */
+    public static void main(String... args) throws Exception {
+        COMMAND_LINE_ARGS = args;
+
+        if (System.getProperty("boot.module.loader") == null) {
+            System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
 
         //TODO Support user constructed container via annotations for testing and custom use
+        Swarm swarm = new Swarm(args);
+        swarm.start().deploy();
     }
 
     public static ArtifactManager artifactManager() throws IOException {
@@ -217,4 +325,18 @@ public class Swarm extends Container {
     public static List<JavaArchive> allArtifacts() throws Exception {
         return artifactManager().allArtifacts();
     }
+
+    static {
+        InputStream in = SwarmConfigurator.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
+        Properties props = new Properties();
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VERSION = props.getProperty("version", "unknown");
+    }
+
+    private SwarmConfigurator swarmConfigurator;
 }

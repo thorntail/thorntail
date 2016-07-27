@@ -15,17 +15,15 @@
  */
 package org.wildfly.swarm.msc;
 
+import javax.enterprise.context.ApplicationScoped;
+
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration
+@DefaultFraction
+@ApplicationScoped
 public class MSCFraction implements Fraction {
-
-    public MSCFraction() {
-
-    }
-
 }

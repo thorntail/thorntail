@@ -16,20 +16,17 @@
 package org.wildfly.swarm.container.internal;
 
 import java.net.URL;
-import java.util.Optional;
 import java.util.Set;
 
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.ProjectStage;
-import org.wildfly.swarm.spi.api.StageConfig;
 
 /**
  * @author Bob McWhirter
  */
 public interface Server {
 
-    Deployer start(Container config, boolean eagerlyOpen) throws Exception;
+    Deployer start(boolean eagerlyOpen) throws Exception;
 
     void stop() throws Exception;
 
