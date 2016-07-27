@@ -25,19 +25,18 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>camel-cdi-parent</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>2016.7-SNAPSHOT</version>
   </parent>
 
-  <name>Camel CDI :: Tests</name>
+  <name>Test Suite: Camel CDI</name>
 
-  <artifactId>camel-cdi-tests</artifactId>
+  <artifactId>testsuite-camel-cdi</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>camel-cdi</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -55,21 +54,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

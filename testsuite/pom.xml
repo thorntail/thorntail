@@ -59,6 +59,7 @@
   <modules>
     <module>testsuite-batch-jberet</module>
     <module>testsuite-cdi</module>
+    <module>testsuite-camel-cdi</module>
     <module>testsuite-connector</module>
     <module>testsuite-container</module>
     <module>testsuite-datasources</module>
