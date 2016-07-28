@@ -1,8 +1,7 @@
 package org.wildfly.swarm.container.runtime.internal;
 
-import java.lang.reflect.Modifier;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -11,18 +10,11 @@ import java.util.ServiceLoader;
 import javax.enterprise.inject.Vetoed;
 
 import org.jboss.as.controller.Extension;
-import org.jboss.jandex.AnnotationInstance;
-import org.jboss.jandex.AnnotationValue;
-import org.jboss.jandex.ClassInfo;
-import org.jboss.jandex.DotName;
-import org.jboss.jandex.MethodInfo;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.container.runtime.GenericParserFactory;
-import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configuration;
-import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 import org.wildfly.swarm.spi.api.annotations.ExtensionClassName;
@@ -33,13 +25,12 @@ import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 @Vetoed
 public class ServerConfigurationBuilder {
 
-    private final Module module;
-
-    private final ClassInfo classInfo;
+    private Class fractionClass;
 
     private boolean marshal = false;
 
@@ -51,139 +42,90 @@ public class ServerConfigurationBuilder {
 
     private List<String> deploymentModules = new ArrayList<>();
 
-    public ServerConfigurationBuilder(Module module, ClassInfo classInfo) {
-        this.module = module;
-        this.classInfo = classInfo;
-    }
-
-    protected List<AnnotationInstance> findAnnotations(Class<?> annotationType) {
-        Collection<AnnotationInstance> all = this.classInfo.classAnnotations();
-        List<AnnotationInstance> selected = new ArrayList<>();
-
-        for (AnnotationInstance each : all) {
-            if (each.name().toString().equals(annotationType.getName())) {
-                selected.add(each);
-            }
-        }
-
-        return selected;
-    }
-
-    protected AnnotationInstance findAnnotation(Class<?> annotationType) {
-        Collection<AnnotationInstance> all = this.classInfo.classAnnotations();
-
-        for (AnnotationInstance each : all) {
-            if (each.name().toString().equals(annotationType.getName())) {
-                return each;
-            }
-        }
-
-        return null;
+    public ServerConfigurationBuilder(Class fractionClass) {
+        this.fractionClass = fractionClass;
     }
 
     @SuppressWarnings("deprecation")
     protected void determineMarshal() {
-        AnnotationInstance anno = findAnnotation(MarshalDMR.class);
+        Annotation anno = this.fractionClass.getAnnotation(MarshalDMR.class);
         if (anno != null) {
             this.marshal = true;
             return;
         }
 
-        anno = findAnnotation(Configuration.class);
+        Configuration configAnno = (Configuration) this.fractionClass.getAnnotation(Configuration.class);
 
-        if (anno != null) {
-            AnnotationValue value = anno.value("marshal");
-            if (value != null) {
-                this.marshal = value.asBoolean();
-            }
+        if (configAnno != null) {
+            this.marshal = configAnno.marshal();
         }
     }
 
     @SuppressWarnings("deprecation")
     protected void determineIgnorable() {
-        AnnotationInstance anno = findAnnotation(Ignorable.class);
+        Annotation anno = this.fractionClass.getAnnotation(Ignorable.class);
         if (anno != null) {
             this.ignorable = true;
             return;
         }
 
-        anno = findAnnotation(Configuration.class);
+        Configuration configAnno = (Configuration) this.fractionClass.getAnnotation(Configuration.class);
 
-        if (anno != null) {
-            AnnotationValue value = anno.value("ignorable");
-            if (value != null) {
-                this.ignorable = value.asBoolean();
-            }
+        if (configAnno != null) {
+            this.ignorable = configAnno.ignorable();
         }
     }
 
     @SuppressWarnings("deprecation")
     protected void determineExtensionModule() {
-        AnnotationInstance anno = findAnnotation(ExtensionModule.class);
+        ExtensionModule anno = (ExtensionModule) this.fractionClass.getAnnotation(ExtensionModule.class);
         if (anno != null) {
-            AnnotationValue value = anno.value();
-            if (value != null) {
-                this.extensionModule = value.asString();
-            }
+            this.extensionModule = anno.value();
             return;
         }
 
-        anno = findAnnotation(Configuration.class);
+        Configuration configAnno = (Configuration) this.fractionClass.getAnnotation(Configuration.class);
 
-        if (anno != null) {
-            AnnotationValue value = anno.value("extension");
-            if (value != null) {
-                this.extensionModule = value.asString();
-            }
+        if (configAnno != null) {
+            this.extensionModule = configAnno.extension();
         }
     }
 
     @SuppressWarnings("deprecation")
     protected void determineExtensionClassName() {
-        AnnotationInstance anno = findAnnotation(ExtensionClassName.class);
+        ExtensionClassName anno = (ExtensionClassName) this.fractionClass.getAnnotation(ExtensionClassName.class);
         if (anno != null) {
-            AnnotationValue value = anno.value();
-            if (value != null) {
-                this.extensionClassName = value.asString();
-            }
+            this.extensionClassName = anno.value();
             return;
         }
 
-        anno = findAnnotation(Configuration.class);
+        Configuration configAnno = (Configuration) this.fractionClass.getAnnotation(Configuration.class);
 
-        if (anno != null) {
-            AnnotationValue value = anno.value("extension");
-            if (value != null) {
-                this.extensionClassName = value.asString();
-            }
+        if (configAnno != null) {
+            this.extensionClassName = configAnno.extensionClassName();
         }
     }
 
     @SuppressWarnings("deprecation")
     protected void determineDeploymentModules() {
-        AnnotationInstance anno = findAnnotation(DeploymentModules.class);
+        DeploymentModules anno = (DeploymentModules) this.fractionClass.getAnnotation(DeploymentModules.class);
 
-        if ( anno != null ) {
-            AnnotationInstance[] modules = anno.value().asNestedArray();
-            for (AnnotationInstance each : modules) {
-                AnnotationValue nameValue = each.value("name");
-                AnnotationValue slotValue = each.value("slot");
-
-                String name = nameValue.asString();
-                String slot = (slotValue != null ? slotValue.asString() : "main");
+        if (anno != null) {
+            for (DeploymentModule module : anno.value()) {
+                String name = module.name();
+                String slot = (module.slot() != null ? module.slot() : "main");
 
                 this.deploymentModules.add(name + ":" + slot);
             }
         } else {
-            List<AnnotationInstance> annos = findAnnotations(DeploymentModule.class);
+            Annotation[] annos = this.fractionClass.getAnnotationsByType(DeploymentModule.class);
 
-            if (!annos.isEmpty()) {
-                for (AnnotationInstance each : annos) {
-                    AnnotationValue nameValue = each.value("name");
-                    AnnotationValue slotValue = each.value("slot");
+            if (annos.length > 0) {
+                for (Annotation each : annos) {
+                    DeploymentModule module = (DeploymentModule) each;
 
-                    String name = nameValue.asString();
-                    String slot = (slotValue != null ? slotValue.asString() : "main");
+                    String name = module.name();
+                    String slot = (module.slot() != null ? module.slot() : "main");
 
                     this.deploymentModules.add(name + ":" + slot);
                 }
@@ -191,15 +133,10 @@ public class ServerConfigurationBuilder {
             }
         }
 
-        anno = findAnnotation(Configuration.class);
+        Configuration configAnno = (Configuration) this.fractionClass.getAnnotation(Configuration.class);
 
-        if (anno != null) {
-            AnnotationValue value = anno.value("deploymentModules");
-            if (value != null) {
-                String[] descs = value.asStringArray();
-
-                Collections.addAll(this.deploymentModules, descs);
-            }
+        if (configAnno != null) {
+            Collections.addAll(this.deploymentModules, configAnno.deploymentModules());
         }
     }
 
@@ -212,11 +149,7 @@ public class ServerConfigurationBuilder {
         determineExtensionClassName();
         determineDeploymentModules();
 
-        Module mainModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(this.module.getIdentifier().getName(), "main"));
-
-        Class<? extends Fraction> fractionClass = (Class<? extends Fraction>) mainModule.getClassLoader().loadClass(this.classInfo.name().toString());
-
-        AnnotationBasedServerConfiguration serverConfig = new AnnotationBasedServerConfiguration(fractionClass);
+        AnnotationBasedServerConfiguration serverConfig = new AnnotationBasedServerConfiguration(this.fractionClass);
 
         serverConfig.ignorable(this.ignorable);
         serverConfig.extension(this.extensionModule);
@@ -224,8 +157,6 @@ public class ServerConfigurationBuilder {
 
         if (this.extensionModule != null) {
             Module extensionModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(this.extensionModule));
-            //Class<? extends AbstractParserFactory> parserFractoryClass = (Class<? extends AbstractParserFactory>) runtimeModule.getClassLoader().loadClass(parserFactoryClass);
-
 
             if (this.extensionClassName != null && this.extensionClassName.equalsIgnoreCase("none")) {
                 // skip it all
@@ -251,36 +182,10 @@ public class ServerConfigurationBuilder {
 
                 if (extensionIter.hasNext()) {
                     throw new RuntimeException("Fraction \"" + fractionClass.getName() + "\" was configured using @Configuration with an extension='',"
-                            + " but has multiple extension classes.  Please use extensionClassName='' to specify exactly one.");
+                                                       + " but has multiple extension classes.  Please use extensionClassName='' to specify exactly one.");
                 }
             }
 
-        }
-
-        List<MethodInfo> fractionMethods = this.classInfo.methods();
-
-        DotName defaultAnno = DotName.createSimple(Default.class.getName());
-
-        boolean foundDefault = false;
-
-        for (MethodInfo each : fractionMethods) {
-            if (each.hasAnnotation(defaultAnno)) {
-                if (!each.parameters().isEmpty()) {
-                    throw new RuntimeException("Method marked @Default must require zero parameters");
-                }
-
-                if (!Modifier.isStatic(each.flags())) {
-                    throw new RuntimeException("Method marked @Default must be static");
-                }
-
-                if (foundDefault) {
-                    throw new RuntimeException("Multiple methods found marked as @Default");
-                }
-
-                foundDefault = true;
-
-                serverConfig.defaultFraction(each.name());
-            }
         }
 
         serverConfig.setDeploymentModules(this.deploymentModules.toArray(new String[this.deploymentModules.size()]));
@@ -297,13 +202,9 @@ public class ServerConfigurationBuilder {
     }
 
     boolean isAnnotated() {
-        Collection<AnnotationInstance> annotations = this.classInfo.classAnnotations();
-
-        for (AnnotationInstance annotation : annotations) {
-            for (Class<?> annotationClass : CLASS_ANNOTATIONS) {
-                if (annotation.name().toString().equals(annotationClass.getName())) {
-                    return true;
-                }
+        for (Class<?> annotationClass : CLASS_ANNOTATIONS) {
+            if (this.fractionClass.getAnnotation(annotationClass) != null) {
+                return true;
             }
         }
 

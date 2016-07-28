@@ -68,6 +68,7 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
+import org.wildfly.swarm.container.runtime.internal.ServerConfigurationBuilder;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.DependentFraction;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -108,10 +109,11 @@ public class RuntimeServer implements Server {
     @Any
     private Instance<Fraction> allFractions;
 
-    @Inject
-    @DefaultFraction
-    @DependentFraction
-    private Instance<Fraction> defaultDependentFractions;
+    //TODO This doesn't seem right at moment
+//    @Inject
+//    @DefaultFraction
+//    @DependentFraction
+//    private Instance<Fraction> defaultDependentFractions;
 
     public RuntimeServer() {
     }
@@ -143,6 +145,8 @@ public class RuntimeServer implements Server {
 
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
+
+        loadFractionConfigurations();
 
 //        applyDefaults(config);
 //
@@ -261,6 +265,18 @@ public class RuntimeServer implements Server {
         }
 
         return this.deployer;
+    }
+
+    private void loadFractionConfigurations() throws Exception {
+        for (Fraction fraction : this.allFractions) {
+            ServerConfigurationBuilder builder = new ServerConfigurationBuilder(fraction.getClass());
+            ServerConfiguration serverConfig = builder.build();
+
+            if (!this.configList.stream().anyMatch((e) -> e.getType().equals(fraction.getClass()))) {
+                this.configByFractionType.put(serverConfig.getType(), serverConfig);
+                this.configList.add(serverConfig);
+            }
+        }
     }
 
     private void getSystemProperties(Optional<ProjectStage> enabledStage, LinkedList<ModelNode> bootstrapOperations) {
