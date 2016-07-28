@@ -108,6 +108,7 @@ public class Swarm {
     public Swarm(boolean debugBootstrap, String... args) throws Exception {
         System.setProperty(SwarmInternalProperties.VERSION, VERSION);
         COMMAND_LINE_ARGS = args;
+        this.debugBootstrap = debugBootstrap;
 
         // Need to setup Logging here so that Weld doesn't default to JUL.
         try {
@@ -127,37 +128,26 @@ public class Swarm {
         } catch (ModuleLoadException e) {
             System.err.println("[WARN] logging not available, logging will not be configured");
         }
-
-
-        Weld weld = new Weld();
-        if (Boolean.getBoolean("swarm.isuberjar")) {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-            weld.setClassLoader(module.getClassLoader());
-        }
-
-        WeldContainer weldContainer = weld.initialize();
-        swarmConfigurator = weldContainer.select(SwarmConfigurator.class).get();
-        swarmConfigurator.setWeld(weldContainer);
-        swarmConfigurator.setDebugBootstrap(debugBootstrap);
-        swarmConfigurator.init();
     }
 
     public Swarm withXmlConfig(URL url) {
-        swarmConfigurator.withXmlConfig(url);
+        //TODO Hold internally
         return this;
     }
 
     public Swarm withStageConfig(URL url) {
-        swarmConfigurator.withStageConfig(url);
+        //TODO Hold internally
         return this;
     }
 
     public StageConfig stageConfig() {
-        return swarmConfigurator.stageConfig();
+        //TODO Hold internally
+        return null;
     }
 
     public boolean hasStageConfig() {
-        return swarmConfigurator.hasStageConfig();
+        //TODO Hold internally
+        return false;
     }
 
     /**
@@ -221,11 +211,25 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public Swarm start() throws Exception {
-        swarmConfigurator.start(false);
+        this.start(false);
         return this;
     }
 
     public Swarm start(boolean eagerlyOpen) throws Exception {
+        Weld weld = new Weld();
+        if (Boolean.getBoolean("swarm.isuberjar")) {
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            weld.setClassLoader(module.getClassLoader());
+        }
+
+        WeldContainer weldContainer = weld.initialize();
+        swarmConfigurator = weldContainer.select(SwarmConfigurator.class).get();
+        swarmConfigurator.setWeld(weldContainer);
+        swarmConfigurator.setDebugBootstrap(this.debugBootstrap);
+        swarmConfigurator.init();
+
+        this.configuratorActive = true;
+
         swarmConfigurator.start(eagerlyOpen);
         return this;
     }
@@ -252,6 +256,10 @@ public class Swarm {
      * @throws Exception If an error occurs.
      */
     public Swarm stop() throws Exception {
+        if (!configuratorActive) {
+            throw new Exception("Unable to call stop() until start() called");
+        }
+
         swarmConfigurator.stop();
         return this;
     }
@@ -264,7 +272,11 @@ public class Swarm {
      * @return The container.
      * @throws DeploymentException if an error occurs.
      */
-    public Swarm deploy() throws DeploymentException {
+    public Swarm deploy() throws Exception {
+        if (!configuratorActive) {
+            throw new Exception("Unable to call deploy() until start() called");
+        }
+
         swarmConfigurator.deploy();
         return this;
     }
@@ -276,7 +288,11 @@ public class Swarm {
      * @return The container.
      * @throws DeploymentException if an error occurs.
      */
-    public Swarm deploy(Archive<?> deployment) throws DeploymentException {
+    public Swarm deploy(Archive<?> deployment) throws Exception {
+        if (!configuratorActive) {
+            throw new Exception("Unable to call deploy() until start() called");
+        }
+
         swarmConfigurator.deploy(deployment);
         return this;
     }
@@ -284,7 +300,11 @@ public class Swarm {
     /**
      * Provides access to the default ShrinkWrap deployment.
      */
-    public Archive<?> createDefaultDeployment() {
+    public Archive<?> createDefaultDeployment() throws Exception {
+        if (!configuratorActive) {
+            throw new Exception("Unable to call createDefaultDeployment() until start() called");
+        }
+
         return swarmConfigurator.createDefaultDeployment();
     }
 
@@ -339,4 +359,8 @@ public class Swarm {
     }
 
     private SwarmConfigurator swarmConfigurator;
+
+    private boolean configuratorActive = false;
+
+    private boolean debugBootstrap;
 }
