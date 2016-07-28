@@ -15,8 +15,15 @@
  */
 package org.wildfly.swarm.logging;
 
+import java.util.logging.LogManager;
+
+import org.jboss.logging.Logger;
 import org.junit.Test;
+import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.container.Container;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Bob McWhirter
@@ -26,7 +33,42 @@ public class LoggingInVmTest {
     @Test
     public void testSimple() throws Exception {
         Container container = new Container();
-        container.fraction(new LoggingFraction());
-        container.start().stop();
+        container.fraction(
+                LoggingFraction.createDebugLoggingFraction()
+                        .logger("cheese.gouda", l -> {
+                            l.level(Level.FINEST);
+                        })
+                        .logger("cheese.cheddar", l -> {
+                            l.level(Level.OFF);
+                        })
+        );
+
+        System.err.println( "Starting the container" );
+
+        container.start();
+
+        System.err.println( "LogManager is : " + LogManager.getLogManager().getClass() );
+
+        System.err.println( "Executing tests" );
+
+        Logger gouda = Logger.getLogger( "cheese.gouda" );
+
+        gouda.info( "gouda info" );
+        gouda.debug( "gouda debug");
+
+        assertTrue( gouda.isTraceEnabled() );
+        assertTrue( gouda.isDebugEnabled() );
+        assertTrue( gouda.isInfoEnabled() );
+
+        Logger cheddar = Logger.getLogger( "cheese.cheddar" );
+
+        cheddar.info( "cheddar info" );
+        cheddar.debug( "cheddar debug" );
+
+        assertFalse( cheddar.isTraceEnabled() );
+        assertFalse( cheddar.isDebugEnabled() );
+        assertFalse( cheddar.isInfoEnabled() );
+
+        container.stop();
     }
 }
