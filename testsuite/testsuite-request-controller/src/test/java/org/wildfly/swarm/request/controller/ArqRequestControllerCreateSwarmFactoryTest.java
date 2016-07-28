@@ -30,7 +30,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
  * @author alexsoto
  */
 @RunWith(Arquillian.class)
-public class ArqRequestControllerContainerFactoryTest {
+public class ArqRequestControllerCreateSwarmFactoryTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {

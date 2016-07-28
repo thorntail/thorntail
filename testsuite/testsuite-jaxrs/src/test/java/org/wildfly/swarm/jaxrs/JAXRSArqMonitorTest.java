@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.management.ManagementFraction;
@@ -47,7 +48,7 @@ public class JAXRSArqMonitorTest extends SimpleHttp {
         return deployment;
     }
 
-    @org.wildfly.swarm.arquillian.adapter.Container
+    @CreateSwarm
     public static Container getContainer() throws Exception {
         Container container = new Container();
         container.fraction(new JAXRSFraction());

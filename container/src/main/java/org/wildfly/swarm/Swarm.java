@@ -107,7 +107,9 @@ public class Swarm {
      */
     public Swarm(boolean debugBootstrap, String... args) throws Exception {
         System.setProperty(SwarmInternalProperties.VERSION, VERSION);
-        COMMAND_LINE_ARGS = args;
+        if (args.length > 0) {
+            COMMAND_LINE_ARGS = args;
+        }
         this.debugBootstrap = debugBootstrap;
 
         // Need to setup Logging here so that Weld doesn't default to JUL.

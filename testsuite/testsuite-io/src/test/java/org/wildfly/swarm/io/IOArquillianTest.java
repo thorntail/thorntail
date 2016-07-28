@@ -28,8 +28,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.junit.Assert.assertNotNull;
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class IOArquillianTest implements ContainerFactory {
+public class IOArquillianTest {
 
     @Deployment//(testable = false)
     public static Archive createDeployment() {
@@ -47,11 +47,11 @@ public class IOArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
+    @CreateSwarm
+    public static Swarm newSwarm() throws Exception {
         IOFraction fraction = new IOFraction();
         fraction.init();
-        return new Container().fraction(fraction);
+        return new Swarm().fraction(fraction);
     }
 
     @ArquillianResource
@@ -60,7 +60,7 @@ public class IOArquillianTest implements ContainerFactory {
     @Test
     public void testNothing() throws InterruptedException, TimeoutException {
         ServiceController<?> serviceController = this.registry.getService(ServiceName.parse("org.wildfly.io.worker.default"));
-        assertNotNull( serviceController );
+        assertNotNull(serviceController);
     }
 
 }
