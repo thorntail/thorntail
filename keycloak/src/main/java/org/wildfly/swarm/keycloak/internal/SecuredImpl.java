@@ -52,7 +52,7 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
             this.asset = new WebXmlAsset();
             getArchive().as(JARArchive.class).add(this.asset);
         } else {
-            NamedAsset asset = (NamedAsset) node.getAsset();
+            Asset asset = node.getAsset();
             if (!(asset instanceof WebXmlAsset)) {
                 this.asset = new WebXmlAsset(asset.openStream());
                 getArchive().as(JARArchive.class).add(this.asset);
