@@ -31,7 +31,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>31-SNAPSHOT</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>31</version.wildfly.swarm.fraction.plugin>
 
     <version.maven.aether>3.2.5</version.maven.aether>
     <version.wildfly.config-api>0.4.4</version.wildfly.config-api>
