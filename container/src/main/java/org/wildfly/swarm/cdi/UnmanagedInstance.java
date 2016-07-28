@@ -37,12 +37,11 @@ public class UnmanagedInstance {
     private boolean disposed = false;
     private boolean inWeld = true;
 
-    public UnmanagedInstance(Object instance) {
+    public UnmanagedInstance(Object instance, BeanManager beanManager) {
         // Handle case where CDI hasn't been initialized, typically `new Container()` in a custom main()
         try {
             this.instance = instance;
 
-            BeanManager beanManager = CDI.current().getBeanManager();
             AnnotatedType type = beanManager.createAnnotatedType(instance.getClass());
             this.injectionTarget = beanManager.getInjectionTargetFactory(type).createInjectionTarget(null);
             this.ctx = beanManager.createCreationalContext(null);

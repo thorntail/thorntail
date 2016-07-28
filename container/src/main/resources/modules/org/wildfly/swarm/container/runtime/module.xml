@@ -40,6 +40,7 @@
     <module name="org.jboss.as.self-contained"/>
     <module name="org.jboss.as.logging"/>
     <module name="org.jboss.shrinkwrap"/>
+    <module name="javax.enterprise.api" slot="cdi2"/>
 
     <!-- the following have been added to support xml parsing -->
     <module name="javax.api" export="true"/>

@@ -26,6 +26,7 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -73,6 +74,9 @@ public class SwarmConfigurator {
     @Inject
     @CommandLineArgs
     private String[] args;
+
+    @Inject
+    BeanManager beanManager;
 
     public SwarmConfigurator() {
     }
@@ -373,7 +377,7 @@ public class SwarmConfigurator {
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container", "runtime"));
             Class<?> serverClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.RuntimeServer");
 
-            UnmanagedInstance serverInstance = new UnmanagedInstance(serverClass.newInstance());
+            UnmanagedInstance serverInstance = new UnmanagedInstance(serverClass.newInstance(), beanManager);
             this.server = (Server) serverInstance.inject().postConstruct().get();
         } catch (Throwable t) {
             t.printStackTrace();
