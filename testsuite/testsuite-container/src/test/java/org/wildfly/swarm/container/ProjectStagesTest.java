@@ -195,6 +195,24 @@ public class ProjectStagesTest {
         container.start().stop();
     }
 
+    /**
+     * Project stage shsould be discovered from classpath (modular or not)
+     * See https://issues.jboss.org/browse/SWARM-486
+     */
+    @Test
+    public void testStageConfigDiscovery() throws Exception {
+
+        Container container = new Container()
+                .fraction(new Fraction() {
+                    @Override
+                    public void initialize(InitContext initContext) {
+                        Assert.assertTrue("stage config is not present", initContext.projectStage().isPresent());
+                        StageConfig stageConfig = initContext.projectStage().get();
+                    }
+                });
+
+        container.start().stop();
+    }
 
 
     private List<ProjectStage> testStages;
