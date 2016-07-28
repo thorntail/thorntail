@@ -272,9 +272,11 @@ public class RuntimeServer implements Server {
             ServerConfigurationBuilder builder = new ServerConfigurationBuilder(fraction.getClass());
             ServerConfiguration serverConfig = builder.build();
 
-            if (!this.configList.stream().anyMatch((e) -> e.getType().equals(fraction.getClass()))) {
-                this.configByFractionType.put(serverConfig.getType(), serverConfig);
-                this.configList.add(serverConfig);
+            if (serverConfig != null) {
+                if (!this.configList.stream().anyMatch((e) -> e.getType().equals(fraction.getClass()))) {
+                    this.configByFractionType.put(serverConfig.getType(), serverConfig);
+                    this.configList.add(serverConfig);
+                }
             }
         }
     }
