@@ -16,7 +16,7 @@ import org.wildfly.swarm.config.undertow.Server;
 @ApplicationScoped
 public class HTTPSCustomizer {
 
-    @Inject
+    @Inject @Any
     private UndertowFraction fraction;
 
     @Inject @Any

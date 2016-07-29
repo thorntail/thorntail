@@ -112,7 +112,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.wildfly.swarm.container", "api"), true));
+                        ModuleIdentifier.create("org.wildfly.swarm.container", "runtime"), true));
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
     }

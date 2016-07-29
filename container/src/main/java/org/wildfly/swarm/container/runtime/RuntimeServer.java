@@ -43,6 +43,10 @@ import javax.xml.namespace.QName;
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.naming.ImmediateManagedReferenceFactory;
+import org.jboss.as.naming.ServiceBasedNamingStore;
+import org.jboss.as.naming.deployment.ContextNames;
+import org.jboss.as.naming.service.BinderService;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
@@ -68,7 +72,6 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
-import org.wildfly.swarm.container.runtime.internal.ServerConfigurationBuilder;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -76,6 +79,7 @@ import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
@@ -117,6 +121,12 @@ public class RuntimeServer implements Server {
     @Any
     private Instance<SocketBinding> socketBindings;
 
+    @Inject
+    @Any
+    private Instance<ServiceActivator> serviceActivators;
+
+    @Inject
+    private FractionMarshaller marshaller;
 
     //TODO This doesn't seem right at moment
 //    @Inject
@@ -160,7 +170,7 @@ public class RuntimeServer implements Server {
         System.err.println( "-------------------------------" );
 
         for (Customizer each : this.customizers) {
-            System.err.println( "### apply customizer: " + each );
+            each.customize();
         }
 
         System.err.println( " --> " + SocketBinding.class.getClassLoader() );
@@ -182,16 +192,20 @@ public class RuntimeServer implements Server {
         //if (!xmlConfig.isPresent())
 //        applySocketBindingGroupDefaults(config);
 
-        LinkedList<ModelNode> bootstrapOperations = new LinkedList<>();
+        List<ModelNode> bootstrapOperations = this.marshaller.marshal();
 
-        if (enabledStage.isPresent())
+        System.err.println( "BOOTSTRAP: " + bootstrapOperations );
+
+        if (enabledStage.isPresent()) {
             getSystemProperties(enabledStage, bootstrapOperations);
+        }
 
         // the extensions
 //        getExtensions(config, bootstrapOperations);
 
         // the subsystem configurations
 //        getSubsystemConfigurations(config, bootstrapOperations);
+
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(bootstrapOperations);
@@ -214,41 +228,34 @@ public class RuntimeServer implements Server {
                 e.printStackTrace();
             }
         }));
-        List<ServiceActivator> activators = new ArrayList<>();
-//        activators.add(context -> {
-//            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<>(tempFileProvider)))
-//                    .install();
-//            // Provide the main command line args as a value service
-//            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(config.getArgs())))
-//                    .install();
-//
-//            // make the stage config available through jndi
-//            if (enabledStage.isPresent()) {
-//
-//                BinderService binderService = new BinderService("swarm/stage-config", null, true);
-//
-//                context.getServiceTarget().addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, "swarm/stage-config"), binderService)
-//                        .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
-//                        .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(new StageConfig(enabledStage.get())))
-//                        .setInitialMode(ServiceController.Mode.ACTIVE)
-//                        .install();
-//            }
-//
-//        });
 
-//        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
-//            boolean found = false;
-//            for (Fraction eachFraction : config.fractions()) {
-//                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-//                    found = true;
-//                    activators.addAll(eachConfig.getServiceActivators(eachFraction));
-//                    break;
-//                }
-//            }
-//            if (!found && !eachConfig.isIgnorable()) {
-//                System.err.println("*** unable to find fraction for: " + eachConfig.getType());
-//            }
-//        }
+        List<ServiceActivator> activators = new ArrayList<>();
+        /*
+        activators.add(context -> {
+            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<>(tempFileProvider)))
+                    .install();
+            // Provide the main command line args as a value service
+            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(config.getArgs())))
+                    .install();
+
+            // make the stage config available through jndi
+            if (enabledStage.isPresent()) {
+
+                BinderService binderService = new BinderService("swarm/stage-config", null, true);
+
+                context.getServiceTarget().addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, "swarm/stage-config"), binderService)
+                        .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
+                        .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(new StageConfig(enabledStage.get())))
+                        .setInitialMode(ServiceController.Mode.ACTIVE)
+                        .install();
+            }
+
+        });
+        */
+
+        this.serviceActivators.forEach( (activator)->{
+            activators.add( activator );
+        });
 
         this.serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
         for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
@@ -294,6 +301,7 @@ public class RuntimeServer implements Server {
 
     private void loadFractionConfigurations() throws Exception {
         for (Fraction fraction : this.allFractions) {
+            /*
             ServerConfigurationBuilder builder = new ServerConfigurationBuilder(fraction.getClass());
             ServerConfiguration serverConfig = builder.build();
 
@@ -303,10 +311,11 @@ public class RuntimeServer implements Server {
                     this.configList.add(serverConfig);
                 }
             }
+            */
         }
     }
 
-    private void getSystemProperties(Optional<ProjectStage> enabledStage, LinkedList<ModelNode> bootstrapOperations) {
+    private void getSystemProperties(Optional<ProjectStage> enabledStage, List<ModelNode> bootstrapOperations) {
         if (!enabledStage.isPresent())
             throw new IllegalArgumentException("No stage config present");
 

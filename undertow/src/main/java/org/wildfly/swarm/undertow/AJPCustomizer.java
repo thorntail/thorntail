@@ -2,6 +2,7 @@ package org.wildfly.swarm.undertow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -15,7 +16,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 @ApplicationScoped
 public class AJPCustomizer implements Customizer {
 
-    @Inject
+    @Inject @Any
     private UndertowFraction fraction;
 
     public AJPCustomizer() {

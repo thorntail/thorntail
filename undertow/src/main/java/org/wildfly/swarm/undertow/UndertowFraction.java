@@ -15,11 +15,8 @@
  */
 package org.wildfly.swarm.undertow;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 
-import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.undertow.BufferCache;
 import org.wildfly.swarm.config.undertow.HandlerConfiguration;
@@ -29,17 +26,16 @@ import org.wildfly.swarm.config.undertow.server.Host;
 import org.wildfly.swarm.config.undertow.servlet_container.JSPSetting;
 import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.wildfly.extension.undertow")
 @MarshalDMR
+@WildFlyExtension(module="org.wildfly.extension.undertow")
 public class UndertowFraction extends Undertow<UndertowFraction> implements Fraction {
 
     public UndertowFraction() {
@@ -168,18 +164,6 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         this.enableAJP = true;
         return this;
     }
-
-    /*
-    @Override
-    public void initialize(Fraction.InitContext initContext) {
-        initContext.socketBinding(
-                new SocketBinding("http")
-                        .port(SwarmProperties.propertyVar(SwarmProperties.HTTP_PORT, "8080")));
-        initContext.socketBinding(
-                new SocketBinding("https")
-                        .port(SwarmProperties.propertyVar(SwarmProperties.HTTPS_PORT, "8443")));
-    }
-    */
 
     public String keystorePassword() {
         return this.keystorePassword;

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.wildfly.swarm.config.Logging;
 import org.wildfly.swarm.config.logging.AsyncHandler;
 import org.wildfly.swarm.config.logging.ConsoleHandler;
@@ -31,6 +33,7 @@ import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.config.logging.PatternFormatter;
 import org.wildfly.swarm.config.logging.RootLogger;
 import org.wildfly.swarm.config.logging.SyslogHandler;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -39,6 +42,8 @@ import org.wildfly.swarm.spi.api.Fraction;
  * @author Lance Ball
  */
 @SuppressWarnings("unused")
+@ApplicationScoped
+@DefaultFraction
 public class LoggingFraction extends Logging<LoggingFraction> implements Fraction {
 
     public static final String CONSOLE = "CONSOLE";

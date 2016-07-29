@@ -23,16 +23,16 @@ import org.wildfly.swarm.config.io.BufferPool;
 import org.wildfly.swarm.config.io.Worker;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.wildfly.extension.io")
-@MarshalDMR
-@DefaultFraction
 @ApplicationScoped
+@DefaultFraction
+@WildFlyExtension(module="org.wildfly.extension.io")
+@MarshalDMR
 public class IOFraction extends IO<IOFraction> implements Fraction {
 
     @PostConstruct

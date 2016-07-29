@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.ee;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.wildfly.swarm.config.EE;
 import org.wildfly.swarm.config.ee.ContextService;
 import org.wildfly.swarm.config.ee.DefaultBindingsService;
@@ -22,15 +24,18 @@ import org.wildfly.swarm.config.ee.DefaultBindingsServiceConsumer;
 import org.wildfly.swarm.config.ee.ManagedExecutorService;
 import org.wildfly.swarm.config.ee.ManagedScheduledExecutorService;
 import org.wildfly.swarm.config.ee.ManagedThreadFactory;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.jboss.as.ee")
+@ApplicationScoped
+@DefaultFraction
+@WildFlyExtension(module="org.jboss.as.ee")
 @MarshalDMR
 public class EEFraction extends EE<EEFraction> implements Fraction {
 
@@ -83,18 +88,5 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
         });
 
         return fraction;
-    }
-
-    @Override
-    public void postInitialize(Fraction.PostInitContext initContext) {
-        if (initContext.hasFraction("Messaging")) {
-            if (this.subresources().defaultBindingsService() == null) {
-                this.defaultBindingsService(new DefaultBindingsService());
-            }
-            if ( this.subresources().defaultBindingsService().jmsConnectionFactory() == null ) {
-                this.subresources().defaultBindingsService()
-                        .jmsConnectionFactory("java:jboss/DefaultJMSConnectionFactory");
-            }
-        }
     }
 }
