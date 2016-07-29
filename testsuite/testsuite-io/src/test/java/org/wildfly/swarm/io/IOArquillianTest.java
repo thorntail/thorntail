@@ -50,7 +50,7 @@ public class IOArquillianTest {
     @CreateSwarm
     public static Swarm newSwarm() throws Exception {
         IOFraction fraction = new IOFraction();
-        fraction.init();
+        fraction.applyDefaults();
         return new Swarm().fraction(fraction);
     }
 
