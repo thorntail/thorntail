@@ -225,6 +225,8 @@ public class Swarm {
         if (Boolean.getBoolean("swarm.isuberjar")) {
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
             weld.setClassLoader(module.getClassLoader());
+            Thread.currentThread().setContextClassLoader( module.getClassLoader() );
+            System.err.println( "using classloader: " + module.getClassLoader() );
         }
 
         // Add Extension that adds User custom bits into configurator
