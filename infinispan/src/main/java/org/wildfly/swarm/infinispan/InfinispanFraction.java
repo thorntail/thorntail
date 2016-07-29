@@ -22,6 +22,7 @@ import org.wildfly.swarm.config.infinispan.cache_container.LockingComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Default;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
@@ -31,6 +32,8 @@ import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
  */
 @ExtensionModule("org.jboss.as.clustering.infinispan")
 @MarshalDMR
+@DeploymentModule(name="org.infinispan", export = true)
+@DeploymentModule(name="org.infinispan.commons", export = true)
 public class InfinispanFraction extends Infinispan<InfinispanFraction> implements Fraction {
 
     private InfinispanFraction() {
@@ -51,6 +54,8 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
             }
         }
     }
+
+
 
     protected InfinispanFraction markDefaultFraction() {
         this.defaultFraction = true;
