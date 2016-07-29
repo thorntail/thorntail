@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,10 +42,6 @@ import javax.xml.namespace.QName;
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.as.naming.ImmediateManagedReferenceFactory;
-import org.jboss.as.naming.ServiceBasedNamingStore;
-import org.jboss.as.naming.deployment.ContextNames;
-import org.jboss.as.naming.service.BinderService;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
@@ -79,7 +74,6 @@ import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
@@ -119,14 +113,17 @@ public class RuntimeServer implements Server {
 
     @Inject
     @Any
-    private Instance<SocketBinding> socketBindings;
-
-    @Inject
-    @Any
     private Instance<ServiceActivator> serviceActivators;
 
     @Inject
-    private FractionMarshaller marshaller;
+    private FractionMarshaller fractionMarshaller;
+
+    @Inject
+    private SocketBindingGroupMarshaller socketBindingGroupMarshaller;
+
+    @Inject
+    private InterfaceMarshaller interfaceMarshaller;
+
 
     //TODO This doesn't seem right at moment
 //    @Inject
@@ -173,14 +170,6 @@ public class RuntimeServer implements Server {
             each.customize();
         }
 
-        System.err.println( " --> " + SocketBinding.class.getClassLoader() );
-
-        for ( SocketBinding each : this.socketBindings ) {
-            System.err.println( "### socket binding: " + each );
-        }
-
-        System.err.println( "-------------------------------" );
-
 
 
 //        applyDefaults(config);
@@ -192,7 +181,9 @@ public class RuntimeServer implements Server {
         //if (!xmlConfig.isPresent())
 //        applySocketBindingGroupDefaults(config);
 
-        List<ModelNode> bootstrapOperations = this.marshaller.marshal();
+        List<ModelNode> bootstrapOperations = this.fractionMarshaller.marshal();
+        bootstrapOperations.addAll( this.socketBindingGroupMarshaller.marshall() );
+        bootstrapOperations.addAll( this.interfaceMarshaller.marshall() );
 
         System.err.println( "BOOTSTRAP: " + bootstrapOperations );
 
@@ -403,6 +394,7 @@ public class RuntimeServer implements Server {
         }
     }
 
+    /*
     private void applySocketBindingGroupDefaults(Container config) {
         if (config.socketBindingGroups().isEmpty()) {
             config.socketBindingGroup(
@@ -446,6 +438,7 @@ public class RuntimeServer implements Server {
             }
         }
     }
+    */
 
     @SuppressWarnings("unchecked")
     private void getExtensions(Container container, List<ModelNode> list) throws Exception {

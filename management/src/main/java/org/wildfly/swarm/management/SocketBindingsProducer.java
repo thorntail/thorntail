@@ -2,25 +2,28 @@ package org.wildfly.swarm.management;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
+import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Bob McWhirter
  */
 @ApplicationScoped
-public class SocketBindingsProducer {
+public class SocketBindingsProducer implements Customizer {
 
-    @Produces
-    public SocketBinding managementHttpSocketBinding() {
-        return new SocketBinding("management-http")
-                .port(SwarmProperties.propertyVar(ManagementProperties.HTTP_PORT, "9990"));
-    }
+    @Inject
+    @Named("standard-sockets")
+    private SocketBindingGroup group;
 
-    @Produces
-    public SocketBinding managementHttpsSocketBinding() {
-        return new SocketBinding("management-https")
-                .port(SwarmProperties.propertyVar(ManagementProperties.HTTPS_PORT, "9993"));
+    public void customize() {
+        this.group.socketBinding(new SocketBinding("management-http")
+                .port(SwarmProperties.propertyVar(ManagementProperties.HTTP_PORT, "9990")));
+        this.group.socketBinding(new SocketBinding("management-https")
+                .port(SwarmProperties.propertyVar(ManagementProperties.HTTPS_PORT, "9993")));
     }
 }

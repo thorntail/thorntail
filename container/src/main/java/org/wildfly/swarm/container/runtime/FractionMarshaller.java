@@ -61,11 +61,9 @@ public class FractionMarshaller {
 
     protected void marshalDMR(List<ModelNode> list) {
         for (Fraction each : this.marshallableFractions) {
-            System.err.println("EACH MARSHALL: " + each);
             try {
                 Marshaller marshaller = new Marshaller();
                 LinkedList<ModelNode> subList = marshaller.marshal(each);
-                System.err.println( subList );
                 list.addAll(subList);
             } catch (Exception e) {
                 e.printStackTrace();
