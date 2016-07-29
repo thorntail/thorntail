@@ -78,8 +78,13 @@
       <version>${version.weld-api}</version>
     </dependency>
     <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-spi</artifactId>
+      <version>${version.weld-api}</version>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-shaded</artifactId>
+      <artifactId>weld-se-core</artifactId>
       <version>${version.weld}</version>
     </dependency>
 
