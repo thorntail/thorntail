@@ -11,6 +11,7 @@
       <filter>
         <include-set>
           <path name="org/wildfly/swarm"/>
+          <path name="org/wildfly/swarm/cdi"/>
           <path name="org/wildfly/swarm/cli"/>
           <path name="org/wildfly/swarm/container"/>
           <path name="org/wildfly/swarm/container/internal"/>

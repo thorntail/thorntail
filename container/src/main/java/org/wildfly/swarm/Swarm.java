@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.cdi.InstallUserFractionExtension;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.SwarmConfigurator;
@@ -159,7 +160,9 @@ public class Swarm {
      * @return The container.
      */
     public Swarm fraction(Fraction fraction) {
-        //TODO Store them in a static that Weld Extension can access to make them Beans
+        if (!InstallUserFractionExtension.userFractions.containsKey(fraction.getClass())) {
+            InstallUserFractionExtension.userFractions.put(fraction.getClass(), fraction);
+        }
         return this;
     }
 
@@ -223,6 +226,9 @@ public class Swarm {
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
             weld.setClassLoader(module.getClassLoader());
         }
+
+        // Add Extension that adds User custom bits into configurator
+        weld.addExtension(new InstallUserFractionExtension());
 
         WeldContainer weldContainer = weld.initialize();
         swarmConfigurator = weldContainer.select(SwarmConfigurator.class).get();
