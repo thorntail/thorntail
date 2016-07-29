@@ -13,7 +13,6 @@ import org.jboss.dmr.ValueExpression;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.annotations.For;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
@@ -37,7 +36,7 @@ public class SocketBindingGroupMarshaller {
     public List<ModelNode> marshall() {
         List<ModelNode> list = new ArrayList<>();
         for (SocketBindingGroup group : this.socketBindingGroups) {
-            System.err.println( "CONFIGURE SOCKET BINDING GROUP: " + group );
+            System.err.println("CONFIGURE SOCKET BINDING GROUP: " + group);
             PathAddress address = PathAddress.pathAddress("socket-binding-group", group.name());
             ModelNode node = new ModelNode();
             node.get(OP).set(ADD);
@@ -47,13 +46,13 @@ public class SocketBindingGroupMarshaller {
             list.add(node);
 
             for (SocketBinding binding : group.socketBindings()) {
-                System.err.println( "CONFIGURE SOCKET BINDING: " + binding );
-                configureSocketBinding( address, binding, list );
+                System.err.println("CONFIGURE SOCKET BINDING: " + binding);
+                configureSocketBinding(address, binding, list);
             }
 
             for (OutboundSocketBinding binding : group.outboundSocketBindings()) {
-                System.err.println( "CONFIGURE OUTBOUND SOCKET BINDING: " + binding );
-                configureSocketBinding( address, binding, list );
+                System.err.println("CONFIGURE OUTBOUND SOCKET BINDING: " + binding);
+                configureSocketBinding(address, binding, list);
             }
         }
 
