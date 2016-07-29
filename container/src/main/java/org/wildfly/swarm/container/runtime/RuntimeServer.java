@@ -435,7 +435,6 @@ public class RuntimeServer implements Server {
 
         while (bootstraps.hasMoreElements()) {
             URL each = bootstraps.nextElement();
-            System.out.println(each);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(each.openStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
