@@ -69,8 +69,8 @@ import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.internal.ServerConfigurationBuilder;
+import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.DefaultFraction;
-import org.wildfly.swarm.spi.api.DependentFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
@@ -108,6 +108,15 @@ public class RuntimeServer implements Server {
     @Inject
     @Any
     private Instance<Fraction> allFractions;
+
+    @Inject
+    @Any
+    private Instance<Customizer> customizers;
+
+    @Inject
+    @Any
+    private Instance<SocketBinding> socketBindings;
+
 
     //TODO This doesn't seem right at moment
 //    @Inject
@@ -147,6 +156,22 @@ public class RuntimeServer implements Server {
         System.setProperty("jboss.server.management.uuid", uuid.toString());
 
         loadFractionConfigurations();
+
+        System.err.println( "-------------------------------" );
+
+        for (Customizer each : this.customizers) {
+            System.err.println( "### apply customizer: " + each );
+        }
+
+        System.err.println( this.socketBindings.isAmbiguous() + " // " + this.socketBindings.isUnsatisfied() );
+
+        for ( SocketBinding each : this.socketBindings ) {
+            System.err.println( "### socket binding: " + each );
+        }
+
+        System.err.println( "-------------------------------" );
+
+
 
 //        applyDefaults(config);
 //
@@ -380,16 +405,21 @@ public class RuntimeServer implements Server {
         Set<String> groupNames = config.socketBindings().keySet();
 
         for (String each : groupNames) {
-            List<SocketBinding> bindings = config.socketBindings().get(each);
+            //List<SocketBinding> bindings = config.socketBindings().get(each);
 
             SocketBindingGroup group = config.getSocketBindingGroup(each);
             if (group == null) {
                 throw new RuntimeException("No socket-binding-group for '" + each + "'");
             }
 
-            for (SocketBinding binding : bindings) {
-                group.socketBinding(binding);
+            for (SocketBinding binding : this.socketBindings) {
+                group.socketBinding( binding );
+
             }
+
+            //for (SocketBinding binding : bindings) {
+                //group.socketBinding(binding);
+            //}
         }
 
         groupNames = config.outboundSocketBindings().keySet();

@@ -17,6 +17,8 @@ package org.wildfly.swarm.undertow;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.undertow.BufferCache;
@@ -51,23 +53,26 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     @Default
     public static UndertowFraction createDefaultFraction() {
         UndertowFraction fraction = new UndertowFraction();
+        return fraction.applyDefaults();
+    }
 
-        final boolean enabled = ( System.getProperty( SwarmProperties.HTTP_EAGER ) != null );
+    @PostConstruct
+    public UndertowFraction applyDefaults() {
+        final boolean enabled = (System.getProperty(SwarmProperties.HTTP_EAGER) != null);
 
-        fraction.server(
-                new Server("default-server")
-                        .httpListener("default", (listener) -> {
-                            listener.socketBinding("http")
-                                    .enabled(enabled);
-                        })
-                        .host(new Host("default-host")))
+        server(new Server("default-server")
+                .httpListener("default", (listener) -> {
+                    listener.socketBinding("http")
+                            .enabled(enabled);
+                })
+                .host(new Host("default-host")))
                 .bufferCache(new BufferCache("default"))
                 .servletContainer(new ServletContainer("default")
                         .websocketsSetting(new WebsocketsSetting())
                         .jspSetting(new JSPSetting()))
                 .handlerConfiguration(new HandlerConfiguration());
 
-        return fraction;
+        return this;
     }
 
     /**
@@ -164,6 +169,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return this;
     }
 
+    /*
     @Override
     public void initialize(Fraction.InitContext initContext) {
         initContext.socketBinding(
@@ -173,44 +179,22 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
                 new SocketBinding("https")
                         .port(SwarmProperties.propertyVar(SwarmProperties.HTTPS_PORT, "8443")));
     }
+    */
 
-    @Override
-    public void postInitialize(Fraction.PostInitContext initContext) {
-        if (this.keystorePassword != null & this.keystorePassword != null && this.alias != null) {
-            ManagementCoreService management = (ManagementCoreService) initContext.fraction("management");
-            if (management == null) {
-                throw new RuntimeException("HTTPS configured but org.wildfly.swarm:management not available");
-            }
+    public String keystorePassword() {
+        return this.keystorePassword;
+    }
 
-            List<Server> servers = subresources().servers();
+    public String keystorePath() {
+        return this.keystorePath;
+    }
 
-            for (Server server : servers) {
-                if (server.subresources().httpsListeners().isEmpty()) {
-                    server.httpsListener("default-https", (listener) -> {
-                        listener.securityRealm("SSLRealm");
-                        listener.socketBinding("https");
-                    });
-                }
-            }
+    public String alias() {
+        return this.alias;
+    }
 
-            management.securityRealm("SSLRealm", (realm) -> {
-                realm.sslServerIdentity((identity) -> {
-                    identity.keystorePath(this.keystorePath);
-                    identity.keystorePassword(this.keystorePassword);
-                    identity.alias(this.alias);
-                });
-            });
-        }
-
-        if (this.enableAJP) {
-            initContext.socketBinding(
-                new SocketBinding("ajp")
-                    .port(SwarmProperties.propertyVar(SwarmProperties.AJP_PORT, "8009")));
-
-            subresources().servers().stream()
-                    .filter(server -> server.subresources().ajpListeners().isEmpty())
-                    .forEach(server -> server.ajpListener("ajp", listener -> listener.socketBinding("ajp")));
-        }
+    public boolean isEnableAJP() {
+        return this.enableAJP;
     }
 
     /**
@@ -235,7 +219,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
 
     private UndertowFraction removeHttpListenersFromDefaultServer() {
         this.subresources().server("default-server")
-            .subresources().httpListeners().clear();
+                .subresources().httpListeners().clear();
         return this;
     }
 

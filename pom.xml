@@ -1100,7 +1100,7 @@
     <!--<module>topology-openshift</module>-->
     <!--<module>topology-webapp</module>-->
     <!--<module>transactions</module>-->
-    <!--<module>undertow</module>-->
+    <module>undertow</module>
     <!--<module>undertow-js</module>-->
     <!--<module>vertx</module>-->
     <!--<module>webservices</module>-->
