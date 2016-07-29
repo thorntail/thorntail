@@ -20,12 +20,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Qualifier;
+
 /** Provides for simple runtime configuration of a Fraction.
  *
  * @author Bob McWhirter
  */
+@Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface ExtensionClassName {
-    String value();
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
+public @interface WildFlyExtension {
+    @Nonbinding String module() default "";
+    @Nonbinding String classname() default "";
 }
