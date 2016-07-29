@@ -9,8 +9,6 @@ import javax.inject.Inject;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.undertow.Server;
-import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.undertow.UndertowFraction;
 
 /**
  * @author Bob McWhirter
@@ -29,7 +27,6 @@ public class HTTPSCustomizer {
     }
 
     public void customize() {
-        /*
         if ( ! this.managementCoreService.isUnsatisfied() ) {
             if (this.fraction.keystorePassword() != null & this.fraction.keystorePassword() != null && this.fraction.alias() != null) {
                 ManagementCoreService management = this.managementCoreService.get();
@@ -57,7 +54,6 @@ public class HTTPSCustomizer {
                 });
             }
         }
-        */
     }
 
 }

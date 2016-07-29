@@ -13,7 +13,6 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 public class SocketBindingsProducer {
 
     public SocketBindingsProducer() {
-        System.err.println( "construct socket bindings producer for undertow" );
     }
 
     @Produces

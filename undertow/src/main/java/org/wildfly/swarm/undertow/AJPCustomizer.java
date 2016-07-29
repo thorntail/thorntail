@@ -1,20 +1,13 @@
 package org.wildfly.swarm.undertow;
 
-import java.util.List;
-
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.wildfly.swarm.config.ManagementCoreService;
-import org.wildfly.swarm.config.undertow.Server;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.undertow.UndertowFraction;
 
 /**
  * @author Bob McWhirter
@@ -26,12 +19,10 @@ public class AJPCustomizer implements Customizer {
     private UndertowFraction fraction;
 
     public AJPCustomizer() {
-        System.err.println( "construct AJPCustomizer" );
     }
 
-    @Produces @Dependent @ApplicationScoped
+    @Produces @Dependent
     public SocketBinding ajpSocketBinding() {
-        System.err.println( "--------------------- produce the AJP socket binding" );
         if (this.fraction.isEnableAJP()) {
             return new SocketBinding("ajp")
                     .port(SwarmProperties.propertyVar(SwarmProperties.AJP_PORT, "8009"));

@@ -163,7 +163,7 @@ public class RuntimeServer implements Server {
             System.err.println( "### apply customizer: " + each );
         }
 
-        System.err.println( this.socketBindings.isAmbiguous() + " // " + this.socketBindings.isUnsatisfied() );
+        System.err.println( " --> " + SocketBinding.class.getClassLoader() );
 
         for ( SocketBinding each : this.socketBindings ) {
             System.err.println( "### socket binding: " + each );
