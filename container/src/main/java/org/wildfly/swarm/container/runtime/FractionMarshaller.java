@@ -1,6 +1,7 @@
 package org.wildfly.swarm.container.runtime;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -46,25 +47,26 @@ public class FractionMarshaller {
 
     protected void marshalExtensions(List<ModelNode> list) {
         for (Fraction each : this.extensionFractions) {
-            System.err.println("EACH EXTENSION: " + each);
             WildFlyExtension anno = each.getClass().getAnnotation(WildFlyExtension.class);
-            System.err.println("extension module: " + anno.module());
 
+            if (anno.module() != null && !anno.module().equals("")) {
+                ModelNode node = new ModelNode();
+                node.get(OP_ADDR).set(EXTENSION, anno.module());
+                node.get(OP).set(ADD);
+                list.add(node);
+            }
 
-            ModelNode node = new ModelNode();
-            node.get(OP_ADDR).set(EXTENSION, anno.module());
-            node.get(OP).set(ADD);
-
-            list.add(node);
         }
     }
 
     protected void marshalDMR(List<ModelNode> list) {
-        Marshaller marshaller = new Marshaller();
         for (Fraction each : this.marshallableFractions) {
             System.err.println("EACH MARSHALL: " + each);
             try {
-                list.addAll(marshaller.marshal(each));
+                Marshaller marshaller = new Marshaller();
+                LinkedList<ModelNode> subList = marshaller.marshal(each);
+                System.err.println( subList );
+                list.addAll(subList);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -38,5 +38,6 @@
     <module name="org.jboss.weld.se" slot="3"/>
     <module name="javax.enterprise.api" slot="cdi2"/>
     <module name="javax.inject.api"/>
+    <module name="javax.annotation.api" export="true"/>
   </dependencies>
 </module>

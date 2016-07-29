@@ -36,8 +36,12 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 public class IOFraction extends IO<IOFraction> implements Fraction {
 
     @PostConstruct
-    public void init() {
-        this.worker(new Worker("default"))
+    public void postConstruct() {
+        applyDefaults();
+    }
+
+    public IOFraction applyDefaults() {
+        return worker(new Worker("default"))
                 .bufferPool(new BufferPool("default"));
     }
 }

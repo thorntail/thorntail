@@ -53,6 +53,10 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
+
     public UndertowFraction applyDefaults() {
         final boolean enabled = (System.getProperty(SwarmProperties.HTTP_EAGER) != null);
 
