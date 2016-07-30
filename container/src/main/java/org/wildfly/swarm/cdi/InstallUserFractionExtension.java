@@ -35,9 +35,14 @@ public class InstallUserFractionExtension implements Extension {
                     .scope(Singleton.class)
                     .produceWith(() -> fraction);
 
-            for(Annotation annotation: fraction.getClass().getAnnotations()) {
-                configurator.qualifiers(annotation);
+            Annotation[] qualifiers = new Annotation[fraction.getClass().getAnnotations().length - 1];
+            int index = 0;
+            for (Annotation annotation : fraction.getClass().getAnnotations()) {
+                if (!annotation.annotationType().equals(DefaultFraction.class)) {
+                    qualifiers[index++] = annotation;
+                }
             }
+            configurator.qualifiers(qualifiers);
         }
     }
 }
