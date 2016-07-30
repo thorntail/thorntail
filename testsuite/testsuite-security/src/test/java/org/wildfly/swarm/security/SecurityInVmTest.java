@@ -15,18 +15,27 @@
  */
 package org.wildfly.swarm.security;
 
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.adapter.InVM;
 import org.wildfly.swarm.container.Container;
 
 /**
  * @author Bob McWhirter
  */
+@InVM
+@RunWith(Arquillian.class)
 public class SecurityInVmTest {
+
+    @CreateSwarm
+    public static Swarm newSwarm() throws Exception {
+        return new Swarm().fraction(new SecurityFraction());
+    }
 
     @Test
     public void testSimple() throws Exception {
-        Container container = new Container();
-        container.fraction(new SecurityFraction());
-        container.start().stop();
     }
 }

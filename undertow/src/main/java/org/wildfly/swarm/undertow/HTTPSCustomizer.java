@@ -16,25 +16,28 @@ import org.wildfly.swarm.config.undertow.Server;
 @ApplicationScoped
 public class HTTPSCustomizer {
 
-    @Inject @Any
-    private UndertowFraction fraction;
+    @Inject
+    @Any
+    private Instance<UndertowFraction> undertowInstance;
 
-    @Inject @Any
+    @Inject
+    @Any
     private Instance<ManagementCoreService> managementCoreService;
 
     public HTTPSCustomizer() {
-        System.err.println( "construct HTTPSCustomizer" );
+        System.err.println("construct HTTPSCustomizer");
     }
 
     public void customize() {
-        if ( ! this.managementCoreService.isUnsatisfied() ) {
-            if (this.fraction.keystorePassword() != null & this.fraction.keystorePassword() != null && this.fraction.alias() != null) {
+        if (!this.managementCoreService.isUnsatisfied()) {
+            UndertowFraction fraction = undertowInstance.get();
+            if (fraction.keystorePassword() != null & fraction.keystorePassword() != null && fraction.alias() != null) {
                 ManagementCoreService management = this.managementCoreService.get();
                 if (management == null) {
                     throw new RuntimeException("HTTPS configured but org.wildfly.swarm:management not available");
                 }
 
-                List<Server> servers = this.fraction.subresources().servers();
+                List<Server> servers = fraction.subresources().servers();
 
                 for (Server server : servers) {
                     if (server.subresources().httpsListeners().isEmpty()) {
@@ -47,9 +50,9 @@ public class HTTPSCustomizer {
 
                 management.securityRealm("SSLRealm", (realm) -> {
                     realm.sslServerIdentity((identity) -> {
-                        identity.keystorePath(this.fraction.keystorePath());
-                        identity.keystorePassword(this.fraction.keystorePassword());
-                        identity.alias(this.fraction.alias());
+                        identity.keystorePath(fraction.keystorePath());
+                        identity.keystorePassword(fraction.keystorePassword());
+                        identity.alias(fraction.alias());
                     });
                 });
             }

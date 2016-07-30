@@ -27,8 +27,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class NamingArquillianTest implements ContainerFactory {
+public class NamingArquillianTest {
 
     @Deployment
     public static Archive createDeployment() {
@@ -46,9 +46,9 @@ public class NamingArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new NamingFraction());
+    @CreateSwarm
+    public static Swarm newSwarm() throws Exception {
+        return new Swarm().fraction(new NamingFraction());
     }
 
     @ArquillianResource
@@ -57,7 +57,7 @@ public class NamingArquillianTest implements ContainerFactory {
     @Test
     public void testNaming() throws InterruptedException, NamingException {
         Context jbossContext = (Context) initialContext.lookup("java:jboss");
-        assertNotNull( jbossContext );
+        assertNotNull(jbossContext);
     }
 
 }

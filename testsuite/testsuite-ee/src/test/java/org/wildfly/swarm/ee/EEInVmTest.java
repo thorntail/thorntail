@@ -15,18 +15,28 @@
  */
 package org.wildfly.swarm.ee;
 
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
-import org.wildfly.swarm.container.Container;
+import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.adapter.InVM;
 
 /**
  * @author Bob McWhirter
  */
+@InVM
+@RunWith(Arquillian.class)
 public class EEInVmTest {
+
+    @CreateSwarm
+    public static Swarm newSwarm() throws Exception {
+        EEFraction fraction = new EEFraction();
+        fraction.applyDefaults();
+        return new Swarm().fraction(fraction);
+    }
 
     @Test
     public void testSimple() throws Exception {
-        Container container = new Container();
-        container.fraction(new EEFraction());
-        container.start().stop();
     }
 }

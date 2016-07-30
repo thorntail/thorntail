@@ -31,9 +31,7 @@ public class IOInVmTest {
 
     @CreateSwarm
     public static Swarm newSwarm() throws Exception {
-        IOFraction fraction = new IOFraction();
-        fraction.applyDefaults();
-        return new Swarm().fraction(fraction);
+        return new Swarm().fraction(new IOFraction().applyDefaults());
     }
 
     @Test

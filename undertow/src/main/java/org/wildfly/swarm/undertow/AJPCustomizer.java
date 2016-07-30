@@ -1,9 +1,8 @@
 package org.wildfly.swarm.undertow;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -20,7 +19,7 @@ public class AJPCustomizer implements Customizer {
 
     @Inject
     @Any
-    private UndertowFraction fraction;
+    private Instance<UndertowFraction> undertowInstance;
 
     @Inject
     @Named("standard-sockets")
@@ -34,13 +33,14 @@ public class AJPCustomizer implements Customizer {
     }
 
     public void customize() {
-        if (this.fraction.isEnableAJP()) {
-            this.fraction.subresources().servers().stream()
+        UndertowFraction fraction = undertowInstance.get();
+        if (fraction.isEnableAJP()) {
+            fraction.subresources().servers().stream()
                     .filter(server -> server.subresources().ajpListeners().isEmpty())
                     .forEach(server -> server.ajpListener("ajp", listener -> listener.socketBinding("ajp")));
 
             this.group.socketBinding(new SocketBinding("ajp")
-                    .port(SwarmProperties.propertyVar(SwarmProperties.AJP_PORT, "8009")));
+                                             .port(SwarmProperties.propertyVar(SwarmProperties.AJP_PORT, "8009")));
         }
     }
 

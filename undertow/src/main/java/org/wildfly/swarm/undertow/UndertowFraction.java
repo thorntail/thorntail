@@ -16,6 +16,7 @@
 package org.wildfly.swarm.undertow;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.undertow.BufferCache;
@@ -25,28 +26,26 @@ import org.wildfly.swarm.config.undertow.ServletContainer;
 import org.wildfly.swarm.config.undertow.server.Host;
 import org.wildfly.swarm.config.undertow.servlet_container.JSPSetting;
 import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
+@DefaultFraction
 @MarshalDMR
-@WildFlyExtension(module="org.wildfly.extension.undertow")
+@WildFlyExtension(module = "org.wildfly.extension.undertow")
+@Singleton
 public class UndertowFraction extends Undertow<UndertowFraction> implements Fraction {
-
-    public UndertowFraction() {
-    }
 
     /**
      * Create the default, HTTP-only fraction.
      *
      * @return The configured fraction.
      */
-    @Default
     public static UndertowFraction createDefaultFraction() {
         UndertowFraction fraction = new UndertowFraction();
         return fraction.applyDefaults();
@@ -61,15 +60,15 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         final boolean enabled = (System.getProperty(SwarmProperties.HTTP_EAGER) != null);
 
         server(new Server("default-server")
-                .httpListener("default", (listener) -> {
-                    listener.socketBinding("http")
-                            .enabled(enabled);
-                })
-                .host(new Host("default-host")))
+                       .httpListener("default", (listener) -> {
+                           listener.socketBinding("http")
+                                   .enabled(enabled);
+                       })
+                       .host(new Host("default-host")))
                 .bufferCache(new BufferCache("default"))
                 .servletContainer(new ServletContainer("default")
-                        .websocketsSetting(new WebsocketsSetting())
-                        .jspSetting(new JSPSetting()))
+                                          .websocketsSetting(new WebsocketsSetting())
+                                          .jspSetting(new JSPSetting()))
                 .handlerConfiguration(new HandlerConfiguration());
 
         return this;

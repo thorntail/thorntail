@@ -1106,7 +1106,7 @@
     <!--<module>webservices</module>-->
 
     <!--<module>integration-tests</module>-->
-    <module>testsuite/testsuite-io</module>
+    <module>testsuite</module>
 
     <module>fraction-list</module>
     <module>plugin</module>
