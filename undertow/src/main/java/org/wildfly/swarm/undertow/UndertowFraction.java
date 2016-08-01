@@ -192,27 +192,27 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return this;
     }
 
-    public UndertowFraction httpPort(Integer httpPort) {
+    public UndertowFraction httpPort(int httpPort) {
         this.httpPort = httpPort;
         return this;
     }
 
-    public Integer httpPort() {
+    public int httpPort() {
         return this.httpPort;
     }
 
-    public UndertowFraction httpsPort(Integer httpsPort) {
+    public UndertowFraction httpsPort(int httpsPort) {
         this.httpsPort = httpsPort;
         return this;
     }
 
-    public Integer httpsPort() {
+    public int httpsPort() {
         return this.httpsPort;
     }
 
-    private Integer httpPort = 8080;
+    private int httpPort = 8080;
 
-    private Integer httpsPort = 8443;
+    private int httpsPort = 8443;
 
     /**
      * Path to the keystore.
