@@ -42,7 +42,7 @@ public class UndertowArquillianTest {
 
     @CreateSwarm
     public static Swarm newSwarm() throws Exception {
-        return new Swarm().fraction(new UndertowFraction());
+        return new Swarm().fraction(UndertowFraction.createDefaultFraction());
     }
 
     @Test

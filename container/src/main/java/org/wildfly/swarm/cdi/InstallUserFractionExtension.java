@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
@@ -56,13 +57,13 @@ public class InstallUserFractionExtension implements Extension {
      *
      * @param abd AfterBeanDiscovery
      */
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
         for (Fraction fraction : userFractions.values()) {
             BeanConfigurator<Object> configurator = abd.addBean()
                     .addType(fraction.getClass())
                     .addType(Fraction.class)
                     .scope(Singleton.class)
-                    .produceWith(() -> fraction);
+                    .produceWith(() -> fraction );
 
             configurator.qualifiers(
                     Arrays.asList(fraction.getClass().getAnnotations())
