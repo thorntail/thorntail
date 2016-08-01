@@ -31,6 +31,5 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface ConfigurationValue {
-    @Nonbinding String property() default "";
-    @Nonbinding String defaultValue() default "";
+    @Nonbinding String value() default "";
 }
