@@ -83,6 +83,9 @@ public class StageConfig {
         public T getValue() {
 
             String valueStr = stage.getProperties().get(key);
+            if ( valueStr == null ) {
+                valueStr = System.getProperty(key);
+            }
             T value = convert(valueStr);
 
             if(null==value)
@@ -102,7 +105,15 @@ public class StageConfig {
 
             if (value == null)
             {
-                return defaultValue!=null ? defaultValue : null;
+                if ( defaultValue != null ) {
+                    if ( defaultValue instanceof String ) {
+                        value = (String) defaultValue;
+                    } else {
+                        return defaultValue;
+                    }
+                } else {
+                    return null;
+                }
             }
 
             Object result = null;
