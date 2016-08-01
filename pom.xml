@@ -1094,7 +1094,7 @@
     <!--<module>spring</module>-->
     <!--<module>swagger</module>-->
     <!--<module>swagger-webapp</module>-->
-    <!--<module>topology</module>-->
+    <module>topology</module>
     <!--<module>topology-consul</module>-->
     <!--<module>topology-jgroups</module>-->
     <!--<module>topology-openshift</module>-->

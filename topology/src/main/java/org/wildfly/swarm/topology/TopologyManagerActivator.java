@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.runtime;
+package org.wildfly.swarm.topology;
+
+import javax.inject.Singleton;
 
 import org.jboss.as.naming.ImmediateManagedReferenceFactory;
 import org.jboss.as.naming.ServiceBasedNamingStore;
@@ -26,11 +28,11 @@ import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
-import org.wildfly.swarm.topology.Topology;
 
 /**
  * @author Bob McWhirter
  */
+@Singleton
 public class TopologyManagerActivator implements ServiceActivator {
 
     @Override

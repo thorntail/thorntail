@@ -240,6 +240,7 @@ public class RuntimeServer implements Server {
         */
 
         this.serviceActivators.forEach( (activator)->{
+            System.err.println( "######## service activator: " + activator );
             activators.add( activator );
         });
 

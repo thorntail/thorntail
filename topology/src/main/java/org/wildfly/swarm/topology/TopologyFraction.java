@@ -15,11 +15,18 @@
  */
 package org.wildfly.swarm.topology;
 
+import javax.inject.Singleton;
+
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Bob McWhirter
  */
+@Singleton
+@DefaultFraction
+@DeploymentModule(name="org.wildfly.swarm.topology")
 public class TopologyFraction implements Fraction {
 
 }
