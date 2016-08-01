@@ -13,69 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime;
+package org.wildfly.swarm.container.runtime.internal.marshal;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.config.runtime.ModelNodeBinding;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
-import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 
 /**
  * @author Bob McWhirter
  */
 @ApplicationScoped
-public class FractionMarshaller {
-
-    @Inject
-    @WildFlyExtension
-    private Instance<Fraction> extensionFractions;
+public class SubsystemMarshaller implements ConfigurationMarshaller {
 
     @Inject
     @MarshalDMR
-    private Instance<Fraction> marshallableFractions;
+    private Instance<Fraction> fractions;
 
 
     public List<ModelNode> marshal() {
         List<ModelNode> list = new ArrayList<>();
-
-        marshalExtensions(list);
-        marshalDMR(list);
-
-        return list;
-    }
-
-    protected void marshalExtensions(List<ModelNode> list) {
-        for (Fraction each : this.extensionFractions) {
-            WildFlyExtension anno = each.getClass().getAnnotation(WildFlyExtension.class);
-
-            if (anno.module() != null && !anno.module().equals("")) {
-                ModelNode node = new ModelNode();
-                node.get(OP_ADDR).set(EXTENSION, anno.module());
-                node.get(OP).set(ADD);
-                list.add(node);
-            }
-
-        }
-    }
-
-    protected void marshalDMR(List<ModelNode> list) {
-        for (Fraction each : this.marshallableFractions) {
+        for (Fraction each : this.fractions) {
             try {
                 Marshaller marshaller = new Marshaller();
                 LinkedList<ModelNode> subList = marshaller.marshal(each);
@@ -84,5 +50,6 @@ public class FractionMarshaller {
                 e.printStackTrace();
             }
         }
+        return list;
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime;
+package org.wildfly.swarm.container.runtime.internal.marshal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,16 +42,15 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.POR
 /**
  * @author Bob McWhirter
  */
-public class SocketBindingGroupMarshaller {
+public class SocketBindingGroupMarshaller implements ConfigurationMarshaller {
 
     @Inject
     @Any
     private Instance<SocketBindingGroup> socketBindingGroups;
 
-    public List<ModelNode> marshall() {
+    public List<ModelNode> marshal() {
         List<ModelNode> list = new ArrayList<>();
         for (SocketBindingGroup group : this.socketBindingGroups) {
-            System.err.println("CONFIGURE SOCKET BINDING GROUP: " + group);
             PathAddress address = PathAddress.pathAddress("socket-binding-group", group.name());
             ModelNode node = new ModelNode();
             node.get(OP).set(ADD);
@@ -61,12 +60,10 @@ public class SocketBindingGroupMarshaller {
             list.add(node);
 
             for (SocketBinding binding : group.socketBindings()) {
-                System.err.println("CONFIGURE SOCKET BINDING: " + binding);
                 configureSocketBinding(address, binding, list);
             }
 
             for (OutboundSocketBinding binding : group.outboundSocketBindings()) {
-                System.err.println("CONFIGURE OUTBOUND SOCKET BINDING: " + binding);
                 configureSocketBinding(address, binding, list);
             }
         }

@@ -67,6 +67,10 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
+import org.wildfly.swarm.container.runtime.internal.marshal.DMRMarshaller;
+import org.wildfly.swarm.container.runtime.internal.marshal.SubsystemMarshaller;
+import org.wildfly.swarm.container.runtime.internal.marshal.InterfaceMarshaller;
+import org.wildfly.swarm.container.runtime.internal.marshal.SocketBindingGroupMarshaller;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -116,14 +120,7 @@ public class RuntimeServer implements Server {
     private Instance<ServiceActivator> serviceActivators;
 
     @Inject
-    private FractionMarshaller fractionMarshaller;
-
-    @Inject
-    private SocketBindingGroupMarshaller socketBindingGroupMarshaller;
-
-    @Inject
-    private InterfaceMarshaller interfaceMarshaller;
-
+    private DMRMarshaller dmrMarshaller;
 
     //TODO This doesn't seem right at moment
 //    @Inject
@@ -181,9 +178,7 @@ public class RuntimeServer implements Server {
         //if (!xmlConfig.isPresent())
 //        applySocketBindingGroupDefaults(config);
 
-        List<ModelNode> bootstrapOperations = this.fractionMarshaller.marshal();
-        bootstrapOperations.addAll( this.socketBindingGroupMarshaller.marshall() );
-        bootstrapOperations.addAll( this.interfaceMarshaller.marshall() );
+        List<ModelNode> bootstrapOperations = this.dmrMarshaller.marshal();
 
         System.err.println( "BOOTSTRAP: " + bootstrapOperations );
 
