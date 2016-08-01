@@ -98,7 +98,7 @@ public class ConfigurationValueProducer {
     private String getName(InjectionPoint injectionPoint) {
         for (Annotation qualifier : injectionPoint.getQualifiers()) {
             if (qualifier.annotationType().equals(ConfigurationValue.class)) {
-                return ((ConfigurationValue) qualifier).value();
+                return ((ConfigurationValue) qualifier).property();
             }
         }
         return null;

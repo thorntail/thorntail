@@ -71,7 +71,7 @@
     <module>testsuite-datasources</module>
     <!--<module>testsuite-drools-server</module>-->
     <module>testsuite-ee</module>
-    <!--<module>testsuite-ejb</module>-->
+    <module>testsuite-ejb</module>
     <!--<module>testsuite-ejb-remote</module>-->
     <!--<module>testsuite-hystrix</module>-->
     <!--<module>testsuite-infinispan</module>-->

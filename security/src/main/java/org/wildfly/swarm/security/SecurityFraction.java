@@ -18,7 +18,6 @@ package org.wildfly.swarm.security;
 import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Security;

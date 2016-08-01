@@ -18,6 +18,9 @@ package org.wildfly.swarm.ejb;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
+
 import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.ejb3.AsyncService;
 import org.wildfly.swarm.config.ejb3.Cache;
@@ -25,34 +28,37 @@ import org.wildfly.swarm.config.ejb3.StrictMaxBeanInstancePool;
 import org.wildfly.swarm.config.ejb3.ThreadPool;
 import org.wildfly.swarm.config.ejb3.TimerService;
 import org.wildfly.swarm.config.ejb3.service.FileDataStore;
-import org.wildfly.swarm.config.security.Flag;
-import org.wildfly.swarm.config.security.SecurityDomain;
-import org.wildfly.swarm.config.security.security_domain.ClassicAuthorization;
-import org.wildfly.swarm.config.security.security_domain.authorization.PolicyModule;
-import org.wildfly.swarm.security.SecurityFraction;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Ken Finnigan
  * @author Lance Ball
  */
-@ExtensionModule("org.jboss.as.ejb3")
+@WildFlyExtension(module = "org.jboss.as.ejb3")
 @MarshalDMR
+@Singleton
+@DefaultFraction
 public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
 
-    @Default
-    public static EJBFraction createDefaultFraction() {
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
 
+    public static EJBFraction createDefaultFraction() {
+        return new EJBFraction().applyDefaults();
+    }
+
+    public EJBFraction applyDefaults() {
         Map<Object, Object> threadPoolSettings = new HashMap<>();
         threadPoolSettings.put("time", "100");
         threadPoolSettings.put("unit", "MILLISECONDS");
 
-        EJBFraction fraction = new EJBFraction();
-        fraction.defaultStatefulBeanAccessTimeout(5000L)
+        defaultStatefulBeanAccessTimeout(5000L)
                 .defaultSingletonBeanAccessTimeout(5000L)
                 .defaultSfsbCache("simple")
                 .defaultSecurityDomain("other")
@@ -79,24 +85,7 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction {
                                     .maxThreads(10)
                                     .keepaliveTime(threadPoolSettings));
 
-        return fraction;
-
+        return this;
     }
 
-    @Override
-    public void postInitialize(Fraction.PostInitContext initContext) {
-        SecurityFraction security = (SecurityFraction) initContext.fraction("security");
-
-        if (security != null) {
-            SecurityDomain ejbPolicy = security.subresources().securityDomains().stream().filter((e) -> e.getKey().equals("jboss-ejb-policy")).findFirst().orElse(null);
-            if (ejbPolicy == null) {
-                ejbPolicy = new SecurityDomain("jboss-ejb-policy")
-                        .classicAuthorization(new ClassicAuthorization()
-                                                      .policyModule(new PolicyModule("default")
-                                                                            .code("Delegating")
-                                                                            .flag(Flag.REQUIRED)));
-                security.securityDomain(ejbPolicy);
-            }
-        }
-    }
 }
