@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.wildfly.swarm.spi.api.Customizer;
+import org.wildfly.swarm.spi.api.Pre;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.SwarmProperties;
@@ -14,6 +15,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 /**
  * @author Bob McWhirter
  */
+@Pre
 @ApplicationScoped
 public class AJPCustomizer implements Customizer {
 

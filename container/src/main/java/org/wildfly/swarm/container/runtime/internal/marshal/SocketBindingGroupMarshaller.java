@@ -18,6 +18,7 @@ package org.wildfly.swarm.container.runtime.internal.marshal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -42,6 +43,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.POR
 /**
  * @author Bob McWhirter
  */
+@ApplicationScoped
 public class SocketBindingGroupMarshaller implements ConfigurationMarshaller {
 
     @Inject

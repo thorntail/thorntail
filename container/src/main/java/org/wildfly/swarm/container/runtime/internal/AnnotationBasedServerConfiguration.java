@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.container.runtime.internal;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +53,7 @@ public class AnnotationBasedServerConfiguration implements ServerConfiguration {
     private List<Configurator> configurators = new ArrayList<>();
 
     private Class<? extends AbstractParserFactory> parserFactoryClass;
+
     private AbstractParserFactory parserFactory;
 
     private String defaultFractionMethodName;
@@ -95,16 +93,16 @@ public class AnnotationBasedServerConfiguration implements ServerConfiguration {
 
     @Override
     public void prepareArchive(Archive a) {
-        if ( this.deploymentModules != null ) {
+        if (this.deploymentModules != null) {
             for (String each : this.deploymentModules) {
                 int colonLoc = each.indexOf(':');
-                if ( colonLoc > 0 ) {
-                    String moduleName = each.substring(0, colonLoc );
-                    String moduleSlot = each.substring(colonLoc+1);
-                    a.as(JARArchive.class).addModule( moduleName, moduleSlot );
+                if (colonLoc > 0) {
+                    String moduleName = each.substring(0, colonLoc);
+                    String moduleSlot = each.substring(colonLoc + 1);
+                    a.as(JARArchive.class).addModule(moduleName, moduleSlot);
                 } else {
                     String moduleName = each;
-                    a.as(JARArchive.class).addModule( moduleName );
+                    a.as(JARArchive.class).addModule(moduleName);
                 }
             }
         }
@@ -137,7 +135,7 @@ public class AnnotationBasedServerConfiguration implements ServerConfiguration {
         if (this.parserFactoryClass != null) {
             return AbstractParserFactory.mapParserNamespaces(this.parserFactoryClass.newInstance());
         }
-        if ( this.parserFactory != null ) {
+        if (this.parserFactory != null) {
             return AbstractParserFactory.mapParserNamespaces(this.parserFactory);
         }
         return Optional.empty();
@@ -152,32 +150,5 @@ public class AnnotationBasedServerConfiguration implements ServerConfiguration {
         }
 
         return list;
-    }
-
-    public void defaultFraction(String defaultFractionMethodName) {
-        this.defaultFractionMethodName = defaultFractionMethodName;
-    }
-
-    @Override
-    public Fraction defaultFraction() {
-        Method[] methods = this.type.getMethods();
-        for (Method method : methods) {
-            if (method.getName().equals(this.defaultFractionMethodName) && Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 0 ) {
-                try {
-                    return (Fraction) method.invoke(null);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        try {
-            return this.type.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 }

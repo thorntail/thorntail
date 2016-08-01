@@ -68,13 +68,12 @@ import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.internal.marshal.DMRMarshaller;
-import org.wildfly.swarm.container.runtime.internal.marshal.SubsystemMarshaller;
-import org.wildfly.swarm.container.runtime.internal.marshal.InterfaceMarshaller;
-import org.wildfly.swarm.container.runtime.internal.marshal.SocketBindingGroupMarshaller;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.Post;
+import org.wildfly.swarm.spi.api.Pre;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
@@ -112,8 +111,12 @@ public class RuntimeServer implements Server {
     private Instance<Fraction> allFractions;
 
     @Inject
-    @Any
-    private Instance<Customizer> customizers;
+    @Pre
+    private Instance<Customizer> preCustomizers;
+
+    @Inject
+    @Post
+    private Instance<Customizer> postCustomizers;
 
     @Inject
     @Any
@@ -163,17 +166,14 @@ public class RuntimeServer implements Server {
 
         System.err.println( "-------------------------------" );
 
-        for (Customizer each : this.customizers) {
+        for (Customizer each : this.preCustomizers) {
             each.customize();
         }
 
+        for (Customizer each : this.postCustomizers) {
+            each.customize();
+        }
 
-
-//        applyDefaults(config);
-//
-//        for (Fraction fraction : config.fractions()) {
-//            fraction.postInitialize(config.createPostInitContext());
-//        }
 
         //if (!xmlConfig.isPresent())
 //        applySocketBindingGroupDefaults(config);
@@ -370,16 +370,6 @@ public class RuntimeServer implements Server {
         this.serviceContainer = null;
         this.client = null;
         this.deployer = null;
-    }
-
-    @Override
-    public Set<Class<? extends Fraction>> getFractionTypes() {
-        return this.configByFractionType.keySet();
-    }
-
-    @Override
-    public Fraction createDefaultFor(Class<? extends Fraction> fractionClazz) {
-        return this.configByFractionType.get(fractionClazz).defaultFraction();
     }
 
     private void applyInterfaceDefaults(Container config) {

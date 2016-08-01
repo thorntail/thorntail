@@ -7,12 +7,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.wildfly.swarm.spi.api.Customizer;
+import org.wildfly.swarm.spi.api.Pre;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 
 /**
  * @author Bob McWhirter
  */
+@Pre
 @ApplicationScoped
 public class TransactionsSocketBindingCustomizer implements Customizer {
 

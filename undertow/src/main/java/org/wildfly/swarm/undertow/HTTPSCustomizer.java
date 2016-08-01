@@ -9,12 +9,15 @@ import javax.inject.Inject;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.undertow.Server;
+import org.wildfly.swarm.spi.api.Customizer;
+import org.wildfly.swarm.spi.api.Pre;
 
 /**
  * @author Bob McWhirter
  */
+@Pre
 @ApplicationScoped
-public class HTTPSCustomizer {
+public class HTTPSCustomizer implements Customizer {
 
     @Inject
     @Any

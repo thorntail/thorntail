@@ -34,8 +34,4 @@ public interface Server {
 
     void setStageConfig(ProjectStage stageConfig);
 
-    Set<Class<? extends Fraction>> getFractionTypes();
-
-    Fraction createDefaultFor(Class<? extends Fraction> fractionClazz);
-
 }
