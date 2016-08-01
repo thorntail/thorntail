@@ -15,48 +15,40 @@
  */
 package org.wildfly.swarm.remoting;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.wildfly.swarm.config.Remoting;
-import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.remoting.EndpointConfiguration;
 import org.wildfly.swarm.config.remoting.HTTPConnector;
-import org.wildfly.swarm.config.undertow.Server;
-import org.wildfly.swarm.config.undertow.server.HTTPListener;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Ken Finnigan
  */
-@ExtensionModule("org.jboss.as.remoting")
+@ApplicationScoped
+@DefaultFraction
+@WildFlyExtension(module = "org.jboss.as.remoting")
 @MarshalDMR
 public class RemotingFraction extends Remoting<RemotingFraction> implements Fraction {
 
-    @Default
-    public static RemotingFraction defaultFraction() {
-        RemotingFraction fraction = new RemotingFraction();
-        fraction.endpointConfiguration(new EndpointConfiguration())
-                .httpConnector(new HTTPConnector("http-remoting-connector")
-                        .connectorRef("default") );
-        return fraction;
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
     }
 
-    @Override
-    public void postInitialize(PostInitContext initContext) {
-        System.setProperty(SwarmProperties.HTTP_EAGER, "true" );
-        Undertow undertow = (Undertow) initContext.fraction( "undertow" );
+    public static RemotingFraction defaultFraction() {
+        return new RemotingFraction().applyDefaults();
+    }
 
-        if ( undertow != null ) {
-            Server server = undertow.subresources().server("default-server");
-            if ( server != null ) {
-                HTTPListener listener = server.subresources().httpListener("default");
-                if ( listener != null ) {
-                    listener.enabled(true);
-                }
-            }
-        }
+    public RemotingFraction applyDefaults() {
+        endpointConfiguration(new EndpointConfiguration())
+                .httpConnector(new HTTPConnector("http-remoting-connector")
+                                       .connectorRef("default"));
 
+        return this;
     }
 }

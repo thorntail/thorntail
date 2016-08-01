@@ -1087,7 +1087,7 @@
     <!--<module>mod_cluster</module>-->
     <module>naming</module>
     <!--<module>netflix</module>-->
-    <!--<module>remoting</module>-->
+    <module>remoting</module>
     <module>request-controller</module>
     <!--<module>resource-adapters</module>-->
     <module>security</module>

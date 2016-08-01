@@ -15,18 +15,26 @@
  */
 package org.wildfly.swarm.remoting;
 
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
-import org.wildfly.swarm.container.Container;
+import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.adapter.InVM;
 
 /**
  * @author Ken Finnigan
  */
+@InVM
+@RunWith(Arquillian.class)
 public class RemotingInVmTest {
+
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(new RemotingFraction());
+    }
 
     @Test
     public void testSimple() throws Exception {
-        Container container = new Container();
-        container.fraction(new RemotingFraction());
-        container.start().stop();
     }
 }

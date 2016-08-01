@@ -99,7 +99,7 @@
     <!--<module>testsuite-monitor</module>-->
     <module>testsuite-msc</module>
     <module>testsuite-naming</module>
-    <!--<module>testsuite-remoting</module>-->
+    <module>testsuite-remoting</module>
     <module>testsuite-request-controller</module>
     <!--<module>testsuite-resource-adapters</module>-->
     <!--<module>testsuite-ribbon</module>-->
