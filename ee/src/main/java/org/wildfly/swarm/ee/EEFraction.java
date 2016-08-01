@@ -20,14 +20,12 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.wildfly.swarm.config.EE;
 import org.wildfly.swarm.config.ee.ContextService;
-import org.wildfly.swarm.config.ee.DefaultBindingsService;
 import org.wildfly.swarm.config.ee.DefaultBindingsServiceConsumer;
 import org.wildfly.swarm.config.ee.ManagedExecutorService;
 import org.wildfly.swarm.config.ee.ManagedScheduledExecutorService;
 import org.wildfly.swarm.config.ee.ManagedThreadFactory;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -50,12 +48,8 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
 
     public static final String DEFAULT_KEY = "default";
 
-    public EEFraction() {
-        System.err.println( "**** Construct EEFraction " + PostConstruct.class.getClassLoader());
-    }
-
     public static EEFraction createDefaultFraction() {
-        return createDefaultFraction( null );
+        return createDefaultFraction(null);
     }
 
     public static EEFraction createDefaultFraction(DefaultBindingsServiceConsumer config) {
@@ -68,7 +62,6 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
     }
 
     public EEFraction applyDefaults() {
-        System.err.println( "***** @PostConstruct EE" );
         return applyDefaults(null);
     }
 
@@ -99,8 +92,8 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
             bindings.managedExecutorService("java:jboss/ee/concurrency/executor/default");
             bindings.managedScheduledExecutorService("java:jboss/ee/concurrency/scheduler/default");
             bindings.managedThreadFactory("java:jboss/ee/concurrency/factory/default");
-            if( config != null ) {
-                config.accept( bindings );
+            if (config != null) {
+                config.accept(bindings);
             }
         });
 

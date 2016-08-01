@@ -18,6 +18,9 @@ package org.wildfly.swarm.jca;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.wildfly.swarm.config.JCA;
 import org.wildfly.swarm.config.jca.ArchiveValidation;
 import org.wildfly.swarm.config.jca.BeanValidation;
@@ -26,33 +29,38 @@ import org.wildfly.swarm.config.jca.CachedConnectionManager;
 import org.wildfly.swarm.config.jca.LongRunningThreads;
 import org.wildfly.swarm.config.jca.ShortRunningThreads;
 import org.wildfly.swarm.config.jca.Workmanager;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionClassName;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.jboss.as.connector")
-@ExtensionClassName("org.jboss.as.connector.subsystems.jca.JcaExtension")
+@ApplicationScoped
+@DefaultFraction
+@WildFlyExtension(module = "org.jboss.as.connector", classname = "org.jboss.as.connector.subsystems.jca.JcaExtension")
 @MarshalDMR
 public class JCAFraction extends JCA<JCAFraction> implements Fraction {
 
-    private JCAFraction() {
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
     }
 
-    @Default
     public static JCAFraction createDefaultFraction() {
+        return new JCAFraction().applyDefaults();
+    }
+
+    public JCAFraction applyDefaults() {
         Map<Object, Object> keepAlive = new HashMap<>();
         keepAlive.put("time", "10");
         keepAlive.put("unit", "SECONDS");
-        JCAFraction fraction = new JCAFraction();
-        fraction.archiveValidation(new ArchiveValidation()
-                                           .enabled(true)
-                                           .failOnError(true)
-                                           .failOnWarn(true))
+
+        archiveValidation(new ArchiveValidation()
+                                  .enabled(true)
+                                  .failOnError(true)
+                                  .failOnWarn(true))
                 .beanValidation(new BeanValidation()
                                         .enabled(true))
                 .workmanager(new Workmanager("default")
@@ -71,6 +79,7 @@ public class JCAFraction extends JCA<JCAFraction> implements Fraction {
                                           .workmanager("default")
                                           .name("default"))
                 .cachedConnectionManager(new CachedConnectionManager().install(true));
-        return fraction;
+
+        return this;
     }
 }

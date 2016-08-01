@@ -1047,7 +1047,7 @@
     <!--<module>camel</module>-->
     <!--<module>cdi</module>-->
     <!--<module>cdi-ext</module>-->
-    <!--<module>connector</module>-->
+    <module>connector</module>
     <!--<module>datasources</module>-->
     <!--<module>drools-server</module>-->
     <module>ee</module>
@@ -1064,7 +1064,7 @@
     <!--<module>jaxrs-jsonp</module>-->
     <!--<module>jaxrs-multipart</module>-->
     <!--<module>jaxrs-validator</module>-->
-    <!--<module>jca</module>-->
+    <module>jca</module>
     <!--<module>jdr</module>-->
     <!--<module>jgroups</module>-->
     <module>jgroups-module</module>
@@ -1099,7 +1099,7 @@
     <!--<module>topology-jgroups</module>-->
     <!--<module>topology-openshift</module>-->
     <!--<module>topology-webapp</module>-->
-    <!--<module>transactions</module>-->
+    <module>transactions</module>
     <module>undertow</module>
     <!--<module>undertow-js</module>-->
     <!--<module>vertx</module>-->

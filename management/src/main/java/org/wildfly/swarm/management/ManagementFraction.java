@@ -22,9 +22,6 @@ import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**

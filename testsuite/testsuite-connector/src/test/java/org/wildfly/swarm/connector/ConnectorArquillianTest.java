@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.connector;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -25,15 +23,15 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class ConnectorArquillianTest implements ContainerFactory {
+public class ConnectorArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -42,9 +40,9 @@ public class ConnectorArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new ConnectorFraction());
+    @CreateSwarm
+    public static Swarm newSwarm() throws Exception {
+        return new Swarm().fraction(new ConnectorFraction());
     }
 
     @Test
