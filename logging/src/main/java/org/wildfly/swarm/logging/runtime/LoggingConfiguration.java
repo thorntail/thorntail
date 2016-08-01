@@ -27,7 +27,6 @@ import org.wildfly.swarm.bootstrap.logging.InitialLoggerManager;
 import org.wildfly.swarm.bootstrap.logging.LevelNode;
 import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.logging.LoggingFraction;
-import org.wildfly.swarm.logging.LoggingProperties;
 import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
 import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
 
@@ -44,30 +43,7 @@ public class LoggingConfiguration extends MarshallingServerConfiguration<Logging
     }
 
     @Override
-    public LoggingFraction defaultFraction() {
-        String prop = System.getProperty(LoggingProperties.LOGGING);
-        if (prop != null) {
-            prop = prop.trim().toUpperCase();
-
-            Level level;
-            try {
-                level = Level.valueOf(prop);
-            } catch (IllegalArgumentException e) {
-                return LoggingFraction.createDefaultLoggingFraction();
-            }
-
-            return LoggingFraction.createDefaultLoggingFraction(level);
-        }
-
-        return LoggingFraction.createDefaultLoggingFraction();
-    }
-
-    @Override
     public List<ModelNode> getList(LoggingFraction fraction) throws Exception {
-        if (fraction == null) {
-            fraction = defaultFraction();
-        }
-
         LevelNode root = InitialLoggerManager.INSTANCE.getRoot();
 
         apply(root, fraction);

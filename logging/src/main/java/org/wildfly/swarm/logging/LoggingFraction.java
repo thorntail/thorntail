@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.wildfly.swarm.config.Logging;
@@ -52,6 +53,31 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
 
     public static final String COLOR_PATTERN = "COLOR_PATTERN";
 
+
+    @PostConstruct
+    public void postConstruct() {
+        Level level = Level.INFO;
+
+        String prop = System.getProperty(LoggingProperties.LOGGING);
+        if (prop != null) {
+            prop = prop.trim().toUpperCase();
+            try {
+                level = Level.valueOf(prop);
+            } catch (IllegalArgumentException e) {
+                // Go with default of Level.INFO
+            }
+        }
+
+        applyDefaults(level);
+    }
+
+    public LoggingFraction applyDefaults(Level level) {
+        defaultColorFormatter()
+                .consoleHandler(level, COLOR_PATTERN)
+                .rootLogger(level, CONSOLE);
+
+        return this;
+    }
 
     /**
      * Create a default TRACE logging fraction.
@@ -95,10 +121,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return The fully-configured fraction.
      */
     public static LoggingFraction createDefaultLoggingFraction(Level level) {
-        return new LoggingFraction()
-                .defaultColorFormatter()
-                .consoleHandler(level, COLOR_PATTERN)
-                .rootLogger(level, CONSOLE);
+        return new LoggingFraction().applyDefaults(level);
     }
 
     // ------- FORMATTERS ---------
