@@ -55,15 +55,6 @@ public abstract class AbstractServerConfiguration<T extends Fraction> implements
         return this.type;
     }
 
-    @Override
-    public T defaultFraction() {
-        try {
-            return getType().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     protected DeploymentSpec deployment(String gav) {
         DeploymentSpec spec = new DeploymentSpec(gav);
         this.deployments.add(spec);

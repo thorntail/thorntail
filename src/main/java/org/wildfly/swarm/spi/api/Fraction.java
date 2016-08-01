@@ -39,12 +39,4 @@ public interface Fraction {
     interface PostInitContext extends InitContext {
     }
 
-    default void initialize(InitContext initContext) {
-        // Do Nothing
-    }
-
-    default void postInitialize(PostInitContext initContext) {
-        // Do Nothing
-    }
-
 }

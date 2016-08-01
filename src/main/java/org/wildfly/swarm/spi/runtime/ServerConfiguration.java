@@ -37,8 +37,6 @@ public interface ServerConfiguration<T extends Fraction> {
 
     Class<T> getType();
 
-    T defaultFraction();
-
     default List<ServiceActivator> getServiceActivators(T fraction) {
         return Collections.emptyList();
     }
