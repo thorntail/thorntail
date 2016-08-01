@@ -13,7 +13,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
  * @author Bob McWhirter
  */
 @ApplicationScoped
-public class SocketBindingsProducer implements Customizer {
+public class UndertowSocketBindingsCustomizer implements Customizer {
 
     @Inject
     @Named("standard-sockets")
