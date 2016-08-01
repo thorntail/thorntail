@@ -17,6 +17,7 @@ package org.wildfly.swarm.io;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.IO;
 import org.wildfly.swarm.config.io.BufferPool;
@@ -29,7 +30,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 @WildFlyExtension(module="org.wildfly.extension.io")
 @MarshalDMR

@@ -30,6 +30,7 @@ public class BootModuleLoader extends ModuleLoader {
                 new BootstrapClasspathModuleFinder(),
                 new BootstrapModuleFinder(),
                 new ClasspathModuleFinder(),
+                new ContainerModuleFinder(),
                 new ApplicationModuleFinder(),
                 new FlattishApplicationModuleFinder(),
         });

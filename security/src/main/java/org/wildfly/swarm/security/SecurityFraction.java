@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Security;
 import org.wildfly.swarm.config.security.Flag;
@@ -33,7 +34,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.security")
 @MarshalDMR
@@ -44,6 +45,10 @@ public class SecurityFraction extends Security<SecurityFraction> implements Frac
     }
 
     @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
+
     public SecurityFraction applyDefaults() {
         return securityDomain(new SecurityDomain("other")
                 .classicAuthentication(new ClassicAuthentication()

@@ -106,7 +106,10 @@ public class WildFlySwarmApplicationConf {
                 line = line.trim();
                 if (!line.isEmpty()) {
                     Entry entry = null;
-                    if (line.startsWith("module:")) {
+                    if (line.startsWith("fraction-module:")) {
+                        line = line.substring(16).trim();
+                        entry = new FractionModuleEntry(line);
+                    } else if (line.startsWith("module:")) {
                         line = line.substring(7).trim();
                         entry = new ModuleEntry(line);
                     } else if (line.startsWith("gav:")) {
@@ -197,6 +200,81 @@ public class WildFlySwarmApplicationConf {
             return this.name.hashCode() + this.slot.hashCode();
         }
 
+        public String toString() {
+            return "module: " + this.name + ":" + this.slot;
+        }
+
+        private final String name;
+
+        private final String slot;
+
+    }
+
+    public static class FractionModuleEntry extends Entry {
+        public FractionModuleEntry(String name) {
+            String[] parts = name.split(":");
+            this.name = parts[0];
+            if (parts.length == 2) {
+                this.slot = parts[1];
+            } else {
+                this.slot = "main";
+            }
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        @Override
+        public void apply(ModuleSpec.Builder builder) {
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create(this.name, this.slot), false));
+        }
+
+        @Override
+        void write(PrintWriter writer) {
+            writer.println("fraction-module:" + this.name + ":" + this.slot);
+        }
+
+        @Override
+        public int compareTo(Object that) {
+            if (that instanceof FractionModuleEntry) {
+                int result = this.name.compareTo(((FractionModuleEntry) that).name);
+
+                if (result != 0) {
+                    return result;
+                }
+
+                return this.slot.compareTo(((FractionModuleEntry) that).slot);
+            }
+            return getClass().getName().compareTo(that.getClass().getName());
+        }
+
+        @Override
+        public boolean equals(Object that) {
+            if (that instanceof FractionModuleEntry) {
+                return this.name.equals(((FractionModuleEntry) that).name) && this.slot.equals(((FractionModuleEntry) that).slot);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.name.hashCode() + this.slot.hashCode();
+        }
+
+        public String toString() {
+            return "module: " + this.name + ":" + this.slot;
+        }
+
         private final String name;
 
         private final String slot;
@@ -253,6 +331,10 @@ public class WildFlySwarmApplicationConf {
         @Override
         public int hashCode() {
             return this.descriptor.hashCode();
+        }
+
+        public String toString() {
+            return "gav: " + this.descriptor;
         }
 
         private final MavenArtifactDescriptor descriptor;

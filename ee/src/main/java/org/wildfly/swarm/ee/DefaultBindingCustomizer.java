@@ -21,7 +21,7 @@ public class DefaultBindingCustomizer implements Customizer {
     @Any
     private Instance<MessagingActiveMQ> messaging;
 
-    @Inject
+    @Inject @Any
     private EEFraction fraction;
 
     @Override

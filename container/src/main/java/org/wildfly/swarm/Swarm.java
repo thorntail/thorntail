@@ -18,6 +18,7 @@ package org.wildfly.swarm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -223,10 +224,16 @@ public class Swarm {
     public Swarm start(boolean eagerlyOpen) throws Exception {
         Weld weld = new Weld();
         if (Boolean.getBoolean("swarm.isuberjar")) {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
             weld.setClassLoader(module.getClassLoader());
             Thread.currentThread().setContextClassLoader( module.getClassLoader() );
             System.err.println( "using classloader: " + module.getClassLoader() );
+
+            Enumeration<URL> res = module.getClassLoader().getResources("META-INF/beans.xml");
+
+            while ( res.hasMoreElements() ) {
+                System.err.println( "beans.xml: " + res.nextElement() );
+            }
         }
 
         // Add Extension that adds User custom bits into configurator

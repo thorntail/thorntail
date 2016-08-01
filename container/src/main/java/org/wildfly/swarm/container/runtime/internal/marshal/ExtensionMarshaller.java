@@ -51,6 +51,13 @@ public class ExtensionMarshaller implements ConfigurationMarshaller {
         for (Fraction each : this.fractions) {
             WildFlyExtension anno = each.getClass().getAnnotation(WildFlyExtension.class);
 
+            System.err.println( "annotation: " + anno + " on " + each + " // " + each.getClass() );
+
+            if ( anno == null ) {
+                // wtf? NPE?
+                continue;
+            }
+
             if (anno.module() != null && !anno.module().equals("")) {
                 String module = anno.module();
                 if ( ! seen.contains( module ) ) {

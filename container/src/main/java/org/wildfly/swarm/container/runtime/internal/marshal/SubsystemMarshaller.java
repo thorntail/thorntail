@@ -27,6 +27,7 @@ import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
@@ -42,6 +43,15 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
     public List<ModelNode> marshal() {
         List<ModelNode> list = new ArrayList<>();
         for (Fraction each : this.fractions) {
+
+            MarshalDMR anno = each.getClass().getAnnotation(MarshalDMR.class);
+
+            System.err.println( "annotation: " + anno + " on " + each + " // " + each.getClass() );
+
+            if ( anno == null ) {
+                // wtf? NPE?
+                continue;
+            }
             try {
                 Marshaller marshaller = new Marshaller();
                 LinkedList<ModelNode> subList = marshaller.marshal(each);

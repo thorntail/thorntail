@@ -17,6 +17,7 @@ package org.wildfly.swarm.ee;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.EE;
 import org.wildfly.swarm.config.ee.ContextService;
@@ -34,7 +35,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module="org.jboss.as.ee")
 @MarshalDMR
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 public class EEFraction extends EE<EEFraction> implements Fraction {
 

@@ -391,7 +391,8 @@ public class DependencyManager {
         }
 
         for (String each : this.bootstrapModules) {
-            appConf.addEntry(new WildFlySwarmApplicationConf.ModuleEntry(each));
+            System.err.println( "BOOTSTRAP MODULE: " + each );
+            appConf.addEntry(new WildFlySwarmApplicationConf.FractionModuleEntry(each));
         }
 
         for (ArtifactSpec each : applicationArtifacts) {

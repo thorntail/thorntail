@@ -211,6 +211,10 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
         return p.toString();
     }
 
+    public String toString() {
+        return mscGav();
+    }
+
     private Builder builder() {
         return new Builder();
     }
