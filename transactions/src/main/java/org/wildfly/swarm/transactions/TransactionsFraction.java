@@ -17,6 +17,7 @@ package org.wildfly.swarm.transactions;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Transactions;
 import org.wildfly.swarm.spi.api.DefaultFraction;
@@ -29,7 +30,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.transactions")
 @MarshalDMR
@@ -52,24 +53,22 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
         return this;
     }
 
-    @Override
-    public void initialize(Fraction.InitContext initContext) {
-
-        initContext.socketBinding(new SocketBinding("txn-recovery-environment")
-                                          .port(this.port));
-
-        initContext.socketBinding(new SocketBinding("txn-status-manager")
-                                          .port(this.statusPort));
-    }
-
     public TransactionsFraction port(int port) {
         this.port = port;
         return this;
     }
 
+    public int port() {
+        return this.port;
+    }
+
     public TransactionsFraction statusPort(int statusPort) {
         this.statusPort = statusPort;
         return this;
+    }
+
+    public int statusPort() {
+        return this.statusPort;
     }
 
     private int port = 4712;
