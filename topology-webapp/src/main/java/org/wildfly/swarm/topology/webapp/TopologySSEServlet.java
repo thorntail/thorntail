@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.webapp.runtime;
+package org.wildfly.swarm.topology.webapp;
 
 import java.io.IOException;
 import java.io.PrintWriter;

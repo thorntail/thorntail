@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.webapp.runtime;
+package org.wildfly.swarm.topology.webapp;
 
 import java.util.Set;
 
@@ -23,7 +23,7 @@ import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
+import org.wildfly.swarm.topology.TopologyConnector;
 
 public class TopologyWebAppActivator implements ServiceActivator {
 

@@ -15,22 +15,22 @@
  */
 package org.wildfly.swarm.topology.webapp;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.wildfly.swarm.config.undertow.HandlerConfiguration;
-import org.wildfly.swarm.config.undertow.Server;
-import org.wildfly.swarm.config.undertow.configuration.ReverseProxy;
-import org.wildfly.swarm.config.undertow.server.Host;
-import org.wildfly.swarm.config.undertow.server.host.Location;
+import javax.inject.Singleton;
+
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.undertow.UndertowFraction;
 
 /**
  * @author Lance Ball
  */
+@Singleton
+@DefaultFraction
 public class TopologyWebAppFraction implements Fraction {
+
+    public static final String DEFAULT_CONTEXT = "/topology";
 
     public TopologyWebAppFraction() {
     }
@@ -83,26 +83,6 @@ public class TopologyWebAppFraction implements Fraction {
 
     public boolean exposeTopologyEndpoint() {
         return exposeTopologyEndpoint;
-    }
-
-    @Override
-    public void postInitialize(Fraction.PostInitContext initContext) {
-        if (!proxiedServiceMappings.isEmpty()) {
-            UndertowFraction undertow = (UndertowFraction) initContext.fraction("undertow");
-            HandlerConfiguration handlerConfig = undertow.subresources().handlerConfiguration();
-            for (String serviceName : proxiedServiceMappings.keySet()) {
-                ReverseProxy proxy = new ReverseProxy(proxyHandlerName(serviceName)).hosts(Collections.emptyList());
-                handlerConfig.reverseProxy(proxy);
-
-                String contextPath = proxiedServiceMappings.get(serviceName);
-                for (Server server : undertow.subresources().servers()) {
-                    Location location = new Location(contextPath).handler(proxyHandlerName(serviceName));
-                    for (Host host : server.subresources().hosts()) {
-                        host.location(location);
-                    }
-                }
-            }
-        }
     }
 
     private Map<String, String> proxiedServiceMappings = new HashMap<>();

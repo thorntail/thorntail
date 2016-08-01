@@ -1,57 +1,41 @@
-/**
- * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.wildfly.swarm.topology.webapp.runtime;
+package org.wildfly.swarm.topology.webapp;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.jboss.msc.service.ServiceActivator;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
 import org.wildfly.swarm.topology.TopologyArchive;
-import org.wildfly.swarm.topology.webapp.TopologyProperties;
-import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
- * @author Lance Ball
+ * @author Bob McWhirter
  */
-public class TopologyWebAppConfiguration extends AbstractServerConfiguration<TopologyWebAppFraction> {
+@Singleton
+public class TopologyWebAppDeploymentProducer {
 
-    public TopologyWebAppConfiguration() {
-        super(TopologyWebAppFraction.class);
-    }
+    @Inject
+    private TopologyWebAppFraction fraction;
 
-    @Override
-    public List<ServiceActivator> getServiceActivators(TopologyWebAppFraction fraction) {
-        List<ServiceActivator> activators = new ArrayList<>();
-        activators.add(new TopologyWebAppActivator(fraction.proxiedServiceMappings().keySet()));
-        return activators;
-    }
+    @Inject
+    @ConfigurationValue("swarm.topology.context.path")
+    private String contextPath;
 
-    @Override
-    public List<Archive> getImplicitDeployments(TopologyWebAppFraction fraction) throws Exception {
-        String context = System.getProperty(TopologyProperties.CONTEXT_PATH);
-        if (context == null) context = DEFAULT_CONTEXT;
+    @Produces @Dependent()
+    Archive deployment() {
 
-        List<Archive> list = new ArrayList<>();
+        String context = TopologyWebAppFraction.DEFAULT_CONTEXT;
+        if (this.contextPath != null) {
+            context = this.contextPath;
+        }
+
         if (fraction.exposeTopologyEndpoint()) {
             WARArchive war = ShrinkWrap.create(WARArchive.class, "topology-webapp.war");
             war.addAsWebInfResource(new StringAsset(getWebXml(fraction)), "web.xml");
@@ -61,9 +45,9 @@ public class TopologyWebAppConfiguration extends AbstractServerConfiguration<Top
             war.addAsWebResource(new ClassLoaderAsset("topology.js", this.getClass().getClassLoader()), "topology.js");
             war.setContextRoot(context);
             war.as(TopologyArchive.class);
-            list.add(war);
+            return war;
         }
-        return list;
+        return null;
     }
 
     protected String getWebXml(TopologyWebAppFraction fraction) {
@@ -86,7 +70,4 @@ public class TopologyWebAppConfiguration extends AbstractServerConfiguration<Top
         webXml += "</web-app>";
         return webXml;
     }
-
-    private static final String DEFAULT_CONTEXT = "/topology";
-
 }

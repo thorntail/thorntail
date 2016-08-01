@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.webapp.runtime;
+package org.wildfly.swarm.topology.webapp;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,7 +41,6 @@ import org.jboss.msc.value.InjectedValue;
 import org.wildfly.extension.undertow.deployment.GlobalRequestControllerHandler;
 import org.wildfly.swarm.topology.Topology;
 import org.wildfly.swarm.topology.TopologyListener;
-import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;
 
 public class TopologyProxyService implements Service<TopologyProxyService>, TopologyListener {
 

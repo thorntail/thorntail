@@ -123,6 +123,10 @@ public class RuntimeServer implements Server {
     private Instance<ServiceActivator> serviceActivators;
 
     @Inject
+    @Any
+    private Instance<Archive> implicitDeployments;
+
+    @Inject
     private DMRMarshaller dmrMarshaller;
 
     //TODO This doesn't seem right at moment
@@ -268,18 +272,7 @@ public class RuntimeServer implements Server {
 
         this.serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Object>(this.deployer))).install();
 
-        List<Archive> implicitDeployments = new ArrayList<>();
-
-//        for (ServerConfiguration<Fraction> eachConfig : this.configList) {
-//            for (Fraction eachFraction : config.fractions()) {
-//                if (eachConfig.getType().isAssignableFrom(eachFraction.getClass())) {
-//                    implicitDeployments.addAll(eachConfig.getImplicitDeployments(eachFraction));
-//                    break;
-//                }
-//            }
-//        }
-
-        for (Archive each : implicitDeployments) {
+        for (Archive each : this.implicitDeployments) {
             this.deployer.deploy(each);
         }
 
