@@ -31,8 +31,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -41,7 +41,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class ArqSecuredManagementInterfaceWithPropertiesTest implements ContainerFactory {
+public class ArqSecuredManagementInterfaceWithPropertiesTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -50,9 +50,9 @@ public class ArqSecuredManagementInterfaceWithPropertiesTest implements Containe
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container()
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm()
                 .fraction(
                         ManagementFraction.createDefaultFraction()
                                 .httpInterfaceManagementInterface((iface) -> {

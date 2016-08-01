@@ -37,12 +37,14 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
     }
 
     public static ManagementFraction createDefaultFraction() {
-        ManagementFraction fraction = new ManagementFraction();
-        return fraction.applyDefaults();
+        return new ManagementFraction().applyDefaults();
     }
 
-
     @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
+
     public ManagementFraction applyDefaults() {
         httpInterfaceManagementInterface();
         return this;

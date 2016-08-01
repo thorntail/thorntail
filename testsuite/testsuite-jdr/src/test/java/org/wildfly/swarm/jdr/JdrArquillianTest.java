@@ -18,19 +18,16 @@ package org.wildfly.swarm.jdr;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.as.controller.PathAddress;
-import org.jboss.as.controller.PathElement;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.client.helpers.Operations;
 import org.jboss.dmr.ModelNode;
-import org.jboss.dmr.ModelType;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -39,7 +36,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author George Gastaldi
  */
 @RunWith(Arquillian.class)
-public class JdrArquillianTest implements ContainerFactory {
+public class JdrArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -48,22 +45,21 @@ public class JdrArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new JdrFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(new JdrFraction());
     }
 
     @Test
     @RunAsClient
     public void testClient() throws Exception {
-
         ModelControllerClient client = ModelControllerClient.Factory.create(
                 "localhost", 9990
         );
 
         ModelNode response = client.execute(
                 Operations.createOperation("generate-jdr-report",
-                        Operations.createAddress("subsystem", "jdr")
+                                           Operations.createAddress("subsystem", "jdr")
                 )
         );
 
@@ -71,9 +67,9 @@ public class JdrArquillianTest implements ContainerFactory {
 
         ModelNode result = response.get("result");
 
-        String reportLocation = result.get( "report-location" ).asString();
+        String reportLocation = result.get("report-location").asString();
 
-        assertThat( reportLocation ).endsWith( ".zip" );
+        assertThat(reportLocation).endsWith(".zip");
     }
 
 }

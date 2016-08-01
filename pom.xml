@@ -1065,7 +1065,7 @@
     <!--<module>jaxrs-multipart</module>-->
     <!--<module>jaxrs-validator</module>-->
     <module>jca</module>
-    <!--<module>jdr</module>-->
+    <module>jdr</module>
     <!--<module>jgroups</module>-->
     <module>jgroups-module</module>
     <module>jmx</module>

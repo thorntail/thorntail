@@ -15,18 +15,26 @@
  */
 package org.wildfly.swarm.management;
 
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
-import org.wildfly.swarm.container.Container;
+import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.adapter.InVM;
 
 /**
  * @author Bob McWhirter
  */
+@InVM
+@RunWith(Arquillian.class)
 public class ManagementInVmTest {
+
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(ManagementFraction.createDefaultFraction());
+    }
 
     @Test
     public void testSimple() throws Exception {
-        Container container = new Container();
-        container.fraction(ManagementFraction.createDefaultFraction());
-        container.start().stop();
     }
 }
