@@ -41,6 +41,7 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
 
 
     public List<ModelNode> marshal() {
+        System.err.println( "marshalling subsystems : " + MarshalDMR.class.getClassLoader() );
         List<ModelNode> list = new ArrayList<>();
         for (Fraction each : this.fractions) {
 
@@ -48,10 +49,12 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
 
             System.err.println( "annotation: " + anno + " on " + each + " // " + each.getClass() );
 
+            /*
             if ( anno == null ) {
                 // wtf? NPE?
                 continue;
             }
+            */
             try {
                 Marshaller marshaller = new Marshaller();
                 LinkedList<ModelNode> subList = marshaller.marshal(each);

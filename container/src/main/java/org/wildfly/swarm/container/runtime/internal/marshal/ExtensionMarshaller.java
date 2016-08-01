@@ -53,10 +53,12 @@ public class ExtensionMarshaller implements ConfigurationMarshaller {
 
             System.err.println( "annotation: " + anno + " on " + each + " // " + each.getClass() );
 
+            /*
             if ( anno == null ) {
                 // wtf? NPE?
                 continue;
             }
+            */
 
             if (anno.module() != null && !anno.module().equals("")) {
                 String module = anno.module();

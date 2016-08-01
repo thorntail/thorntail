@@ -55,6 +55,17 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                                 ClassFilters.acceptAll(),
                                 null,
                                 ModuleIdentifier.create("org.wildfly.swarm.bootstrap"), false));
+
+                builder.addDependency(
+                        DependencySpec.createModuleDependencySpec(
+                                PathFilters.acceptAll(),
+                                PathFilters.acceptAll(),
+                                PathFilters.acceptAll(),
+                                PathFilters.acceptAll(),
+                                ClassFilters.acceptAll(),
+                                ClassFilters.acceptAll(),
+                                null,
+                                ModuleIdentifier.create("org.wildfly.swarm.spi", "api"), false));
             }
         } catch (Throwable t) {
             t.printStackTrace();
