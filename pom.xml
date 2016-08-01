@@ -1068,7 +1068,7 @@
     <!--<module>jdr</module>-->
     <!--<module>jgroups</module>-->
     <module>jgroups-module</module>
-    <!--<module>jmx</module>-->
+    <module>jmx</module>
     <!--<module>jolokia</module>-->
     <!--<module>jpa</module>-->
     <!--<module>jpa-mysql</module>-->

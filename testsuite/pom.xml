@@ -81,7 +81,7 @@
     <module>testsuite-jca</module>
     <!--<module>testsuite-jdr</module>-->
     <!--<module>testsuite-jgroups</module>-->
-    <!--<module>testsuite-jmx</module>-->
+    <module>testsuite-jmx</module>
     <!--<module>testsuite-jolokia</module>-->
     <!--<module>testsuite-jpa</module>-->
     <!--<module>testsuite-jpa-mysql</module>-->

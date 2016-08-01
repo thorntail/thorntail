@@ -16,7 +16,6 @@
 package org.wildfly.swarm.jmx;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
@@ -26,24 +25,23 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class JMXArquillianTest implements ContainerFactory {
+public class JMXArquillianTest {
 
     @Deployment
     public static Archive createDeployment() {
@@ -52,16 +50,16 @@ public class JMXArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new JMXFraction());
+    @CreateSwarm
+    public static Swarm newSwarm() throws Exception {
+        return new Swarm().fraction(new JMXFraction());
     }
 
     @Test
     public void testNothing() throws InterruptedException, MalformedObjectNameException, InstanceNotFoundException {
         MBeanServer server = locateMBeanServer();
         ObjectInstance result = server.getObjectInstance(ObjectName.getInstance("jboss.msc:type=container,name=jboss-as"));
-        assertNotNull( result );
+        assertNotNull(result);
     }
 
     private MBeanServer locateMBeanServer() {
