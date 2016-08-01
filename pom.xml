@@ -1048,7 +1048,7 @@
     <!--<module>cdi</module>-->
     <!--<module>cdi-ext</module>-->
     <module>connector</module>
-    <!--<module>datasources</module>-->
+    <module>datasources</module>
     <!--<module>drools-server</module>-->
     <module>ee</module>
     <!--<module>ejb</module>-->

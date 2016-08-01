@@ -68,7 +68,7 @@
     <!--<module>testsuite-camel-other</module>-->
     <!--<module>testsuite-connector</module>-->
     <!--<module>testsuite-container</module>-->
-    <!--<module>testsuite-datasources</module>-->
+    <module>testsuite-datasources</module>
     <!--<module>testsuite-drools-server</module>-->
     <module>testsuite-ee</module>
     <!--<module>testsuite-ejb</module>-->
