@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Logging;
 import org.wildfly.swarm.config.logging.AsyncHandler;
@@ -36,6 +37,8 @@ import org.wildfly.swarm.config.logging.RootLogger;
 import org.wildfly.swarm.config.logging.SyslogHandler;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
@@ -43,8 +46,10 @@ import org.wildfly.swarm.spi.api.Fraction;
  * @author Lance Ball
  */
 @SuppressWarnings("unused")
-@ApplicationScoped
+@Singleton
 @DefaultFraction
+@WildFlyExtension(module = "org.jboss.as.logging")
+@MarshalDMR
 public class LoggingFraction extends Logging<LoggingFraction> implements Fraction {
 
     public static final String CONSOLE = "CONSOLE";

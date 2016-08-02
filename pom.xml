@@ -1077,7 +1077,7 @@
     <!--<module>keycloak</module>-->
     <!--<module>keycloak-server</module>-->
     <module>logging</module>
-    <!--<module>logstash</module>-->
+    <module>logstash</module>
     <module>mail</module>
     <!--<module>management-console</module>-->
     <!--<module>messaging</module>-->

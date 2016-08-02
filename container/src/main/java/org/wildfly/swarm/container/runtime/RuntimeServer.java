@@ -176,10 +176,12 @@ public class RuntimeServer implements Server {
         System.err.println( "-------------------------------" );
 
         for (Customizer each : this.preCustomizers) {
+            System.err.println( "PRE CUSTOMZIER: " + each );
             each.customize();
         }
 
         for (Customizer each : this.postCustomizers) {
+            System.err.println( "POST CUSTOMZIER: " + each );
             each.customize();
         }
 
