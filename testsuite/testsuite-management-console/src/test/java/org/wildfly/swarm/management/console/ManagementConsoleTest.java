@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.wildfly.swarm.arquillian.ArtifactDependencies;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.undertow.WARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -32,6 +33,8 @@ public class ManagementConsoleTest {
         return ShrinkWrap.create(WARArchive.class);
     }
 
+
+    /*
     @ArtifactDependencies
     public static List<String> appDependencies() {
 
@@ -39,6 +42,7 @@ public class ManagementConsoleTest {
                 "org.wildfly.swarm:management-console"
         );
     }
+    */
 
     @Test
     @RunAsClient

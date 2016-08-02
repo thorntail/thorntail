@@ -93,7 +93,7 @@
     <module>testsuite-logstash</module>
     <module>testsuite-mail</module>
     <!--<module>testsuite-management</module>-->
-    <!--<module>testsuite-management-console</module>-->
+    <module>testsuite-management-console</module>
     <!--<module>testsuite-messaging</module>-->
     <!--<module>testsuite-mod_cluster</module>-->
     <!--<module>testsuite-monitor</module>-->
