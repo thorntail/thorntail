@@ -82,6 +82,7 @@ public class PackageTask extends DefaultTask {
                 .fractionList(FractionList.get())
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
                 .additionalModules(ext.getModuleDirs().stream()
+                                           .filter(f -> f.exists())
                                            .map(File::getAbsolutePath)
                                            .collect(Collectors.toList()))
                 .logger(new BuildTool.SimpleLogger() {

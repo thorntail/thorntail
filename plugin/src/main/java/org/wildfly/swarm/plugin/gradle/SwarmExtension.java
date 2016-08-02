@@ -22,11 +22,15 @@ import java.util.Properties;
 
 import groovy.lang.Closure;
 import groovy.util.ConfigObject;
+import org.gradle.api.Project;
 
 /**
  * @author Bob McWhirter
  */
 public class SwarmExtension {
+
+    private Project project;
+
     private String mainClass;
 
     private Boolean bundleDependencies = true;
@@ -41,8 +45,9 @@ public class SwarmExtension {
 
     private List<File> moduleDirs = new ArrayList<>();
 
-    public SwarmExtension() {
-
+    public SwarmExtension(Project project) {
+        this.project = project;
+        this.moduleDirs.add(new File(this.project.getBuildDir(), "resources/main/modules"));
     }
 
     public void properties(Closure<Properties> closure) {
