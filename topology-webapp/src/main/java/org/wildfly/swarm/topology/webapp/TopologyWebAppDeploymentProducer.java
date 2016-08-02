@@ -25,7 +25,7 @@ public class TopologyWebAppDeploymentProducer {
     private TopologyWebAppFraction fraction;
 
     @Inject
-    @ConfigurationValue(property = "swarm.topology.context.path")
+    @ConfigurationValue("swarm.topology.context.path")
     private String contextPath;
 
     @Produces @Dependent()

@@ -1,11 +1,8 @@
 package org.wildfly.swarm.container.runtime;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -98,7 +95,7 @@ public class ConfigurationValueProducer {
     private String getName(InjectionPoint injectionPoint) {
         for (Annotation qualifier : injectionPoint.getQualifiers()) {
             if (qualifier.annotationType().equals(ConfigurationValue.class)) {
-                return ((ConfigurationValue) qualifier).property();
+                return ((ConfigurationValue) qualifier).value();
             }
         }
         return null;

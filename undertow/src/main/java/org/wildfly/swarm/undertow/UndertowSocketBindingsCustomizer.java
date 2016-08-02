@@ -27,11 +27,11 @@ public class UndertowSocketBindingsCustomizer implements Customizer {
     UndertowFraction fraction;
 
     @Inject
-    @ConfigurationValue(property = "swarm.http.port")
+    @ConfigurationValue("swarm.http.port")
     Integer httpPort;
 
     @Inject
-    @ConfigurationValue(property = "swarm.https.port")
+    @ConfigurationValue("swarm.https.port")
     Integer httpsPort;
 
     public void customize() {
