@@ -27,8 +27,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -37,7 +37,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class MailArquillianTest implements ContainerFactory {
+public class MailArquillianTest {
 
     @Deployment
     public static Archive createDeployment() {
@@ -47,9 +47,9 @@ public class MailArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(MailFraction.defaultFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(MailFraction.defaultFraction());
     }
 
     @Test

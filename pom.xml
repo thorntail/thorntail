@@ -1043,7 +1043,7 @@
 
     <!-- fractions -->
     <!--<module>batch-jberet</module>-->
-    <!--<module>bean-validation</module>-->
+    <module>bean-validation</module>
     <!--<module>camel</module>-->
     <!--<module>cdi</module>-->
     <!--<module>cdi-ext</module>-->
@@ -1053,17 +1053,17 @@
     <module>ee</module>
     <module>ejb</module>
     <!--<module>ejb-remote</module>-->
-    <!--<module>hibernate-search</module>-->
-    <!--<module>hibernate-validator</module>-->
+    <module>hibernate-search</module>
+    <module>hibernate-validator</module>
     <!--<module>infinispan</module>-->
     <module>io</module>
     <!--<module>javafx</module>-->
     <module>jaxrs</module>
     <!--<module>jaxrs-cdi</module>-->
-    <!--<module>jaxrs-jaxb</module>-->
-    <!--<module>jaxrs-jsonp</module>-->
-    <!--<module>jaxrs-multipart</module>-->
-    <!--<module>jaxrs-validator</module>-->
+    <module>jaxrs-jaxb</module>
+    <module>jaxrs-jsonp</module>
+    <module>jaxrs-multipart</module>
+    <module>jaxrs-validator</module>
     <module>jca</module>
     <module>jdr</module>
     <!--<module>jgroups</module>-->
@@ -1078,7 +1078,7 @@
     <!--<module>keycloak-server</module>-->
     <module>logging</module>
     <!--<module>logstash</module>-->
-    <!--<module>mail</module>-->
+    <module>mail</module>
     <!--<module>management-console</module>-->
     <!--<module>messaging</module>-->
     <!--<module>microprofile</module>-->
