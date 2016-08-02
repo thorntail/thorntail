@@ -23,7 +23,7 @@ import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ConsulCache.Listener;
 import com.orbitz.consul.model.health.ServiceHealth;
 import org.wildfly.swarm.topology.runtime.Registration;
-import org.wildfly.swarm.topology.runtime.TopologyManager;
+import org.wildfly.swarm.topology.TopologyManager;
 
 /**
  * Service-cache listener.

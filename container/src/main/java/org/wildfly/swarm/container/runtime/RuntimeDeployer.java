@@ -71,6 +71,10 @@ public class RuntimeDeployer implements Deployer {
         this.tempFileProvider = tempFileProvider;
     }
 
+    public void setFractionArchivePrepare(FractionArchivePreparer preparer) {
+        this.preparer = preparer;
+    }
+
     public void debug(boolean debug) {
         this.debug = debug;
     }
@@ -79,8 +83,14 @@ public class RuntimeDeployer implements Deployer {
     public void deploy(Archive<?> deployment) throws DeploymentException {
 
         // 1. give fractions a chance to handle the deployment
+        /*
         for (ServerConfiguration each : this.configurations) {
             each.prepareArchive(deployment);
+        }
+        */
+
+        if ( this.preparer != null ) {
+            this.preparer.prepareArchive( deployment );
         }
 
         // 2. create a meta data index
@@ -204,5 +214,7 @@ public class RuntimeDeployer implements Deployer {
     private boolean debug = false;
 
     private final RuntimeServer.Opener opener;
+
+    private FractionArchivePreparer preparer;
 
 }

@@ -36,7 +36,7 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.wildfly.swarm.topology.runtime.TopologyManager;
+import org.wildfly.swarm.topology.TopologyManager;
 
 /**
  * Catalog-watching service.

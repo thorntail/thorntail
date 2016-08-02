@@ -129,6 +129,9 @@ public class RuntimeServer implements Server {
     @Inject
     private DMRMarshaller dmrMarshaller;
 
+    @Inject
+    private FractionArchivePreparer fractionArchivePreparer;
+
     //TODO This doesn't seem right at moment
 //    @Inject
 //    @DefaultFraction
@@ -269,6 +272,7 @@ public class RuntimeServer implements Server {
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(opener, this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
+        this.deployer.setFractionArchivePrepare( this.fractionArchivePreparer );
 
         this.serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Object>(this.deployer))).install();
 

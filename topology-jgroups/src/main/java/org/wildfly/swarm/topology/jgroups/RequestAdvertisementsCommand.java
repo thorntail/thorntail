@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.jgroups.runtime;
+package org.wildfly.swarm.topology.jgroups;
 
 import org.wildfly.clustering.dispatcher.Command;
-import org.wildfly.swarm.topology.runtime.Registration;
 
 /**
  * @author Bob McWhirter
  */
-public class AdvertiseCommand implements Command<Void, JGroupsTopologyConnector> {
+public class RequestAdvertisementsCommand implements Command<Void, JGroupsTopologyConnector> {
 
-    public AdvertiseCommand(Registration registration) {
-        this.registration = registration;
+    public RequestAdvertisementsCommand() {
     }
 
     @Override
     public Void execute(JGroupsTopologyConnector context) throws Exception {
-        context.register(this.registration);
+        context.advertiseAll();
         return null;
     }
-
-    private Registration registration;
 }

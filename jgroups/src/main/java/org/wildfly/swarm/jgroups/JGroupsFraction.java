@@ -15,37 +15,55 @@
  */
 package org.wildfly.swarm.jgroups;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
+
 import org.wildfly.swarm.config.JGroups;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Environment;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.jboss.as.clustering.jgroups")
+@Singleton
+@WildFlyExtension(module = "org.jboss.as.clustering.jgroups")
 @MarshalDMR
+@DefaultFraction
 public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fraction {
 
     public JGroupsFraction() {
     }
 
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
 
-    @Default
     public static JGroupsFraction defaultFraction() {
-        if (Environment.openshift()) {
-            return defaultOpenShiftFraction();
-        }
-        return defaultMulticastFraction();
+        return new JGroupsFraction().applyDefaults();
     }
 
     public static JGroupsFraction defaultMulticastFraction() {
-        return new JGroupsFraction()
-                .defaultChannel("swarm-jgroups")
+        return new JGroupsFraction().applyMulticastDefaults();
+    }
+
+    public static JGroupsFraction defaultOpenShiftFraction() {
+        return new JGroupsFraction().applyOpenShiftDefaults();
+    }
+
+    public JGroupsFraction applyDefaults() {
+        if (Environment.openshift()) {
+            return applyOpenShiftDefaults();
+        }
+        return applyMulticastDefaults();
+    }
+
+
+    public JGroupsFraction applyMulticastDefaults() {
+        return defaultChannel("swarm-jgroups")
                 .stack("udp", (s) -> {
                     s.transport("UDP", (t) -> {
                         t.socketBinding("jgroups-udp");
@@ -71,9 +89,8 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                 });
     }
 
-    public static JGroupsFraction defaultOpenShiftFraction() {
-        return new JGroupsFraction()
-                .defaultChannel("swarm-jgroups")
+    public JGroupsFraction applyOpenShiftDefaults() {
+        return defaultChannel("swarm-jgroups")
                 .stack("tcp", (s) -> {
                     s.transport("TCP", (t) -> {
                         t.socketBinding("jgroups-tcp");
@@ -98,33 +115,15 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                 });
     }
 
-    @Override
-    public void initialize(Fraction.InitContext initContext) {
-        initContext.socketBinding(
-                new SocketBinding("jgroups-udp")
-                        .port(55200)
-                        .multicastAddress(SwarmProperties.propertyVar(JGroupsProperties.DEFAULT_MULTICAST_ADDRESS,
-                                                                      "230.0.0.4"))
-                        .multicastPort(45688));
-
-        initContext.socketBinding(
-                new SocketBinding("jgroups-udp-fd")
-                        .port(54200));
-
-        initContext.socketBinding(
-                new SocketBinding("jgroups-mping")
-                        .port(0)
-                        .multicastAddress(SwarmProperties.propertyVar(JGroupsProperties.DEFAULT_MULTICAST_ADDRESS,
-                                                                      "230.0.0.4"))
-                        .multicastPort(45700));
-
-        initContext.socketBinding(
-                new SocketBinding("jgroups-tcp")
-                        .port(7600));
-
-        initContext.socketBinding(
-                new SocketBinding("jgroups-tcp-fd")
-                        .port(57600));
-
+    public JGroupsFraction defaultMulticastAddress(String defaultMulticastAddress) {
+        this.defaultMulticastAddress = defaultMulticastAddress;
+        return this;
     }
+
+    public String defaultMulticastAddress() {
+        return this.defaultMulticastAddress;
+    }
+
+    private String defaultMulticastAddress = "230.0.0.4";
+
 }

@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.consul.runtime;
+package org.wildfly.swarm.topology.consul;
+
+import javax.inject.Singleton;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
-import org.wildfly.swarm.topology.runtime.TopologyManager;
+import org.wildfly.swarm.topology.consul.runtime.Advertiser;
+import org.wildfly.swarm.topology.consul.runtime.ConsulTopologyConnector;
+import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.TopologyManager;
 
 /**
  * MSC activator for the ConsulTopologyConnector.
@@ -32,6 +36,7 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  *
  * @see AgentActivator
  */
+@Singleton
 public class ConsulTopologyConnectorActivator implements ServiceActivator {
 
     public ConsulTopologyConnectorActivator() {

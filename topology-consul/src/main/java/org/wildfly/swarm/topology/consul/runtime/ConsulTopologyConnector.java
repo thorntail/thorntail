@@ -27,8 +27,8 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.topology.runtime.Registration;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
-import org.wildfly.swarm.topology.runtime.TopologyManager;
+import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.TopologyManager;
 
 /**
  * Topology connector for Consul.

@@ -15,9 +15,11 @@
  */
 package org.wildfly.swarm.jgroups;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.wildfly.swarm.container.Container;
 
+@Ignore
 public class JGroupsInVmTest {
 
     @Test

@@ -18,8 +18,10 @@ package org.wildfly.swarm.topology.consul;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.inject.Singleton;
+
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
@@ -31,25 +33,9 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
  * @author John Hovell
  * @author Bob McWhirter
  */
+@Singleton
+@DefaultFraction
 public class ConsulTopologyFraction implements Fraction {
-
-    /**
-     * Construct a default fraction using the default agent URL of http://localhost:8500/.
-     */
-    @Override
-    public void initialize(InitContext initContext) {
-        if(initContext.projectStage().isPresent()) {
-            try {
-                StageConfig stageConfig = initContext.projectStage().get();
-                String configvalue = stageConfig.resolve(SwarmProperties.CONSUL_URL)
-                        .withDefault(null)
-                        .getValue();
-                this.url = configvalue !=null ? new URL(configvalue):DEFAULT_URL;
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Faile to resolve property 'swarm.consul.url'", e);
-            }
-        }
-    }
 
     public ConsulTopologyFraction() {
         this(DEFAULT_URL);

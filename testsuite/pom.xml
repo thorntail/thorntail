@@ -80,7 +80,7 @@
     <!--<module>testsuite-jaxrs</module>-->
     <module>testsuite-jca</module>
     <!--<module>testsuite-jdr</module>-->
-    <!--<module>testsuite-jgroups</module>-->
+    <module>testsuite-jgroups</module>
     <module>testsuite-jmx</module>
     <!--<module>testsuite-jolokia</module>-->
     <!--<module>testsuite-jpa</module>-->
@@ -109,8 +109,8 @@
     <!--<module>testsuite-swagger</module>-->
     <!--<module>testsuite-swagger-webapp</module>-->
     <module>testsuite-topology</module>
-    <!--<module>testsuite-topology-consul</module>-->
-    <!--<module>testsuite-topology-jgroups</module>-->
+    <module>testsuite-topology-consul</module>
+    <module>testsuite-topology-jgroups</module>
     <!--<module>testsuite-topology-openshift</module>-->
     <module>testsuite-topology-webapp</module>
     <module>testsuite-transactions</module>

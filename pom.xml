@@ -1066,7 +1066,7 @@
     <module>jaxrs-validator</module>
     <module>jca</module>
     <module>jdr</module>
-    <!--<module>jgroups</module>-->
+    <module>jgroups</module>
     <module>jgroups-module</module>
     <module>jmx</module>
     <!--<module>jolokia</module>-->
@@ -1095,8 +1095,8 @@
     <!--<module>swagger</module>-->
     <!--<module>swagger-webapp</module>-->
     <module>topology</module>
-    <!--<module>topology-consul</module>-->
-    <!--<module>topology-jgroups</module>-->
+    <module>topology-consul</module>
+    <module>topology-jgroups</module>
     <!--<module>topology-openshift</module>-->
     <module>topology-webapp</module>
     <module>transactions</module>
