@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 

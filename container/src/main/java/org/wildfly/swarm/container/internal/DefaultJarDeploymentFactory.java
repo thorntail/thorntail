@@ -27,7 +27,7 @@ import javax.enterprise.inject.Vetoed;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.wildfly.swarm.internal.FileSystemLayout;
+import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.JARArchive;
 

@@ -65,6 +65,7 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.CommandLineArgs;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.cdi.UnmanagedInstance;
 import org.wildfly.swarm.container.runtime.ProjectStageFactory;
@@ -494,42 +495,10 @@ public class SwarmConfigurator {
             }
         }
 
-        if (Files.exists(Paths.get("pom.xml"))) {
-            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("pom.xml").toFile()))) {
-                String line;
+        // fallback to file system
+        FileSystemLayout fsLayout = FileSystemLayout.create();
 
-                while ((line = in.readLine()) != null) {
-                    line = line.trim();
-                    if (line.equals("<packaging>jar</packaging>")) {
-                        return "jar";
-                    } else if (line.equals("<packaging>war</packaging>")) {
-                        return "war";
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (Files.exists(Paths.get("Mavenfile"))) {
-            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("Mavenfile").toFile()))) {
-                String line;
-
-                while ((line = in.readLine()) != null) {
-                    line = line.trim();
-                    if (line.equals("packaging :jar")) {
-                        return "jar";
-                    } else if (line.equals("packaging :war")) {
-                        return "war";
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        // when in doubt, assume at least a .jar
-        return "jar";
+        return fsLayout.determinePackagingType();
     }
 
     private ProjectStage loadStageConfiguration(URL url) {
