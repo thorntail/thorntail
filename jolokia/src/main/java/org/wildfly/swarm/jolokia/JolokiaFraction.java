@@ -15,11 +15,16 @@
  */
 package org.wildfly.swarm.jolokia;
 
+import javax.inject.Singleton;
+
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter
  */
+@Singleton
+@DefaultFraction
 public class JolokiaFraction implements Fraction {
 
     public JolokiaFraction() {
@@ -30,9 +35,14 @@ public class JolokiaFraction implements Fraction {
         this.context = context;
     }
 
+    public JolokiaFraction context(String context) {
+        this.context = context;
+        return this;
+    }
+
     public String context() {
         return this.context;
     }
 
-    private final String context;
+    private String context;
 }
