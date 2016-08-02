@@ -1,4 +1,4 @@
-package org.wildfly.swarm.spi.runtime;
+package org.wildfly.swarm.spi.api;
 
 import org.jboss.shrinkwrap.api.Archive;
 
