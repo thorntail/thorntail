@@ -29,7 +29,7 @@ import javax.inject.Qualifier;
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 @Repeatable(DeploymentModules.class)
 public @interface DeploymentModule {
 
