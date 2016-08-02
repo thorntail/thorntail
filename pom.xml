@@ -1055,7 +1055,7 @@
     <!--<module>ejb-remote</module>-->
     <module>hibernate-search</module>
     <module>hibernate-validator</module>
-    <!--<module>infinispan</module>-->
+    <module>infinispan</module>
     <module>io</module>
     <!--<module>javafx</module>-->
     <module>jaxrs</module>

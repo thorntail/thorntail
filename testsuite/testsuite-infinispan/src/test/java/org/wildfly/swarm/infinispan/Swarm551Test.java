@@ -20,44 +20,51 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.UUID;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
-import org.wildfly.swarm.container.Container;
+import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.jaxrs.JAXRSFraction;
-import org.wildfly.swarm.spi.api.Module;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Heiko Braun
  */
+@RunWith(Arquillian.class)
 public class Swarm551Test {
 
-    @Test
-    public void testCacheManagerAccess() throws Exception {
-
-        Container container = new Container();
-        container.fraction(new JAXRSFraction());
-        container.fraction(InfinispanFraction.createDefaultFraction());
-
-        container.start();
-
+    @Deployment(testable = false)
+    public static Archive deployment() {
         JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class, "testDeployment.war");
         archive.addResource(MyResource.class);
+        return archive;
+    }
 
-      /*  Module infinispan = archive.addModule("org.infinispan");
-        infinispan.withExport(true);
-        Module commons = archive.addModule("org.infinispan.commons");
-        commons.withExport(true);
-*/
+    @CreateSwarm
+    public static Swarm create() throws Exception {
+        Swarm container = new Swarm();
+        container.fraction(new JAXRSFraction());
+        container.fraction(InfinispanFraction.createDefaultFraction());
+        return container;
+    }
 
-        container.deploy(archive);
-
+    @RunAsClient
+    @Test
+    public void testAccess() {
         String response = getUrlContents("http://localhost:8080");
+        response = response.trim();
 
-        System.out.println(response);
-
-        container.stop();
+        UUID uuid = UUID.fromString( response );
+        assertNotNull( uuid );
     }
 
     static String getUrlContents(String theUrl) {

@@ -74,7 +74,7 @@
     <module>testsuite-ejb</module>
     <!--<module>testsuite-ejb-remote</module>-->
     <!--<module>testsuite-hystrix</module>-->
-    <!--<module>testsuite-infinispan</module>-->
+    <module>testsuite-infinispan</module>
     <module>testsuite-io</module>
     <!--<module>testsuite-javafx</module>-->
     <!--<module>testsuite-jaxrs</module>-->

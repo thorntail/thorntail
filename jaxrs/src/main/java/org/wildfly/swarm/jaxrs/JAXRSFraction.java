@@ -36,9 +36,11 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @DeploymentModule(name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider")
 public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
 
+    /*
     static {
         ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(JAXRSArchive.class, JAXRSArchiveImpl.class);
     }
+    */
 
 
 }
