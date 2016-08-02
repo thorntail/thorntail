@@ -26,11 +26,14 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
+import org.wildfly.swarm.bootstrap.util.MavenFileSystemLayout;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Bob McWhirter
+ * @author Heiko Braun
  */
 public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
 
@@ -53,10 +56,9 @@ public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
     public boolean setupUsingMaven(Archive<?> archive) throws Exception {
-        Path pwd = Paths.get(System.getProperty("user.dir"));
 
-        final Path classes = pwd.resolve("target").resolve("classes");
-
+        FileSystemLayout fsLayout = FileSystemLayout.create();
+        final Path classes = fsLayout.resolveBuildClassesDir();
         boolean success = false;
 
         if (Files.exists(classes)) {

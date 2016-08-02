@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
 import org.wildfly.swarm.resource.adapters.RARArchive;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
@@ -61,9 +61,8 @@ public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
     public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {
         final DependenciesContainer<?> archive = (DependenciesContainer<?>) givenArchive;
 
-        Path pwd = Paths.get(System.getProperty("user.dir"));
-
-        final Path classes = pwd.resolve("target").resolve("classes");
+        FileSystemLayout fsLayout = FileSystemLayout.create();
+        final Path classes = fsLayout.resolveBuildClassesDir();
 
         boolean success = false;
 
@@ -82,7 +81,7 @@ public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
             });
         }
 
-        final Path webapp = pwd.resolve("src").resolve("main").resolve("webapp");
+        final Path webapp = fsLayout.resolveSrcWebAppDir();
         if (Files.exists(webapp)) {
             success = true;
             Files.walkFileTree(webapp, new SimpleFileVisitor<Path>() {
