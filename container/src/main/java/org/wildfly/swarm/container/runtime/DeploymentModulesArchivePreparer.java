@@ -6,18 +6,18 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
-import org.wildfly.swarm.spi.runtime.ArchivePreparer;
 
 /**
  * @author Bob McWhirter
  */
 @Singleton
-public class FractionArchivePreparer implements ArchivePreparer {
+public class DeploymentModulesArchivePreparer implements ArchivePreparer {
 
     @Inject
     @Any
@@ -38,8 +38,8 @@ public class FractionArchivePreparer implements ArchivePreparer {
                 }
             } else {
                 DeploymentModule entry = each.getClass().getAnnotation(DeploymentModule.class);
-                if ( entry != null ) {
-                    addModule( jarArchive, entry );
+                if (entry != null) {
+                    addModule(jarArchive, entry);
                 }
             }
         }

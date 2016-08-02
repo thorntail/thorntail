@@ -68,6 +68,7 @@ import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.internal.marshal.DMRMarshaller;
+import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -130,7 +131,8 @@ public class RuntimeServer implements Server {
     private DMRMarshaller dmrMarshaller;
 
     @Inject
-    private FractionArchivePreparer fractionArchivePreparer;
+    @Any
+    private Instance<ArchivePreparer> allArchivePreparers;
 
     //TODO This doesn't seem right at moment
 //    @Inject
@@ -272,7 +274,7 @@ public class RuntimeServer implements Server {
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(opener, this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
-        this.deployer.setFractionArchivePrepare( this.fractionArchivePreparer );
+        this.deployer.setArchivePreparers(this.allArchivePreparers);
 
         this.serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Object>(this.deployer))).install();
 

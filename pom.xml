@@ -1057,7 +1057,7 @@
     <module>hibernate-validator</module>
     <module>infinispan</module>
     <module>io</module>
-    <!--<module>javafx</module>-->
+    <module>javafx</module>
     <module>jaxrs</module>
     <!--<module>jaxrs-cdi</module>-->
     <module>jaxrs-jaxb</module>

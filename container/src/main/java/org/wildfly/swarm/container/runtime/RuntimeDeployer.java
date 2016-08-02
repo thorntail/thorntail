@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
 
 import org.jboss.as.controller.client.ModelControllerClient;
@@ -41,6 +42,7 @@ import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
+import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
@@ -71,8 +73,8 @@ public class RuntimeDeployer implements Deployer {
         this.tempFileProvider = tempFileProvider;
     }
 
-    public void setFractionArchivePrepare(FractionArchivePreparer preparer) {
-        this.preparer = preparer;
+    public void setArchivePreparers(Instance<ArchivePreparer> preparers) {
+        this.archivePreparers = preparers;
     }
 
     public void debug(boolean debug) {
@@ -83,14 +85,8 @@ public class RuntimeDeployer implements Deployer {
     public void deploy(Archive<?> deployment) throws DeploymentException {
 
         // 1. give fractions a chance to handle the deployment
-        /*
-        for (ServerConfiguration each : this.configurations) {
-            each.prepareArchive(deployment);
-        }
-        */
-
-        if ( this.preparer != null ) {
-            this.preparer.prepareArchive( deployment );
+        for (ArchivePreparer preparer : this.archivePreparers) {
+            preparer.prepareArchive(deployment);
         }
 
         // 2. create a meta data index
@@ -215,6 +211,6 @@ public class RuntimeDeployer implements Deployer {
 
     private final RuntimeServer.Opener opener;
 
-    private FractionArchivePreparer preparer;
+    private Instance<ArchivePreparer> archivePreparers;
 
 }

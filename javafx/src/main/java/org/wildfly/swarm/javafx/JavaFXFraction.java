@@ -15,10 +15,15 @@
  */
 package org.wildfly.swarm.javafx;
 
+import javax.enterprise.context.ApplicationScoped;
+
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Ken Finnigan
  */
+@ApplicationScoped
+@DefaultFraction
 public class JavaFXFraction implements Fraction {
 }
