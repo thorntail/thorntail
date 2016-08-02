@@ -36,6 +36,7 @@ public class PackagePlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getExtensions().create("swarm", SwarmExtension.class);
 
+        project.getExtensions().create("swarm", SwarmExtension.class, project);
         project.afterEvaluate(__ -> {
             final TaskContainer tasks = project.getTasks();
             final PackageTask packageTask = tasks.create(WILDFLY_SWARM_PACKAGE_TASK_NAME, PackageTask.class);
