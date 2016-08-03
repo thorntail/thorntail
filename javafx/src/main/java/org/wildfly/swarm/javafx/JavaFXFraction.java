@@ -19,10 +19,12 @@ import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Ken Finnigan
  */
+@DeploymentModule(name = "javafx")
 @Singleton
 @DefaultFraction
 public class JavaFXFraction implements Fraction {
