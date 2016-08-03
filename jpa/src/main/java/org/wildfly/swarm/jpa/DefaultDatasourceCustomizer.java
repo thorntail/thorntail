@@ -1,5 +1,6 @@
 package org.wildfly.swarm.jpa;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,6 +20,7 @@ public class DefaultDatasourceCustomizer implements Customizer {
     Instance<String> defaultDatasourceInstance;
 
     @Inject
+    @Any
     Instance<JPAFraction> jpaFractionInstance;
 
     @Override

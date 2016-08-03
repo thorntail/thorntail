@@ -15,9 +15,12 @@
  */
 package org.wildfly.swarm.jpa;
 
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -27,13 +30,15 @@ import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
 public class JPAArquillianTest {
 
-    @Deployment(testable = false)
+    @Deployment(testable = true)
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
@@ -45,10 +50,13 @@ public class JPAArquillianTest {
         return new Swarm().fraction(JPAFraction.createDefaultFraction());
     }
 
-    @Test
-    @RunAsClient
-    public void testNothing() {
+    @ArquillianResource
+    InitialContext context;
 
+    @Test
+    public void testDefaultDatasource() throws Exception {
+        DataSource dataSource = (DataSource) context.lookup("java:jboss/datasources/ExampleDS");
+        assertNotNull(dataSource);
     }
 
 }

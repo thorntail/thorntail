@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.ejb.remote;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,6 +32,7 @@ import org.wildfly.swarm.spi.api.Post;
 @Post
 public class RemoteServiceCustomizer implements Customizer {
     @Inject
+    @Any
     Instance<EJBFraction> ejbInstance;
 
     @Override

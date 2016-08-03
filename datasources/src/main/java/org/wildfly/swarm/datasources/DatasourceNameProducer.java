@@ -1,6 +1,7 @@
 package org.wildfly.swarm.datasources;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import javax.inject.Singleton;
 @Singleton
 public class DatasourceNameProducer {
     @Inject
+    @Any
     Instance<DatasourcesFraction> datasourcesFractionInstance;
 
     @Produces

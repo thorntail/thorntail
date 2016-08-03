@@ -15,8 +15,12 @@
  */
 package org.wildfly.swarm.jpa.mysql;
 
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -27,10 +31,12 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.jpa.JPAFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(Arquillian.class)
 public class MySQLJPAArquillianTest {
 
-    @Deployment(testable = false)
+    @Deployment(testable = true)
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
@@ -42,9 +48,13 @@ public class MySQLJPAArquillianTest {
         return new Swarm().fraction(JPAFraction.createDefaultFraction());
     }
 
-    @Test
-    public void testNothing() {
+    @ArquillianResource
+    InitialContext context;
 
+    @Test
+    public void testDefaultDatasource() throws Exception {
+        DataSource dataSource = (DataSource) context.lookup("java:jboss/datasources/ExampleDS");
+        assertNotNull(dataSource);
     }
 
 }
