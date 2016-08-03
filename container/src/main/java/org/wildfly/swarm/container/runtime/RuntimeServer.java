@@ -103,6 +103,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
 @Vetoed
 public class RuntimeServer implements Server {
 
+    //TODO Currently not used, is it even needed?
     @Inject
     @DefaultFraction
     private Instance<Fraction> allDefaultFractions;
@@ -133,12 +134,6 @@ public class RuntimeServer implements Server {
     @Inject
     @Any
     private Instance<ArchivePreparer> allArchivePreparers;
-
-    //TODO This doesn't seem right at moment
-//    @Inject
-//    @DefaultFraction
-//    @DependentFraction
-//    private Instance<Fraction> defaultDependentFractions;
 
     public RuntimeServer() {
     }
