@@ -24,9 +24,12 @@ import org.wildfly.swarm.container.runtime.RuntimeServer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  * @author Stuart Douglas
  */
+@Vetoed
 public class GateHandlerWrapper implements HandlerWrapper, RuntimeServer.Opener {
 
     private final List<Holder> held = new ArrayList<>();
@@ -47,6 +50,7 @@ public class GateHandlerWrapper implements HandlerWrapper, RuntimeServer.Opener 
         return new GateHandler(handler);
     }
 
+    @Vetoed
     private final class GateHandler implements HttpHandler {
 
         private final HttpHandler next;

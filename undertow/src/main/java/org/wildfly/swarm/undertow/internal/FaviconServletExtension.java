@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.undertow.internal;
 
+import javax.enterprise.inject.Vetoed;
 import javax.servlet.ServletContext;
 
 import io.undertow.Handlers;
@@ -25,6 +26,7 @@ import io.undertow.servlet.api.DeploymentInfo;
 /**
  * @author Ken Finnigan
  */
+@Vetoed
 public class FaviconServletExtension implements ServletExtension {
     public static final String HANDLER_NAME = "org.wildfly.swarm.generated.FaviconErrorHandler";
 

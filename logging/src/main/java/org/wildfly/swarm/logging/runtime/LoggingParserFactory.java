@@ -18,6 +18,7 @@ package org.wildfly.swarm.logging.runtime;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
 
 import org.jboss.as.logging.LoggingExtension;
@@ -31,6 +32,7 @@ import org.wildfly.swarm.spi.runtime.AbstractParserFactory;
  * @author Heiko Braun
  * @since 10/11/15
  */
+@Vetoed
 public class LoggingParserFactory extends AbstractParserFactory {
 
     public Map<QName, XMLElementReader<List<ModelNode>>> create() {

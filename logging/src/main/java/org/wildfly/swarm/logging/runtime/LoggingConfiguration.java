@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
 
 import org.jboss.dmr.ModelNode;
@@ -34,6 +35,7 @@ import org.wildfly.swarm.spi.runtime.MarshallingServerConfiguration;
  * @author Bob McWhirter
  * @author Lance Ball
  */
+@Vetoed
 public class LoggingConfiguration extends MarshallingServerConfiguration<LoggingFraction> {
 
     public static final String EXTENSION_MODULE = "org.jboss.as.logging";
