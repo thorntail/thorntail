@@ -16,7 +16,7 @@
 package org.wildfly.swarm.remoting;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Remoting;
 import org.wildfly.swarm.config.remoting.EndpointConfiguration;
@@ -29,7 +29,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Ken Finnigan
  */
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.remoting")
 @MarshalDMR

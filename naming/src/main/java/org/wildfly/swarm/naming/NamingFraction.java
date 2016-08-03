@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.naming;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Naming;
 import org.wildfly.swarm.spi.api.DefaultFraction;
@@ -27,8 +27,8 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  * @author Bob McWhirter
  */
 @DefaultFraction
-@ApplicationScoped
-@WildFlyExtension(module="org.jboss.as.naming")
+@Singleton
+@WildFlyExtension(module = "org.jboss.as.naming")
 @MarshalDMR
 public class NamingFraction extends Naming<NamingFraction> implements Fraction {
 }

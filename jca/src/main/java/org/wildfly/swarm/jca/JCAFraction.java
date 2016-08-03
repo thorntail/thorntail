@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.JCA;
 import org.wildfly.swarm.config.jca.ArchiveValidation;
@@ -37,7 +37,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.connector", classname = "org.jboss.as.connector.subsystems.jca.JcaExtension")
 @MarshalDMR

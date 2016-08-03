@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.jdr;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Jdr;
 import org.wildfly.swarm.spi.api.DefaultFraction;
@@ -28,7 +28,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.jdr")
 @MarshalDMR
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 public class JdrFraction extends Jdr<JdrFraction> implements Fraction {
 }

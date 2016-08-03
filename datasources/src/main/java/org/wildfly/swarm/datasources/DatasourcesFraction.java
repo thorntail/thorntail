@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.datasources;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Datasources;
 import org.wildfly.swarm.config.datasources.DataSource;
@@ -30,7 +30,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.connector", classname = "org.jboss.as.connector.subsystems.datasources.DataSourcesExtension")
 @MarshalDMR
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 public class DatasourcesFraction extends Datasources<DatasourcesFraction> implements Fraction {
     @Override

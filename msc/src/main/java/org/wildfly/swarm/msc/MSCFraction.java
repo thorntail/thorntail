@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.msc;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -24,6 +24,6 @@ import org.wildfly.swarm.spi.api.Fraction;
  * @author Bob McWhirter
  */
 @DefaultFraction
-@ApplicationScoped
+@Singleton
 public class MSCFraction implements Fraction {
 }

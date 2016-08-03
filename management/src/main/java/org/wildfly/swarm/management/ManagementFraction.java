@@ -16,7 +16,7 @@
 package org.wildfly.swarm.management;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
@@ -29,7 +29,7 @@ import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
  */
 @MarshalDMR
 @DefaultFraction
-@ApplicationScoped
+@Singleton
 public class ManagementFraction extends ManagementCoreService<ManagementFraction> implements Fraction {
 
     public ManagementFraction() {

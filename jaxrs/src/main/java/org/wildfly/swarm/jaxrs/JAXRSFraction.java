@@ -15,11 +15,9 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.config.JAXRS;
-import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
@@ -29,11 +27,11 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 @DefaultFraction
-@WildFlyExtension(module="org.jboss.as.jaxrs")
+@WildFlyExtension(module = "org.jboss.as.jaxrs")
 @MarshalDMR
-@DeploymentModule(name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider")
+@DeploymentModule(name = "com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider")
 public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
 
     /*

@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.javafx;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -23,7 +23,7 @@ import org.wildfly.swarm.spi.api.Fraction;
 /**
  * @author Ken Finnigan
  */
-@ApplicationScoped
+@Singleton
 @DefaultFraction
 public class JavaFXFraction implements Fraction {
 }
