@@ -772,6 +772,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>mysql</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
@@ -1055,6 +1061,7 @@
     <!--<module>cdi-ext</module>-->
     <module>connector</module>
     <module>databases/h2</module>
+    <module>databases/mysql</module>
     <module>datasources</module>
     <!--<module>drools-server</module>-->
     <module>ee</module>

@@ -16,19 +16,19 @@
 package org.wildfly.swarm.jpa.mysql;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.jpa.JPAFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 @RunWith(Arquillian.class)
-public class MySQLJPAArquillianTest implements ContainerFactory {
+public class MySQLJPAArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -37,13 +37,12 @@ public class MySQLJPAArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(MySQLJPAFraction.createDefaultFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(JPAFraction.createDefaultFraction());
     }
 
     @Test
-    @RunAsClient
     public void testNothing() {
 
     }
