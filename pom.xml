@@ -533,6 +533,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>h2</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>hibernate-search</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
@@ -1048,6 +1054,7 @@
     <!--<module>cdi</module>-->
     <!--<module>cdi-ext</module>-->
     <module>connector</module>
+    <module>databases/h2</module>
     <module>datasources</module>
     <!--<module>drools-server</module>-->
     <module>ee</module>
@@ -1070,9 +1077,7 @@
     <module>jgroups-module</module>
     <module>jmx</module>
     <module>jolokia</module>
-    <!--<module>jpa</module>-->
-    <!--<module>jpa-mysql</module>-->
-    <!--<module>jpa-postgresql</module>-->
+    <module>jpa</module>
     <module>jsf</module>
     <module>keycloak</module>
     <module>keycloak-server</module>

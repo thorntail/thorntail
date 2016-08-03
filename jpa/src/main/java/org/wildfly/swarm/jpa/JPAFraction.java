@@ -15,59 +15,36 @@
  */
 package org.wildfly.swarm.jpa;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
+
 import org.wildfly.swarm.config.JPA;
-import org.wildfly.swarm.datasources.DatasourcesFraction;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Ken Finnigan
  * @author Lance Ball
  */
-@ExtensionModule("org.jboss.as.jpa")
+@WildFlyExtension(module = "org.jboss.as.jpa")
 @MarshalDMR
+@Singleton
+@DefaultFraction
 public class JPAFraction extends JPA<JPAFraction> implements Fraction {
 
-    public JPAFraction() {
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
     }
 
-    @Default
     public static JPAFraction createDefaultFraction() {
-        return new JPAFraction()
-                .defaultExtendedPersistenceInheritance(DefaultExtendedPersistenceInheritance.DEEP);
-
+        return new JPAFraction().applyDefaults();
     }
 
-    public JPAFraction inhibitDefaultDatasource() {
-        this.inhibitDefaultDatasource = true;
+    public JPAFraction applyDefaults() {
+        defaultExtendedPersistenceInheritance(DefaultExtendedPersistenceInheritance.DEEP);
         return this;
     }
-
-    @Override
-    public void initialize(Fraction.InitContext initContext) {
-        if (!inhibitDefaultDatasource) {
-            String dsName = System.getProperty(SwarmProperties.DATASOURCE_NAME, "ExampleDS");
-            String driverName = System.getProperty(SwarmProperties.DATABASE_DRIVER, "h2");
-            final DatasourcesFraction datasources = new DatasourcesFraction()
-                    .jdbcDriver(driverName, (d) -> {
-                        d.driverClassName("org.h2.Driver");
-                        d.xaDatasourceClass("org.h2.jdbcx.JdbcDataSource");
-                        d.driverModuleName("com.h2database.h2");
-                    })
-                    .dataSource(dsName, (ds) -> {
-                        ds.driverName(driverName);
-                        ds.connectionUrl(System.getProperty(SwarmProperties.DATASOURCE_CONNECTION_URL, "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"));
-                        ds.userName(System.getProperty(SwarmProperties.DATASOURCE_USERNAME, "sa"));
-                        ds.password(System.getProperty(SwarmProperties.DATASOURCE_PASSWORD, "sa"));
-                    });
-
-            initContext.fraction(datasources);
-            defaultDatasource("jboss/datasources/" + dsName);
-        }
-    }
-
-    private boolean inhibitDefaultDatasource = false;
 }

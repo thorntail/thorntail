@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
-  ~
-  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
-  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
     <version>2016.7-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <relativePath>../../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jpa</artifactId>
+  <artifactId>h2</artifactId>
 
-  <name>JPA</name>
-  <description>Java Persistence API with Hibernate and H2 datasource</description>
+  <name>H2</name>
+  <description>H2 driver and datasource</description>
 
   <properties>
-    <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>JavaEE,Data</swarm.fraction.tags>
+    <swarm.fraction.tags>Data,H2</swarm.fraction.tags>
   </properties>
 
   <build>
@@ -39,22 +34,13 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container</artifactId>
     </dependency>
+
+    <!-- Fraction Dependencies -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>datasources</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>h2</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>ee</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>bootstrap</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
@@ -90,11 +76,6 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <!-- Provided APIs -->
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
     </dependency>
   </dependencies>
 

@@ -83,7 +83,7 @@
     <module>testsuite-jgroups</module>
     <module>testsuite-jmx</module>
     <module>testsuite-jolokia</module>
-    <!--<module>testsuite-jpa</module>-->
+    <module>testsuite-jpa</module>
     <!--<module>testsuite-jpa-mysql</module>-->
     <!--<module>testsuite-jpa-postgresql</module>-->
     <module>testsuite-jsf</module>
