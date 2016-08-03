@@ -15,37 +15,48 @@
  */
 package org.wildfly.swarm.messaging;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
+
 import org.wildfly.swarm.config.MessagingActiveMQ;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  * @author Lance Ball
  */
-@ExtensionModule("org.wildfly.extension.messaging-activemq")
+@WildFlyExtension(module = "org.wildfly.extension.messaging-activemq")
 @MarshalDMR
-@DeploymentModule(name="javax.jms.api")
+@DeploymentModule(name = "javax.jms.api")
+@Singleton
+@DefaultFraction
 public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> implements Fraction {
 
-    /** Construct a completely unconfigured and empty fraction.
-     */
-    public MessagingFraction() {
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
     }
 
-    /** Create a fraction with the default local server.
+    /**
+     * Create a fraction with the default local server.
      *
      * @return This fraction.
      */
-    @Default
+
     public static MessagingFraction createDefaultFraction() {
-        return new MessagingFraction().defaultServer();
+        return new MessagingFraction().applyDefaults();
     }
 
-    /** Create a fraction and configure the default local server.
+    public MessagingFraction applyDefaults() {
+        return defaultServer();
+    }
+
+    /**
+     * Create a fraction and configure the default local server.
      *
      * @param config The configurator.
      * @return This fraction.
@@ -54,7 +65,8 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
         return new MessagingFraction().defaultServer(config);
     }
 
-    /** Create the default local server if required.
+    /**
+     * Create the default local server if required.
      *
      * @return This fraction.
      */
@@ -64,7 +76,8 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
         return this;
     }
 
-    /** Configure the default local server, creating it first if required.
+    /**
+     * Configure the default local server, creating it first if required.
      *
      * @param config The configurator.
      * @return This fraction.
@@ -75,10 +88,11 @@ public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> impl
         return this;
     }
 
-    /** Configure a named server.
+    /**
+     * Configure a named server.
      *
      * @param childKey The key (name) of the server.
-     * @param config The configurator.
+     * @param config   The configurator.
      * @return This fraction.
      */
     public MessagingFraction server(String childKey, EnhancedServerConsumer config) {

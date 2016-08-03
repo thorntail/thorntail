@@ -1099,7 +1099,7 @@
     <module>logstash</module>
     <module>mail</module>
     <module>management-console</module>
-    <!--<module>messaging</module>-->
+    <module>messaging</module>
     <!--<module>microprofile</module>-->
     <module>msc</module>
     <!--<module>monitor</module>-->
@@ -1122,7 +1122,7 @@
     <module>undertow</module>
     <!--<module>undertow-js</module>-->
     <!--<module>vertx</module>-->
-    <!--<module>webservices</module>-->
+    <module>webservices</module>
 
     <!--<module>integration-tests</module>-->
     <module>testsuite</module>

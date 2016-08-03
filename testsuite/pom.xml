@@ -94,7 +94,7 @@
     <module>testsuite-mail</module>
     <!--<module>testsuite-management</module>-->
     <module>testsuite-management-console</module>
-    <!--<module>testsuite-messaging</module>-->
+    <module>testsuite-messaging</module>
     <!--<module>testsuite-mod_cluster</module>-->
     <!--<module>testsuite-monitor</module>-->
     <module>testsuite-msc</module>
@@ -116,6 +116,6 @@
     <module>testsuite-transactions</module>
     <module>testsuite-undertow</module>
     <!--<module>testsuite-vertx</module>-->
-    <!--<module>testsuite-webservices</module>-->
+    <module>testsuite-webservices</module>
   </modules>
 </project>

@@ -15,17 +15,36 @@
  */
 package org.wildfly.swarm.webservices;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
-import org.wildfly.swarm.container.Container;
+import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
+@RunWith(Arquillian.class)
 public class CreateSOAPInVmTest {
+
+    @Deployment
+    public static Archive createDeployment() {
+        JARArchive deployment = ShrinkWrap.create(JARArchive.class);
+        deployment.add(EmptyAsset.INSTANCE, "nothing");
+        return deployment;
+    }
+
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm()
+                .fraction(UndertowFraction.createDefaultFraction())
+                .fraction(WebServicesFraction.createDefaultFraction());
+    }
+
     @Test
     public void testSimple() throws Exception {
-        new Container()
-                .fraction(WebServicesFraction.createDefaultFraction())
-                .fraction(UndertowFraction.createDefaultFraction())
-                .start()
-                .stop();
     }
 }
