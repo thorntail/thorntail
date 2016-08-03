@@ -17,6 +17,7 @@ package org.wildfly.swarm.monitor.runtime;
 
 import java.io.IOException;
 
+import javax.enterprise.inject.Vetoed;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -24,6 +25,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.wildfly.swarm.monitor.Status;
 
+@Vetoed
 @Provider
 public class HealthResponseFilter implements ContainerResponseFilter {
 

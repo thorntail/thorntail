@@ -17,6 +17,7 @@ package org.wildfly.swarm.container.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 
@@ -285,7 +287,40 @@ public class RuntimeServer implements Server {
             this.deployer.deploy(each);
         }
 
+        setupUserSpaceExtension();
+
         return this.deployer;
+    }
+
+    @Inject
+    private ConfigurationValueProducer configValueProducer;
+
+    @Inject
+    private ProjectStageProducer projectStageProducer;
+
+    @Inject
+    private BeanManager beanManager;
+
+
+    private void setupUserSpaceExtension() {
+        try {
+            Module module = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "org.wildfly.swarm.cdi", "ext" ) );
+            Class<?> use = module.getClassLoader().loadClass("org.wildfly.swarm.cdi.UserSpaceExtension");
+            Field field = use.getDeclaredField("BEANS");
+            List<Object> beans = (List<Object>) field.get(null);
+            System.err.println( "setting up beans: " + beans );
+            beans.add( new SimpleExposedBean<>(ConfigurationValueProducer.class, this.configValueProducer));
+            //beans.addAll( this.beanManager.getBeans(Object.class, ConfigurationValue.Literal.INSTANCE ) );
+        } catch (ModuleLoadException e) {
+            // ignore, don't do it.
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void loadFractionConfigurations() throws Exception {

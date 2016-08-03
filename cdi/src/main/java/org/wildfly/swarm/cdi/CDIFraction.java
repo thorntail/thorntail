@@ -15,12 +15,23 @@
  */
 package org.wildfly.swarm.cdi;
 
+import javax.inject.Singleton;
+
 import org.wildfly.swarm.config.Weld;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
+@DefaultFraction
+@Singleton
+@WildFlyExtension(module = "org.jboss.as.weld")
+@MarshalDMR
+@DeploymentModule(name = "org.wildfly.swarm.cdi", slot = "ext", metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 public class CDIFraction extends Weld<CDIFraction> implements Fraction {
 
     public CDIFraction() {

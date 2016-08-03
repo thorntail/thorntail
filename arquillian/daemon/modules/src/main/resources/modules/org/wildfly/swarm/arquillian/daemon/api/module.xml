@@ -14,7 +14,7 @@
   <dependencies>
     <module name="io.netty"/>
     <module name="javax.annotation.api" export="true"/>
-    <module name="javax.enterprise.api" slot="cdi2" export="true"/>
+    <module name="javax.enterprise.api" export="true"/>
     <module name="org.jboss.as.server"/>
     <module name="org.jboss.modules"/>
     <module name="org.jboss.msc"/>

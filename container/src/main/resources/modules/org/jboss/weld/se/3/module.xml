@@ -7,7 +7,7 @@
 
   <dependencies>
     <module name="javax.api"/>
-    <module name="javax.enterprise.api" slot="cdi2"/>
+    <module name="javax.enterprise.api"/>
     <module name="org.jboss.logging" export="true"/>
     <module name="org.jboss.weld.spi" slot="3"/>
     <module name="org.jboss.weld.core" slot="3"/>

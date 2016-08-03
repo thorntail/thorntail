@@ -44,7 +44,7 @@
     <module name="org.jboss.weld.spi" slot="3" export="true"/>
     <module name="org.jboss.weld.core" slot="3"/>
     <module name="org.jboss.weld.se" slot="3"/>
-    <module name="javax.enterprise.api" slot="cdi2"/>
+    <module name="javax.enterprise.api"/>
     <module name="javax.inject.api"/>
 
     <!-- the following have been added to support xml parsing -->

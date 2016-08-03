@@ -67,6 +67,7 @@ import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.cdi.UnmanagedInstance;
+import org.wildfly.swarm.container.runtime.ProjectStageFactory;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;

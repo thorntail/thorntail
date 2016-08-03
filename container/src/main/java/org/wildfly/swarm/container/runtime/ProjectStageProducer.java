@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime.internal;
+package org.wildfly.swarm.container.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +25,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-import org.wildfly.swarm.container.internal.ProjectStageFactory;
-import org.wildfly.swarm.container.internal.ProjectStageImpl;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<module xmlns="urn:jboss:module:1.5" name="javax.enterprise.api" slot="cdi2">
+<module xmlns="urn:jboss:module:1.5" name="javax.enterprise.api">
   <resources>
     <artifact name="javax.enterprise:cdi-api:${version.cdi2}"/>
   </resources>

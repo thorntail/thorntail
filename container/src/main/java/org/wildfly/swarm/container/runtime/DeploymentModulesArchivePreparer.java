@@ -61,6 +61,7 @@ public class DeploymentModulesArchivePreparer implements ArchivePreparer {
     }
 
     protected void addModule(JARArchive archive, DeploymentModule entry) {
+        System.err.println( "add deployment module: " + entry );
         String moduleName = entry.name();
         String moduleSlot = entry.slot();
         if (moduleSlot.equals("")) {
@@ -68,6 +69,6 @@ public class DeploymentModulesArchivePreparer implements ArchivePreparer {
         }
         Module def = archive.addModule(moduleName, moduleSlot);
         def.withExport(entry.export());
-        def.withMetaInf(entry.metaInf().toString());
+        def.withMetaInf(entry.metaInf().toString().toLowerCase());
     }
 }

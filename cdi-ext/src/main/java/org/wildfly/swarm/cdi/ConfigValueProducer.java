@@ -19,76 +19,93 @@ package org.wildfly.swarm.cdi;
 import java.lang.annotation.Annotation;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Singleton;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.StageConfig.Resolver;
+import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
 
 /**
  *
  * @author Martin Kouba
  */
-@ApplicationScoped
+@Singleton
 public class ConfigValueProducer {
+
+    /*
+    static {
+        System.err.println( "Annotation from CVP - " + ConfigurationValue.class.getClassLoader() );
+        System.err.println( "Producer from CVP: " + ConfigValueProducer.class.getClassLoader() );
+        System.err.println( "NonBinding from CVP: " + Nonbinding.class.getClassLoader() );
+    }
 
     private StageConfig stageConfig;
 
+    public ConfigValueProducer() {
+        System.err.println( "******* ConfigValueProducer ctor" );
+    }
+
     @PostConstruct
     void init() {
+        System.err.println( "******* ConfigValueProducer POSTCONSTRUCT" );
         stageConfig = lookup();
     }
+    */
 
-    @ConfigValue
+    @ConfigurationValue
     @Dependent
     @Produces
-    Resolver<String> produceResolver(InjectionPoint injectionPoint) {
-        return resolver(injectionPoint);
+    public Resolver<String> produceResolver(InjectionPoint injectionPoint) {
+        return null;
+        //return resolver(injectionPoint);
     }
+    /*
 
-    @ConfigValue
+    @ConfigurationValue
     @Dependent
     @Produces
-    String produceStringConfigValue(InjectionPoint injectionPoint) {
+    public String produceStringConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, String.class);
     }
 
-    @ConfigValue
+    @ConfigurationValue
     @Dependent
     @Produces
-    Integer produceIntegerConfigValue(InjectionPoint injectionPoint) {
+    public Integer produceIntegerConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Integer.class);
     }
 
-    @ConfigValue
+    @ConfigurationValue
     @Dependent
     @Produces
-    Boolean produceBooleanConfigValue(InjectionPoint injectionPoint) {
+    public Boolean produceBooleanConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Boolean.class);
     }
 
-    @ConfigValue
+    @ConfigurationValue
     @Dependent
     @Produces
-    Long produceLongConfigValue(InjectionPoint injectionPoint) {
+    public Long produceLongConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Long.class);
     }
 
-    @ConfigValue
+    @ConfigurationValue
     @Dependent
     @Produces
-    Float produceFloatConfigValue(InjectionPoint injectionPoint) {
+    public Float produceFloatConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Float.class);
     }
 
-    @ConfigValue
+    @ConfigurationValue
     @Dependent
     @Produces
-    Double produceDoubleConfigValue(InjectionPoint injectionPoint) {
+    public Double produceDoubleConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Double.class);
     }
 
@@ -107,8 +124,8 @@ public class ConfigValueProducer {
 
     private String getName(InjectionPoint injectionPoint) {
         for (Annotation qualifier : injectionPoint.getQualifiers()) {
-            if (qualifier.annotationType().equals(ConfigValue.class)) {
-                return ((ConfigValue) qualifier).value();
+            if (qualifier.annotationType().equals(ConfigurationValue.class)) {
+                return ((ConfigurationValue) qualifier).value();
             }
         }
         return null;
@@ -119,8 +136,10 @@ public class ConfigValueProducer {
             InitialContext context = new InitialContext();
             return (StageConfig) context.lookup("jboss/swarm/stage-config");
         } catch (NamingException e) {
+            e.printStackTrace();
             return null;
         }
     }
+    */
 
 }

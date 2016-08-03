@@ -18,8 +18,11 @@ package org.wildfly.swarm.cdi;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.wildfly.swarm.spi.api.StageConfig.Resolver;
+import org.wildfly.swarm.container.runtime.ConfigurationValueProducer;
+import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+
 
 /**
  *
@@ -29,22 +32,23 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 public class ConfigAwareBean {
 
     @Inject
-    @ConfigValue(SwarmProperties.PORT_OFFSET)
+    @ConfigurationValue(SwarmProperties.PORT_OFFSET)
     private Integer portOffset;
 
     private String logLevel;
 
-    private Resolver<String> portOffsetResolver;
+    private StageConfig.Resolver<String> portOffsetResolver;
+
 
     @Inject
-    ConfigAwareBean(@ConfigValue("logger.level") String logLevel,
-            @ConfigValue(SwarmProperties.PORT_OFFSET) Resolver<String> resolver) {
+    ConfigAwareBean(@ConfigurationValue("logger.level") String logLevel,
+            @ConfigurationValue(SwarmProperties.PORT_OFFSET) StageConfig.Resolver<String> resolver) {
         this.logLevel = logLevel;
         this.portOffsetResolver = resolver;
     }
 
     @Inject
-    void init(@ConfigValue("logger.level") String logLevel) {
+    void init(@ConfigurationValue("logger.level") String logLevel) {
         // Initializers are called after constructor
         if (!this.logLevel.equals(logLevel)) {
             this.logLevel = "FAIL";
@@ -59,8 +63,9 @@ public class ConfigAwareBean {
         return logLevel;
     }
 
-    Resolver<String> getPortOffsetResolver() {
+    StageConfig.Resolver<String> getPortOffsetResolver() {
         return portOffsetResolver;
     }
+
 
 }

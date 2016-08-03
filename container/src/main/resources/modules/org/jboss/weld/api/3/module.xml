@@ -7,7 +7,7 @@
 
   <dependencies>
     <module name="javax.api"/>
-    <module name="javax.enterprise.api" slot="cdi2" export="true"/>
+    <module name="javax.enterprise.api" export="true"/>
     <module name="javax.inject.api"/>
     <module name="javax.interceptor.api"/>
   </dependencies>
