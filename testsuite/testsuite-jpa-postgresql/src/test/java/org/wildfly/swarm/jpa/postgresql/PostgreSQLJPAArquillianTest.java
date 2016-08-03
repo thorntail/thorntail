@@ -23,12 +23,13 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.jpa.JPAFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 @RunWith(Arquillian.class)
-public class PostgreSQLJPAArquillianTest implements ContainerFactory {
+public class PostgreSQLJPAArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -37,9 +38,9 @@ public class PostgreSQLJPAArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(PostgreSQLJPAFraction.createDefaultFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(JPAFraction.createDefaultFraction());
     }
 
     @Test

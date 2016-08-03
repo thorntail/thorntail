@@ -784,6 +784,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
@@ -1062,6 +1068,7 @@
     <module>connector</module>
     <module>databases/h2</module>
     <module>databases/mysql</module>
+    <module>databases/postgresql</module>
     <module>datasources</module>
     <!--<module>drools-server</module>-->
     <module>ee</module>
