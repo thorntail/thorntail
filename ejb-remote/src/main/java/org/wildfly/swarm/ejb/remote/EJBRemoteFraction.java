@@ -15,27 +15,15 @@
  */
 package org.wildfly.swarm.ejb.remote;
 
-import org.wildfly.swarm.config.ejb3.RemoteService;
-import org.wildfly.swarm.ejb.EJBFraction;
+import javax.inject.Singleton;
+
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Ken Finnigan
  */
-@Configuration
+@Singleton
+@DefaultFraction
 public class EJBRemoteFraction implements Fraction {
-
-    @Override
-    public void postInitialize(PostInitContext initContext) {
-        EJBFraction ejbFraction = (EJBFraction) initContext.fraction("ejb");
-        if (ejbFraction != null) {
-            ejbFraction
-                    .remoteService(
-                            new RemoteService()
-                                    .connectorRef("http-remoting-connector")
-                                    .threadPoolName("default")
-                    );
-        }
-    }
 }

@@ -23,8 +23,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.jsf.JSFFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
@@ -32,7 +32,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class JSFArquillianTest implements ContainerFactory {
+public class JSFArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -41,9 +41,9 @@ public class JSFArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new JSFFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(new JSFFraction());
     }
 
     @Test

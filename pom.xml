@@ -1052,7 +1052,7 @@
     <!--<module>drools-server</module>-->
     <module>ee</module>
     <module>ejb</module>
-    <!--<module>ejb-remote</module>-->
+    <module>ejb-remote</module>
     <module>hibernate-search</module>
     <module>hibernate-validator</module>
     <module>infinispan</module>
@@ -1073,7 +1073,7 @@
     <!--<module>jpa</module>-->
     <!--<module>jpa-mysql</module>-->
     <!--<module>jpa-postgresql</module>-->
-    <!--<module>jsf</module>-->
+    <module>jsf</module>
     <!--<module>keycloak</module>-->
     <!--<module>keycloak-server</module>-->
     <module>logging</module>
@@ -1089,9 +1089,9 @@
     <!--<module>netflix</module>-->
     <module>remoting</module>
     <module>request-controller</module>
-    <!--<module>resource-adapters</module>-->
+    <module>resource-adapters</module>
     <module>security</module>
-    <!--<module>spring</module>-->
+    <module>spring</module>
     <!--<module>swagger</module>-->
     <!--<module>swagger-webapp</module>-->
     <module>topology</module>

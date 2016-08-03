@@ -72,7 +72,7 @@
     <!--<module>testsuite-drools-server</module>-->
     <module>testsuite-ee</module>
     <module>testsuite-ejb</module>
-    <!--<module>testsuite-ejb-remote</module>-->
+    <module>testsuite-ejb-remote</module>
     <!--<module>testsuite-hystrix</module>-->
     <module>testsuite-infinispan</module>
     <module>testsuite-io</module>
@@ -86,7 +86,7 @@
     <!--<module>testsuite-jpa</module>-->
     <!--<module>testsuite-jpa-mysql</module>-->
     <!--<module>testsuite-jpa-postgresql</module>-->
-    <!--<module>testsuite-jsf</module>-->
+    <module>testsuite-jsf</module>
     <!--<module>testsuite-keycloak</module>-->
     <!--<module>testsuite-keycloak-server</module>-->
     <!--<module>testsuite-logging</module>-->
@@ -101,11 +101,11 @@
     <module>testsuite-naming</module>
     <module>testsuite-remoting</module>
     <module>testsuite-request-controller</module>
-    <!--<module>testsuite-resource-adapters</module>-->
+    <module>testsuite-resource-adapters</module>
     <!--<module>testsuite-ribbon</module>-->
     <!--<module>testsuite-ribbon-secured</module>-->
     <module>testsuite-security</module>
-    <!--<module>testsuite-spring</module>-->
+    <module>testsuite-spring</module>
     <!--<module>testsuite-swagger</module>-->
     <!--<module>testsuite-swagger-webapp</module>-->
     <module>testsuite-topology</module>
