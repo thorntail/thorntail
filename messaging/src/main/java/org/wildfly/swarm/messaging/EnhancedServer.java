@@ -74,6 +74,15 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         return this;
     }
 
+    public EnhancedServer enableRemote() {
+        enableHTTPConnections();
+
+        connectionFactory(new ConnectionFactory("RemoteConnectionFactory")
+                                  .connectors(Collections.singletonList("http-connector"))
+                                  .entries("java:/RemoteConnectionFactory", "java:jboss/exported/jms/RemoteConnectionFactory"));
+        return this;
+    }
+
     private EnhancedServer enableHTTPConnections() {
         if (this.subresources().acceptor(("http-acceptor")) != null) {
             return this;
@@ -99,6 +108,24 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         });
     }
 
+    public EnhancedServer remoteJmsQueue(String childKey) {
+        remoteJmsQueue(childKey, null);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public EnhancedServer remoteJmsQueue(String childKey, JMSQueueConsumer config) {
+        return super.jmsQueue(childKey, (q) -> {
+            if (config != null) {
+                config.accept(q);
+            }
+            if (q.entries() == null || q.entries().isEmpty()) {
+                q.entry("java:/jboss/exported/jms/queue/" + childKey);
+                q.entry("java:/jms/queue/" + childKey);
+            }
+        });
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public EnhancedServer jmsTopic(String childKey, JMSTopicConsumer config) {
@@ -107,6 +134,24 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
                 config.accept(t);
             }
             if (t.entries() == null || t.entries().isEmpty()) {
+                t.entry("java:/jms/topic/" + childKey);
+            }
+        });
+    }
+
+    public EnhancedServer remoteJmsTopic(String childKey) {
+        remoteJmsTopic(childKey, null);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public EnhancedServer remoteJmsTopic(String childKey, JMSTopicConsumer config) {
+        return super.jmsTopic(childKey, (t) -> {
+            if (config != null) {
+                config.accept(t);
+            }
+            if (t.entries() == null || t.entries().isEmpty()) {
+                t.entry("java:/jboss/exported/jms/topic/" + childKey);
                 t.entry("java:/jms/topic/" + childKey);
             }
         });
