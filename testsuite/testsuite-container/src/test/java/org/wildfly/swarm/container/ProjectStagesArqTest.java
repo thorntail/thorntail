@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.container;
 
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -22,14 +26,18 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.Pre;
+import org.wildfly.swarm.spi.api.ProjectStage;
 
 /**
  * @author Heiko Braun
  */
 @RunWith(Arquillian.class)
-public class ProjectStagesArqTest implements ContainerFactory {
+public class ProjectStagesArqTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
@@ -43,24 +51,30 @@ public class ProjectStagesArqTest implements ContainerFactory {
      * Test loading of project-stages.yml in arq test cases
      * See https://issues.jboss.org/browse/SWARM-486
      */
-    @Override
-    public Container newContainer(String... args) throws Exception {
-
-        return new Container().fraction(new Fraction() {
-            @Override
-            public void initialize(InitContext initContext) {
-                // does nothing but extract stageConfig for verification
-                if (!initContext.projectStage().isPresent()) {
-                    throw new AssertionError("project stages not present");
-                }
-            }
-        });
-
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm()
+                .component( ProjectStageInjectable.class );
     }
 
     @Test
-    public void testStageConfigPresence() {
-        // nada
+    public void testNothing() {
+        // nothing
+    }
+
+    @Pre
+    @Singleton
+    public static class ProjectStageInjectable implements Customizer {
+
+        @Inject
+        private Instance<ProjectStage> stage;
+
+        @Override
+        public void customize() {
+            if ( this.stage.isUnsatisfied() ) {
+                throw new AssertionError("project stages not present");
+            }
+        }
     }
 
 }

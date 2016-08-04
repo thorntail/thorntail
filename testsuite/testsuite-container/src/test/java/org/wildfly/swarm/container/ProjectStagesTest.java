@@ -16,25 +16,22 @@
 package org.wildfly.swarm.container;
 
 import java.util.List;
-import java.util.Map;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.wildfly.swarm.container.internal.ProjectStageFactory;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Heiko Braun
  * @since 07/04/16
  */
+@Ignore
 public class ProjectStagesTest {
 
+    /*
     @Before
     public void prepareStage() {
         testStages = new ProjectStageFactory().loadStages(
@@ -195,10 +192,10 @@ public class ProjectStagesTest {
         container.start().stop();
     }
 
-    /**
-     * Project stage shsould be discovered from classpath (modular or not)
-     * See https://issues.jboss.org/browse/SWARM-486
-     */
+    //
+    // Project stage shsould be discovered from classpath (modular or not)
+    // See https://issues.jboss.org/browse/SWARM-486
+    //
     @Test
     public void testStageConfigDiscovery() throws Exception {
 
@@ -216,4 +213,5 @@ public class ProjectStagesTest {
 
 
     private List<ProjectStage> testStages;
+    */
 }
