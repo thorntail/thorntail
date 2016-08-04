@@ -40,8 +40,8 @@
         <module>ejb</module>
         <module>jaxb</module>
         <module>jms</module>
-<!--
         <module>jmx</module>
+<!--
         <module>jpa</module>
         <module>mail</module>
         <module>undertow</module>

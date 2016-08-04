@@ -77,7 +77,7 @@ public class JMSIntegrationTest {
         return archive;
     }
 
-    
+
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
         Swarm container = new Swarm().fraction(new CamelCoreFraction());
