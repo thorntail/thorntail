@@ -145,10 +145,6 @@ public class SwarmConfigurator {
         return stageConfig.isPresent();
     }
 
-    public PostInitContext createPostInitContext() {
-        return new PostInitContext();
-    }
-
     public void start(boolean eagerlyOpen) throws Exception {
         if (!this.running) {
             if (stageConfig.isPresent()) {
@@ -600,41 +596,4 @@ public class SwarmConfigurator {
     private ClassLoader defaultDeploymentClassLoader;
 
     private WeldContainer weldContainer;
-
-    /**
-     * Initialization Context to be passed to Fractions to allow them to provide
-     * additional functionality into the Container.
-     */
-    private class InitContext implements Fraction.InitContext {
-        public void fraction(Fraction fraction) {
-            SwarmConfigurator.this.dependentFraction(fraction);
-        }
-
-        public void socketBinding(SocketBinding binding) {
-            socketBinding("default-sockets", binding);
-        }
-
-        public void socketBinding(String groupName, SocketBinding binding) {
-            SwarmConfigurator.this.socketBinding(groupName, binding);
-        }
-
-        public void outboundSocketBinding(OutboundSocketBinding binding) {
-            outboundSocketBinding("default-sockets", binding);
-        }
-
-        public void outboundSocketBinding(String groupName, OutboundSocketBinding binding) {
-            SwarmConfigurator.this.outboundSocketBinding(groupName, binding);
-        }
-
-        @Override
-        public Optional<StageConfig> projectStage() {
-            Optional<StageConfig> cfg = stageConfig.isPresent() ?
-                    Optional.of(new StageConfig(stageConfig.get())) : Optional.empty();
-
-            return cfg;
-        }
-    }
-
-    private class PostInitContext extends InitContext implements Fraction.PostInitContext {
-    }
 }
