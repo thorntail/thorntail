@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
@@ -32,4 +33,17 @@ import javax.inject.Qualifier;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface ConfigurationValue {
     @Nonbinding String value() default "";
+
+    final class Literal extends AnnotationLiteral<ConfigurationValue> implements ConfigurationValue {
+
+        public static final Literal INSTANCE = new Literal();
+
+        private static final long serialVersionUID = 1L;
+
+        @Nonbinding
+        @Override
+        public String value() {
+            return null;
+        }
+    }
 }
