@@ -73,7 +73,7 @@
     <module>testsuite-ee</module>
     <module>testsuite-ejb</module>
     <module>testsuite-ejb-remote</module>
-    <!--<module>testsuite-hystrix</module>-->
+    <module>testsuite-hystrix</module>
     <module>testsuite-infinispan</module>
     <module>testsuite-io</module>
     <module>testsuite-javafx</module>
@@ -102,8 +102,8 @@
     <module>testsuite-remoting</module>
     <module>testsuite-request-controller</module>
     <module>testsuite-resource-adapters</module>
-    <!--<module>testsuite-ribbon</module>-->
-    <!--<module>testsuite-ribbon-secured</module>-->
+    <module>testsuite-ribbon</module>
+    <module>testsuite-ribbon-secured</module>
     <module>testsuite-security</module>
     <module>testsuite-spring</module>
     <module>testsuite-swagger</module>
