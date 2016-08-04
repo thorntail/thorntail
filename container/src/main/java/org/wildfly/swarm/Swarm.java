@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.LogManager;
 
 import javax.enterprise.inject.Vetoed;
@@ -167,6 +169,11 @@ public class Swarm {
         return this;
     }
 
+    public Swarm component(Class<?> cls) {
+        this.userComponentClasses.add(cls);
+        return this;
+    }
+
     /**
      * Configure a network interface.
      *
@@ -226,18 +233,23 @@ public class Swarm {
         if (Boolean.getBoolean("swarm.isuberjar")) {
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
             weld.setClassLoader(module.getClassLoader());
-            Thread.currentThread().setContextClassLoader( module.getClassLoader() );
-            System.err.println( "using classloader: " + module.getClassLoader() );
+            Thread.currentThread().setContextClassLoader(module.getClassLoader());
+            System.err.println("using classloader: " + module.getClassLoader());
 
             Enumeration<URL> res = module.getClassLoader().getResources("META-INF/beans.xml");
 
-            while ( res.hasMoreElements() ) {
-                System.err.println( "beans.xml: " + res.nextElement() );
+            while (res.hasMoreElements()) {
+                System.err.println("beans.xml: " + res.nextElement());
             }
         }
 
         // Add Extension that adds User custom bits into configurator
         weld.addExtension(new InstallUserFractionExtension());
+
+        for (Class<?> each : this.userComponentClasses) {
+            System.err.println("adding component class: " + each);
+            weld.addBeanClass(each);
+        }
 
         WeldContainer weldContainer = weld.initialize();
         swarmConfigurator = weldContainer.select(SwarmConfigurator.class).get();
@@ -248,6 +260,7 @@ public class Swarm {
         this.configuratorActive = true;
 
         swarmConfigurator.start(eagerlyOpen);
+
         return this;
     }
 
@@ -374,6 +387,8 @@ public class Swarm {
 
         VERSION = props.getProperty("version", "unknown");
     }
+
+    private Set<Class<?>> userComponentClasses = new HashSet<>();
 
     private SwarmConfigurator swarmConfigurator;
 
