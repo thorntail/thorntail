@@ -28,7 +28,7 @@ import org.wildfly.swarm.swagger.SwaggerArchive;
  */
 public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implements SwaggerArchive {
 
-    public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.runtime.SwaggerActivator";
+    public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.runtime.SwaggerServiceActivator";
 
     public SwaggerArchiveImpl(ArchiveBase<?> archive) {
         super(archive);

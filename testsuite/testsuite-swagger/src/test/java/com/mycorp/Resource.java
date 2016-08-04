@@ -13,20 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.swagger;
+package com.mycorp;
 
-import org.junit.Test;
-import org.wildfly.swarm.container.Container;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 /**
  * @author Lance Ball
  */
-public class SwaggerInVmTest {
+@Path("/")
+@Api(value = "theapp", authorizations = {
+        @Authorization(value = "sampleoauth", scopes = {})
+})
+@Produces({"application/json", "application/xml"})
+public class Resource {
 
-    @Test
-    public void testSimple() throws Exception {
-        Container container = new Container();
-        container.fraction(new SwaggerFraction());
-        container.start().stop();
+    @Path("howdy")
+    @GET
+    @ApiOperation(value = "Say howdy",
+            response = String.class)
+    public String get() {
+        return "howdy";
     }
+
 }

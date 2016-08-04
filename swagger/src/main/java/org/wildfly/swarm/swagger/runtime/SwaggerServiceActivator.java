@@ -17,6 +17,8 @@ package org.wildfly.swarm.swagger.runtime;
 
 import java.io.InputStream;
 
+import javax.inject.Singleton;
+
 import io.swagger.jaxrs.config.BeanConfig;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
@@ -27,7 +29,8 @@ import org.wildfly.swarm.swagger.SwaggerConfig;
 /**
  * @author Lance Ball
  */
-public class SwaggerActivator implements ServiceActivator {
+
+public class SwaggerServiceActivator implements ServiceActivator {
     @Override
     public void activate(ServiceActivatorContext serviceActivatorContext) throws ServiceRegistryException {
 
