@@ -1062,7 +1062,7 @@
     <!-- fractions -->
     <module>batch-jberet</module>
     <module>bean-validation</module>
-    <!--<module>camel</module>-->
+    <module>camel</module>
     <module>cdi</module>
     <module>cdi-ext</module>
     <module>connector</module>
