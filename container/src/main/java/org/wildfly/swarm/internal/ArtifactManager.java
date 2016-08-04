@@ -18,15 +18,12 @@ package org.wildfly.swarm.internal;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,7 +91,6 @@ public class ArtifactManager implements ArtifactLookup {
         if (this.deps != null) {
             archivesPaths = new MavenDependencyResolution(deps).resolve(exclusions);
         } else {
-
             archivesPaths = new SystemDependencyResolution().resolve(exclusions);
         }
 
@@ -108,7 +104,8 @@ public class ArtifactManager implements ArtifactLookup {
                         .importFrom(artifact)
                         .as(JavaArchive.class));
             } else {
-                final String archiveName = archiveNameForClassesDir(artifact.toPath());
+
+                final String archiveName = FileSystemLayout.archiveNameForClassesDir(artifact.toPath());
 
                 // pack resources and classes of the same project into one archive
                 if (archives.containsKey(archiveName)) {
@@ -122,18 +119,6 @@ public class ArtifactManager implements ArtifactLookup {
         }
 
         return new ArrayList<>(archives.values());
-    }
-
-    public static String archiveNameForClassesDir(Path element) {
-        if (element.endsWith("target/classes")) {
-            // Maven
-            return element.subpath(element.getNameCount() - 3, element.getNameCount() - 2).toString() + ".jar";
-        } else if (element.endsWith("build/classes/main") || element.endsWith("build/resources/main")) {
-            // Gradle
-            return element.subpath(element.getNameCount() - 4, element.getNameCount() - 3).toString() + ".jar";
-        } else {
-            return UUID.randomUUID().toString() + ".jar";
-        }
     }
 
     private File findFile(String gav) throws IOException, ModuleLoadException {

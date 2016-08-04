@@ -15,9 +15,7 @@
  */
 package org.wildfly.swarm.container;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -62,6 +60,7 @@ import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.internal.Deployer;
@@ -378,9 +377,9 @@ public class Container {
     }
 
     /**
-     * Deploy the default WAR deployment.
+     * Deploy the default deployment.
      * <p/>
-     * <p>For WAR-based applications, the primary WAR artifact iwll be deployed.</p>
+     * <p>The actual deployment type depends on the build packaging type</p>
      *
      * @return The container.
      * @throws DeploymentException if an error occurs.
@@ -664,38 +663,10 @@ public class Container {
             }
         }
 
-        if (Files.exists(Paths.get("pom.xml"))) {
-            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("pom.xml").toFile()))) {
-                String line;
+        // fallback to file system
+        FileSystemLayout fsLayout = FileSystemLayout.create();
 
-                while ((line = in.readLine()) != null) {
-                    line = line.trim();
-                    if (line.equals("<packaging>jar</packaging>")) {
-                        return "jar";
-                    } else if (line.equals("<packaging>war</packaging>")) {
-                        return "war";
-                    }
-                }
-            }
-        }
-
-        if (Files.exists(Paths.get("Mavenfile"))) {
-            try (BufferedReader in = new BufferedReader(new FileReader(Paths.get("Mavenfile").toFile()))) {
-                String line;
-
-                while ((line = in.readLine()) != null) {
-                    line = line.trim();
-                    if (line.equals("packaging :jar")) {
-                        return "jar";
-                    } else if (line.equals("packaging :war")) {
-                        return "war";
-                    }
-                }
-            }
-        }
-
-        // when in doubt, assume at least a .jar
-        return "jar";
+        return fsLayout.determinePackagingType();
     }
 
     private ProjectStage loadStageConfiguration(URL url) {

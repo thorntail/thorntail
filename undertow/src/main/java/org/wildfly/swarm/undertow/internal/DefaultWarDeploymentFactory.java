@@ -19,19 +19,20 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Bob McWhirter
+ * @author Heiko Braun
  */
 public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
@@ -62,10 +63,8 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
     public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {
         final DependenciesContainer<?> archive = (DependenciesContainer<?>) givenArchive;
 
-        Path pwd = Paths.get(System.getProperty("user.dir"));
-
-        final Path classes = pwd.resolve("target").resolve("classes");
-
+        FileSystemLayout fsLayout = FileSystemLayout.create();
+        final Path classes = fsLayout.resolveBuildClassesDir();
         boolean success = false;
 
         if (Files.exists(classes)) {
@@ -88,7 +87,7 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
             });
         }
 
-        final Path webapp = pwd.resolve("src").resolve("main").resolve("webapp");
+        final Path webapp = fsLayout.resolveSrcWebAppDir();
 
         if (Files.exists(webapp)) {
             success = true;

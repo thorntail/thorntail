@@ -150,17 +150,17 @@ public class ArtifactManagerTest {
 
     @Test
     public void testArchiveNameForGradleClassesOutputDir() {
-        assertThat(ArtifactManager.archiveNameForClassesDir(Paths.get("/test/projectname/build/resources/main"))).isEqualTo("projectname.jar");
+        assertThat(FileSystemLayout.archiveNameForClassesDir(Paths.get("/test/projectname/build/resources/main"))).isEqualTo("projectname.jar");
     }
 
     @Test
     public void testArchiveNameForGradleResourcesOutputDir() {
-        assertThat(ArtifactManager.archiveNameForClassesDir(Paths.get("/test/projectname/build/classes/main"))).isEqualTo("projectname.jar");
+        assertThat(FileSystemLayout.archiveNameForClassesDir(Paths.get("/test/projectname/build/classes/main"))).isEqualTo("projectname.jar");
     }
 
     @Test
     public void testArchiveNameForMavenOutputDir() {
-        assertThat(ArtifactManager.archiveNameForClassesDir(Paths.get("/test/projectname/target/classes"))).isEqualTo("projectname.jar");
+        assertThat(FileSystemLayout.archiveNameForClassesDir(Paths.get("/test/projectname/target/classes"))).isEqualTo("projectname.jar");
     }
 
     @Test
