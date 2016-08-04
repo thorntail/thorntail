@@ -37,6 +37,7 @@
     <modules>
         <module>cdi</module>
         <module>cxf</module>
+<!--
         <module>ejb</module>
         <module>jaxb</module>
         <module>jms</module>
@@ -45,6 +46,7 @@
         <module>mail</module>
         <module>undertow</module>
         <module>other</module>
+-->
     </modules>
 
 </project>

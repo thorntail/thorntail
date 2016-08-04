@@ -47,9 +47,7 @@
     <!-- Modules -->
     <modules>
         <module>core</module>
-<!--
         <module>components</module>
--->
     </modules>
 
     <!-- DependencyManagement -->

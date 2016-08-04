@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,7 +56,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelContextRegistry;
-import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.camel.test.cdi.subA.Constants;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextA;
@@ -67,7 +68,7 @@ import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 @RunWith(Arquillian.class)
-public class CDIIntegrationTest implements ContainerFactory {
+public class CDIIntegrationTest {
 
     @Resource(name = "java:jboss/camel/CamelContextRegistry")
     CamelContextRegistry contextRegistry;
@@ -97,9 +98,9 @@ public class CDIIntegrationTest implements ContainerFactory {
         return archive;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new CamelCoreFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(new CamelCoreFraction());
     }
 
     @Test

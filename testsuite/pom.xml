@@ -59,8 +59,8 @@
   <modules>
     <module>testsuite-batch-jberet</module>
     <module>testsuite-cdi</module>
-    <!--<module>testsuite-camel-cdi</module>-->
-    <!--<module>testsuite-camel-cxf</module>-->
+    <module>testsuite-camel-cdi</module>
+    <module>testsuite-camel-cxf</module>
     <!--<module>testsuite-camel-ejb</module>-->
     <!--<module>testsuite-camel-jms</module>-->
     <!--<module>testsuite-camel-jmx</module>-->
