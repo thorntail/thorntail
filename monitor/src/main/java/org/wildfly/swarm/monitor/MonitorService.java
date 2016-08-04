@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.monitor;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -23,11 +23,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.as.server.ServerEnvironment;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
@@ -46,11 +49,12 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUC
  * @author Heiko Braun
  * @since 19/02/16
  */
+@Vetoed
 public class MonitorService implements Monitor, Service<MonitorService> {
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "monitor");
 
-    MonitorService(Optional<String> securityRealm) {
+    public MonitorService(Optional<String> securityRealm) {
         this.securityRealm = securityRealm;
     }
 
@@ -60,7 +64,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         serverEnvironment = serverEnvironmentValue.getValue();
         controllerClient = modelControllerValue.getValue().createClient(executorService);
 
-        if(!securityRealm.isPresent()) {
+        if (!securityRealm.isPresent()) {
             System.out.println("WARN: You are running the monitoring endpoints without any security realm configuration!");
         }
     }
@@ -95,7 +99,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
             ModelNode response = controllerClient.execute(op);
             ModelNode unwrapped = unwrap(response);
             // need a way to figure out *which* version we really mean here...
-            unwrapped.get("wfs-version").set( "fixme" );
+            unwrapped.get("wfs-version").set("fixme");
             return unwrapped;
         } catch (IOException e) {
             return new ModelNode().get(FAILURE_DESCRIPTION).set(e.getMessage());
@@ -148,7 +152,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     @Override
     public void registerHealth(HealthMetaData metaData) {
-        System.out.println("Adding /health endpoint delegate: "+metaData.getWebContext());
+        System.out.println("Adding /health endpoint delegate: " + metaData.getWebContext());
         this.endpoints.add(metaData);
     }
 
@@ -160,11 +164,11 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     @Override
     public Optional<SecurityRealm> getSecurityRealm() {
 
-        if(securityRealm.isPresent() && null==securityRealmServiceValue.getOptionalValue()) {
-            throw new RuntimeException("A security realm has been specified, but has not been configured: "+securityRealm.get());
+        if (securityRealm.isPresent() && null == securityRealmServiceValue.getOptionalValue()) {
+            throw new RuntimeException("A security realm has been specified, but has not been configured: " + securityRealm.get());
         }
 
-        return securityRealmServiceValue.getOptionalValue()!=null ?
+        return securityRealmServiceValue.getOptionalValue() != null ?
                 Optional.of(securityRealmServiceValue.getValue()) :
                 Optional.empty();
 
@@ -177,11 +181,23 @@ public class MonitorService implements Monitor, Service<MonitorService> {
             return response;
     }
 
-    final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
+    public Injector<ServerEnvironment> getServerEnvironmentInjector() {
+        return this.serverEnvironmentValue;
+    }
 
-    final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
+    public Injector<ModelController> getModelControllerInjector() {
+        return this.modelControllerValue;
+    }
 
-    final InjectedValue<SecurityRealm> securityRealmServiceValue = new InjectedValue<SecurityRealm>();
+    public Injector<SecurityRealm> getSecurityRealmInjector() {
+        return this.securityRealmServiceValue;
+    }
+
+    private final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
+
+    private final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
+
+    private final InjectedValue<SecurityRealm> securityRealmServiceValue = new InjectedValue<SecurityRealm>();
 
     private final Optional<String> securityRealm;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.monitor;
 
 import java.util.ArrayList;
 import java.util.Collections;

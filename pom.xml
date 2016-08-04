@@ -1102,7 +1102,7 @@
     <module>messaging</module>
     <!--<module>microprofile</module>-->
     <module>msc</module>
-    <!--<module>monitor</module>-->
+    <module>monitor</module>
     <!--<module>mod_cluster</module>-->
     <module>naming</module>
     <!--<module>netflix</module>-->

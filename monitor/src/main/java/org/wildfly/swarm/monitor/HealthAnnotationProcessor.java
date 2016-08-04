@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.monitor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
+import javax.inject.Singleton;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
@@ -26,70 +25,24 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.MethodInfo;
-import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ClassAsset;
-import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
-import org.jboss.shrinkwrap.impl.base.path.BasicPath;
-import org.wildfly.swarm.monitor.MonitorFraction;
-import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
+import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 
 /**
- * @author Heiko Braun
+ * @author Ken Finnigan
  */
-public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFraction> {
-
-    /**
-     * Path to the WEB-INF inside of the Archive.
-     */
-    private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
-
-    /**
-     * Path to the classes inside of the Archive.
-     */
-    private static final ArchivePath PATH_CLASSES = ArchivePaths.create(PATH_WEB_INF, "classes");
+@Singleton
+public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
     public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.monitor.Health");
+
     public static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
 
-    public MonitorConfiguration() {
-        super(MonitorFraction.class);
-    }
-
     @Override
-    public MonitorFraction defaultFraction() {
-        return new MonitorFraction();
-    }
-
-    @Override
-    public List<ServiceActivator> getServiceActivators(MonitorFraction fraction) {
-        List<ServiceActivator> activators = new ArrayList<>();
-        activators.add(new MonitorServiceActivator(fraction.securityRealm()));
-        return activators;
-    }
-
-    @Override
-    public void prepareArchive(Archive<?> a) {
-        JARArchive jarArchive = a.as(JARArchive.class);
-        jarArchive.addModule("javax.ws.rs.api");
-        jarArchive.addModule("org.wildfly.swarm.monitor");
-        jarArchive.addModule("org.jboss.dmr");
-
-        Asset resource = new ClassAsset(HealthResponseFilter.class);
-        ArchivePath location = new BasicPath(PATH_CLASSES, AssetUtil.getFullPathForClassResource(HealthResponseFilter.class));
-        jarArchive.add(resource, location);
-    }
-
-    @Override
-    public void processArchiveMetaData(Archive<?> a, Index index) {
+    public void processArchive(Archive<?> archive, Index index) {
         List<AnnotationInstance> annotations = index.getAnnotations(PATH);
         for (AnnotationInstance annotation : annotations) {
-            if(annotation.target().kind()== AnnotationTarget.Kind.CLASS)
-            {
+            if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
                 ClassInfo classInfo = annotation.target().asClass();
 
                 for (MethodInfo methodInfo : classInfo.methods()) {
@@ -113,7 +66,7 @@ public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFra
 
                             // the method local @Health
                             AnnotationInstance healthAnnotation = methodInfo.annotation(HEALTH);
-                            isSecure = healthAnnotation.value("inheritSecurity")!=null ? healthAnnotation.value("inheritSecurity").asBoolean() : true;
+                            isSecure = healthAnnotation.value("inheritSecurity") != null ? healthAnnotation.value("inheritSecurity").asBoolean() : true;
 
                         } else {
                             throw new RuntimeException("@Health requires an explicit @Path annotation");
@@ -122,7 +75,7 @@ public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFra
                         try {
                             HealthMetaData metaData = new HealthMetaData(sb.toString(), isSecure);
                             Monitor.lookup().registerHealth(metaData);
-                        } catch (NamingException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -131,6 +84,4 @@ public class MonitorConfiguration extends AbstractServerConfiguration<MonitorFra
             }
         }
     }
-
-
 }
