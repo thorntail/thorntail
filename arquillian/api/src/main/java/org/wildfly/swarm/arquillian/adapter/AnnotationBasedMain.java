@@ -20,7 +20,6 @@ import java.lang.reflect.Modifier;
 
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.container.Container;
 
 /**
  * @uathor Ken Finnigan
