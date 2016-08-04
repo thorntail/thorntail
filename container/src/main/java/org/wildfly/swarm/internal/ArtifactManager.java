@@ -36,7 +36,6 @@ import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
-import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 import org.wildfly.swarm.spi.api.ArtifactLookup;

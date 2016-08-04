@@ -15,9 +15,7 @@
  */
 package org.wildfly.swarm.container.internal;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -65,13 +63,13 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.CommandLineArgs;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.cdi.UnmanagedInstance;
-import org.wildfly.swarm.container.runtime.ProjectStageFactory;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
+import org.wildfly.swarm.container.runtime.ProjectStageFactory;
+import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.JARArchive;
