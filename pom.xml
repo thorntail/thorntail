@@ -1080,7 +1080,7 @@
     <module>io</module>
     <module>javafx</module>
     <module>jaxrs</module>
-    <!--<module>jaxrs-cdi</module>-->
+    <module>jaxrs-cdi</module>
     <module>jaxrs-jaxb</module>
     <module>jaxrs-jsonp</module>
     <module>jaxrs-multipart</module>

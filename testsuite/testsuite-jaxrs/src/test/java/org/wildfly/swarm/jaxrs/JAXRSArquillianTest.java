@@ -28,14 +28,14 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class JAXRSArquillianTest implements ContainerFactory {
+public class JAXRSArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
@@ -46,9 +46,9 @@ public class JAXRSArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new JAXRSFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(new JAXRSFraction());
     }
 
     @Test
