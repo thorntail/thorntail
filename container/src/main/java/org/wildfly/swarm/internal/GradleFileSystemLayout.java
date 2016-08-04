@@ -1,4 +1,4 @@
-package org.wildfly.swarm.bootstrap.util;
+package org.wildfly.swarm.internal;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

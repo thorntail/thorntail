@@ -60,7 +60,7 @@ import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
+import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.internal.Deployer;

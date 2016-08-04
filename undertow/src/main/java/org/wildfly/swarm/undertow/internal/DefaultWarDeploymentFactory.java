@@ -19,14 +19,13 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.wildfly.swarm.bootstrap.util.FileSystemLayout;
+import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.undertow.WARArchive;
