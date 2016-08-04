@@ -115,7 +115,7 @@
     <module>testsuite-topology-webapp</module>
     <module>testsuite-transactions</module>
     <module>testsuite-undertow</module>
-    <!--<module>testsuite-vertx</module>-->
+    <module>testsuite-vertx</module>
     <module>testsuite-webservices</module>
   </modules>
 </project>

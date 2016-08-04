@@ -15,11 +15,9 @@
  */
 package org.wildfly.swarm.vertx;
 
-import java.util.Arrays;
+import javax.inject.Singleton;
 
-import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
-import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
-import org.wildfly.swarm.resource.adapters.ResourceAdapterFraction;
+import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
@@ -27,6 +25,8 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
  * @author George Gastaldi
  */
 @DeploymentModule(name = "io.vertx.jca", slot = "api")
+@Singleton
+@DefaultFraction
 public class VertxFraction implements Fraction {
 
     public VertxFraction inhibitAdapterDeployment() {
@@ -63,27 +63,6 @@ public class VertxFraction implements Fraction {
 
     public boolean isAdapterDeploymentInhibited() {
         return inhibitAdapterDeployment;
-    }
-
-    @Override
-    public void initialize(InitContext initContext) {
-        if (!isAdapterDeploymentInhibited()) {
-            initContext.fraction(new ResourceAdapterFraction().resourceAdapter("vertx-ra", ra -> {
-                ra.module("io.vertx.jca:ra")
-                        .transactionSupport(ResourceAdapter.TransactionSupport.NOTRANSACTION)
-                        .connectionDefinitions("VertxConnectionFactory", c -> {
-                            c.className("io.vertx.resourceadapter.impl.VertxManagedConnectionFactory")
-                                    .jndiName(jndiName())
-                                    .enabled(true)
-                                    .configProperties(
-                                            Arrays.asList(
-                                                    new ConfigProperties("clusterHost").value(clusterHost()),
-                                                    new ConfigProperties("clusterPort").value(String.valueOf(clusterPort()))
-                                            )
-                                    );
-                        });
-            }));
-        }
     }
 
     private boolean inhibitAdapterDeployment;

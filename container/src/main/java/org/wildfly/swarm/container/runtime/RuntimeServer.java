@@ -287,7 +287,8 @@ public class RuntimeServer implements Server {
             this.deployer.deploy(each);
         }
 
-        setupUserSpaceExtension();
+        //TODO User Space integration with CDI
+//        setupUserSpaceExtension();
 
         return this.deployer;
     }
