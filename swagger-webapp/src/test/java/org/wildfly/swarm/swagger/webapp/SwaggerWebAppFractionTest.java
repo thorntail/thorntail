@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.swagger.webapp.unit;
+package org.wildfly.swarm.swagger.webapp;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -30,24 +28,16 @@ import static org.fest.assertions.Assertions.assertThat;
 public class SwaggerWebAppFractionTest {
 
     @Test
-    @Ignore // not a fantastic test.
-    public void testAddWebContentFromGAV() {
-        SwaggerWebAppFraction fraction = new SwaggerWebAppFraction();
-        fraction.addWebContent("org.wildfly.swarm:swagger-webapp-ui:war:" + SwaggerWebAppFraction.VERSION);
-        assertArchive(fraction);
-    }
-
-    @Test
     public void testAddWebContentFromJar() {
         SwaggerWebAppFraction fraction = new SwaggerWebAppFraction();
-        fraction.addWebContent("./test.jar");
+        fraction.addWebContent("./src/test/user-content.jar");
         assertArchive(fraction);
     }
 
     @Test
     public void testAddWebContentFromDirectory() {
         SwaggerWebAppFraction fraction = new SwaggerWebAppFraction();
-        fraction.addWebContent("./sut");
+        fraction.addWebContent("./src/test/user-content");
         Archive<?> archive = assertArchive(fraction);
         // make sure nested files are where they should be
         Node node = archive.get("/js/test.js");

@@ -1112,7 +1112,7 @@
     <module>security</module>
     <module>spring</module>
     <module>swagger</module>
-    <!--<module>swagger-webapp</module>-->
+    <module>swagger-webapp</module>
     <module>topology</module>
     <module>topology-consul</module>
     <module>topology-jgroups</module>
