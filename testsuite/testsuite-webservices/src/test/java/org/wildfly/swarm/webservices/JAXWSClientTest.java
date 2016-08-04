@@ -70,17 +70,16 @@ import org.wildfly.swarm.webservices.ws.SimpleWebserviceEndpointImpl;
 public class JAXWSClientTest  implements ContainerFactory {
 
     private static final String MESSAGE_TO_ECHO = "Lorem ipsum dolor sit amet";
-    private static final QName SERVICE_Q_NAME = new QName(NAMESPACE, SERVICE_NAME);
 
     private static SimpleWSServer wsServer;
 
-    public JAXWSClientTest() {
-        System.out.println(" --> Created JAXWSClientTest");
-        System.out.flush();
+    public JAXWSClientTest() throws IOException {
+        wsServer = new SimpleWSServer();
+        wsServer.buildAndStartWebService();
     }
 
     @Deployment(testable = false)
-    public static Archive createDeployment() {
+    public static Archive createDeployment() throws IOException {
         System.out.println("Creating deployment");
         final WARArchive warArchive = ShrinkWrap.create(WARArchive.class, "myapp.war")
                 .addClass(WebserviceClientServlet.class)
@@ -89,75 +88,33 @@ public class JAXWSClientTest  implements ContainerFactory {
                 .addClass(SimpleWSServer.class)
                 .addClass(SimpleWebserviceEndpointImpl.class)
                 .addClass(SimpleWebserviceEndpointIface.class);
-        warArchive.addModule("javax.xml.ws.api");
         return warArchive;
     }
 
-    public static void startUp() throws IOException {
-        wsServer.buildAndStartWebService();
-    }
-
     public Container newContainer(String... args) throws Exception {
-        wsServer = new SimpleWSServer();
-        wsServer.buildAndStartWebService();
         System.out.println("Building container");
         return new Container(false)
                 .fraction(WebServicesFraction.createDefaultFraction())
                 .fraction(buildNamingFraction());
     }
 
-//    @Test
-//    @RunAsClient
-    public void testSimpleWSClient() {
-        Service webService = Service.create(wsServer.getServerURL(), SERVICE_Q_NAME);
-        QName portName = new QName(NAMESPACE, "SimpleWebserviceEndpointImplPort");
-        SimpleWebserviceEndpointIface webServicePort = webService.getPort(portName, SimpleWebserviceEndpointIface.class);
-        assertThat(webServicePort.echo(MESSAGE_TO_ECHO), is(MESSAGE_TO_ECHO));
-    }
-
-//    @Test
-//    @RunAsClient
-    public void testSimpleWSClientWithSoapHandler() {
-        QName serviceName = SERVICE_Q_NAME;
-        Service webService = Service.create(wsServer.getServerURL(), SERVICE_Q_NAME);
-        QName portName = new QName(NAMESPACE, "SimpleWebserviceEndpointImplPort");
-        SimpleWebserviceEndpointIface webServicePort = webService.getPort(portName, SimpleWebserviceEndpointIface.class);
-        BindingProvider bindingProvider = (BindingProvider) webServicePort;
-        List<Handler> handlerChain = bindingProvider.getBinding().getHandlerChain();
-        handlerChain.add(new SampleSoapHandler());
-        bindingProvider.getBinding().setHandlerChain(handlerChain);
-
-        assertThat(webServicePort.echo(MESSAGE_TO_ECHO), is(MESSAGE_TO_ECHO));
-    }
 
     @Test
     @RunAsClient
     public void testServletAsWebServiceClient() throws Exception {
-        Container container = newContainer().start();
-        try {
-            final URL webappURL = new URL("http://localhost:8080/myapp?message=" + encode(MESSAGE_TO_ECHO, UTF_8.name()));
-            final String response = readResponse(webappURL);
+        final URL webappURL = new URL("http://localhost:8080/myapp?message=" + encode(MESSAGE_TO_ECHO, UTF_8.name()));
+        final String response = readResponse(webappURL);
 
-            assertThat(response, is(MESSAGE_TO_ECHO));
-        } finally {
-            container.stop();
-        }
+        assertThat(response, is(MESSAGE_TO_ECHO));
     }
 
-//    @Test
-//    @RunAsClient
+    @Test
+    @RunAsClient
     public void testServletAsWebServiceClientWithSoapHandler() throws Exception {
-        Container container = newContainer().start();
-        try {
-            final URL webappURL = new URL("http://localhost:8080/myapp/handled?message=" + encode(MESSAGE_TO_ECHO, UTF_8.name()));
-            final String response = readResponse(webappURL);
+        final URL webappURL = new URL("http://localhost:8080/myapp/handled?message=" + encode(MESSAGE_TO_ECHO, UTF_8.name()));
+        final String response = readResponse(webappURL);
 
-            assertThat(response, is(MESSAGE_TO_ECHO));
-        } finally {
-            container.stop();
-        }
-
-
+        assertThat(response, is(MESSAGE_TO_ECHO));
     }
 
     private String readResponse(URL webappURL) throws IOException {

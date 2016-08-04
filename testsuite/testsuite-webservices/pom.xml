@@ -20,18 +20,6 @@
   <name>Test Suite: WebServices</name>
   <description>Test Suite: WebServices</description>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19.1</version>
-        <configuration>
-          <argLine>-Xbootclasspath/p:${user.home}/.m2/repository/org/jboss/logmanager/jboss-logmanager/2.0.3.Final/jboss-logmanager-2.0.3.Final.jar
-            -Djava.util.logging.manager=org.jboss.logmanager.LogManager</argLine>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -41,10 +29,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>webservices</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
