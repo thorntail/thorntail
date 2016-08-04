@@ -25,5 +25,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Documented
 public @interface CreateSwarm {
-
+    boolean startEagerly() default false;
 }
