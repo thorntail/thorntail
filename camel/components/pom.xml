@@ -37,10 +37,10 @@
     <modules>
         <module>cdi</module>
         <module>cxf</module>
-<!--
         <module>ejb</module>
         <module>jaxb</module>
         <module>jms</module>
+<!--
         <module>jmx</module>
         <module>jpa</module>
         <module>mail</module>
