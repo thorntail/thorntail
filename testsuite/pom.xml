@@ -88,7 +88,7 @@
     <module>testsuite-jpa-postgresql</module>
     <module>testsuite-jsf</module>
     <module>testsuite-keycloak</module>
-    <!--<module>testsuite-keycloak-server</module>-->
+    <module>testsuite-keycloak-server</module>
     <module>testsuite-logging</module>
     <module>testsuite-logstash</module>
     <module>testsuite-mail</module>
