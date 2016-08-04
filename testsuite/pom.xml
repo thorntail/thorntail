@@ -95,7 +95,7 @@
     <module>testsuite-management</module>
     <module>testsuite-management-console</module>
     <module>testsuite-messaging</module>
-    <!--<module>testsuite-mod_cluster</module>-->
+    <module>testsuite-mod_cluster</module>
     <module>testsuite-monitor</module>
     <module>testsuite-msc</module>
     <module>testsuite-naming</module>

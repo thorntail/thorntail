@@ -1103,7 +1103,7 @@
     <!--<module>microprofile</module>-->
     <module>msc</module>
     <module>monitor</module>
-    <!--<module>mod_cluster</module>-->
+    <module>mod_cluster</module>
     <module>naming</module>
     <!--<module>netflix</module>-->
     <module>remoting</module>
