@@ -68,6 +68,7 @@ import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.internal.marshal.DMRMarshaller;
+import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.DefaultFraction;
@@ -134,6 +135,10 @@ public class RuntimeServer implements Server {
     @Inject
     @Any
     private Instance<ArchivePreparer> allArchivePreparers;
+
+    @Inject
+    @Any
+    private Instance<ArchiveMetadataProcessor> allArchiveProcessors;
 
     public RuntimeServer() {
     }
@@ -272,6 +277,7 @@ public class RuntimeServer implements Server {
         this.deployer = new RuntimeDeployer(opener, this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
         this.deployer.setArchivePreparers(this.allArchivePreparers);
+        this.deployer.setArchiveMetadataProcessors(this.allArchiveProcessors);
 
         this.serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Object>(this.deployer))).install();
 
