@@ -3,6 +3,7 @@ package org.wildfly.swarm.camel.core;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -10,7 +11,10 @@ import javax.inject.Singleton;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.impl.ExplicitCamelContextNameStrategy;
 import org.apache.camel.model.ModelCamelContext;
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
 import org.jboss.msc.service.AbstractService;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
@@ -24,6 +28,7 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.extension.camel.CamelConstants;
+import org.wildfly.extension.camel.handler.ModuleClassLoaderAssociationHandler;
 import org.wildfly.extension.camel.service.CamelContextRegistryService;
 
 import static org.wildfly.swarm.camel.core.AbstractCamelFraction.LOGGER;
@@ -67,15 +72,24 @@ public class CamelServiceActivator implements ServiceActivator {
 
         @Override
         public void start(StartContext startContext) throws StartException {
-            CamelContextRegistryService.MutableCamelContextRegistry contextRegistry = injectedContextRegistry.getValue();
-            ClassLoader classLoader = CamelContextRegistryService.MutableCamelContextRegistry.class.getClassLoader();
             try {
-                for (RouteBuilder builder : this.fraction.getRouteBuilders()) {
-                    ModelCamelContext camelctx = builder.getContext();
-                    camelctx.setApplicationContextClassLoader(classLoader);
-                    builder.addRoutesToCamelContext(camelctx);
-                    contextRegistry.addCamelContext(camelctx);
-                    systemContexts.add(camelctx);
+                CamelContextRegistryService.MutableCamelContextRegistry contextRegistry = injectedContextRegistry.getValue();
+                Module appModule = Module.getCallerModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                ModuleClassLoaderAssociationHandler.associate(appModule.getClassLoader());
+                try {
+                    for (Map.Entry<String, RouteBuilder> entry : fraction.getRouteBuilders().entrySet()) {
+                        String name = entry.getKey();
+                        RouteBuilder builder = entry.getValue();
+                        ModelCamelContext camelctx = builder.getContext();
+                        if (name != null) {
+                            camelctx.setNameStrategy(new ExplicitCamelContextNameStrategy(name));
+                        }
+                        builder.addRoutesToCamelContext(camelctx);
+                        contextRegistry.addCamelContext(camelctx);
+                        systemContexts.add(camelctx);
+                    }
+                } finally {
+                    ModuleClassLoaderAssociationHandler.disassociate();
                 }
                 for (CamelContext camelctx : systemContexts) {
                     camelctx.start();
