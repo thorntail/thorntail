@@ -33,4 +33,5 @@ import javax.inject.Qualifier;
 public @interface WildFlyExtension {
     @Nonbinding String module() default "";
     @Nonbinding String classname() default "";
+    @Nonbinding boolean noClass() default false;
 }
