@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.jboss.dmr.ModelNode;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.wildfly.swarm.container.runtime.internal.xmlconfig.StandaloneXMLParser;
 
 /**
  * @author Heiko Braun
@@ -39,7 +40,7 @@ public class ParserTestCase {
 
     @Test
     public void testDelegatingParser() throws Exception {
-        StandaloneXmlParser parser = new StandaloneXmlParser();
+        StandaloneXMLParser parser = new StandaloneXMLParser();
         List<ModelNode> operations = parser.parse(xml);
         Assert.assertEquals(28, operations.size());
     }

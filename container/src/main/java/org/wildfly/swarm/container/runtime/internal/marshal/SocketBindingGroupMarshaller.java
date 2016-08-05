@@ -50,8 +50,7 @@ public class SocketBindingGroupMarshaller implements ConfigurationMarshaller {
     @Any
     private Instance<SocketBindingGroup> socketBindingGroups;
 
-    public List<ModelNode> marshal() {
-        List<ModelNode> list = new ArrayList<>();
+    public void marshal(List<ModelNode> list) {
         for (SocketBindingGroup group : this.socketBindingGroups) {
             PathAddress address = PathAddress.pathAddress("socket-binding-group", group.name());
             ModelNode node = new ModelNode();
@@ -69,8 +68,6 @@ public class SocketBindingGroupMarshaller implements ConfigurationMarshaller {
                 configureSocketBinding(address, binding, list);
             }
         }
-
-        return list;
     }
 
     private void configureSocketBindings(PathAddress address, SocketBindingGroup group, List<ModelNode> list) {

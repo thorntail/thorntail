@@ -44,16 +44,11 @@ public class InterfaceMarshaller implements ConfigurationMarshaller {
     @Any
     private Instance<Interface> interfaces;
 
-    public List<ModelNode> marshal() {
-
-        List<ModelNode> list = new ArrayList<>();
+    public void marshal(List<ModelNode> list) {
 
         for (Interface iface : this.interfaces) {
             configureInterface( iface, list );
         }
-
-        return list;
-
     }
 
     private void configureInterface(Interface iface, List<ModelNode> list) {

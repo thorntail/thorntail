@@ -16,6 +16,7 @@
 package org.wildfly.swarm.container.runtime.internal.marshal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,41 +52,54 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
     @WildFlySubsystem
     private Instance<Fraction> subsystemOnlyFractions;
 
-    public List<ModelNode> marshal() {
-        List<ModelNode> list = new ArrayList<>();
+    public void marshal(List<ModelNode> list) {
         for (Fraction each : this.dmrFractions) {
 
             MarshalDMR anno = each.getClass().getAnnotation(MarshalDMR.class);
 
-            System.err.println( "annotation: " + anno + " on " + each + " // " + each.getClass() );
-
             try {
                 Marshaller marshaller = new Marshaller();
                 LinkedList<ModelNode> subList = marshaller.marshal(each);
-                list.addAll(subList);
+                if (!isAlreadyConfigured(subList, list)) {
+                    list.addAll(subList);
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
 
-        for ( Fraction each : this.subsystemOnlyFractions ) {
+        for (Fraction each : this.subsystemOnlyFractions) {
             MarshalDMR dmrAnno = each.getClass().getAnnotation(MarshalDMR.class);
 
-            if ( dmrAnno != null ) {
+            if (dmrAnno != null) {
                 // already marshalled as full config-api DMR
                 continue;
             }
 
             WildFlySubsystem subsysAnno = each.getClass().getAnnotation(WildFlySubsystem.class);
 
-            PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, subsysAnno.value() ));
+            PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, subsysAnno.value()));
+
 
             ModelNode node = new ModelNode();
             node.get(OP_ADDR).set(address.toModelNode());
             node.get(OP).set(ADD);
-            list.add(node);
+            List<ModelNode> subList = Collections.singletonList(node);
+
+            if (!isAlreadyConfigured(subList, list)) {
+                list.addAll(subList);
+            }
         }
 
-        return list;
+    }
+
+    private boolean isAlreadyConfigured(List<ModelNode> subList, List<ModelNode> list) {
+        if (subList.isEmpty()) {
+            return false;
+        }
+
+        ModelNode head = subList.get(0);
+
+        return list.stream().anyMatch(e -> e.get(OP_ADDR).equals(head.get(OP_ADDR)));
     }
 }

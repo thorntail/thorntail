@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,8 +19,6 @@
  */
 
 package org.wildfly.swarm.camel.test.jpa;
-
-import java.net.URL;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -38,15 +36,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelContextRegistry;
-import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.camel.test.jpa.subA.Account;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.jpa.JPAFraction;
 
 @RunWith(Arquillian.class)
-public class JPATransactionManagerIntegrationTest implements ContainerFactory {
+public class JPATransactionManagerIntegrationTest {
 
     @Deployment
     public static JavaArchive deployment() {
@@ -59,13 +57,13 @@ public class JPATransactionManagerIntegrationTest implements ContainerFactory {
         return archive;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        Container container = new Container();
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        Swarm container = new Swarm();
         container.fraction(new CamelCoreFraction());
         container.fraction(new DatasourcesFraction());
         container.fraction(new JPAFraction());
-		container.withXmlConfig(getClass().getResource("/standalone.xml"));
+		container.withXmlConfig(JPATransactionManagerIntegrationTest.class.getResource("/standalone.xml"));
         return container;
     }
 

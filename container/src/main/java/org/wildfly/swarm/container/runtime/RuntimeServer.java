@@ -22,11 +22,9 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -70,6 +68,7 @@ import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.internal.marshal.DMRMarshaller;
+import org.wildfly.swarm.container.runtime.internal.xmlconfig.StandaloneXMLParser;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -191,7 +190,8 @@ public class RuntimeServer implements Server {
         //if (!xmlConfig.isPresent())
 //        applySocketBindingGroupDefaults(config);
 
-        List<ModelNode> bootstrapOperations = this.dmrMarshaller.marshal();
+        List<ModelNode> bootstrapOperations = new ArrayList<>();
+        this.dmrMarshaller.marshal( bootstrapOperations );
 
         System.err.println( "BOOTSTRAP: " + bootstrapOperations );
 
@@ -464,25 +464,6 @@ public class RuntimeServer implements Server {
     }
     */
 
-    @SuppressWarnings("unchecked")
-    private void getExtensions(Container container, List<ModelNode> list) throws Exception {
-
-        Set<ModelNode> extensionNodes = new HashSet<>();
-
-        FractionProcessor<List<ModelNode>> consumer = (context, cfg, fraction) -> {
-            try {
-                Optional<ModelNode> extension = cfg.getExtension();
-                extension.map(extensionNodes::add);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        };
-
-        visitFractions(container, list, consumer);
-
-        list.addAll(extensionNodes);
-    }
-
     private void getSubsystemConfigurations(Container config, List<ModelNode> list) throws Exception {
         if (xmlConfig.isPresent()) {
             configureFractionsFromXML(config, list);
@@ -640,9 +621,9 @@ public class RuntimeServer implements Server {
     @SuppressWarnings("unchecked")
     private void configureFractionsFromXML(Container container, List<ModelNode> operationList) throws Exception {
 
-        StandaloneXmlParser parser = new StandaloneXmlParser();
+        StandaloneXMLParser parser = new StandaloneXMLParser();
 
-        FractionProcessor<StandaloneXmlParser> consumer = (p, cfg, fraction) -> {
+        FractionProcessor<StandaloneXMLParser> consumer = (p, cfg, fraction) -> {
             try {
                 cfg.getSubsystemParsers().ifPresent((fractionParsers) -> {
                     ((Map<QName, XMLElementReader<List<ModelNode>>>) fractionParsers).forEach((k, v) -> {

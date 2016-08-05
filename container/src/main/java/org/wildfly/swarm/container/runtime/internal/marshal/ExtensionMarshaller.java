@@ -43,22 +43,14 @@ public class ExtensionMarshaller implements ConfigurationMarshaller {
     @WildFlyExtension
     private Instance<Fraction> fractions;
 
-    public List<ModelNode> marshal() {
+    public void marshal(List<ModelNode> list) {
+
+        List<ModelNode> extensions = new ArrayList<>();
 
         Set<String> seen = new HashSet<>();
-        List<ModelNode> list = new ArrayList<>();
 
         for (Fraction each : this.fractions) {
             WildFlyExtension anno = each.getClass().getAnnotation(WildFlyExtension.class);
-
-            System.err.println( "annotation: " + anno + " on " + each + " // " + each.getClass() );
-
-            /*
-            if ( anno == null ) {
-                // wtf? NPE?
-                continue;
-            }
-            */
 
             if (anno.module() != null && !anno.module().equals("")) {
                 String module = anno.module();
@@ -66,13 +58,13 @@ public class ExtensionMarshaller implements ConfigurationMarshaller {
                     ModelNode node = new ModelNode();
                     node.get(OP_ADDR).set(EXTENSION, anno.module());
                     node.get(OP).set(ADD);
-                    list.add(node);
+                    extensions.add(node);
                     seen.add( module );
                 }
             }
         }
 
-        return list;
+        list.addAll(0, extensions );
     }
 
 }

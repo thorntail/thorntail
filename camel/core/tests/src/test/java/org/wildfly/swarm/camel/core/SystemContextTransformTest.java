@@ -57,7 +57,7 @@ public class SystemContextTransformTest {
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction().addRouteBuilder(new RouteBuilder() {
+        return new Swarm().fraction(new CamelCoreFraction().addRouteBuilder("myname", new RouteBuilder() {
             @Override
             public void configure() throws Exception {
                 from("direct:start")

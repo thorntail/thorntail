@@ -26,7 +26,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @Singleton
 @DefaultFraction
-@WildFlyExtension(module = "org.jboss.as.connector")
+@WildFlyExtension(module = "org.jboss.as.connector", noClass=true)
 public class ConnectorFraction implements Fraction {
 
 }

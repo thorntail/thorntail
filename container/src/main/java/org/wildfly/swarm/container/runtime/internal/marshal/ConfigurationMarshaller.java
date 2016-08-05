@@ -23,6 +23,5 @@ import org.jboss.dmr.ModelNode;
  * @author Bob McWhirter
  */
 public interface ConfigurationMarshaller {
-
-    List<ModelNode> marshal();
+    void marshal(List<ModelNode> list);
 }

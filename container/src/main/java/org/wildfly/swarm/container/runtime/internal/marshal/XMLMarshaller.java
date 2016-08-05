@@ -15,42 +15,43 @@
  */
 package org.wildfly.swarm.container.runtime.internal.marshal;
 
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.container.runtime.internal.xmlconfig.StandaloneXMLParser;
+import org.wildfly.swarm.container.runtime.internal.xmlconfig.XMLConfig;
 
 /**
  * @author Bob McWhirter
  */
 @ApplicationScoped
-public class DMRMarshaller implements ConfigurationMarshaller  {
+public class XMLMarshaller implements ConfigurationMarshaller {
 
     @Inject
-    private XMLMarshaller xmlMarshaller;
+    @XMLConfig
+    private Instance<URL> xmlConfig;
 
     @Inject
-    private ExtensionMarshaller extensionMarshaller;
-
-    @Inject
-    private SubsystemMarshaller subsystemMarshaller;
-
-    @Inject
-    private InterfaceMarshaller interfaceMarshaller;
-
-    @Inject
-    private SocketBindingGroupMarshaller socketBindingGroupMarshaller;
+    private StandaloneXMLParser parser;
 
     public void marshal(List<ModelNode> list) {
-        System.err.println( ">>>> begin marshal" );
-        this.xmlMarshaller.marshal(list);
-        this.extensionMarshaller.marshal(list);
-        this.subsystemMarshaller.marshal(list);
-        this.interfaceMarshaller.marshal(list);
-        this.socketBindingGroupMarshaller.marshal(list);
-        System.err.println( "<<<< end marshal" );
+        if (this.xmlConfig.isUnsatisfied()) {
+            return;
+        }
+
+        xmlConfig.forEach( url-> parse(url, list));
+    }
+
+    protected void parse(URL url, List<ModelNode> list) {
+        try {
+            list.addAll( this.parser.parse( url ) );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

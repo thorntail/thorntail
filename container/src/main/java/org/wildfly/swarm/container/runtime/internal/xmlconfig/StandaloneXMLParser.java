@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime;
+package org.wildfly.swarm.container.runtime.internal.xmlconfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
@@ -46,11 +45,9 @@ import org.jboss.staxmapper.XMLMapper;
  * @since 27/11/15
  */
 @Vetoed
-public class StandaloneXmlParser {
+public class StandaloneXMLParser {
 
-    private List<ModelNode> usedExtensions;
-
-    public StandaloneXmlParser() {
+    public StandaloneXMLParser() {
 
         parserDelegate = new StandaloneXml(new ExtensionHandler() {
             @Override
@@ -81,7 +78,7 @@ public class StandaloneXmlParser {
      * @param parser      creates ModelNode's from XML input
      * @return
      */
-    public StandaloneXmlParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>>  parser) {
+    public StandaloneXMLParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>>  parser) {
         xmlMapper.registerRootElement(elementName, parser);
         return this;
     }
@@ -97,9 +94,6 @@ public class StandaloneXmlParser {
             final XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
 
             xmlMapper.parseDocument(operationList, reader);
-
-            //operationList.forEach(System.out::println);
-
         } catch (Throwable t) {
             t.printStackTrace();
         } finally {
@@ -121,7 +115,7 @@ public class StandaloneXmlParser {
     private static class NoopXMLElementReader implements XMLElementReader<List<ModelNode>> {
         @Override
         public void readElement(XMLExtendedStreamReader reader, List<ModelNode> modelNode) throws XMLStreamException {
-            System.out.println("Skip " + reader.getNamespaceURI() + "::" + reader.getLocalName());
+            //System.out.println("Skip " + reader.getNamespaceURI() + "::" + reader.getLocalName());
             reader.discardRemainder();
         }
     }
