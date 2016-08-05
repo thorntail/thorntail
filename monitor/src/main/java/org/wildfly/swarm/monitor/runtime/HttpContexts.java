@@ -69,7 +69,8 @@ class HttpContexts implements HttpHandler {
         }
         else if (exchange.getRelativePath().startsWith(HEALTH)) {
             healthRedirect(exchange);
-            return;
+            if(exchange.isResponseStarted()) // allow the redirect handler to proceed
+                return;
         }
 
         next.handleRequest(exchange);
