@@ -49,21 +49,27 @@ class HttpContexts implements HttpHandler {
 
         if (NODE.equals(exchange.getRequestPath())) {
             nodeInfo(exchange);
+            return;
         } else if (HEAP.equals(exchange.getRequestPath())) {
             heap(exchange);
+            return;
         } else if (THREADS.equals(exchange.getRequestPath())) {
             threads(exchange);
+            return;
         }
         else if(Queries.preventDirectAccess(monitor, exchange.getRelativePath()))
         {
             exchange.setStatusCode(403);
             exchange.endExchange();
+            return;
         }
         else if (HEALTH.equals(exchange.getRequestPath())) {
             listHealtSubresources(exchange);
+            return;
         }
         else if (exchange.getRelativePath().startsWith(HEALTH)) {
             healthRedirect(exchange);
+            return;
         }
 
         next.handleRequest(exchange);
