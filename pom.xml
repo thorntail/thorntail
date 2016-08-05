@@ -1070,7 +1070,7 @@
     <module>databases/mysql</module>
     <module>databases/postgresql</module>
     <module>datasources</module>
-    <!--<module>drools-server</module>-->
+    <module>drools-server</module>
     <module>ee</module>
     <module>ejb</module>
     <module>ejb-remote</module>

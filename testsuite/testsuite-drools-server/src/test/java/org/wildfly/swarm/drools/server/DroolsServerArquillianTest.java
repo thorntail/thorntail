@@ -23,15 +23,15 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Salaboy
  */
 @RunWith(Arquillian.class)
-public class DroolsServerArquillianTest implements ContainerFactory {
+public class DroolsServerArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -40,9 +40,9 @@ public class DroolsServerArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new DroolsServerFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(new DroolsServerFraction());
     }
 
     @Test
