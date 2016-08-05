@@ -42,7 +42,7 @@ public class EJBRemoteArquillianTest {
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new EJBRemoteFraction());
+        return new Swarm();
     }
 
     @Test

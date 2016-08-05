@@ -64,7 +64,6 @@ import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextA;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextB;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextC;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextD;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 @RunWith(Arquillian.class)

@@ -59,12 +59,9 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     public UndertowFraction applyDefaults() {
-        final boolean enabled = (System.getProperty(SwarmProperties.HTTP_EAGER) != null);
-
         server(new Server("default-server")
                 .httpListener("default", (listener) -> {
-                    listener.socketBinding("http")
-                            .enabled(enabled);
+                    listener.socketBinding("http");
                 })
                 .host(new Host("default-host")))
                 .bufferCache(new BufferCache("default"))

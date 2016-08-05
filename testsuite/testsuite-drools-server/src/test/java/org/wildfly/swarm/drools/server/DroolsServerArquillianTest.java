@@ -42,7 +42,7 @@ public class DroolsServerArquillianTest {
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new DroolsServerFraction());
+        return new Swarm();
     }
 
     @Test

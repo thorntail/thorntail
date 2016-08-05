@@ -163,11 +163,7 @@ public class RuntimeServer implements Server {
     }
 
     @Override
-    public Deployer start(boolean eagerlyOpen) throws Exception {
-
-        if (System.getProperty(SwarmProperties.HTTP_EAGER) != null) {
-            eagerlyOpen = true;
-        }
+    public Deployer start(boolean eagerOpen) throws Exception {
 
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
@@ -271,9 +267,6 @@ public class RuntimeServer implements Server {
         ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
-        if (eagerlyOpen) {
-            opener.open();
-        }
 
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(opener, this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);

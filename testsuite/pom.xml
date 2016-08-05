@@ -65,8 +65,8 @@
     <module>testsuite-camel-jms</module>
     <module>testsuite-camel-jmx</module>
     <module>testsuite-camel-jpa</module>
-    <!--<module>testsuite-camel-other</module>-->
-    <!--<module>testsuite-connector</module>-->
+    <module>testsuite-camel-other</module>
+    <module>testsuite-connector</module>
     <module>testsuite-container</module>
     <module>testsuite-datasources</module>
     <module>testsuite-drools-server</module>

@@ -54,11 +54,6 @@ public class ArqModClusterTest {
         return deployment;
     }
 
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm() .fraction( new ModclusterFraction() );
-    }
-
     @ArquillianResource
     private ServiceRegistry registry;
 

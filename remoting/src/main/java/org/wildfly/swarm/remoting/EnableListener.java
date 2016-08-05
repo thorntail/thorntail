@@ -40,6 +40,7 @@ public class EnableListener implements Customizer {
 
     @Override
     public void customize() {
+        System.err.println( "EAGER HTTP!!!" );
         System.setProperty(SwarmProperties.HTTP_EAGER, "true");
 
         if (!undertow.isUnsatisfied()) {

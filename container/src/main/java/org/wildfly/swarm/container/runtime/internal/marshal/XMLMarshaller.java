@@ -48,6 +48,9 @@ public class XMLMarshaller implements ConfigurationMarshaller {
     }
 
     protected void parse(URL url, List<ModelNode> list) {
+        if ( url == null ) {
+            return;
+        }
         try {
             list.addAll( this.parser.parse( url ) );
         } catch (Exception e) {
