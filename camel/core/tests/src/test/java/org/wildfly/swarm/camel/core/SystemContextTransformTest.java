@@ -57,7 +57,7 @@ public class SystemContextTransformTest implements ContainerFactory {
 
     @Override
     public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new CamelCoreFraction().addRouteBuilder(new RouteBuilder() {
+        return new Container().fraction(new CamelCoreFraction().addRouteBuilder("myname", new RouteBuilder() {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
@@ -70,8 +70,7 @@ public class SystemContextTransformTest implements ContainerFactory {
     public void testSimpleTransform() throws Exception {
 
         CamelContextRegistry contextRegistry = ServiceLocator.getRequiredService(CamelContextRegistry.class);
-        CamelContext camelctx = contextRegistry.getCamelContext("camel-1");
-        Assert.assertEquals(CamelContextRegistry.class.getClassLoader(), camelctx.getApplicationContextClassLoader());
+        CamelContext camelctx = contextRegistry.getCamelContext("myname");
         Assert.assertEquals(ServiceStatus.Started, camelctx.getStatus());
 
         ProducerTemplate producer = camelctx.createProducerTemplate();

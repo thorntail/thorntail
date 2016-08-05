@@ -22,4 +22,5 @@ package org.wildfly.swarm.camel.core;
 import org.wildfly.swarm.spi.api.Fraction;
 
 public final class CamelCoreFraction extends AbstractCamelFraction<CamelCoreFraction> implements Fraction {
+
 }

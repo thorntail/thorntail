@@ -19,11 +19,12 @@
  */
 package org.wildfly.swarm.camel.core;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.jboss.gravia.utils.IllegalArgumentAssertion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -32,15 +33,20 @@ public abstract class AbstractCamelFraction<T extends AbstractCamelFraction<T>> 
 
     public final static Logger LOGGER = LoggerFactory.getLogger("org.wildfly.swarm.camel");
 
-    private final List<RouteBuilder> routeBuilders = new ArrayList<>();
+    private final Map<String, RouteBuilder> routeBuilders = new LinkedHashMap<>();
 
-    @SuppressWarnings("unchecked")
     public T addRouteBuilder(RouteBuilder builder) {
-        routeBuilders.add(builder);
-        return (T)this;
+        return addRouteBuilder(null, builder);
     }
 
-    public List<RouteBuilder> getRouteBuilders() {
-        return Collections.unmodifiableList(routeBuilders);
+    @SuppressWarnings("unchecked")
+    public T addRouteBuilder(String name, RouteBuilder builder) {
+        IllegalArgumentAssertion.assertNotNull(builder, "builder");
+        routeBuilders.put(name, builder);
+        return (T)this;
+    }
+    
+    public Map<String, RouteBuilder> getRouteBuilders() {
+        return Collections.unmodifiableMap(routeBuilders);
     }
 }

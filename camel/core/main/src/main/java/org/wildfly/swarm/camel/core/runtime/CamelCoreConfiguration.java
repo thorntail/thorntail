@@ -24,18 +24,22 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXT
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
-import static org.wildfly.swarm.camel.core.CamelCoreFraction.LOGGER;
+import static org.wildfly.swarm.camel.core.AbstractCamelFraction.LOGGER;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.impl.ExplicitCamelContextNameStrategy;
 import org.apache.camel.model.ModelCamelContext;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
 import org.jboss.msc.service.AbstractService;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
@@ -49,6 +53,7 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.extension.camel.CamelConstants;
+import org.wildfly.extension.camel.handler.ModuleClassLoaderAssociationHandler;
 import org.wildfly.extension.camel.service.CamelContextRegistryService.MutableCamelContextRegistry;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.spi.runtime.AbstractServerConfiguration;
@@ -117,15 +122,24 @@ public class CamelCoreConfiguration extends AbstractServerConfiguration<CamelCor
 
         @Override
         public void start(StartContext startContext) throws StartException {
-            MutableCamelContextRegistry contextRegistry = injectedContextRegistry.getValue();
-            ClassLoader classLoader = MutableCamelContextRegistry.class.getClassLoader();
             try {
-                for (RouteBuilder builder : fraction.getRouteBuilders()) {
-                    ModelCamelContext camelctx = builder.getContext();
-                    camelctx.setApplicationContextClassLoader(classLoader);
-                    builder.addRoutesToCamelContext(camelctx);
-                    contextRegistry.addCamelContext(camelctx);
-                    systemContexts.add(camelctx);
+                MutableCamelContextRegistry contextRegistry = injectedContextRegistry.getValue();
+                Module appModule = Module.getCallerModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                ModuleClassLoaderAssociationHandler.associate(appModule.getClassLoader());
+                try {
+                    for (Entry<String, RouteBuilder> entry : fraction.getRouteBuilders().entrySet()) {
+                        String name = entry.getKey();
+                        RouteBuilder builder = entry.getValue();
+                        ModelCamelContext camelctx = builder.getContext();
+                        if (name != null) {
+                            camelctx.setNameStrategy(new ExplicitCamelContextNameStrategy(name));
+                        }
+                        builder.addRoutesToCamelContext(camelctx);
+                        contextRegistry.addCamelContext(camelctx);
+                        systemContexts.add(camelctx);
+                    }
+                } finally {
+                    ModuleClassLoaderAssociationHandler.disassociate();
                 }
                 for (CamelContext camelctx : systemContexts) {
                     camelctx.start();

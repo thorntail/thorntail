@@ -29,7 +29,7 @@
     <version>2016.7-SNAPSHOT</version>
   </parent>
 
-    <name>Components</name>
+    <name>Camel Components</name>
     
     <artifactId>camel-components</artifactId>
     <packaging>pom</packaging>
