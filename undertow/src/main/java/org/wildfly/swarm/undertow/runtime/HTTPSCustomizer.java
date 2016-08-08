@@ -48,6 +48,7 @@ public class HTTPSCustomizer implements Customizer {
 
     public void customize() {
         if (!this.managementCoreService.isUnsatisfied()) {
+            System.err.println( "Set up HTTPS" );
             UndertowFraction fraction = undertowInstance.get();
             if (fraction.keystorePassword() != null & fraction.keystorePassword() != null && fraction.alias() != null) {
                 ManagementCoreService management = this.managementCoreService.get();
@@ -74,6 +75,8 @@ public class HTTPSCustomizer implements Customizer {
                     });
                 });
             }
+        } else {
+            System.err.println( "No ManagementCoreService apparently" );
         }
     }
 

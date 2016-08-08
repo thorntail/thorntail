@@ -71,10 +71,13 @@ public class FractionProducingExtension implements Extension {
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
         Set<Type> preExistingFractionClasses = new HashSet<>();
 
+
         for (Fraction fraction : explicitlyInstalledFractions) {
             BeanConfigurator<Object> configurator = abd.addBean()
-                    .addType(fraction.getClass())
-                    .addType(Fraction.class)
+                    //.addType(fraction.getClass())
+                    .addTypes( applicableClasses( fraction.getClass() ) )
+                    //.addTransitiveTypeClosure(fraction.getClass())
+                    //.addType(Fraction.class)
                     .scope(Singleton.class)
                     .addQualifier(new AnnotationLiteral<Default>() {
                     })
@@ -98,8 +101,10 @@ public class FractionProducingExtension implements Extension {
                 .filter(cls -> !preExistingFractionClasses.contains(cls))
                 .forEach((cls) -> {
                     BeanConfigurator<Object> configurator = abd.addBean()
-                            .addType(cls)
-                            .addType(Fraction.class)
+                            //.addType(cls)
+                            //.addTransitiveTypeClosure(cls)
+                            //.addType(Fraction.class)
+                            .addTypes( applicableClasses( cls ) )
                             .scope(Singleton.class)
                             .addQualifier(new AnnotationLiteral<Default>() {
                             })
@@ -113,5 +118,25 @@ public class FractionProducingExtension implements Extension {
 
                 });
 
+    }
+
+    Set<Type> applicableClasses(Class cur) {
+        Set<Type> classes = new HashSet<>();
+        applicableClasses( cur, classes );
+        return classes;
+    }
+
+    void applicableClasses(Class cur, Set<Type> set) {
+        if ( cur == null ) {
+            return;
+        }
+
+        set.add( cur );
+
+        for (Class each : cur.getInterfaces()) {
+            applicableClasses( each, set );
+        }
+
+        applicableClasses( cur.getSuperclass(), set );
     }
 }
