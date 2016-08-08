@@ -53,7 +53,6 @@ import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.config.messaging.activemq.server.JMSQueue;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.messaging.MessagingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 

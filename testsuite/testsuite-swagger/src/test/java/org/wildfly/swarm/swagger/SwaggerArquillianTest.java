@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.concurrent.CountDownLatch;
 
 import com.mycorp.Resource;
 import org.jboss.arquillian.container.test.api.Deployment;

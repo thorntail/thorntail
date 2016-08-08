@@ -1,14 +1,9 @@
 package org.wildfly.swarm.internal;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
-
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
  * @author Heiko Braun

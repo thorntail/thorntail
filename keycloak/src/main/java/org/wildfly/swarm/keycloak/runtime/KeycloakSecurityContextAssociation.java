@@ -15,11 +15,14 @@
  */
 package org.wildfly.swarm.keycloak.runtime;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.keycloak.KeycloakSecurityContext;
 
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class KeycloakSecurityContextAssociation {
 
     public static KeycloakSecurityContext get() {

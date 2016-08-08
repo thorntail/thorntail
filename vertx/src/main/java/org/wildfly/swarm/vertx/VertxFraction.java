@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.vertx;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
@@ -25,9 +22,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
  * @author George Gastaldi
  */
 @DeploymentModule(name = "io.vertx.jca", slot = "api")
-@Singleton
-@DefaultFraction
-public class VertxFraction implements Fraction {
+public class VertxFraction implements Fraction<VertxFraction> {
 
     public VertxFraction inhibitAdapterDeployment() {
         this.inhibitAdapterDeployment = true;

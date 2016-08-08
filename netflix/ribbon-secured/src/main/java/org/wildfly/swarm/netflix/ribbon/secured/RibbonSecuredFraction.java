@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.netflix.ribbon.secured;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
@@ -25,7 +22,5 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
  * @author Bob McWhirter
  */
 @DeploymentModule(name = "org.wildfly.swarm.netflix.ribbon.secured", slot = "client")
-@Singleton
-@DefaultFraction
-public class RibbonSecuredFraction implements Fraction {
+public class RibbonSecuredFraction implements Fraction<RibbonSecuredFraction> {
 }

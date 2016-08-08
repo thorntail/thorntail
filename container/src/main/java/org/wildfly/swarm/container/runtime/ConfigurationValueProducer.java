@@ -101,7 +101,7 @@ public class ConfigurationValueProducer {
 
     private Resolver<String> resolver(InjectionPoint injectionPoint) {
         String name = getName(injectionPoint);
-        if (name.isEmpty() || stageConfig == null) {
+        if (name == null || name.isEmpty() || stageConfig == null) {
             return null;
         }
         return stageConfig.resolve(getName(injectionPoint));

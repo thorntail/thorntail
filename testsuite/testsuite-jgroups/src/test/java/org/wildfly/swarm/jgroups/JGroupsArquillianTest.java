@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.jgroups;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.msc.service.ServiceController;
@@ -33,7 +30,7 @@ import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class JGroupsArquillianTest {

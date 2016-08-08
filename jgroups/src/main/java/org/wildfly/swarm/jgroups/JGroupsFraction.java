@@ -16,10 +16,8 @@
 package org.wildfly.swarm.jgroups;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.JGroups;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Environment;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -28,11 +26,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@Singleton
 @WildFlyExtension(module = "org.jboss.as.clustering.jgroups")
 @MarshalDMR
-@DefaultFraction
-public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fraction {
+public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fraction<JGroupsFraction> {
 
     public JGroupsFraction() {
     }

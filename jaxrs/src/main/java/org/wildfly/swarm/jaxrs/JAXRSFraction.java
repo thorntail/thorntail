@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.JAXRS;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -27,18 +24,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.jaxrs")
 @MarshalDMR
 @DeploymentModule(name = "com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider")
-public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction {
-
-    /*
-    static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(JAXRSArchive.class, JAXRSArchiveImpl.class);
-    }
-    */
-
+public class JAXRSFraction extends JAXRS<JAXRSFraction> implements Fraction<JAXRSFraction> {
 
 }

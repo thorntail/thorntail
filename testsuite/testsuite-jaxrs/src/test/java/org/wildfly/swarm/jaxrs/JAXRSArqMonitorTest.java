@@ -17,7 +17,6 @@ package org.wildfly.swarm.jaxrs;
 
 import java.util.Properties;
 
-import org.apache.http.Header;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -26,9 +25,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.monitor.MonitorFraction;
 
@@ -49,8 +48,8 @@ public class JAXRSArqMonitorTest extends SimpleHttp {
     }
 
     @CreateSwarm
-    public static Container getContainer() throws Exception {
-        Container container = new Container();
+    public static Swarm getContainer() throws Exception {
+        Swarm container = new Swarm();
         container.fraction(new JAXRSFraction());
         //container.fraction(LoggingFraction.createDebugLoggingFraction());
         container.fraction(new MonitorFraction().securityRealm("TestRealm"));

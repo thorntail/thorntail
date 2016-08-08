@@ -21,10 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.Logging;
 import org.wildfly.swarm.config.logging.AsyncHandler;
 import org.wildfly.swarm.config.logging.ConsoleHandler;
@@ -35,7 +31,6 @@ import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.config.logging.PatternFormatter;
 import org.wildfly.swarm.config.logging.RootLogger;
 import org.wildfly.swarm.config.logging.SyslogHandler;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -46,11 +41,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  * @author Lance Ball
  */
 @SuppressWarnings("unused")
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.logging")
 @MarshalDMR
-public class LoggingFraction extends Logging<LoggingFraction> implements Fraction {
+public class LoggingFraction extends Logging<LoggingFraction> implements Fraction<LoggingFraction> {
 
     public static final String CONSOLE = "CONSOLE";
 
@@ -59,8 +52,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
     public static final String COLOR_PATTERN = "COLOR_PATTERN";
 
 
-    @PostConstruct
-    public void postConstruct() {
+    public LoggingFraction applyDefaults() {
         Level level = Level.INFO;
 
         String prop = System.getProperty(LoggingProperties.LOGGING);
@@ -73,7 +65,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
             }
         }
 
-        applyDefaults(level);
+        return applyDefaults(level);
     }
 
     public LoggingFraction applyDefaults(Level level) {

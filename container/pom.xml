@@ -61,6 +61,7 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <version>${version.cdi2}</version>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>javax.el</groupId>
@@ -76,16 +77,19 @@
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-api</artifactId>
       <version>${version.weld-api}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-spi</artifactId>
       <version>${version.weld-api}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <version>${version.weld}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.netflix.hystrix;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
@@ -29,7 +26,5 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
         @DeploymentModule(name = "com.netflix.hystrix"),
         @DeploymentModule(name = "io.reactivex.rxjava")
 })
-@Singleton
-@DefaultFraction
-public class HystrixFraction implements Fraction {
+public class HystrixFraction implements Fraction<HystrixFraction> {
 }

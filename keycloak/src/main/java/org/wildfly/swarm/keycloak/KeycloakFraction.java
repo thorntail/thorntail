@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.keycloak;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -26,11 +23,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 /**
  * @author Bob McWhirter
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.keycloak.keycloak-adapter-subsystem" )
 @WildFlySubsystem("keycloak")
 @DeploymentModule(name = "org.keycloak.keycloak-core")
-public class KeycloakFraction implements Fraction {
+public class KeycloakFraction implements Fraction<KeycloakFraction> {
 
 }

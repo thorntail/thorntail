@@ -15,35 +15,12 @@
  */
 package org.wildfly.swarm.container;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.enterprise.inject.Vetoed;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.Swarm;
-import org.jboss.shrinkwrap.api.Domain;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.base.exporter.ExplodedExporterImpl;
-import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
-import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
-import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
-import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
-import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.internal.FileSystemLayout;
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
-import org.wildfly.swarm.container.internal.Server;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 

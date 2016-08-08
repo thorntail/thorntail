@@ -15,17 +15,12 @@
  */
 package org.wildfly.swarm.infinispan;
 
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-
 import javax.naming.InitialContext;
 
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.msc.service.ServiceController;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistry;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;

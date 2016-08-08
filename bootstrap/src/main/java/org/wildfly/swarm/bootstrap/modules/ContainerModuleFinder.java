@@ -1,10 +1,14 @@
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Enumeration;
 
 import org.jboss.modules.DependencySpec;
-import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
@@ -13,7 +17,6 @@ import org.jboss.modules.filter.ClassFilters;
 import org.jboss.modules.filter.PathFilters;
 import org.wildfly.swarm.bootstrap.util.Layout;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
 
 /**
  * @author Bob McWhirter
@@ -31,46 +34,86 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
 
 
         try {
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("org.wildfly.swarm.spi"), false));
+
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("org.wildfly.swarm.container", "runtime"), false));
+
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("org.wildfly.swarm.bootstrap"), false));
+
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("org.wildfly.swarm.spi", "api"), false));
+
             if (Layout.getInstance().isUberJar()) {
                 handleWildFlySwarmApplicationConf(builder);
+            } else {
+                ClassLoader cl = ClassLoader.getSystemClassLoader();
+                Enumeration<URL> results = cl.getResources("wildfly-swarm-bootstrap.conf");
 
-                builder.addDependency(
-                        DependencySpec.createModuleDependencySpec(
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                ClassFilters.acceptAll(),
-                                ClassFilters.acceptAll(),
-                                null,
-                                ModuleIdentifier.create("org.wildfly.swarm.container", "runtime"), false));
-
-                builder.addDependency(
-                        DependencySpec.createModuleDependencySpec(
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                ClassFilters.acceptAll(),
-                                ClassFilters.acceptAll(),
-                                null,
-                                ModuleIdentifier.create("org.wildfly.swarm.bootstrap"), false));
-
-                builder.addDependency(
-                        DependencySpec.createModuleDependencySpec(
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                PathFilters.acceptAll(),
-                                ClassFilters.acceptAll(),
-                                ClassFilters.acceptAll(),
-                                null,
-                                ModuleIdentifier.create("org.wildfly.swarm.spi", "api"), false));
+                while (results.hasMoreElements()) {
+                    URL each = results.nextElement();
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(each.openStream()))) {
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            line = line.trim();
+                            if (!line.isEmpty()) {
+                                builder.addDependency(
+                                        DependencySpec.createModuleDependencySpec(
+                                                PathFilters.acceptAll(),
+                                                PathFilters.acceptAll(),
+                                                PathFilters.acceptAll(),
+                                                PathFilters.acceptAll(),
+                                                ClassFilters.acceptAll(),
+                                                ClassFilters.acceptAll(),
+                                                null,
+                                                ModuleIdentifier.create(line, "runtime"), false));
+                            }
+                        }
+                    }
+                }
             }
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
 
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected void handleWildFlySwarmApplicationConf(ModuleSpec.Builder builder) throws Exception {
@@ -79,9 +122,34 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
             WildFlySwarmApplicationConf conf = new WildFlySwarmApplicationConf(appConf);
             conf.getEntries()
                     .stream()
-                    .filter( e-> e instanceof WildFlySwarmApplicationConf.FractionModuleEntry )
-                    .forEach( e->{
-                        ((WildFlySwarmApplicationConf.FractionModuleEntry)e).apply(builder);
+                    .filter(e -> e instanceof WildFlySwarmApplicationConf.FractionModuleEntry)
+                    .forEach(e -> {
+                        //((WildFlySwarmApplicationConf.FractionModuleEntry)e).apply(builder);
+                        WildFlySwarmApplicationConf.FractionModuleEntry entry = (WildFlySwarmApplicationConf.FractionModuleEntry) e;
+
+                        builder.addDependency(
+                                DependencySpec.createModuleDependencySpec(
+                                        PathFilters.acceptAll(),
+                                        PathFilters.acceptAll(),
+                                        PathFilters.acceptAll(),
+                                        PathFilters.acceptAll(),
+                                        ClassFilters.acceptAll(),
+                                        ClassFilters.acceptAll(),
+                                        null,
+                                        ModuleIdentifier.create(entry.getName(), "runtime"), false));
+
+                        /*
+                        builder.addDependency(
+                                DependencySpec.createModuleDependencySpec(
+                                        PathFilters.acceptAll(),
+                                        PathFilters.acceptAll(),
+                                        PathFilters.acceptAll(),
+                                        PathFilters.acceptAll(),
+                                        ClassFilters.acceptAll(),
+                                        ClassFilters.acceptAll(),
+                                        null,
+                                        ModuleIdentifier.create(entry.getName(), "main"), false));
+                                        */
                     });
         }
     }

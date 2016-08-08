@@ -15,14 +15,7 @@
  */
 package org.wildfly.swarm.container;
 
-import java.util.List;
-
-import org.junit.Assert;
 import org.junit.Ignore;
-import org.junit.Test;
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.ProjectStage;
-import org.wildfly.swarm.spi.api.StageConfig;
 
 /**
  * @author Heiko Braun

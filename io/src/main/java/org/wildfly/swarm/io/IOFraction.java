@@ -15,14 +15,9 @@
  */
 package org.wildfly.swarm.io;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.IO;
 import org.wildfly.swarm.config.io.BufferPool;
 import org.wildfly.swarm.config.io.Worker;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -30,16 +25,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module="org.wildfly.extension.io")
 @MarshalDMR
-public class IOFraction extends IO<IOFraction> implements Fraction {
-
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
+public class IOFraction extends IO<IOFraction> implements Fraction<IOFraction> {
 
     public IOFraction applyDefaults() {
         return worker(new Worker("default"))

@@ -30,8 +30,8 @@ import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.spi.api.Pre;
 import org.wildfly.swarm.spi.api.ProjectStage;
+import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
 /**
  * @author Heiko Braun

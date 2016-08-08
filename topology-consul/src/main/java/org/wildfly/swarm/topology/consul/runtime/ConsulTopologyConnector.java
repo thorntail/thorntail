@@ -16,7 +16,6 @@
 package org.wildfly.swarm.topology.consul.runtime;
 
 import com.orbitz.consul.CatalogClient;
-import com.orbitz.consul.Consul;
 import com.orbitz.consul.HealthClient;
 import org.jboss.as.network.SocketBinding;
 import org.jboss.msc.inject.Injector;
@@ -26,9 +25,9 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.wildfly.swarm.topology.runtime.Registration;
 import org.wildfly.swarm.topology.TopologyConnector;
 import org.wildfly.swarm.topology.TopologyManager;
+import org.wildfly.swarm.topology.runtime.Registration;
 
 /**
  * Topology connector for Consul.

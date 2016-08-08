@@ -17,19 +17,13 @@ package org.wildfly.swarm.logstash;
 
 import java.util.Properties;
 
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.logging.Level;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Ken Finnigan
  */
-@DefaultFraction
-@Singleton
-public class LogstashFraction implements Fraction {
+public class LogstashFraction implements Fraction<LogstashFraction> {
 
     public LogstashFraction() {
         this("metaData", "wildflySwarmNode=${jboss.node.name}");

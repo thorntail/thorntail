@@ -16,11 +16,9 @@
 package org.wildfly.swarm.mod_cluster;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Modcluster;
 import org.wildfly.swarm.config.modcluster.ConfigurationModClusterConfig;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -28,11 +26,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Stuart Douglas
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.wildfly.extension.mod_cluster")
 @MarshalDMR
-public class ModclusterFraction extends Modcluster<ModclusterFraction> implements Fraction {
+public class ModclusterFraction extends Modcluster<ModclusterFraction> implements Fraction<ModclusterFraction> {
 
     public ModclusterFraction() {
     }

@@ -19,7 +19,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 
 import org.wildfly.common.cpu.ProcessorInfo;
 import org.wildfly.swarm.config.BatchJBeret;
@@ -27,7 +26,6 @@ import org.wildfly.swarm.config.batch.jberet.InMemoryJobRepository;
 import org.wildfly.swarm.config.batch.jberet.JDBCJobRepository;
 import org.wildfly.swarm.config.batch.jberet.ThreadPool;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -37,11 +35,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.wildfly.extension.batch.jberet")
 @MarshalDMR
-public class BatchFraction extends BatchJBeret<BatchFraction> implements Fraction {
+public class BatchFraction extends BatchJBeret<BatchFraction> implements Fraction<BatchFraction> {
     public static final String DEFAULT_JOB_REPOSITORY_NAME = "in-memory";
 
     public static final String DEFAULT_THREAD_POOL_NAME = "batch";

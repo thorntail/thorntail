@@ -22,9 +22,12 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -37,6 +40,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.xml.namespace.QName;
 
 import org.jboss.as.controller.ModelController;
@@ -59,29 +63,34 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.vfs.TempFileProvider;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.internal.marshal.DMRMarshaller;
 import org.wildfly.swarm.container.runtime.internal.xmlconfig.StandaloneXMLParser;
+import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.api.DefaultFraction;
+import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
-import org.wildfly.swarm.spi.api.Post;
-import org.wildfly.swarm.spi.api.Pre;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
+import org.wildfly.swarm.spi.runtime.annotations.Post;
+import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
@@ -102,13 +111,9 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
  * @author Ken Finnigan
  */
 @SuppressWarnings("unused")
+@Singleton
 @Vetoed
 public class RuntimeServer implements Server {
-
-    //TODO Currently not used, is it even needed?
-    @Inject
-    @DefaultFraction
-    private Instance<Fraction> allDefaultFractions;
 
     @Inject
     @Any
@@ -141,6 +146,8 @@ public class RuntimeServer implements Server {
     @Any
     private Instance<ArchiveMetadataProcessor> allArchiveProcessors;
 
+    private String defaultDeploymentType;
+
     public RuntimeServer() {
     }
 
@@ -170,15 +177,15 @@ public class RuntimeServer implements Server {
 
         loadFractionConfigurations();
 
-        System.err.println( "-------------------------------" );
+        System.err.println("-------------------------------");
 
         for (Customizer each : this.preCustomizers) {
-            System.err.println( "PRE CUSTOMZIER: " + each );
+            System.err.println("PRE CUSTOMZIER: " + each);
             each.customize();
         }
 
         for (Customizer each : this.postCustomizers) {
-            System.err.println( "POST CUSTOMZIER: " + each );
+            System.err.println("POST CUSTOMZIER: " + each);
             each.customize();
         }
 
@@ -187,9 +194,9 @@ public class RuntimeServer implements Server {
 //        applySocketBindingGroupDefaults(config);
 
         List<ModelNode> bootstrapOperations = new ArrayList<>();
-        this.dmrMarshaller.marshal( bootstrapOperations );
+        this.dmrMarshaller.marshal(bootstrapOperations);
 
-        System.err.println( "BOOTSTRAP: " + bootstrapOperations );
+        System.err.println("BOOTSTRAP: " + bootstrapOperations);
 
         if (enabledStage.isPresent()) {
             getSystemProperties(enabledStage, bootstrapOperations);
@@ -248,9 +255,9 @@ public class RuntimeServer implements Server {
         });
         */
 
-        this.serviceActivators.forEach( (activator)->{
-            System.err.println( "######## service activator: " + activator );
-            activators.add( activator );
+        this.serviceActivators.forEach((activator) -> {
+            System.err.println("######## service activator: " + activator);
+            activators.add(activator);
         });
 
         this.serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
@@ -298,12 +305,11 @@ public class RuntimeServer implements Server {
 
     private void setupUserSpaceExtension() {
         try {
-            Module module = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "org.wildfly.swarm.cdi", "ext" ) );
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.cdi", "ext"));
             Class<?> use = module.getClassLoader().loadClass("org.wildfly.swarm.cdi.UserSpaceExtension");
             Field field = use.getDeclaredField("BEANS");
             List<Object> beans = (List<Object>) field.get(null);
-            System.err.println( "setting up beans: " + beans );
-            beans.add( new SimpleExposedBean<>(ConfigurationValueProducer.class, this.configValueProducer));
+            beans.add(new SimpleExposedBean<>(ConfigurationValueProducer.class, this.configValueProducer));
             //beans.addAll( this.beanManager.getBeans(Object.class, ConfigurationValue.Literal.INSTANCE ) );
         } catch (ModuleLoadException e) {
             // ignore, don't do it.
@@ -407,7 +413,7 @@ public class RuntimeServer implements Server {
     private void applyInterfaceDefaults(Container config) {
         if (config.ifaces().isEmpty()) {
             config.iface("public",
-                         SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
+                    SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
         }
     }
 
@@ -693,6 +699,84 @@ public class RuntimeServer implements Server {
             }
 
         }
+    }
+
+    public void deploy() throws DeploymentException {
+        Archive<?> deployment = createDefaultDeployment();
+        if (deployment == null) {
+            throw new DeploymentException("Unable to create default deployment");
+        } else {
+            deploy(deployment);
+        }
+    }
+
+    public void deploy(Archive<?> deployment) throws DeploymentException {
+        this.deployer.deploy(deployment);
+    }
+
+    public Archive<?> createDefaultDeployment() {
+        try {
+            Iterator<DefaultDeploymentFactory> providerIter = Module.getBootModuleLoader()
+                    .loadModule(ModuleIdentifier.create("swarm.application"))
+                    .loadService(DefaultDeploymentFactory.class)
+                    .iterator();
+
+            if (!providerIter.hasNext()) {
+                providerIter = ServiceLoader.load(DefaultDeploymentFactory.class, ClassLoader.getSystemClassLoader())
+                        .iterator();
+            }
+
+            final Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
+
+            while (providerIter.hasNext()) {
+                final DefaultDeploymentFactory factory = providerIter.next();
+                final DefaultDeploymentFactory current = factories.get(factory.getType());
+                if (current == null) {
+                    factories.put(factory.getType(), factory);
+                } else {
+                    // if this one is high priority than the previously-seen factory, replace it.
+                    if (factory.getPriority() > current.getPriority()) {
+                        factories.put(factory.getType(), factory);
+                    }
+                }
+            }
+
+            DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
+            return factory != null ? factory.create() : ShrinkWrap.create(JARArchive.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String determineDeploymentType() {
+        if (this.defaultDeploymentType == null) {
+            this.defaultDeploymentType = determineDeploymentTypeInternal();
+            System.setProperty(BootstrapProperties.DEFAULT_DEPLOYMENT_TYPE, this.defaultDeploymentType);
+        }
+        return this.defaultDeploymentType;
+    }
+
+    private String determineDeploymentTypeInternal() {
+        String artifact = System.getProperty(BootstrapProperties.APP_PATH);
+        if (artifact != null) {
+            int dotLoc = artifact.lastIndexOf('.');
+            if (dotLoc >= 0) {
+                return artifact.substring(dotLoc + 1);
+            }
+        }
+
+        artifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
+        if (artifact != null) {
+            int dotLoc = artifact.lastIndexOf('.');
+            if (dotLoc >= 0) {
+                return artifact.substring(dotLoc + 1);
+            }
+        }
+
+        // fallback to file system
+        FileSystemLayout fsLayout = FileSystemLayout.create();
+
+        return fsLayout.determinePackagingType();
     }
 
     private static final String BUILD_TIME_INDEX_NAME = "META-INF/swarm-jandex.idx";

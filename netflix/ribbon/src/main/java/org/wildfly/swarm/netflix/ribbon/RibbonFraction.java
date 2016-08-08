@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.netflix.ribbon;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
@@ -32,9 +29,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
         @DeploymentModule(name = "io.reactivex.rxnetty"),
         @DeploymentModule(name = "io.netty")
 })
-@Singleton
-@DefaultFraction
-public class RibbonFraction implements Fraction {
+public class RibbonFraction implements Fraction<RibbonFraction> {
 
     public RibbonFraction() {
         System.setProperty("ribbon.NIWSServerListClassName", "org.wildfly.swarm.netflix.ribbon.runtime.TopologyServerList");

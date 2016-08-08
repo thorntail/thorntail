@@ -25,7 +25,7 @@ import org.wildfly.swarm.spi.api.SocketBindingGroup;
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 public class DefaultSocketBindingGroupProducer {
 
     public static final String STANDARD_SOCKETS = "standard-sockets";

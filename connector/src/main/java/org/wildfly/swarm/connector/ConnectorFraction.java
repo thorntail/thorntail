@@ -15,18 +15,13 @@
  */
 package org.wildfly.swarm.connector;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.connector", noClass=true)
-public class ConnectorFraction implements Fraction {
+public class ConnectorFraction implements Fraction<ConnectorFraction> {
 
 }

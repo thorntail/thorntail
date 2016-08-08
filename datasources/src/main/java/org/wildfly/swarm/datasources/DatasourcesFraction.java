@@ -15,12 +15,9 @@
  */
 package org.wildfly.swarm.datasources;
 
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.Datasources;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriverConsumer;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -30,9 +27,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.connector", classname = "org.jboss.as.connector.subsystems.datasources.DataSourcesExtension")
 @MarshalDMR
-@Singleton
-@DefaultFraction
-public class DatasourcesFraction extends Datasources<DatasourcesFraction> implements Fraction {
+public class DatasourcesFraction extends Datasources<DatasourcesFraction> implements Fraction<DatasourcesFraction> {
     @Override
     public DatasourcesFraction dataSource(DataSource value) {
         if (value.jndiName() == null) {

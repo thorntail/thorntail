@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.asset.NamedAsset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;

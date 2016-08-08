@@ -17,30 +17,49 @@ package org.wildfly.swarm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Enumeration;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.JarFile;
 import java.util.logging.LogManager;
+import java.util.zip.ZipEntry;
 
 import javax.enterprise.inject.Vetoed;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.log.StreamModuleLogger;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.Domain;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.base.exporter.ExplodedExporterImpl;
+import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
+import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
+import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
+import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
-import org.wildfly.swarm.cdi.InstallUserFractionExtension;
+import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
-import org.wildfly.swarm.container.internal.SwarmConfigurator;
+import org.wildfly.swarm.container.internal.Server;
+import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.JBossLoggingManager;
+import org.wildfly.swarm.container.runtime.SwarmConfigurator;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -68,6 +87,8 @@ public class Swarm {
     public static ArtifactManager ARTIFACT_MANAGER;
 
     public static String[] COMMAND_LINE_ARGS;
+
+    private Server server;
 
     /**
      * Construct a new, un-started container.
@@ -110,6 +131,13 @@ public class Swarm {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Swarm(boolean debugBootstrap, String... args) throws Exception {
+        if (System.getProperty("boot.module.loader") == null) {
+            System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+        }
+        if (debugBootstrap) {
+            Module.setModuleLogger(new StreamModuleLogger(System.err));
+        }
+
         System.setProperty(SwarmInternalProperties.VERSION, VERSION);
         if (args.length > 0) {
             COMMAND_LINE_ARGS = args;
@@ -134,6 +162,69 @@ public class Swarm {
         } catch (ModuleLoadException e) {
             System.err.println("[WARN] logging not available, logging will not be configured");
         }
+        createShrinkWrapDomain();
+    }
+
+    private void createShrinkWrapDomain() {
+        ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+        try {
+            if (isFatJar()) {
+                Thread.currentThread().setContextClassLoader(SwarmConfigurator.class.getClassLoader());
+                Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
+            }
+            Domain domain = ShrinkWrap.getDefaultDomain();
+            domain.getConfiguration().getExtensionLoader().addOverride(ZipExporter.class, ZipExporterImpl.class);
+            domain.getConfiguration().getExtensionLoader().addOverride(ZipImporter.class, ZipImporterImpl.class);
+            domain.getConfiguration().getExtensionLoader().addOverride(ExplodedExporter.class, ExplodedExporterImpl.class);
+            domain.getConfiguration().getExtensionLoader().addOverride(JavaArchive.class, JavaArchiveImpl.class);
+            domain.getConfiguration().getExtensionLoader().addOverride(WebArchive.class, WebArchiveImpl.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalCl);
+        }
+    }
+
+    private static boolean isFatJar() throws IOException {
+        URL location = Swarm.class.getProtectionDomain().getCodeSource().getLocation();
+        Path root = null;
+        if (location.getProtocol().equals("file")) {
+            try {
+                root = Paths.get(location.toURI());
+            } catch (URISyntaxException e) {
+                throw new IOException(e);
+            }
+        } else if (location.toExternalForm().startsWith("jar:file:")) {
+            return true;
+        }
+
+        if (Files.isRegularFile(root)) {
+            try (JarFile jar = new JarFile(root.toFile())) {
+                ZipEntry propsEntry = jar.getEntry("META-INF/wildfly-swarm.properties");
+                if (propsEntry != null) {
+                    try (InputStream in = jar.getInputStream(propsEntry)) {
+                        Properties props = new Properties();
+                        props.load(in);
+                        if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
+                            System.setProperty(BootstrapProperties.APP_ARTIFACT,
+                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                        }
+
+                        Set<String> names = props.stringPropertyNames();
+                        for (String name : names) {
+                            String value = props.getProperty(name);
+                            if (System.getProperty(name) == null) {
+                                System.setProperty(name, value);
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public Swarm withXmlConfig(URL url) {
@@ -163,9 +254,7 @@ public class Swarm {
      * @return The container.
      */
     public Swarm fraction(Fraction fraction) {
-        if (!InstallUserFractionExtension.userFractions.containsKey(fraction.getClass())) {
-            InstallUserFractionExtension.userFractions.put(fraction.getClass(), fraction);
-        }
+        this.explicitlyInstalledFractions.add( fraction );
         return this;
     }
 
@@ -182,12 +271,13 @@ public class Swarm {
      * @return The container.
      */
     public Swarm iface(String name, String expression) {
-        swarmConfigurator.iface(name, expression);
+        //swarmConfigurator.iface(name, expression);
         return this;
     }
 
     public List<Interface> ifaces() {
-        return swarmConfigurator.ifaces();
+        //return swarmConfigurator.ifaces();
+        return null;
     }
 
     /**
@@ -197,24 +287,28 @@ public class Swarm {
      * @return The container.
      */
     public Swarm socketBindingGroup(SocketBindingGroup group) {
-        swarmConfigurator.socketBindingGroup(group);
+        //swarmConfigurator.socketBindingGroup(group);
         return this;
     }
 
     public List<SocketBindingGroup> socketBindingGroups() {
-        return swarmConfigurator.socketBindingGroups();
+        //return swarmConfigurator.socketBindingGroups();
+        return null;
     }
 
     public SocketBindingGroup getSocketBindingGroup(String name) {
-        return swarmConfigurator.getSocketBindingGroup(name);
+        //return swarmConfigurator.getSocketBindingGroup(name);
+        return null;
     }
 
     public Map<String, List<SocketBinding>> socketBindings() {
-        return swarmConfigurator.socketBindings();
+        //return swarmConfigurator.socketBindings();
+        return null;
     }
 
     public Map<String, List<OutboundSocketBinding>> outboundSocketBindings() {
-        return swarmConfigurator.outboundSocketBindings();
+        //return swarmConfigurator.outboundSocketBindings();
+        return null;
     }
 
     /**
@@ -229,37 +323,11 @@ public class Swarm {
     }
 
     public Swarm start(boolean eagerlyOpen) throws Exception {
-        Weld weld = new Weld();
-        if (Boolean.getBoolean("swarm.isuberjar")) {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
-            weld.setClassLoader(module.getClassLoader());
-            Thread.currentThread().setContextClassLoader(module.getClassLoader());
-            System.err.println("using classloader: " + module.getClassLoader());
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+        Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
-            Enumeration<URL> res = module.getClassLoader().getResources("META-INF/beans.xml");
-
-            while (res.hasMoreElements()) {
-                System.err.println("beans.xml: " + res.nextElement());
-            }
-        }
-
-        // Add Extension that adds User custom bits into configurator
-        weld.addExtension(new InstallUserFractionExtension());
-
-        for (Class<?> each : this.userComponentClasses) {
-            System.err.println("adding component class: " + each);
-            weld.addBeanClass(each);
-        }
-
-        WeldContainer weldContainer = weld.initialize();
-        swarmConfigurator = weldContainer.select(SwarmConfigurator.class).get();
-        swarmConfigurator.setWeld(weldContainer);
-        swarmConfigurator.setDebugBootstrap(this.debugBootstrap);
-        swarmConfigurator.init();
-
-        this.configuratorActive = true;
-
-        swarmConfigurator.start(eagerlyOpen);
+        ServerBootstrap bootstrap = (ServerBootstrap) bootstrapClass.newInstance();
+        this.server = bootstrap.bootstrap( this.explicitlyInstalledFractions );
 
         return this;
     }
@@ -286,11 +354,11 @@ public class Swarm {
      * @throws Exception If an error occurs.
      */
     public Swarm stop() throws Exception {
-        if (!configuratorActive) {
+        if (this.server == null ) {
             throw new Exception("Unable to call stop() until start() called");
         }
 
-        swarmConfigurator.stop();
+        //swarmConfigurator.stop();
         return this;
     }
 
@@ -303,11 +371,11 @@ public class Swarm {
      * @throws DeploymentException if an error occurs.
      */
     public Swarm deploy() throws Exception {
-        if (!configuratorActive) {
+        if (this.server == null) {
             throw new Exception("Unable to call deploy() until start() called");
         }
 
-        swarmConfigurator.deploy();
+        this.server.deploy();
         return this;
     }
 
@@ -319,11 +387,11 @@ public class Swarm {
      * @throws DeploymentException if an error occurs.
      */
     public Swarm deploy(Archive<?> deployment) throws Exception {
-        if (!configuratorActive) {
+        if (this.server == null ) {
             throw new Exception("Unable to call deploy() until start() called");
         }
 
-        swarmConfigurator.deploy(deployment);
+        this.server.deploy(deployment);
         return this;
     }
 
@@ -331,11 +399,12 @@ public class Swarm {
      * Provides access to the default ShrinkWrap deployment.
      */
     public Archive<?> createDefaultDeployment() throws Exception {
-        if (!configuratorActive) {
+        if (this.server == null) {
             throw new Exception("Unable to call createDefaultDeployment() until start() called");
         }
 
-        return swarmConfigurator.createDefaultDeployment();
+        //return swarmConfigurator.createDefaultDeployment();
+        return this.server.createDefaultDeployment();
     }
 
     /**
@@ -390,9 +459,7 @@ public class Swarm {
 
     private Set<Class<?>> userComponentClasses = new HashSet<>();
 
-    private SwarmConfigurator swarmConfigurator;
-
-    private boolean configuratorActive = false;
+    private List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
 
     private boolean debugBootstrap;
 }

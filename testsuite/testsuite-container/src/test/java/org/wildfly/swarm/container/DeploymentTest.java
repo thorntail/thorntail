@@ -15,15 +15,7 @@
  */
 package org.wildfly.swarm.container;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Ignore;
-import org.junit.Test;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.spi.api.JARArchive;
-
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
 
 /**
  * @author Bob McWhirter

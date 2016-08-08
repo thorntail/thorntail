@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.container.runtime.internal.marshal;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -33,7 +33,6 @@ import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
@@ -45,49 +44,40 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 public class SubsystemMarshaller implements ConfigurationMarshaller {
 
     @Inject
-    @MarshalDMR
-    private Instance<Fraction> dmrFractions;
-
-    @Inject
-    @WildFlySubsystem
-    private Instance<Fraction> subsystemOnlyFractions;
+    @Any
+    private Instance<Fraction> fractions;
 
     public void marshal(List<ModelNode> list) {
-        for (Fraction each : this.dmrFractions) {
+        for (Fraction each : this.fractions) {
 
             MarshalDMR anno = each.getClass().getAnnotation(MarshalDMR.class);
 
-            try {
-                Marshaller marshaller = new Marshaller();
-                LinkedList<ModelNode> subList = marshaller.marshal(each);
-                if (!isAlreadyConfigured(subList, list)) {
-                    list.addAll(subList);
+            if ( anno != null ) {
+                try {
+                    Marshaller marshaller = new Marshaller();
+                    LinkedList<ModelNode> subList = marshaller.marshal(each);
+                    if (!isAlreadyConfigured(subList, list)) {
+                        list.addAll(subList);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+            } else {
+                WildFlySubsystem subsysAnno = each.getClass().getAnnotation(WildFlySubsystem.class);
 
-        for (Fraction each : this.subsystemOnlyFractions) {
-            MarshalDMR dmrAnno = each.getClass().getAnnotation(MarshalDMR.class);
+                if ( subsysAnno != null ){
 
-            if (dmrAnno != null) {
-                // already marshalled as full config-api DMR
-                continue;
-            }
+                    PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, subsysAnno.value()));
 
-            WildFlySubsystem subsysAnno = each.getClass().getAnnotation(WildFlySubsystem.class);
+                    ModelNode node = new ModelNode();
+                    node.get(OP_ADDR).set(address.toModelNode());
+                    node.get(OP).set(ADD);
+                    List<ModelNode> subList = Collections.singletonList(node);
 
-            PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, subsysAnno.value()));
-
-
-            ModelNode node = new ModelNode();
-            node.get(OP_ADDR).set(address.toModelNode());
-            node.get(OP).set(ADD);
-            List<ModelNode> subList = Collections.singletonList(node);
-
-            if (!isAlreadyConfigured(subList, list)) {
-                list.addAll(subList);
+                    if (!isAlreadyConfigured(subList, list)) {
+                        list.addAll(subList);
+                    }
+                }
             }
         }
 

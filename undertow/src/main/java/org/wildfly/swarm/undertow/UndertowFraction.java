@@ -16,8 +16,6 @@
 package org.wildfly.swarm.undertow;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.undertow.BufferCache;
@@ -27,20 +25,15 @@ import org.wildfly.swarm.config.undertow.ServletContainer;
 import org.wildfly.swarm.config.undertow.server.Host;
 import org.wildfly.swarm.config.undertow.servlet_container.JSPSetting;
 import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@DefaultFraction
 @MarshalDMR
 @WildFlyExtension(module = "org.wildfly.extension.undertow")
-@Singleton
 public class UndertowFraction extends Undertow<UndertowFraction> implements Fraction {
 
     /**

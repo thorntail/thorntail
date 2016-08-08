@@ -18,17 +18,12 @@ package org.wildfly.swarm.topology.webapp;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Lance Ball
  */
-@Singleton
-@DefaultFraction
-public class TopologyWebAppFraction implements Fraction {
+public class TopologyWebAppFraction implements Fraction<TopologyWebAppFraction> {
 
     public static final String DEFAULT_CONTEXT = "/topology";
 

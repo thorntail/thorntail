@@ -15,17 +15,12 @@
  */
 package org.wildfly.swarm.jolokia;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter
  */
-@Singleton
-@DefaultFraction
-public class JolokiaFraction implements Fraction {
+public class JolokiaFraction implements Fraction<JolokiaFraction> {
 
     public JolokiaFraction() {
         this("jolokia");

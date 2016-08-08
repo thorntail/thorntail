@@ -18,8 +18,8 @@ package org.wildfly.swarm.container.runtime;
 import java.net.URL;
 import java.util.List;
 
-import org.junit.Assert;
 import org.jboss.dmr.ModelNode;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.wildfly.swarm.container.runtime.internal.xmlconfig.StandaloneXMLParser;

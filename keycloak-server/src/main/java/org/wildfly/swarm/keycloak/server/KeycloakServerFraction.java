@@ -15,19 +15,6 @@
  */
 package org.wildfly.swarm.keycloak.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
-import org.wildfly.swarm.config.infinispan.CacheContainer;
-import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
-import org.wildfly.swarm.datasources.DatasourcesFraction;
-import org.wildfly.swarm.infinispan.InfinispanFraction;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
@@ -35,11 +22,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 /**
  * @author Bob McWhirter
  */
-@DefaultFraction
-@Singleton
 @WildFlyExtension(module = "org.keycloak.keycloak-wildfly-server-subsystem")
 @WildFlySubsystem("keycloak-server")
-public class KeycloakServerFraction implements Fraction {
+public class KeycloakServerFraction implements Fraction<KeycloakServerFraction> {
 
     public KeycloakServerFraction() {
     }

@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.request.controller;
 
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.RequestController;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -28,8 +25,6 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  * @author Ken Finnigan
  * @author Lance Ball
  */
-@Singleton
-@DefaultFraction
 @MarshalDMR
 @WildFlyExtension(module = "org.wildfly.extension.request-controller")
 public class RequestControllerFraction extends RequestController<RequestControllerFraction> implements Fraction {

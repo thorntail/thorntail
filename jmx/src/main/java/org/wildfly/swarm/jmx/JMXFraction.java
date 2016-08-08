@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.jmx;
 
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.JMX;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -28,8 +25,6 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.jmx")
 @MarshalDMR
-@Singleton
-@DefaultFraction
-public class JMXFraction extends JMX<JMXFraction> implements Fraction {
+public class JMXFraction extends JMX<JMXFraction> implements Fraction<JMXFraction> {
 
 }

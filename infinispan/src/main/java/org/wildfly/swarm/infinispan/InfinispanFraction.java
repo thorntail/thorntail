@@ -16,12 +16,9 @@
 package org.wildfly.swarm.infinispan;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Infinispan;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -30,27 +27,24 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  * @author Lance Ball
  * @author Toby Crawley
  */
-@Singleton
-@DefaultFraction
 @MarshalDMR
 @WildFlyExtension(module = "org.jboss.as.clustering.infinispan")
 @DeploymentModule(name="org.infinispan", export = true)
 @DeploymentModule(name="org.infinispan.commons", export = true)
-public class InfinispanFraction extends Infinispan<InfinispanFraction> implements Fraction {
+public class InfinispanFraction extends Infinispan<InfinispanFraction> implements Fraction<InfinispanFraction> {
 
-    private InfinispanFraction() {
+    public InfinispanFraction() {
     }
 
-    @PostConstruct
-    public void postConstruct() {
+    @Override
+    public InfinispanFraction applyDefaults() {
         markDefaultFraction();
+        return this;
     }
 
     public static InfinispanFraction createDefaultFraction() {
         return new InfinispanFraction().markDefaultFraction();
     }
-
-
 
     protected InfinispanFraction markDefaultFraction() {
         this.defaultFraction = true;
@@ -58,7 +52,7 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         return this;
     }
 
-    boolean isDefaultFraction() {
+    public boolean isDefaultFraction() {
         return this.defaultFraction;
     }
 

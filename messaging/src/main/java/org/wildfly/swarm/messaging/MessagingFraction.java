@@ -16,10 +16,8 @@
 package org.wildfly.swarm.messaging;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.MessagingActiveMQ;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -32,9 +30,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @WildFlyExtension(module = "org.wildfly.extension.messaging-activemq")
 @MarshalDMR
 @DeploymentModule(name = "javax.jms.api")
-@Singleton
-@DefaultFraction
-public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> implements Fraction {
+public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> implements Fraction<MessagingFraction> {
 
     @PostConstruct
     public void postConstruct() {

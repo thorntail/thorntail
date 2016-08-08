@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.keycloak;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;

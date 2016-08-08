@@ -15,11 +15,7 @@
  */
 package org.wildfly.swarm.jpa;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.JPA;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -30,14 +26,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.jpa")
 @MarshalDMR
-@Singleton
-@DefaultFraction
-public class JPAFraction extends JPA<JPAFraction> implements Fraction {
-
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
+public class JPAFraction extends JPA<JPAFraction> implements Fraction<JPAFraction> {
 
     public static JPAFraction createDefaultFraction() {
         return new JPAFraction().applyDefaults();

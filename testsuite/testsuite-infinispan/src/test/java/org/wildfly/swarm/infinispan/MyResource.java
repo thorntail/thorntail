@@ -1,10 +1,12 @@
 package org.wildfly.swarm.infinispan;
 
 import java.util.UUID;
+
 import javax.naming.InitialContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
 import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
 

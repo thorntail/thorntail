@@ -33,7 +33,7 @@ import javax.enterprise.inject.Vetoed;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
-import org.wildfly.swarm.container.internal.SwarmConfigurator;
+import org.wildfly.swarm.container.runtime.SwarmConfigurator;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 

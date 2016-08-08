@@ -18,9 +18,6 @@ package org.wildfly.swarm.jca;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
-
 import org.wildfly.swarm.config.JCA;
 import org.wildfly.swarm.config.jca.ArchiveValidation;
 import org.wildfly.swarm.config.jca.BeanValidation;
@@ -29,7 +26,6 @@ import org.wildfly.swarm.config.jca.CachedConnectionManager;
 import org.wildfly.swarm.config.jca.LongRunningThreads;
 import org.wildfly.swarm.config.jca.ShortRunningThreads;
 import org.wildfly.swarm.config.jca.Workmanager;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -37,16 +33,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.connector", classname = "org.jboss.as.connector.subsystems.jca.JcaExtension")
 @MarshalDMR
-public class JCAFraction extends JCA<JCAFraction> implements Fraction {
-
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
+public class JCAFraction extends JCA<JCAFraction> implements Fraction<JCAFraction> {
 
     public static JCAFraction createDefaultFraction() {
         return new JCAFraction().applyDefaults();

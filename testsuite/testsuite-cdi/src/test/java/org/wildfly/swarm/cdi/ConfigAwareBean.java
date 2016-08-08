@@ -18,7 +18,6 @@ package org.wildfly.swarm.cdi;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.wildfly.swarm.container.runtime.ConfigurationValueProducer;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;

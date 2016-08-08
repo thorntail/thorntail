@@ -1,10 +1,8 @@
 package org.wildfly.swarm.jolokia;
 
 import java.io.InputStream;
-import java.util.concurrent.CountDownLatch;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -16,9 +14,10 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.spi.api.JARArchive;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Bob McWhirter

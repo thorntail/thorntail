@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -39,8 +40,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 @ApplicationScoped
 public class ExtensionMarshaller implements ConfigurationMarshaller {
 
-    @Inject
-    @WildFlyExtension
+    @Inject @Any
     private Instance<Fraction> fractions;
 
     public void marshal(List<ModelNode> list) {
@@ -52,14 +52,16 @@ public class ExtensionMarshaller implements ConfigurationMarshaller {
         for (Fraction each : this.fractions) {
             WildFlyExtension anno = each.getClass().getAnnotation(WildFlyExtension.class);
 
-            if (anno.module() != null && !anno.module().equals("")) {
-                String module = anno.module();
-                if ( ! seen.contains( module ) ) {
-                    ModelNode node = new ModelNode();
-                    node.get(OP_ADDR).set(EXTENSION, anno.module());
-                    node.get(OP).set(ADD);
-                    extensions.add(node);
-                    seen.add( module );
+            if ( anno != null ) {
+                if (anno.module() != null && !anno.module().equals("")) {
+                    String module = anno.module();
+                    if (!seen.contains(module)) {
+                        ModelNode node = new ModelNode();
+                        node.get(OP_ADDR).set(EXTENSION, anno.module());
+                        node.get(OP).set(ADD);
+                        extensions.add(node);
+                        seen.add(module);
+                    }
                 }
             }
         }

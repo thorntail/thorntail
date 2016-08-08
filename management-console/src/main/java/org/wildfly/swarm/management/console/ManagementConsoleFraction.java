@@ -15,21 +15,12 @@
  */
 package org.wildfly.swarm.management.console;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * Created by ggastald on 02/06/16.
  */
-@Singleton
-@DefaultFraction
-public class ManagementConsoleFraction implements Fraction {
+public class ManagementConsoleFraction implements Fraction<ManagementConsoleFraction> {
 
     public ManagementConsoleFraction() {
         contextRoot(DEFAULT_CONTEXT);

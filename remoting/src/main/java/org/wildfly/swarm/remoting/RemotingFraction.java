@@ -16,12 +16,10 @@
 package org.wildfly.swarm.remoting;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Remoting;
 import org.wildfly.swarm.config.remoting.EndpointConfiguration;
 import org.wildfly.swarm.config.remoting.HTTPConnector;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -29,11 +27,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Ken Finnigan
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.remoting")
 @MarshalDMR
-public class RemotingFraction extends Remoting<RemotingFraction> implements Fraction {
+public class RemotingFraction extends Remoting<RemotingFraction> implements Fraction<RemotingFraction> {
 
     @PostConstruct
     public void postConstruct() {

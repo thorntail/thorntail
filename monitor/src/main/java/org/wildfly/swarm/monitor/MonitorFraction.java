@@ -17,9 +17,6 @@ package org.wildfly.swarm.monitor;
 
 import java.util.Optional;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
@@ -32,9 +29,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
         @DeploymentModule(name = "org.wildfly.swarm.monitor"),
         @DeploymentModule(name = "org.jboss.dmr")
 })
-@Singleton
-@DefaultFraction
-public class MonitorFraction implements Fraction {
+public class MonitorFraction implements Fraction<MonitorFraction> {
 
     private Optional<String> securityRealm = Optional.empty();
 

@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.spring;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
@@ -27,7 +24,5 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 @DeploymentModule(name = "com.fasterxml.jackson.core.jackson-core")
 @DeploymentModule(name = "com.fasterxml.jackson.core.jackson-databind")
 @DeploymentModule(name = "com.fasterxml.jackson.core.jackson-annotations")
-@Singleton
-@DefaultFraction
-public class SpringFraction implements Fraction {
+public class SpringFraction implements Fraction<SpringFraction> {
 }

@@ -18,9 +18,6 @@ package org.wildfly.swarm.topology.consul;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
@@ -33,9 +30,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
  * @author John Hovell
  * @author Bob McWhirter
  */
-@Singleton
-@DefaultFraction
-public class ConsulTopologyFraction implements Fraction {
+public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> {
 
     public ConsulTopologyFraction() {
         this(DEFAULT_URL);

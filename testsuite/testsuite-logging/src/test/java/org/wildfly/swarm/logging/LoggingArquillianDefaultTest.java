@@ -25,8 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.config.logging.Level;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.junit.Assert.assertFalse;

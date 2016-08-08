@@ -17,7 +17,6 @@ package org.wildfly.swarm.container.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.spi.api.SwarmProperties;

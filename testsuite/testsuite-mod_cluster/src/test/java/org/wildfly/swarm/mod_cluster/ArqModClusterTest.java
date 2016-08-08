@@ -15,14 +15,9 @@
  */
 package org.wildfly.swarm.mod_cluster;
 
-import java.util.concurrent.CountDownLatch;
-
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.logging.Logger;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistry;
@@ -31,15 +26,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.config.logging.Level;
-import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Bob McWhirter

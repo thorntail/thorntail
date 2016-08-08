@@ -15,15 +15,10 @@
  */
 package org.wildfly.swarm.msc;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
  * @author Bob McWhirter
  */
-@DefaultFraction
-@Singleton
-public class MSCFraction implements Fraction {
+public class MSCFraction implements Fraction<MSCFraction> {
 }

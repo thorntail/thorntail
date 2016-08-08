@@ -16,10 +16,8 @@
 package org.wildfly.swarm.mail;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Mail;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -29,9 +27,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.mail")
 @MarshalDMR
-@Singleton
-@DefaultFraction
-public class MailFraction extends Mail<MailFraction> implements Fraction {
+public class MailFraction extends Mail<MailFraction> implements Fraction<MailFraction> {
 
     @PostConstruct
     public void postConstruct() {

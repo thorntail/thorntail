@@ -16,13 +16,9 @@
 package org.wildfly.swarm.transactions;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Transactions;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -30,12 +26,10 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.jboss.as.transactions")
 @MarshalDMR
 @DeploymentModule(name = "org.jboss.jts")
-public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction {
+public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction<TransactionsFraction> {
 
     @PostConstruct
     public void postConstruct() {

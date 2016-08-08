@@ -17,8 +17,6 @@ package org.wildfly.swarm.swagger.runtime;
 
 import java.io.InputStream;
 
-import javax.inject.Singleton;
-
 import io.swagger.jaxrs.config.BeanConfig;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;

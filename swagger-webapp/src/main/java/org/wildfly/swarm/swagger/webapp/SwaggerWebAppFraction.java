@@ -17,16 +17,11 @@ package org.wildfly.swarm.swagger.webapp;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.SwarmProperties;
@@ -35,9 +30,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 /**
  * @author Lance Ball
  */
-@Singleton
-@DefaultFraction
-public class SwaggerWebAppFraction implements Fraction {
+public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
 
     public SwaggerWebAppFraction() {
         context = System.getProperty(SwarmProperties.CONTEXT_PATH, DEFAULT_CONTEXT);

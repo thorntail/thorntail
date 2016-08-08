@@ -19,17 +19,12 @@
  */
 package org.wildfly.swarm.camel.core;
 
-import javax.inject.Singleton;
-
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 
-@Singleton
-@DefaultFraction
 @WildFlyExtension(module = "org.wildfly.extension.camel")
 @WildFlySubsystem("camel")
-public final class CamelCoreFraction extends AbstractCamelFraction<CamelCoreFraction> implements Fraction {
+public final class CamelCoreFraction extends AbstractCamelFraction<CamelCoreFraction> implements Fraction<CamelCoreFraction> {
 
 }

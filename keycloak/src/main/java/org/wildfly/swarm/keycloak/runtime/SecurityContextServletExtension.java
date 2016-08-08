@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.keycloak.runtime;
 
+import javax.enterprise.inject.Vetoed;
 import javax.servlet.ServletContext;
 
 import io.undertow.server.HandlerWrapper;
@@ -29,10 +30,10 @@ import org.keycloak.adapters.undertow.OIDCUndertowHttpFacade;
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class SecurityContextServletExtension implements ServletExtension {
     @Override
     public void handleDeployment(DeploymentInfo info, ServletContext context) {
-        System.err.println("HANDLE DEPLOYMENT FOR SECURITY CONTEXT");
         info.addThreadSetupAction(new ThreadSetupAction() {
             @Override
             public Handle setup(HttpServerExchange exchange) {

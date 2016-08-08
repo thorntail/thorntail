@@ -17,8 +17,6 @@ package org.wildfly.swarm.cdi;
 
 import java.io.File;
 
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,9 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

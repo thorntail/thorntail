@@ -1,7 +1,5 @@
 package org.wildfly.swarm.swagger.webapp;
 
-import javax.inject.Inject;
-
 /**
  * @author Bob McWhirter
  */

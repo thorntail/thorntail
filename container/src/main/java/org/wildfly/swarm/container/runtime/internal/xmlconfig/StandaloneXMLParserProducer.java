@@ -32,7 +32,6 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 public class StandaloneXMLParserProducer {
 
     @Inject
-    @WildFlyExtension
     private Instance<Fraction> fractions;
 
     private StandaloneXMLParser parser = new StandaloneXMLParser();
@@ -50,6 +49,10 @@ public class StandaloneXMLParserProducer {
 
     private void setupFactory(Fraction fraction) {
         WildFlyExtension anno = fraction.getClass().getAnnotation(WildFlyExtension.class);
+
+        if ( anno == null ) {
+            return;
+        }
 
         String extensionModuleName = anno.module();
         String extensionClassName = anno.classname();

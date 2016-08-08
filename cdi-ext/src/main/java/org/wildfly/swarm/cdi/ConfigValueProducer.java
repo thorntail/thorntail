@@ -16,18 +16,11 @@
  */
 package org.wildfly.swarm.cdi;
 
-import java.lang.annotation.Annotation;
-
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.Nonbinding;
 import javax.inject.Singleton;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
-import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.StageConfig.Resolver;
 import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
 

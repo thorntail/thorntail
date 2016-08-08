@@ -16,14 +16,12 @@
 package org.wildfly.swarm.webservices;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Webservices;
 import org.wildfly.swarm.config.webservices.ClientConfig;
 import org.wildfly.swarm.config.webservices.EndpointConfig;
 import org.wildfly.swarm.config.webservices.Handler;
 import org.wildfly.swarm.config.webservices.PreHandlerChain;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -31,9 +29,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 @WildFlyExtension(module = "org.jboss.as.webservices")
 @MarshalDMR
-@Singleton
-@DefaultFraction
-public class WebServicesFraction extends Webservices<WebServicesFraction> implements Fraction {
+public class WebServicesFraction extends Webservices<WebServicesFraction> implements Fraction<WebServicesFraction> {
 
     @PostConstruct
     public void postConstruct() {

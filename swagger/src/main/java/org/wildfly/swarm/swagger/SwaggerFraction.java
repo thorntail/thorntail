@@ -15,18 +15,11 @@
  */
 package org.wildfly.swarm.swagger;
 
-import javax.inject.Singleton;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.wildfly.swarm.spi.api.DefaultFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.swagger.internal.SwaggerArchiveImpl;
 
 /**
  * @author Lance Ball
  */
-@DefaultFraction
-@Singleton
-public class SwaggerFraction implements Fraction {
+public class SwaggerFraction implements Fraction<SwaggerFraction> {
 
 }
