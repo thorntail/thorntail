@@ -18,5 +18,9 @@ package org.wildfly.swarm.spi.api;
 /**
  * @author Bob McWhirter
  */
-public interface Fraction<T> {
+public interface Fraction<T extends Fraction> {
+
+    default T applyDefaults() {
+        return (T) this;
+    }
 }

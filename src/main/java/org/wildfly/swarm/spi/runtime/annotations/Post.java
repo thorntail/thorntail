@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.spi.api;
+package org.wildfly.swarm.spi.runtime.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
 /**
@@ -29,13 +28,5 @@ import javax.inject.Qualifier;
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
-public @interface DefaultFraction {
-
-    final class Literal extends AnnotationLiteral<DefaultFraction> implements DefaultFraction {
-
-        public static final Literal INSTANCE = new Literal();
-
-        private static final long serialVersionUID = 1L;
-
-    }
+public @interface Post {
 }
