@@ -48,11 +48,16 @@ public class XMLMarshaller implements ConfigurationMarshaller {
     }
 
     protected void parse(URL url, List<ModelNode> list) {
+        System.err.println( "marshal XML: " + url );
         if ( url == null ) {
             return;
         }
         try {
-            list.addAll( this.parser.parse( url ) );
+            List<ModelNode> subList = this.parser.parse(url);
+            System.err.println( ">>> xml" );
+            System.err.println( subList );
+            System.err.println( "<<< xml" );
+            list.addAll( subList );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

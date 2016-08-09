@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.keycloak.runtime;
+package org.wildfly.swarm.keycloak.deployment;
 
-import javax.enterprise.inject.Vetoed;
 import javax.servlet.ServletContext;
 
 import io.undertow.server.HandlerWrapper;
@@ -30,7 +29,6 @@ import org.keycloak.adapters.undertow.OIDCUndertowHttpFacade;
 /**
  * @author Bob McWhirter
  */
-@Vetoed
 public class SecurityContextServletExtension implements ServletExtension {
     @Override
     public void handleDeployment(DeploymentInfo info, ServletContext context) {

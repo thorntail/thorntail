@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.spi.api.ProjectStage;
 
 /**
  * @author Bob McWhirter
@@ -30,6 +31,9 @@ public class DMRMarshaller implements ConfigurationMarshaller  {
 
     @Inject
     private XMLMarshaller xmlMarshaller;
+
+    @Inject
+    private ProjectStagePropertyMarshaller projectStagePropertyMarshaller;
 
     @Inject
     private ExtensionMarshaller extensionMarshaller;
@@ -47,6 +51,7 @@ public class DMRMarshaller implements ConfigurationMarshaller  {
         System.err.println( ">>>> begin marshal" );
         this.xmlMarshaller.marshal(list);
         this.extensionMarshaller.marshal(list);
+        this.projectStagePropertyMarshaller.marshal(list);
         this.subsystemMarshaller.marshal(list);
         this.interfaceMarshaller.marshal(list);
         this.socketBindingGroupMarshaller.marshal(list);

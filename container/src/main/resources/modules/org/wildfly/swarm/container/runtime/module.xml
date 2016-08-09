@@ -55,5 +55,6 @@
 
     <!-- to support service activators that expose container components through JNDI -->
     <module name="org.jboss.as.naming"/>
+    <module name="org.yaml.snakeyaml"/>
   </dependencies>
 </module>

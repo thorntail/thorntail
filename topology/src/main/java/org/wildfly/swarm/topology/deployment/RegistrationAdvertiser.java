@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.runtime;
+package org.wildfly.swarm.topology.deployment;
 
 import org.jboss.as.network.SocketBinding;
 import org.jboss.msc.inject.Injector;

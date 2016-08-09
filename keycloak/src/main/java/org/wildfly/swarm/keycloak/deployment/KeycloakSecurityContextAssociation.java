@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.keycloak.runtime;
-
-import javax.enterprise.inject.Vetoed;
+package org.wildfly.swarm.keycloak.deployment;
 
 import org.keycloak.KeycloakSecurityContext;
 
 /**
  * @author Bob McWhirter
  */
-@Vetoed
 public class KeycloakSecurityContextAssociation {
 
     public static KeycloakSecurityContext get() {

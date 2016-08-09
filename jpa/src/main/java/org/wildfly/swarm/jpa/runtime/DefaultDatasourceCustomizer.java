@@ -20,7 +20,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.wildfly.swarm.datasources.DefaultDatasource;
+import org.wildfly.swarm.datasources.runtime.DefaultDatasource;
 import org.wildfly.swarm.jpa.JPAFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;

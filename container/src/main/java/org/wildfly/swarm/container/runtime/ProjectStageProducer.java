@@ -25,6 +25,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
+import org.wildfly.swarm.spi.api.ClassLoading;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
@@ -45,15 +49,37 @@ public class ProjectStageProducer {
         return new StageConfig( projectStage() );
     }
 
-    @Produces @Dependent
+    @Produces @Singleton
     public ProjectStage projectStage() {
         System.err.println( "*** producing projectStage" );
         try {
             String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
+            System.err.println( "stage file prop: " + stageFile );
+
+            URL url = null;
+
             if (stageFile != null) {
-                return loadStageConfiguration(new URL(stageFile));
+                url = new URL(stageFile);
+                System.err.println( "from stage file: " + url );
+            } else {
+                try {
+                    Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application" ) );
+                    url = module.getClassLoader().getResource( "project-stages.yml" );
+                    System.err.println( "from module: " + url );
+                } catch (ModuleLoadException e) {
+                    e.printStackTrace();
+                }
             }
 
+            if ( url == null ) {
+                url = ClassLoader.getSystemClassLoader().getResource( "project-stages.yml" );
+                System.err.println( "from classloader: " + url );
+            }
+
+            System.err.println( "  final: " + url );
+            if ( url != null ) {
+                return loadStageConfiguration(url);
+            }
         } catch (MalformedURLException e) {
             System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: " + e.getMessage());
         }
@@ -63,14 +89,19 @@ public class ProjectStageProducer {
 
     private ProjectStage loadStageConfiguration(URL url) {
         try {
-            return enableStageConfiguration(url.openStream());
+            System.err.println( "Loading project stages from: " + url );
+            InputStream in = url.openStream();
+            System.err.println( "input stream: " + in );
+            return enableStageConfiguration(in);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Failed to load stage configuration from URL :" + url.toExternalForm(), e);
         }
     }
 
     private ProjectStage enableStageConfiguration(InputStream input) {
         List<ProjectStage> projectStages = new ProjectStageFactory().loadStages(input);
+        System.err.println( "ALL STAGES: " + projectStages );
         String stageName = System.getProperty(SwarmProperties.PROJECT_STAGE, "default");
         ProjectStage stage = null;
         for (ProjectStage projectStage : projectStages) {

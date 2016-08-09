@@ -60,8 +60,8 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
             }
         }
 
-        getArchive().as(JARArchive.class).addModule("org.wildfly.swarm.keycloak", "runtime");
-        getArchive().as(JARArchive.class).addAsServiceProvider("io.undertow.servlet.ServletExtension", "org.wildfly.swarm.keycloak.runtime.SecurityContextServletExtension");
+        getArchive().as(JARArchive.class).addModule("org.wildfly.swarm.keycloak", "deployment");
+        getArchive().as(JARArchive.class).addAsServiceProvider("io.undertow.servlet.ServletExtension", "org.wildfly.swarm.keycloak.deployment.SecurityContextServletExtension");
 
         InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
         if (keycloakJson == null) {
