@@ -26,6 +26,7 @@ import javax.inject.Singleton;
 
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.config.infinispan.CacheContainer;
+import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
@@ -39,10 +40,12 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 @Singleton
 public class KeycloakServerCustomizer implements Customizer {
 
-    @Inject @Any
+    @Inject
+    @Any
     private InfinispanFraction infinispan;
 
-    @Inject @Any
+    @Inject
+    @Any
     private DatasourcesFraction datasources;
 
 
@@ -55,8 +58,8 @@ public class KeycloakServerCustomizer implements Customizer {
                 File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-keycloak-config", ".d");
                 System.setProperty("jboss.server.config.dir", dir.getAbsolutePath());
                 Files.copy(getClass().getClassLoader().getResourceAsStream("keycloak-server.json"),
-                        dir.toPath().resolve("keycloak-server.json"),
-                        StandardCopyOption.REPLACE_EXISTING);
+                           dir.toPath().resolve("keycloak-server.json"),
+                           StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -72,8 +75,11 @@ public class KeycloakServerCustomizer implements Customizer {
                     .localCache("loginFailures")
                     .localCache("work")
                     .localCache("realmVersions", (ca) -> ca.transactionComponent(new TransactionComponent()
-                            .mode(TransactionComponent.Mode.BATCH)
-                            .locking(TransactionComponent.Locking.PESSIMISTIC)))
+                                                                                         .mode(TransactionComponent.Mode.BATCH)
+                                                                                         .locking(TransactionComponent.Locking.PESSIMISTIC)))
+                    .localCache("authorization", (ca) -> ca.evictionComponent(new EvictionComponent()
+                                                                                      .strategy(EvictionComponent.Strategy.LRU)
+                                                                                      .maxEntries(new Long(100))))
             );
         }
 
