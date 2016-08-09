@@ -22,6 +22,8 @@ import java.nio.file.StandardCopyOption;
 
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.config.infinispan.CacheContainer;
+import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
+import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent.Strategy;
 import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
@@ -65,6 +67,9 @@ public class KeycloakServerFraction implements Fraction {
                     .localCache("realmVersions", (ca) -> ca.transactionComponent(new TransactionComponent()
                                                                                          .mode(TransactionComponent.Mode.BATCH)
                                                                                          .locking(TransactionComponent.Locking.PESSIMISTIC)))
+                    .localCache("authorization", (ca) -> ca.evictionComponent(new EvictionComponent()
+                                                                                      .strategy(Strategy.LRU)
+                                                                                      .maxEntries(new Long(100))))
             );
         }
 
