@@ -43,8 +43,8 @@ public class UndertowFilterCustomizer implements Customizer {
             undertow.filterConfiguration();
             undertow.subresources().filterConfiguration()
                     .customFilter("wfs-monitor", customFilter -> {
-                        customFilter.module("org.wildfly.swarm.monitor:api");
-                        customFilter.className("org.wildfly.swarm.monitor.SecureHttpContexts");
+                        customFilter.module("org.wildfly.swarm.monitor:runtime");
+                        customFilter.className("org.wildfly.swarm.monitor.runtime.SecureHttpContexts");
                     });
 
             undertow.subresources().server("default-server")

@@ -19,16 +19,13 @@ import java.util.Optional;
 
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 
 /**
  * @author Heiko Braun
  */
-@DeploymentModules({
-        @DeploymentModule(name = "javax.ws.rs.api"),
-        @DeploymentModule(name = "org.wildfly.swarm.monitor"),
-        @DeploymentModule(name = "org.jboss.dmr")
-})
+@DeploymentModule(name = "javax.ws.rs.api")
+@DeploymentModule(name = "org.jboss.dmr")
+@DeploymentModule(name = "org.wildfly.swarm.monitor")
 public class MonitorFraction implements Fraction<MonitorFraction> {
 
     private Optional<String> securityRealm = Optional.empty();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor;
+package org.wildfly.swarm.monitor.runtime;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +23,7 @@ import javax.naming.NamingException;
 
 import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.monitor.HealthMetaData;
 
 /**
  * The main API exposed by the monitoring service

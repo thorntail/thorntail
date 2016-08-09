@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor;
+package org.wildfly.swarm.monitor.runtime;
 
 import javax.inject.Singleton;
 
@@ -32,6 +32,8 @@ import org.wildfly.swarm.spi.api.JARArchive;
  */
 @Singleton
 public class InstallMonitorFilter implements ArchivePreparer {
+
+    //private static String HEALTH_RESPONSE_FILTER_CLASS_NAME = "org.wildfly.swarm.monitor.runtime.HealthResponseFilter";
 
     /**
      * Path to the WEB-INF inside of the Archive.

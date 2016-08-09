@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor;
+package org.wildfly.swarm.monitor.runtime;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.monitor.HealthMetaData;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 
 /**

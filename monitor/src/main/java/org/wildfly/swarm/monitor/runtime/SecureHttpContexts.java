@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor;
+package org.wildfly.swarm.monitor.runtime;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
 
 import io.undertow.security.api.AuthenticationMechanism;
@@ -51,6 +52,7 @@ import org.jboss.as.domain.management.SecurityRealm;
  * @author Heiko Braun
  * @since 18/02/16
  */
+@Vetoed
 public class SecureHttpContexts implements HttpHandler {
 
 
