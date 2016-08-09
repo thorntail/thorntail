@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.jpa.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -28,7 +29,8 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 /**
  * @author Ken Finnigan
  */
-@Singleton
+
+@ApplicationScoped
 @Post
 public class DefaultDatasourceCustomizer implements Customizer {
     @Inject
@@ -41,7 +43,9 @@ public class DefaultDatasourceCustomizer implements Customizer {
 
     @Override
     public void customize() {
+        System.err.println( "customize default datasource" );
         if (!jpaFractionInstance.isUnsatisfied() && !defaultDatasourceInstance.isUnsatisfied()) {
+            System.err.println( "datasource is " + defaultDatasourceInstance.get() );
             jpaFractionInstance.get().defaultDatasource("jboss/datasources/" + defaultDatasourceInstance.get());
         }
     }

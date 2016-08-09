@@ -67,6 +67,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                             null,
                             ModuleIdentifier.create("org.wildfly.swarm.bootstrap"), false));
 
+
             builder.addDependency(
                     DependencySpec.createModuleDependencySpec(
                             PathFilters.acceptAll(),
@@ -76,7 +77,59 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                             ClassFilters.acceptAll(),
                             ClassFilters.acceptAll(),
                             null,
-                            ModuleIdentifier.create("org.wildfly.swarm.spi", "api"), false));
+                            ModuleIdentifier.create("org.jboss.jandex" ), false));
+
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("org.jboss.weld.api", "3" ), false));
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("org.jboss.weld.spi", "3" ), false));
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("org.jboss.weld.core", "3" ), false));
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("org.jboss.weld.se", "3" ), false));
+
+            builder.addDependency(
+                    DependencySpec.createModuleDependencySpec(
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            PathFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            ClassFilters.acceptAll(),
+                            null,
+                            ModuleIdentifier.create("javax.enterprise.api" ), false));
 
             if (Layout.getInstance().isUberJar()) {
                 handleWildFlySwarmApplicationConf(builder);

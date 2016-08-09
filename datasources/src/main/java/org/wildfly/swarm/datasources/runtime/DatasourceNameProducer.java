@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.datasources.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -27,7 +28,7 @@ import org.wildfly.swarm.datasources.DatasourcesFraction;
 /**
  * @author Ken Finnigan
  */
-@Singleton
+@ApplicationScoped
 public class DatasourceNameProducer {
     @Inject
     @Any
@@ -37,9 +38,11 @@ public class DatasourceNameProducer {
     @Dependent
     @DefaultDatasource
     public String getDatasourceName() {
+        System.err.println( "get datasource name" );
         if (!datasourcesFractionInstance.isUnsatisfied()) {
             return datasourcesFractionInstance.get().subresources().dataSources().get(0).getKey();
         }
+        System.err.println( "no datasources fraction, return null" );
 
         return null;
     }
