@@ -22,7 +22,7 @@ import com.netflix.client.config.IClientConfig;
 import com.netflix.client.config.IClientConfigKey;
 import com.netflix.loadbalancer.AbstractServerList;
 import com.netflix.loadbalancer.Server;
-import org.wildfly.swarm.topology.TopologyManager;
+import org.wildfly.swarm.topology.runtime.TopologyManager;
 
 /**
  * @author Bob McWhirter

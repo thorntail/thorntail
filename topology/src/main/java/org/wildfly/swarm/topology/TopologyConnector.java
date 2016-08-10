@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.runtime;
+package org.wildfly.swarm.topology;
 
 import org.jboss.as.network.SocketBinding;
-import org.jboss.msc.service.ServiceName;
 
 /**
  * @author Bob McWhirter
  */
 public interface TopologyConnector {
-    ServiceName SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
+    //ServiceName SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
 
     void advertise(String name, SocketBinding binding, String... tags);
 

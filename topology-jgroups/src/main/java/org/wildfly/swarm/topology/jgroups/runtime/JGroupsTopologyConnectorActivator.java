@@ -23,8 +23,7 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.clustering.dispatcher.CommandDispatcherFactory;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
-import org.wildfly.swarm.topology.TopologyManager;
+import org.wildfly.swarm.topology.runtime.TopologyManager;
 import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
 /**
@@ -39,7 +38,7 @@ public class JGroupsTopologyConnectorActivator implements ServiceActivator {
 
         JGroupsTopologyConnector manager = new JGroupsTopologyConnector();
 
-        target.addService(TopologyConnector.SERVICE_NAME, manager)
+        target.addService(TopologyManagerActivator.CONNECTOR_SERVICE_NAME, manager)
                 .addDependency(ServiceName.parse("jboss.clustering.dispatcher.default"), CommandDispatcherFactory.class, manager.getCommandDispatcherFactoryInjector())
                 //.addDependency(ServiceName.parse("org.wildfly.network.socket-binding.http"), SocketBinding.class, manager.getSocketBindingInjector())
                 .addDependency(TopologyManagerActivator.SERVICE_NAME, TopologyManager.class, manager.getTopologyManagerInjector())

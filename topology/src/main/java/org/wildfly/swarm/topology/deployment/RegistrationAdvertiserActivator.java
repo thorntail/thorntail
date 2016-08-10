@@ -28,12 +28,15 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.TopologyArchive;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
+import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
 /**
  * @author Bob McWhirter
  */
 public class RegistrationAdvertiserActivator implements ServiceActivator {
+    public static final ServiceName CONNECTOR_SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
+
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
 
@@ -67,7 +70,7 @@ public class RegistrationAdvertiserActivator implements ServiceActivator {
         RegistrationAdvertiser advertiser = new RegistrationAdvertiser(serviceName, socketBindingName);
 
         target.addService(ServiceName.of("swarm", "topology", "register", serviceName, socketBindingName), advertiser)
-                .addDependency(TopologyConnector.SERVICE_NAME, TopologyConnector.class, advertiser.getTopologyConnectorInjector())
+                .addDependency(CONNECTOR_SERVICE_NAME, TopologyConnector.class, advertiser.getTopologyConnectorInjector())
                 .addDependency(socketBinding, SocketBinding.class, advertiser.getSocketBindingInjector())
                 .setInitialMode(ServiceController.Mode.PASSIVE)
                 .install();

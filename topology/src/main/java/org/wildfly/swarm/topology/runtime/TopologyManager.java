@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology;
+package org.wildfly.swarm.topology.runtime;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,8 +25,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import org.jboss.msc.service.ServiceName;
-import org.wildfly.swarm.topology.runtime.Registration;
+import org.wildfly.swarm.topology.Topology;
+import org.wildfly.swarm.topology.TopologyListener;
 
 /**
  * @author Bob McWhirter

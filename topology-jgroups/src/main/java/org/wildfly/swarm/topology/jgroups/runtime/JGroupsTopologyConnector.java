@@ -31,8 +31,8 @@ import org.wildfly.clustering.dispatcher.CommandDispatcher;
 import org.wildfly.clustering.dispatcher.CommandDispatcherFactory;
 import org.wildfly.clustering.group.Group;
 import org.wildfly.clustering.group.Node;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
-import org.wildfly.swarm.topology.TopologyManager;
+import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.runtime.TopologyManager;
 import org.wildfly.swarm.topology.runtime.Registration;
 
 /**

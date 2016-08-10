@@ -30,7 +30,6 @@ import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.wildfly.swarm.topology.Topology;
-import org.wildfly.swarm.topology.TopologyManager;
 
 /**
  * @author Bob McWhirter
@@ -39,6 +38,7 @@ import org.wildfly.swarm.topology.TopologyManager;
 public class TopologyManagerActivator implements ServiceActivator {
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "topology");
+    public static final ServiceName CONNECTOR_SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
