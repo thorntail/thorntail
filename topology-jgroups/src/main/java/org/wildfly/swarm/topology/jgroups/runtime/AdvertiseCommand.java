@@ -13,18 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology;
+package org.wildfly.swarm.topology.jgroups.runtime;
 
-import org.jboss.as.network.SocketBinding;
-import org.jboss.msc.service.ServiceName;
+import org.wildfly.clustering.dispatcher.Command;
+import org.wildfly.swarm.topology.jgroups.runtime.JGroupsTopologyConnector;
+import org.wildfly.swarm.topology.runtime.Registration;
 
 /**
  * @author Bob McWhirter
  */
-public interface TopologyConnector {
-    ServiceName SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
+public class AdvertiseCommand implements Command<Void, JGroupsTopologyConnector> {
 
-    void advertise(String name, SocketBinding binding, String... tags);
+    public AdvertiseCommand(Registration registration) {
+        this.registration = registration;
+    }
 
-    void unadvertise(String name, SocketBinding binding);
+    @Override
+    public Void execute(JGroupsTopologyConnector context) throws Exception {
+        context.register(this.registration);
+        return null;
+    }
+
+    private Registration registration;
 }

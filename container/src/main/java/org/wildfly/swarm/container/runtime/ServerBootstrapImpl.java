@@ -10,6 +10,7 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
+import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -18,7 +19,7 @@ import org.wildfly.swarm.spi.api.Fraction;
 public class ServerBootstrapImpl implements ServerBootstrap {
 
     @Override
-    public Server bootstrap(Collection<Fraction> explicitlyInstalledFractions) throws Exception {
+    public Server bootstrap(String[] args, Collection<Fraction> explicitlyInstalledFractions) throws Exception {
         FractionProducingExtension.explicitlyInstalledFractions.addAll(explicitlyInstalledFractions);
 
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
@@ -30,6 +31,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
 
         // Add Extension that adds User custom bits into configurator
         weld.addExtension(new FractionProducingExtension());
+        weld.addExtension(new CommandLineArgsExtension(args));
 
         WeldContainer weldContainer = weld.initialize();
         SwarmConfigurator swarmConfigurator = weldContainer.select(SwarmConfigurator.class).get();

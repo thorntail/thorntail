@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.jgroups;
+package org.wildfly.swarm.topology.jgroups.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.wildfly.clustering.dispatcher.CommandDispatcher;
 import org.wildfly.clustering.dispatcher.CommandDispatcherFactory;
 import org.wildfly.clustering.group.Group;
 import org.wildfly.clustering.group.Node;
-import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.TopologyManager;
 import org.wildfly.swarm.topology.runtime.Registration;
 

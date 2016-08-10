@@ -86,7 +86,9 @@ public class Swarm {
 
     public static ArtifactManager ARTIFACT_MANAGER;
 
-    public static String[] COMMAND_LINE_ARGS;
+    private String[] args;
+
+    //public static String[] COMMAND_LINE_ARGS;
 
     private Server server;
 
@@ -139,9 +141,12 @@ public class Swarm {
         }
 
         System.setProperty(SwarmInternalProperties.VERSION, VERSION);
+        /*
         if (args.length > 0) {
             COMMAND_LINE_ARGS = args;
         }
+        */
+        setArgs( args );
         this.debugBootstrap = debugBootstrap;
 
         // Need to setup Logging here so that Weld doesn't default to JUL.
@@ -163,6 +168,10 @@ public class Swarm {
             System.err.println("[WARN] logging not available, logging will not be configured");
         }
         createShrinkWrapDomain();
+    }
+
+    public void setArgs(String...args) {
+        this.args = args;
     }
 
     private void createShrinkWrapDomain() {
@@ -327,7 +336,7 @@ public class Swarm {
         Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
         ServerBootstrap bootstrap = (ServerBootstrap) bootstrapClass.newInstance();
-        this.server = bootstrap.bootstrap( this.explicitlyInstalledFractions );
+        this.server = bootstrap.bootstrap( this.args, this.explicitlyInstalledFractions );
 
         return this;
     }
@@ -414,8 +423,6 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
-        COMMAND_LINE_ARGS = args;
-
         if (System.getProperty("boot.module.loader") == null) {
             System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }

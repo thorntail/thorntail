@@ -25,9 +25,10 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.TopologyManager;
 import org.wildfly.swarm.topology.runtime.Registration;
+import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
 /**
  * Topology connector for Consul.
@@ -76,7 +77,7 @@ public class ConsulTopologyConnector implements Service<ConsulTopologyConnector>
         target.addService(CatalogWatcher.SERVICE_NAME, watcher)
                 .addDependency(CatalogClientService.SERVICE_NAME, CatalogClient.class, watcher.getCatalogClientInjector())
                 .addDependency(HealthClientService.SERIVCE_NAME, HealthClient.class, watcher.getHealthClientInjector())
-                .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, watcher.getTopologyManagerInjector())
+                .addDependency(TopologyManagerActivator.SERVICE_NAME, TopologyManager.class, watcher.getTopologyManagerInjector())
                 .install();
 
 

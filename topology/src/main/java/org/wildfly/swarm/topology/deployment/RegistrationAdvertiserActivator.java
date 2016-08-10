@@ -28,7 +28,7 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.TopologyArchive;
-import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.runtime.TopologyConnector;
 
 /**
  * @author Bob McWhirter

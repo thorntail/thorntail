@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.webapp;
+package org.wildfly.swarm.topology.webapp.runtime;
 
 import java.util.Set;
+
+import javax.inject.Singleton;
 
 import io.undertow.server.HttpHandler;
 import org.jboss.msc.service.ServiceActivator;
@@ -23,8 +25,10 @@ import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.runtime.TopologyConnector;
+import org.wildfly.swarm.topology.webapp.TopologyProxyService;
 
+@Singleton
 public class TopologyWebAppActivator implements ServiceActivator {
 
     public TopologyWebAppActivator(Set<String> serviceNames) {

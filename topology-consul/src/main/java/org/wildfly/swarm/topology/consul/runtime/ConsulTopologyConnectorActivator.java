@@ -22,8 +22,9 @@ import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.TopologyManager;
+import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
 /**
  * MSC activator for the ConsulTopologyConnector.
@@ -48,7 +49,7 @@ public class ConsulTopologyConnectorActivator implements ServiceActivator {
         ConsulTopologyConnector connector = new ConsulTopologyConnector();
 
         target.addService(TopologyConnector.SERVICE_NAME, connector)
-                .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
+                .addDependency(TopologyManagerActivator.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
                 .addDependency(Advertiser.SERVICE_NAME, Advertiser.class, connector.getAdvertiserInjector())
                 .setInitialMode(ServiceController.Mode.ACTIVE)
                 .install();

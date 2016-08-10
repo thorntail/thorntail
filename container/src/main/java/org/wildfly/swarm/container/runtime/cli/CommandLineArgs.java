@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm;
+package org.wildfly.swarm.container.runtime.cli;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -32,4 +33,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target({ METHOD, PARAMETER, FIELD })
 public @interface CommandLineArgs {
+    class Literal extends AnnotationLiteral<CommandLineArgs> implements CommandLineArgs {
+        public static Literal INSTANCE = new Literal();
+    }
 }

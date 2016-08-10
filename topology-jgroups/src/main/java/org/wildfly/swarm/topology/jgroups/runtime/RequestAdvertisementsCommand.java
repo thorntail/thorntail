@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology.jgroups;
+package org.wildfly.swarm.topology.jgroups.runtime;
 
 import org.wildfly.clustering.dispatcher.Command;
+import org.wildfly.swarm.topology.jgroups.runtime.JGroupsTopologyConnector;
 
 /**
  * @author Bob McWhirter

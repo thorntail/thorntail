@@ -33,8 +33,6 @@ import org.wildfly.swarm.topology.runtime.Registration;
  */
 public class TopologyManager implements Topology {
 
-    public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "topology");
-
     public static final TopologyManager INSTANCE = new TopologyManager();
 
     public synchronized void addListener(TopologyListener listener) {
