@@ -23,6 +23,8 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
+import org.wildfly.swarm.spi.api.Module;
+
 /** Provides for simple runtime configuration of a Fraction.
  *
  * @author Bob McWhirter
@@ -37,10 +39,12 @@ public @interface DeploymentModule {
     String slot() default "main";
     boolean export() default false;
     MetaInfDisposition metaInf() default MetaInfDisposition.NONE;
+    Module.ServiceHandling services() default Module.ServiceHandling.NONE;
 
-    public static enum MetaInfDisposition {
+    enum MetaInfDisposition {
         NONE,
         IMPORT,
         EXPORT
     }
+
 }
