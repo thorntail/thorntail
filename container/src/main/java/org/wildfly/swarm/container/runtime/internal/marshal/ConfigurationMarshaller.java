@@ -19,9 +19,21 @@ import java.util.List;
 
 import org.jboss.dmr.ModelNode;
 
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+
 /**
  * @author Bob McWhirter
  */
 public interface ConfigurationMarshaller {
     void marshal(List<ModelNode> list);
+
+    default boolean isAlreadyConfigured(List<ModelNode> subList, List<ModelNode> list) {
+        if (subList.isEmpty()) {
+            return false;
+        }
+
+        ModelNode head = subList.get(0);
+
+        return list.stream().anyMatch(e -> e.get(OP_ADDR).equals(head.get(OP_ADDR)));
+    }
 }

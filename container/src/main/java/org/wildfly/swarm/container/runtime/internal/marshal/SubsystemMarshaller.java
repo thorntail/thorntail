@@ -54,8 +54,7 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
 
             if ( anno != null ) {
                 try {
-                    Marshaller marshaller = new Marshaller();
-                    LinkedList<ModelNode> subList = marshaller.marshal(each);
+                    LinkedList<ModelNode> subList = Marshaller.marshal(each);
                     if (!isAlreadyConfigured(subList, list)) {
                         list.addAll(subList);
                     }
@@ -81,15 +80,5 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
             }
         }
 
-    }
-
-    private boolean isAlreadyConfigured(List<ModelNode> subList, List<ModelNode> list) {
-        if (subList.isEmpty()) {
-            return false;
-        }
-
-        ModelNode head = subList.get(0);
-
-        return list.stream().anyMatch(e -> e.get(OP_ADDR).equals(head.get(OP_ADDR)));
     }
 }

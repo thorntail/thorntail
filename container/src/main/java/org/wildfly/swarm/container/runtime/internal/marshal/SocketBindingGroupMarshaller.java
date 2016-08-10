@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.container.runtime.internal.marshal;
 
+import java.util.LinkedList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -58,14 +58,20 @@ public class SocketBindingGroupMarshaller implements ConfigurationMarshaller {
             node.get(OP_ADDR).set(address.toModelNode());
             node.get(DEFAULT_INTERFACE).set(group.defaultInterface());
             node.get(PORT_OFFSET).set(new ValueExpression(group.portOffsetExpression()));
-            list.add(node);
+
+            LinkedList<ModelNode> subList = new LinkedList<>();
+            subList.add(node);
 
             for (SocketBinding binding : group.socketBindings()) {
-                configureSocketBinding(address, binding, list);
+                configureSocketBinding(address, binding, subList);
             }
 
             for (OutboundSocketBinding binding : group.outboundSocketBindings()) {
-                configureSocketBinding(address, binding, list);
+                configureSocketBinding(address, binding, subList);
+            }
+
+            if (!isAlreadyConfigured(subList, list)) {
+                list.addAll(subList);
             }
         }
     }
