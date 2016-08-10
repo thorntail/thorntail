@@ -173,13 +173,13 @@ public class ArtifactManager implements ArtifactLookup {
         if (version == null) {
             throw new RuntimeException("Unable to determine version number from GAV: " + gav);
         }
+        ArtifactCoordinates coords= new ArtifactCoordinates(
+                groupId,
+                artifactId,
+                version,
+                classifier == null ? "" : classifier);
 
-        return MavenResolvers.get().resolveArtifact(
-                new ArtifactCoordinates(
-                        groupId,
-                        artifactId,
-                        version,
-                        classifier == null ? "" : classifier), packaging);
+        return MavenResolvers.get().resolveArtifact( coords, packaging );
     }
 
     String determineVersionViaDependenciesConf(String groupId, String artifactId, String packaging, String classifier) throws IOException {

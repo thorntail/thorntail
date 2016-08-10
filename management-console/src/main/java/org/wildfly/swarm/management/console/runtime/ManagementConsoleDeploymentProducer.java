@@ -15,15 +15,22 @@
  */
 package org.wildfly.swarm.management.console.runtime;
 
+import java.net.URL;
+
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.management.console.ManagementConsoleFraction;
 import org.wildfly.swarm.management.console.ManagementConsoleProperties;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.undertow.WARArchive;
 
@@ -48,9 +55,16 @@ public class ManagementConsoleDeploymentProducer {
         if ( this.context == null ) {
             this.context = fraction.contextRoot();
         }
-        return this.lookup.artifact("org.jboss.as:jboss-as-console:jar:2.8.25.Final:resources", "management-console-ui.war")
-                .as(WARArchive.class)
-                .setContextRoot(this.context);
+
+        // Load the swagger-ui webjars.
+        Module module = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "org.jboss.as.console" ) );
+        URL resource = module.getExportedResource("jboss-as-console-resources.jar");
+        WARArchive war = ShrinkWrap.create(WARArchive.class, "management-console-ui.war" );
+        war.as(ZipImporter.class).importFrom( resource.openStream() );
+
+        war.setContextRoot( this.context );
+
+        return war;
     }
 
 }

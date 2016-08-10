@@ -26,6 +26,27 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>swagger-ui</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.jboss.as</includeGroupIds>
+              <includeArtifactIds>jboss-as-console</includeArtifactIds>
+              <includeClassifiers>resources</includeClassifiers>
+              <outputDirectory>${project.build.directory}/classes/modules/org/jboss/as/console/main/</outputDirectory>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -42,9 +63,10 @@
       <artifactId>spi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>staxmapper</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-console</artifactId>
+      <classifier>resources</classifier>
+      <version>${version.jboss.management-console}</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>

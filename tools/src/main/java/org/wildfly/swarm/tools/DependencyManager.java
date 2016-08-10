@@ -161,7 +161,6 @@ public class DependencyManager {
             if (dependency.shouldGather) {
                 dependencies.add(dependency);
             }
-
         }
 
         for (ArtifactSpec dependency : this.moduleDependencies) {
