@@ -26,7 +26,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.topology.TopologyArchive;
 import org.wildfly.swarm.topology.webapp.TopologySSEServlet;
 import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;

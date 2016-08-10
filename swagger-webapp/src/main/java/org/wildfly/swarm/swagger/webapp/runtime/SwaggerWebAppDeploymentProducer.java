@@ -22,7 +22,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
 import org.wildfly.swarm.swagger.webapp.SwaggerWebAppProperties;
 import org.wildfly.swarm.undertow.WARArchive;

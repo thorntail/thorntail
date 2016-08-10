@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 
 /**

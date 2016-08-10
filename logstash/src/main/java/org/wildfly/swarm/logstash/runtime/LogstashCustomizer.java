@@ -26,7 +26,7 @@ import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.logstash.LogstashFraction;
 import org.wildfly.swarm.logstash.LogstashProperties;
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
 /**

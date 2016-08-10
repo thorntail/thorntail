@@ -26,7 +26,7 @@ import org.wildfly.swarm.jgroups.JGroupsProperties;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
 /**

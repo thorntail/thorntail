@@ -19,14 +19,13 @@ import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.StageConfig.Resolver;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 /**
  * @author Martin Kouba
@@ -36,9 +35,6 @@ public class ConfigurationValueProducer {
 
     @Inject
     private StageConfig stageConfig;
-
-    @Inject
-    private BeanManager beanManager;
 
     @Produces
     @ConfigurationValue
@@ -94,7 +90,7 @@ public class ConfigurationValueProducer {
         Resolver<String> resolver = resolver(injectionPoint);
         try {
             return resolver != null ? resolver.as(target).getValue() : null;
-        } catch (RuntimeException e)  {
+        } catch (RuntimeException e) {
             return null;
         }
     }
@@ -115,17 +111,6 @@ public class ConfigurationValueProducer {
         }
         return null;
     }
-
-    /*
-    private StageConfig lookup() {
-        try {
-            InitialContext context = new InitialContext();
-            return (StageConfig) context.lookup("jboss/swarm/stage-config");
-        } catch (NamingException e) {
-            return null;
-        }
-    }
-    */
 
 }
 

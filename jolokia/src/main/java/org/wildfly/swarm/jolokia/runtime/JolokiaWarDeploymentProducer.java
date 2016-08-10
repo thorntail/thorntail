@@ -23,7 +23,7 @@ import javax.inject.Singleton;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.jolokia.JolokiaFraction;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**

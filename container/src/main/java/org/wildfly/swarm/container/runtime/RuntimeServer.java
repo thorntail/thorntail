@@ -87,6 +87,7 @@ import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
@@ -287,37 +288,24 @@ public class RuntimeServer implements Server {
             this.deployer.deploy(each);
         }
 
-        //TODO User Space integration with CDI
-//        setupUserSpaceExtension();
+        setupUserSpaceExtension();
 
         return this.deployer;
     }
 
     @Inject
-    private ConfigurationValueProducer configValueProducer;
-
-    @Inject
-    private ProjectStageProducer projectStageProducer;
-
-    @Inject
-    private BeanManager beanManager;
-
+    private Instance<StageConfig> stageConfig;
 
     private void setupUserSpaceExtension() {
         try {
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.cdi", "ext"));
-            Class<?> use = module.getClassLoader().loadClass("org.wildfly.swarm.cdi.UserSpaceExtension");
-            Field field = use.getDeclaredField("BEANS");
-            List<Object> beans = (List<Object>) field.get(null);
-            beans.add(new SimpleExposedBean<>(ConfigurationValueProducer.class, this.configValueProducer));
-            //beans.addAll( this.beanManager.getBeans(Object.class, ConfigurationValue.Literal.INSTANCE ) );
+            Class<?> use = module.getClassLoader().loadClass("org.wildfly.swarm.cdi.InjectStageConfigExtension");
+            Field field = use.getDeclaredField("stageConfig");
+            field.setAccessible(true);
+            field.set(null, stageConfig.get());
         } catch (ModuleLoadException e) {
             // ignore, don't do it.
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
 

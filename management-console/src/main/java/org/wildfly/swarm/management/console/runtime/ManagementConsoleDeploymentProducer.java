@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.management.console.ManagementConsoleFraction;
 import org.wildfly.swarm.management.console.ManagementConsoleProperties;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**

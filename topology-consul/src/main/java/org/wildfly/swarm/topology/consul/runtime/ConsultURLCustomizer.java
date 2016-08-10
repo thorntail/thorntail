@@ -22,7 +22,7 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 import org.wildfly.swarm.topology.consul.ConsulTopologyFraction;
 

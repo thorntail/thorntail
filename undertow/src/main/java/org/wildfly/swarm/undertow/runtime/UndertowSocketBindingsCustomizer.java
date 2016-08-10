@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.annotations.ConfigurationValue;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 import org.wildfly.swarm.undertow.UndertowFraction;
