@@ -70,5 +70,6 @@ public class DeploymentModulesArchivePreparer implements ArchivePreparer {
         Module def = archive.addModule(moduleName, moduleSlot);
         def.withExport(entry.export());
         def.withMetaInf(entry.metaInf().toString().toLowerCase());
+        def.withServices(entry.services());
     }
 }

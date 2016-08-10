@@ -16,12 +16,15 @@
 package org.wildfly.swarm.vertx;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author George Gastaldi
  */
 @DeploymentModule(name = "io.vertx.jca", slot = "api")
+@DeploymentModule(name = "io.vertx.jca", slot = "ra", services = Module.ServiceHandling.IMPORT )
+@DeploymentModule(name = "com.hazelcast" )
 public class VertxFraction implements Fraction<VertxFraction> {
 
     public VertxFraction inhibitAdapterDeployment() {
