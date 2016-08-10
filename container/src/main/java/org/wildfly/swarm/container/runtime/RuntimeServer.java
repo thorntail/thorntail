@@ -38,7 +38,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.xml.namespace.QName;
@@ -94,7 +93,6 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HOST;
@@ -105,7 +103,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PORT_OFFSET;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VALUE;
 
 /**
  * @author Bob McWhirter
@@ -176,8 +173,6 @@ public class RuntimeServer implements Server {
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
 
-        loadFractionConfigurations();
-
         System.err.println("-------------------------------");
 
         for (Customizer each : this.preCustomizers) {
@@ -190,25 +185,10 @@ public class RuntimeServer implements Server {
             each.customize();
         }
 
-
-        //if (!xmlConfig.isPresent())
-//        applySocketBindingGroupDefaults(config);
-
         List<ModelNode> bootstrapOperations = new ArrayList<>();
         this.dmrMarshaller.marshal(bootstrapOperations);
 
         System.err.println("BOOTSTRAP: " + bootstrapOperations);
-
-        if (enabledStage.isPresent()) {
-            getSystemProperties(enabledStage, bootstrapOperations);
-        }
-
-        // the extensions
-//        getExtensions(config, bootstrapOperations);
-
-        // the subsystem configurations
-//        getSubsystemConfigurations(config, bootstrapOperations);
-
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(bootstrapOperations);
@@ -275,7 +255,6 @@ public class RuntimeServer implements Server {
         ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
-
         this.client = controller.createClient(executor);
         this.deployer = new RuntimeDeployer(opener, this.serviceContainer, this.configList, this.client, this.contentProvider, tempFileProvider);
         this.deployer.debug(this.debug);
@@ -309,37 +288,6 @@ public class RuntimeServer implements Server {
             e.printStackTrace();
         }
 
-    }
-
-    private void loadFractionConfigurations() throws Exception {
-        for (Fraction fraction : this.allFractions) {
-            /*
-            ServerConfigurationBuilder builder = new ServerConfigurationBuilder(fraction.getClass());
-            ServerConfiguration serverConfig = builder.build();
-
-            if (serverConfig != null) {
-                if (!this.configList.stream().anyMatch((e) -> e.getType().equals(fraction.getClass()))) {
-                    this.configByFractionType.put(serverConfig.getType(), serverConfig);
-                    this.configList.add(serverConfig);
-                }
-            }
-            */
-        }
-    }
-
-    private void getSystemProperties(Optional<ProjectStage> enabledStage, List<ModelNode> bootstrapOperations) {
-        if (!enabledStage.isPresent())
-            throw new IllegalArgumentException("No stage config present");
-
-        ProjectStage projectStage = enabledStage.get();
-        Map<String, String> properties = projectStage.getProperties();
-        for (String key : properties.keySet()) {
-            ModelNode modelNode = new ModelNode();
-            modelNode.get(OP).set(ADD);
-            modelNode.get(ADDRESS).set("system-property", key);
-            modelNode.get(VALUE).set(properties.get(key));
-            bootstrapOperations.add(modelNode);
-        }
     }
 
     protected Opener tryToAddGateHandlers() throws Exception {
@@ -401,7 +349,7 @@ public class RuntimeServer implements Server {
     private void applyInterfaceDefaults(Container config) {
         if (config.ifaces().isEmpty()) {
             config.iface("public",
-                    SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
+                         SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
         }
     }
 

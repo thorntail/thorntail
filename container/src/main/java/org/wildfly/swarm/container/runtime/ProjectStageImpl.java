@@ -46,7 +46,6 @@ public class ProjectStageImpl implements ProjectStage {
     }
 
     ProjectStage initialize() {
-
         for (String key : config.keySet()) {
             StringBuffer buffer = new StringBuffer();
             parse(buffer, null, key, config);
@@ -76,7 +75,6 @@ public class ProjectStageImpl implements ProjectStage {
     }
 
     private void parse(StringBuffer buffer, String parent, String key, Map<String, Object> config) {
-
         if (parent != null && buffer.substring(buffer.length() - 1, buffer.length()).equals("\n"))
             buffer.append(parent);
 

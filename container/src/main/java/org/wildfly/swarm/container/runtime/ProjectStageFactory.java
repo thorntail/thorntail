@@ -17,6 +17,7 @@ package org.wildfly.swarm.container.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,15 @@ import org.yaml.snakeyaml.Yaml;
 @Vetoed
 public class ProjectStageFactory {
 
-    public List<ProjectStage> loadStages(InputStream inputStream) {
+    public List<ProjectStage> loadStages(URL url) {
+        try {
+            return this.loadStages(url.openStream());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load stage configuration from URL :" + url.toExternalForm(), e);
+        }
+    }
 
+    public List<ProjectStage> loadStages(InputStream inputStream) {
         try {
             List<ProjectStage> stages = new LinkedList<>();
             Yaml yaml = new Yaml();
@@ -63,7 +71,7 @@ public class ProjectStageFactory {
                     .filter(stage -> DEFAULT.equals(stage.getName()))
                     .findFirst();
 
-            if(!defaultStage.isPresent())
+            if (!defaultStage.isPresent())
                 throw new RuntimeException("Missing stage 'default' in project-stages.yml");
 
             // inherit values from default stage
@@ -75,7 +83,7 @@ public class ProjectStageFactory {
                         Set<String> currentKeys = current.keySet();
                         defaults.keySet().forEach(
                                 key -> {
-                                    if(!currentKeys.contains(key))
+                                    if (!currentKeys.contains(key))
                                         current.put(key, defaults.get(key));
                                 }
                         );

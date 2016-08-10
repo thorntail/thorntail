@@ -108,7 +108,6 @@
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>${version.org.snakeyaml}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

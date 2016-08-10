@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.container.runtime;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +31,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.builder.BeanConfigurator;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Singleton;
 
@@ -42,12 +41,13 @@ import org.wildfly.swarm.spi.api.Fraction;
  */
 public class FractionProducingExtension implements Extension {
 
-    //public static Map<Class<?>, Fraction> userFractions = new HashMap<>();
+    private Set<Class<? extends Fraction>> fractionClasses = new HashSet<>();
 
-    public Set<Class<? extends Fraction>> fractionClasses = new HashSet<>();
+    private List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
 
-    public static List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
-
+    public FractionProducingExtension(Collection<Fraction> explicitlyInstalled) {
+        this.explicitlyInstalledFractions.addAll(explicitlyInstalled);
+    }
 
     <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
         Class<?> cls = pat.getAnnotatedType().getJavaClass();
@@ -71,13 +71,9 @@ public class FractionProducingExtension implements Extension {
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
         Set<Type> preExistingFractionClasses = new HashSet<>();
 
-
         for (Fraction fraction : explicitlyInstalledFractions) {
-            BeanConfigurator<Object> configurator = abd.addBean()
-                    //.addType(fraction.getClass())
-                    .addTypes( applicableClasses( fraction.getClass() ) )
-                    //.addTransitiveTypeClosure(fraction.getClass())
-                    //.addType(Fraction.class)
+            abd.addBean()
+                    .addTypes(applicableClasses(fraction.getClass()))
                     .scope(Singleton.class)
                     .addQualifier(new AnnotationLiteral<Default>() {
                     })
@@ -85,7 +81,6 @@ public class FractionProducingExtension implements Extension {
 
             preExistingFractionClasses.add(fraction.getClass());
         }
-
 
         Set<Bean<?>> availableFractionBeans = beanManager.getBeans(Fraction.class, new AnnotationLiteral<Any>() {
         });
@@ -100,11 +95,8 @@ public class FractionProducingExtension implements Extension {
         fractionClasses.stream()
                 .filter(cls -> !preExistingFractionClasses.contains(cls))
                 .forEach((cls) -> {
-                    BeanConfigurator<Object> configurator = abd.addBean()
-                            //.addType(cls)
-                            //.addTransitiveTypeClosure(cls)
-                            //.addType(Fraction.class)
-                            .addTypes( applicableClasses( cls ) )
+                    abd.addBean()
+                            .addTypes(applicableClasses(cls))
                             .scope(Singleton.class)
                             .addQualifier(new AnnotationLiteral<Default>() {
                             })
@@ -117,26 +109,25 @@ public class FractionProducingExtension implements Extension {
                             });
 
                 });
-
     }
 
     Set<Type> applicableClasses(Class cur) {
         Set<Type> classes = new HashSet<>();
-        applicableClasses( cur, classes );
+        applicableClasses(cur, classes);
         return classes;
     }
 
     void applicableClasses(Class cur, Set<Type> set) {
-        if ( cur == null ) {
+        if (cur == null) {
             return;
         }
 
-        set.add( cur );
+        set.add(cur);
 
         for (Class each : cur.getInterfaces()) {
-            applicableClasses( each, set );
+            applicableClasses(each, set);
         }
 
-        applicableClasses( cur.getSuperclass(), set );
+        applicableClasses(cur.getSuperclass(), set);
     }
 }
