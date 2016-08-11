@@ -34,8 +34,6 @@ public class PackagePlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        project.getExtensions().create("swarm", SwarmExtension.class);
-
         project.getExtensions().create("swarm", SwarmExtension.class, project);
         project.afterEvaluate(__ -> {
             final TaskContainer tasks = project.getTasks();
