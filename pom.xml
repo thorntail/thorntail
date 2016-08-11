@@ -1136,7 +1136,7 @@
     <module>swarmtool</module>
     <module>boms</module>
 
-    <!--<module>standalone-servers</module>-->
+    <module>standalone-servers</module>
   </modules>
 
   <profiles>
