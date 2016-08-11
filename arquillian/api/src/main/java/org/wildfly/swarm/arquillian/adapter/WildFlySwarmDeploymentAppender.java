@@ -33,6 +33,7 @@ public class WildFlySwarmDeploymentAppender extends CachedAuxilliaryArchiveAppen
                         "org.jboss.arquillian.container.test.spi",
                         "org.wildfly.swarm.arquillian.resources")
                 .addClass(WildFlySwarmRemoteExtension.class)
+                .addClass(WildFlySwarmCommandService.class)
                 .addClass(ServiceRegistryServiceActivator.class)
                 .addAsServiceProvider(RemoteLoadableExtension.class, WildFlySwarmRemoteExtension.class)
                 .addAsServiceProvider(ServiceActivator.class, ServiceRegistryServiceActivator.class)
