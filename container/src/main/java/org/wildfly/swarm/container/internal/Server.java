@@ -16,6 +16,7 @@
 package org.wildfly.swarm.container.internal;
 
 import java.net.URL;
+import java.util.Optional;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.DeploymentException;
@@ -30,9 +31,9 @@ public interface Server {
 
     void stop() throws Exception;
 
-    void setXmlConfig(URL xmlConfig);
+    void setXmlConfig(Optional<URL> xmlConfig);
 
-    void setStageConfig(ProjectStage stageConfig);
+    void setStageConfig(Optional<ProjectStage> stageConfig);
 
     Archive<?> createDefaultDeployment();
 

@@ -150,17 +150,17 @@ public class RuntimeServer implements Server {
     }
 
     @Override
-    public void setXmlConfig(URL xmlConfig) {
-        if (null == xmlConfig)
+    public void setXmlConfig(Optional<URL> xmlConfig) {
+        if (!xmlConfig.isPresent())
             throw new IllegalArgumentException("Invalid XML config");
-        this.xmlConfig = Optional.of(xmlConfig);
+        this.xmlConfig = xmlConfig;
     }
 
     @Override
-    public void setStageConfig(ProjectStage enabledConfig) {
-        if (null == enabledConfig)
+    public void setStageConfig(Optional<ProjectStage> enabledConfig) {
+        if (!enabledConfig.isPresent())
             throw new IllegalArgumentException("Invalid stage config");
-        this.enabledStage = Optional.of(enabledConfig);
+        this.enabledStage = enabledConfig;
     }
 
     public void debug(boolean debug) {
@@ -213,28 +213,6 @@ public class RuntimeServer implements Server {
         }));
 
         List<ServiceActivator> activators = new ArrayList<>();
-        /*
-        activators.add(context -> {
-            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "temp-provider"), new ValueService<>(new ImmediateValue<>(tempFileProvider)))
-                    .install();
-            // Provide the main command line args as a value service
-            context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(config.getArgs())))
-                    .install();
-
-            // make the stage config available through jndi
-            if (enabledStage.isPresent()) {
-
-                BinderService binderService = new BinderService("swarm/stage-config", null, true);
-
-                context.getServiceTarget().addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, "swarm/stage-config"), binderService)
-                        .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
-                        .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(new StageConfig(enabledStage.get())))
-                        .setInitialMode(ServiceController.Mode.ACTIVE)
-                        .install();
-            }
-
-        });
-        */
 
         this.serviceActivators.forEach((activator) -> {
             System.err.println("######## service activator: " + activator);

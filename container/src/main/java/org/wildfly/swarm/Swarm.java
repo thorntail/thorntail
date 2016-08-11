@@ -168,13 +168,39 @@ public class Swarm {
         CommandLine cmd = CommandLine.parse(args);
         cmd.apply(this);
 
-        try {
-            String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
-            if (stageFile != null) {
-                loadStageConfiguration(new URL(stageFile));
+        if (!this.stageConfig.isPresent()) {
+            try {
+                String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
+                System.err.println("stage file prop: " + stageFile);
+
+                URL url = null;
+
+                if (stageFile != null) {
+                    url = new URL(stageFile);
+                    System.err.println("from stage file: " + url);
+                } else {
+                    try {
+                        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                        url = module.getClassLoader().getResource("project-stages.yml");
+                        System.err.println("from module: " + url);
+                    } catch (ModuleLoadException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (url == null) {
+                    url = ClassLoader.getSystemClassLoader().getResource("project-stages.yml");
+                    System.err.println("from classloader: " + url);
+                }
+
+                System.err.println("  final: " + url);
+                if (url != null) {
+                    this.stageConfigUrl = Optional.of(url);
+                    loadStageConfiguration(url);
+                }
+            } catch (MalformedURLException e) {
+                System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: " + e.getMessage());
             }
-        } catch (MalformedURLException e) {
-            System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: " + e.getMessage());
         }
     }
 
@@ -190,7 +216,7 @@ public class Swarm {
     public Swarm withStageConfig(URL url) {
         this.stageConfigUrl = Optional.of(url);
 
-        if (null == System.getProperty(SwarmProperties.PROJECT_STAGE_FILE)) {
+        if (!this.stageConfig.isPresent()) {
             loadStageConfiguration(stageConfigUrl.get());
         } else {
             System.out.println("[INFO] Project stage superseded by external configuration " + System.getProperty(SwarmProperties.PROJECT_STAGE_FILE));
@@ -288,15 +314,20 @@ public class Swarm {
         Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
         ServerBootstrap bootstrap = (ServerBootstrap) bootstrapClass.newInstance();
-        this.server = bootstrap
+        bootstrap
                 .withArguments(this.args)
                 .withBootstrapDebug(this.debugBootstrap)
                 .withExplicitlyInstalledFractions(this.explicitlyInstalledFractions)
                 .withUserComponents(this.userComponentClasses)
-                .withStageConfig(this.stageConfig)
-                .withStageConfigUrl(this.stageConfigUrl.toString())
-                .withXmlConfig(this.xmlConfig)
-                .bootstrap();
+                .withXmlConfig(this.xmlConfig);
+
+        if (this.stageConfigUrl.isPresent() && this.stageConfig.isPresent()) {
+            bootstrap
+                    .withStageConfig(this.stageConfig)
+                    .withStageConfigUrl(this.stageConfigUrl.get().toExternalForm());
+        }
+
+        this.server = bootstrap.bootstrap();
 
         return this;
     }

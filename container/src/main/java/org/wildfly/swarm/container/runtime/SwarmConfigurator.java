@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,6 +56,7 @@ import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.StageConfig;
 
 /**
  * @author Ken Finnigan
@@ -88,14 +91,32 @@ public class SwarmConfigurator {
     public void setStageConfig(String stageConfigUrl, Optional<ProjectStage> stageConfig) {
         if (stageConfig.isPresent()) {
             System.out.println("[INFO] Starting container with stage config source : " + stageConfigUrl);
-            this.server.setStageConfig(stageConfig.get());
+            this.stageConfig = stageConfig;
+            this.server.setStageConfig(stageConfig);
         }
+    }
+
+    @Produces
+    @Singleton
+    public ProjectStage projectStage() {
+        if (this.stageConfig.isPresent()) {
+            return this.stageConfig.get();
+        }
+
+        return new ProjectStageImpl("default");
+    }
+
+    @Produces
+    @Dependent
+    public StageConfig stageConfig() {
+        System.err.println("*** producing stageConfig");
+        return new StageConfig(projectStage());
     }
 
     public void setXmlConfig(Optional<URL> xmlConfig) {
         if (xmlConfig.isPresent()) {
             System.out.println("[INFO] Starting container with xml config source : " + xmlConfig.get());
-            this.server.setXmlConfig(xmlConfig.get());
+            this.server.setXmlConfig(xmlConfig);
         }
     }
 
@@ -356,4 +377,6 @@ public class SwarmConfigurator {
     private ClassLoader defaultDeploymentClassLoader;
 
     private WeldContainer weldContainer;
+
+    private Optional<ProjectStage> stageConfig = Optional.empty();
 }

@@ -29,6 +29,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     @Override
     public ServerBootstrap withStageConfig(Optional<ProjectStage> stageConfig) {
         this.stageConfig = stageConfig;
+        this.stageConfigSet = true;
         return this;
     }
 
@@ -84,10 +85,12 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         swarmConfigurator.setWeld(weldContainer);
         swarmConfigurator.setDebugBootstrap(this.bootstrapDebug);
         swarmConfigurator.init();
-        swarmConfigurator.setStageConfig(this.stageConfigUrl, this.stageConfig);
         swarmConfigurator.setXmlConfig(this.xmlConfigURL);
 
-        //TODO Do something with stage config and xml config
+        if (this.stageConfigSet) {
+            swarmConfigurator.setStageConfig(this.stageConfigUrl, this.stageConfig);
+        }
+
         return swarmConfigurator.start(true);
     }
 
@@ -104,4 +107,6 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     private boolean bootstrapDebug;
 
     private String stageConfigUrl;
+
+    private boolean stageConfigSet = false;
 }
