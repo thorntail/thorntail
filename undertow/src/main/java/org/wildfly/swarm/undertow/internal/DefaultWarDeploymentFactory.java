@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -34,6 +36,7 @@ import org.wildfly.swarm.undertow.WARArchive;
  * @author Bob McWhirter
  * @author Heiko Braun
  */
+@ApplicationScoped
 public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
     public static WARArchive archiveFromCurrentApp() throws Exception {

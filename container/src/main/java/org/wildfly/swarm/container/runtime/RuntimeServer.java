@@ -22,12 +22,9 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -62,7 +59,6 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.vfs.TempFileProvider;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
@@ -73,15 +69,14 @@ import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
+import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.internal.marshal.DMRMarshaller;
 import org.wildfly.swarm.container.runtime.internal.xmlconfig.StandaloneXMLParser;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
@@ -143,6 +138,10 @@ public class RuntimeServer implements Server {
     @Inject
     @Any
     private Instance<ArchiveMetadataProcessor> allArchiveProcessors;
+
+    @Inject
+    private DefaultDeploymentCreator defaultDeploymentCreator;
+
 
     private String defaultDeploymentType;
 
@@ -629,37 +628,7 @@ public class RuntimeServer implements Server {
     }
 
     public Archive<?> createDefaultDeployment() {
-        try {
-            Iterator<DefaultDeploymentFactory> providerIter = Module.getBootModuleLoader()
-                    .loadModule(ModuleIdentifier.create("swarm.application"))
-                    .loadService(DefaultDeploymentFactory.class)
-                    .iterator();
-
-            if (!providerIter.hasNext()) {
-                providerIter = ServiceLoader.load(DefaultDeploymentFactory.class, ClassLoader.getSystemClassLoader())
-                        .iterator();
-            }
-
-            final Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
-
-            while (providerIter.hasNext()) {
-                final DefaultDeploymentFactory factory = providerIter.next();
-                final DefaultDeploymentFactory current = factories.get(factory.getType());
-                if (current == null) {
-                    factories.put(factory.getType(), factory);
-                } else {
-                    // if this one is high priority than the previously-seen factory, replace it.
-                    if (factory.getPriority() > current.getPriority()) {
-                        factories.put(factory.getType(), factory);
-                    }
-                }
-            }
-
-            DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
-            return factory != null ? factory.create() : ShrinkWrap.create(JARArchive.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return this.defaultDeploymentCreator.createDefaultDeployment( determineDeploymentType() );
     }
 
     private String determineDeploymentType() {
