@@ -25,8 +25,9 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
+import org.wildfly.swarm.topology.TopologyConnector;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
+import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
 /**
  * Topology connector for OpenShift 3.
@@ -76,7 +77,7 @@ public class OpenShiftTopologyConnector implements Service<OpenShiftTopologyConn
         target.addService(ServiceWatcher.SERVICE_NAME, watcher)
                 .addDependency(ClientService.SERVICE_NAME, IClient.class, watcher.getClientInjector())
                 .addDependency(NamespaceService.SERVICE_NAME, String.class, watcher.getNamespaceInjector())
-                .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, watcher.getTopologyManagerInjector())
+                .addDependency(TopologyManagerActivator.SERVICE_NAME, TopologyManager.class, watcher.getTopologyManagerInjector())
                 .install();
     }
 

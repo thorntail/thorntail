@@ -24,8 +24,8 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.topology.Topology;
 
@@ -36,7 +36,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(Arquillian.class)
 @Ignore
-public class ArqTopologyOpenShiftTest implements ContainerFactory {
+public class ArqTopologyOpenShiftTest {
 
     @Deployment
     public static Archive createDeployment() {
@@ -46,9 +46,9 @@ public class ArqTopologyOpenShiftTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new OpenShiftTopologyFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm();
     }
 
     @Test

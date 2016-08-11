@@ -15,13 +15,16 @@
  */
 package org.wildfly.swarm.topology.openshift.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
+import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
+@ApplicationScoped
 public class OpenShiftTopologyConnectorActivator implements ServiceActivator {
 
     @Override
@@ -30,8 +33,8 @@ public class OpenShiftTopologyConnectorActivator implements ServiceActivator {
 
         OpenShiftTopologyConnector connector = new OpenShiftTopologyConnector();
 
-        target.addService(TopologyConnector.SERVICE_NAME, connector)
-                .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
+        target.addService(TopologyManagerActivator.CONNECTOR_SERVICE_NAME, connector)
+                .addDependency(TopologyManagerActivator.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
                 .install();
     }
 }

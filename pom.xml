@@ -1120,7 +1120,7 @@
     <module>topology</module>
     <module>topology-consul</module>
     <module>topology-jgroups</module>
-    <!--<module>topology-openshift</module>-->
+    <module>topology-openshift</module>
     <module>topology-webapp</module>
     <module>transactions</module>
     <module>undertow</module>
