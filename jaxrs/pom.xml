@@ -50,6 +50,17 @@
       <artifactId>security</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- MOVE TO A MODULE? -->
     <dependency>
       <groupId>org.ow2.asm</groupId>

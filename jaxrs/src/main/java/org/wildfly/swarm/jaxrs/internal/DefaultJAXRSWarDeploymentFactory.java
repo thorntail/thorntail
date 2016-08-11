@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.jaxrs.internal;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
@@ -23,6 +25,7 @@ import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 /**
  * @author Bob McWhirter
  */
+@ApplicationScoped
 public class DefaultJAXRSWarDeploymentFactory extends DefaultWarDeploymentFactory {
 
     @Override

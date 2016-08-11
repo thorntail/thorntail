@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.internal;
+package org.wildfly.swarm.container.runtime.deployments;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import javax.enterprise.inject.Vetoed;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -35,7 +35,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
  * @author Bob McWhirter
  * @author Heiko Braun
  */
-@Vetoed
+@ApplicationScoped
 public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
