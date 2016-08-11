@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.spi.api.annotations;
+package org.wildfly.swarm.spi.runtime.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
@@ -30,6 +31,19 @@ import javax.inject.Qualifier;
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
-public @interface DeploymentModules {
-    @Nonbinding DeploymentModule[] value();
+public @interface ConfigurationValue {
+    @Nonbinding String value() default "";
+
+    final class Literal extends AnnotationLiteral<ConfigurationValue> implements ConfigurationValue {
+
+        public static final Literal INSTANCE = new Literal();
+
+        private static final long serialVersionUID = 1L;
+
+        @Nonbinding
+        @Override
+        public String value() {
+            return null;
+        }
+    }
 }

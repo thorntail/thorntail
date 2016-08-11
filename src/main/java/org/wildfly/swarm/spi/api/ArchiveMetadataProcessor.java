@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.spi.api;
 
-/**
- * @author Bob McWhirter
- */
-public interface Fraction<T extends Fraction> {
+import org.jboss.jandex.Index;
+import org.jboss.shrinkwrap.api.Archive;
 
-    default T applyDefaults() {
-        return (T) this;
-    }
+/**
+ * @author Ken Finnigan
+ */
+public interface ArchiveMetadataProcessor {
+    void processArchive(Archive<?> archive, Index index);
 }

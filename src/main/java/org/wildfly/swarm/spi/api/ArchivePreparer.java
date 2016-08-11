@@ -15,12 +15,11 @@
  */
 package org.wildfly.swarm.spi.api;
 
+import org.jboss.shrinkwrap.api.Archive;
+
 /**
  * @author Bob McWhirter
  */
-public interface Fraction<T extends Fraction> {
-
-    default T applyDefaults() {
-        return (T) this;
-    }
+public interface ArchivePreparer {
+    void prepareArchive(Archive<?> archive);
 }

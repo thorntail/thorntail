@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.spi.api.annotations;
+package org.wildfly.swarm.spi.runtime.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Provides for simple runtime configuration of a Fraction.
- *
- * @author Bob McWhirter
+import javax.inject.Qualifier;
+
+/**
+ * @author Ken Finnigan
  */
+@Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface ExtensionModule {
-    String value();
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
+public @interface Post {
 }

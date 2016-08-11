@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.spi.api.annotations;
+package org.wildfly.swarm.spi.api;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-/** Denotes method to use to create a default Fraction if none is explicitly created by the user.
- *
+/**
  * @author Bob McWhirter
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Default {
+public interface Customizer {
+
+    void customize();
 }

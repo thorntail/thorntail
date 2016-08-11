@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.spi.api;
+package org.wildfly.swarm.spi.api.annotations;
 
-/**
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Qualifier;
+
+/** Provides for simple runtime configuration of a Fraction.
+ *
  * @author Bob McWhirter
  */
-public interface Fraction<T extends Fraction> {
-
-    default T applyDefaults() {
-        return (T) this;
-    }
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
+public @interface WildFlySubsystem {
+    @Nonbinding String value() default "";
 }

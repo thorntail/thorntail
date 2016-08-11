@@ -27,7 +27,6 @@ import org.jboss.jandex.Index;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.staxmapper.XMLElementReader;
-import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -37,14 +36,8 @@ public interface ServerConfiguration<T extends Fraction> {
 
     Class<T> getType();
 
-    T defaultFraction();
-
     default List<ServiceActivator> getServiceActivators(T fraction) {
         return Collections.emptyList();
-    }
-
-    default void prepareArchive(Archive<?> a) {
-
     }
 
     default void processArchiveMetaData(Archive<?> a, Index idx) {
