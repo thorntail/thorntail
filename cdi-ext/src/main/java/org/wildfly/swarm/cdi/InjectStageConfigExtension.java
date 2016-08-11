@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-import org.wildfly.swarm.container.runtime.ConfigurationValueProducer;
+import org.wildfly.swarm.container.runtime.cdi.ConfigurationValueProducer;
 import org.wildfly.swarm.spi.api.StageConfig;
 
 /**

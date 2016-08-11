@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime.internal.marshal;
+package org.wildfly.swarm.container.runtime.marshal;
 
 import java.net.URL;
 import java.util.List;
@@ -23,8 +23,8 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.container.runtime.internal.xmlconfig.StandaloneXMLParser;
-import org.wildfly.swarm.container.runtime.internal.xmlconfig.XMLConfig;
+import org.wildfly.swarm.container.runtime.xmlconfig.StandaloneXMLParser;
+import org.wildfly.swarm.container.runtime.xmlconfig.XMLConfig;
 
 /**
  * @author Bob McWhirter

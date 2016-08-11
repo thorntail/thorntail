@@ -11,6 +11,7 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
+import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
 import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.ProjectStage;

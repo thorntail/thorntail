@@ -22,7 +22,7 @@ import org.jboss.dmr.ModelNode;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.wildfly.swarm.container.runtime.internal.xmlconfig.StandaloneXMLParser;
+import org.wildfly.swarm.container.runtime.xmlconfig.StandaloneXMLParser;
 
 /**
  * @author Heiko Braun

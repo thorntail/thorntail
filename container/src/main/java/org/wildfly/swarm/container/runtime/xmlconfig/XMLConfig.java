@@ -1,4 +1,4 @@
-package org.wildfly.swarm.container.runtime.internal.xmlconfig;
+package org.wildfly.swarm.container.runtime.xmlconfig;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
