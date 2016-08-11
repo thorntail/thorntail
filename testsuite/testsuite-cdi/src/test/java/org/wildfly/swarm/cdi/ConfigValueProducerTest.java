@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.cdi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -25,40 +22,48 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
-public class ConfigValueProducerTest implements ContainerFactory {
+@Ignore
+public class ConfigValueProducerTest {
 
     @Deployment
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.create(JARArchive.class)
+        JARArchive archive = ShrinkWrap.create(JARArchive.class)
                 .add(new FileAsset(new File("src/test/resources/beans.xml")),
                         "META-INF/beans.xml")
                 .add(new FileAsset(
-                        new File("src/test/resources/project-stages.yml")),
+                                new File("src/test/resources/project-stages.yml")),
                         "project-stages.yml")
                 .addClass(ConfigAwareBean.class);
+        return archive;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container()
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm()
                 .withStageConfig(ConfigValueProducerTest.class.getClassLoader()
                         .getResource("project-stages.yml"))
+                //.fraction(LoggingFraction.createDebugLoggingFraction())
                 .fraction(new CDIFraction());
     }
 
     @Test
     public void testInjection(ConfigAwareBean configAwareBean) {
         assertNotNull(configAwareBean);
+
         assertEquals(Integer.valueOf(10), configAwareBean.getPortOffset());
         assertEquals("DEBUG", configAwareBean.getLogLevel());
         assertEquals(Integer.valueOf(10), configAwareBean

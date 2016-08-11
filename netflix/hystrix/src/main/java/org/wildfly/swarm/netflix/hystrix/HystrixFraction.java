@@ -16,9 +16,15 @@
 package org.wildfly.swarm.netflix.hystrix;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 
 /**
  * @author Ken Finnigan
  */
-public class HystrixFraction implements Fraction {
+@DeploymentModules({
+        @DeploymentModule(name = "com.netflix.hystrix"),
+        @DeploymentModule(name = "io.reactivex.rxjava")
+})
+public class HystrixFraction implements Fraction<HystrixFraction> {
 }

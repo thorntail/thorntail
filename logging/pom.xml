@@ -56,6 +56,17 @@
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Provided APIs -->
     <dependency>
       <groupId>org.jboss.logging</groupId>

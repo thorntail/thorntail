@@ -15,31 +15,35 @@
  */
 package org.wildfly.swarm.management;
 
+import javax.annotation.PostConstruct;
+
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 /**
  * @author Bob McWhirter
  */
 @MarshalDMR
-public class ManagementFraction extends ManagementCoreService<ManagementFraction> implements Fraction {
+public class ManagementFraction extends ManagementCoreService<ManagementFraction> implements Fraction<ManagementFraction> {
 
     public ManagementFraction() {
 
     }
 
-    @Default
     public static ManagementFraction createDefaultFraction() {
-        ManagementFraction fraction = new ManagementFraction();
+        return new ManagementFraction().applyDefaults();
+    }
 
-        fraction.httpInterfaceManagementInterface();
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
 
-        return fraction;
+    public ManagementFraction applyDefaults() {
+        httpInterfaceManagementInterface();
+        return this;
     }
 
     @Override
@@ -65,16 +69,6 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
             consumer.accept(realm);
             return realm;
         });
-    }
-
-    @Override
-    public void initialize(Fraction.InitContext initContext) {
-        initContext.socketBinding(
-                new SocketBinding("management-http")
-                        .port(SwarmProperties.propertyVar(ManagementProperties.HTTP_PORT, "9990")));
-        initContext.socketBinding(
-                new SocketBinding("management-https")
-                        .port(SwarmProperties.propertyVar(ManagementProperties.HTTPS_PORT, "9993")));
     }
 
 }

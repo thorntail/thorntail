@@ -33,13 +33,18 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>staxmapper</artifactId>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs</artifactId>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- kie drools server dependencies -->

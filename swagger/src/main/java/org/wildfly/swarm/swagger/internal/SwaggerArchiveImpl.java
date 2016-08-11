@@ -28,14 +28,14 @@ import org.wildfly.swarm.swagger.SwaggerArchive;
  */
 public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implements SwaggerArchive {
 
-    public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.runtime.SwaggerActivator";
+    public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.deployment.SwaggerServiceActivator";
 
     public SwaggerArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
 
         if (!as(ServiceActivatorArchive.class).containsServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME)) {
             as(ServiceActivatorArchive.class).addServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME);
-            as(JARArchive.class).addModule("org.wildfly.swarm.swagger", "runtime");
+            as(JARArchive.class).addModule("org.wildfly.swarm.swagger", "deployment");
         }
 
         loadOrCreateConfigurationAsset();

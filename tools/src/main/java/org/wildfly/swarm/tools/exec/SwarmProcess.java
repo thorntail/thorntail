@@ -34,6 +34,19 @@ public class SwarmProcess {
 
         new Thread(this.stdout).start();
         new Thread(this.stderr).start();
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    if (!this.process.isAlive()) {
+                        this.latch.countDown();
+                    }
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+
+        }).start();
     }
 
     public Exception getError() {

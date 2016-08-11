@@ -19,7 +19,6 @@ import javax.jms.ConnectionFactory;
 import javax.naming.InitialContext;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,17 +26,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class MessagingArquillianTest implements ContainerFactory {
+public class MessagingArquillianTest {
 
     @Deployment
     public static Archive createDeployment() {
@@ -46,9 +45,9 @@ public class MessagingArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(MessagingFraction.createDefaultFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(MessagingFraction.createDefaultFraction());
     }
 
     @ArquillianResource
@@ -56,8 +55,8 @@ public class MessagingArquillianTest implements ContainerFactory {
 
     @Test
     public void testDefaultConnectionFactory() throws Exception {
-        ConnectionFactory factory = (ConnectionFactory) context.lookup("java:jboss/DefaultJMSConnectionFactory" );
-        assertNotNull( factory );
+        ConnectionFactory factory = (ConnectionFactory) context.lookup("java:jboss/DefaultJMSConnectionFactory");
+        assertNotNull(factory);
     }
 
 }

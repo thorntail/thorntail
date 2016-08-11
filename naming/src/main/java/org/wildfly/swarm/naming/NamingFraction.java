@@ -17,17 +17,13 @@ package org.wildfly.swarm.naming;
 
 import org.wildfly.swarm.config.Naming;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.jboss.as.naming")
+@WildFlyExtension(module = "org.jboss.as.naming")
 @MarshalDMR
-public class NamingFraction extends Naming<NamingFraction> implements Fraction {
-
-    public NamingFraction() {
-    }
-
+public class NamingFraction extends Naming<NamingFraction> implements Fraction<NamingFraction> {
 }

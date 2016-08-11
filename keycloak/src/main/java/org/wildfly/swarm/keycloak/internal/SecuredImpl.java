@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.asset.NamedAsset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
@@ -61,8 +60,8 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
             }
         }
 
-        getArchive().as(JARArchive.class).addModule("org.wildfly.swarm.keycloak", "runtime");
-        getArchive().as(JARArchive.class).addAsServiceProvider("io.undertow.servlet.ServletExtension", "org.wildfly.swarm.keycloak.runtime.SecurityContextServletExtension");
+        getArchive().as(JARArchive.class).addModule("org.wildfly.swarm.keycloak", "deployment");
+        getArchive().as(JARArchive.class).addAsServiceProvider("io.undertow.servlet.ServletExtension", "org.wildfly.swarm.keycloak.deployment.SecurityContextServletExtension");
 
         InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
         if (keycloakJson == null) {

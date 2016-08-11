@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
@@ -14,6 +16,7 @@ import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
  * @author Heiko Braun
  * @since 18/07/16
  */
+@Vetoed
 public class MavenDependencyResolution implements DependencyResolution {
 
     public MavenDependencyResolution(WildFlySwarmDependenciesConf deps) {

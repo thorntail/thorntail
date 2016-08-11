@@ -47,6 +47,17 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jolokia</groupId>
       <artifactId>jolokia-war</artifactId>
       <type>war</type>

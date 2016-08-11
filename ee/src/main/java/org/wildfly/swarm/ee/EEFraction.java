@@ -15,24 +15,24 @@
  */
 package org.wildfly.swarm.ee;
 
+import javax.annotation.PostConstruct;
+
 import org.wildfly.swarm.config.EE;
 import org.wildfly.swarm.config.ee.ContextService;
-import org.wildfly.swarm.config.ee.DefaultBindingsService;
 import org.wildfly.swarm.config.ee.DefaultBindingsServiceConsumer;
 import org.wildfly.swarm.config.ee.ManagedExecutorService;
 import org.wildfly.swarm.config.ee.ManagedScheduledExecutorService;
 import org.wildfly.swarm.config.ee.ManagedThreadFactory;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.jboss.as.ee")
+@WildFlyExtension(module="org.jboss.as.ee")
 @MarshalDMR
-public class EEFraction extends EE<EEFraction> implements Fraction {
+public class EEFraction extends EE<EEFraction> implements Fraction<EEFraction> {
 
     public static final String CONCURRENCY_CONTEXT_DEFAULT = "java:jboss/ee/concurrency/context/default";
 
@@ -44,14 +44,25 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
 
     public static final String DEFAULT_KEY = "default";
 
-    @Default
     public static EEFraction createDefaultFraction() {
-        return createDefaultFraction( null );
+        return createDefaultFraction(null);
     }
 
     public static EEFraction createDefaultFraction(DefaultBindingsServiceConsumer config) {
-        EEFraction fraction = new EEFraction();
-        fraction.specDescriptorPropertyReplacement(false)
+        return new EEFraction().applyDefaults();
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
+
+    public EEFraction applyDefaults() {
+        return applyDefaults(null);
+    }
+
+    public EEFraction applyDefaults(DefaultBindingsServiceConsumer config) {
+        specDescriptorPropertyReplacement(false)
                 .contextService(new ContextService(DEFAULT_KEY)
                         .jndiName(CONCURRENCY_CONTEXT_DEFAULT)
                         .useTransactionSetupProvider(false))
@@ -72,29 +83,16 @@ public class EEFraction extends EE<EEFraction> implements Fraction {
                         .coreThreads(5)
                         .keepaliveTime(3000L));
 
-        fraction.defaultBindingsService((bindings) -> {
+        defaultBindingsService((bindings) -> {
             bindings.contextService("java:jboss/ee/concurrency/context/default");
             bindings.managedExecutorService("java:jboss/ee/concurrency/executor/default");
             bindings.managedScheduledExecutorService("java:jboss/ee/concurrency/scheduler/default");
             bindings.managedThreadFactory("java:jboss/ee/concurrency/factory/default");
-            if( config != null ) {
-                config.accept( bindings );
+            if (config != null) {
+                config.accept(bindings);
             }
         });
 
-        return fraction;
-    }
-
-    @Override
-    public void postInitialize(Fraction.PostInitContext initContext) {
-        if (initContext.hasFraction("Messaging")) {
-            if (this.subresources().defaultBindingsService() == null) {
-                this.defaultBindingsService(new DefaultBindingsService());
-            }
-            if ( this.subresources().defaultBindingsService().jmsConnectionFactory() == null ) {
-                this.subresources().defaultBindingsService()
-                        .jmsConnectionFactory("java:jboss/DefaultJMSConnectionFactory");
-            }
-        }
+        return this;
     }
 }

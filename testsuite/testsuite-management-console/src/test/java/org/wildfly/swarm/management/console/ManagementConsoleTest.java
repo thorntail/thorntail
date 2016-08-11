@@ -1,8 +1,6 @@
 package org.wildfly.swarm.management.console;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -13,7 +11,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
-import org.wildfly.swarm.arquillian.ArtifactDependencies;
 import org.wildfly.swarm.undertow.WARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -32,6 +29,8 @@ public class ManagementConsoleTest {
         return ShrinkWrap.create(WARArchive.class);
     }
 
+
+    /*
     @ArtifactDependencies
     public static List<String> appDependencies() {
 
@@ -39,6 +38,7 @@ public class ManagementConsoleTest {
                 "org.wildfly.swarm:management-console"
         );
     }
+    */
 
     @Test
     @RunAsClient

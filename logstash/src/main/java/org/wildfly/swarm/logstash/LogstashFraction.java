@@ -17,20 +17,17 @@ package org.wildfly.swarm.logstash;
 
 import java.util.Properties;
 
-import org.wildfly.swarm.config.logging.CustomHandler;
 import org.wildfly.swarm.config.logging.Level;
-import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Ken Finnigan
  */
-public class LogstashFraction implements Fraction {
+public class LogstashFraction implements Fraction<LogstashFraction> {
 
     public LogstashFraction() {
         this("metaData", "wildflySwarmNode=${jboss.node.name}");
-        hostname(SwarmProperties.propertyVar("logstash.host"));
+        System.err.println( "====== construct Logstash");
     }
 
     public LogstashFraction(String nodeKey, String nodeValue) {
@@ -38,23 +35,7 @@ public class LogstashFraction implements Fraction {
     }
 
     public static Fraction createDefaultLogstashFraction() {
-        return createDefaultLogstashFraction(true);
-    }
-
-    public static Fraction createDefaultLogstashFraction(boolean loggingFractionIfNoLogstash) {
-        String hostname = System.getProperty(LogstashProperties.HOSTNAME);
-        String port = System.getProperty(LogstashProperties.PORT);
-
-        if (hostname != null && port != null) {
-            return new LogstashFraction()
-                    .hostname(hostname)
-                    .port(port);
-        }
-
-        if (loggingFractionIfNoLogstash) {
-            return LoggingFraction.createDefaultLoggingFraction();
-        }
-        return null;
+        return new LogstashFraction();
     }
 
     public LogstashFraction level(Level level) {
@@ -62,19 +43,30 @@ public class LogstashFraction implements Fraction {
         return this;
     }
 
+    public Level level() {
+        return this.level;
+    }
+
     public LogstashFraction hostname(String hostname) {
-        this.handlerProperties.put("hostname", SwarmProperties.propertyVar(LogstashProperties.HOSTNAME, hostname));
+        this.hostname = hostname;
         return this;
     }
 
-    public LogstashFraction port(String port) {
-        this.handlerProperties.put("port", SwarmProperties.propertyVar(LogstashProperties.PORT, port));
-        return this;
+    public String hostname() {
+        return this.hostname;
     }
 
     public LogstashFraction port(int port) {
-        port("" + port);
+        this.port = port;
         return this;
+    }
+
+    public int port() {
+        return this.port;
+    }
+
+    public Properties formatterProperties() {
+        return this.formatterProperties;
     }
 
     public LogstashFraction metadata(String key, String value) {
@@ -82,20 +74,9 @@ public class LogstashFraction implements Fraction {
         return this;
     }
 
-    @Override
-    public void initialize(Fraction.InitContext initContext) {
-        final CustomHandler<?> logstashHandler = new CustomHandler<>("logstash-handler")
-                .module("org.jboss.logmanager.ext")
-                .attributeClass("org.jboss.logmanager.ext.handlers.SocketHandler")
-                .namedFormatter("logstash")
-                .properties(handlerProperties);
-        initContext.fraction(new LoggingFraction()
-                                     .customFormatter("logstash", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.formatters.LogstashFormatter", this.formatterProperties)
-                                     .customHandler(logstashHandler)
-                                     .rootLogger(this.level, logstashHandler.getKey()));
-    }
+    private String hostname;
 
-    private Properties handlerProperties = new Properties();
+    private int port;
 
     private Properties formatterProperties = new Properties();
 

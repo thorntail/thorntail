@@ -23,8 +23,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
@@ -40,9 +40,9 @@ public class ArqRequestControllerTest {
         return deployment;
     }
 
-    @org.wildfly.swarm.arquillian.adapter.Container
-    public static Container newContainer() throws Exception {
-        return new Container().fraction(RequestControllerFraction.createDefaultFraction());
+    @CreateSwarm
+    public static Swarm newSwarm() throws Exception {
+        return new Swarm().fraction(RequestControllerFraction.createDefaultFraction());
     }
 
     @Test

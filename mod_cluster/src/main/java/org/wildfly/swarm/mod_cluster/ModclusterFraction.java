@@ -15,41 +15,39 @@
  */
 package org.wildfly.swarm.mod_cluster;
 
+import javax.annotation.PostConstruct;
+
 import org.wildfly.swarm.config.Modcluster;
 import org.wildfly.swarm.config.modcluster.ConfigurationModClusterConfig;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Stuart Douglas
  */
-@ExtensionModule("org.wildfly.extension.mod_cluster")
+@WildFlyExtension(module = "org.wildfly.extension.mod_cluster")
 @MarshalDMR
-public class ModclusterFraction extends Modcluster<ModclusterFraction> implements Fraction {
+public class ModclusterFraction extends Modcluster<ModclusterFraction> implements Fraction<ModclusterFraction> {
 
     public ModclusterFraction() {
     }
 
-    @Default
     public static ModclusterFraction createDefaultFraction() {
-        ModclusterFraction fraction = new ModclusterFraction();
-        fraction.configurationModClusterConfig(new ConfigurationModClusterConfig()
+        return new ModclusterFraction().applyDefaults();
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
+
+    public ModclusterFraction applyDefaults() {
+        return configurationModClusterConfig(new ConfigurationModClusterConfig()
                 .advertiseSocket("modcluster")
                 .advertise(true)
                 .connector("default"));
-        return fraction;
     }
-    @Override
-    public void postInitialize(Fraction.PostInitContext initContext) {
-        //TODO: this should probably not be hard coded
-        initContext.socketBinding(
-                new SocketBinding("modcluster")
-                        .port(0)
-                        .multicastAddress("224.0.1.105")
-                        .multicastPort("23364"));
-    }
+
 
 }

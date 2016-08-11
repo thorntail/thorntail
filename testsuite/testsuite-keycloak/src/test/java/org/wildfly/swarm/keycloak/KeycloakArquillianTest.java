@@ -23,15 +23,15 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class KeycloakArquillianTest implements ContainerFactory {
+public class KeycloakArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -40,15 +40,15 @@ public class KeycloakArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new KeycloakFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(new KeycloakFraction());
     }
 
     @Test
     @RunAsClient
-    public void testNothing() {
-
+    public void testNothing() throws InterruptedException {
+        // TODO figure out how to confirm keycloak is working.
     }
 
 }

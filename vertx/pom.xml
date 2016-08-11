@@ -46,6 +46,16 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>messaging</artifactId>
     </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- io.vertx module -->
     <dependency>
@@ -62,6 +72,7 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-jca-adapter</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

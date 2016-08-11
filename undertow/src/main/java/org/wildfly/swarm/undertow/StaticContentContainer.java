@@ -47,7 +47,7 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
 
     @SuppressWarnings("unchecked")
     default T staticContent(String base) {
-        as(WARArchive.class).addModule("org.wildfly.swarm.undertow", "runtime");
+        //as(WARArchive.class).addModule("org.wildfly.swarm.undertow", "runtime");
 
         try {
             // Add all the static content from the current app to the archive

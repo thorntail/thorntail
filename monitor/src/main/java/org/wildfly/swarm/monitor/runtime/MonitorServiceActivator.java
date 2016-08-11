@@ -17,6 +17,11 @@ package org.wildfly.swarm.monitor.runtime;
 
 import java.util.Optional;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.as.naming.ImmediateManagedReferenceFactory;
@@ -33,6 +38,7 @@ import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
+import org.wildfly.swarm.monitor.MonitorFraction;
 
 /**
  * Installs a monitoring service so we get hold of the MSC services
@@ -41,16 +47,21 @@ import org.jboss.msc.service.ServiceTarget;
  * @author Heiko Braun
  * @see Monitor
  */
+@ApplicationScoped
 public class MonitorServiceActivator implements ServiceActivator {
 
-    final Optional<String> securityRealm;
-
-    public MonitorServiceActivator(Optional<String> securityRealm) {
-        this.securityRealm = securityRealm;
-    }
+    @Inject
+    @Any
+    Instance<MonitorFraction> monitorFractionInstance;
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
+        Optional<String> securityRealm = Optional.empty();
+
+        if (!monitorFractionInstance.isUnsatisfied()) {
+            securityRealm = monitorFractionInstance.get().securityRealm();
+        }
+
         ServiceTarget target = context.getServiceTarget();
 
         MonitorService service = new MonitorService(securityRealm);
@@ -58,14 +69,14 @@ public class MonitorServiceActivator implements ServiceActivator {
         ServiceBuilder<MonitorService> monitorServiceServiceBuilder = target.addService(MonitorService.SERVICE_NAME, service);
 
         ServiceBuilder<MonitorService> serviceBuilder = monitorServiceServiceBuilder
-                .addDependency(ServerEnvironmentService.SERVICE_NAME, ServerEnvironment.class, service.serverEnvironmentValue)
-                .addDependency(Services.JBOSS_SERVER_CONTROLLER, ModelController.class, service.modelControllerValue);
+                .addDependency(ServerEnvironmentService.SERVICE_NAME, ServerEnvironment.class, service.getServerEnvironmentInjector())
+                .addDependency(Services.JBOSS_SERVER_CONTROLLER, ModelController.class, service.getModelControllerInjector());
 
-        if(securityRealm.isPresent()) { // configured through the fraction interface
+        if (securityRealm.isPresent()) { // configured through the fraction interface
             serviceBuilder.addDependency(
                     createRealmName(securityRealm.get()),
                     SecurityRealm.class,
-                    service.securityRealmServiceValue
+                    service.getSecurityRealmInjector()
             );
         }
 
@@ -80,18 +91,12 @@ public class MonitorServiceActivator implements ServiceActivator {
                 .setInitialMode(ServiceController.Mode.ACTIVE)
                 .install();
 
-
     }
 
     public static ServiceName createRealmName(String realmName) {
-        return BASE_SERVICE_NAME.append(new String[]{realmName});
+        return BASE_SERVICE_NAME.append(realmName);
     }
 
-    static {
-        BASE_SERVICE_NAME = ServiceName.JBOSS.append(new String[]{"server", "controller", "management", "security_realm"});
-    }
-
-    private static final ServiceName BASE_SERVICE_NAME;
-
+    private static final ServiceName BASE_SERVICE_NAME = ServiceName.JBOSS.append("server", "controller", "management", "security_realm");
 
 }

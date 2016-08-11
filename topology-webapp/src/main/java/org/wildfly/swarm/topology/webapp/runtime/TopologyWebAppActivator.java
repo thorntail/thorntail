@@ -17,14 +17,19 @@ package org.wildfly.swarm.topology.webapp.runtime;
 
 import java.util.Set;
 
+import javax.inject.Singleton;
+
 import io.undertow.server.HttpHandler;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
+import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
+import org.wildfly.swarm.topology.webapp.TopologyProxyService;
 
+@Singleton
 public class TopologyWebAppActivator implements ServiceActivator {
 
     public TopologyWebAppActivator(Set<String> serviceNames) {
@@ -38,7 +43,7 @@ public class TopologyWebAppActivator implements ServiceActivator {
         TopologyProxyService proxyService = new TopologyProxyService(serviceNames);
         ServiceBuilder<TopologyProxyService> serviceBuilder = target
                 .addService(TopologyProxyService.SERVICE_NAME, proxyService)
-                .addDependency(TopologyConnector.SERVICE_NAME);
+                .addDependency(TopologyManagerActivator.CONNECTOR_SERVICE_NAME);
         for (String serviceName : serviceNames) {
             serviceBuilder.addDependency(proxyService.mscServiceNameForServiceProxy(serviceName),
                                          HttpHandler.class, proxyService.getHandlerInjectorFor(serviceName));

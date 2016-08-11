@@ -15,12 +15,15 @@
  */
 package org.wildfly.swarm.container.runtime;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.bootstrap.logging.BackingLogger;
 
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class JBossLoggingLogger implements BackingLogger {
     public JBossLoggingLogger(Logger logger) {
         this.logger = logger;

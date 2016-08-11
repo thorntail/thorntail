@@ -17,11 +17,17 @@ package org.wildfly.swarm.cdi;
 
 import org.wildfly.swarm.config.Weld;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-public class CDIFraction extends Weld<CDIFraction> implements Fraction {
+@WildFlyExtension(module = "org.jboss.as.weld")
+@MarshalDMR
+@DeploymentModule(name = "org.wildfly.swarm.cdi", slot = "ext", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
+public class CDIFraction extends Weld<CDIFraction> implements Fraction<CDIFraction> {
 
     public CDIFraction() {
     }

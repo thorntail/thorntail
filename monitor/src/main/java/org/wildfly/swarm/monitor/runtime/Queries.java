@@ -15,10 +15,15 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
+import javax.enterprise.inject.Vetoed;
+
+import org.wildfly.swarm.monitor.HealthMetaData;
+
 /**
  * @author Heiko Braun
  * @since 21/03/16
  */
+@Vetoed
 class Queries {
 
     /*public final static boolean isHealthEndpoint(Monitor monitor, String relativePath) {

@@ -31,11 +31,15 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>30</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>34</version.wildfly.swarm.fraction.plugin>
+
+    <version.cdi2>2.0.Alpha4</version.cdi2>
+
+    <version.jboss.management-console>2.8.25.Final</version.jboss.management-console>
 
     <version.maven.aether>3.2.5</version.maven.aether>
     <version.wildfly.config-api>0.4.4</version.wildfly.config-api>
-    <version.swarm.spi>1.0.8.Final</version.swarm.spi>
+    <version.swarm.spi>1.0.10.Final</version.swarm.spi>
     <version.wildfly>10.0.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
@@ -533,6 +537,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>h2</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>hibernate-search</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
@@ -766,7 +776,19 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>mysql</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming</artifactId>
+        <version>2016.7-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>postgresql</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
 
@@ -1048,6 +1070,9 @@
     <module>cdi</module>
     <module>cdi-ext</module>
     <module>connector</module>
+    <module>databases/h2</module>
+    <module>databases/mysql</module>
+    <module>databases/postgresql</module>
     <module>datasources</module>
     <module>drools-server</module>
     <module>ee</module>
@@ -1071,8 +1096,6 @@
     <module>jmx</module>
     <module>jolokia</module>
     <module>jpa</module>
-    <module>jpa-mysql</module>
-    <module>jpa-postgresql</module>
     <module>jsf</module>
     <module>keycloak</module>
     <module>keycloak-server</module>
@@ -1097,7 +1120,7 @@
     <module>topology</module>
     <module>topology-consul</module>
     <module>topology-jgroups</module>
-    <module>topology-openshift</module>
+    <!--<module>topology-openshift</module>-->
     <module>topology-webapp</module>
     <module>transactions</module>
     <module>undertow</module>
@@ -1105,7 +1128,7 @@
     <module>vertx</module>
     <module>webservices</module>
 
-    <module>integration-tests</module>
+    <!--<module>integration-tests</module>-->
     <module>testsuite</module>
 
     <module>fraction-list</module>
@@ -1113,7 +1136,7 @@
     <module>swarmtool</module>
     <module>boms</module>
 
-    <module>standalone-servers</module>
+    <!--<module>standalone-servers</module>-->
   </modules>
 
   <profiles>

@@ -15,12 +15,9 @@
  */
 package org.wildfly.swarm.io;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.msc.service.ServiceController;
@@ -31,16 +28,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class IOArquillianTest implements ContainerFactory {
+public class IOArquillianTest {
 
     @Deployment//(testable = false)
     public static Archive createDeployment() {
@@ -49,9 +47,9 @@ public class IOArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(IOFraction.createDefaultFraction());
+    @CreateSwarm
+    public static Swarm newSwarm() throws Exception {
+        return new Swarm().fraction(new IOFraction().applyDefaults());
     }
 
     @ArquillianResource
@@ -60,7 +58,7 @@ public class IOArquillianTest implements ContainerFactory {
     @Test
     public void testNothing() throws InterruptedException, TimeoutException {
         ServiceController<?> serviceController = this.registry.getService(ServiceName.parse("org.wildfly.io.worker.default"));
-        assertNotNull( serviceController );
+        assertNotNull(serviceController);
     }
 
 }

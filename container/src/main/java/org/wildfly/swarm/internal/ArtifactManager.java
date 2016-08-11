@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -42,6 +44,7 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
+@Vetoed
 public class ArtifactManager implements ArtifactLookup {
 
     public ArtifactManager(WildFlySwarmDependenciesConf deps) {
@@ -170,13 +173,13 @@ public class ArtifactManager implements ArtifactLookup {
         if (version == null) {
             throw new RuntimeException("Unable to determine version number from GAV: " + gav);
         }
+        ArtifactCoordinates coords= new ArtifactCoordinates(
+                groupId,
+                artifactId,
+                version,
+                classifier == null ? "" : classifier);
 
-        return MavenResolvers.get().resolveArtifact(
-                new ArtifactCoordinates(
-                        groupId,
-                        artifactId,
-                        version,
-                        classifier == null ? "" : classifier), packaging);
+        return MavenResolvers.get().resolveArtifact( coords, packaging );
     }
 
     String determineVersionViaDependenciesConf(String groupId, String artifactId, String packaging, String classifier) throws IOException {

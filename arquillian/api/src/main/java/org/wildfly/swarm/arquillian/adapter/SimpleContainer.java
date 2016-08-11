@@ -34,38 +34,25 @@ public interface SimpleContainer {
         return this;
     }
 
-    default boolean isContainerFactory(Class<?> cls) {
-        if (cls.getName().equals("org.wildfly.swarm.ContainerFactory")) {
-            return true;
-        }
-
-        for (Class<?> interf : cls.getInterfaces()) {
-            if (isContainerFactory(interf)) {
-                return true;
-            }
-        }
-
-        return cls.getSuperclass() != null && isContainerFactory(cls.getSuperclass());
-    }
-
     /**
      * Returns the method that is annotated with given annotation.
      * Throws an exception if more than one method is found annotated.
-     * @param testClass where annotation is searched.
+     *
+     * @param testClass  where annotation is searched.
      * @param annotation type of annotation
      * @return Method annotated with given annotation
      * or null if no method annotated.
      */
     default Method getAnnotatedMethodWithAnnotation(Class<?> testClass, Class<? extends Annotation> annotation) {
         final List<Method> methodsWithAnnotation = ReflectionUtil.getMethodsWithAnnotation(testClass,
-                annotation);
+                                                                                           annotation);
 
-        if (methodsWithAnnotation.size() > 1 ) {
+        if (methodsWithAnnotation.size() > 1) {
             throw new IllegalArgumentException(
                     String.format("More than one %s annotation found and only one was expected. Methods where %s was found are; %s",
-                            annotation.getSimpleName(),
-                            annotation.getSimpleName(),
-                            methodsWithAnnotation));
+                                  annotation.getSimpleName(),
+                                  annotation.getSimpleName(),
+                                  methodsWithAnnotation));
         }
 
         return methodsWithAnnotation.size() == 1 ? methodsWithAnnotation.get(0) : null;

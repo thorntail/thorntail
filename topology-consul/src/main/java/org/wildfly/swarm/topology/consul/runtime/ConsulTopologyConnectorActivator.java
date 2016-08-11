@@ -15,13 +15,15 @@
  */
 package org.wildfly.swarm.topology.consul.runtime;
 
+import javax.inject.Singleton;
+
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.topology.runtime.TopologyConnector;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
+import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
 /**
  * MSC activator for the ConsulTopologyConnector.
@@ -32,6 +34,7 @@ import org.wildfly.swarm.topology.runtime.TopologyManager;
  *
  * @see AgentActivator
  */
+@Singleton
 public class ConsulTopologyConnectorActivator implements ServiceActivator {
 
     public ConsulTopologyConnectorActivator() {
@@ -44,8 +47,8 @@ public class ConsulTopologyConnectorActivator implements ServiceActivator {
 
         ConsulTopologyConnector connector = new ConsulTopologyConnector();
 
-        target.addService(TopologyConnector.SERVICE_NAME, connector)
-                .addDependency(TopologyManager.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
+        target.addService(TopologyManagerActivator.CONNECTOR_SERVICE_NAME, connector)
+                .addDependency(TopologyManagerActivator.SERVICE_NAME, TopologyManager.class, connector.getTopologyManagerInjector())
                 .addDependency(Advertiser.SERVICE_NAME, Advertiser.class, connector.getAdvertiserInjector())
                 .setInitialMode(ServiceController.Mode.ACTIVE)
                 .install();

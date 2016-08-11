@@ -21,8 +21,8 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 /**
  * @author Ken Finnigan
  */
-@DeploymentModule(name="com.fasterxml.jackson.core.jackson-core")
-@DeploymentModule(name="com.fasterxml.jackson.core.jackson-databind")
-@DeploymentModule(name="com.fasterxml.jackson.core.jackson-annotations")
-public class SpringFraction implements Fraction {
+@DeploymentModule(name = "com.fasterxml.jackson.core.jackson-core")
+@DeploymentModule(name = "com.fasterxml.jackson.core.jackson-databind")
+@DeploymentModule(name = "com.fasterxml.jackson.core.jackson-annotations")
+public class SpringFraction implements Fraction<SpringFraction> {
 }

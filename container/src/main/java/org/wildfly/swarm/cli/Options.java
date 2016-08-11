@@ -19,12 +19,15 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Vetoed;
+
 /** Options for command-line parsing.
  *
  * Options are matched in the order in which they are added.
  *
  * @author Bob McWhirter
  */
+@Vetoed
 public class Options {
 
 

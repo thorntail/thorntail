@@ -26,9 +26,9 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.cdi.CDIFraction;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.ejb.EJBFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
@@ -40,7 +40,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
  * @author George Gastaldi
  */
 @RunWith(Arquillian.class)
-public class VertxArquillianTest implements ContainerFactory {
+public class VertxArquillianTest {
 
     @Deployment
     public static Archive createDeployment() {
@@ -51,9 +51,9 @@ public class VertxArquillianTest implements ContainerFactory {
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container()
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm()
                 .fraction(new CDIFraction())
                 .fraction(new VertxFraction())
                 .fraction(EJBFraction.createDefaultFraction());

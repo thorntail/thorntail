@@ -20,7 +20,7 @@ import org.wildfly.swarm.spi.api.Fraction;
 /**
  * @author Bob McWhirter
  */
-public class JolokiaFraction implements Fraction {
+public class JolokiaFraction implements Fraction<JolokiaFraction> {
 
     public JolokiaFraction() {
         this("jolokia");
@@ -30,9 +30,14 @@ public class JolokiaFraction implements Fraction {
         this.context = context;
     }
 
+    public JolokiaFraction context(String context) {
+        this.context = context;
+        return this;
+    }
+
     public String context() {
         return this.context;
     }
 
-    private final String context;
+    private String context;
 }

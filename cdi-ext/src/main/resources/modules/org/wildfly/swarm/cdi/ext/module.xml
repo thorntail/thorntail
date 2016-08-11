@@ -11,11 +11,9 @@
   </resources>
 
   <dependencies>
+    <module name="org.wildfly.swarm.spi" slot="runtime" export="true"/>
+    <module name="org.wildfly.swarm.container" slot="runtime" export="true"/>
     <module name="org.wildfly.swarm.container"/>
-    <module name="org.wildfly.swarm.container" slot="runtime"/>
-    <module name="javax.inject.api"/>
-    <module name="javax.annotation.api"/>
-    <module name="javax.enterprise.api"/>
   </dependencies>
 
 </module>

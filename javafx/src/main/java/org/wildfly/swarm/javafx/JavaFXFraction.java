@@ -16,9 +16,11 @@
 package org.wildfly.swarm.javafx;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Ken Finnigan
  */
-public class JavaFXFraction implements Fraction {
+@DeploymentModule(name = "javafx")
+public class JavaFXFraction implements Fraction<JavaFXFraction> {
 }

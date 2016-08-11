@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.topology.runtime;
 
+import javax.inject.Singleton;
+
 import org.jboss.as.naming.ImmediateManagedReferenceFactory;
 import org.jboss.as.naming.ServiceBasedNamingStore;
 import org.jboss.as.naming.deployment.ContextNames;
@@ -22,6 +24,7 @@ import org.jboss.as.naming.service.BinderService;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.ValueService;
@@ -31,13 +34,17 @@ import org.wildfly.swarm.topology.Topology;
 /**
  * @author Bob McWhirter
  */
+@Singleton
 public class TopologyManagerActivator implements ServiceActivator {
+
+    public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "topology");
+    public static final ServiceName CONNECTOR_SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
         ServiceTarget target = context.getServiceTarget();
 
-        target.addService(TopologyManager.SERVICE_NAME, new ValueService<>(new ImmediateValue<>(TopologyManager.INSTANCE)))
+        target.addService(SERVICE_NAME, new ValueService<>(new ImmediateValue<>(TopologyManager.INSTANCE)))
                 .install();
 
         BinderService binderService = new BinderService(Topology.JNDI_NAME, null, true);

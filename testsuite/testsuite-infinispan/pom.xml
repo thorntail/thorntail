@@ -28,6 +28,10 @@
       <artifactId>infinispan</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
       <scope>test</scope>

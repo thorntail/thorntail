@@ -29,6 +29,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncEvent;
@@ -47,6 +48,7 @@ import org.wildfly.swarm.topology.TopologyListener;
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 @WebServlet(urlPatterns = {"/system/stream"}, asyncSupported = true)
 public class TopologySSEServlet extends HttpServlet {
 

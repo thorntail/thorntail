@@ -23,6 +23,7 @@ import javax.naming.NamingException;
 
 import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.monitor.HealthMetaData;
 
 /**
  * The main API exposed by the monitoring service

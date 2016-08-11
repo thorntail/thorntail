@@ -32,6 +32,8 @@ import org.wildfly.swarm.config.logging.PatternFormatter;
 import org.wildfly.swarm.config.logging.RootLogger;
 import org.wildfly.swarm.config.logging.SyslogHandler;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
@@ -39,7 +41,9 @@ import org.wildfly.swarm.spi.api.Fraction;
  * @author Lance Ball
  */
 @SuppressWarnings("unused")
-public class LoggingFraction extends Logging<LoggingFraction> implements Fraction {
+@WildFlyExtension(module = "org.jboss.as.logging")
+@MarshalDMR
+public class LoggingFraction extends Logging<LoggingFraction> implements Fraction<LoggingFraction> {
 
     public static final String CONSOLE = "CONSOLE";
 
@@ -47,6 +51,30 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
 
     public static final String COLOR_PATTERN = "COLOR_PATTERN";
 
+
+    public LoggingFraction applyDefaults() {
+        Level level = Level.INFO;
+
+        String prop = System.getProperty(LoggingProperties.LOGGING);
+        if (prop != null) {
+            prop = prop.trim().toUpperCase();
+            try {
+                level = Level.valueOf(prop);
+            } catch (IllegalArgumentException e) {
+                // Go with default of Level.INFO
+            }
+        }
+
+        return applyDefaults(level);
+    }
+
+    public LoggingFraction applyDefaults(Level level) {
+        defaultColorFormatter()
+                .consoleHandler(level, COLOR_PATTERN)
+                .rootLogger(level, CONSOLE);
+
+        return this;
+    }
 
     /**
      * Create a default TRACE logging fraction.
@@ -90,10 +118,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return The fully-configured fraction.
      */
     public static LoggingFraction createDefaultLoggingFraction(Level level) {
-        return new LoggingFraction()
-                .defaultColorFormatter()
-                .consoleHandler(level, COLOR_PATTERN)
-                .rootLogger(level, CONSOLE);
+        return new LoggingFraction().applyDefaults(level);
     }
 
     // ------- FORMATTERS ---------

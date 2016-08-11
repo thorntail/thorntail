@@ -17,15 +17,13 @@ package org.wildfly.swarm.jdr;
 
 import org.wildfly.swarm.config.Jdr;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author George Gastaldi
  */
-@ExtensionModule("org.jboss.as.jdr")
+@WildFlyExtension(module = "org.jboss.as.jdr")
 @MarshalDMR
-public class JdrFraction extends Jdr<JdrFraction> implements Fraction {
-    public JdrFraction() {
-    }
+public class JdrFraction extends Jdr<JdrFraction> implements Fraction<JdrFraction> {
 }

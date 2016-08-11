@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.fest.assertions.ObjectAssert;
 import org.junit.Test;
 import org.wildfly.swarm.tools.FractionDescriptor;
 
@@ -37,16 +36,16 @@ public class FractionListTest {
 
         Collection<FractionDescriptor> descriptors = list.getFractionDescriptors();
 
-        FractionDescriptor logstash = descriptors.stream().filter(e -> e.getArtifactId().equals("logstash")).findFirst().get();
+        FractionDescriptor ee = descriptors.stream().filter(e -> e.getArtifactId().equals("ee")).findFirst().get();
 
-        assertThat(list.getFractionDescriptor("org.wildfly.swarm", "logstash")).isEqualTo(logstash);
+        assertThat(list.getFractionDescriptor("org.wildfly.swarm", "ee")).isEqualTo(ee);
 
-        assertThat(logstash.getGroupId()).isEqualTo("org.wildfly.swarm");
-        assertThat(logstash.getArtifactId()).isEqualTo("logstash");
-        assertThat(logstash.getDependencies()).hasSize(2);
+        assertThat(ee.getGroupId()).isEqualTo("org.wildfly.swarm");
+        assertThat(ee.getArtifactId()).isEqualTo("ee");
+        assertThat(ee.getDependencies()).hasSize(2);
 
-        assertThat(logstash.getDependencies().stream().filter(e -> e.getArtifactId().equals("container")).collect(Collectors.toList())).isNotEmpty();
-        assertThat(logstash.getDependencies().stream().filter(e -> e.getArtifactId().equals("logging")).collect(Collectors.toList())).isNotEmpty();
+        assertThat(ee.getDependencies().stream().filter(e -> e.getArtifactId().equals("container")).collect(Collectors.toList())).isNotEmpty();
+        assertThat(ee.getDependencies().stream().filter(e -> e.getArtifactId().equals("naming")).collect(Collectors.toList())).isNotEmpty();
     }
 
     @Test
@@ -69,11 +68,12 @@ public class FractionListTest {
         assertThat(descriptors).onProperty("name").isNotNull();
         assertThat(descriptors).onProperty("description").isNotNull();
     }
+
     @Test
     public void testNameAndDescription() throws Exception {
-        FractionDescriptor cdi = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "cdi");
-        assertThat(cdi.getName()).isEqualTo("CDI");
-        assertThat(cdi.getDescription()).isEqualTo("CDI with Weld");
+        FractionDescriptor cdi = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "jaxrs");
+        assertThat(cdi.getName()).isEqualTo("JAX-RS");
+        assertThat(cdi.getDescription()).isEqualTo("RESTful Web Services with RESTEasy");
     }
 
     @Test

@@ -18,6 +18,7 @@ package org.wildfly.swarm.monitor.runtime;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
 
 import io.undertow.attribute.ReadOnlyAttributeException;
@@ -25,12 +26,14 @@ import io.undertow.attribute.RelativePathAttribute;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.monitor.HealthMetaData;
 
 /**
  * The actual monitoring HTTP endpoints. These are wrapped by {@link SecureHttpContexts}.
  *
  * @author Heiko Braun
  */
+@Vetoed
 class HttpContexts implements HttpHandler {
 
     public HttpContexts(HttpHandler next) {

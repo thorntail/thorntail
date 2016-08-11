@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,10 +49,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
-import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.config.messaging.activemq.server.JMSQueue;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.messaging.MessagingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
@@ -64,7 +64,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
  */
 @CamelAware
 @RunWith(Arquillian.class)
-public class JMSIntegrationTest implements ContainerFactory {
+public class JMSIntegrationTest {
 
     static final String QUEUE_NAME = "camel-jms-queue";
     static final String QUEUE_JNDI_NAME = "java:/" + QUEUE_NAME;
@@ -76,9 +76,10 @@ public class JMSIntegrationTest implements ContainerFactory {
         return archive;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        Container container = new Container().fraction(new CamelCoreFraction());
+
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        Swarm container = new Swarm().fraction(new CamelCoreFraction());
         container.fraction(MessagingFraction.createDefaultFraction()
                 .defaultServer((s) -> {
                     s.jmsQueue(new JMSQueue<>(QUEUE_NAME).entry(QUEUE_JNDI_NAME));

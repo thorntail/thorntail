@@ -23,6 +23,7 @@
   <packaging>jar</packaging>
 
   <properties>
+    <swarm.fraction.cdi>false</swarm.fraction.cdi>
     <swarm.fraction.internal>true</swarm.fraction.internal>
   </properties>
 

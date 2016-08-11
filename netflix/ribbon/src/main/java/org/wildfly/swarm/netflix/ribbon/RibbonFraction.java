@@ -16,10 +16,23 @@
 package org.wildfly.swarm.netflix.ribbon;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 
 /**
  * @author Bob McWhirter
  */
-public class RibbonFraction implements Fraction {
+@DeploymentModules({
+        @DeploymentModule(name = "com.netflix.ribbon"),
+        @DeploymentModule(name = "com.netflix.hystrix"),
+        @DeploymentModule(name = "io.reactivex.rxjava"),
+        @DeploymentModule(name = "io.reactivex.rxnetty"),
+        @DeploymentModule(name = "io.netty")
+})
+public class RibbonFraction implements Fraction<RibbonFraction> {
 
+    public RibbonFraction() {
+        System.setProperty("ribbon.NIWSServerListClassName", "org.wildfly.swarm.netflix.ribbon.runtime.TopologyServerList");
+        System.setProperty("ribbon.NFLoadBalancerRuleClassName", "com.netflix.loadbalancer.RoundRobinRule");
+    }
 }

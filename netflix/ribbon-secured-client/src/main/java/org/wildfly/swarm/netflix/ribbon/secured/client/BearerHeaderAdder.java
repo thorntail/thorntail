@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
 import org.keycloak.KeycloakSecurityContext;
-import org.wildfly.swarm.keycloak.runtime.KeycloakSecurityContextAssociation;
+import org.wildfly.swarm.keycloak.deployment.KeycloakSecurityContextAssociation;
 
 /**
  * @author Bob McWhirter

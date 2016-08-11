@@ -18,12 +18,15 @@ package org.wildfly.swarm.container.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.as.selfcontained.ContentProvider;
 import org.jboss.vfs.VirtualFile;
 
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class SimpleContentProvider implements ContentProvider {
 
     public SimpleContentProvider() {

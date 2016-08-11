@@ -20,6 +20,6 @@ import org.wildfly.swarm.spi.api.Fraction;
 /**
  * @author Bob McWhirter
  */
-public class JGroupsTopologyFraction implements Fraction {
+public class JGroupsTopologyFraction implements Fraction<JGroupsTopologyFraction> {
 
 }

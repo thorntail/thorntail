@@ -6,7 +6,6 @@ import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * @author Bob McWhirter

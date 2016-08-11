@@ -28,37 +28,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.spi.api.ClassLoading;
+import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
-/** A parsed command-line.
+/**
+ * A parsed command-line.
  *
  * @author Bob McWhirter
  */
+@Vetoed
 public class CommandLine {
 
-    /** Default option for parsing -h and --help */
+    /**
+     * Default option for parsing -h and --help
+     */
     public static final Option<Boolean> HELP = new Option<Boolean>()
             .withLong("help")
             .withShort('h')
             .withDescription("Display this help")
-            .withDefault(()->false)
+            .withDefault(() -> false)
             .then((cmd, opt, value) -> cmd.put(opt, true));
 
-    /** Default option for parsing -v and --version */
+    /**
+     * Default option for parsing -v and --version
+     */
     public static final Option<Boolean> VERSION = new Option<Boolean>()
             .withLong("version")
             .withShort('v')
             .withDescription("Display the version of WildFly Swarm")
-            .withDefault(()->false)
+            .withDefault(() -> false)
             .then((cmd, opt, value) -> cmd.put(opt, true));
 
-    /** Default option for parsing -Dname and -Dname=value */
+    /**
+     * Default option for parsing -Dname and -Dname=value
+     */
     public static final Option<Properties> PROPERTY = new Option<Properties>()
             .withShort('D')
             .hasValue("<name>[=<value>]")
@@ -76,39 +85,44 @@ public class CommandLine {
                 props.setProperty(propName, propValue);
             });
 
-    /** Default option for parsing -P */
+    /**
+     * Default option for parsing -P
+     */
     public static final Option<URL> PROPERTIES_URL = new Option<URL>()
             .withShort('P')
             .withLong("properties")
             .hasValue("<url>")
             .withDescription("Load system properties from the given URL")
-            .then( (cmd, opt, value)-> cmd.put( opt, Option.toURL( value ) ));
+            .then((cmd, opt, value) -> cmd.put(opt, Option.toURL(value)));
 
-    /** Default option for parsing -c and --server-config */
+    /**
+     * Default option for parsing -c and --server-config
+     */
     public static final Option<URL> SERVER_CONFIG = new Option<URL>()
             .withShort('c')
             .withLong("server-config")
             .hasValue("<config>")
             .valueMayBeSeparate(true)
             .withDescription("URL of the server configuration (e.g. standalone.xml)")
-            .withDefault( ()->{
+            .withDefault(() -> {
                 return resolveResource("standalone.xml");
             })
-            .then( (cmd, opt, value)-> cmd.put( opt, Option.toURL(value)));
+            .then((cmd, opt, value) -> cmd.put(opt, Option.toURL(value)));
 
 
-    /** Default option for parsing -s and --stage-config */
+    /**
+     * Default option for parsing -s and --stage-config
+     */
     public static final Option<URL> STAGE_CONFIG = new Option<URL>()
             .withShort('s')
             .withLong("stage-config")
             .hasValue("<config>")
             .valueMayBeSeparate(true)
             .withDescription("URL to the stage configuration (e.g. config.yaml")
-            .withDefault( ()->{
+            .withDefault(() -> {
                 return resolveResource("project-stages.yml");
             })
-            .then( (cmd, opt, value)-> cmd.put( opt, Option.toURL( value ) ));
-
+            .then((cmd, opt, value) -> cmd.put(opt, Option.toURL(value)));
 
 
     public static final Option<String> ACTIVE_STAGE = new Option<String>()
@@ -116,10 +130,12 @@ public class CommandLine {
             .withLong("stage")
             .hasValue("<active-stage>")
             .valueMayBeSeparate(true)
-            .withDescription( "When using a stage-config, set the active stage" )
+            .withDescription("When using a stage-config, set the active stage")
             .then(CommandLine::put);
 
-    /** Default option for parsing -b */
+    /**
+     * Default option for parsing -b
+     */
     public static final Option<String> BIND = new Option<String>()
             .withShort('b')
             .hasValue("<value>")
@@ -127,7 +143,9 @@ public class CommandLine {
             .withDescription("Set the property " + SwarmProperties.BIND_ADDRESS + " to <value>")
             .then(CommandLine::put);
 
-    /** Default set of options */
+    /**
+     * Default set of options
+     */
     public static Options defaultOptions() {
         return new Options(
                 HELP,
@@ -145,17 +163,19 @@ public class CommandLine {
         this.options = options;
     }
 
-    /** Put a value under a given key.
+    /**
+     * Put a value under a given key.
      *
-     * @param key The key.
+     * @param key   The key.
      * @param value The value.
-     * @param <T> The type of the value.
+     * @param <T>   The type of the value.
      */
     public <T> void put(Option<T> key, T value) {
         this.values.put(key, value);
     }
 
-    /** Retrieve a value under a given key.
+    /**
+     * Retrieve a value under a given key.
      *
      * @param key The key.
      * @param <T> The type of the value.
@@ -171,7 +191,8 @@ public class CommandLine {
         return v;
     }
 
-    /** Display help for the options associated with the creation of this command-line.
+    /**
+     * Display help for the options associated with the creation of this command-line.
      *
      * @param out The output stream to display help upon.
      */
@@ -180,19 +201,20 @@ public class CommandLine {
     }
 
     public void displayHelp(PrintStream out, StageConfig stageConfig) {
-        displayHelp( out );
-        if ( stageConfig != null ) {
+        displayHelp(out);
+        if (stageConfig != null) {
             out.println();
-            out.println("Stage configuration options:" );
+            out.println("Stage configuration options:");
             out.println();
             for (String key : stageConfig.keys()) {
-                out.println( "  " + key );
+                out.println("  " + key);
             }
             out.println();
         }
     }
 
-    /** Display the version.
+    /**
+     * Display the version.
      *
      * @param out The output stream to display help upon.
      */
@@ -200,7 +222,8 @@ public class CommandLine {
         out.println("WildFly Swarm version UNKNOWN");
     }
 
-    /** Apply properties to the system properties.
+    /**
+     * Apply properties to the system properties.
      *
      * <p>Applies values stored through the <code>Key.PROPERTIES</code>,
      * <code>Key.PROPERTIES_URL</code> or <code>Key.BIND</code> options.
@@ -229,45 +252,47 @@ public class CommandLine {
             System.setProperty(SwarmProperties.BIND_ADDRESS, get(BIND));
         }
 
-        if ( get(ACTIVE_STAGE) != null ) {
+        if (get(ACTIVE_STAGE) != null) {
             System.setProperty(SwarmProperties.PROJECT_STAGE, get(ACTIVE_STAGE));
         }
     }
 
-    /** Apply configuration to the container.
+    /**
+     * Apply configuration to the container.
      *
      * <p>Applies configuration from <code>Key.SERVER_CONFIG</code> and <code>Key.STAGE_CONFIG</code>.</p>
      *
-     * @param container The container to configure.
+     * @param swarm Swarm instance to configure.
      * @throws MalformedURLException If a URL is attempted to be read and fails.
      */
-    public void applyConfigurations(Container container) throws MalformedURLException {
+    public void applyConfigurations(Swarm swarm) throws MalformedURLException {
         if (get(SERVER_CONFIG) != null) {
-            container.withXmlConfig(get(SERVER_CONFIG));
+            swarm.withXmlConfig(get(SERVER_CONFIG));
         }
         if (get(STAGE_CONFIG) != null) {
-            container.withStageConfig(get(STAGE_CONFIG));
+            swarm.withStageConfig(get(STAGE_CONFIG));
         }
     }
 
-    /** Apply properties and configuration from the parsed commandline to a container.
+    /**
+     * Apply properties and configuration from the parsed commandline to a container.
      *
-     * @param container The container to apply configuration to.
+     * @param swarm The Swarm instance to apply configuration to.
      * @throws IOException If an error occurs resolving any URL.
      */
-    public void apply(Container container) throws IOException {
+    public void apply(Swarm swarm) throws IOException {
         applyProperties();
-        applyConfigurations(container);
+        applyConfigurations(swarm);
 
-        if ( get(HELP) ) {
-            displayVersion( System.err );
+        if (get(HELP)) {
+            displayVersion(System.err);
             System.err.println();
-            displayHelp( System.err, container.hasStageConfig() ? container.stageConfig() : null  );
+            displayHelp(System.err, swarm.hasStageConfig() ? swarm.stageConfig() : null);
             System.exit(0);
         }
 
-        if ( get(VERSION) ) {
-            displayVersion( System.err );
+        if (get(VERSION)) {
+            displayVersion(System.err);
         }
     }
 
@@ -275,7 +300,8 @@ public class CommandLine {
         this.extraArguments.add(arg);
     }
 
-    /** Any un-parsed non-option arguments.
+    /**
+     * Any un-parsed non-option arguments.
      *
      * @return The list of unparsed arguments.
      */
@@ -283,7 +309,8 @@ public class CommandLine {
         return this.extraArguments;
     }
 
-    /** Any un-parsed non-option arguments.
+    /**
+     * Any un-parsed non-option arguments.
      *
      * @return The array of unparsed arguments.
      */
@@ -295,7 +322,8 @@ public class CommandLine {
         this.invalidArguments.add(arg);
     }
 
-    /** Any invalid options seen during parsing.
+    /**
+     * Any invalid options seen during parsing.
      *
      * @return The list of invalid arguments.
      */
@@ -303,7 +331,8 @@ public class CommandLine {
         return this.invalidArguments;
     }
 
-    /** Determine if any invalid arguments were seen during the parse.
+    /**
+     * Determine if any invalid arguments were seen during the parse.
      *
      * @return <code>true</code> if {@link #invalidArguments()} is not empty, otherwise <code>false</code>.
      */
@@ -311,7 +340,8 @@ public class CommandLine {
         return !this.invalidArguments.isEmpty();
     }
 
-    /** Parse an array of arguments using the default options.
+    /**
+     * Parse an array of arguments using the default options.
      *
      * @param args The args to parse.
      * @return The parsed <code>CommandLine</code>.
@@ -320,10 +350,11 @@ public class CommandLine {
         return CommandLineParser.parse(defaultOptions(), args);
     }
 
-    /** Parse an array of arguments using specific options.
+    /**
+     * Parse an array of arguments using specific options.
      *
      * @param options The options to use.
-     * @param args The args to parse.
+     * @param args    The args to parse.
      * @return The parsed <code>CommandLine</code>.
      */
     public static CommandLine parse(Options options, String... args) throws Exception {
@@ -342,16 +373,16 @@ public class CommandLine {
 
         URL yml = null;
         try {
-            Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application" ) );
-            yml = appModule.getClassLoader().getResource( path );
-            if ( yml != null ) {
+            Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            yml = appModule.getClassLoader().getResource(path);
+            if (yml != null) {
                 return yml;
             }
         } catch (ModuleLoadException e) {
             // ignore;
         }
 
-        yml = ClassLoader.getSystemClassLoader().getResource( path );
+        yml = ClassLoader.getSystemClassLoader().getResource(path);
         return yml;
     }
 

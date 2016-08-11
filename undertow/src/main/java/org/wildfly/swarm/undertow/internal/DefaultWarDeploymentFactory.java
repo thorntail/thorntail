@@ -40,7 +40,7 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
         final WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
         final DefaultDeploymentFactory factory = new DefaultWarDeploymentFactory();
         factory.setup(archive);
-        archive.addModule("org.wildfly.swarm.undertow", "runtime");
+        //archive.addModule("org.wildfly.swarm.undertow", "runtime");
 
         return archive;
     }

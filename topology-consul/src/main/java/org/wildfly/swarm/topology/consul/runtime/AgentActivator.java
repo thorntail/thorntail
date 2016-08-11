@@ -1,6 +1,8 @@
 package org.wildfly.swarm.topology.consul.runtime;
 
-import java.net.URL;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
@@ -8,25 +10,32 @@ import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
+import org.wildfly.swarm.topology.consul.ConsulTopologyFraction;
+import org.wildfly.swarm.topology.consul.runtime.Advertiser;
+import org.wildfly.swarm.topology.consul.runtime.AgentClientService;
+import org.wildfly.swarm.topology.consul.runtime.CatalogClientService;
+import org.wildfly.swarm.topology.consul.runtime.ConsulService;
+import org.wildfly.swarm.topology.consul.runtime.HealthClientService;
 
 /**
  * @author Heiko Braun
  * @since 18/05/16
  */
+@Singleton
 public class AgentActivator implements ServiceActivator {
 
-    private final URL url;
 
-    public AgentActivator(URL url) {
-        this.url = url;
-    }
+    @Inject
+    @Any
+    ConsulTopologyFraction fraction;
+
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
 
         ServiceTarget target = context.getServiceTarget();
 
-        ConsulService consul = new ConsulService(this.url);
+        ConsulService consul = new ConsulService(this.fraction.url());
         target.addService(ConsulService.SERVICE_NAME, consul)
                 .install();
 

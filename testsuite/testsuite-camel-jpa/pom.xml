@@ -31,7 +31,7 @@
 
   <name>Test Suite: Camel JPA</name>
 
-  <artifactId>camel-jpa-tests</artifactId>
+  <artifactId>testsuite-camel-jpa</artifactId>
 
   <dependencies>
     <dependency>

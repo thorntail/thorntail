@@ -17,17 +17,14 @@ package org.wildfly.swarm.jmx;
 
 import org.wildfly.swarm.config.JMX;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.jboss.as.jmx")
+@WildFlyExtension(module = "org.jboss.as.jmx")
 @MarshalDMR
-public class JMXFraction extends JMX<JMXFraction> implements Fraction {
-
-    public JMXFraction() {
-    }
+public class JMXFraction extends JMX<JMXFraction> implements Fraction<JMXFraction> {
 
 }

@@ -17,28 +17,27 @@ package org.wildfly.swarm.container.internal;
 
 import java.net.URL;
 import java.util.Optional;
-import java.util.Set;
 
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.spi.api.Fraction;
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.spi.api.ProjectStage;
-import org.wildfly.swarm.spi.api.StageConfig;
 
 /**
  * @author Bob McWhirter
  */
 public interface Server {
 
-    Deployer start(Container config, boolean eagerlyOpen) throws Exception;
+    Deployer start(boolean eagerlyOpen) throws Exception;
 
     void stop() throws Exception;
 
-    void setXmlConfig(URL xmlConfig);
+    void setXmlConfig(Optional<URL> xmlConfig);
 
-    void setStageConfig(ProjectStage stageConfig);
+    void setStageConfig(Optional<ProjectStage> stageConfig);
 
-    Set<Class<? extends Fraction>> getFractionTypes();
+    Archive<?> createDefaultDeployment();
 
-    Fraction createDefaultFor(Class<? extends Fraction> fractionClazz);
+    void deploy() throws DeploymentException;
+    void deploy(Archive<?> deployment) throws DeploymentException;
 
 }

@@ -20,7 +20,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
-import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
 

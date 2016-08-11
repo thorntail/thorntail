@@ -25,16 +25,16 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter.TransactionSupport;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
-import org.wildfly.swarm.container.Container;
 
 /**
  * @author Ralf Battenfeld
  */
 @RunWith(Arquillian.class)
-public class ResourceAdaptersIronjacamarFromRaTest implements ContainerFactory {
+public class ResourceAdaptersIronjacamarFromRaTest {
 
     @Deployment(testable = false)
     public static Archive<?> createDeployment1() {
@@ -57,9 +57,9 @@ public class ResourceAdaptersIronjacamarFromRaTest implements ContainerFactory {
         return deploymentRar;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(new ResourceAdapterFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(new ResourceAdapterFraction());
     }
 
     @Test

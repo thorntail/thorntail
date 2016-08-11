@@ -18,17 +18,15 @@ package org.wildfly.swarm.resource.adapters;
 import org.wildfly.swarm.config.ResourceAdapters;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.ExtensionClassName;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Ralf Battenfeld
  */
-@ExtensionModule("org.jboss.as.connector")
-@ExtensionClassName("org.jboss.as.connector.subsystems.resourceadapters.ResourceAdaptersExtension")
+@WildFlyExtension(module = "org.jboss.as.connector", classname = "org.jboss.as.connector.subsystems.resourceadapters.ResourceAdaptersExtension")
 @MarshalDMR
-public class ResourceAdapterFraction extends ResourceAdapters<ResourceAdapterFraction> implements Fraction {
+public class ResourceAdapterFraction extends ResourceAdapters<ResourceAdapterFraction> implements Fraction<ResourceAdapterFraction> {
 
     @Override
     public ResourceAdapterFraction resourceAdapter(ResourceAdapter value) {

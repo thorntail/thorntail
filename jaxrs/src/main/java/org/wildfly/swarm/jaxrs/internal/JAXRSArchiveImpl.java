@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

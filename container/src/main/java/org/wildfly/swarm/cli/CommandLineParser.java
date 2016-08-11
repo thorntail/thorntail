@@ -15,9 +15,12 @@
  */
 package org.wildfly.swarm.cli;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 class CommandLineParser {
 
     private final Options options;

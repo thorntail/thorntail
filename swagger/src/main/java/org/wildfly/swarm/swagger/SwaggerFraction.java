@@ -15,16 +15,11 @@
  */
 package org.wildfly.swarm.swagger;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.swagger.internal.SwaggerArchiveImpl;
 
 /**
  * @author Lance Ball
  */
-public class SwaggerFraction implements Fraction {
-    static {
-        ShrinkWrap.getDefaultDomain().getConfiguration().getExtensionLoader().addOverride(SwaggerArchive.class, SwaggerArchiveImpl.class);
-    }
+public class SwaggerFraction implements Fraction<SwaggerFraction> {
 
 }

@@ -15,37 +15,46 @@
  */
 package org.wildfly.swarm.jpa.mysql;
 
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.jpa.JPAFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
-@RunWith(Arquillian.class)
-public class MySQLJPAArquillianTest implements ContainerFactory {
+import static org.junit.Assert.assertNotNull;
 
-    @Deployment(testable = false)
+@RunWith(Arquillian.class)
+public class MySQLJPAArquillianTest {
+
+    @Deployment(testable = true)
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
         return deployment;
     }
 
-    @Override
-    public Container newContainer(String... args) throws Exception {
-        return new Container().fraction(MySQLJPAFraction.createDefaultFraction());
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().fraction(JPAFraction.createDefaultFraction());
     }
 
-    @Test
-    @RunAsClient
-    public void testNothing() {
+    @ArquillianResource
+    InitialContext context;
 
+    @Test
+    public void testDefaultDatasource() throws Exception {
+        DataSource dataSource = (DataSource) context.lookup("java:jboss/datasources/ExampleDS");
+        assertNotNull(dataSource);
     }
 
 }

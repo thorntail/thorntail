@@ -16,16 +16,9 @@
 package org.wildfly.swarm.msc;
 
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Configuration;
 
 /**
  * @author Bob McWhirter
  */
-@Configuration
-public class MSCFraction implements Fraction {
-
-    public MSCFraction() {
-
-    }
-
+public class MSCFraction implements Fraction<MSCFraction> {
 }

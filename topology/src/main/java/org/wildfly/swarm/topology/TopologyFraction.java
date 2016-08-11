@@ -16,10 +16,12 @@
 package org.wildfly.swarm.topology;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Bob McWhirter
  */
-public class TopologyFraction implements Fraction {
+@DeploymentModule(name="org.wildfly.swarm.topology")
+public class TopologyFraction implements Fraction<TopologyFraction> {
 
 }

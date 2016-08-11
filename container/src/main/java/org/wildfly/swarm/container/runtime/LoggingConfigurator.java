@@ -18,6 +18,8 @@ package org.wildfly.swarm.container.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.as.logging.logmanager.ConfigurationPersistence;
 import org.jboss.logmanager.Configurator;
 import org.jboss.logmanager.LogContext;
@@ -29,6 +31,7 @@ import org.wildfly.swarm.bootstrap.logging.LevelNode;
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class LoggingConfigurator extends ConfigurationPersistence implements Configurator {
 
     /**

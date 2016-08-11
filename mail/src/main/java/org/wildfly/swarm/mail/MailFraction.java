@@ -15,34 +15,38 @@
  */
 package org.wildfly.swarm.mail;
 
+import javax.annotation.PostConstruct;
+
 import org.wildfly.swarm.config.Mail;
-import org.wildfly.swarm.config.mail.MailSession;
-import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.OutboundSocketBinding;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Ken Finnigan
  */
-@ExtensionModule("org.jboss.as.mail")
+@WildFlyExtension(module = "org.jboss.as.mail")
 @MarshalDMR
-public class MailFraction extends Mail<MailFraction> implements Fraction {
+public class MailFraction extends Mail<MailFraction> implements Fraction<MailFraction> {
 
-    public MailFraction() {
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
     }
 
-    @Default
     public static MailFraction defaultFraction() {
-        return new MailFraction()
-                .mailSession("Default", (session) -> {
-                    session.smtpServer((server) -> {
-                        server.host("localhost");
-                        server.port("25");
-                    });
-                });
+        return new MailFraction().applyDefaults();
+    }
+
+    public MailFraction applyDefaults() {
+        mailSession("Default", (session) -> {
+            session.smtpServer((server) -> {
+                server.host("localhost");
+                server.port("25");
+            });
+        });
+
+        return this;
     }
 
     public MailFraction mailSession(String key, EnhancedMailSessionConsumer consumer) {
@@ -62,18 +66,5 @@ public class MailFraction extends Mail<MailFraction> implements Fraction {
         return this.mailSession(key, (session) -> {
             session.smtpServer(consumer);
         });
-    }
-
-    @Override
-    public void postInitialize(Fraction.PostInitContext initContext) {
-        for (MailSession session : subresources().mailSessions()) {
-            SMTPServer server = session.subresources().smtpServer();
-            if (server != null && server instanceof EnhancedSMTPServer) {
-                OutboundSocketBinding socketBinding = ((EnhancedSMTPServer) server).outboundSocketBinding();
-                if (socketBinding != null) {
-                    initContext.outboundSocketBinding(socketBinding);
-                }
-            }
-        }
     }
 }

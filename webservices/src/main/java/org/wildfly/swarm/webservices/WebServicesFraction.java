@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.webservices;
 
+import javax.annotation.PostConstruct;
+
 import org.wildfly.swarm.config.Webservices;
 import org.wildfly.swarm.config.webservices.ClientConfig;
 import org.wildfly.swarm.config.webservices.EndpointConfig;
@@ -22,28 +24,31 @@ import org.wildfly.swarm.config.webservices.Handler;
 import org.wildfly.swarm.config.webservices.PreHandlerChain;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
-@ExtensionModule("org.jboss.as.webservices")
+@WildFlyExtension(module = "org.jboss.as.webservices")
 @MarshalDMR
-public class WebServicesFraction extends Webservices<WebServicesFraction> implements Fraction {
+public class WebServicesFraction extends Webservices<WebServicesFraction> implements Fraction<WebServicesFraction> {
 
-    private WebServicesFraction() {
-
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
     }
 
-    @Default
     public static WebServicesFraction createDefaultFraction() {
+        return new WebServicesFraction().applyDefaults();
+    }
 
+    public WebServicesFraction applyDefaults() {
         String SoapHost = System.getProperty(SwarmProperties.BIND_ADDRESS, SOAP_HOST);
 
-        return new WebServicesFraction()
-                .wsdlHost(SoapHost)
+        wsdlHost(SoapHost)
                 .endpointConfig(new EndpointConfig(STANDARD_ENDPOINT_CONFIG))
                 .endpointConfig(createRemoteEndpoint())
                 .clientConfig(new ClientConfig(STANDARD_CLIENT_CONFIG));
+
+        return this;
     }
 
     private static final EndpointConfig createRemoteEndpoint() {

@@ -15,69 +15,89 @@
  */
 package org.wildfly.swarm.logging;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-import junit.framework.Assert;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.logging.Logger;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
+import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.config.logging.Level;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.spi.api.JARArchive;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Heiko Braun
  */
+@RunWith(Arquillian.class)
 public class SWARM553Test {
 
-    final static String logFile = System.getProperty("user.dir") + File.separator+
-            "target"+File.separator+
+    final static String logFile = System.getProperty("user.dir") + File.separator +
+            "target" + File.separator +
             "Swarm553.log";
 
-    @Test
-    public void testPeriodicSizeRotatingFileHandler() throws Exception {
-
-        Container container = new Container();
-        container.fraction(customLoggingConfig());
-
-        container.start();
-
-        Logger logger  = Logger.getLogger("br.org.sistemafieg.cliente");
-        logger.info("test message");
-
+    @Deployment
+    public static Archive deployment() {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, "empty.jar");
         archive.addPackage(SWARM553Test.class.getPackage());
-        container.deploy(archive);
-
-        // verify the log file exists
-        Assert.assertTrue("File not found: "+logFile ,new File(logFile).exists());
-
-        container.stop();
+        return archive;
     }
 
-    private static LoggingFraction customLoggingConfig() {
+    @Test
+    public void doLogging() throws FileNotFoundException {
+        String message = "testing: " + UUID.randomUUID().toString();
+        Logger logger = Logger.getLogger("br.org.sistemafieg.cliente");
+        logger.info(message);
+        assertTrue("File not found: " + logFile, new File(logFile).exists());
 
-        System.out.println("log logFile: "+ logFile);
+        BufferedReader reader = new BufferedReader(new FileReader(logFile));
+        List<String> lines = reader.lines().collect(Collectors.toList());
 
-        LoggingFraction loggingFraction = new LoggingFraction()
-                .periodicSizeRotatingFileHandler("FILE",(h)->{
-                    h.level(Level.INFO)
-                            .append(true)
-                            .suffix(".yyyy-MM-dd")
-                            .rotateSize("30m")
-                            .enabled(true)
-                            .encoding("UTF-8")
-                            .maxBackupIndex(2);
-                    Map<String,String> fileSpec = new HashMap<>();
-                    fileSpec.put("path", logFile);
-                    h.file(fileSpec);
-                }).logger("br.org.sistemafieg.cliente",(l)->{
-                    l.level(Level.INFO)
-                            .handler("FILE");
-                });
-        return loggingFraction;
+        boolean found = false;
+
+        for (String line : lines) {
+            if (line.contains(message)) {
+                found = true;
+                break;
+            }
+        }
+
+        assertTrue("Expected message " + message, found);
+
+
+    }
+
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm()
+                .fraction(
+                        new LoggingFraction().periodicSizeRotatingFileHandler("FILE", (h) -> {
+                            h.level(Level.INFO)
+                                    .append(true)
+                                    .suffix(".yyyy-MM-dd")
+                                    .rotateSize("30m")
+                                    .enabled(true)
+                                    .encoding("UTF-8")
+                                    .maxBackupIndex(2);
+                            Map<String, String> fileSpec = new HashMap<>();
+                            fileSpec.put("path", logFile);
+                            h.file(fileSpec);
+                        }).logger("br.org.sistemafieg.cliente", (l) -> {
+                            l.level(Level.INFO)
+                                    .handler("FILE");
+                        }));
     }
 }

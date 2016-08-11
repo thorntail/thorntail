@@ -23,8 +23,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.config.logging.Level;
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.junit.Assert.assertFalse;
@@ -43,9 +43,9 @@ public class LoggingArquillianDefaultTest {
         return deployment;
     }
 
-    @org.wildfly.swarm.arquillian.adapter.Container
-    public static Container newContainer() throws Exception {
-        return new Container()
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm()
                 .fraction(
                         LoggingFraction.createDefaultLoggingFraction()
                 );

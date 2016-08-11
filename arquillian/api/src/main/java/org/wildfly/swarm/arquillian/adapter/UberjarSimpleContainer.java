@@ -35,7 +35,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
-import org.wildfly.swarm.arquillian.WithMain;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
@@ -48,7 +48,6 @@ import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 public class UberjarSimpleContainer implements SimpleContainer {
-
 
     private final ContainerContext containerContext;
 
@@ -71,7 +70,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     @Override
     public void start(Archive<?> archive) throws Exception {
-
   /*
         System.err.println( ">>> CORE" );
         System.err.println(" NAME: " + archive.getName());
@@ -85,71 +83,30 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         MainSpecifier mainSpecifier = containerContext.getObjectStore().get(MainSpecifier.class);
 
-        boolean annotatedContainerFactory = false;
+        boolean annotatedCreateSwarm = false;
 
-        if (isContainerFactory(this.testClass)) {
-            registerContainerFactory(archive, this.testClass);
-        } else {
-            Method containerMethod = getAnnotatedMethodWithAnnotation(this.testClass, Container.class);
-            // preflight check it
-            if (containerMethod != null) {
-                if (Modifier.isStatic(containerMethod.getModifiers())) {
-                    // good to go
-                    annotatedContainerFactory = true;
-                    archive.as(JARArchive.class)
-                            .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                                    AnnotationBasedContainerFactory.class.getName())
-                            .addClass(AnnotationBasedContainerFactory.class)
-                            .addClass(Container.class)
-                            .addClass(this.testClass);
-                    archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
-                    archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
-                } else {
-                    throw new IllegalArgumentException(
-                            String.format("Method annotated with %s is %s but it is not static",
-                                    org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
-                                    containerMethod));
-                }
+        Method swarmMethod = getAnnotatedMethodWithAnnotation(this.testClass, CreateSwarm.class);
+        // preflight check it
+        if (swarmMethod != null) {
+            if (Modifier.isStatic(swarmMethod.getModifiers())) {
+                // good to go
+                annotatedCreateSwarm = true;
+                archive.as(JARArchive.class)
+                        .addClass(CreateSwarm.class)
+                        .addClass(AnnotationBasedMain.class)
+                        .addClass(this.testClass);
+                archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
+                archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
             } else {
-
-                Method containerFactoryMethod = getAnnotatedMethodWithAnnotation(this.testClass,
-                        org.wildfly.swarm.arquillian.adapter.ContainerFactory.class);
-
-                // If there is a method annotated with @ContainerFactory
-
-                if (containerFactoryMethod != null) {
-                    if (Modifier.isStatic(containerFactoryMethod.getModifiers())) {
-                        final Object containerFactory = containerFactoryMethod.invoke(null, new Object[0]);
-
-                        if (containerFactory instanceof Class) {
-                            Class containerFactoryClass = (Class) containerFactory;
-                            if (org.wildfly.swarm.ContainerFactory.class.isAssignableFrom(containerFactoryClass)) {
-                                registerContainerFactory(archive, containerFactoryClass);
-                            } else {
-                                throw new IllegalArgumentException(
-                                        String.format("Method annotated with %s is %s but it does not return an instance of %s",
-                                                org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
-                                                containerFactoryMethod,
-                                                org.wildfly.swarm.ContainerFactory.class.getSimpleName()));
-                            }
-
-                        } else {
-                            throw new IllegalArgumentException(
-                                    String.format("Method annotated with %s is %s but it does not return an instance of %s",
-                                            org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
-                                            containerFactoryMethod,
-                                            org.wildfly.swarm.ContainerFactory.class.getSimpleName()));
-                        }
-                    } else {
-                        throw new IllegalArgumentException(
-                                String.format("Method annotated with %s is %s but it is not static",
-                                        org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
-                                        containerFactoryMethod));
-                    }
-                }
-
+                throw new IllegalArgumentException(
+                        String.format("Method annotated with %s is %s but it is not static",
+                                      CreateSwarm.class.getSimpleName(),
+                                      swarmMethod));
             }
+        } else {
+            //TODO Some kind of default main()?
         }
+
         archive.as(ServiceActivatorArchive.class)
                 .addServiceActivator(DaemonServiceActivator.class);
         archive.as(JARArchive.class).addModule("org.wildfly.swarm.arquillian.daemon");
@@ -164,16 +121,16 @@ public class UberjarSimpleContainer implements SimpleContainer {
         final String additionalModules = System.getProperty(SwarmInternalProperties.BUILD_MODULES);
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
-                    .map(File::new)
-                    .filter(File::exists)
-                    .map(File::getAbsolutePath)
-                    .collect(Collectors.toList()));
+                                           .map(File::new)
+                                           .filter(File::exists)
+                                           .map(File::getAbsolutePath)
+                                           .collect(Collectors.toList()));
         }
 
         final SwarmExecutor executor = new SwarmExecutor().withDefaultSystemProperties();
 
-        if (annotatedContainerFactory) {
-            executor.withProperty(AnnotationBasedContainerFactory.ANNOTATED_CLASS_NAME, this.testClass.getName());
+        if (annotatedCreateSwarm) {
+            executor.withProperty(AnnotationBasedMain.ANNOTATED_CLASS_NAME, this.testClass.getName());
         }
 
         final String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
@@ -197,8 +154,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
             for (MavenResolvedArtifact dep : deps) {
                 MavenCoordinate coord = dep.getCoordinate();
                 tool.dependency(dep.getScope().name(), coord.getGroupId(),
-                        coord.getArtifactId(), coord.getVersion(),
-                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                                coord.getArtifactId(), coord.getVersion(),
+                                coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
             }
         } else {
             // ensure that arq daemon is available
@@ -213,8 +170,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 for (MavenResolvedArtifact dep : deps) {
                     MavenCoordinate coord = dep.getCoordinate();
                     tool.dependency(dep.getScope().name(), coord.getGroupId(),
-                            coord.getArtifactId(), coord.getVersion(),
-                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                                    coord.getArtifactId(), coord.getVersion(),
+                                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
                 }
             }
         }
@@ -225,7 +182,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", SwarmProperties.DEBUG_PORT, debug),
-                        e);
+                                                   e);
             }
         }
 
@@ -236,11 +193,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
             for (String arg : args) {
                 executor.withArgument(arg);
             }
-        } else {
-            WithMain withMainAnno = this.testClass.getAnnotation(WithMain.class);
-            if (withMainAnno != null) {
-                tool.mainClass(withMainAnno.value().getName());
-            }
+        } else if (annotatedCreateSwarm){
+            tool.mainClass(AnnotationBasedMain.class.getName());
         }
 
         Archive<?> wrapped = null;
@@ -289,7 +243,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
     private void registerContainerFactory(Archive<?> archive, Class<?> clazz) {
         archive.as(JavaArchive.class)
                 .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                        clazz.getName())
+                                      clazz.getName())
                 .addClass(clazz);
         archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
         archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");

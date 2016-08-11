@@ -18,12 +18,15 @@ package org.wildfly.swarm.monitor;
 import java.util.Optional;
 
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.undertow.UndertowFraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Heiko Braun
  */
-public class MonitorFraction implements Fraction {
+@DeploymentModule(name = "javax.ws.rs.api")
+@DeploymentModule(name = "org.jboss.dmr")
+@DeploymentModule(name = "org.wildfly.swarm.monitor")
+public class MonitorFraction implements Fraction<MonitorFraction> {
 
     private Optional<String> securityRealm = Optional.empty();
 
@@ -34,31 +37,5 @@ public class MonitorFraction implements Fraction {
 
     public Optional<String> securityRealm() {
         return this.securityRealm;
-    }
-
-    @Override
-    public void postInitialize(Fraction.PostInitContext initContext) {
-
-        UndertowFraction undertow = (UndertowFraction) initContext.fraction("undertow");
-
-        if (undertow != null) {
-            undertow.filterConfiguration();
-            undertow.subresources().filterConfiguration()
-                    .customFilter("wfs-monitor", customFilter -> {
-                        customFilter.module("org.wildfly.swarm.monitor:runtime");
-                        customFilter.className("org.wildfly.swarm.monitor.runtime.SecureHttpContexts");
-                    });
-
-            undertow.subresources().server("default-server")
-                    .subresources().host("default-host")
-                    .filterRef( "wfs-monitor", f -> {
-                        f.priority(100);
-                    });
-
-
-        } else {
-            throw new RuntimeException("The monitor fraction requires the undertow fraction!");
-        }
-
     }
 }

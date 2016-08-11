@@ -15,43 +15,36 @@
  */
 package org.wildfly.swarm.transactions;
 
+import javax.annotation.PostConstruct;
+
 import org.wildfly.swarm.config.Transactions;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.annotations.Default;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Bob McWhirter
  */
-@ExtensionModule("org.jboss.as.transactions")
+@WildFlyExtension(module = "org.jboss.as.transactions")
 @MarshalDMR
-@DeploymentModule(name="org.jboss.jts")
-public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction {
+@DeploymentModule(name = "org.jboss.jts")
+public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction<TransactionsFraction> {
 
-    protected TransactionsFraction() {
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
+
+    public static TransactionsFraction createDefaultFraction() {
+        return new TransactionsFraction().applyDefaults();
+    }
+
+    public TransactionsFraction applyDefaults() {
         this.socketBinding("txn-recovery-environment")
                 .statusSocketBinding("txn-status-manager")
                 .processIdUuid(true);
-    }
-
-    @Default
-    public static TransactionsFraction createDefaultFraction() {
-        return new TransactionsFraction()
-                .socketBinding("txn-recovery-environment")
-                .statusSocketBinding("txn-status-manager");
-    }
-
-    @Override
-    public void initialize(Fraction.InitContext initContext) {
-
-        initContext.socketBinding(new SocketBinding("txn-recovery-environment")
-                                          .port(this.port));
-
-        initContext.socketBinding(new SocketBinding("txn-status-manager")
-                                          .port(this.statusPort));
+        return this;
     }
 
     public TransactionsFraction port(int port) {
@@ -59,9 +52,17 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
         return this;
     }
 
+    public int port() {
+        return this.port;
+    }
+
     public TransactionsFraction statusPort(int statusPort) {
         this.statusPort = statusPort;
         return this;
+    }
+
+    public int statusPort() {
+        return this.statusPort;
     }
 
     private int port = 4712;

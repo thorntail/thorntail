@@ -18,9 +18,12 @@ package org.wildfly.swarm.container.util;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class XmlWriter implements AutoCloseable {
 
     public XmlWriter(Writer out) {
@@ -37,6 +40,7 @@ public class XmlWriter implements AutoCloseable {
 
     private final Writer out;
 
+    @Vetoed
     public class Element {
         Element(String name) throws IOException {
             this.name = name;

@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.jandex.Index;
@@ -39,6 +42,8 @@ import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
+import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
+import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
@@ -57,6 +62,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class RuntimeDeployer implements Deployer {
 
     public RuntimeDeployer(RuntimeServer.Opener opener, ServiceContainer serviceContainer, List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
@@ -68,6 +74,14 @@ public class RuntimeDeployer implements Deployer {
         this.tempFileProvider = tempFileProvider;
     }
 
+    public void setArchivePreparers(Instance<ArchivePreparer> preparers) {
+        this.archivePreparers = preparers;
+    }
+
+    public void setArchiveMetadataProcessors(Instance<ArchiveMetadataProcessor> processors) {
+        this.archiveMetadataProcessors = processors;
+    }
+
     public void debug(boolean debug) {
         this.debug = debug;
     }
@@ -76,28 +90,30 @@ public class RuntimeDeployer implements Deployer {
     public void deploy(Archive<?> deployment) throws DeploymentException {
 
         // 1. give fractions a chance to handle the deployment
-        for (ServerConfiguration each : this.configurations) {
-            each.prepareArchive(deployment);
+        for (ArchivePreparer preparer : this.archivePreparers) {
+            preparer.prepareArchive(deployment);
         }
 
-        // 2. create a meta data index
-        Indexer indexer = new Indexer();
-        Map<ArchivePath, Node> c = deployment.getContent();
-        try {
-            for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
-                if (each.getKey().get().endsWith(CLASS_SUFFIX)) {
-                    indexer.index(each.getValue().getAsset().openStream());
+        // 2. create a meta data index, but only if we have processors for it
+        if (!this.archiveMetadataProcessors.isUnsatisfied()) {
+            Indexer indexer = new Indexer();
+            Map<ArchivePath, Node> c = deployment.getContent();
+            try {
+                for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
+                    if (each.getKey().get().endsWith(CLASS_SUFFIX)) {
+                        indexer.index(each.getValue().getAsset().openStream());
+                    }
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-        Index index = indexer.complete();
+            Index index = indexer.complete();
 
-        // 2.1 let fractions process the meta data
-        for (ServerConfiguration each : this.configurations) {
-            each.processArchiveMetaData(deployment, index);
+            // 2.1 let fractions process the meta data
+            for (ArchiveMetadataProcessor processor : this.archiveMetadataProcessors) {
+                processor.processArchive(deployment, index);
+            }
         }
 
         if (this.debug) {
@@ -202,4 +218,7 @@ public class RuntimeDeployer implements Deployer {
 
     private final RuntimeServer.Opener opener;
 
+    private Instance<ArchivePreparer> archivePreparers;
+
+    private Instance<ArchiveMetadataProcessor> archiveMetadataProcessors;
 }

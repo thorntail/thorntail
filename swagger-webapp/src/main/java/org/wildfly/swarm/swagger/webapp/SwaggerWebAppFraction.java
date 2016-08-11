@@ -17,8 +17,6 @@ package org.wildfly.swarm.swagger.webapp;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -32,9 +30,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 /**
  * @author Lance Ball
  */
-public class SwaggerWebAppFraction implements Fraction {
-
-    public static final String VERSION;
+public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
 
     public SwaggerWebAppFraction() {
         context = System.getProperty(SwarmProperties.CONTEXT_PATH, DEFAULT_CONTEXT);
@@ -68,7 +64,7 @@ public class SwaggerWebAppFraction implements Fraction {
             try {
                 this.webContent = ArtifactLookup.get().artifact(content);
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         } else if (maybeFile.isDirectory()) {
             try {
@@ -90,18 +86,6 @@ public class SwaggerWebAppFraction implements Fraction {
         JARArchive archive = ShrinkWrap.create(JARArchive.class);
         archive.as(ExplodedImporter.class).importDirectory(directory);
         return archive;
-    }
-
-    static {
-        InputStream in = SwaggerWebAppFraction.class.getClassLoader().getResourceAsStream("swagger-webapp.properties");
-        Properties props = new Properties();
-        try {
-            props.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        VERSION = props.getProperty("version", "unknown");
     }
 
     private final String DEFAULT_CONTEXT = "/swagger-ui";

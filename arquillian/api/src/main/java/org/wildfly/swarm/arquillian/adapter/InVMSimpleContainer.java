@@ -15,23 +15,22 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.ContainerFactory;
-import org.wildfly.swarm.arquillian.ReflectionUtil;
-import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.container.Container;
-import org.wildfly.swarm.msc.ServiceActivatorArchive;
-import org.wildfly.swarm.spi.api.JARArchive;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.List;
 import java.util.StringTokenizer;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.msc.ServiceActivatorArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Toby Crawley
  * @author alexsoto
+ * @author Ken Finnigan
  */
 public class InVMSimpleContainer implements SimpleContainer {
 
@@ -53,117 +52,73 @@ public class InVMSimpleContainer implements SimpleContainer {
 
         System.setProperty(BootstrapProperties.APP_ARTIFACT, archive.getName());
 
-        if (isContainerFactory(this.testClass)) {
+        Method swarmMethod = getAnnotatedMethodWithAnnotation(this.testClass,
+                                                              CreateSwarm.class);
 
-            archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
-            archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
-            Object factory = this.testClass.newInstance();
-            this.container = ((ContainerFactory) factory).newContainer();
+        // If there is a method annotated with @CreateSwarm
+        if (swarmMethod != null) {
+            if (Modifier.isStatic(swarmMethod.getModifiers())) {
+                final Object swarm = swarmMethod.invoke(null);
 
-        } else {
-
-            Method containerMethod = getAnnotatedMethodWithAnnotation(this.testClass,
-                    org.wildfly.swarm.arquillian.adapter.Container.class);
-            // If there is a method annotated with @Container
-            if (containerMethod != null) {
-                if (Modifier.isStatic(containerMethod.getModifiers())) {
-                    final Object container = containerMethod.invoke(null, new Object[0]);
-
-                    if (container instanceof Container) {
-                        this.container = (Container) container;
-                    } else {
-                        throw new IllegalArgumentException(
-                                String.format("Method annotated with %s does not return an instance of %s",
-                                        org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
-                                        Container.class.getSimpleName()));
-                    }
+                if (swarm instanceof Swarm) {
+                    this.swarm = (Swarm) swarm;
                 } else {
                     throw new IllegalArgumentException(
-                            String.format("Method annotated with %s is %s but it is not static",
-                                    org.wildfly.swarm.arquillian.adapter.Container.class.getSimpleName(),
-                                    containerMethod));
+                            String.format("Method annotated with %s does not return an instance of %s",
+                                          CreateSwarm.class.getSimpleName(),
+                                          Swarm.class.getSimpleName()));
                 }
             } else {
-
-                Method containerFactoryMethod = getAnnotatedMethodWithAnnotation(this.testClass,
-                        org.wildfly.swarm.arquillian.adapter.ContainerFactory.class);
-
-                // If there is a method annotated with @ContainerFactory
-                if (containerFactoryMethod != null) {
-                    if (Modifier.isStatic(containerFactoryMethod.getModifiers())) {
-                        final Object containerFactory = containerFactoryMethod.invoke(null, new Object[0]);
-
-                        if (containerFactory instanceof Class) {
-                            Class containerFactoryClass = (Class) containerFactory;
-                            if (ContainerFactory.class.isAssignableFrom(containerFactoryClass)) {
-                                Object factory = containerFactoryClass.newInstance();
-                                this.container = ((ContainerFactory) factory).newContainer();
-                            } else {
-                                throw new IllegalArgumentException(
-                                        String.format("Method annotated with %s does not return a class of %s",
-                                                org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
-                                                ContainerFactory.class.getSimpleName()));
-                            }
-
-                        } else {
-                            throw new IllegalArgumentException(
-                                    String.format("Method annotated with %s does not return a class of %s",
-                                            org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
-                                            ContainerFactory.class.getSimpleName()));
-                        }
-                    } else {
-                        throw new IllegalArgumentException(
-                                String.format("Method annotated with %s is %s but it is not static",
-                                        org.wildfly.swarm.arquillian.adapter.ContainerFactory.class.getSimpleName(),
-                                        containerMethod));
-                    }
-                } else {
-                    this.container = new Container();
-                }
+                throw new IllegalArgumentException(
+                        String.format("Method annotated with %s is %s but it is not static",
+                                      CreateSwarm.class.getSimpleName(),
+                                      swarmMethod));
             }
+        } else {
+            this.swarm = new Swarm();
         }
 
         handleJavaVmArguments();
-        this.container.start().deploy(archive);
+        this.swarm.start().deploy(archive);
     }
 
     private void handleJavaVmArguments() {
-        if ( this.javaVmArguments == null ) {
+        if (this.javaVmArguments == null) {
             return;
         }
 
-        StringTokenizer tokens = new StringTokenizer( this.javaVmArguments );
+        StringTokenizer tokens = new StringTokenizer(this.javaVmArguments);
 
-        while ( tokens.hasMoreTokens() ) {
+        while (tokens.hasMoreTokens()) {
             String each = tokens.nextToken();
-            if ( ! each.startsWith( "-D" ) ) {
-                System.err.println( "ignoring non-property Java VM argument for InVM test: " + each );
+            if (!each.startsWith("-D")) {
+                System.err.println("ignoring non-property Java VM argument for InVM test: " + each);
                 continue;
             }
 
-            each = each.substring( 2 );
+            each = each.substring(2);
 
-            int equalLoc = each.indexOf( "=" );
-            if ( equalLoc < 0 ) {
-                System.setProperty( each, "true" );
+            int equalLoc = each.indexOf("=");
+            if (equalLoc < 0) {
+                System.setProperty(each, "true");
             } else {
-                String key = each.substring(0,equalLoc);
-                String value = each.substring(equalLoc+1);
-                System.setProperty( key, value );
+                String key = each.substring(0, equalLoc);
+                String value = each.substring(equalLoc + 1);
+                System.setProperty(key, value);
             }
         }
     }
 
     @Override
     public void stop() throws Exception {
-        if (container != null) {
-            container.stop();
+        if (swarm != null) {
+            swarm.stop();
         }
     }
 
     private final Class<?> testClass;
 
-    private Container container;
+    private Swarm swarm;
 
     private String javaVmArguments;
 }

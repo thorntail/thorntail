@@ -25,7 +25,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import org.jboss.msc.service.ServiceName;
 import org.wildfly.swarm.topology.Topology;
 import org.wildfly.swarm.topology.TopologyListener;
 
@@ -33,8 +32,6 @@ import org.wildfly.swarm.topology.TopologyListener;
  * @author Bob McWhirter
  */
 public class TopologyManager implements Topology {
-
-    public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "topology");
 
     public static final TopologyManager INSTANCE = new TopologyManager();
 

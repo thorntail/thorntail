@@ -32,7 +32,7 @@ import org.wildfly.swarm.topology.TopologyArchive;
  */
 public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implements TopologyArchive {
 
-    public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.topology.runtime.RegistrationAdvertiserActivator";
+    public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.topology.deployment.RegistrationAdvertiserActivator";
 
     /**
      * Constructs a new instance using the underlying specified archive, which is required
@@ -78,7 +78,7 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
     protected TopologyArchive doAdvertise() {
         if (!as(ServiceActivatorArchive.class).containsServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME)) {
             as(ServiceActivatorArchive.class).addServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME);
-            as(JARArchive.class).addModule("org.wildfly.swarm.topology", "runtime");
+            as(JARArchive.class).addModule("org.wildfly.swarm.topology", "deployment");
         }
 
         StringBuffer buf = new StringBuffer();

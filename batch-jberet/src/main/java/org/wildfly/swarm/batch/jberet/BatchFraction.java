@@ -18,6 +18,8 @@ package org.wildfly.swarm.batch.jberet;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
 import org.wildfly.common.cpu.ProcessorInfo;
 import org.wildfly.swarm.config.BatchJBeret;
 import org.wildfly.swarm.config.batch.jberet.InMemoryJobRepository;
@@ -25,21 +27,29 @@ import org.wildfly.swarm.config.batch.jberet.JDBCJobRepository;
 import org.wildfly.swarm.config.batch.jberet.ThreadPool;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.Default;
-import org.wildfly.swarm.spi.api.annotations.ExtensionModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * A batch (JSR-352) fraction implemented by JBeret.
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@ExtensionModule("org.wildfly.extension.batch.jberet")
+@WildFlyExtension(module = "org.wildfly.extension.batch.jberet")
 @MarshalDMR
-public class BatchFraction extends BatchJBeret<BatchFraction> implements Fraction {
+public class BatchFraction extends BatchJBeret<BatchFraction> implements Fraction<BatchFraction> {
     public static final String DEFAULT_JOB_REPOSITORY_NAME = "in-memory";
 
     public static final String DEFAULT_THREAD_POOL_NAME = "batch";
+
+    public BatchFraction() {
+
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        applyDefaults();
+    }
 
     /**
      * Creates a default batch fraction.
@@ -54,23 +64,23 @@ public class BatchFraction extends BatchJBeret<BatchFraction> implements Fractio
      *
      * @return a new default batch fraction
      */
-    @Default
     public static BatchFraction createDefaultFraction() {
-        final BatchFraction fraction = new BatchFraction();
+        return new BatchFraction().applyDefaults();
+    }
+
+    public BatchFraction applyDefaults() {
         final InMemoryJobRepository<?> jobRepository = new InMemoryJobRepository<>(DEFAULT_JOB_REPOSITORY_NAME);
-        fraction.inMemoryJobRepository(jobRepository)
-                .defaultJobRepository(jobRepository.getKey());
 
         // Default thread-pool
         final ThreadPool<?> threadPool = new ThreadPool<>(DEFAULT_THREAD_POOL_NAME);
         threadPool.maxThreads(ProcessorInfo.availableProcessors())
                 .keepaliveTime("time", "30")
                 .keepaliveTime("unit", "seconds");
-        fraction.threadPool(threadPool)
+
+        return inMemoryJobRepository(jobRepository)
+                .defaultJobRepository(jobRepository.getKey())
+                .threadPool(threadPool)
                 .defaultThreadPool(threadPool.getKey());
-
-        return fraction;
-
     }
 
     /**

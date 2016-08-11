@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -33,6 +35,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
  * @author Bob McWhirter
  * @author Heiko Braun
  */
+@Vetoed
 public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
