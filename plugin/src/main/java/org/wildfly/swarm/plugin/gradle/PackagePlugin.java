@@ -15,8 +15,13 @@
  */
 package org.wildfly.swarm.plugin.gradle;
 
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.JavaBasePlugin;
+import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.plugins.WarPlugin;
+import org.gradle.api.tasks.TaskCollection;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -25,14 +30,51 @@ import org.gradle.api.tasks.bundling.Jar;
  */
 public class PackagePlugin implements Plugin<Project> {
 
+    public static final String WILDFLY_SWARM_PACKAGE_TASK_NAME = "wildfly-swarm-package";
+
     @Override
     public void apply(Project project) {
         project.getExtensions().create("swarm", SwarmExtension.class);
+
         project.afterEvaluate(__ -> {
             final TaskContainer tasks = project.getTasks();
-            final PackageTask packageTask = tasks.create("wildfly-swarm-package", PackageTask.class);
-            tasks.withType(Jar.class, task -> packageTask.jarTask(task).dependsOn(task));
-            tasks.getByName("build").dependsOn(packageTask);
+            final PackageTask packageTask = tasks.create(WILDFLY_SWARM_PACKAGE_TASK_NAME, PackageTask.class);
+
+            final Jar archiveTask = getArchiveTask(project);
+
+            if (archiveTask == null) {
+                throw new GradleException("No suitable Archive-Task found to include in Swarm Uber-JAR.");
+            }
+
+            packageTask.jarTask(archiveTask).dependsOn(archiveTask);
+
+            tasks.getByName(JavaBasePlugin.BUILD_TASK_NAME).dependsOn(packageTask);
         });
     }
+
+    /**
+     * Returns the most suitable Archive-Task for wrapping in the swarm jar - in the following order:
+     *
+     * 1. Custom-JAR-Task defined in SwarmExtension 'archiveTask'
+     * 2. WAR-Task
+     * 3. JAR-Task
+     */
+    private Jar getArchiveTask(Project project) {
+
+        TaskCollection<Jar> existingArchiveTasks = project.getTasks().withType(Jar.class);
+        Jar customArchiveTask = project.getExtensions().getByType(SwarmExtension.class).getArchiveTask();
+
+        if (customArchiveTask != null) {
+            return existingArchiveTasks.getByName(customArchiveTask.getName());
+
+        } else if (existingArchiveTasks.findByName(WarPlugin.WAR_TASK_NAME) != null) {
+            return existingArchiveTasks.getByName(WarPlugin.WAR_TASK_NAME);
+
+        } else if (existingArchiveTasks.findByName(JavaPlugin.JAR_TASK_NAME) != null) {
+            return existingArchiveTasks.getByName(JavaPlugin.JAR_TASK_NAME);
+        }
+
+        return null;
+    }
+
 }

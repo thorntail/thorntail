@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import groovy.lang.Closure;
 import groovy.util.ConfigObject;
+import org.gradle.api.tasks.bundling.Jar;
 
 /**
  * @author Bob McWhirter
@@ -40,6 +41,8 @@ public class SwarmExtension {
     private File propertiesFile;
 
     private List<File> moduleDirs = new ArrayList<>();
+
+    private Jar archiveTask;
 
     public SwarmExtension() {
 
@@ -104,5 +107,13 @@ public class SwarmExtension {
     public void setModuleDirs(final List<File> moduleDirs) {
         this.moduleDirs.clear();
         this.moduleDirs.addAll(moduleDirs);
+    }
+
+    public Jar getArchiveTask() {
+        return archiveTask;
+    }
+
+    public void setArchiveTask(Jar archiveTask) {
+        this.archiveTask = archiveTask;
     }
 }
