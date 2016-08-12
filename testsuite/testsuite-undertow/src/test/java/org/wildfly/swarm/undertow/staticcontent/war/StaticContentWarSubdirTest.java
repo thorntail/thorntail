@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs;
+package org.wildfly.swarm.undertow.staticcontent.war;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -26,44 +27,39 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.ArtifactDependencies;
+import org.wildfly.swarm.undertow.WARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-/**
- * @author Bob McWhirter
- */
 @RunWith(Arquillian.class)
-public class JAXRSArquillianTest {
-
-    @Deployment(testable = false)
+public class StaticContentWarSubdirTest {
+    @Deployment
     public static Archive createDeployment() throws Exception {
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
-        deployment.addClass(HealthCheckResource.class);
-        deployment.addClass(CustomJsonProvider.class);
-        deployment.addClass(MyResource.class);
-        deployment.addAllDependencies();
+        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
+        deployment.staticContent("foo");
+        // Make sure we're testing from contents inside the jar only
+        deployment.delete("WEB-INF/undertow-external-mounts.conf");
         return deployment;
     }
 
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new JAXRSFraction());
-    }
-
-    @Test
-    @RunAsClient
-    public void testResource() {
-        browser.navigate().to("http://localhost:8080/health/app/health-secure");
-        assertThat(browser.getPageSource()).contains("UP");
+    @ArtifactDependencies
+    public static List<String> appDependencies() {
+        return Arrays.asList(
+                "org.wildfly.swarm:undertow"
+        );
     }
 
     @RunAsClient
     @Test
-    public void testSimple() throws IOException {
-        browser.navigate().to("http://localhost:8080");
-        assertThat(browser.getPageSource()).contains("Howdy at ");
+    public void testStaticContent() throws Exception {
+        assertContains("", "This is foo/index.html.");
+        assertContains("index.html", "This is foo/index.html.");
+    }
+
+    public void assertContains(String path, String content) throws Exception {
+        browser.navigate().to("http://localhost:8080/" + path);
+        assertThat(browser.getPageSource()).contains(content);
     }
 
     @Drone

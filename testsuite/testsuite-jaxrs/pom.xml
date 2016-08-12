@@ -32,12 +32,12 @@
       <artifactId>monitor</artifactId>
       <version>${project.version}</version>
     </dependency>
-<!--
+
     <dependency>
-      <groupId>com.fasterxml.jackson.jaxrs</groupId>
-      <artifactId>jackson-jaxrs-json-provider</artifactId>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.7</version>
     </dependency>
--->
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

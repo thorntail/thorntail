@@ -15,28 +15,32 @@
  */
 package org.wildfly.swarm.ejb;
 
+import javax.ejb.EJB;
+
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Bob McWhirter
  */
+@Ignore
 @RunWith(Arquillian.class)
 public class EJBArquillianTest {
 
-    @Deployment(testable = false)
+    @Deployment
     public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
+        JARArchive deployment = ShrinkWrap.create(JARArchive.class, "ejb-test.jar");
+        deployment.addClass(GreeterEJB.class);
         return deployment;
     }
 
@@ -46,8 +50,11 @@ public class EJBArquillianTest {
     }
 
     @Test
-    @RunAsClient
-    public void testNothing() {
+    public void testFromInside() {
+        assertEquals(greeter.message(), "Howdy from EJB");
     }
+
+    @EJB(lookup = "java:global/ejb-test/GreeterEJB")
+    private GreeterEJB greeter;
 
 }
