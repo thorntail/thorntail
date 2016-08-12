@@ -19,7 +19,6 @@
 
   <build>
     <finalName>${project.artifactId}</finalName>
-
     <pluginManagement>
       <plugins>
         <plugin>
@@ -33,49 +32,12 @@
                 <goal>package</goal>
               </goals>
             </execution>
-            <execution>
-              <id>start</id>
-              <phase>pre-integration-test</phase>
-              <goals>
-                <goal>start</goal>
-              </goals>
-              <configuration>
-                <stdoutFile>target/stdout.log</stdoutFile>
-                <stderrFile>target/stderr.log</stderrFile>
-              </configuration>
-            </execution>
-            <execution>
-              <id>stop</id>
-              <phase>post-integration-test</phase>
-              <goals>
-                <goal>stop</goal>
-              </goals>
-            </execution>
           </executions>
         </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
-      <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-            <configuration>
-              <testSourceDirectory>src/it/java</testSourceDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
@@ -97,6 +59,67 @@
       <properties>
         <wildfly-swarm.useUberJar>true</wildfly-swarm.useUberJar>
       </properties>
+    </profile>
+    <profile>
+      <id>run-tests</id>
+      <activation>
+        <property>
+          <name>!skipTests</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.wildfly.swarm</groupId>
+              <artifactId>wildfly-swarm-plugin</artifactId>
+              <version>2016.7-SNAPSHOT</version>
+              <executions>
+                <execution>
+                  <id>start</id>
+                  <phase>pre-integration-test</phase>
+                  <goals>
+                    <goal>start</goal>
+                  </goals>
+                  <configuration>
+                    <stdoutFile>target/stdout.log</stdoutFile>
+                    <stderrFile>target/stderr.log</stderrFile>
+                  </configuration>
+                </execution>
+                <execution>
+                  <id>stop</id>
+                  <phase>post-integration-test</phase>
+                  <goals>
+                    <goal>stop</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+                <configuration>
+                  <testSourceDirectory>src/it/java</testSourceDirectory>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify</id>
+                <goals>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 </project>
