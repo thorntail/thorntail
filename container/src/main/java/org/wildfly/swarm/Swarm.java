@@ -61,8 +61,8 @@ import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
-import org.wildfly.swarm.container.runtime.JBossLoggingManager;
-import org.wildfly.swarm.container.runtime.ProjectStageFactory;
+import org.wildfly.swarm.container.runtime.logging.JBossLoggingManager;
+import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
 import org.wildfly.swarm.container.runtime.SwarmConfigurator;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
@@ -152,7 +152,7 @@ public class Swarm {
             try {
                 Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
                 System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
-                System.setProperty("org.jboss.logmanager.configurator", "org.wildfly.swarm.container.runtime.LoggingConfigurator");
+                System.setProperty("org.jboss.logmanager.configurator", "org.wildfly.swarm.container.runtime.wildfly.LoggingConfigurator");
                 //force logging init
                 LogManager.getLogManager();
                 BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());

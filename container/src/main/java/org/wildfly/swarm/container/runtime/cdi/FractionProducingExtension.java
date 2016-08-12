@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime;
+package org.wildfly.swarm.container.runtime.cdi;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

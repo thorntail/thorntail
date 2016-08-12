@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.wildfly.swarm.container.runtime.DefaultSocketBindingGroupProducer;
+import org.wildfly.swarm.container.runtime.config.DefaultSocketBindingGroupProducer;
 import org.wildfly.swarm.jgroups.JGroupsFraction;
 import org.wildfly.swarm.jgroups.JGroupsProperties;
 import org.wildfly.swarm.spi.api.Customizer;

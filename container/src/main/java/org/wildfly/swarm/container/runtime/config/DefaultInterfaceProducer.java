@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime;
+package org.wildfly.swarm.container.runtime.config;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
-import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.container.Interface;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Bob McWhirter
  */
-@Singleton
-public class DefaultSocketBindingGroupProducer {
+@ApplicationScoped
+public class DefaultInterfaceProducer {
 
-    public static final String STANDARD_SOCKETS = "standard-sockets";
+    @Produces
+    public Interface publicInterace() {
+        return new Interface( "public", SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
 
-    @Produces @Singleton @Named( STANDARD_SOCKETS )
-    public SocketBindingGroup standardSockets() {
-        return new SocketBindingGroup( "standard-sockets", "public", "0");
     }
-
 }

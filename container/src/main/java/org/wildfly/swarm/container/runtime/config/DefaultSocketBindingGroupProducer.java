@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime.internal;
+package org.wildfly.swarm.container.runtime.config;
 
-import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.SocketBindingGroup;
 
 /**
  * @author Bob McWhirter
  */
-public interface Configurator {
-    void execute(Fraction fraction, List<ModelNode> list) throws Exception;
+@Singleton
+public class DefaultSocketBindingGroupProducer {
+
+    public static final String STANDARD_SOCKETS = "standard-sockets";
+
+    @Produces @Singleton @Named( STANDARD_SOCKETS )
+    public SocketBindingGroup standardSockets() {
+        return new SocketBindingGroup( "standard-sockets", "public", "0");
+    }
+
 }

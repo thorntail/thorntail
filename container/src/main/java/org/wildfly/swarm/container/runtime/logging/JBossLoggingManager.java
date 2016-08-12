@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime.internal.marshal;
+package org.wildfly.swarm.container.runtime.logging;
 
-import java.util.List;
+import javax.enterprise.inject.Vetoed;
 
-import org.jboss.dmr.ModelNode;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import org.jboss.logging.Logger;
+import org.wildfly.swarm.bootstrap.logging.BackingLogger;
+import org.wildfly.swarm.bootstrap.logging.BackingLoggerManager;
 
 /**
  * @author Bob McWhirter
  */
-public interface ConfigurationMarshaller {
-    void marshal(List<ModelNode> list);
+@Vetoed
+public class JBossLoggingManager implements BackingLoggerManager {
 
-    default boolean isAlreadyConfigured(List<ModelNode> subList, List<ModelNode> list) {
-        if (subList.isEmpty()) {
-            return false;
-        }
+    public JBossLoggingManager() {
+    }
 
-        ModelNode head = subList.get(0);
-
-        return list.stream().anyMatch(e -> e.get(OP_ADDR).equals(head.get(OP_ADDR)));
+    @Override
+    public BackingLogger getBackingLogger(String name) {
+        return new JBossLoggingLogger(Logger.getLogger(name));
     }
 }

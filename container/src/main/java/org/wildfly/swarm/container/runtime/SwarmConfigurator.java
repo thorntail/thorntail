@@ -48,6 +48,7 @@ import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
+import org.wildfly.swarm.container.runtime.cdi.ProjectStageImpl;
 import org.wildfly.swarm.container.runtime.cli.CommandLineArgs;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;

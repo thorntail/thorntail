@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime;
+package org.wildfly.swarm.container.runtime.marshal;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
+import java.util.List;
 
-import org.wildfly.swarm.spi.api.ArtifactLookup;
+import org.jboss.dmr.ModelNode;
+
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 
 /**
  * @author Bob McWhirter
  */
-@Singleton
-public class ArtifactLookupProducer {
+public interface ConfigurationMarshaller {
+    void marshal(List<ModelNode> list);
 
-    @Produces @Singleton
-    public ArtifactLookup lookup() {
-        return ArtifactLookup.get();
+    default boolean isAlreadyConfigured(List<ModelNode> subList, List<ModelNode> list) {
+        if (subList.isEmpty()) {
+            return false;
+        }
+
+        ModelNode head = subList.get(0);
+
+        return list.stream().anyMatch(e -> e.get(OP_ADDR).equals(head.get(OP_ADDR)));
     }
 }

@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime.internal;
+package org.wildfly.swarm.container.runtime.cdi;
 
-import java.util.List;
+import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
 
-import javax.enterprise.inject.Vetoed;
-
-import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.config.runtime.invocation.Marshaller;
-import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
 
 /**
  * @author Bob McWhirter
  */
-@Vetoed
-public class MarshalConfigurator implements Configurator {
+@Singleton
+public class ArtifactLookupProducer {
 
-    @Override
-    public void execute(Fraction fraction, List<ModelNode> list) throws Exception {
-        list.addAll(Marshaller.marshal(fraction));
+    @Produces @Singleton
+    public ArtifactLookup lookup() {
+        return ArtifactLookup.get();
     }
 }

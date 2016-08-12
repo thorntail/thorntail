@@ -13,25 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container.runtime;
+package org.wildfly.swarm.container.runtime.wildfly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.inject.Vetoed;
 
-import org.jboss.logging.Logger;
-import org.wildfly.swarm.bootstrap.logging.BackingLogger;
-import org.wildfly.swarm.bootstrap.logging.BackingLoggerManager;
+import org.jboss.as.selfcontained.ContentProvider;
+import org.jboss.vfs.VirtualFile;
 
 /**
  * @author Bob McWhirter
  */
 @Vetoed
-public class JBossLoggingManager implements BackingLoggerManager {
+public class SimpleContentProvider implements ContentProvider {
 
-    public JBossLoggingManager() {
+    public SimpleContentProvider() {
+
+    }
+
+    public synchronized byte[] addContent(VirtualFile content) {
+        this.contents.add(content);
+        byte[] hash = new byte[1];
+        hash[0] = (byte) (this.contents.size() - 1);
+        return hash;
     }
 
     @Override
-    public BackingLogger getBackingLogger(String name) {
-        return new JBossLoggingLogger(Logger.getLogger(name));
+    public VirtualFile getContent(int index) {
+        if (index >= this.contents.size()) {
+            return null;
+        }
+
+        return this.contents.get(index);
     }
+
+    private List<VirtualFile> contents = new ArrayList<>();
 }
