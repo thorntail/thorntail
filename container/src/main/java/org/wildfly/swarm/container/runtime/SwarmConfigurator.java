@@ -15,17 +15,12 @@
  */
 package org.wildfly.swarm.container.runtime;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
@@ -37,12 +32,8 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.log.StreamModuleLogger;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.cdi.UnmanagedInstance;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
@@ -50,9 +41,6 @@ import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageImpl;
 import org.wildfly.swarm.container.runtime.cli.CommandLineArgs;
-import org.wildfly.swarm.internal.FileSystemLayout;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
@@ -77,7 +65,6 @@ public class SwarmConfigurator {
 
     public void init() throws Exception {
         createServer(debugBootstrap);
-        determineDeploymentType();
     }
 
     public Server start(boolean eagerlyOpen) throws Exception {
@@ -158,54 +145,19 @@ public class SwarmConfigurator {
     }
 
     public void deploy() throws DeploymentException {
-        Archive<?> deployment = createDefaultDeployment();
-        if (deployment == null) {
-            throw new DeploymentException("Unable to create default deployment");
-        } else {
-            deploy(deployment);
+        if (!this.running) {
+            throw new RuntimeException("Swarm has not been started.");
         }
+
+        this.server.deploy();
     }
 
     public void deploy(Archive<?> deployment) throws DeploymentException {
         if (!this.running) {
-            throw new RuntimeException("The Container has not been started.");
+            throw new RuntimeException("Swarm has not been started.");
         }
 
-        this.deployer.deploy(deployment);
-    }
-
-    public Archive<?> createDefaultDeployment() {
-        try {
-            Iterator<DefaultDeploymentFactory> providerIter = Module.getBootModuleLoader()
-                    .loadModule(ModuleIdentifier.create("swarm.application"))
-                    .loadService(DefaultDeploymentFactory.class)
-                    .iterator();
-
-            if (!providerIter.hasNext()) {
-                providerIter = ServiceLoader.load(DefaultDeploymentFactory.class, ClassLoader.getSystemClassLoader())
-                        .iterator();
-            }
-
-            final Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
-
-            while (providerIter.hasNext()) {
-                final DefaultDeploymentFactory factory = providerIter.next();
-                final DefaultDeploymentFactory current = factories.get(factory.getType());
-                if (current == null) {
-                    factories.put(factory.getType(), factory);
-                } else {
-                    // if this one is high priority than the previously-seen factory, replace it.
-                    if (factory.getPriority() > current.getPriority()) {
-                        factories.put(factory.getType(), factory);
-                    }
-                }
-            }
-
-            DefaultDeploymentFactory factory = factories.get(determineDeploymentType());
-            return factory != null ? factory.create() : ShrinkWrap.create(JARArchive.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.server.deploy(deployment);
     }
 
     public void setDebugBootstrap(boolean debugBootstrap) {
@@ -214,52 +166,6 @@ public class SwarmConfigurator {
 
     public void setWeld(WeldContainer weldContainer) {
         this.weldContainer = weldContainer;
-    }
-
-    private Archive<?> getDefaultDeployment() {
-        if (defaultDeployment == null) {
-            try {
-                defaultDeployment = createDefaultDeployment();
-            } catch (RuntimeException ex) {
-                // ignore
-            }
-        }
-        return defaultDeployment;
-    }
-
-    private ClassLoader getDefaultDeploymentClassLoader() throws Exception {
-        if (defaultDeploymentClassLoader == null) {
-            List<URL> urllist = new ArrayList<>();
-            URL archiveURL = getDefaultDeploymentURL();
-            if (archiveURL != null) {
-                urllist.add(archiveURL);
-                File webpath = new File(new File(archiveURL.toURI()), "WEB-INF/classes");
-                if (webpath.exists()) {
-                    urllist.add(webpath.toURI().toURL());
-                }
-            }
-            URL[] urls = urllist.toArray(new URL[urllist.size()]);
-            Module m1 = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-            defaultDeploymentClassLoader = new URLClassLoader(urls, m1.getClassLoader());
-        }
-        return defaultDeploymentClassLoader;
-    }
-
-    /**
-     * @return The URL to the default deployment or null
-     */
-    private URL getDefaultDeploymentURL() throws IOException {
-        if (defaultDeploymentURL == null) {
-            Archive<?> archive = getDefaultDeployment();
-            if (archive != null) {
-                File tmpdir = TempFileManager.INSTANCE.newTempDirectory("deployment", ".d");
-
-                archive.as(ExplodedExporter.class).exportExploded(tmpdir);
-
-                defaultDeploymentURL = new File(tmpdir, archive.getName()).toURI().toURL();
-            }
-        }
-        return defaultDeploymentURL;
     }
 
     public void createServer(boolean debugBootstrap) {
@@ -320,37 +226,6 @@ public class SwarmConfigurator {
         }
 
         list.add(binding);
-    }
-
-    private String determineDeploymentType() {
-        if (this.defaultDeploymentType == null) {
-            this.defaultDeploymentType = determineDeploymentTypeInternal();
-            System.setProperty(BootstrapProperties.DEFAULT_DEPLOYMENT_TYPE, this.defaultDeploymentType);
-        }
-        return this.defaultDeploymentType;
-    }
-
-    private String determineDeploymentTypeInternal() {
-        String artifact = System.getProperty(BootstrapProperties.APP_PATH);
-        if (artifact != null) {
-            int dotLoc = artifact.lastIndexOf('.');
-            if (dotLoc >= 0) {
-                return artifact.substring(dotLoc + 1);
-            }
-        }
-
-        artifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
-        if (artifact != null) {
-            int dotLoc = artifact.lastIndexOf('.');
-            if (dotLoc >= 0) {
-                return artifact.substring(dotLoc + 1);
-            }
-        }
-
-        // fallback to file system
-        FileSystemLayout fsLayout = FileSystemLayout.create();
-
-        return fsLayout.determinePackagingType();
     }
 
     private List<SocketBindingGroup> socketBindingGroups = new ArrayList<>();
