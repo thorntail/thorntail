@@ -22,5 +22,7 @@ import org.wildfly.swarm.container.DeploymentException;
  * @author Bob McWhirter
  */
 public interface Deployer {
+    void deploy() throws DeploymentException;
     void deploy(Archive<?> deployment) throws DeploymentException;
+    Archive<?> createDefaultDeployment();
 }

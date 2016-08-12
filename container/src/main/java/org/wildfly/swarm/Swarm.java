@@ -61,9 +61,8 @@ import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
-import org.wildfly.swarm.container.runtime.logging.JBossLoggingManager;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
-import org.wildfly.swarm.container.runtime.SwarmConfigurator;
+import org.wildfly.swarm.container.runtime.logging.JBossLoggingManager;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -376,7 +375,7 @@ public class Swarm {
             throw new Exception("Unable to call deploy() until start() called");
         }
 
-        this.server.deploy();
+        this.server.deployer().deploy();
         return this;
     }
 
@@ -392,7 +391,7 @@ public class Swarm {
             throw new Exception("Unable to call deploy() until start() called");
         }
 
-        this.server.deploy(deployment);
+        this.server.deployer().deploy(deployment);
         return this;
     }
 
@@ -404,14 +403,13 @@ public class Swarm {
             throw new Exception("Unable to call createDefaultDeployment() until start() called");
         }
 
-        return this.server.createDefaultDeployment();
+        return this.server.deployer().createDefaultDeployment();
     }
 
     private void createShrinkWrapDomain() {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             if (isFatJar()) {
-                Thread.currentThread().setContextClassLoader(SwarmConfigurator.class.getClassLoader());
                 Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
                 Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
             }
@@ -525,6 +523,7 @@ public class Swarm {
     }
 
     static {
+        /*
         InputStream in = SwarmConfigurator.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
         Properties props = new Properties();
         try {
@@ -534,6 +533,8 @@ public class Swarm {
         }
 
         VERSION = props.getProperty("version", "unknown");
+        */
+        VERSION = "unknown";
     }
 
     private String[] args;

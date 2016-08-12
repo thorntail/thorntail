@@ -62,6 +62,7 @@ public class DefaultDeploymentCreator {
         return new EmptyJARArchiveDeploymentFactory(type);
     }
 
+
     private static class EmptyJARArchiveDeploymentFactory extends DefaultDeploymentFactory {
         private final String type;
 

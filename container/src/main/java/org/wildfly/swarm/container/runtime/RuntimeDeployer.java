@@ -25,6 +25,8 @@ import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
@@ -42,13 +44,13 @@ import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
+import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
+import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
-import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
-import org.wildfly.swarm.spi.runtime.ServerConfiguration;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.BLOCKING_TIMEOUT;
@@ -63,24 +65,51 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
 /**
  * @author Bob McWhirter
  */
-@Vetoed
+@Singleton
 public class RuntimeDeployer implements Deployer {
 
-    public RuntimeDeployer(RuntimeServer.Opener opener, ServiceContainer serviceContainer, List<ServerConfiguration<Fraction>> configurations, ModelControllerClient client, SimpleContentProvider contentProvider, TempFileProvider tempFileProvider) throws IOException {
-        this.opener = opener;
-        this.serviceContainer = serviceContainer;
-        this.configurations = configurations;
-        this.client = client;
-        this.contentProvider = contentProvider;
-        this.tempFileProvider = tempFileProvider;
+    public void deploy() throws DeploymentException {
+        Archive<?> deployment = createDefaultDeployment();
+        if (deployment == null) {
+            throw new DeploymentException("Unable to create default deployment");
+        } else {
+            deploy(deployment);
+        }
     }
 
-    public void setArchivePreparers(Instance<ArchivePreparer> preparers) {
-        this.archivePreparers = preparers;
+    public Archive<?> createDefaultDeployment() {
+        return this.defaultDeploymentCreator.createDefaultDeployment( determineDeploymentType() );
     }
 
-    public void setArchiveMetadataProcessors(Instance<ArchiveMetadataProcessor> processors) {
-        this.archiveMetadataProcessors = processors;
+    private String determineDeploymentType() {
+        if (this.defaultDeploymentType == null) {
+            this.defaultDeploymentType = determineDeploymentTypeInternal();
+            System.setProperty(BootstrapProperties.DEFAULT_DEPLOYMENT_TYPE, this.defaultDeploymentType);
+        }
+        return this.defaultDeploymentType;
+    }
+
+    private String determineDeploymentTypeInternal() {
+        String artifact = System.getProperty(BootstrapProperties.APP_PATH);
+        if (artifact != null) {
+            int dotLoc = artifact.lastIndexOf('.');
+            if (dotLoc >= 0) {
+                return artifact.substring(dotLoc + 1);
+            }
+        }
+
+        artifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
+        if (artifact != null) {
+            int dotLoc = artifact.lastIndexOf('.');
+            if (dotLoc >= 0) {
+                return artifact.substring(dotLoc + 1);
+            }
+        }
+
+        // fallback to file system
+        FileSystemLayout fsLayout = FileSystemLayout.create();
+
+        return fsLayout.determinePackagingType();
     }
 
     public void debug(boolean debug) {
@@ -166,9 +195,6 @@ public class RuntimeDeployer implements Deployer {
             ModelNode outcome = result.get("outcome");
 
             if (outcome.asString().equals("success")) {
-                // When there's a successful deployment, enable every undertow http listener
-                // if it's not already enabled, regardless of name.
-                openConnections(deployment);
                 return;
             }
 
@@ -176,18 +202,6 @@ public class RuntimeDeployer implements Deployer {
             throw new DeploymentException(deployment, description.asString());
         } catch (IOException e) {
             throw new DeploymentException(deployment, e);
-        }
-    }
-
-    public void openConnections(Archive<?> archive) {
-        if (archive.getName().endsWith(".war") || archive.getName().endsWith(".ear")) {
-            openConnections();
-        }
-    }
-
-    public void openConnections() {
-        if (this.opener != null) {
-            this.opener.open();
         }
     }
 
@@ -203,23 +217,27 @@ public class RuntimeDeployer implements Deployer {
 
     private static final String CLASS_SUFFIX = ".class";
 
-    private final ServiceContainer serviceContainer;
+    private String defaultDeploymentType;
 
-    private final ModelControllerClient client;
+    @Inject
+    private ModelControllerClient client;
 
-    private final SimpleContentProvider contentProvider;
+    @Inject
+    private SimpleContentProvider contentProvider;
 
-    private final List<ServerConfiguration<Fraction>> configurations;
+    @Inject
+    private TempFileProvider tempFileProvider;
 
-    private final TempFileProvider tempFileProvider;
+    @Inject
+    private DefaultDeploymentCreator defaultDeploymentCreator;
 
     private final List<Closeable> mountPoints = new ArrayList<>();
 
     private boolean debug = false;
 
-    private final RuntimeServer.Opener opener;
-
+    @Inject
     private Instance<ArchivePreparer> archivePreparers;
 
+    @Inject
     private Instance<ArchiveMetadataProcessor> archiveMetadataProcessors;
 }
