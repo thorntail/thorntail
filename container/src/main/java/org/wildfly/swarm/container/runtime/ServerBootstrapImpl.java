@@ -30,7 +30,6 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     @Override
     public ServerBootstrap withStageConfig(Optional<ProjectStage> stageConfig) {
         this.stageConfig = stageConfig;
-        this.stageConfigSet = true;
         return this;
     }
 
@@ -82,17 +81,12 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         }
 
         WeldContainer weldContainer = weld.initialize();
-        SwarmConfigurator swarmConfigurator = weldContainer.select(SwarmConfigurator.class).get();
-        swarmConfigurator.setWeld(weldContainer);
-        swarmConfigurator.setDebugBootstrap(this.bootstrapDebug);
-        swarmConfigurator.init();
-        swarmConfigurator.setXmlConfig(this.xmlConfigURL);
 
-        if (this.stageConfigSet) {
-            swarmConfigurator.setStageConfig(this.stageConfigUrl, this.stageConfig);
-        }
-
-        return swarmConfigurator.start(true);
+        RuntimeServer server = weldContainer.select(RuntimeServer.class).get();
+        server.setXmlConfig( this.xmlConfigURL );
+        server.setStageConfig( this.stageConfig );
+        server.start(true);
+        return server;
     }
 
     private String[] args;
@@ -101,13 +95,11 @@ public class ServerBootstrapImpl implements ServerBootstrap {
 
     private Set<Class<?>> userComponents;
 
-    private Optional<ProjectStage> stageConfig;
+    private Optional<ProjectStage> stageConfig = Optional.empty();
 
-    private Optional<URL> xmlConfigURL;
+    private Optional<URL> xmlConfigURL = Optional.empty();
 
     private boolean bootstrapDebug;
 
     private String stageConfigUrl;
-
-    private boolean stageConfigSet = false;
 }

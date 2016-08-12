@@ -27,17 +27,16 @@ import org.wildfly.swarm.spi.api.ProjectStage;
  */
 public interface Server {
 
-    Deployer start(boolean eagerlyOpen) throws Exception;
 
     void stop() throws Exception;
 
-    void setXmlConfig(Optional<URL> xmlConfig);
-
-    void setStageConfig(Optional<ProjectStage> stageConfig);
-
+    /*
     Archive<?> createDefaultDeployment();
 
     void deploy() throws DeploymentException;
     void deploy(Archive<?> deployment) throws DeploymentException;
+    */
+
+    Deployer deployer();
 
 }
