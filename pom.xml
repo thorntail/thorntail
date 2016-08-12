@@ -1128,7 +1128,6 @@
     <module>vertx</module>
     <module>webservices</module>
 
-    <!--<module>integration-tests</module>-->
     <module>testsuite</module>
 
     <module>fraction-list</module>

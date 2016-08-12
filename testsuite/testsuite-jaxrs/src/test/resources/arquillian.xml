@@ -1,7 +1,7 @@
 <arquillian>
 
   <extension qualifier="webdriver">
-    <property name="browser">${browser}</property>
+    <property name="browser">phantomjs</property>
   </extension>
 
   <container qualifier="daemon" default="true">

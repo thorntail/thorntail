@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.integration.ejb;
+package org.wildfly.swarm.ejb;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 
 /**
  * @author Ken Finnigan
  */
 @Stateless
-@Path("/")
-public class MyResource {
+public class GreeterEJB {
 
-    @GET
-    @Produces("text/plain")
-    public String get() {
-        return greeter.message();
+    public String message() {
+        return "Howdy from EJB";
     }
-
-    @EJB
-    private GreeterEJB greeter;
 }
