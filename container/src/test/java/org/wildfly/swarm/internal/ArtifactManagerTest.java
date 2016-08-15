@@ -120,7 +120,7 @@ public class ArtifactManagerTest {
             manager.artifact(String.format("%s:%s:%s", ARTIFACT_INVALID_GROUP_ID, ARTIFACT_INVALID_ARTIFACT_ID, ARTIFACT_INVALID_VERSION));
             fail("RuntimeException should have been thrown");
         } catch (RuntimeException e) {
-            assertThat(e).hasMessage("Artifact 'no.such:thingy:1.0.0' not found.");
+            assertThat(e).hasMessage("WFSWARM0013: Artifact 'no.such:thingy:1.0.0' not found.");
         }
     }
 
@@ -132,7 +132,7 @@ public class ArtifactManagerTest {
                                            ARTIFACT_INVALID_VERSION));
             fail("RuntimeException should have been thrown");
         } catch (RuntimeException e) {
-            assertThat(e).hasMessage("Artifact 'no.such:thingy:jar:1.0.0' not found.");
+            assertThat(e).hasMessage("WFSWARM0013: Artifact 'no.such:thingy:jar:1.0.0' not found.");
         }
     }
 

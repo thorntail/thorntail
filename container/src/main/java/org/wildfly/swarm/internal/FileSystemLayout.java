@@ -45,7 +45,7 @@ public abstract class FileSystemLayout {
 
         String userDir = System.getProperty(USER_DIR);
         if(null==userDir)
-            throw new IllegalStateException("System property 'user.dir' not provided");
+            throw SwarmMessages.MESSAGES.systemPropertyNotFound("user.dir");
 
         return create(userDir);
     }
@@ -64,7 +64,7 @@ public abstract class FileSystemLayout {
             return new GradleFileSystemLayout(root);
         }
 
-        throw new IllegalArgumentException("Cannot identify FileSystemLayout for given path: "+root);
+        throw SwarmMessages.MESSAGES.cannotIdentifyFileSystemLayout(root);
     }
 
 

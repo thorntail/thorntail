@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.Vetoed;
 
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.yaml.snakeyaml.Yaml;
 
@@ -40,7 +41,7 @@ public class ProjectStageFactory {
         try {
             return this.loadStages(url.openStream());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load stage configuration from URL :" + url.toExternalForm(), e);
+            throw SwarmMessages.MESSAGES.failedLoadingStageConfig(e, url);
         }
     }
 
@@ -72,7 +73,7 @@ public class ProjectStageFactory {
                     .findFirst();
 
             if (!defaultStage.isPresent())
-                throw new RuntimeException("Missing stage 'default' in project-stages.yml");
+                throw SwarmMessages.MESSAGES.missingDefaultStage();
 
             // inherit values from default stage
             final Map<String, String> defaults = defaultStage.get().getProperties();

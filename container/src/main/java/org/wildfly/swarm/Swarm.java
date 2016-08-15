@@ -64,6 +64,7 @@ import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
 import org.wildfly.swarm.container.runtime.logging.JBossLoggingManager;
 import org.wildfly.swarm.internal.ArtifactManager;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
@@ -220,7 +221,7 @@ public class Swarm {
 
     public StageConfig stageConfig() {
         if (!stageConfig.isPresent())
-            throw new RuntimeException("Stage config is not present");
+            throw SwarmMessages.MESSAGES.missingStageConfig();
         return new StageConfig(stageConfig.get());
     }
 
@@ -349,7 +350,7 @@ public class Swarm {
      */
     public Swarm stop() throws Exception {
         if (this.server == null) {
-            throw new Exception("Unable to call stop() until start() called");
+            throw SwarmMessages.MESSAGES.containerNotStarted("stop()");
         }
 
         this.server.stop();
@@ -367,7 +368,7 @@ public class Swarm {
      */
     public Swarm deploy() throws Exception {
         if (this.server == null) {
-            throw new Exception("Unable to call deploy() until start() called");
+            throw SwarmMessages.MESSAGES.containerNotStarted("deploy()");
         }
 
         this.server.deployer().deploy();
@@ -383,7 +384,7 @@ public class Swarm {
      */
     public Swarm deploy(Archive<?> deployment) throws Exception {
         if (this.server == null) {
-            throw new Exception("Unable to call deploy() until start() called");
+            throw SwarmMessages.MESSAGES.containerNotStarted("deploy(Archive<?>)");
         }
 
         this.server.deployer().deploy(deployment);
@@ -395,7 +396,7 @@ public class Swarm {
      */
     public Archive<?> createDefaultDeployment() throws Exception {
         if (this.server == null) {
-            throw new Exception("Unable to call createDefaultDeployment() until start() called");
+            throw SwarmMessages.MESSAGES.containerNotStarted("createDefaultDeployment()");
         }
 
         return this.server.deployer().createDefaultDeployment();
@@ -474,7 +475,7 @@ public class Swarm {
         }
 
         if (null == stage)
-            throw new RuntimeException("Project stage '" + stageName + "' cannot be found");
+            throw SwarmMessages.MESSAGES.stageNotFound(stageName);
 
         System.out.println("[INFO] Using project stage: " + stageName);
 

@@ -116,7 +116,7 @@ public class OptionTest {
             configOpt.parse(state, null);
             fail("should have throw a missing-argument exception");
         } catch (RuntimeException e) {
-            assertThat(e.getMessage()).isEqualTo("-c requires an argument");
+            assertThat(e.getMessage()).endsWith("-c requires an argument.");
         }
     }
 

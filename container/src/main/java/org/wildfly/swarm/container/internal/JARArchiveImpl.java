@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.impl.base.container.ContainerBase;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
@@ -49,7 +50,7 @@ public class JARArchiveImpl extends ContainerBase<JARArchive> implements JARArch
      */
     @Override
     public ArchivePath getLibraryPath() {
-        throw new UnsupportedOperationException("JavaArchive spec does not support Libraries");
+        throw SwarmMessages.MESSAGES.librariesNotSupported();
     }
 
     /**

@@ -72,7 +72,7 @@ public class ArtifactManager implements ArtifactLookup {
         final File file = findFile(gav);
 
         if (file == null) {
-            throw new RuntimeException("Artifact '" + gav + "' not found.");
+            throw SwarmMessages.MESSAGES.artifactNotFound(gav);
         }
 
         return ShrinkWrap.create(ZipImporter.class, asName == null ? file.getName() : asName)
@@ -134,7 +134,7 @@ public class ArtifactManager implements ArtifactLookup {
         String[] parts = gav.split(":");
 
         if (parts.length < 2) {
-            throw new RuntimeException("GAV must includes at least 2 segments");
+            throw SwarmMessages.MESSAGES.gavMinimumSegments();
         }
 
         String groupId = parts[0];
@@ -171,7 +171,7 @@ public class ArtifactManager implements ArtifactLookup {
         }
 
         if (version == null) {
-            throw new RuntimeException("Unable to determine version number from GAV: " + gav);
+            throw SwarmMessages.MESSAGES.unableToDetermineVersion(gav);
         }
         ArtifactCoordinates coords= new ArtifactCoordinates(
                 groupId,

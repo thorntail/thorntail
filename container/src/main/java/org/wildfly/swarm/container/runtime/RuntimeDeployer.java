@@ -47,6 +47,7 @@ import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
 import org.wildfly.swarm.internal.FileSystemLayout;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.SwarmProperties;
@@ -71,7 +72,7 @@ public class RuntimeDeployer implements Deployer {
     public void deploy() throws DeploymentException {
         Archive<?> deployment = createDefaultDeployment();
         if (deployment == null) {
-            throw new DeploymentException("Unable to create default deployment");
+            throw SwarmMessages.MESSAGES.cannotCreateDefaultDeployment();
         } else {
             deploy(deployment);
         }
@@ -165,7 +166,7 @@ public class RuntimeDeployer implements Deployer {
             Closeable closeable = VFS.mountZipExpanded(in, deployment.getName(), mountPoint, tempFileProvider);
             this.mountPoints.add(closeable);
         } catch (IOException e) {
-            throw new DeploymentException(deployment, e);
+            throw SwarmMessages.MESSAGES.failToMountDeployment(e, deployment);
         }
 
         byte[] hash = this.contentProvider.addContent(mountPoint);
@@ -199,9 +200,9 @@ public class RuntimeDeployer implements Deployer {
             }
 
             ModelNode description = result.get("failure-description");
-            throw new DeploymentException(deployment, description.asString());
+            throw new DeploymentException(deployment, SwarmMessages.MESSAGES.deploymentFailed(description.asString()));
         } catch (IOException e) {
-            throw new DeploymentException(deployment, e);
+            throw SwarmMessages.MESSAGES.deploymentFailed(e, deployment);
         }
     }
 

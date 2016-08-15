@@ -44,6 +44,11 @@ public class DeploymentException extends Exception {
         this.archive = archive;
     }
 
+    public DeploymentException(String message, Throwable cause, Archive<?> archive) {
+        super(message, cause);
+        this.archive = archive;
+    }
+
     public Archive<?> getArchive() {
         return this.archive;
     }
