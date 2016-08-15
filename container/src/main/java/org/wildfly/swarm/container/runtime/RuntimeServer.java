@@ -69,7 +69,6 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  */
 @SuppressWarnings("unused")
 @Singleton
-//@Vetoed
 public class RuntimeServer implements Server {
 
     @Inject
@@ -133,6 +132,12 @@ public class RuntimeServer implements Server {
     public StageConfig stageConfig() {
         System.err.println("*** producing stageConfig");
         return new StageConfig(projectStage());
+    }
+
+    @Produces
+    @Singleton
+    ModelControllerClient client() {
+        return this.client;
     }
 
     public void debug(boolean debug) {
@@ -204,22 +209,13 @@ public class RuntimeServer implements Server {
         return deployer;
     }
 
-    @Produces
-    @Singleton
-    ModelControllerClient client() {
-        return this.client;
-    }
-
-    @Inject
-    private Instance<StageConfig> stageConfig;
-
     private void setupUserSpaceExtension() {
         try {
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.cdi", "ext"));
             Class<?> use = module.getClassLoader().loadClass("org.wildfly.swarm.cdi.InjectStageConfigExtension");
             Field field = use.getDeclaredField("stageConfig");
             field.setAccessible(true);
-            field.set(null, stageConfig.get());
+            field.set(null, this.stageConfig());
         } catch (ModuleLoadException e) {
             // ignore, don't do it.
         } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
@@ -229,7 +225,6 @@ public class RuntimeServer implements Server {
     }
 
     public void stop() throws Exception {
-
         final CountDownLatch latch = new CountDownLatch(1);
         this.serviceContainer.addTerminateListener(info -> latch.countDown());
         this.serviceContainer.shutdown();
@@ -252,8 +247,6 @@ public class RuntimeServer implements Server {
     private ServiceContainer serviceContainer;
 
     private ModelControllerClient client;
-
-    //private RuntimeDeployer deployer;
 
     // optional XML config
     private Optional<URL> xmlConfig = Optional.empty();
