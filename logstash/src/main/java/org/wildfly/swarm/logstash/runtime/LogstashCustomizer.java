@@ -64,15 +64,11 @@ public class LogstashCustomizer implements Customizer {
                 handlerProps.put("hostname", hostname);
                 handlerProps.put("port", "" + port);
 
-                System.err.println( "using: " + handlerProps );
-
                 final CustomHandler<?> logstashHandler = new CustomHandler<>("logstash-handler")
                         .module("org.jboss.logmanager.ext")
                         .attributeClass("org.jboss.logmanager.ext.handlers.SocketHandler")
                         .namedFormatter("logstash")
                         .properties(handlerProps);
-
-                System.err.println( "console handlers: " + this.loggingFraction.consoleHandlers() );
 
                 this.loggingFraction
                         .customFormatter("logstash", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.formatters.LogstashFormatter",

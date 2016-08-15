@@ -52,7 +52,6 @@ public class InterfaceMarshaller implements ConfigurationMarshaller {
 
     private void configureInterface(Interface iface, List<ModelNode> list) {
         if (hasInterface(iface, list)) {
-            System.err.println("has interface, not adding");
             return;
         }
         ModelNode node = new ModelNode();

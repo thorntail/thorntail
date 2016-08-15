@@ -23,7 +23,6 @@ public class CommandLineArgsServiceActivator implements ServiceActivator {
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
-        System.err.println( "install MSC args for " + Arrays.asList( this.args ) );
         context.getServiceTarget().addService(ServiceName.of("wildfly", "swarm", "main-args"), new ValueService<>(new ImmediateValue<>(this.args)))
                 .install();
     }

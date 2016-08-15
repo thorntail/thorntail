@@ -30,9 +30,6 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
 
-        System.err.println("bootstrap START");
-
-
         try {
             builder.addDependency(
                     DependencySpec.createModuleDependencySpec(

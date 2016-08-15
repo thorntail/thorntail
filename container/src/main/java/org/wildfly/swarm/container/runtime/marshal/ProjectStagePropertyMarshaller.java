@@ -39,16 +39,13 @@ public class ProjectStagePropertyMarshaller implements ConfigurationMarshaller {
     private ProjectStage stage;
 
     public void marshal(List<ModelNode> list) {
-        System.err.println( ">> marshal project stage properties" );
         Map<String, String> properties = this.stage.getProperties();
         for (String key : properties.keySet()) {
-            System.err.println( "key: " + key );
             ModelNode modelNode = new ModelNode();
             modelNode.get(OP).set(ADD);
             modelNode.get(ADDRESS).set("system-property", key);
             modelNode.get(VALUE).set(properties.get(key));
             list.add(modelNode);
         }
-        System.err.println( "<< marshal project stage properties" );
     }
 }

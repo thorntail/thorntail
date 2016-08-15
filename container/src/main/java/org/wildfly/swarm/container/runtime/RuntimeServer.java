@@ -131,7 +131,6 @@ public class RuntimeServer implements Server {
     @Produces
     @Dependent
     public StageConfig stageConfig() {
-        System.err.println("*** producing stageConfig");
         return new StageConfig(projectStage());
     }
 
@@ -144,22 +143,16 @@ public class RuntimeServer implements Server {
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
 
-        System.err.println("-------------------------------");
-
         for (Customizer each : this.preCustomizers) {
-            System.err.println("PRE CUSTOMZIER: " + each);
             each.customize();
         }
 
         for (Customizer each : this.postCustomizers) {
-            System.err.println("POST CUSTOMZIER: " + each);
             each.customize();
         }
 
         List<ModelNode> bootstrapOperations = new ArrayList<>();
         this.dmrMarshaller.marshal(bootstrapOperations);
-
-        System.err.println("BOOTSTRAP: " + bootstrapOperations);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(bootstrapOperations);
@@ -173,7 +166,6 @@ public class RuntimeServer implements Server {
         List<ServiceActivator> activators = new ArrayList<>();
 
         this.serviceActivators.forEach((activator) -> {
-            System.err.println("######## service activator: " + activator);
             activators.add(activator);
         });
 

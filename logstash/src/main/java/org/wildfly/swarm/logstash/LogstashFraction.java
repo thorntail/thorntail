@@ -27,7 +27,6 @@ public class LogstashFraction implements Fraction<LogstashFraction> {
 
     public LogstashFraction() {
         this("metaData", "wildflySwarmNode=${jboss.node.name}");
-        System.err.println( "====== construct Logstash");
     }
 
     public LogstashFraction(String nodeKey, String nodeValue) {

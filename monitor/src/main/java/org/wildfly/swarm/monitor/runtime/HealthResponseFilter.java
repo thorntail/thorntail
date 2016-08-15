@@ -29,7 +29,6 @@ public class HealthResponseFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext resp) throws IOException {
-        System.err.println( "FIRE FILTER!" );
         if (resp.hasEntity() && (resp.getEntity() instanceof Status)) {
             Status status = (Status) resp.getEntity();
             int code = (Status.State.UP == status.getState()) ? 200 : 503;

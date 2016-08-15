@@ -23,7 +23,6 @@ public class StandaloneXMLConfigProducer {
             Module app = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
             ClassLoader cl = app.getClassLoader();
             URL result = cl.getResource("standalone.xml");
-            System.err.println("load standalone.xml from module classloader: " + result);
             return result;
         } catch (ModuleLoadException e) {
             e.printStackTrace();
@@ -36,7 +35,6 @@ public class StandaloneXMLConfigProducer {
     public URL fromClassLoader() {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         URL result = cl.getResource("standalone.xml");
-        System.err.println("load standalone.xml from system classloader: " + result);
         return result;
     }
 }

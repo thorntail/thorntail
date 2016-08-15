@@ -37,8 +37,6 @@ public class NestedJarResourceLoader {
 
     public static ResourceLoader loaderFor(URL base, String rootPath, String loaderPath, String loaderName) throws IOException {
 
-        //System.err.println( "** " + base + ", " + rootPath + ", " + loaderPath + ", " + loaderName );
-
         String urlString = base.toExternalForm();
         if (urlString.startsWith("jar:file:")) {
             int endLoc = urlString.indexOf(".jar!");
@@ -67,11 +65,6 @@ public class NestedJarResourceLoader {
 
                 String relativeRoot = urlString.substring(endLoc + 5);
                 File resourceRoot = new File(new File(exp, relativeRoot), loaderPath);
-                /*
-                if ( resourceRoot.listFiles() != null ) {
-                    System.err.println("@ " + resourceRoot + " --> " + Arrays.asList(resourceRoot.listFiles()));
-                }
-                */
                 return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot);
             }
         } else if (urlString.startsWith("file:")) {

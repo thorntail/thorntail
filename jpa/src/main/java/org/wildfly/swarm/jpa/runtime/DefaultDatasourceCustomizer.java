@@ -43,9 +43,7 @@ public class DefaultDatasourceCustomizer implements Customizer {
 
     @Override
     public void customize() {
-        System.err.println( "customize default datasource" );
         if (!jpaFractionInstance.isUnsatisfied() && !defaultDatasourceInstance.isUnsatisfied()) {
-            System.err.println( "datasource is " + defaultDatasourceInstance.get() );
             jpaFractionInstance.get().defaultDatasource("jboss/datasources/" + defaultDatasourceInstance.get());
         }
     }
