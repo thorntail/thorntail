@@ -15,15 +15,7 @@
  */
 package org.wildfly.swarm.jmx;
 
-import java.util.ArrayList;
-
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanServer;
 import javax.management.MBeanServerConnection;
-import javax.management.MBeanServerFactory;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectInstance;
-import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -41,13 +33,12 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class JMXRemoteArquillianTest {
+public class JMXRemoteManagementAutoEndpointArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
@@ -69,14 +60,14 @@ public class JMXRemoteArquillianTest {
     @Test
     @RunAsClient
     public void testRemoteConnection() throws Exception {
-        String urlString = "service:jmx:remote+http://localhost:9990";
-        
+        String urlString = "service:jmx:remote://localhost:4777";
+
         JMXServiceURL serviceURL = new JMXServiceURL(urlString);
         JMXConnector jmxConnector = JMXConnectorFactory.connect(serviceURL, null);
         MBeanServerConnection connection = jmxConnector.getMBeanServerConnection();
 
         int count = connection.getMBeanCount();
-        assertThat( count ).isGreaterThan( 1 );
+        assertThat(count).isGreaterThan(1);
 
         jmxConnector.close();
     }

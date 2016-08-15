@@ -15,10 +15,10 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>testsuite-jmx</artifactId>
+  <artifactId>testsuite-jmx-remote-management</artifactId>
 
-  <name>Test Suite: JMX</name>
-  <description>Test Suite: JMX</description>
+  <name>Test Suite: JMX with Remoting over Management</name>
+  <description>Test Suite: JMX with Remoting over Management</description>
 
   <packaging>jar</packaging>
 
