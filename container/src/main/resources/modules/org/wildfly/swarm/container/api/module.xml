@@ -12,15 +12,22 @@
         <include-set>
           <path name="META-INF"/>
           <path name="org/wildfly/swarm"/>
-          <path name="org/wildfly/swarm/cdi"/>
           <path name="org/wildfly/swarm/cli"/>
           <path name="org/wildfly/swarm/container"/>
           <path name="org/wildfly/swarm/container/internal"/>
           <path name="org/wildfly/swarm/container/util"/>
+          <path name="org/wildfly/swarm/internal"/>
         </include-set>
         <exclude-set>
           <path name="org/wildfly/container/runtime"/>
-          <path name="org/wildfly/container/runtime/internal"/>
+          <path name="org/wildfly/container/runtime/cdi"/>
+          <path name="org/wildfly/container/runtime/cli"/>
+          <path name="org/wildfly/container/runtime/config"/>
+          <path name="org/wildfly/container/runtime/deployments"/>
+          <path name="org/wildfly/container/runtime/logging"/>
+          <path name="org/wildfly/container/runtime/marshal"/>
+          <path name="org/wildfly/container/runtime/wildfly"/>
+          <path name="org/wildfly/container/runtime/xmlconfig"/>
         </exclude-set>
       </filter>
     </artifact>
