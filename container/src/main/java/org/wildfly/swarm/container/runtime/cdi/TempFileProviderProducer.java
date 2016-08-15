@@ -18,23 +18,31 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
 @Singleton
 public class TempFileProviderProducer implements Runnable {
 
-    private TempFileProvider tempFileProvider;
+    private TempFileProvider tempFileProvider = null;
 
     @PostConstruct
-    void init() throws IOException {
-        File serverTmp = TempFileManager.INSTANCE.newTempDirectory("wildfly-swarm", ".d");
-        System.setProperty("jboss.server.temp.dir", serverTmp.getAbsolutePath());
+    void init() {
+        File serverTmp;
+        try {
+            serverTmp = TempFileManager.INSTANCE.newTempDirectory("wildfly-swarm", ".d");
+            System.setProperty("jboss.server.temp.dir", serverTmp.getAbsolutePath());
 
-        ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
-        this.tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor, true);
+            ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
+            this.tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor, true);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(this) );
+            Runtime.getRuntime().addShutdownHook(new Thread(this));
+        } catch (IOException e) {
+            //TODO This should be properly logged
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
         try {
-            this.tempFileProvider.close();
+            if (this.tempFileProvider != null) {
+                this.tempFileProvider.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -49,7 +49,7 @@ public class FractionProducingExtension implements Extension {
         this.explicitlyInstalledFractions.addAll(explicitlyInstalled);
     }
 
-    <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
+    <T> void processAnnotatedType(@Observes ProcessAnnotatedType<? extends Fraction> pat) {
         Class<?> cls = pat.getAnnotatedType().getJavaClass();
 
         if (Fraction.class.isAssignableFrom(cls)) {
