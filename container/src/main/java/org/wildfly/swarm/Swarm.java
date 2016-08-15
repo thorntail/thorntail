@@ -170,18 +170,15 @@ public class Swarm {
         if (!this.stageConfig.isPresent()) {
             try {
                 String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
-                System.err.println("stage file prop: " + stageFile);
 
                 URL url = null;
 
                 if (stageFile != null) {
                     url = new URL(stageFile);
-                    System.err.println("from stage file: " + url);
                 } else {
                     try {
                         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
                         url = module.getClassLoader().getResource("project-stages.yml");
-                        System.err.println("from module: " + url);
                     } catch (ModuleLoadException e) {
                         e.printStackTrace();
                     }
@@ -189,10 +186,8 @@ public class Swarm {
 
                 if (url == null) {
                     url = ClassLoader.getSystemClassLoader().getResource("project-stages.yml");
-                    System.err.println("from classloader: " + url);
                 }
 
-                System.err.println("  final: " + url);
                 if (url != null) {
                     this.stageConfigUrl = Optional.of(url);
                     loadStageConfiguration(url);

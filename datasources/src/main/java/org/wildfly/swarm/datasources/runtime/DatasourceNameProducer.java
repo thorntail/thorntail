@@ -38,11 +38,9 @@ public class DatasourceNameProducer {
     @Dependent
     @DefaultDatasource
     public String getDatasourceName() {
-        System.err.println( "get datasource name" );
         if (!datasourcesFractionInstance.isUnsatisfied()) {
             return datasourcesFractionInstance.get().subresources().dataSources().get(0).getKey();
         }
-        System.err.println( "no datasources fraction, return null" );
 
         return null;
     }

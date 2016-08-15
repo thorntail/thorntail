@@ -76,7 +76,6 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         weld.addExtension(new CommandLineArgsExtension(args));
 
         for (Class<?> each : this.userComponents) {
-            System.err.println("adding component class: " + each);
             weld.addBeanClass(each);
         }
 

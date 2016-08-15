@@ -47,13 +47,11 @@ public class DMRMarshaller implements ConfigurationMarshaller  {
     private SocketBindingGroupMarshaller socketBindingGroupMarshaller;
 
     public void marshal(List<ModelNode> list) {
-        System.err.println( ">>>> begin marshal" );
         this.xmlMarshaller.marshal(list);
         this.extensionMarshaller.marshal(list);
         this.projectStagePropertyMarshaller.marshal(list);
         this.subsystemMarshaller.marshal(list);
         this.interfaceMarshaller.marshal(list);
         this.socketBindingGroupMarshaller.marshal(list);
-        System.err.println( "<<<< end marshal" );
     }
 }

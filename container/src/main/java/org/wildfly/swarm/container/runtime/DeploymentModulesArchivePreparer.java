@@ -61,7 +61,6 @@ public class DeploymentModulesArchivePreparer implements ArchivePreparer {
     }
 
     protected void addModule(JARArchive archive, DeploymentModule entry) {
-        System.err.println( "add deployment module: " + entry );
         String moduleName = entry.name();
         String moduleSlot = entry.slot();
         if (moduleSlot.equals("")) {
