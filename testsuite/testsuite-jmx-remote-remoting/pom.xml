@@ -15,10 +15,10 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>testsuite-jmx</artifactId>
+  <artifactId>testsuite-jmx-remote-remoting</artifactId>
 
-  <name>Test Suite: JMX</name>
-  <description>Test Suite: JMX</description>
+  <name>Test Suite: JMX with Remoting</name>
+  <description>Test Suite: JMX with Remoting</description>
 
   <packaging>jar</packaging>
 
@@ -26,10 +26,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jmx</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

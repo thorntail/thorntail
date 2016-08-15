@@ -31,9 +31,15 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @MarshalDMR
 public class RemotingFraction extends Remoting<RemotingFraction> implements Fraction<RemotingFraction> {
 
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
+    private boolean required;
+
+    public RemotingFraction requireLegacyConnector(boolean required) {
+        this.required = required;
+        return this;
+    }
+
+    public boolean isRequireLegacyConnector() {
+        return this.required;
     }
 
     public static RemotingFraction defaultFraction() {
