@@ -11,11 +11,11 @@
     <system export="true">
       <paths>
         <path name="org/wildfly/swarm"/>
-        <path name="org/wildfly/swarm/cdi"/>
         <path name="org/wildfly/swarm/cli"/>
         <path name="org/wildfly/swarm/container"/>
         <path name="org/wildfly/swarm/container/internal"/>
         <path name="org/wildfly/swarm/container/util"/>
+        <path name="org/wildfly/swarm/internal"/>
       </paths>
     </system>
     <module name="org.wildfly.swarm.container" slot="api" services="import" export="true"/>
