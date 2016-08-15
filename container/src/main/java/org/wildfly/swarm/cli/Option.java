@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.cli;
 
+import org.wildfly.swarm.internal.SwarmMessages;
+
 import java.io.File;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
@@ -320,12 +322,12 @@ public class Option<T> {
         }
 
         if (hasValue() && value == null && !this.valueMayBeSeparate) {
-            throw new RuntimeException(matchedArg + " requires an argument");
+            throw SwarmMessages.MESSAGES.argumentRequired(matchedArg);
         }
 
         if (hasValue() && value == null) {
             if (state.la() == null) {
-                throw new RuntimeException(matchedArg + " requires an argument");
+                throw SwarmMessages.MESSAGES.argumentRequired(matchedArg);
             }
             value = state.consume();
         }

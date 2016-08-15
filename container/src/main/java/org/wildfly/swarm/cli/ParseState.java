@@ -40,6 +40,7 @@ class ParseState {
 
     String consume() {
         if ( la() == null ) {
+            // TODO (jrp) this may need to be internationalized, but I'm not certain what the error is
             throw new RuntimeException( "parse error" );
         }
         return this.args[ this.cur++ ];

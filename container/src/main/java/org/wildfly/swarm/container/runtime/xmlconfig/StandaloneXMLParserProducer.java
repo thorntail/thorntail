@@ -22,6 +22,7 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.staxmapper.XMLElementReader;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -87,8 +88,7 @@ public class StandaloneXMLParserProducer {
                 }
 
                 if (extensions.size() > 1) {
-                    throw new RuntimeException("Fraction \"" + fraction.getClass().getName() + "\" was configured using @WildFlyExtension with a module='',"
-                            + " but has multiple extension classes.  Please use classname='' to specify exactly one, or noClass=true to ignore all. " + extensions);
+                    throw SwarmMessages.MESSAGES.fractionHasMultipleExtensions(fraction.getClass().getName(), extensions);
                 }
 
                 if (!extensions.isEmpty()) {
