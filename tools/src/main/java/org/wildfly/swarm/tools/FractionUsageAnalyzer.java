@@ -83,6 +83,10 @@ public class FractionUsageAnalyzer {
     private static String asClassNameMatch(final String n) {
         final int idx = n.lastIndexOf('.');
 
+        if ( idx < 0 ) {
+            return n;
+        }
+
         return n.substring(0, idx) + ":" + n.substring(idx + 1);
     }
 
