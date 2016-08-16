@@ -18,11 +18,12 @@
   <artifactId>microprofile</artifactId>
 
   <name>MicroProfile</name>
-  <description>Implementation of MicroProfile</description>
+  <description>Implementation of MicroProfile.io</description>
 
   <packaging>jar</packaging>
 
   <properties>
+    <swarm.fraction.stability>unstable</swarm.fraction.stability>
     <swarm.fraction.tags>JavaEE,Web,MicroProfile</swarm.fraction.tags>
   </properties>
 

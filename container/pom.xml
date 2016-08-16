@@ -24,6 +24,7 @@
 
   <properties>
     <swarm.fraction.internal>true</swarm.fraction.internal>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
     <version.weld-api>3.0.Alpha19</version.weld-api>
     <version.weld>3.0.0.Alpha16</version.weld>
