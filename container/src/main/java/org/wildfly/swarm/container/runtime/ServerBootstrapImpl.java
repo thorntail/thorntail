@@ -1,10 +1,14 @@
 package org.wildfly.swarm.container.runtime;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 
+import org.jboss.logging.Logger;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.weld.environment.se.Weld;
@@ -13,6 +17,7 @@ import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
 import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.ProjectStage;
 
@@ -20,6 +25,8 @@ import org.wildfly.swarm.spi.api.ProjectStage;
  * @author Bob McWhirter
  */
 public class ServerBootstrapImpl implements ServerBootstrap {
+
+    private static Logger LOG = Logger.getLogger( "org.wildfly.swarm" );
 
     @Override
     public ServerBootstrap withArguments(String[] args) {
@@ -68,6 +75,8 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
         Thread.currentThread().setContextClassLoader(module.getClassLoader());
 
+        logFractions( module.getClassLoader() );
+
         Weld weld = new Weld();
         weld.setClassLoader(module.getClassLoader());
 
@@ -86,6 +95,32 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         server.setStageConfig( this.stageConfig );
         server.start(true);
         return server;
+    }
+
+    protected void logFractions(ClassLoader cl) throws IOException {
+        Enumeration<URL> fractionProps = cl.getResources("META-INF/fraction.properties");
+        while ( fractionProps.hasMoreElements() ) {
+            logFraction( fractionProps.nextElement() );
+        }
+    }
+
+    protected void logFraction(URL url) throws IOException {
+        Properties props = new Properties();
+        props.load( url.openStream() );
+
+        int stabilityIndex = Integer.parseInt(props.getProperty("stabilityIndex"));
+
+        String name = props.getProperty( "name" );
+        String groupId = props.getProperty( "groupId" );
+        String artifactId = props.getProperty( "artifactId" );
+        String version = props.getProperty( "version" );
+        String stabilityLevel = props.getProperty( "stabilityLevel" );
+
+        if ( stabilityIndex < 3 ) {
+            LOG.warn(SwarmMessages.MESSAGES.availableFraction(name, stabilityLevel, groupId, artifactId, version));
+        } else {
+            LOG.info(SwarmMessages.MESSAGES.availableFraction(name, stabilityLevel, groupId, artifactId, version));
+        }
     }
 
     private String[] args;
