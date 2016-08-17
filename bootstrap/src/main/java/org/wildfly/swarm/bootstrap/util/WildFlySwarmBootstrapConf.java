@@ -121,7 +121,6 @@ public class WildFlySwarmBootstrapConf {
 
     public void apply(ModuleSpec.Builder builder) throws IOException {
         for (MavenArtifactDescriptor entry : this.entries) {
-            System.err.println( "apply: " + entry );
             apply(builder, entry);
         }
     }
