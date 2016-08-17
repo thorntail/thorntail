@@ -211,7 +211,7 @@ public class Swarm {
     public Swarm withStageConfig(URL url) {
         this.stageConfigUrl = Optional.of(url);
 
-        if (!this.stageConfig.isPresent()) {
+        if (this.stageConfig.isPresent()) {
             loadStageConfiguration(stageConfigUrl.get());
         } else {
             System.out.println("[INFO] Project stage superseded by external configuration " + System.getProperty(SwarmProperties.PROJECT_STAGE_FILE));
