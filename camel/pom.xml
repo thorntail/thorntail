@@ -41,7 +41,7 @@
     <properties>
         <!-- keep in sync with wildfly-camel -->
         <version.apache.camel>2.17.2</version.apache.camel>
-        <version.wildfly.camel>4.2.0</version.wildfly.camel>
+        <version.wildfly.camel>4.2.1</version.wildfly.camel>
     </properties>
 
     <!-- Modules -->
