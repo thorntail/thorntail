@@ -9,8 +9,10 @@ import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.jmx.JMXRemotingConnector;
 import org.wildfly.swarm.jmx.JMXFraction;
+import org.wildfly.swarm.jmx.JMXProperties;
 import org.wildfly.swarm.remoting.RemotingFraction;
 import org.wildfly.swarm.spi.api.Customizer;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
 /** Picks and/or verifies the remote JMX connector to use.
@@ -26,6 +28,15 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  *     <li>Remoting over HTTP (typically normal web-port, 8080) if <code>org.wildfly.swarm:undertow</code> is present</li>
  *     <li>Else, the legacy remoting port (typically port 4777)</li>
  * </ul>
+ *
+ * <p>A user who does not explicitly configure a {@link JMXRemotingConnector} can still activate
+ * a connector using configuation values (through properties or project-stages.yml), using
+ * the key of <code>swarm.jmx.remote</code></p>.
+ *
+ * <p>A non-null value (such as "true") will cause the above logic to be followed in selecting
+ * an endpoint.  If the value is <code>management</code>, then the management endpoint will
+ * be considered to be explicitly selected. If management is available but the user would
+ * rather use the standard HTTP interface, then a value of <code>http></code> may be used.</p>
  *
  * <p>In the event a user has specifically {@link JMXRemotingConnector#useManagementEndpoint(Boolean)} to
  * <code>true<</code>, then in the event <code>org.wildfly.swarm:management</code> is not present,
@@ -51,12 +62,28 @@ public class JMXRemotingConnectorEndpointSelector implements Customizer {
     @Inject
     private RemotingFraction remoting;
 
+    @Inject
+    @ConfigurationValue( JMXProperties.REMOTE )
+    private String remote;
+
     @Override
     public void customize() {
         JMXRemotingConnector remotingConnector = this.jmx.subresources().jmxRemotingConnector();
         if (remotingConnector == null) {
-            LOG.info("JMX not configured for remote access");
-            return;
+            if ( this.remote == null ) {
+                LOG.info("JMX not configured for remote access");
+                return;
+            }
+
+            this.jmx.jmxRemotingConnector();
+
+            remotingConnector = this.jmx.subresources().jmxRemotingConnector();
+
+            if ( this.remote.equals( "http" ) ) {
+                remotingConnector.useManagementEndpoint(false);
+            } else if ( this.remote.equals( "management" ) ) {
+                remotingConnector.useManagementEndpoint(true);
+            }
         }
 
         boolean requiresLegacyRemoting = false;
