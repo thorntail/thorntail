@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +35,8 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
  */
 public class UberJarMavenResolver implements MavenResolver {
 
+    private Map<ArtifactCoordinates, File> resolutionCache = new ConcurrentHashMap<>();
+
     public static File copyTempJar(String artifactId, InputStream in, String packaging) throws IOException {
         File tmp = TempFileManager.INSTANCE.newTempFile(artifactId, "." + packaging);
         Files.copy(in, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -41,21 +46,26 @@ public class UberJarMavenResolver implements MavenResolver {
     @Override
     public File resolveArtifact(ArtifactCoordinates coordinates, String packaging) throws IOException {
 
-        String artifactRelativePath = "m2repo/" + relativeArtifactPath('/', coordinates.getGroupId(), coordinates.getArtifactId(), coordinates.getVersion());
-        String classifier = "";
-        if (coordinates.getClassifier() != null && !coordinates.getClassifier().trim().isEmpty()) {
-            classifier = "-" + coordinates.getClassifier();
+        File resolved = this.resolutionCache.get( coordinates );
+        if ( resolved == null ) {
+
+            String artifactRelativePath = "m2repo/" + relativeArtifactPath('/', coordinates.getGroupId(), coordinates.getArtifactId(), coordinates.getVersion());
+            String classifier = "";
+            if (coordinates.getClassifier() != null && !coordinates.getClassifier().trim().isEmpty()) {
+                classifier = "-" + coordinates.getClassifier();
+            }
+
+            String jarPath = artifactRelativePath + classifier + "." + packaging;
+
+            InputStream stream = UberJarMavenResolver.class.getClassLoader().getResourceAsStream(jarPath);
+
+            if (stream != null) {
+                resolved = copyTempJar(coordinates.getArtifactId() + "-" + coordinates.getVersion(), stream, packaging);
+                this.resolutionCache.put(coordinates, resolved);
+            }
         }
 
-        String jarPath = artifactRelativePath + classifier + "." + packaging;
-
-        InputStream stream = UberJarMavenResolver.class.getClassLoader().getResourceAsStream(jarPath);
-
-        if (stream != null) {
-            return copyTempJar(coordinates.getArtifactId() + "-" + coordinates.getVersion(), stream, packaging);
-        }
-
-        return null;
+        return resolved;
     }
 
     static String relativeArtifactPath(char separator, String groupId, String artifactId, String version) {
