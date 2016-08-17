@@ -75,7 +75,7 @@
 
     <version.vertx>3.3.2</version.vertx>
 
-    <version.keycloak>1.9.8.Final</version.keycloak>
+    <version.keycloak>2.1.0.Final</version.keycloak>
     <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
 
     <version.org.kie>6.4.0.Final</version.org.kie>
