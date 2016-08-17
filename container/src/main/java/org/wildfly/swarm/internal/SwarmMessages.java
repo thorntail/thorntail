@@ -87,4 +87,7 @@ public interface SwarmMessages {
 
     @Message(id = 17, value = "Cannot identify FileSystemLayout for given path: %s")
     IllegalArgumentException cannotIdentifyFileSystemLayout(String path);
+
+    @Message(id=18, value = "Installed fraction: %24s - %-15s %s:%s:%s")
+    String availableFraction(String name, String stabilityLevel, String groupId, String artifactId, String version);
 }
