@@ -19,14 +19,17 @@
 
 package org.wildfly.swarm.internal;
 
-import org.jboss.as.controller.Extension;
-import org.jboss.logging.Messages;
-import org.jboss.logging.annotations.*;
-import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.container.DeploymentException;
-
 import java.net.URL;
 import java.util.Collection;
+
+import org.jboss.logging.Messages;
+import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.MessageBundle;
+import org.jboss.logging.annotations.Param;
+import org.jboss.logging.annotations.Transform;
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.container.DeploymentException;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
@@ -88,6 +91,6 @@ public interface SwarmMessages {
     @Message(id = 17, value = "Cannot identify FileSystemLayout for given path: %s")
     IllegalArgumentException cannotIdentifyFileSystemLayout(String path);
 
-    @Message(id=18, value = "Installed fraction: %24s - %-15s %s:%s:%s")
+    @Message(id = 18, value = "Installed fraction: %24s - %-15s %s:%s:%s")
     String availableFraction(String name, String stabilityLevel, String groupId, String artifactId, String version);
 }
