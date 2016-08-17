@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.undertow.Server;
@@ -32,7 +33,7 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  * @author Bob McWhirter
  */
 @Pre
-@ApplicationScoped
+@Singleton
 public class HTTPSCustomizer implements Customizer {
 
     @Inject

@@ -25,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -127,13 +128,13 @@ public class RuntimeServer implements Server {
     }
 
     @Produces
-    @Dependent
+    @Singleton
     public StageConfig stageConfig() {
         return new StageConfig(projectStage());
     }
 
     @Produces
-    @Singleton
+    @ApplicationScoped
     ModelControllerClient client() {
         return this.client;
     }

@@ -21,6 +21,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.runtime.xmlconfig.StandaloneXMLParser;
@@ -29,7 +30,7 @@ import org.wildfly.swarm.container.runtime.xmlconfig.XMLConfig;
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 public class XMLMarshaller implements ConfigurationMarshaller {
 
     @Inject

@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.MessagingActiveMQ;
 import org.wildfly.swarm.config.ee.DefaultBindingsService;
@@ -30,7 +31,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * @author Bob McWhirter
  */
 @Pre
-@ApplicationScoped
+@Singleton
 public class DefaultBindingCustomizer implements Customizer {
 
     @Inject

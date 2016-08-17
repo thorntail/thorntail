@@ -20,6 +20,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
@@ -32,7 +33,7 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  * @author Bob McWhirter
  */
 @Pre
-@ApplicationScoped
+@Singleton
 public class AJPCustomizer implements Customizer {
 
     @Inject
