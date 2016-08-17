@@ -27,7 +27,6 @@ import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageBundle;
 import org.jboss.logging.annotations.Param;
-import org.jboss.logging.annotations.Transform;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.DeploymentException;
 
@@ -74,7 +73,7 @@ public interface SwarmMessages {
 
     @Message(id = 12, value = "Fraction \"%s\" was configured using @WildFlyExtension with a module='',"
             + " but has multiple extension classes.  Please use classname='' to specify exactly one, or noClass=true to ignore all. %s")
-    RuntimeException fractionHasMultipleExtensions(@Transform(Transform.TransformType.GET_CLASS) String className, Collection<String> extensions);
+    RuntimeException fractionHasMultipleExtensions(String className, Collection<String> extensions);
 
     @Message(id = 13, value = "Artifact '%s' not found.")
     RuntimeException artifactNotFound(String gav);
