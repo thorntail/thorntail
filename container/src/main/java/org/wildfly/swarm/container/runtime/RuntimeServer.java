@@ -67,7 +67,6 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
-@SuppressWarnings("unused")
 @Singleton
 public class RuntimeServer implements Server {
 
@@ -165,14 +164,9 @@ public class RuntimeServer implements Server {
 
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
 
-        UUID grist = java.util.UUID.randomUUID();
-
-
         List<ServiceActivator> activators = new ArrayList<>();
 
-        this.serviceActivators.forEach((activator) -> {
-            activators.add(activator);
-        });
+        this.serviceActivators.forEach(activators::add);
 
         this.serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
         for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
