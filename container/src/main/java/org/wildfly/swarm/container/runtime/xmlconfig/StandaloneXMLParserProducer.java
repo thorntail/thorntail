@@ -3,7 +3,9 @@ package org.wildfly.swarm.container.runtime.xmlconfig;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Instance;
@@ -88,7 +90,7 @@ public class StandaloneXMLParserProducer {
                 }
 
                 if (extensions.size() > 1) {
-                    throw SwarmMessages.MESSAGES.fractionHasMultipleExtensions(fraction.getClass().getName(), extensions);
+                    throw SwarmMessages.MESSAGES.fractionHasMultipleExtensions(fraction.getClass().getName(), extensions.stream().map(Objects::toString).collect(Collectors.toList()));
                 }
 
                 if (!extensions.isEmpty()) {
