@@ -50,6 +50,7 @@ your `pom.xml` should specify some of the following dependencies within
 the `org.wildfly.swarm` Maven group-id:
 
 * bean-validation
+* cdi
 * ee
 * io
 * jaxrs
@@ -59,7 +60,6 @@ the `org.wildfly.swarm` Maven group-id:
 * security
 * transactions
 * undertow
-* weld
 * _and many more!_
 
 # How To Build WildFly Swarm Itself
