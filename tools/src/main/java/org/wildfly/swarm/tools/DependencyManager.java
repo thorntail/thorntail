@@ -405,7 +405,9 @@ public class DependencyManager {
             }
         }
 
-        appConf.addEntry(new WildFlySwarmApplicationConf.PathEntry(projectAsset.getName()));
+        if ( projectAsset != null ) {
+            appConf.addEntry(new WildFlySwarmApplicationConf.PathEntry(projectAsset.getName()));
+        }
 
         return appConf;
 

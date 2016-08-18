@@ -161,6 +161,12 @@ public class BuildTool {
         return this;
     }
 
+    public BuildTool hollow(boolean hollow) {
+        this.hollow = hollow;
+        this.mainClass = "org.wildfly.swarm.HollowSwarm";
+        return this;
+    }
+
     public BuildTool logger(SimpleLogger logger) {
         this.log = logger;
 
@@ -224,6 +230,9 @@ public class BuildTool {
     }
 
     private void addProjectAsset() {
+        if ( this.hollow ) {
+            return;
+        }
         this.archive.add(this.projectAsset);
     }
 
@@ -367,7 +376,7 @@ public class BuildTool {
     }
 
     private void addWildFlySwarmApplicationConf() throws Exception {
-        WildFlySwarmApplicationConf appConf = this.dependencyManager.getWildFlySwarmApplicationConf(this.projectAsset);
+        WildFlySwarmApplicationConf appConf = this.dependencyManager.getWildFlySwarmApplicationConf( this.hollow ? null : this.projectAsset);
         this.archive.add(new StringAsset(appConf.toString()), WildFlySwarmApplicationConf.CLASSPATH_LOCATION);
     }
 
@@ -443,6 +452,8 @@ public class BuildTool {
     private FractionList fractionList = null;
 
     private SimpleLogger log = STD_LOGGER;
+
+    private boolean hollow;
 
     private static SimpleLogger STD_LOGGER = new SimpleLogger() {
         @Override

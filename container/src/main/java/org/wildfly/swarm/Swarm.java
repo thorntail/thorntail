@@ -91,6 +91,8 @@ public class Swarm {
 
     public static ArtifactManager ARTIFACT_MANAGER;
 
+    private final CommandLine commandLine;
+
     /**
      * Construct a new, un-started container.
      *
@@ -165,8 +167,8 @@ public class Swarm {
 
         createShrinkWrapDomain();
 
-        CommandLine cmd = CommandLine.parse(args);
-        cmd.apply(this);
+        this.commandLine = CommandLine.parse(args);
+        this.commandLine.apply(this);
 
         if (!this.stageConfig.isPresent()) {
             try {
@@ -197,6 +199,10 @@ public class Swarm {
                 System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: " + e.getMessage());
             }
         }
+    }
+
+    public CommandLine getCommandLine() {
+        return this.commandLine;
     }
 
     public void setArgs(String... args) {
