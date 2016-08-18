@@ -28,13 +28,14 @@ import org.wildfly.swarm.bootstrap.Main;
 public class UberJarManifest {
 
     public static final Attributes.Name WILDFLY_SWARM_MAIN_CLASS_ATTRIBUTE = new Attributes.Name("WildFly-Swarm-Main-Class");
+    public static final Attributes.Name WILDFLY_SWARM_HOLLOW_ATTRIBUTE = new Attributes.Name("WildFly-Swarm-Hollow");
 
     public UberJarManifest(Manifest manifest) {
         this.manifest = manifest;
     }
 
 
-    public UberJarManifest(String mainClass) {
+    public UberJarManifest(String mainClass, boolean hollow) {
         this.manifest = new Manifest();
 
         Attributes attrs = this.manifest.getMainAttributes();
@@ -43,6 +44,7 @@ public class UberJarManifest {
         if (mainClass != null && !mainClass.equals("")) {
             attrs.put(WILDFLY_SWARM_MAIN_CLASS_ATTRIBUTE, mainClass);
         }
+        attrs.put(WILDFLY_SWARM_HOLLOW_ATTRIBUTE, "" + hollow);
     }
 
     public String getMainClassName() {
@@ -52,6 +54,20 @@ public class UberJarManifest {
 
         return (String) this.manifest.getMainAttributes().get(WILDFLY_SWARM_MAIN_CLASS_ATTRIBUTE);
     }
+
+    public boolean isHollow() {
+        if (this.manifest == null) {
+            return false;
+        }
+        Object attr = this.manifest.getMainAttributes().get(WILDFLY_SWARM_HOLLOW_ATTRIBUTE);
+
+        if ( attr == null ) {
+            return false;
+        }
+
+        return attr.toString().equals( "true" );
+    }
+
 
     public void write(OutputStream out) throws IOException {
         this.manifest.write(out);

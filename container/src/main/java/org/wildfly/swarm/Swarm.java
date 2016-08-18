@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.logging.LogManager;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
 import javax.enterprise.inject.Vetoed;
@@ -367,7 +368,7 @@ public class Swarm {
     /**
      * Deploy the default WAR deployment.
      * <p/>
-     * <p>For WAR-based applications, the primary WAR artifact iwll be deployed.</p>
+     * <p>For WAR-based applications, the primary WAR artifact will be deployed.</p>
      *
      * @return The container.
      * @throws DeploymentException if an error occurs.
@@ -377,7 +378,16 @@ public class Swarm {
             throw SwarmMessages.MESSAGES.containerNotStarted("deploy()");
         }
 
-        this.server.deployer().deploy();
+        if (System.getProperty("swarm.hollow") == null) {
+            this.server.deployer().deploy();
+        } else {
+            this.server.deployer().deploy(
+                    getCommandLine().extraArguments()
+                            .stream()
+                            .map(e -> Paths.get(e))
+                            .collect(Collectors.toList())
+            );
+        }
         return this;
     }
 
@@ -450,7 +460,7 @@ public class Swarm {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();

@@ -163,7 +163,6 @@ public class BuildTool {
 
     public BuildTool hollow(boolean hollow) {
         this.hollow = hollow;
-        this.mainClass = "org.wildfly.swarm.HollowSwarm";
         return this;
     }
 
@@ -339,7 +338,7 @@ public class BuildTool {
     }
 
     private void addManifest() throws IOException {
-        UberJarManifestAsset manifest = new UberJarManifestAsset(this.mainClass);
+        UberJarManifestAsset manifest = new UberJarManifestAsset(this.mainClass, this.hollow);
         this.archive.add(manifest);
     }
 

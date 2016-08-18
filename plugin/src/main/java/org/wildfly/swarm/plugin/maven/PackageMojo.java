@@ -59,7 +59,7 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Parameter(alias = "executableScript")
     protected File executableScript;
 
-    @Parameter(alias = "hollow", defaultValue = "false")
+    @Parameter(alias = "hollow", defaultValue = "false", property = "swarm.hollow")
     protected boolean hollow;
 
     @Override
@@ -108,8 +108,10 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .map(FractionDescriptor::toArtifactSpec)
                 .forEach(tool::fraction);
 
-        this.project.getArtifacts()
-                .forEach(dep -> tool.dependency(artifactToArtifactSpec(dep)));
+        if ( ! this.hollow ) {
+            this.project.getArtifacts()
+                    .forEach(dep -> tool.dependency(artifactToArtifactSpec(dep)));
+        }
 
         this.project.getResources()
                 .forEach(r -> tool.resourceDirectory(r.getDirectory()));
@@ -122,7 +124,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .forEach(tool::additionalModule);
 
         try {
-            File jar = tool.build(finalName, Paths.get(this.projectBuildDir));
+            File jar = tool.build(finalName + ( this.hollow ? "-hollow" : "" ), Paths.get(this.projectBuildDir));
 
             ArtifactHandler handler = new DefaultArtifactHandler("jar");
             Artifact swarmJarArtifact = new DefaultArtifact(
@@ -131,7 +133,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                     primaryArtifact.getBaseVersion(),
                     primaryArtifact.getScope(),
                     "jar",
-                    "swarm",
+                    ( this.hollow ? "hollow" : "" ) + "swarm",
                     handler
             );
 
