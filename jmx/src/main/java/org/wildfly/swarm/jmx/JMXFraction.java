@@ -27,4 +27,9 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @MarshalDMR
 public class JMXFraction extends JMX<JMXFraction> implements Fraction<JMXFraction> {
 
+    @Override
+    public JMXFraction applyDefaults() {
+        return expressionExposeModel()
+                .resolvedExposeModel();
+    }
 }
