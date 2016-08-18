@@ -28,7 +28,8 @@ import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
-/**
+/** Produces an XML configuration (standalone.xml) parser for available fractions.
+ *
  * @author Bob McWhirter
  */
 @Singleton

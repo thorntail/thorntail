@@ -16,7 +16,9 @@
 package org.wildfly.swarm.container.runtime.marshal;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -27,7 +29,8 @@ import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.runtime.xmlconfig.StandaloneXMLParser;
 import org.wildfly.swarm.container.runtime.xmlconfig.XMLConfig;
 
-/**
+/** Marshals a collection of XML configurations (standalone.xml) to DMR.
+ *
  * @author Bob McWhirter
  */
 @Singleton
@@ -45,16 +48,21 @@ public class XMLMarshaller implements ConfigurationMarshaller {
             return;
         }
 
-        xmlConfig.forEach( url-> parse(url, list));
+        Set<URL> seen = new HashSet<>();
+        xmlConfig.forEach(url -> parse(url, seen, list));
     }
 
-    protected void parse(URL url, List<ModelNode> list) {
-        if ( url == null ) {
+    protected void parse(URL url, Set<URL> seen, List<ModelNode> list) {
+        if (url == null) {
             return;
         }
+        if (seen.contains(url)) {
+            return;
+        }
+        seen.add(url);
         try {
             List<ModelNode> subList = this.parser.parse(url);
-            list.addAll( subList );
+            list.addAll(subList);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
