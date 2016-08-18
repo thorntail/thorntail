@@ -21,22 +21,27 @@ package org.wildfly.swarm.internal;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 
-import org.jboss.logging.Messages;
+import org.jboss.logging.BasicLogger;
+import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
-import org.jboss.logging.annotations.MessageBundle;
+import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.logging.annotations.Param;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.DeploymentException;
+import org.wildfly.swarm.spi.api.Customizer;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageBundle(projectCode = "WFSWARM", length = 4)
-public interface SwarmMessages {
+@MessageLogger(projectCode = "WFSWARM", length = 4)
+public interface SwarmMessages extends BasicLogger {
 
-    SwarmMessages MESSAGES = Messages.getBundle(SwarmMessages.class);
+    SwarmMessages MESSAGES = Logger.getMessageLogger(SwarmMessages.class, "org.wildfly.swarm");
 
     @Message(id = 1, value = "Stage config is not present.")
     RuntimeException missingStageConfig();
@@ -93,6 +98,58 @@ public interface SwarmMessages {
     @Message(id = 18, value = "Installed fraction: %24s - %-15s %s:%s:%s")
     String availableFraction(String name, String stabilityLevel, String groupId, String artifactId, String version);
 
-    @Message(id=19, value="No deployments specified on the command-line" )
+    @Message(id = 19, value = "No deployments specified on the command-line")
     String noDeploymentsSpecified();
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 20, value = "Stage Config found in %s at location: %s")
+    void stageConfigLocation(String configType, String configLocation);
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 21, value = "Failed to parse project stage URL reference, ignoring: %s")
+    void malformedStageConfigUrl(String error);
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 22, value = "Project stage superseded by external configuration %s")
+    void stageConfigSuperseded(String location);
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 23, value = "Unable to setup Shrinkwrap Domain")
+    void shrinkwrapDomainSetupFailed(@Cause Throwable cause);
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 24, value = "Using project stage: %s")
+    void usingProjectStage(String stageName);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 25, value = "Add deployment module: %s")
+    void deploymentModuleAdded(DeploymentModule module);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 26, value = "Calling Pre Customizer: %s")
+    void callingPreCustomizer(Customizer customizer);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 27, value = "Calling Post Customizer: %s")
+    void callingPostCustomizer(Customizer customizer);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 28, value = "WildFly Bootstrap operations: \n %s")
+    void wildflyBootstrap(String operations);
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 29, value = "Install MSC service for command line args: %s")
+    void argsInstalled(List<String> args);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 30, value = "Marshalling Project Stage property %s")
+    void marshalProjectStageProperty(String key);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 31, value = "Marshalling XML from %s as: \n %s")
+    void marshalXml(String location, String xml);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 32, value = "Load standalone.xml via %s from %s")
+    void loadingStandaloneXml(String loader, String location);
 }

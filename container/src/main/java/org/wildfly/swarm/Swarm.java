@@ -174,6 +174,7 @@ public class Swarm {
         if (!this.stageConfig.isPresent()) {
             try {
                 String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
+                SwarmMessages.MESSAGES.stageConfigLocation(SwarmProperties.PROJECT_STAGE_FILE + " system property", stageFile);
 
                 URL url = null;
 
@@ -183,6 +184,9 @@ public class Swarm {
                     try {
                         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
                         url = module.getClassLoader().getResource("project-stages.yml");
+                        if (url != null) {
+                            SwarmMessages.MESSAGES.stageConfigLocation("'swarm.application' module", url.toExternalForm());
+                        }
                     } catch (ModuleLoadException e) {
                         e.printStackTrace();
                     }
@@ -190,6 +194,9 @@ public class Swarm {
 
                 if (url == null) {
                     url = ClassLoader.getSystemClassLoader().getResource("project-stages.yml");
+                    if (url != null) {
+                        SwarmMessages.MESSAGES.stageConfigLocation("ClassLoader", url.toExternalForm());
+                    }
                 }
 
                 if (url != null) {
@@ -197,7 +204,7 @@ public class Swarm {
                     loadStageConfiguration(url);
                 }
             } catch (MalformedURLException e) {
-                System.err.println("[WARN] Failed to parse project stage URL reference, ignoring: " + e.getMessage());
+                SwarmMessages.MESSAGES.malformedStageConfigUrl(e.getMessage());
             }
         }
     }
@@ -221,7 +228,7 @@ public class Swarm {
         if (!this.stageConfig.isPresent()) {
             loadStageConfiguration(stageConfigUrl.get());
         } else {
-            System.out.println("[INFO] Project stage superseded by external configuration " + System.getProperty(SwarmProperties.PROJECT_STAGE_FILE));
+            SwarmMessages.MESSAGES.stageConfigSuperseded(System.getProperty(SwarmProperties.PROJECT_STAGE_FILE));
         }
         return this;
     }
@@ -432,7 +439,7 @@ public class Swarm {
             domain.getConfiguration().getExtensionLoader().addOverride(JavaArchive.class, JavaArchiveImpl.class);
             domain.getConfiguration().getExtensionLoader().addOverride(WebArchive.class, WebArchiveImpl.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            SwarmMessages.MESSAGES.shrinkwrapDomainSetupFailed(e);
         } finally {
             Thread.currentThread().setContextClassLoader(originalCl);
         }
@@ -493,7 +500,7 @@ public class Swarm {
         if (null == stage)
             throw SwarmMessages.MESSAGES.stageNotFound(stageName);
 
-        System.out.println("[INFO] Using project stage: " + stageName);
+        SwarmMessages.MESSAGES.usingProjectStage(stageName);
 
         this.stageConfig = Optional.of(stage);
     }

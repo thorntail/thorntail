@@ -57,6 +57,7 @@ import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.marshal.DMRMarshaller;
 import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
 import org.wildfly.swarm.container.runtime.wildfly.UUIDFactory;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.ProjectStage;
@@ -117,19 +118,19 @@ public class RuntimeServer implements Server {
         System.setProperty("jboss.server.management.uuid", uuid.toString());
 
         for (Customizer each : this.preCustomizers) {
+            SwarmMessages.MESSAGES.callingPreCustomizer(each);
             each.customize();
         }
 
         for (Customizer each : this.postCustomizers) {
+            SwarmMessages.MESSAGES.callingPostCustomizer(each);
             each.customize();
         }
 
         List<ModelNode> bootstrapOperations = new ArrayList<>();
         this.dmrMarshaller.marshal(bootstrapOperations);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(bootstrapOperations);
-        }
+        SwarmMessages.MESSAGES.wildflyBootstrap(bootstrapOperations.toString());
 
         Thread.currentThread().setContextClassLoader(RuntimeServer.class.getClassLoader());
 

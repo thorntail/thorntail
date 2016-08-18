@@ -18,11 +18,11 @@ package org.wildfly.swarm.container.runtime.marshal;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ProjectStage;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -42,6 +42,7 @@ public class ProjectStagePropertyMarshaller implements ConfigurationMarshaller {
     public void marshal(List<ModelNode> list) {
         Map<String, String> properties = this.stage.getProperties();
         for (String key : properties.keySet()) {
+            SwarmMessages.MESSAGES.marshalProjectStageProperty(key);
             ModelNode modelNode = new ModelNode();
             modelNode.get(OP).set(ADD);
             modelNode.get(ADDRESS).set("system-property", key);
