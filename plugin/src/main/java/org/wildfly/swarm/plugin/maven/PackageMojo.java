@@ -59,6 +59,9 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Parameter(alias = "executableScript")
     protected File executableScript;
 
+    @Parameter(alias = "hollow", defaultValue = "false")
+    protected boolean hollow;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         initProperties(false);
@@ -67,13 +70,13 @@ public class PackageMojo extends AbstractSwarmMojo {
         final String type = primaryArtifact.getType();
         final BuildTool tool = new BuildTool()
                 .projectArtifact(primaryArtifact.getGroupId(),
-                                 primaryArtifact.getArtifactId(),
-                                 primaryArtifact.getBaseVersion(),
-                                 type,
-                                 primaryArtifact.getFile(),
-                                 finalName.endsWith("." + type) ?
-                                         finalName :
-                                         String.format("%s.%s", finalName, type))
+                        primaryArtifact.getArtifactId(),
+                        primaryArtifact.getBaseVersion(),
+                        type,
+                        primaryArtifact.getFile(),
+                        finalName.endsWith("." + type) ?
+                                finalName :
+                                String.format("%s.%s", finalName, type))
                 .fractionList(FractionList.get())
                 .properties(this.properties)
                 .mainClass(this.mainClass)
@@ -82,6 +85,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .executableScript(executableScript)
                 .fractionDetectionMode(fractionDetectMode)
                 .artifactResolvingHelper(mavenArtifactResolvingHelper())
+                .hollow(hollow )
                 .logger(new BuildTool.SimpleLogger() {
                     @Override
                     public void info(String msg) {
