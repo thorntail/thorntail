@@ -9,10 +9,9 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 
-/**
+/** Produces auto-discovered XML configuration (standalone.xml) URLs.
  * @author Bob McWhirter
  */
-
 @Singleton
 public class StandaloneXMLConfigProducer {
 

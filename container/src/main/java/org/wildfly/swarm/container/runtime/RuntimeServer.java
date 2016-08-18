@@ -72,10 +72,6 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
 public class RuntimeServer implements Server {
 
     @Inject
-    @Any
-    private Instance<Fraction> allFractions;
-
-    @Inject
     @Pre
     private Instance<Customizer> preCustomizers;
 
@@ -103,44 +99,16 @@ public class RuntimeServer implements Server {
     @Inject
     private Instance<RuntimeDeployer> deployer;
 
-    private String defaultDeploymentType;
-
+    @Inject
+    private StageConfig stageConfig;
 
     public RuntimeServer() {
-    }
-
-    public void setXmlConfig(Optional<URL> xmlConfig) {
-        this.xmlConfig = xmlConfig;
-    }
-
-    public void setStageConfig(Optional<ProjectStage> enabledConfig) {
-        this.enabledStage = enabledConfig;
-    }
-
-    @Produces
-    @Singleton
-    public ProjectStage projectStage() {
-        if (this.enabledStage.isPresent()) {
-            return this.enabledStage.get();
-        }
-
-        return new ProjectStageImpl("default");
-    }
-
-    @Produces
-    @Singleton
-    public StageConfig stageConfig() {
-        return new StageConfig(projectStage());
     }
 
     @Produces
     @ApplicationScoped
     ModelControllerClient client() {
         return this.client;
-    }
-
-    public void debug(boolean debug) {
-        this.debug = debug;
     }
 
     public Deployer start(boolean eagerOpen) throws Exception {
@@ -202,7 +170,7 @@ public class RuntimeServer implements Server {
             Class<?> use = module.getClassLoader().loadClass("org.wildfly.swarm.cdi.InjectStageConfigExtension");
             Field field = use.getDeclaredField("stageConfig");
             field.setAccessible(true);
-            field.set(null, this.stageConfig());
+            field.set(null, this.stageConfig);
         } catch (ModuleLoadException e) {
             // ignore, don't do it.
         } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
@@ -235,14 +203,5 @@ public class RuntimeServer implements Server {
 
     private ModelControllerClient client;
 
-    // optional XML config
-    private Optional<URL> xmlConfig = Optional.empty();
-
     private BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.runtime.server");
-
-    // TODO : still needed or merge error?
-    private boolean debug;
-
-    private Optional<ProjectStage> enabledStage = Optional.empty();
-
 }

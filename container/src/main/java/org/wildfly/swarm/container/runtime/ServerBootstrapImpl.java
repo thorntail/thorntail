@@ -16,6 +16,8 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
+import org.wildfly.swarm.container.runtime.cdi.ProjectStageProducingExtension;
+import org.wildfly.swarm.container.runtime.cdi.XMLConfigProducingExtension;
 import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -83,6 +85,8 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         // Add Extension that adds User custom bits into configurator
         weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions));
         weld.addExtension(new CommandLineArgsExtension(args));
+        weld.addExtension(new ProjectStageProducingExtension(this.stageConfig));
+        weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
 
         for (Class<?> each : this.userComponents) {
             weld.addBeanClass(each);
@@ -91,8 +95,6 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         WeldContainer weldContainer = weld.initialize();
 
         RuntimeServer server = weldContainer.select(RuntimeServer.class).get();
-        server.setXmlConfig( this.xmlConfigURL );
-        server.setStageConfig( this.stageConfig );
         server.start(true);
         return server;
     }
