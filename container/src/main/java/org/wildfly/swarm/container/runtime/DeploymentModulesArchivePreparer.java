@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.JARArchive;
@@ -61,6 +62,8 @@ public class DeploymentModulesArchivePreparer implements ArchivePreparer {
     }
 
     protected void addModule(JARArchive archive, DeploymentModule entry) {
+        SwarmMessages.MESSAGES.deploymentModuleAdded(entry);
+
         String moduleName = entry.name();
         String moduleSlot = entry.slot();
         if (moduleSlot.equals("")) {
