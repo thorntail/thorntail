@@ -92,4 +92,7 @@ public interface SwarmMessages {
 
     @Message(id = 18, value = "Installed fraction: %24s - %-15s %s:%s:%s")
     String availableFraction(String name, String stabilityLevel, String groupId, String artifactId, String version);
+
+    @Message(id=19, value="No deployments specified on the command-line" )
+    String noDeploymentsSpecified();
 }

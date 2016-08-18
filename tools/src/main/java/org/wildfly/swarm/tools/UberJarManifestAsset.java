@@ -28,8 +28,8 @@ import org.wildfly.swarm.bootstrap.util.UberJarManifest;
  */
 public class UberJarManifestAsset implements NamedAsset {
 
-    public UberJarManifestAsset(String mainClass) {
-        this.manifest = new UberJarManifest(mainClass);
+    public UberJarManifestAsset(String mainClass, boolean hollow) {
+        this.manifest = new UberJarManifest(mainClass, hollow);
     }
 
     public UberJarManifestAsset(UberJarManifest manifest) {

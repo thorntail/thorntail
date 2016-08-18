@@ -19,9 +19,14 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
@@ -32,11 +37,15 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
+import org.jboss.logging.Logger;
 import org.jboss.msc.service.ServiceContainer;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
@@ -69,6 +78,9 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
 @Singleton
 public class RuntimeDeployer implements Deployer {
 
+    private static Logger LOG = Logger.getLogger( "org.wildfly.swarm.deployer" );
+
+    @Override
     public void deploy() throws DeploymentException {
         Archive<?> deployment = createDefaultDeployment();
         if (deployment == null) {
@@ -78,8 +90,35 @@ public class RuntimeDeployer implements Deployer {
         }
     }
 
+    @Override
+    public void deploy(Collection<Path> pathsToDeploy) throws DeploymentException {
+        if ( pathsToDeploy.isEmpty() ) {
+            LOG.warn( SwarmMessages.MESSAGES.noDeploymentsSpecified() );
+            return;
+        }
+        archives( pathsToDeploy )
+                .forEach(e -> {
+                    try {
+                        deploy(e);
+                    } catch (DeploymentException e1) {
+                        // TODO fix error-handling
+                        e1.printStackTrace();
+                    }
+                });
+    }
+
+    protected static Stream<Archive> archives(Collection<Path> paths) {
+        return paths.stream()
+                .map(path -> {
+                    String simpleName = path.getFileName().toString();
+                    Archive archive = ShrinkWrap.create(JavaArchive.class, simpleName);
+                    archive.as(ZipImporter.class).importFrom(path.toFile());
+                    return archive;
+                });
+    }
+
     public Archive<?> createDefaultDeployment() {
-        return this.defaultDeploymentCreator.createDefaultDeployment( determineDeploymentType() );
+        return this.defaultDeploymentCreator.createDefaultDeployment(determineDeploymentType());
     }
 
     private String determineDeploymentType() {

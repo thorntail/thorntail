@@ -57,11 +57,14 @@ public class Main {
     public String getMainClassName() throws IOException, URISyntaxException {
         String mainClassName = null;
         UberJarManifest manifest = new UberJarManifest(Layout.getInstance().getManifest());
-
         mainClassName = manifest.getMainClassName();
 
         if (mainClassName == null) {
             mainClassName = DEFAULT_MAIN_CLASS_NAME;
+        }
+
+        if ( manifest.isHollow() ) {
+            System.setProperty( "swarm.hollow", "true" );
         }
 
         return mainClassName;
