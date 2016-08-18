@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.spi.api.ProjectStage;
@@ -32,7 +33,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 public class ProjectStagePropertyMarshaller implements ConfigurationMarshaller {
 
     @Inject

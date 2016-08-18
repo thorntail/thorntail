@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
@@ -30,7 +31,7 @@ import org.wildfly.swarm.topology.consul.ConsulTopologyFraction;
  * @author Bob McWhirter
  */
 @Pre
-@ApplicationScoped
+@Singleton
 public class ConsultURLCustomizer implements Customizer {
 
     @Inject

@@ -30,8 +30,8 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Ken Finnigan
  */
 
-@ApplicationScoped
 @Post
+@Singleton
 public class DefaultDatasourceCustomizer implements Customizer {
     @Inject
     @DefaultDatasource

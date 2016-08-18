@@ -29,7 +29,7 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  * @author Ken Finnigan
  */
 @Post
-@ApplicationScoped
+@Singleton
 public class UndertowFilterCustomizer implements Customizer {
     @Inject
     @Any

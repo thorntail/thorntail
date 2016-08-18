@@ -25,7 +25,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Ken Finnigan
  */
 @Post
-@ApplicationScoped
+@Singleton
 public class DroolsSetup implements Customizer {
 
     private static String configFolder = System.getProperty("org.drools.server.swarm.security.conf");

@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -37,7 +38,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 public class ExtensionMarshaller implements ConfigurationMarshaller {
 
     @Inject @Any
