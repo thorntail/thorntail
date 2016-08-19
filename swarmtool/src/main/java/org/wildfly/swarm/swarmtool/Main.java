@@ -46,6 +46,9 @@ public class Main {
 
     private static final OptionParser OPT_PARSER = new OptionParser();
 
+    private static final OptionSpec<Void> HOLLOW_OPT =
+            OPT_PARSER.accepts("hollow", "creates a swarm jar containing only the fractions");
+
     private static final OptionSpec<Void> HELP_OPT =
             OPT_PARSER.acceptsAll(asList("h", "help"), "print help and exit")
                     .forHelp();
@@ -211,7 +214,7 @@ public class Main {
         final String type = parts[1] == null ? "jar" : parts[1];
         final String jarName = foundOptions.has(NAME_OPT) ? foundOptions.valueOf(NAME_OPT) : baseName;
         final String outDir = new File(foundOptions.valueOf(OUTPUT_DIR_OPT)).getCanonicalPath();
-
+        final String suffix = foundOptions.has(HOLLOW_OPT) ? "-hollow-swarm" : "-swarm";
         final BuildTool tool = new BuildTool()
                 .artifactResolvingHelper(getResolvingHelper(foundOptions.valuesOf(REPOS_OPT)))
                 .projectArtifact("", baseName, "", type, source)
@@ -222,16 +225,19 @@ public class Main {
                 .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS_OPT))
                 .executable(foundOptions.has(EXECUTABLE_OPT))
                 .resolveTransitiveDependencies(true)
-                .properties(properties);
+                .properties(properties)
+                .hollow(foundOptions.has(HOLLOW_OPT));
+
         if (foundOptions.has(MAIN_OPT)) {
             tool.mainClass(foundOptions.valueOf(MAIN_OPT));
         }
         if (foundOptions.has(MODULES_OPT)) {
             tool.additionalModules(foundOptions.valuesOf(MODULES_OPT));
         }
+
         addSwarmFractions(tool, foundOptions.valuesOf(FRACTIONS_OPT));
 
-        System.err.println(String.format("Building %s/%s-swarm.jar", outDir, jarName));
+        System.err.println(String.format("Building %s/%s-%s.jar", outDir, jarName, suffix));
         return tool.build(jarName, Paths.get(outDir));
     }
 
