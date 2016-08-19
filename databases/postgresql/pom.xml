@@ -51,6 +51,14 @@
       <artifactId>datasources</artifactId>
     </dependency>
 
+    <!-- Provided Dependencies -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${version.postgresql}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>

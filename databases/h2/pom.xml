@@ -44,6 +44,14 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Provided Dependencies -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${version.h2}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Fraction Dependencies -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
