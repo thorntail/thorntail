@@ -193,33 +193,34 @@ public class BuildTool {
     }
 
     public boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
+        JarFile jarFile = new JarFile(artifactFile);
+        Enumeration<JarEntry> entries = jarFile.entries();
+
         boolean jbossModulesFound = false;
-        try (JarFile jarFile = new JarFile(artifactFile)) {
-            Enumeration<JarEntry> entries = jarFile.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry each = entries.nextElement();
-                if (each.getName().startsWith("org/jboss/modules/ModuleLoader")) {
-                    jbossModulesFound = true;
-                }
+
+        while (entries.hasMoreElements()) {
+            JarEntry each = entries.nextElement();
+            if (each.getName().startsWith("org/jboss/modules/ModuleLoader")) {
+                jbossModulesFound = true;
             }
         }
+
         return jbossModulesFound;
     }
 
     public void expandArtifact(File artifactFile) throws IOException {
-        try (JarFile jarFile = new JarFile(artifactFile)) {
-            Enumeration<JarEntry> entries = jarFile.entries();
+        JarFile jarFile = new JarFile(artifactFile);
+        Enumeration<JarEntry> entries = jarFile.entries();
 
-            while (entries.hasMoreElements()) {
-                JarEntry each = entries.nextElement();
-                if (each.getName().startsWith("META-INF")) {
-                    continue;
-                }
-                if (each.isDirectory()) {
-                    continue;
-                }
-                this.archive.add(new ZipFileEntryAsset(jarFile, each), each.getName());
+        while (entries.hasMoreElements()) {
+            JarEntry each = entries.nextElement();
+            if (each.getName().startsWith("META-INF")) {
+                continue;
             }
+            if (each.isDirectory()) {
+                continue;
+            }
+            this.archive.add(new ZipFileEntryAsset(jarFile, each), each.getName());
         }
     }
 
