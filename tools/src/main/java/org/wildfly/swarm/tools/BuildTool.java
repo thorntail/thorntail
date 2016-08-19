@@ -86,7 +86,6 @@ public class BuildTool {
                                      String packaging, File file, String artifactName) {
         this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file),
                                               artifactName);
-
         return this;
     }
 
@@ -230,7 +229,8 @@ public class BuildTool {
         if ( this.hollow ) {
             return;
         }
-        this.archive.add(this.projectAsset);
+        //this.archive.add(this.projectAsset);
+        this.archive.add( new WebInfLibFilteringArchiveAsset(this.projectAsset));
     }
 
     private boolean detectFractions() throws Exception {
