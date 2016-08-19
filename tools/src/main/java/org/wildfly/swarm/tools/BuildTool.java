@@ -193,18 +193,16 @@ public class BuildTool {
     }
 
     public boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
-        JarFile jarFile = new JarFile(artifactFile);
-        Enumeration<JarEntry> entries = jarFile.entries();
-
         boolean jbossModulesFound = false;
-
-        while (entries.hasMoreElements()) {
-            JarEntry each = entries.nextElement();
-            if (each.getName().startsWith("org/jboss/modules/ModuleLoader")) {
-                jbossModulesFound = true;
+        try (JarFile jarFile = new JarFile(artifactFile)) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry each = entries.nextElement();
+                if (each.getName().startsWith("org/jboss/modules/ModuleLoader")) {
+                    jbossModulesFound = true;
+                }
             }
         }
-
         return jbossModulesFound;
     }
 
