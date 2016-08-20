@@ -19,6 +19,7 @@ import org.wildfly.swarm.config.Datasources;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriverConsumer;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -26,6 +27,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  * @author Bob McWhirter
  */
 @WildFlyExtension(module = "org.jboss.as.connector", classname = "org.jboss.as.connector.subsystems.datasources.DataSourcesExtension")
+@DeploymentModule(name = "org.jboss.ironjacamar.jdbcadapters")
 @MarshalDMR
 public class DatasourcesFraction extends Datasources<DatasourcesFraction> implements Fraction<DatasourcesFraction> {
     @Override
