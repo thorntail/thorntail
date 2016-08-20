@@ -24,20 +24,21 @@ each application's use-case.
 # Project Configuration
 
 In a normal WAR-based maven `pom.xml`, simply add the following
-
-    <plugin>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-plugin</artifactId>
-      <version>${version.wildfly-swarm}</version>
-      <executions>
-        <execution>
-          <phase>package</phase>
-          <goals>
-            <goal>package</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
+```xml
+<plugin>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-plugin</artifactId>
+  <version>${version.wildfly-swarm}</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>package</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+```
 
 This will take the `.war` file normally created by your build, and wrap
 it in the wildfly-swarm mechanisms.
@@ -65,12 +66,15 @@ the `org.wildfly.swarm` Maven group-id:
 # How To Build WildFly Swarm Itself
 
 WildFly Swarm attempts to be a well-behaved Maven project. To install to your local repository for usage:
-
-    mvn install
+```bash
+mvn clean install
+```
 
 If you're running short on time:
 
-    mvn install -DskipTests
+```bash
+mvn clean install -DskipTests
+```
 
 # Issue Tracking
 
