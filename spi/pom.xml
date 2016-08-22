@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>spi</artifactId>
+  <version>1.0.12.Final-SNAPSHOT</version>
+
+  <name>WildFly Swarm: SPI</name>
+  <description>WildFly Swarm: SPI</description>
+
+  <packaging>jar</packaging>
+
+  <scm>
+    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-spi.git</connection>
+    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm-spi.git</developerConnection>
+    <url>https://github.com/wildfly-swarm/wildfly-swarm-spi</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <properties>
+    <version.wildfly>10.0.0.Final</version.wildfly>
+    <version.wildfly.config-api>0.4.4</version.wildfly.config-api>
+    <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
+    <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-9</version.org.jboss.shrinkwrap.descriptors>
+    <version.maven.aether>3.2.5</version.maven.aether>
+    <version.fest-assert>1.4</version.fest-assert>
+    <version.cdi2-api>2.0.Alpha4</version.cdi2-api>
+
+    <!-- Surefire args -->
+    <surefire.jpda.args />
+    <surefire.system.args>-da ${surefire.jpda.args}</surefire.system.args>
+
+    <!-- Checkstyle configuration -->
+    <linkXRef>false</linkXRef>
+
+    <!-- maven-compiler-plugin -->
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav-jackrabbit</artifactId>
+        <version>2.10</version>
+      </extension>
+    </extensions>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <failOnError>false</failOnError>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.jandex</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>1.0.4</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+            <configuration>
+              <indexName>swarm-jandex.idx</indexName>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-impl-base</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <version>${version.cdi2-api}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.msc</groupId>
+      <artifactId>jboss-msc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>staxmapper</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-dmr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-controller</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>config-api-runtime</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jandex</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-parent</artifactId>
+        <version>${version.wildfly}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!--
+        org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
+    -->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>${version.maven.aether}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-api</artifactId>
+        <version>${version.org.jboss.shrinkwrap}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-spi</artifactId>
+        <version>${version.org.jboss.shrinkwrap}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-impl-base</artifactId>
+        <version>${version.org.jboss.shrinkwrap}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-spi</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-base</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-javaee</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-base</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
+        <version>${version.org.jboss.shrinkwrap.descriptors}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>config-api</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>config-api-runtime</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>config-api-modules</artifactId>
+        <version>${version.wildfly.config-api}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.easytesting</groupId>
+        <artifactId>fest-assert</artifactId>
+        <version>${version.fest-assert}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>attach-exposed-components</id>
+      <activation>
+        <file>
+          <exists>exposed-components.json</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-exposed-components</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>exposed-components.json</file>
+                      <type>json</type>
+                      <classifier>exposed-components</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
