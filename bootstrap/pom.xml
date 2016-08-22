@@ -82,10 +82,6 @@
       <artifactId>jboss-modules</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.spec.javax.sql</groupId>
-      <artifactId>jboss-javax-sql-api_7.0_spec</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>
       <artifactId>shrinkwrap-api</artifactId>
       <scope>test</scope>

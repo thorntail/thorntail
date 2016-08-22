@@ -39,9 +39,8 @@
     <version.maven.aether>3.2.5</version.maven.aether>
     <version.wildfly.config-api>0.4.5</version.wildfly.config-api>
     <version.swarm.spi>1.0.11.Final</version.swarm.spi>
-    <version.wildfly>10.0.0.Final</version.wildfly>
+    <version.wildfly>10.1.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
-    <version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>2.0.0.Final</version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
     <version.org.arquillian>1.1.10.Final</version.org.arquillian>
@@ -71,7 +70,7 @@
 
     <version.openshift.client>3.0.1.Final</version.openshift.client>
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
-    <version.org.jgroups>3.6.6.Final</version.org.jgroups>
+    <version.org.jgroups>3.6.10.Final</version.org.jgroups>
 
     <version.vertx>3.3.2</version.vertx>
 
