@@ -38,7 +38,6 @@
 
     <version.maven.aether>3.2.5</version.maven.aether>
     <version.wildfly.config-api>0.4.6</version.wildfly.config-api>
-    <version.swarm.spi>1.0.11.Final</version.swarm.spi>
     <version.wildfly>10.1.0.Final</version.wildfly>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
@@ -361,16 +360,16 @@
         <version>${version.org.jboss.spec.javax.sql.jboss-javax-sql-api_7.0_spec}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>spi</artifactId>
-        <version>${version.swarm.spi}</version>
-      </dependency>
-
       <!-- Project Artifacts -->
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>tools</artifactId>
+        <version>2016.9-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>spi</artifactId>
         <version>2016.9-SNAPSHOT</version>
       </dependency>
 
@@ -1063,6 +1062,7 @@
 
     <!-- base -->
     <module>bootstrap</module>
+    <module>spi</module>
     <module>container</module>
 
     <module>management</module>
