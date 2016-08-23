@@ -18,9 +18,11 @@ package org.wildfly.swarm.undertow.staticcontent;
 public interface StaticContentCommonTests {
 
     default void assertBasicStaticContentWorks(String context) throws Exception {
-        if (context.length() > 0 && !context.endsWith("/")) {
+        if (context.length() > 0 || !context.endsWith("/")) {
+            System.out.println("Inside if");
             context = context + "/";
         }
+        System.out.println(context);
         assertContains(context + "static-content.txt", "This is static.");
         assertContains(context + "index.html", "This is index.html.");
         assertContains(context + "foo/index.html", "This is foo/index.html.");

@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -31,10 +32,12 @@ import java.util.stream.Stream;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.container.ClassContainer;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.daemon.DaemonServiceActivator;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
@@ -86,15 +89,17 @@ public class UberjarSimpleContainer implements SimpleContainer {
         boolean annotatedCreateSwarm = false;
 
         Method swarmMethod = getAnnotatedMethodWithAnnotation(this.testClass, CreateSwarm.class);
+
+        List<Class<?>> types = determineTypes(this.testClass);
+
         // preflight check it
         if (swarmMethod != null) {
             if (Modifier.isStatic(swarmMethod.getModifiers())) {
                 // good to go
                 annotatedCreateSwarm = true;
-                archive.as(JARArchive.class)
-                        .addClass(CreateSwarm.class)
-                        .addClass(AnnotationBasedMain.class)
-                        .addClass(this.testClass);
+                types.add(CreateSwarm.class);
+                types.add(AnnotationBasedMain.class);
+
                 archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
                 archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
             } else {
@@ -103,8 +108,15 @@ public class UberjarSimpleContainer implements SimpleContainer {
                                       CreateSwarm.class.getSimpleName(),
                                       swarmMethod));
             }
-        } else {
-            //TODO Some kind of default main()?
+        }
+
+        if (types.size() > 0) {
+            try {
+                ((ClassContainer<?>) archive).addClasses(types.toArray(new Class[types.size()]));
+            } catch (UnsupportedOperationException e) {
+                // TODO Remove the try/catch when SHRINKWRAP-510 is resolved and we update to latest SW
+                archive.as(JARArchive.class).addClasses(types.toArray(new Class[types.size()]));
+            }
         }
 
         archive.as(ServiceActivatorArchive.class)
@@ -220,8 +232,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
             for (String arg : args) {
                 executor.withArgument(arg);
             }
-        } else if (annotatedCreateSwarm){
+        } else if (annotatedCreateSwarm) {
             tool.mainClass(AnnotationBasedMain.class.getName());
+        } else {
+            tool.mainClass(Swarm.class.getName());
         }
 
         Archive<?> wrapped = null;
@@ -265,6 +279,21 @@ public class UberjarSimpleContainer implements SimpleContainer {
         if (this.process.getError() != null) {
             throw new DeploymentException("Error starting process", this.process.getError());
         }
+    }
+
+    private List<Class<?>> determineTypes(Class<?> testClass) {
+        List<Class<?>> types = new ArrayList<>();
+
+        Class clazz = testClass;
+
+        while (clazz != null) {
+            types.add(clazz);
+            types.addAll(Arrays.<Class<?>>asList(clazz.getInterfaces()));
+
+            clazz = clazz.getSuperclass();
+        }
+
+        return types;
     }
 
     private void registerContainerFactory(Archive<?> archive, Class<?> clazz) {
