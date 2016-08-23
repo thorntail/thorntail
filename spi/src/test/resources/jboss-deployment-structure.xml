@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
+  <deployment>
+    <dependencies>
+      <!-- required to use existing Apache HttpClient pool with managed RESTEasy Client -->
+      <module name="org.apache.httpcomponents" services="export" export="true"/>
+    </dependencies>
+  </deployment>
+</jboss-deployment-structure>
