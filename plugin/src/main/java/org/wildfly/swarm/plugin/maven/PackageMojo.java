@@ -85,7 +85,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .executableScript(executableScript)
                 .fractionDetectionMode(fractionDetectMode)
                 .artifactResolvingHelper(mavenArtifactResolvingHelper())
-                .hollow(hollow )
+                .hollow(hollow)
                 .logger(new BuildTool.SimpleLogger() {
                     @Override
                     public void info(String msg) {
@@ -108,10 +108,16 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .map(FractionDescriptor::toArtifactSpec)
                 .forEach(tool::fraction);
 
-        if ( ! this.hollow ) {
-            this.project.getArtifacts()
-                    .forEach(dep -> tool.dependency(artifactToArtifactSpec(dep)));
-        }
+        this.project.getDependencyArtifacts()
+                .stream()
+                .filter(e -> {
+                    String scope = e.getScope();
+                    return (scope.equals("compile") || scope.equals("runtime"));
+                })
+                .forEach(dep -> tool.explicitDependency(artifactToArtifactSpec(dep)));
+
+        this.project.getArtifacts()
+                .forEach( dep-> tool.presolvedDependency( artifactToArtifactSpec(dep)));
 
         this.project.getResources()
                 .forEach(r -> tool.resourceDirectory(r.getDirectory()));
@@ -124,7 +130,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .forEach(tool::additionalModule);
 
         try {
-            File jar = tool.build(finalName + ( this.hollow ? "-hollow" : "" ), Paths.get(this.projectBuildDir));
+            File jar = tool.build(finalName + (this.hollow ? "-hollow" : ""), Paths.get(this.projectBuildDir));
 
             ArtifactHandler handler = new DefaultArtifactHandler("jar");
             Artifact swarmJarArtifact = new DefaultArtifact(
@@ -133,13 +139,16 @@ public class PackageMojo extends AbstractSwarmMojo {
                     primaryArtifact.getBaseVersion(),
                     primaryArtifact.getScope(),
                     "jar",
-                    ( this.hollow ? "hollow" : "" ) + "swarm",
+                    (this.hollow ? "hollow" : "") + "swarm",
                     handler
             );
 
             swarmJarArtifact.setFile(jar);
-
             this.project.addAttachedArtifact(swarmJarArtifact);
+
+            if (this.project.getPackaging().equals("war")) {
+                tool.repackageWar(this.project.getArtifact().getFile());
+            }
         } catch (Exception e) {
             throw new MojoFailureException("Unable to create -swarm.jar", e);
         }

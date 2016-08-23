@@ -7,10 +7,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.GenericArchiveImpl;
 
 /**
@@ -18,36 +14,30 @@ import org.jboss.shrinkwrap.impl.base.GenericArchiveImpl;
  */
 public class WebInfLibFilteringArchive extends GenericArchiveImpl {
 
-    public WebInfLibFilteringArchive(Archive<?> archive) {
-        super( archive );
-        filter();
+    public WebInfLibFilteringArchive(Archive<?> archive, DependencyManager dependencyManager) {
+        super(archive);
+        filter(dependencyManager);
     }
 
-    protected void filter() {
+    protected void filter(DependencyManager dependencyManager) {
         Set<ArchivePath> remove = new HashSet<>();
-        filter( remove, getArchive().get(ArchivePaths.root() ) );
+        filter(remove, getArchive().get(ArchivePaths.root()), dependencyManager);
 
         for (ArchivePath each : remove) {
-            getArchive().delete( each );
+            getArchive().delete(each);
         }
     }
 
-    protected void filter(Set<ArchivePath> remove, Node node) {
+    protected void filter(Set<ArchivePath> remove, Node node, DependencyManager dependencyManager) {
         String path = node.getPath().get();
-        if ( path.startsWith( "/WEB-INF/lib" ) && path.endsWith( ".jar" ) ) {
-            Asset asset = node.getAsset();
-            if ( asset != null ) {
-                Archive archive = ShrinkWrap.create(JavaArchive.class, path);
-                archive.as(ZipImporter.class).importFrom( asset.openStream() );
-                Node bootstrapNode = archive.get("/wildfly-swarm-bootstrap.conf");
-                if ( bootstrapNode != null ) {
-                    remove.add( node.getPath() );
-                }
+        if (path.startsWith("/WEB-INF/lib") && path.endsWith(".jar")) {
+            if (dependencyManager.isRemovable(node)) {
+                remove.add(node.getPath());
             }
         }
 
         for (Node each : node.getChildren()) {
-            filter( remove, each );
+            filter(remove, each, dependencyManager);
         }
     }
 }

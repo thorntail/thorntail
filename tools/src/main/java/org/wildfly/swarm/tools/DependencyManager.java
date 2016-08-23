@@ -17,11 +17,16 @@ package org.wildfly.swarm.tools;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
+import java.security.DigestException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +40,8 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
 import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
@@ -62,8 +69,12 @@ public class DependencyManager {
         this.resolver = resolver;
     }
 
-    public void addDependency(ArtifactSpec dep) {
-        this.dependencies.add(dep);
+    public void addExplicitDependency(ArtifactSpec dep) {
+        this.explicitDependencies.add(dep);
+    }
+
+    public void addPresolvedDependency(ArtifactSpec dep) {
+        this.presolvedDependencies.add(dep);
     }
 
     public void addAdditionalModule(Path module) {
@@ -247,19 +258,124 @@ public class DependencyManager {
         return this.providedGAVToModuleMappings;
     }
 
-    protected void analyzeDependencies(boolean resolveTransitive) throws Exception {
-        if (resolveTransitive) {
-            Set<ArtifactSpec> newDeps = resolveAllArtifacts(this.dependencies);
-            this.dependencies.clear();
-            this.dependencies.addAll(newDeps);
-        } else {
-            resolveAllArtifacts(this.dependencies);
+    protected void analyzeDependencies(boolean autodetect) throws Exception {
+        /*
+        for (ArtifactSpec each : this.explicitDependencies) {
+            System.err.println( "explicit: " + each );
         }
+        */
+
+        Set<ArtifactSpec> newDeps = resolveAllArtifacts(this.explicitDependencies);
+
+        /*
+        for (ArtifactSpec each : this.presolvedDependencies) {
+            System.err.println("pre-solved: " + each);
+        }
+        */
+
+        this.dependencies.clear();
+        if ( this.presolvedDependencies.isEmpty() ) {
+            this.dependencies.addAll( newDeps );
+        } else {
+            newDeps.stream()
+                    .filter(dep -> autodetect || this.presolvedDependencies.contains(dep))
+                    .forEach(dep -> this.dependencies.add(dep));
+        }
+
+        /*
+        for (ArtifactSpec each : this.dependencies) {
+            System.err.println("now: " + each);
+        }
+        */
 
         scanModulesDependencies();
         scanBootstrapDependencies();
         analyzeModuleDependencies();
         analyzeProvidedDependencies();
+        analyzeRemovableDependencies();
+    }
+
+    protected void analyzeRemovableDependencies() throws Exception {
+        Set<ArtifactSpec> bootstrapDeps = this.dependencies.stream()
+                .filter(e -> isWildFlySwarmBootstrap(e.file))
+                .collect(Collectors.toSet());
+
+        Set<ArtifactSpec> nonBootstrapDeps = new HashSet<>();
+        nonBootstrapDeps.addAll(this.explicitDependencies);
+        nonBootstrapDeps.removeAll(bootstrapDeps);
+
+        Set<ArtifactSpec> simplifiedDeps = resolveAllArtifacts(nonBootstrapDeps);
+
+        this.removableDependencies.addAll(this.dependencies);
+        this.removableDependencies.removeAll(simplifiedDeps);
+
+        /*
+        for (ArtifactSpec each : this.removableDependencies) {
+            System.err.println( "remove: " + each );
+        }
+        */
+
+    }
+
+    public Set<ArtifactSpec> getRemovableDependencies() {
+        return this.removableDependencies;
+    }
+
+    public boolean isRemovable(Node node) {
+        Asset asset = node.getAsset();
+        if ( asset == null ) {
+            return false;
+        }
+
+        String path = node.getPath().get();
+
+        try {
+            byte[] checksum = checksum(asset.openStream());
+
+            return this.removableDependencies.stream()
+                    .filter(e -> path.endsWith(e.artifactId() + "-" + e.version() + ".jar"))
+                    .map(e -> {
+                        try {
+                            return checksum(new FileInputStream(e.file));
+                        } catch (IOException | NoSuchAlgorithmException | DigestException e1) {
+                            return null;
+                        }
+                    })
+                    .filter(e -> e != null)
+                    .anyMatch(e -> {
+                        return Arrays.equals(e, checksum );
+                    });
+        } catch (NoSuchAlgorithmException | IOException | DigestException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    protected byte[] checksum(InputStream in) throws IOException, NoSuchAlgorithmException, DigestException {
+        byte[] buf = new byte[1024];
+        int len = 0;
+
+        MessageDigest md = MessageDigest.getInstance( "SHA1" );
+
+        while ( ( len = in.read( buf )) >= 0 ) {
+            md.update( buf, 0, len );
+        }
+
+        return md.digest();
+    }
+
+    protected boolean isWildFlySwarmBootstrap(File file) {
+        if (file == null) {
+            return false;
+        }
+
+        try (JarFile jar = new JarFile(file)) {
+            return jar.getEntry("wildfly-swarm-bootstrap.conf") != null;
+        } catch (IOException e) {
+            // ignore
+        }
+        return false;
     }
 
     protected void scanModulesDependencies() {
@@ -405,7 +521,7 @@ public class DependencyManager {
             }
         }
 
-        if ( projectAsset != null ) {
+        if (projectAsset != null) {
             appConf.addEntry(new WildFlySwarmApplicationConf.PathEntry(projectAsset.getName()));
         }
 
@@ -513,11 +629,17 @@ public class DependencyManager {
         return this.resolver.resolveAll(specs);
     }
 
+    private final Set<ArtifactSpec> explicitDependencies = new HashSet<>();
+
+    private final Set<ArtifactSpec> presolvedDependencies = new HashSet<>();
+
     private final Set<ArtifactSpec> dependencies = new HashSet<>();
 
     private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
 
     private final Set<ArtifactSpec> bootstrapDependencies = new HashSet<>();
+
+    private final Set<ArtifactSpec> removableDependencies = new HashSet<>();
 
     private final Set<String> bootstrapModules = new HashSet<>();
 

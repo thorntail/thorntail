@@ -64,7 +64,8 @@ public class MainTest {
         result.err = err.toString();
         result.out = out.toString();
 
-        //System.out.println(result.err);
+        System.err.println(result.err);
+        System.out.println(result.err);
 
         return result;
     }
