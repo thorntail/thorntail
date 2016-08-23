@@ -224,7 +224,6 @@ public class Main {
                                              BuildTool.FractionDetectionMode.force)
                 .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS_OPT))
                 .executable(foundOptions.has(EXECUTABLE_OPT))
-                .resolveTransitiveDependencies(true)
                 .properties(properties)
                 .hollow(foundOptions.has(HOLLOW_OPT));
 

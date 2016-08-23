@@ -124,6 +124,6 @@ public class PackageTask extends DefaultTask {
         String classifier = artifact.getClassifier();
         File file = artifact.getFile();
 
-        this.tool.dependency("compile", groupId, artifactId, version, extension, classifier, file);
+        this.tool.explicitDependency("compile", groupId, artifactId, version, extension, classifier, file);
     }
 }

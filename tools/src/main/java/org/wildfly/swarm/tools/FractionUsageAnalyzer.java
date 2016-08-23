@@ -63,16 +63,16 @@ public class FractionUsageAnalyzer {
                                    .collect(Collectors.toSet()));
         specs.addAll(findFractions(detectables));
 
-        // Remove fractions that have a dependency on each other
+        // Remove fractions that have a explicitDependency on each other
         Iterator<FractionDescriptor> it = specs.iterator();
         while (it.hasNext()) {
             FractionDescriptor descriptor = it.next();
-            // Is set as a dependency to any other descriptor? If so, remove it
+            // Is set as a explicitDependency to any other descriptor? If so, remove it
             if (specs.stream().anyMatch(fd->fd.getDependencies().contains(descriptor))) {
                 it.remove();
             }
         }
-        // Add container only if no fractions are detected, as they have a transitive dependency to container
+        // Add container only if no fractions are detected, as they have a transitive explicitDependency to container
         if (specs.isEmpty()) {
             specs.add(this.fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, "container"));
         }

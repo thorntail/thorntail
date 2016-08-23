@@ -151,7 +151,7 @@ public class DependencyManagerTest {
 
     @Test
     public void analyzeDependenciesNoModules() throws Exception {
-        manager.addDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
+        manager.addExplicitDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
         manager.analyzeDependencies(false);
         assertThat(manager.getDependencies()).hasSize(1);
         assertThat(manager.getBootstrapDependencies()).isEmpty();
@@ -159,8 +159,8 @@ public class DependencyManagerTest {
 
     @Test
     public void analyzeDependenciesWithBootstrapJar() throws Exception {
-        manager.addDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
-        manager.addDependency(BOOTSTRAP_JAR);
+        manager.addExplicitDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
+        manager.addExplicitDependency(BOOTSTRAP_JAR);
         manager.analyzeDependencies(false);
         assertThat(manager.getDependencies()).hasSize(2);
         assertThat(manager.getBootstrapDependencies()).hasSize(1);
@@ -170,10 +170,10 @@ public class DependencyManagerTest {
 
     @Test
     public void analyzeDependenciesWithBootstrapJarAndBootstrapConf() throws Exception {
-        manager.addDependency(BOOTSTRAP_JAR);
-        manager.addDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
-        manager.addDependency(MODULES_EMPTY_A);
-        manager.addDependency(MODULES_EMPTY_B);
+        manager.addExplicitDependency(BOOTSTRAP_JAR);
+        manager.addExplicitDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
+        manager.addExplicitDependency(MODULES_EMPTY_A);
+        manager.addExplicitDependency(MODULES_EMPTY_B);
         manager.analyzeDependencies(false);
         assertThat(manager.getDependencies()).hasSize(4);
         assertThat(manager.getBootstrapDependencies()).hasSize(1);
@@ -185,8 +185,8 @@ public class DependencyManagerTest {
 
     @Test
     public void analyzeDependenciesWithBootstrapConfContents() throws Exception {
-        manager.addDependency(BOOTSTRAP_JAR);
-        manager.addDependency(BOOTSTRAP_CONF);
+        manager.addExplicitDependency(BOOTSTRAP_JAR);
+        manager.addExplicitDependency(BOOTSTRAP_CONF);
         manager.analyzeDependencies(false);
         assertThat(manager.getDependencies()).hasSize(2);
         assertThat(manager.getBootstrapDependencies()).hasSize(1);
@@ -198,7 +198,7 @@ public class DependencyManagerTest {
 
     @Test
     public void analyzeDependenciesWithModuleXml() throws Exception {
-        manager.addDependency(MODULES_A);
+        manager.addExplicitDependency(MODULES_A);
         manager.analyzeDependencies(false);
         assertThat(manager.getDependencies()).hasSize(1);
         assertThat(manager.getDependencies()).contains(MODULES_A);
@@ -211,10 +211,10 @@ public class DependencyManagerTest {
 
     @Test
     public void populateUberJarMavenRepository() throws Exception {
-        manager.addDependency(BOOTSTRAP_JAR);
-        manager.addDependency(BOOTSTRAP_CONF);
-        manager.addDependency(MODULES_EMPTY_A);
-        manager.addDependency(MODULES_A);
+        manager.addExplicitDependency(BOOTSTRAP_JAR);
+        manager.addExplicitDependency(BOOTSTRAP_CONF);
+        manager.addExplicitDependency(MODULES_EMPTY_A);
+        manager.addExplicitDependency(MODULES_A);
         manager.analyzeDependencies(false);
 
         Archive archive = ShrinkWrap.create(JavaArchive.class);
@@ -235,7 +235,7 @@ public class DependencyManagerTest {
 
     @Test
     public void analyzeDependenciesWithProvided() throws Exception {
-        manager.addDependency(PROVIDED_A);
+        manager.addExplicitDependency(PROVIDED_A);
         manager.analyzeDependencies(false);
 
         assertThat(manager.getDependencies()).hasSize(1);
@@ -246,12 +246,12 @@ public class DependencyManagerTest {
 
     @Test
     public void populateUberJarMavenRepositoryAvoidingProvided() throws Exception {
-        manager.addDependency(BOOTSTRAP_JAR);
-        manager.addDependency(BOOTSTRAP_CONF);
-        manager.addDependency(MODULES_EMPTY_A);
-        manager.addDependency(MODULES_A);
-        manager.addDependency(PROVIDED_A);
-        manager.addDependency(COM_SUN_MAIL);
+        manager.addExplicitDependency(BOOTSTRAP_JAR);
+        manager.addExplicitDependency(BOOTSTRAP_CONF);
+        manager.addExplicitDependency(MODULES_EMPTY_A);
+        manager.addExplicitDependency(MODULES_A);
+        manager.addExplicitDependency(PROVIDED_A);
+        manager.addExplicitDependency(COM_SUN_MAIL);
         manager.analyzeDependencies(false);
 
         assertThat(manager.getProvidedGAVs()).contains("com.sun.mail:javax.mail");
@@ -275,7 +275,7 @@ public class DependencyManagerTest {
 
     @Test
     public void analyzeDependenciesUnresolveable() throws Exception {
-        manager.addDependency(ArtifactSpec.fromMscGav("no:such-thing:1.0"));
+        manager.addExplicitDependency(ArtifactSpec.fromMscGav("no:such-thing:1.0"));
         manager.analyzeDependencies(false);
 
     }

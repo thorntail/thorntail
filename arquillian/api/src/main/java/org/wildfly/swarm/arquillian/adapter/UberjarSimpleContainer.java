@@ -144,34 +144,61 @@ public class UberjarSimpleContainer implements SimpleContainer {
         boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;
 
         if (!hasRequestedArtifacts) {
-            final MavenResolvedArtifact[] deps =
+            final MavenResolvedArtifact[] explicitDeps =
+                    resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                            .importRuntimeAndTestDependencies()
+                            .resolve()
+                            .withoutTransitivity()
+                            .asResolvedArtifact());
+
+            for (MavenResolvedArtifact dep : explicitDeps) {
+                MavenCoordinate coord = dep.getCoordinate();
+                tool.explicitDependency(dep.getScope().name(), coord.getGroupId(),
+                                coord.getArtifactId(), coord.getVersion(),
+                                coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+            }
+
+            final MavenResolvedArtifact[] presolvedDeps =
                     resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
                             .importRuntimeAndTestDependencies()
                             .resolve()
                             .withTransitivity()
                             .asResolvedArtifact());
 
-            for (MavenResolvedArtifact dep : deps) {
+            for (MavenResolvedArtifact dep : presolvedDeps) {
                 MavenCoordinate coord = dep.getCoordinate();
-                tool.dependency(dep.getScope().name(), coord.getGroupId(),
-                                coord.getArtifactId(), coord.getVersion(),
-                                coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                tool.presolvedDependency(dep.getScope().name(), coord.getGroupId(),
+                        coord.getArtifactId(), coord.getVersion(),
+                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
             }
         } else {
             // ensure that arq daemon is available
             this.requestedMavenArtifacts.add("org.wildfly.swarm:arquillian-daemon");
             for (String requestedDep : this.requestedMavenArtifacts) {
-                final MavenResolvedArtifact[] deps =
+                final MavenResolvedArtifact[] explicitDeps =
+                        resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                                .resolve(requestedDep)
+                                .withoutTransitivity()
+                                .asResolvedArtifact());
+
+                for (MavenResolvedArtifact dep : explicitDeps) {
+                    MavenCoordinate coord = dep.getCoordinate();
+                    tool.explicitDependency(dep.getScope().name(), coord.getGroupId(),
+                                    coord.getArtifactId(), coord.getVersion(),
+                                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                }
+
+                final MavenResolvedArtifact[] presolvedDeps =
                         resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
                                 .resolve(requestedDep)
                                 .withTransitivity()
                                 .asResolvedArtifact());
 
-                for (MavenResolvedArtifact dep : deps) {
+                for (MavenResolvedArtifact dep : presolvedDeps) {
                     MavenCoordinate coord = dep.getCoordinate();
-                    tool.dependency(dep.getScope().name(), coord.getGroupId(),
-                                    coord.getArtifactId(), coord.getVersion(),
-                                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                    tool.presolvedDependency(dep.getScope().name(), coord.getGroupId(),
+                            coord.getArtifactId(), coord.getVersion(),
+                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
                 }
             }
         }

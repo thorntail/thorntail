@@ -12,8 +12,11 @@ public class WebInfLibFilteringArchiveAsset implements ProjectAsset {
 
     private final ProjectAsset asset;
 
-    public WebInfLibFilteringArchiveAsset(ProjectAsset asset) {
+    private final DependencyManager dependencyManager;
+
+    public WebInfLibFilteringArchiveAsset(ProjectAsset asset, DependencyManager dependencyManager) {
         this.asset = asset;
+        this.dependencyManager = dependencyManager;
     }
 
     @Override
@@ -28,6 +31,6 @@ public class WebInfLibFilteringArchiveAsset implements ProjectAsset {
 
     @Override
     public InputStream openStream() {
-        return new WebInfLibFilteringArchive( this.asset.getArchive() ).as(ZipExporter.class).exportAsInputStream();
+        return new WebInfLibFilteringArchive( this.asset.getArchive(), this.dependencyManager ).as(ZipExporter.class).exportAsInputStream();
     }
 }

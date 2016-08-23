@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -37,6 +39,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
 import org.jboss.shrinkwrap.impl.base.io.IOUtil;
@@ -71,11 +74,6 @@ public class BuildTool {
         return this;
     }
 
-    public BuildTool resolveTransitiveDependencies(boolean resolveTransitiveDependencies) {
-        this.resolveTransitiveDependencies = resolveTransitiveDependencies;
-        return this;
-    }
-
     public BuildTool projectArtifact(String groupId, String artifactId, String version, String packaging, File file) {
         projectArtifact(groupId, artifactId, version, packaging, file, null);
 
@@ -100,17 +98,29 @@ public class BuildTool {
         return this;
     }
 
-    public BuildTool dependency(String scope, String groupId, String artifactId, String version,
-                                String packaging, String classifier, File file) {
-        dependency(new ArtifactSpec(scope, groupId, artifactId, version,
+    public BuildTool explicitDependency(String scope, String groupId, String artifactId, String version,
+                                        String packaging, String classifier, File file) {
+        explicitDependency(new ArtifactSpec(scope, groupId, artifactId, version,
                                     packaging, classifier, file));
 
         return this;
     }
 
-    public BuildTool dependency(final ArtifactSpec spec) {
-        this.dependencyManager.addDependency(spec);
+    public BuildTool explicitDependency(final ArtifactSpec spec) {
+        this.dependencyManager.addExplicitDependency(spec);
+        return this;
+    }
 
+    public BuildTool presolvedDependency(String scope, String groupId, String artifactId, String version,
+                                        String packaging, String classifier, File file) {
+        presolvedDependency(new ArtifactSpec(scope, groupId, artifactId, version,
+                packaging, classifier, file));
+
+        return this;
+    }
+
+    public BuildTool presolvedDependency(final ArtifactSpec spec) {
+        this.dependencyManager.addPresolvedDependency( spec );
         return this;
     }
 
@@ -176,8 +186,18 @@ public class BuildTool {
         return createJar(baseName, dir);
     }
 
+    public void repackageWar(File file) throws IOException {
+        this.log.info("Repackaging .war: " + file );
+        Archive original = ShrinkWrap.create( JavaArchive.class );
+        original.as(ZipImporter.class).importFrom( file );
+
+        WebInfLibFilteringArchive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
+        Files.move( file.toPath(), Paths.get( file.toString() + ".original" ), StandardCopyOption.REPLACE_EXISTING );
+        repackaged.as( ZipExporter.class).exportTo( file, true );
+    }
+
     public Archive build() throws Exception {
-        analyzeDependencies();
+        analyzeDependencies(false);
         addWildflySwarmBootstrapJar();
         addWildFlyBootstrapConf();
         addManifest();
@@ -221,16 +241,15 @@ public class BuildTool {
         }
     }
 
-    protected void analyzeDependencies() throws Exception {
-        this.dependencyManager.analyzeDependencies(this.resolveTransitiveDependencies);
+    protected void analyzeDependencies(boolean autodetect) throws Exception {
+        this.dependencyManager.analyzeDependencies(autodetect);
     }
 
     private void addProjectAsset() {
         if ( this.hollow ) {
             return;
         }
-        //this.archive.add(this.projectAsset);
-        this.archive.add( new WebInfLibFilteringArchiveAsset(this.projectAsset));
+        this.archive.add( new WebInfLibFilteringArchiveAsset(this.projectAsset, this.dependencyManager ));
     }
 
     private boolean detectFractions() throws Exception {
@@ -290,9 +309,8 @@ public class BuildTool {
                                       .sorted()
                                       .collect(Collectors.toList())));
 
-        allFractions.forEach(f -> this.dependencyManager.addDependency(f));
-        resolveTransitiveDependencies(true);
-        analyzeDependencies();
+        allFractions.forEach(f -> this.dependencyManager.addExplicitDependency(f));
+        analyzeDependencies(true);
     }
 
     private void addWildflySwarmBootstrapJar() throws Exception {
@@ -303,8 +321,7 @@ public class BuildTool {
                 throw new IllegalStateException("Fraction detection requested, but no FractionList provided");
             }
 
-            if (this.fractionDetectionMode == FractionDetectionMode.force ||
-                    artifact == null) {
+            if (this.fractionDetectionMode == FractionDetectionMode.force || artifact == null) {
                 this.log.info("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
                 if (detectFractions()) {
                     addFractions();
@@ -429,8 +446,6 @@ public class BuildTool {
     private String mainClass;
 
     private boolean bundleDependencies = true;
-
-    private boolean resolveTransitiveDependencies = false;
 
     private boolean executable;
 
