@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.servers.swagger;
 
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
 
 /**
@@ -24,7 +24,7 @@ import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
 public class Main {
 
     public static void main(String... args) throws Exception {
-        Container container = new Container();
+        Swarm container = new Swarm();
         SwaggerWebAppFraction fraction = new SwaggerWebAppFraction();
         fraction.addWebContent(System.getProperty("swarm.swagger.ui.resources"));
         container.fraction(fraction);
