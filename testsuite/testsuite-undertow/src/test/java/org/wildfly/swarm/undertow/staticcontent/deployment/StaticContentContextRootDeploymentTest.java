@@ -39,23 +39,24 @@ import static org.fest.assertions.Fail.fail;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class StaticContentDeploymentTest implements StaticContentCommonTests {
+public class StaticContentContextRootDeploymentTest implements StaticContentCommonTests {
 
     @Deployment(testable = false)
-    public static Archive getFirst() throws Exception {
+    public static Archive getSecond() throws Exception {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
+        deployment.setContextRoot("/static");
         deployment.staticContent();
         return deployment;
     }
 
     @Test
-    public void testStaticContent() throws Exception {
-        assertBasicStaticContentWorks("");
-        assertFileChangesReflected("");
+    public void testStaticContentWithContext() throws Exception {
+        assertBasicStaticContentWorks("static");
+        assertFileChangesReflected("static");
     }
 
     public void assertContains(String path, String text) throws Exception {
-        assertThat(fetch("http://localhost:8080" + path)).contains(text);
+        assertThat(fetch("http://localhost:8080/" + path)).contains(text);
     }
 
     public void assertNotFound(String path) throws Exception {
