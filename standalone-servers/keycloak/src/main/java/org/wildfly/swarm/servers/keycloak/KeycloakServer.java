@@ -1,12 +1,12 @@
 package org.wildfly.swarm.servers.keycloak;
 
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
 
 /**
  * @author Ken Finnigan
  */
 public class KeycloakServer {
     public static void main(String... args) throws Exception {
-        (new Container()).start(true);
+        (new Swarm()).start(true);
     }
 }

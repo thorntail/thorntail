@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.servers.management.console;
 
-import org.wildfly.swarm.container.Container;
+import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.management.console.ManagementConsoleFraction;
 
 /**
@@ -24,7 +24,7 @@ import org.wildfly.swarm.management.console.ManagementConsoleFraction;
 public class Main {
 
     public static void main(String... args) throws Exception {
-        Container container = new Container();
+        Swarm container = new Swarm();
         container.fraction(new ManagementConsoleFraction());
         container.start();
     }
