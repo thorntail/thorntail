@@ -214,8 +214,7 @@ public class DependencyManager {
 
     protected static Stream<ModuleAnalyzer> findModuleXmls(File file) {
         List<ModuleAnalyzer> analyzers = new ArrayList<>();
-        try {
-            JarFile jar = new JarFile(file);
+        try (JarFile jar = new JarFile(file)) {
             Enumeration<JarEntry> entries = jar.entries();
 
             while (entries.hasMoreElements()) {
@@ -274,8 +273,8 @@ public class DependencyManager {
         */
 
         this.dependencies.clear();
-        if ( this.presolvedDependencies.isEmpty() ) {
-            this.dependencies.addAll( newDeps );
+        if (this.presolvedDependencies.isEmpty()) {
+            this.dependencies.addAll(newDeps);
         } else {
             newDeps.stream()
                     .filter(dep -> autodetect || this.presolvedDependencies.contains(dep))
@@ -323,28 +322,26 @@ public class DependencyManager {
 
     public boolean isRemovable(Node node) {
         Asset asset = node.getAsset();
-        if ( asset == null ) {
+        if (asset == null) {
             return false;
         }
 
         String path = node.getPath().get();
 
         try {
-            byte[] checksum = checksum(asset.openStream());
+            byte[] checksum = checksum(asset);
 
             return this.removableDependencies.stream()
                     .filter(e -> path.endsWith(e.artifactId() + "-" + e.version() + ".jar"))
                     .map(e -> {
                         try {
-                            return checksum(new FileInputStream(e.file));
+                            return checksum(e.file);
                         } catch (IOException | NoSuchAlgorithmException | DigestException e1) {
                             return null;
                         }
                     })
                     .filter(e -> e != null)
-                    .anyMatch(e -> {
-                        return Arrays.equals(e, checksum );
-                    });
+                    .anyMatch(e -> Arrays.equals(e, checksum));
         } catch (NoSuchAlgorithmException | IOException | DigestException e) {
             e.printStackTrace();
         }
@@ -352,14 +349,26 @@ public class DependencyManager {
         return false;
     }
 
+    protected byte[] checksum(Asset asset) throws IOException, DigestException, NoSuchAlgorithmException {
+        try (InputStream in = asset.openStream()) {
+            return checksum(in);
+        }
+    }
+
+    protected byte[] checksum(File file) throws IOException, DigestException, NoSuchAlgorithmException {
+        try (InputStream in = new FileInputStream(file)) {
+            return checksum(in);
+        }
+    }
+
     protected byte[] checksum(InputStream in) throws IOException, NoSuchAlgorithmException, DigestException {
         byte[] buf = new byte[1024];
         int len = 0;
 
-        MessageDigest md = MessageDigest.getInstance( "SHA1" );
+        MessageDigest md = MessageDigest.getInstance("SHA1");
 
-        while ( ( len = in.read( buf )) >= 0 ) {
-            md.update( buf, 0, len );
+        while ((len = in.read(buf)) >= 0) {
+            md.update(buf, 0, len);
         }
 
         return md.digest();
@@ -586,25 +595,27 @@ public class DependencyManager {
         try (JarFile jar = new JarFile(spec.file)) {
             ZipEntry entry = jar.getEntry(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
             if (entry != null) {
-                this.classpathConf.read(jar.getInputStream(entry));
+                try ( InputStream in = jar.getInputStream(entry)) {
+                    this.classpathConf.read(in);
 
-                // add ourselves
-                providedGAVs.add(spec.groupId() + ":" + spec.artifactId());
+                    // add ourselves
+                    providedGAVs.add(spec.groupId() + ":" + spec.artifactId());
 
-                if (spec.artifactId().endsWith("-modules")) {
-                    providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-modules".length()) + "-api");
+                    if (spec.artifactId().endsWith("-modules")) {
+                        providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-modules".length()) + "-api");
+                    }
+
+                    if (spec.artifactId().endsWith("-api")) {
+                        providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-api".length()));
+                    }
+
+                    providedGAVs.addAll(
+                            this.classpathConf.getMatchesForActionType(WildFlySwarmClasspathConf.MavenMatcher.class, WildFlySwarmClasspathConf.RemoveAction.class).stream()
+                                    .map(m -> (WildFlySwarmClasspathConf.MavenMatcher) m)
+                                    .map(m -> m.groupId + ":" + m.artifactId)
+                                    .collect(Collectors.toList())
+                    );
                 }
-
-                if (spec.artifactId().endsWith("-api")) {
-                    providedGAVs.add(spec.groupId() + ":" + spec.artifactId().substring(0, spec.artifactId().length() - "-api".length()));
-                }
-
-                providedGAVs.addAll(
-                        this.classpathConf.getMatchesForActionType(WildFlySwarmClasspathConf.MavenMatcher.class, WildFlySwarmClasspathConf.RemoveAction.class).stream()
-                                .map(m -> (WildFlySwarmClasspathConf.MavenMatcher) m)
-                                .map(m -> m.groupId + ":" + m.artifactId)
-                                .collect(Collectors.toList())
-                );
             }
         } catch (IOException e) {
             e.printStackTrace();

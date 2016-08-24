@@ -130,6 +130,10 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .forEach(tool::additionalModule);
 
         try {
+            if (this.project.getPackaging().equals("war")) {
+                tool.repackageWar(this.project.getArtifact().getFile());
+            }
+
             File jar = tool.build(finalName + (this.hollow ? "-hollow" : ""), Paths.get(this.projectBuildDir));
 
             ArtifactHandler handler = new DefaultArtifactHandler("jar");
@@ -146,9 +150,6 @@ public class PackageMojo extends AbstractSwarmMojo {
             swarmJarArtifact.setFile(jar);
             this.project.addAttachedArtifact(swarmJarArtifact);
 
-            if (this.project.getPackaging().equals("war")) {
-                tool.repackageWar(this.project.getArtifact().getFile());
-            }
         } catch (Exception e) {
             throw new MojoFailureException("Unable to create -swarm.jar", e);
         }

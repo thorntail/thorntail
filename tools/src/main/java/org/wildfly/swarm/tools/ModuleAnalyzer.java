@@ -46,15 +46,18 @@ public class ModuleAnalyzer {
     }
 
     public ModuleAnalyzer(InputStream in) throws IOException {
-        NodeImporter importer = new XmlDomNodeImporterImpl();
-        Node node = importer.importAsNode(in, true);
+        try {
+            NodeImporter importer = new XmlDomNodeImporterImpl();
+            Node node = importer.importAsNode(in, true);
 
-        String rootName = node.getName();
+            String rootName = node.getName();
 
-        if (rootName.equals("module")) {
-            this.module = new ModuleDescriptorImpl(null, node);
+            if (rootName.equals("module")) {
+                this.module = new ModuleDescriptorImpl(null, node);
+            }
+        } finally {
+            in.close();
         }
-        in.close();
     }
 
     public String getName() {
