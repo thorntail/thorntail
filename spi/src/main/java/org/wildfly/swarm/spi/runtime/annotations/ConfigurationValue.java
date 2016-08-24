@@ -32,7 +32,7 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface ConfigurationValue {
-    @Nonbinding String value() default "";
+    @Nonbinding String value();
 
     final class Literal extends AnnotationLiteral<ConfigurationValue> implements ConfigurationValue {
 
