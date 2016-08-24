@@ -62,13 +62,17 @@ public class SystemDependencyResolution implements DependencyResolution {
 
                     // Read wildfly-swarm-classpath.conf entries
                     if(element.endsWith(JAR)) {
-                        try (JarFile jar = new JarFile(new File(element))) {
-                            ZipEntry entry = jar.getEntry(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
-                            if (entry != null) {
-                                classpathConf.read(jar.getInputStream(entry));
+
+                        File file = new File(element);
+                        if(file.exists()) { // better then running into IOException, i.e. when executing unit tests
+                            try (JarFile jar = new JarFile(file)) {
+                                ZipEntry entry = jar.getEntry(WildFlySwarmClasspathConf.CLASSPATH_LOCATION);
+                                if (entry != null) {
+                                    classpathConf.read(jar.getInputStream(entry));
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
                     }
 
