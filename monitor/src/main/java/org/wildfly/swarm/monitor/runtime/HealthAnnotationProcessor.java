@@ -16,6 +16,7 @@
 package org.wildfly.swarm.monitor.runtime;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Singleton;
 
@@ -39,10 +40,24 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
     public static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
 
+    public static final DotName APP_PATH = DotName.createSimple("javax.ws.rs.ApplicationPath");
+
     @Override
     public void processArchive(Archive<?> archive, Index index) {
-        List<AnnotationInstance> annotations = index.getAnnotations(PATH);
-        for (AnnotationInstance annotation : annotations) {
+
+
+        // first pass: JAX-RS applications
+        Optional<String> appPath = Optional.empty();
+        List<AnnotationInstance> appPathAnnotations = index.getAnnotations(APP_PATH);
+        for (AnnotationInstance annotation : appPathAnnotations) {
+            if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
+                appPath = Optional.of(annotation.value().asString());
+            }
+        }
+
+        // second pass: JAX-RS resources
+        List<AnnotationInstance> pathAnnotations = index.getAnnotations(PATH);
+        for (AnnotationInstance annotation : pathAnnotations) {
             if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
                 ClassInfo classInfo = annotation.target().asClass();
 
@@ -50,6 +65,11 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
                     if (methodInfo.hasAnnotation(HEALTH)) {
                         StringBuffer sb = new StringBuffer();
                         boolean isSecure = false;
+
+
+                        // prepend the appPath if given
+                        if (appPath.isPresent() && !appPath.get().equals("/"))
+                            sb.append(appPath.get());
 
                         // the class level @Path
                         for (AnnotationInstance classAnnotation : classInfo.classAnnotations()) {
@@ -62,10 +82,10 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
                         if (methodInfo.hasAnnotation(PATH)) {
 
-                            // the method local @Path
+                            // the method level @Path
                             sb.append(methodInfo.annotation(PATH).value().asString());
 
-                            // the method local @Health
+                            // the method level @Health
                             AnnotationInstance healthAnnotation = methodInfo.annotation(HEALTH);
                             isSecure = healthAnnotation.value("inheritSecurity") != null ? healthAnnotation.value("inheritSecurity").asBoolean() : true;
 
