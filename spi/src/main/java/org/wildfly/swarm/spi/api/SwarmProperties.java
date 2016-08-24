@@ -58,6 +58,17 @@ public interface SwarmProperties {
     String HTTPS_PORT = "swarm.https.port";
 
     /**
+     * If true, generates a self-signed certificate for development purposes
+     */
+    String HTTPS_GENERATE_SELF_SIGNED_CERTIFICATE = "swarm.https.certificate.generate";
+
+    /**
+     * The host used in the self-signed certificate if {@link SwarmProperties#HTTPS_GENERATE_SELF_SIGNED_CERTIFICATE} is true
+     * Defaults to localhost
+     */
+    String HTTPS_GENERATE_SELF_SIGNED_CERTIFICATE_HOST = "swarm.https.certificate.generate.host";
+
+    /**
      * The context path to be used, defaults to /
      */
     String CONTEXT_PATH = "swarm.context.path";
