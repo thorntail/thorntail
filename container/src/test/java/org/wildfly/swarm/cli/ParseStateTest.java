@@ -70,19 +70,11 @@ public class ParseStateTest {
         assertThat( state.la() ).isNull();
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testTooMuchConsume() {
         ParseState state = new ParseState("foo");
 
         assertThat( state.consume() ).isEqualTo( "foo" );
-
-        try {
-            state.consume();
-            fail( "should have thrown an exception for over-consume()");
-        } catch (RuntimeException e) {
-            // expected and correct
-            e.printStackTrace();
-        }
-
+        state.consume();
     }
 }
