@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
@@ -45,11 +46,11 @@ public class UndertowSocketBindingsCustomizer implements Customizer {
     UndertowFraction fraction;
 
     @Inject
-    @ConfigurationValue("swarm.http.port")
+    @ConfigurationValue(SwarmProperties.HTTP_PORT)
     Integer httpPort;
 
     @Inject
-    @ConfigurationValue("swarm.https.port")
+    @ConfigurationValue(SwarmProperties.HTTPS_PORT)
     Integer httpsPort;
 
     public void customize() {
