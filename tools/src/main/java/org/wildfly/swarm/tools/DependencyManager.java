@@ -18,6 +18,7 @@ package org.wildfly.swarm.tools;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -330,26 +331,36 @@ public class DependencyManager {
         String path = node.getPath().get();
 
         try {
-            byte[] checksum = checksum(asset.openStream());
+            byte[] checksum = checksum(asset);
 
             return this.removableDependencies.stream()
                     .filter(e -> path.endsWith(e.artifactId() + "-" + e.version() + ".jar"))
                     .map(e -> {
                         try {
-                            return checksum(new FileInputStream(e.file));
+                            return checksum(e.file);
                         } catch (IOException | NoSuchAlgorithmException | DigestException e1) {
                             return null;
                         }
                     })
                     .filter(e -> e != null)
-                    .anyMatch(e -> {
-                        return Arrays.equals(e, checksum );
-                    });
+                    .anyMatch(e -> Arrays.equals(e, checksum ));
         } catch (NoSuchAlgorithmException | IOException | DigestException e) {
             e.printStackTrace();
         }
 
         return false;
+    }
+
+    protected byte[] checksum(Asset asset) throws IOException, DigestException, NoSuchAlgorithmException {
+        try ( InputStream in = asset.openStream() ) {
+            return checksum(in);
+        }
+    }
+
+    protected byte[] checksum(File file) throws IOException, DigestException, NoSuchAlgorithmException {
+        try ( InputStream in = new FileInputStream(file) ) {
+            return checksum(in);
+        }
     }
 
     protected byte[] checksum(InputStream in) throws IOException, NoSuchAlgorithmException, DigestException {

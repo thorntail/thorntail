@@ -191,8 +191,12 @@ public class BuildTool {
         Archive original = ShrinkWrap.create( JavaArchive.class );
         original.as(ZipImporter.class).importFrom( file );
 
+        Path backupPath = Paths.get(file.toString() + ".original");
+        Files.deleteIfExists( backupPath );
+
         WebInfLibFilteringArchive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
-        Files.move( file.toPath(), Paths.get( file.toString() + ".original" ), StandardCopyOption.REPLACE_EXISTING );
+        Files.copy( file.toPath(), backupPath, StandardCopyOption.REPLACE_EXISTING );
+        Files.deleteIfExists( file.toPath() );
         repackaged.as( ZipExporter.class).exportTo( file, true );
     }
 
