@@ -37,14 +37,14 @@ public class ConfigurationValueProducer {
     private StageConfig stageConfig;
 
     @Produces
-    @ConfigurationValue
+    @ConfigurationValue("")
     @Dependent
     Resolver<String> produceResolver(InjectionPoint injectionPoint) {
         return resolver(injectionPoint);
     }
 
     @Produces
-    @ConfigurationValue
+    @ConfigurationValue("")
     @Dependent
     String produceStringConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, String.class);
@@ -52,7 +52,7 @@ public class ConfigurationValueProducer {
 
 
     @Produces
-    @ConfigurationValue
+    @ConfigurationValue("")
     @Dependent
     Integer produceIntegerConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Integer.class);
@@ -60,26 +60,26 @@ public class ConfigurationValueProducer {
 
     @Produces
     @Dependent
-    @ConfigurationValue
+    @ConfigurationValue("")
     Boolean produceBooleanConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Boolean.class);
     }
 
-    @ConfigurationValue
+    @ConfigurationValue("")
     @Dependent
     @Produces
     Long produceLongConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Long.class);
     }
 
-    @ConfigurationValue
+    @ConfigurationValue("")
     @Dependent
     @Produces
     Float produceFloatConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Float.class);
     }
 
-    @ConfigurationValue
+    @ConfigurationValue("")
     @Dependent
     @Produces
     Double produceDoubleConfigValue(InjectionPoint injectionPoint) {
