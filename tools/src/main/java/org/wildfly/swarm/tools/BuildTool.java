@@ -188,11 +188,14 @@ public class BuildTool {
 
     public void repackageWar(File file) throws IOException {
         this.log.info("Repackaging .war: " + file );
+
+        Path backupPath = Paths.get( file.toString() + ".original" );
+        Files.move( file.toPath(), backupPath, StandardCopyOption.REPLACE_EXISTING );
+
         Archive original = ShrinkWrap.create( JavaArchive.class );
-        original.as(ZipImporter.class).importFrom( file );
+        original.as(ZipImporter.class).importFrom( backupPath.toFile() );
 
         WebInfLibFilteringArchive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
-        Files.move( file.toPath(), Paths.get( file.toString() + ".original" ), StandardCopyOption.REPLACE_EXISTING );
         repackaged.as( ZipExporter.class).exportTo( file, true );
     }
 
