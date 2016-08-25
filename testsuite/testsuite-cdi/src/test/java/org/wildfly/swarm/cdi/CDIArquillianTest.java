@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.cdi;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -53,8 +54,12 @@ public class CDIArquillianTest {
     private Cheddar cheddar;
 
     @Test
-    public void testNothing() {
-        assertNotNull( cheddar );
+    public void testInjection() {
+        assertNotNull(cheddar);
     }
 
+    @Test
+    public void testCDIContainerPresence() throws Exception {
+        assertNotNull(CDI.current());
+    }
 }
