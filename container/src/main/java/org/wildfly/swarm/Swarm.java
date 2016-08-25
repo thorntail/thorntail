@@ -46,11 +46,13 @@ import org.jboss.shrinkwrap.api.Domain;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.exporter.ExplodedExporterImpl;
 import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
+import org.jboss.shrinkwrap.impl.base.importer.ExplodedImporterImpl;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
@@ -436,6 +438,7 @@ public class Swarm {
             domain.getConfiguration().getExtensionLoader().addOverride(ZipExporter.class, ZipExporterImpl.class);
             domain.getConfiguration().getExtensionLoader().addOverride(ZipImporter.class, ZipImporterImpl.class);
             domain.getConfiguration().getExtensionLoader().addOverride(ExplodedExporter.class, ExplodedExporterImpl.class);
+            domain.getConfiguration().getExtensionLoader().addOverride(ExplodedImporter.class, ExplodedImporterImpl.class);
             domain.getConfiguration().getExtensionLoader().addOverride(JavaArchive.class, JavaArchiveImpl.class);
             domain.getConfiguration().getExtensionLoader().addOverride(WebArchive.class, WebArchiveImpl.class);
         } catch (Exception e) {
