@@ -130,7 +130,15 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.never)
                 .bundleDependencies(false);
 
-        final String additionalModules = System.getProperty(SwarmInternalProperties.BUILD_MODULES);
+        String additionalModules = System.getProperty(SwarmInternalProperties.BUILD_MODULES);
+
+        // See https://issues.jboss.org/browse/SWARM-571
+        if(null==additionalModules) {
+            // see if we can find it
+            File modulesDir = new File("target/classes/modules");
+            additionalModules = modulesDir.exists() ? modulesDir.getAbsolutePath() : null;
+        }
+
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
                                            .map(File::new)

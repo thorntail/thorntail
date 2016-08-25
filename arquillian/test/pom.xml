@@ -44,6 +44,7 @@
     </plugins>
   </build>
 
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
