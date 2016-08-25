@@ -29,6 +29,7 @@ import org.jboss.jandex.MethodInfo;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.monitor.HealthMetaData;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
+import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 
 /**
  * @author Ken Finnigan
@@ -45,8 +46,15 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
     @Override
     public void processArchive(Archive<?> archive, Index index) {
 
+        // first pass: jboss-web context root
+        Optional<String> jbossWebContext = Optional.empty();
+        if(archive instanceof JBossWebContainer) {
+            JBossWebContainer war = (JBossWebContainer)archive;
+            if(war.getContextRoot() !=null )
+                jbossWebContext = Optional.of(war.getContextRoot());
+        }
 
-        // first pass: JAX-RS applications
+        // second pass: JAX-RS applications
         Optional<String> appPath = Optional.empty();
         List<AnnotationInstance> appPathAnnotations = index.getAnnotations(APP_PATH);
         for (AnnotationInstance annotation : appPathAnnotations) {
@@ -55,7 +63,7 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
             }
         }
 
-        // second pass: JAX-RS resources
+        // third pass: JAX-RS resources
         List<AnnotationInstance> pathAnnotations = index.getAnnotations(PATH);
         for (AnnotationInstance annotation : pathAnnotations) {
             if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
@@ -63,20 +71,24 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
                 for (MethodInfo methodInfo : classInfo.methods()) {
                     if (methodInfo.hasAnnotation(HEALTH)) {
-                        StringBuffer sb = new StringBuffer();
+                        StringBuilder sb = new StringBuilder();
                         boolean isSecure = false;
 
 
+                        // prepend the jboss-web cntext if given
+                        if (jbossWebContext.isPresent() && !jbossWebContext.get().equals("/"))
+                            safeAppend(sb, jbossWebContext.get());
+
                         // prepend the appPath if given
                         if (appPath.isPresent() && !appPath.get().equals("/"))
-                            sb.append(appPath.get());
+                            safeAppend(sb, appPath.get());
 
                         // the class level @Path
                         for (AnnotationInstance classAnnotation : classInfo.classAnnotations()) {
                             if (classAnnotation.name().equals(PATH)) {
                                 String methodPathValue = classAnnotation.value().asString();
                                 if (!methodPathValue.equals("/"))
-                                    sb.append(methodPathValue);
+                                    safeAppend(sb, methodPathValue);
                             }
                         }
 
@@ -104,5 +116,20 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
             }
         }
+    }
+
+
+    public static void safeAppend(StringBuilder sb, String pathToken) {
+
+        // normalise the token to '/foobar'
+        if(!pathToken.startsWith("/"))
+            pathToken = "/"+pathToken;
+
+        if(pathToken.endsWith("/"))
+            pathToken = pathToken.substring(0, pathToken.length()-1);
+
+        // append to buffer
+        sb.append(pathToken);
+
     }
 }

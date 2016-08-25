@@ -43,6 +43,7 @@ public class JAXRSArquillianTest {
         deployment.addClass(HealthCheckResource.class);
         deployment.addClass(CustomJsonProvider.class);
         deployment.addClass(MyResource.class);
+        deployment.setContextRoot("rest");
         deployment.addAllDependencies();
         return deployment;
     }
@@ -55,14 +56,14 @@ public class JAXRSArquillianTest {
     @Test
     @RunAsClient
     public void testResource() {
-        browser.navigate().to("http://localhost:8080/health/app/health-secure");
+        browser.navigate().to("http://localhost:8080/health/rest/monitor/health-secure");
         assertThat(browser.getPageSource()).contains("UP");
     }
 
     @RunAsClient
     @Test
     public void testSimple() throws IOException {
-        browser.navigate().to("http://localhost:8080");
+        browser.navigate().to("http://localhost:8080/rest");
         assertThat(browser.getPageSource()).contains("Howdy at ");
     }
 

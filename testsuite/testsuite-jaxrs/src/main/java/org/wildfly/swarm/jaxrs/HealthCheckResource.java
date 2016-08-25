@@ -24,7 +24,7 @@ import org.wildfly.swarm.monitor.HealthStatus;
 /**
  * @author Heiko Braun
  */
-@Path("/app")
+@Path("/monitor")
 public class HealthCheckResource {
 
 
