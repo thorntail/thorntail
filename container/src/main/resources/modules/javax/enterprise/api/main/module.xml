@@ -11,6 +11,7 @@
     <module name="javax.interceptor.api" export="true"/>
 
     <!-- CDIProvider -->
+    <module name="org.jboss.as.weld" services="import" optional="true"/>
     <module name="org.jboss.weld.core" optional="true"/>
   </dependencies>
 </module>
