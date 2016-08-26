@@ -1,283 +1,208 @@
-/**
- * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.wildfly.swarm.tools;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.function.Consumer;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.wildfly.swarm.bootstrap.env.FractionManifest;
+import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Bob McWhirter
  */
-@SuppressWarnings("unchecked")
 public class DependencyManagerTest {
 
-    private ArtifactSpec BOOTSTRAP_JAR;
+    private static MockArtifactResolver RESOLVER = new MockArtifactResolver();
 
-    private ArtifactSpec MODULES_EMPTY_A;
+    private static ArtifactSpec SERVLET_SPEC = simple("org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:jar:1.0.0.Final");
+    private static ArtifactSpec JAXRS_SPEC = simple("org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec:1.0.0.Final", (config)->{
+        config.addDependency( SERVLET_SPEC );
+    });
 
-    private ArtifactSpec MODULES_EMPTY_B;
+    private static ArtifactSpec COMMON_DEP = simple("org.useful:utility:1.0");
 
-    private ArtifactSpec BOOTSTRAP_CONF;
+    private static ArtifactSpec UNDERTOW_FRACTION = fraction("org.wildfly.swarm:undertow", (config) -> {
+        config.addDependency(SERVLET_SPEC);
+        config.addDependency(COMMON_DEP);
+    });
 
-    private ArtifactSpec MODULES_A;
-
-    private ArtifactSpec PROVIDED_A;
-
-    private ArtifactSpec COM_SUN_MAIL;
-
-    private ArtifactSpec CXF;
-
-    private ArtifactSpec WS_INTEGRATION;
-
-    private MockArtifactResolver resolver;
+    private static ArtifactSpec JAXRS_FRACTION = fraction("org.wildfly.swarm:jaxrs", (config) -> {
+        config.addDependency(JAXRS_SPEC);
+        config.addDependency(COMMON_DEP);
+        config.addDependency(UNDERTOW_FRACTION);
+    });
 
     private DependencyManager manager;
 
     @Before
-    public void setUp() throws Exception {
-        BOOTSTRAP_JAR = ArtifactSpec.fromMscGav("org.wildfly.swarm:bootstrap:1.0");
-
-        MODULES_EMPTY_A = ArtifactSpec.fromMscGav("test:modules-empty-A:1.0");
-
-        MODULES_EMPTY_B = ArtifactSpec.fromMscGav("test:modules-empty-B:1.0");
-
-        BOOTSTRAP_CONF = ArtifactSpec.fromMscGav("test:bootstrap-conf:1.0");
-
-        MODULES_A = ArtifactSpec.fromMscGav("test:with-modules-A:1.0");
-
-        PROVIDED_A = ArtifactSpec.fromMscGav("test:provided-A:1.0");
-
-        COM_SUN_MAIL = ArtifactSpec.fromMscGav("com.sun.mail:javax.mail:1.0");
-
-        CXF = ArtifactSpec.fromMscGav("org.jboss.ws.cxf:jbossws-cxf-resources:5.1.0.Final:wildfly1000");
-
-        WS_INTEGRATION = ArtifactSpec.fromMscGav("org.wildfly:wildfly-webservices-server-integration:10.0.0.CR4");
-
-        resolver = new MockArtifactResolver();
-
-        resolver.add(BOOTSTRAP_JAR, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "nothing");
-        });
-
-        resolver.add("test:no-module-A:1.0", (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "nothing");
-        });
-
-        resolver.add("test:no-module-B:1.0", (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "nothing");
-        });
-
-        resolver.add(MODULES_EMPTY_A, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-bootstrap.conf");
-        });
-
-        resolver.add(MODULES_EMPTY_B, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "wildfly-swarm-bootstrap.conf");
-        });
-
-        resolver.add(BOOTSTRAP_CONF, (archive) -> {
-            archive.add(new StringAsset(
-                    "com.module1\n" +
-                            "com.module2\n"
-            ), "wildfly-swarm-bootstrap.conf");
-        });
-
-        resolver.add(MODULES_A, (archive) -> {
-            archive.add(new ClassLoaderAsset("module.xml"), "modules/org/jboss/as/webservices/main/module.xml");
-        });
-
-        resolver.add(PROVIDED_A, (archive) -> {
-            archive.add(new ClassLoaderAsset("keycloak-core-module.xml"), "modules/org/keyclaok/keycloak-core-module/main/module.xml");
-            archive.add(new StringAsset(
-                    "maven(com.sun.mail:javax.mail) remove"
-            ), "META-INF/wildfly-swarm-classpath.conf");
-
-        });
-
-        resolver.add(COM_SUN_MAIL, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "nothing");
-        });
-
-        resolver.add(CXF, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "nothing");
-        });
-
-        resolver.add(WS_INTEGRATION, (archive) -> {
-            archive.add(EmptyAsset.INSTANCE, "nothing");
-        });
-
+    public void setUp() {
         this.manager = new DependencyManager();
-        this.manager.setArtifactResolvingHelper(resolver);
-    }
-
-    @After
-    public void tearDownManager() {
-        this.manager = null;
+        this.manager.setArtifactResolvingHelper(RESOLVER);
     }
 
     @Test
-    public void analyzeDependenciesZero() throws Exception {
+    public void testNoSwarmJars() throws Exception {
+        // Explicitly asked-for dependencies are also the full resolved tree
+        manager.addExplicitDependency(JAXRS_SPEC);
+        manager.addExplicitDependency(COMMON_DEP);
+
+        manager.addPresolvedDependency(JAXRS_SPEC);
+        manager.addPresolvedDependency(COMMON_DEP);
+        manager.addPresolvedDependency(SERVLET_SPEC);
+
         manager.analyzeDependencies(false);
-        assertThat(manager.getDependencies()).isEmpty();
+        assertThat(manager.getRemovableDependencies()).isEmpty();
+
+        assertThat(manager.getDependencies()).containsOnly(JAXRS_SPEC, SERVLET_SPEC, COMMON_DEP);
+
+        WildFlySwarmManifest manifest = manager.getWildFlySwarmManifest();
+
+        // these are empty because we have not actually done any auto-detection.
+        assertThat(manifest.bootstrapArtifacts()).isEmpty();
+        assertThat(manifest.bootstrapModules()).isEmpty();
+
+        assertThat(manifest.getDependencies()).containsOnly(
+                SERVLET_SPEC.mavenGav(),
+                JAXRS_SPEC.mavenGav(),
+                COMMON_DEP.mavenGav() );
     }
 
     @Test
-    public void analyzeDependenciesNoModules() throws Exception {
-        manager.addExplicitDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
-        manager.analyzeDependencies(false);
-        assertThat(manager.getDependencies()).hasSize(1);
-        assertThat(manager.getBootstrapDependencies()).isEmpty();
+    public void testAutodetectedSwarmJar() throws Exception {
+        // Explicitly asked-for dependencies are also the full resolved tree
+        manager.addExplicitDependency(JAXRS_SPEC);
+        manager.addExplicitDependency(COMMON_DEP);
+
+        // auto-detected, not pre-solved
+        manager.addExplicitDependency(JAXRS_FRACTION);
+
+        manager.addPresolvedDependency(JAXRS_SPEC);
+        manager.addPresolvedDependency(SERVLET_SPEC);
+        manager.addPresolvedDependency(COMMON_DEP);
+
+        manager.analyzeDependencies(true);
+        assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION);
+        assertThat(manager.getDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION, JAXRS_SPEC, SERVLET_SPEC, COMMON_DEP);
+
+        WildFlySwarmManifest manifest = manager.getWildFlySwarmManifest();
+
+        assertThat(manifest.bootstrapArtifacts()).containsOnly( JAXRS_FRACTION.mavenGav(), UNDERTOW_FRACTION.mavenGav() );
+        assertThat(manifest.bootstrapModules()).containsOnly( "org.wildfly.swarm.jaxrs", "org.wildfly.swarm.undertow" );
+
+        // still includes the jaxrs-spec because it was explicit and we just can't know
+        assertThat(manifest.getDependencies()).containsOnly(
+                SERVLET_SPEC.mavenGav(),
+                JAXRS_SPEC.mavenGav(),
+                COMMON_DEP.mavenGav() );
     }
 
     @Test
-    public void analyzeDependenciesWithBootstrapJar() throws Exception {
-        manager.addExplicitDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
-        manager.addExplicitDependency(BOOTSTRAP_JAR);
-        manager.analyzeDependencies(false);
-        assertThat(manager.getDependencies()).hasSize(2);
-        assertThat(manager.getBootstrapDependencies()).hasSize(1);
-        assertThat(manager.getBootstrapDependencies()).contains(BOOTSTRAP_JAR);
-        assertThat(manager.getBootstrapModules()).isEmpty();
+    public void testAutodetectedSwarmJarNoExplicitCommon() throws Exception {
+        // Explicitly asked-for dependencies are also the full resolved tree
+        manager.addExplicitDependency(JAXRS_SPEC);
+
+        // auto-detected, not pre-solved
+        manager.addExplicitDependency(JAXRS_FRACTION);
+
+        manager.addPresolvedDependency(JAXRS_SPEC);
+        manager.addPresolvedDependency(SERVLET_SPEC);
+
+        manager.analyzeDependencies(true);
+        assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION, COMMON_DEP);
+        assertThat(manager.getDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION, SERVLET_SPEC, JAXRS_SPEC, COMMON_DEP);
+
+        WildFlySwarmManifest manifest = manager.getWildFlySwarmManifest();
+
+        assertThat(manifest.bootstrapArtifacts()).containsOnly( JAXRS_FRACTION.mavenGav(), UNDERTOW_FRACTION.mavenGav() );
+        assertThat(manifest.bootstrapModules()).containsOnly( "org.wildfly.swarm.jaxrs", "org.wildfly.swarm.undertow" );
+
+        // still includes the jaxrs-spec because it was explicit and we just can't know
+        assertThat(manifest.getDependencies()).containsOnly( JAXRS_SPEC.mavenGav(), SERVLET_SPEC.mavenGav() );
     }
 
     @Test
-    public void analyzeDependenciesWithBootstrapJarAndBootstrapConf() throws Exception {
-        manager.addExplicitDependency(BOOTSTRAP_JAR);
-        manager.addExplicitDependency(ArtifactSpec.fromMscGav("test:no-module-A:1.0"));
-        manager.addExplicitDependency(MODULES_EMPTY_A);
-        manager.addExplicitDependency(MODULES_EMPTY_B);
+    public void testWithSwarmJarBeingOnlyUserOfDep() throws Exception {
+        // Only :jaxrs is the explicit resolved tree, but brings in jaxrs-spec and common dep
+        manager.addExplicitDependency(JAXRS_FRACTION);
+
+        manager.addPresolvedDependency(JAXRS_FRACTION);
+        manager.addPresolvedDependency(JAXRS_SPEC);
+        manager.addPresolvedDependency(UNDERTOW_FRACTION);
+        manager.addPresolvedDependency(SERVLET_SPEC);
+        manager.addPresolvedDependency(COMMON_DEP);
         manager.analyzeDependencies(false);
-        assertThat(manager.getDependencies()).hasSize(4);
-        assertThat(manager.getBootstrapDependencies()).hasSize(1);
-        assertThat(manager.getBootstrapDependencies()).contains(BOOTSTRAP_JAR);
-        //assertThat(manager.getBootstrapDependencies()).contains(MODULES_EMPTY_A);
-        //assertThat(manager.getBootstrapDependencies()).contains(MODULES_EMPTY_B);
-        assertThat(manager.getBootstrapModules()).isEmpty();
+
+        assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, UNDERTOW_FRACTION, SERVLET_SPEC, COMMON_DEP);
+        assertThat(manager.getDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, UNDERTOW_FRACTION, SERVLET_SPEC, COMMON_DEP);
+
+        WildFlySwarmManifest manifest = manager.getWildFlySwarmManifest();
+        assertThat(manifest.bootstrapArtifacts()).containsOnly(JAXRS_FRACTION.mavenGav(), UNDERTOW_FRACTION.mavenGav());
+        assertThat(manifest.bootstrapModules()).containsOnly("org.wildfly.swarm.jaxrs", "org.wildfly.swarm.undertow");
+
+        assertThat(manifest.getDependencies()).isEmpty();
     }
 
     @Test
-    public void analyzeDependenciesWithBootstrapConfContents() throws Exception {
-        manager.addExplicitDependency(BOOTSTRAP_JAR);
-        manager.addExplicitDependency(BOOTSTRAP_CONF);
+    public void testWithApplicationAlsoUsingDep() throws Exception {
+        // :jaxrs and common dep are explicit, implying application needs common
+
+        manager.addExplicitDependency(JAXRS_FRACTION);
+        manager.addExplicitDependency(COMMON_DEP);
+
+        manager.addPresolvedDependency(JAXRS_FRACTION);
+        manager.addPresolvedDependency(JAXRS_SPEC);
+        manager.addPresolvedDependency(UNDERTOW_FRACTION);
+        manager.addPresolvedDependency(SERVLET_SPEC);
+        manager.addPresolvedDependency(COMMON_DEP);
+
         manager.analyzeDependencies(false);
-        assertThat(manager.getDependencies()).hasSize(2);
-        assertThat(manager.getBootstrapDependencies()).hasSize(1);
-        assertThat(manager.getBootstrapDependencies()).contains(BOOTSTRAP_JAR);
-        assertThat(manager.getBootstrapModules()).hasSize(2);
-        assertThat(manager.getBootstrapModules()).contains("com.module1");
-        assertThat(manager.getBootstrapModules()).contains("com.module2");
+        assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, UNDERTOW_FRACTION, SERVLET_SPEC);
+        assertThat(manager.getDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, COMMON_DEP, UNDERTOW_FRACTION, SERVLET_SPEC);
+
+        WildFlySwarmManifest manifest = manager.getWildFlySwarmManifest();
+        assertThat(manifest.bootstrapArtifacts()).containsOnly(JAXRS_FRACTION.mavenGav(), UNDERTOW_FRACTION.mavenGav());
+        assertThat(manifest.bootstrapModules()).containsOnly("org.wildfly.swarm.jaxrs", "org.wildfly.swarm.undertow");
+
+        assertThat( manifest.getDependencies() ).containsOnly( COMMON_DEP.mavenGav() );
     }
 
-    @Test
-    public void analyzeDependenciesWithModuleXml() throws Exception {
-        manager.addExplicitDependency(MODULES_A);
-        manager.analyzeDependencies(false);
-        assertThat(manager.getDependencies()).hasSize(1);
-        assertThat(manager.getDependencies()).contains(MODULES_A);
-        assertThat(manager.getBootstrapDependencies()).hasSize(1);
-        assertThat(manager.getBootstrapDependencies()).contains(MODULES_A);
-
-        assertThat(manager.getModuleDependencies()).contains(CXF);
-        assertThat(manager.getModuleDependencies()).contains(WS_INTEGRATION);
+    private static ArtifactSpec simple(String gav) {
+        ArtifactSpec spec = ArtifactSpec.fromMscGav(gav);
+        RESOLVER.add(spec);
+        return spec;
     }
 
-    @Test
-    public void populateUberJarMavenRepository() throws Exception {
-        manager.addExplicitDependency(BOOTSTRAP_JAR);
-        manager.addExplicitDependency(BOOTSTRAP_CONF);
-        manager.addExplicitDependency(MODULES_EMPTY_A);
-        manager.addExplicitDependency(MODULES_A);
-        manager.analyzeDependencies(false);
-
-        Archive archive = ShrinkWrap.create(JavaArchive.class);
-
-        manager.populateUberJarMavenRepository(archive);
-
-        Map<ArchivePath, Node> content = archive.getContent();
-
-        List<String> jars = content.keySet().stream().map(ArchivePath::get).filter((e) -> e.endsWith(".jar")).collect(Collectors.toList());
-
-        assertThat(jars).hasSize(5);
-        assertThat(jars).contains("/m2repo/" + MODULES_EMPTY_A.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + BOOTSTRAP_CONF.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + MODULES_A.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + CXF.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + WS_INTEGRATION.repoPath(true));
+    private static ArtifactSpec simple(String gav, Consumer<MockArtifactResolver.Entry> config) {
+        ArtifactSpec spec = ArtifactSpec.fromMscGav(gav);
+        RESOLVER.add(spec, config);
+        return spec;
     }
 
-    @Test
-    public void analyzeDependenciesWithProvided() throws Exception {
-        manager.addExplicitDependency(PROVIDED_A);
-        manager.analyzeDependencies(false);
+    private static ArtifactSpec fraction(String ga, Consumer<MockArtifactResolver.Entry> config) {
+        String moduleName = ga.replace(':', '.');
+        String gav = ga + ":" + System.getProperty("project.version");
+        ArtifactSpec spec = ArtifactSpec.fromMscGav(gav);
 
-        assertThat(manager.getDependencies()).hasSize(1);
-        assertThat(manager.getProvidedGAVs()).hasSize(2);
-        assertThat(manager.getProvidedGAVs()).contains(PROVIDED_A.groupId() + ":" + PROVIDED_A.artifactId());
-        assertThat(manager.getProvidedGAVs()).contains("com.sun.mail:javax.mail");
-    }
+        JavaArchive jar = ShrinkWrap.create( JavaArchive.class );
 
-    @Test
-    public void populateUberJarMavenRepositoryAvoidingProvided() throws Exception {
-        manager.addExplicitDependency(BOOTSTRAP_JAR);
-        manager.addExplicitDependency(BOOTSTRAP_CONF);
-        manager.addExplicitDependency(MODULES_EMPTY_A);
-        manager.addExplicitDependency(MODULES_A);
-        manager.addExplicitDependency(PROVIDED_A);
-        manager.addExplicitDependency(COM_SUN_MAIL);
-        manager.analyzeDependencies(false);
+        StringBuilder yaml = new StringBuilder();
 
-        assertThat(manager.getProvidedGAVs()).contains("com.sun.mail:javax.mail");
+        yaml.append( "module: " + moduleName );
 
-        Archive archive = ShrinkWrap.create(JavaArchive.class);
+        jar.add(new StringAsset(yaml.toString()), FractionManifest.CLASSPATH_LOCATION );
 
-        manager.populateUberJarMavenRepository(archive);
+        RESOLVER.add(spec, jar, config);
 
-        Map<ArchivePath, Node> content = archive.getContent();
-
-        List<String> jars = content.keySet().stream().map(ArchivePath::get).filter((e) -> e.endsWith(".jar")).collect(Collectors.toList());
-
-        assertThat(jars).hasSize(6);
-        assertThat(jars).contains("/m2repo/" + MODULES_EMPTY_A.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + BOOTSTRAP_CONF.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + MODULES_A.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + CXF.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + WS_INTEGRATION.repoPath(true));
-        assertThat(jars).contains("/m2repo/" + PROVIDED_A.repoPath(true));
-    }
-
-    @Test
-    public void analyzeDependenciesUnresolveable() throws Exception {
-        manager.addExplicitDependency(ArtifactSpec.fromMscGav("no:such-thing:1.0"));
-        manager.analyzeDependencies(false);
-
+        return spec;
     }
 
 }

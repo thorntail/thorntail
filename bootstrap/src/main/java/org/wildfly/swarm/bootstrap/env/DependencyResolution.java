@@ -1,4 +1,4 @@
-package org.wildfly.swarm.internal;
+package org.wildfly.swarm.bootstrap.env;
 
 import java.io.IOException;
 import java.util.Collection;

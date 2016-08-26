@@ -27,6 +27,8 @@ public class BootstrapProperties {
 
     public static final String DEFAULT_DEPLOYMENT_TYPE = "swarm.default.deployment.type";
 
+    public static final String IS_UBERJAR = "swarm.isuberjar";
+
     public static boolean flagIsSet(final String prop) {
         return flagIsSet(prop, false);
     }

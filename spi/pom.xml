@@ -21,39 +21,9 @@
 
   <packaging>jar</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.jboss.jandex</groupId>
-        <artifactId>jandex-maven-plugin</artifactId>
-        <version>1.0.4</version>
-        <executions>
-          <execution>
-            <id>make-index</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>jandex</goal>
-            </goals>
-            <configuration>
-              <indexName>swarm-jandex.idx</indexName>
-              <verbose>true</verbose>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-        <version>${version.wildfly.swarm.fraction.plugin}</version>
-        <executions>
-          <execution>
-            <id>process</id>
-            <phase/>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+  <properties>
+    <swarm.fraction>false</swarm.fraction>
+  </properties>
 
   <dependencies>
     <dependency>

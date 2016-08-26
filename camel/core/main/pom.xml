@@ -29,7 +29,7 @@
     <version>2016.9-SNAPSHOT</version>
   </parent>
 
-    <name>Camel Core :: Main</name>
+    <name>Camel</name>
     
     <artifactId>camel-core</artifactId>
 

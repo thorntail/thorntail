@@ -15,27 +15,30 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Enumeration;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
+import org.jboss.modules.ResourceLoader;
+import org.jboss.modules.ResourceLoaderSpec;
+import org.jboss.modules.ResourceLoaders;
 import org.jboss.modules.filter.ClassFilters;
 import org.jboss.modules.filter.PathFilters;
+import org.jboss.modules.maven.ArtifactCoordinates;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
-import org.wildfly.swarm.bootstrap.util.Layout;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 /**
- * Module-finder used only for loading the first set of jars when run in an fat-jar scenario.
+ * Module-finder used only for loading the module <code>swarm.application</code> when run in an fat-jar scenario.
  *
  * @author Bob McWhirter
  */
@@ -48,53 +51,37 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
     }
 
     protected ApplicationModuleFinder(String slot) {
-        super( MODULE_NAME, slot );
+        super(MODULE_NAME, slot);
     }
 
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
-        try {
-            if (Layout.getInstance().isUberJar()) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Loading as uberjar");
-                }
-                handleWildFlySwarmApplicationConf(builder);
-            } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Loading as non-ubjerjar");
-                }
-                ClassLoader cl = ClassLoader.getSystemClassLoader();
-                Enumeration<URL> results = cl.getResources("wildfly-swarm-bootstrap.conf");
 
-                while (results.hasMoreElements()) {
-                    URL each = results.nextElement();
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(each.openStream()))) {
-                        String line = null;
-                        while ((line = reader.readLine()) != null) {
-                            line = line.trim();
-                            if (!line.isEmpty()) {
-                                builder.addDependency(
-                                        DependencySpec.createModuleDependencySpec(
-                                                PathFilters.acceptAll(),
-                                                PathFilters.acceptAll(),
-                                                PathFilters.acceptAll(),
-                                                PathFilters.acceptAll(),
-                                                ClassFilters.acceptAll(),
-                                                ClassFilters.acceptAll(),
-                                                null,
-                                                ModuleIdentifier.create(line), false));
-                            }
-                        }
-                    }
-                }
-            }
+        ApplicationEnvironment env = ApplicationEnvironment.get();
+
+
+        env.bootstrapModules()
+                .forEach((module) -> {
+                    builder.addDependency(
+                            DependencySpec.createModuleDependencySpec(
+                                    PathFilters.acceptAll(),
+                                    PathFilters.acceptAll(),
+                                    PathFilters.acceptAll(),
+                                    PathFilters.acceptAll(),
+                                    ClassFilters.acceptAll(),
+                                    ClassFilters.acceptAll(),
+                                    null,
+                                    ModuleIdentifier.create(module), false));
+
+                });
+
+        try {
+            addAsset(builder, env);
         } catch (IOException e) {
             throw new ModuleLoadException(e);
-        } catch (URISyntaxException e) {
-            throw new ModuleLoadException(e);
-        } catch (Exception e) {
-            throw new ModuleLoadException(e);
         }
+
+        addDependencies(builder, env);
 
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
@@ -117,12 +104,80 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
         builder.addDependency(DependencySpec.createLocalDependencySpec());
     }
 
-    protected void handleWildFlySwarmApplicationConf(ModuleSpec.Builder builder) throws Exception {
-        InputStream appConf = getClass().getClassLoader().getResourceAsStream(WildFlySwarmApplicationConf.CLASSPATH_LOCATION);
-        if (appConf != null) {
-            WildFlySwarmApplicationConf conf = new WildFlySwarmApplicationConf(appConf);
-            conf.apply(builder);
+    protected void addAsset(ModuleSpec.Builder builder, ApplicationEnvironment env) throws IOException {
+        String path = env.getAsset();
+        if ( path == null ) {
+            return;
         }
+
+        int slashLoc = path.lastIndexOf('/');
+        String name = path;
+
+        if (slashLoc > 0) {
+            name = path.substring(slashLoc + 1);
+        }
+
+        String ext = ".jar";
+        int dotLoc = name.lastIndexOf('.');
+        if (dotLoc > 0) {
+            ext = name.substring(dotLoc);
+            name = name.substring(0, dotLoc);
+        }
+
+        File tmp = TempFileManager.INSTANCE.newTempFile(name, ext);
+
+        try (InputStream artifactIn = getClass().getClassLoader().getResourceAsStream(path)) {
+            Files.copy(artifactIn, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        final String jarName = tmp.getName().toString();
+        final JarFile jarFile = new JarFile(tmp);
+        final ResourceLoader jarLoader = ResourceLoaders.createJarResourceLoader(jarName,
+                jarFile);
+        builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
+
+        if (".war".equalsIgnoreCase(ext)) {
+            final ResourceLoader warLoader = ResourceLoaders.createJarResourceLoader(jarName,
+                    jarFile,
+                    "WEB-INF/classes");
+            builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));
+        }
+
+    }
+
+    protected void addDependencies(ModuleSpec.Builder builder, ApplicationEnvironment env) {
+        env.getDependencies()
+                .forEach( (dep)->{
+                    String[] parts = dep.split(":");
+                    ArtifactCoordinates coords = null;
+
+                    if ( ! parts[2].equals( "jar" ) ) {
+                        return;
+                    }
+
+                    if ( parts.length == 4 ) {
+                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[3] );
+                    } else if ( parts.length == 5 ) {
+                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[3], parts[4] );
+                    }
+                    try {
+                        File artifact = MavenResolvers.get().resolveJarArtifact(coords);
+                        if ( artifact == null ) {
+                            LOG.error( "Unable to find artifact for " + coords );
+                            return;
+                        }
+                        JarFile jar = new JarFile(artifact);
+
+                        builder.addResourceRoot(
+                                ResourceLoaderSpec.createResourceLoaderSpec(
+                                        ResourceLoaders.createJarResourceLoader(artifact.getName(), jar)
+                                )
+                        );
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                });
     }
 
     private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.application");

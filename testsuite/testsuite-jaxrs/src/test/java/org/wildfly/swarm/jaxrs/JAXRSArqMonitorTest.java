@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.monitor.MonitorFraction;
 

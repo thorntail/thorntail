@@ -107,7 +107,6 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     @Override
     public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
         if (specs.isEmpty()) {
-
             return specs;
         }
 

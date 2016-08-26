@@ -38,7 +38,7 @@ public class ArquillianTest {
 
     @Deployment
     public static Archive<?> createDeployment() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class)
+        JARArchive archive = ShrinkWrap.create(JARArchive.class, "arquillian-test.jar")
                 .addClass(ArquillianTest.class);
 
         archive.addModule("progress");

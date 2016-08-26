@@ -30,9 +30,10 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>35</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>36</version.wildfly.swarm.fraction.plugin>
 
     <version.cdi2>2.0.Alpha4</version.cdi2>
+    <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
     <version.jboss.management-console>2.8.25.Final</version.jboss.management-console>
 
@@ -233,6 +234,12 @@
       <!--
         org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
     -->
+
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${version.org.snakeyaml}</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>

@@ -21,7 +21,8 @@ import java.lang.reflect.Modifier;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 
-/**
+/** A main class capable of using another nother class, annotated with {@link CreateSwarm} to create a main().
+ *
  * @uathor Ken Finnigan
  */
 public class AnnotationBasedMain {

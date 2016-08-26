@@ -13,6 +13,8 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
+import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
@@ -77,7 +79,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
         Thread.currentThread().setContextClassLoader(module.getClassLoader());
 
-        logFractions( module.getClassLoader() );
+        logFractions();
 
         Weld weld = new Weld();
         weld.setClassLoader(module.getClassLoader());
@@ -99,29 +101,17 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         return server;
     }
 
-    protected void logFractions(ClassLoader cl) throws IOException {
-        Enumeration<URL> fractionProps = cl.getResources("META-INF/fraction.properties");
-        while ( fractionProps.hasMoreElements() ) {
-            logFraction( fractionProps.nextElement() );
-        }
+    protected void logFractions() throws IOException {
+        ApplicationEnvironment.get().fractionManifests()
+                .forEach(this::logFraction);
     }
 
-    protected void logFraction(URL url) throws IOException {
-        Properties props = new Properties();
-        props.load( url.openStream() );
-
-        int stabilityIndex = Integer.parseInt(props.getProperty("stabilityIndex"));
-
-        String name = props.getProperty( "name" );
-        String groupId = props.getProperty( "groupId" );
-        String artifactId = props.getProperty( "artifactId" );
-        String version = props.getProperty( "version" );
-        String stabilityLevel = props.getProperty( "stabilityLevel" );
-
+    protected void logFraction(FractionManifest manifest) {
+        int stabilityIndex = manifest.getStabilityIndex();
         if ( stabilityIndex < 3 ) {
-            LOG.warn(SwarmMessages.MESSAGES.availableFraction(name, stabilityLevel, groupId, artifactId, version));
+            LOG.warn(SwarmMessages.MESSAGES.availableFraction(manifest.getName(), manifest.getStabilityLevel(), manifest.getGroupId(), manifest.getArtifactId(), manifest.getVersion()));
         } else {
-            LOG.info(SwarmMessages.MESSAGES.availableFraction(name, stabilityLevel, groupId, artifactId, version));
+            LOG.info(SwarmMessages.MESSAGES.availableFraction(manifest.getName(), manifest.getStabilityLevel(), manifest.getGroupId(), manifest.getArtifactId(), manifest.getVersion()));
         }
     }
 

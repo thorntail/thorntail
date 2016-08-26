@@ -24,9 +24,9 @@ import java.net.URISyntaxException;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
-import org.wildfly.swarm.bootstrap.util.Layout;
-import org.wildfly.swarm.bootstrap.util.UberJarManifest;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
  * @author Bob McWhirter
@@ -40,9 +40,14 @@ public class Main {
     }
 
     public static void main(String... args) throws Throwable {
-        //TODO Move property key to -spi
-        System.setProperty("swarm.isuberjar", Boolean.TRUE.toString());
-        new Main(args).run();
+        try {
+            //TODO Move property key to -spi
+            System.setProperty(BootstrapProperties.IS_UBERJAR, Boolean.TRUE.toString());
+            new Main(args).run();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
+        }
     }
 
     public void run() throws Throwable {
@@ -54,28 +59,14 @@ public class Main {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
     }
 
-    public String getMainClassName() throws IOException, URISyntaxException {
-        String mainClassName = null;
-        UberJarManifest manifest = new UberJarManifest(Layout.getInstance().getManifest());
-        mainClassName = manifest.getMainClassName();
-
-        if (mainClassName == null) {
-            mainClassName = DEFAULT_MAIN_CLASS_NAME;
-        }
-
-        if ( manifest.isHollow() ) {
-            System.setProperty( "swarm.hollow", "true" );
-        }
-
-        return mainClassName;
+    public Class<?> getMainClass() throws IOException, URISyntaxException, ModuleLoadException, ClassNotFoundException {
+        String mainClassName = ApplicationEnvironment.get().getMainClassName();
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+        return module.getClassLoader().loadClass(mainClassName);
     }
 
-    public Class<?> getMainClass() throws IOException, URISyntaxException, ModuleLoadException, ClassNotFoundException {
-        String mainClassName = getMainClassName();
-
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-
-        return module.getClassLoader().loadClass(mainClassName);
+    public String getMainClassName() {
+        return ApplicationEnvironment.get().getMainClassName();
     }
 
     public void invoke(Class<?> mainClass) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -29,7 +30,6 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
-import org.gradle.api.internal.artifacts.DefaultExcludeRule;
 import org.gradle.api.internal.artifacts.dependencies.DefaultDependencyArtifact;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency;
@@ -45,6 +45,7 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
 
 
     private final Project project;
+
     Map<String, Project> projects;
 
     public GradleArtifactResolvingHelper(Project project) {
@@ -67,7 +68,7 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
 
         final Iterator<ResolvedDependency> iterator =
-                doResolve(new HashSet<>(Collections.singletonList(spec))).iterator();
+                doResolve(new HashSet<>(Collections.singletonList(spec)), false).iterator();
         if (iterator.hasNext()) {
             spec.file = iterator.next()
                     .getModuleArtifacts()
@@ -83,28 +84,27 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
     @Override
     public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs) throws Exception {
         if (specs.isEmpty()) {
-
             return specs;
         }
 
         final Set<ArtifactSpec> resolvedSpecs = new HashSet<>();
 
-        doResolve(specs).forEach(dep -> dep.getModuleArtifacts()
+        doResolve(specs, true).forEach(dep -> dep.getModuleArtifacts()
                 .forEach(artifact -> resolvedSpecs
                         .add(new ArtifactSpec(dep.getConfiguration(),
-                                              dep.getModuleGroup(),
-                                              artifact.getName(),
-                                              dep.getModuleVersion(),
-                                              artifact.getExtension(),
-                                              artifact.getClassifier(),
-                                              artifact.getFile()))));
+                                dep.getModuleGroup(),
+                                artifact.getName(),
+                                dep.getModuleVersion(),
+                                artifact.getExtension(),
+                                artifact.getClassifier(),
+                                artifact.getFile()))));
 
         return resolvedSpecs.stream()
                 .filter(a -> !"system".equals(a.scope))
                 .collect(Collectors.toSet());
     }
 
-    private Set<ResolvedDependency> doResolve(final Collection<ArtifactSpec> deps) {
+    private Set<ResolvedDependency> doResolve(final Collection<ArtifactSpec> deps, boolean transitive) {
         final Configuration config = this.project.getConfigurations().detachedConfiguration();
         final DependencySet dependencySet = config.getDependencies();
 
@@ -118,12 +118,26 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
                         final DefaultDependencyArtifact da =
                                 new DefaultDependencyArtifact(spec.artifactId(), spec.type(), spec.type(), spec.classifier(), null);
                         d.addArtifact(da);
-                        d.getExcludeRules().add(new DefaultExcludeRule());
                         dependencySet.add(d);
                     }
                 });
 
+        if ( transitive ) {
+            return config.getResolvedConfiguration().getFirstLevelModuleDependencies()
+                    .stream()
+                    .flatMap(this::fullTree)
+                    .collect(Collectors.toSet());
+        }
         return config.getResolvedConfiguration().getFirstLevelModuleDependencies();
+    }
+
+    private Stream<ResolvedDependency> fullTree(ResolvedDependency root) {
+        return Stream.concat( Stream.of( root ), subTree( root ) );
+    }
+
+    private Stream<ResolvedDependency> subTree(ResolvedDependency root) {
+        return root.getChildren().stream()
+                .flatMap( e-> fullTree( e ));
     }
 
 }

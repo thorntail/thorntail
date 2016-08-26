@@ -26,8 +26,8 @@ import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.xml.ModuleXmlParser;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
-import org.wildfly.swarm.bootstrap.util.Layout;
 
 /**
  * @author Bob McWhirter
@@ -42,12 +42,13 @@ public class ClasspathModuleFinder implements ModuleFinder {
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
         final String path = "modules/" + identifier.getName().replace('.', '/') + "/" + identifier.getSlot() + "/module.xml";
 
+
         if (LOG.isTraceEnabled()) {
             LOG.trace("attempt:" + identifier);
         }
 
         try {
-            ClassLoader cl = Layout.getInstance().getBootstrapClassLoader();
+            ClassLoader cl = ApplicationEnvironment.get().getBootstrapClassLoader();
             if (LOG.isTraceEnabled()) {
                 LOG.trace("classloader: " + cl);
                 LOG.trace("path: " + path);
@@ -96,8 +97,6 @@ public class ClasspathModuleFinder implements ModuleFinder {
             }
             return moduleSpec;
         } catch (IOException e) {
-            throw new ModuleLoadException(e);
-        } catch (URISyntaxException e) {
             throw new ModuleLoadException(e);
         }
 

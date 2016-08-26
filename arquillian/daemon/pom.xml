@@ -15,16 +15,95 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>arquillian-daemon-parent</artifactId>
+  <artifactId>arquillian-daemon</artifactId>
 
   <name> Arquillian Daemon</name>
   <description> Arquillian Daemon</description>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
-  <modules>
-    <module>api</module>
-    <module>modules</module>
-  </modules>
+  <properties>
+    <swarm.fraction.cdi>false</swarm.fraction.cdi>
+    <swarm.fraction.bootstrap>org.wildfly.swarm.arquillian.daemon</swarm.fraction.bootstrap>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-server</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.logmanager</groupId>
+          <artifactId>jboss-logmanager</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.msc</groupId>
+      <artifactId>jboss-msc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-container-test-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 
 </project>
