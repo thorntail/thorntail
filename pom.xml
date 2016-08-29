@@ -47,6 +47,7 @@
     <version.org.jboss.arquillian.drone>2.0.0.Alpha4</version.org.jboss.arquillian.drone>
     <version.org.arquillian.graphene>2.1.0.CR2</version.org.arquillian.graphene>
     <version.org.jboss.shrinkwrap.descriptors>2.0.0-alpha-9</version.org.jboss.shrinkwrap.descriptors>
+    <version.org.jboss.shrinkwrap.resolver>2.2.3</version.org.jboss.shrinkwrap.resolver>
     <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
     <version.fest-assert>1.4</version.fest-assert>
     <version.junit>4.12</version.junit>
@@ -972,6 +973,15 @@
         <version>${version.wildfly}</version>
         <type>zip</type>
         <scope>provided</scope>
+      </dependency>
+
+      <!-- ShrinkWrap Resolver -->
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-bom</artifactId>
+        <version>${version.org.jboss.shrinkwrap.resolver}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
       <dependency>
