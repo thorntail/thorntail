@@ -34,7 +34,7 @@
   <artifactId>camel-jpa</artifactId>
 
   <properties>
-    <swarm.fraction.tags>Camel</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration,EIP,JPA</swarm.fraction.tags>
   </properties>
 
 

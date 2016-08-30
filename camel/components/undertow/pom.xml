@@ -34,7 +34,7 @@
   <artifactId>camel-undertow</artifactId>
 
   <properties>
-    <swarm.fraction.tags>Camel</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration,EIP,Undertow,Servlet</swarm.fraction.tags>
   </properties>
 
 

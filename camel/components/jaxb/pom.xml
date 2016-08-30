@@ -34,7 +34,7 @@
   <artifactId>camel-jaxb</artifactId>
 
   <properties>
-    <swarm.fraction.tags>Camel</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration,EIP,JAXB</swarm.fraction.tags>
   </properties>
 
 

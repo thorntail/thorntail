@@ -34,7 +34,7 @@
   <artifactId>camel-ejb</artifactId>
 
   <properties>
-    <swarm.fraction.tags>Camel</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration,EIP,EJB</swarm.fraction.tags>
   </properties>
 
   <dependencies>
