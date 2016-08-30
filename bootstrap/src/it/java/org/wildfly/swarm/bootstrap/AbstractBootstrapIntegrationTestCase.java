@@ -29,9 +29,11 @@ import java.util.jar.Manifest;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
@@ -42,6 +44,11 @@ public abstract class AbstractBootstrapIntegrationTestCase {
     protected ClassLoader createClassLoader(JavaArchive archive) throws IOException {
         File tmpFile = export(archive);
         return new URLClassLoader(new URL[]{tmpFile.toURI().toURL()}, null);
+    }
+
+    protected ClassLoader createClassLoader(JavaArchive archive, ClassLoader parent) throws IOException {
+        File tmpFile = export(archive);
+        return new URLClassLoader(new URL[]{tmpFile.toURI().toURL()}, parent);
     }
 
     protected File export(JavaArchive archive) throws IOException {
@@ -75,8 +82,9 @@ public abstract class AbstractBootstrapIntegrationTestCase {
         archive.addAsManifestResource(new ByteArrayAsset(propsOut.toByteArray()), "wildfly-swarm.properties");
 
         if (appArtifact != null) {
-            String conf = "path:" + appArtifact + "\n";
-            archive.addAsManifestResource(new ByteArrayAsset(conf.getBytes()), "wildfly-swarm-application.conf");
+            WildFlySwarmManifest manifest = new WildFlySwarmManifest();
+            manifest.setAsset( appArtifact );
+            archive.add(new StringAsset(manifest.toString()), WildFlySwarmManifest.CLASSPATH_LOCATION );
         }
 
         if (mainClassName != null) {

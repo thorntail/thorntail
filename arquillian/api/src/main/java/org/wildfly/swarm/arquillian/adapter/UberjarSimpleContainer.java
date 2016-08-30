@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +33,8 @@ import java.util.stream.Stream;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.container.ClassContainer;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -73,7 +76,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     @Override
     public void start(Archive<?> archive) throws Exception {
-  /*
+        /*
         System.err.println( ">>> CORE" );
         System.err.println(" NAME: " + archive.getName());
         for (Map.Entry<ArchivePath, Node> each : archive.getContent().entrySet()) {
@@ -82,13 +85,12 @@ public class UberjarSimpleContainer implements SimpleContainer {
         System.err.println( "<<< CORE" );
         */
 
-        //System.err.println("is factory: " + isContainerFactory(this.testClass));
-
         MainSpecifier mainSpecifier = containerContext.getObjectStore().get(MainSpecifier.class);
 
         boolean annotatedCreateSwarm = false;
 
         Method swarmMethod = getAnnotatedMethodWithAnnotation(this.testClass, CreateSwarm.class);
+
 
         List<Class<?>> types = determineTypes(this.testClass);
 
@@ -275,6 +277,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         File workingDirectory = Files.createTempDirectory("arquillian").toFile();
         workingDirectory.deleteOnExit();
         executor.withWorkingDirectory(workingDirectory.toPath());
+
 
         this.process = executor.execute();
         this.process.getOutputStream().close();

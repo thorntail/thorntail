@@ -23,11 +23,13 @@ import org.jboss.shrinkwrap.api.asset.NamedAsset;
  */
 public interface ProjectAsset extends NamedAsset {
 
+    String PREFIX = "_bootstrap/";
+
     String getSimpleName();
 
     Archive<?> getArchive();
 
     default String getName() {
-        return "_bootstrap/" + getSimpleName();
+        return PREFIX + getSimpleName();
     }
 }

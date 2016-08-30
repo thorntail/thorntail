@@ -35,6 +35,7 @@ import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.extension.camel.CamelContextRegistry;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 

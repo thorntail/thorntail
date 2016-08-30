@@ -17,7 +17,6 @@ package org.wildfly.swarm.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,9 +34,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
-import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 
 /**
@@ -47,21 +45,7 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
 @Vetoed
 public class ArtifactManager implements ArtifactLookup {
 
-    public ArtifactManager(WildFlySwarmDependenciesConf deps) {
-        this.deps = deps;
-    }
-
-    public ArtifactManager(InputStream in) throws IOException {
-        this.deps = new WildFlySwarmDependenciesConf(in);
-    }
-
-    public ArtifactManager() throws IOException {
-        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(WildFlySwarmDependenciesConf.CLASSPATH_LOCATION);
-        if (in != null) {
-            this.deps = new WildFlySwarmDependenciesConf(in);
-        } else {
-            this.deps = null;
-        }
+    public ArtifactManager() {
     }
 
     public JavaArchive artifact(String gav) throws IOException, ModuleLoadException {
@@ -91,11 +75,8 @@ public class ArtifactManager implements ArtifactLookup {
 
         final List<String> exclusions = Arrays.asList(groupIdExclusions);
 
-        if (this.deps != null) {
-            archivesPaths = new MavenDependencyResolution(deps).resolve(exclusions);
-        } else {
-            archivesPaths = new SystemDependencyResolution().resolve(exclusions);
-        }
+        ApplicationEnvironment env = ApplicationEnvironment.get();
+        archivesPaths = env.resolveDependencies(exclusions);
 
         // package the shrinkwrap bits
         for (final String element : archivesPaths) {
@@ -163,7 +144,7 @@ public class ArtifactManager implements ArtifactLookup {
         }
 
         if (version == null) {
-            version = determineVersionViaDependenciesConf(groupId, artifactId, packaging, classifier);
+            version = determineVersionViaApplicationEnvironment(groupId, artifactId, packaging, classifier);
         }
 
         if (version == null) {
@@ -182,13 +163,45 @@ public class ArtifactManager implements ArtifactLookup {
         return MavenResolvers.get().resolveArtifact( coords, packaging );
     }
 
-    String determineVersionViaDependenciesConf(String groupId, String artifactId, String packaging, String classifier) throws IOException {
-        if (this.deps != null) {
-            MavenArtifactDescriptor found = this.deps.find(groupId, artifactId, packaging, classifier);
-            if (found != null) {
 
-                return found.version();
+    String determineVersionViaApplicationEnvironment(String groupId, String artifactId, String packaging, String classifier) throws IOException {
+        ApplicationEnvironment env = ApplicationEnvironment.get();
+
+        if ( classifier.isEmpty() ) {
+            classifier = null;
+        }
+
+        for (String dep : env.getDependencies()) {
+            String[] parts = dep.split(":");
+
+            String depGroupId = parts[0];
+            String depArtifactId = parts[1];
+            String depPackaging = parts[2];
+            String depVersion = null;
+            String depClassifier = null;
+            if ( parts.length == 4 ) {
+                depVersion = parts[3];
+            } else {
+                depClassifier = parts[3];
+                depVersion = parts[4];
             }
+
+            if ( groupId.equals( depGroupId ) ) {
+                if ( artifactId.equals( depArtifactId ) ) {
+                    if ( packaging.equals( depPackaging ) ) {
+                        if ( classifier == null ) {
+                            if ( depClassifier == null ) {
+                                return depVersion;
+                            }
+                        } else {
+                            if ( depClassifier != null && classifier.equals( depClassifier ) ) {
+                                return depVersion;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         return null;
@@ -210,6 +223,6 @@ public class ArtifactManager implements ArtifactLookup {
         return null;
     }
 
-    final private WildFlySwarmDependenciesConf deps;
+    //final private WildFlySwarmDependenciesConf deps;
 
 }

@@ -25,13 +25,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TimeZone;
+import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 import org.jboss.shrinkwrap.api.Archive;
@@ -43,11 +49,10 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
 import org.jboss.shrinkwrap.impl.base.io.IOUtil;
+import org.wildfly.swarm.bootstrap.Main;
+import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmApplicationConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmBootstrapConf;
-import org.wildfly.swarm.bootstrap.util.WildFlySwarmDependenciesConf;
 
 /**
  * @author Bob McWhirter
@@ -83,12 +88,14 @@ public class BuildTool {
     public BuildTool projectArtifact(String groupId, String artifactId, String version,
                                      String packaging, File file, String artifactName) {
         this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file),
-                                              artifactName);
+                artifactName);
+        this.dependencyManager.setProjectAsset(this.projectAsset);
         return this;
     }
 
     public BuildTool projectArchive(Archive archive) {
         this.projectAsset = new ArchiveAsset(archive);
+        this.dependencyManager.setProjectAsset(this.projectAsset);
         return this;
     }
 
@@ -101,7 +108,7 @@ public class BuildTool {
     public BuildTool explicitDependency(String scope, String groupId, String artifactId, String version,
                                         String packaging, String classifier, File file) {
         explicitDependency(new ArtifactSpec(scope, groupId, artifactId, version,
-                                    packaging, classifier, file));
+                packaging, classifier, file));
 
         return this;
     }
@@ -112,7 +119,7 @@ public class BuildTool {
     }
 
     public BuildTool presolvedDependency(String scope, String groupId, String artifactId, String version,
-                                        String packaging, String classifier, File file) {
+                                         String packaging, String classifier, File file) {
         presolvedDependency(new ArtifactSpec(scope, groupId, artifactId, version,
                 packaging, classifier, file));
 
@@ -120,7 +127,7 @@ public class BuildTool {
     }
 
     public BuildTool presolvedDependency(final ArtifactSpec spec) {
-        this.dependencyManager.addPresolvedDependency( spec );
+        this.dependencyManager.addPresolvedDependency(spec);
         return this;
     }
 
@@ -187,26 +194,23 @@ public class BuildTool {
     }
 
     public void repackageWar(File file) throws IOException {
-        this.log.info("Repackaging .war: " + file );
+        this.log.info("Repackaging .war: " + file);
 
-        Path backupPath = Paths.get( file.toString() + ".original" );
-        Files.move( file.toPath(), backupPath, StandardCopyOption.REPLACE_EXISTING );
+        Path backupPath = Paths.get(file.toString() + ".original");
+        Files.move(file.toPath(), backupPath, StandardCopyOption.REPLACE_EXISTING);
 
-        Archive original = ShrinkWrap.create( JavaArchive.class );
-        original.as(ZipImporter.class).importFrom( backupPath.toFile() );
+        Archive original = ShrinkWrap.create(JavaArchive.class);
+        original.as(ZipImporter.class).importFrom(backupPath.toFile());
 
         WebInfLibFilteringArchive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
-        repackaged.as( ZipExporter.class).exportTo( file, true );
+        repackaged.as(ZipExporter.class).exportTo(file, true);
     }
 
     public Archive build() throws Exception {
         analyzeDependencies(false);
         addWildflySwarmBootstrapJar();
-        addWildFlyBootstrapConf();
-        addManifest();
-        addWildFlySwarmProperties();
-        addWildFlySwarmApplicationConf();
-        addWildFlySwarmDependenciesConf();
+        addJarManifest();
+        addWildFlySwarmApplicationManifest();
         addAdditionalModules();
         addProjectAsset();
         populateUberJarMavenRepository();
@@ -249,10 +253,10 @@ public class BuildTool {
     }
 
     private void addProjectAsset() {
-        if ( this.hollow ) {
+        if (this.hollow) {
             return;
         }
-        this.archive.add( new WebInfLibFilteringArchiveAsset(this.projectAsset, this.dependencyManager ));
+        this.archive.add(new WebInfLibFilteringArchiveAsset(this.projectAsset, this.dependencyManager));
     }
 
     private boolean detectFractions() throws Exception {
@@ -271,16 +275,16 @@ public class BuildTool {
 
         //don't overwrite fractions added by the user
         detectedFractions.removeAll(this.fractions.stream()
-                                            .map(x -> FractionDescriptor.fromArtifactSpec(x))
-                                            .collect(Collectors.toSet()));
+                .map(x -> FractionDescriptor.fromArtifactSpec(x))
+                .collect(Collectors.toSet()));
 
         this.log.info(String.format("Detected %sfractions: %s",
-                                    this.fractions.isEmpty() ? "" : "additional ",
-                                    String.join(", ",
-                                                detectedFractions.stream()
-                                                        .map(FractionDescriptor::av)
-                                                        .sorted()
-                                                        .collect(Collectors.toList()))));
+                this.fractions.isEmpty() ? "" : "additional ",
+                String.join(", ",
+                        detectedFractions.stream()
+                                .map(FractionDescriptor::av)
+                                .sorted()
+                                .collect(Collectors.toList()))));
         detectedFractions.stream()
                 .map(FractionDescriptor::toArtifactSpec)
                 .forEach(this::fraction);
@@ -307,10 +311,10 @@ public class BuildTool {
                 .forEach(allFractions::add);
 
         this.log.info("Adding fractions: " +
-                              String.join(", ", allFractions.stream()
-                                      .map(BuildTool::strippedSwarmGav)
-                                      .sorted()
-                                      .collect(Collectors.toList())));
+                String.join(", ", allFractions.stream()
+                        .map(BuildTool::strippedSwarmGav)
+                        .sorted()
+                        .collect(Collectors.toList())));
 
         allFractions.forEach(f -> this.dependencyManager.addExplicitDependency(f));
         analyzeDependencies(true);
@@ -355,46 +359,44 @@ public class BuildTool {
         }
     }
 
-    private void addManifest() throws IOException {
-        UberJarManifestAsset manifest = new UberJarManifestAsset(this.mainClass, this.hollow);
-        this.archive.add(manifest);
+    private static final DateFormat ISO_DATE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+
+    static {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        ISO_DATE.setTimeZone(tz);
     }
 
-    private void addWildFlySwarmProperties() throws IOException {
-        Properties props = new Properties();
+    private void addJarManifest() {
+        Manifest manifest = new Manifest();
+        Attributes attrs = manifest.getMainAttributes();
+        attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+        attrs.put(Attributes.Name.MAIN_CLASS, Main.class.getName());
 
-        Enumeration<?> propNames = this.properties.propertyNames();
-
-        while (propNames.hasMoreElements()) {
-            String eachName = (String) propNames.nextElement();
-            String eachValue = this.properties.get(eachName).toString();
-            props.put(eachName, eachValue);
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            manifest.write(out);
+            out.close();
+            byte[] bytes = out.toByteArray();
+            this.archive.addAsManifestResource( new ByteArrayAsset( bytes ), "MANIFEST.MF" );
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        props.setProperty(BootstrapProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
-
-        if (this.bundleDependencies) {
-            props.setProperty(BootstrapProperties.BUNDLED_DEPENDENCIES, "true");
-        }
-
-        ByteArrayOutputStream propsBytes = new ByteArrayOutputStream();
-        props.store(propsBytes, "Generated by WildFly Swarm");
-
-        this.archive.addAsManifestResource(new ByteArrayAsset(propsBytes.toByteArray()), "wildfly-swarm.properties");
     }
 
-    private void addWildFlyBootstrapConf() throws Exception {
-        WildFlySwarmBootstrapConf bootstrapConf = this.dependencyManager.getWildFlySwarmBootstrapConf();
-        this.archive.add(new StringAsset(bootstrapConf.toString()), WildFlySwarmBootstrapConf.CLASSPATH_LOCATION);
-    }
+    private void addWildFlySwarmApplicationManifest() {
+        WildFlySwarmManifest manifest = this.dependencyManager.getWildFlySwarmManifest();
 
-    private void addWildFlySwarmDependenciesConf() throws IOException {
-        WildFlySwarmDependenciesConf depsConf = this.dependencyManager.getWildFlySwarmDependenciesConf();
-        this.archive.add(new StringAsset(depsConf.toString()), WildFlySwarmDependenciesConf.CLASSPATH_LOCATION);
-    }
+        String timestamp = ISO_DATE.format(new Date());
+        this.properties.put("swarm.uberjar.build.timestamp", timestamp);
+        this.properties.put("swarm.uberjar.build.user", System.getProperty("user.name"));
+        this.properties.put(BootstrapProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
 
-    private void addWildFlySwarmApplicationConf() throws Exception {
-        WildFlySwarmApplicationConf appConf = this.dependencyManager.getWildFlySwarmApplicationConf( this.hollow ? null : this.projectAsset);
-        this.archive.add(new StringAsset(appConf.toString()), WildFlySwarmApplicationConf.CLASSPATH_LOCATION);
+        manifest.setProperties(this.properties);
+        manifest.bundleDependencies(this.bundleDependencies);
+        manifest.setMainClass( this.mainClass );
+        manifest.setHollow( this.hollow );
+        this.archive.add(new StringAsset(manifest.toString()), WildFlySwarmManifest.CLASSPATH_LOCATION);
+
     }
 
     private File createJar(String baseName, Path dir) throws IOException {
@@ -426,7 +428,7 @@ public class BuildTool {
             final File moduleDir = new File(additionalModule);
             this.archive.addAsResource(moduleDir, "modules");
             Files.find(moduleDir.toPath(), 20,
-                       (p, __) -> p.getFileName().toString().equals("module.xml"))
+                    (p, __) -> p.getFileName().toString().equals("module.xml"))
                     .forEach(p -> this.dependencyManager.addAdditionalModule(p));
 
         }

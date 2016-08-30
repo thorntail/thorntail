@@ -17,6 +17,8 @@ package org.wildfly.swarm.plugin.gradle;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,7 @@ import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
 import org.wildfly.swarm.fractionlist.FractionList;
+import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
@@ -71,7 +74,7 @@ public class PackageTask extends DefaultTask {
         this.tool = new BuildTool()
                 .artifactResolvingHelper(new GradleArtifactResolvingHelper(project))
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
-                                 jarTask.getExtension(), jarTask.getArchivePath())
+                        jarTask.getExtension(), jarTask.getArchivePath())
                 .mainClass(ext.getMainClassName())
                 .bundleDependencies(ext.getBundleDependencies())
                 .executable(ext.getExecutable())
@@ -82,9 +85,9 @@ public class PackageTask extends DefaultTask {
                 .fractionList(FractionList.get())
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
                 .additionalModules(ext.getModuleDirs().stream()
-                                           .filter(f -> f.exists())
-                                           .map(File::getAbsolutePath)
-                                           .collect(Collectors.toList()))
+                        .filter(f -> f.exists())
+                        .map(File::getAbsolutePath)
+                        .collect(Collectors.toList()))
                 .logger(new BuildTool.SimpleLogger() {
                     @Override
                     public void info(String msg) {
@@ -102,11 +105,22 @@ public class PackageTask extends DefaultTask {
                     }
                 });
 
+        List<ArtifactSpec> explicitDependencies = new ArrayList<>();
+
+        project.getConfigurations()
+                .getByName("compile")
+                .getAllDependencies()
+                .forEach((artifact) -> {
+                    String groupId = artifact.getGroup();
+                    String artifactId = artifact.getName();
+                    explicitDependencies.add(new ArtifactSpec("compile", groupId, artifactId, null, "jar", null, null));
+                });
+
         project.getConfigurations()
                 .getByName("compile")
                 .getResolvedConfiguration()
                 .getResolvedArtifacts()
-                .forEach(this::addDependency);
+                .forEach(e -> addDependency(explicitDependencies, e));
 
         final Boolean bundleDependencies = ext.getBundleDependencies();
         if (bundleDependencies != null) {
@@ -116,7 +130,7 @@ public class PackageTask extends DefaultTask {
         this.tool.build(project.getName(), project.getBuildDir().toPath().resolve("libs"));
     }
 
-    private void addDependency(final ResolvedArtifact artifact) {
+    private void addDependency(final List<ArtifactSpec> explicitDependencies, final ResolvedArtifact artifact) {
         String groupId = artifact.getModuleVersion().getId().getGroup();
         String artifactId = artifact.getModuleVersion().getId().getName();
         String version = artifact.getModuleVersion().getId().getVersion();
@@ -124,6 +138,12 @@ public class PackageTask extends DefaultTask {
         String classifier = artifact.getClassifier();
         File file = artifact.getFile();
 
-        this.tool.explicitDependency("compile", groupId, artifactId, version, extension, classifier, file);
+        this.tool.presolvedDependency("compile", groupId, artifactId, version, extension, classifier, file);
+
+        for (ArtifactSpec each : explicitDependencies) {
+            if ( each.groupId().equals( groupId ) && each.artifactId().equals( artifactId ) ) {
+                this.tool.explicitDependency("compile", groupId, artifactId, version, extension, classifier, file);
+            }
+        }
     }
 }

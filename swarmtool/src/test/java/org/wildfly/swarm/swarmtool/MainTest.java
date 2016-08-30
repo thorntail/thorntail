@@ -29,8 +29,9 @@ import java.util.jar.Manifest;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.wildfly.swarm.bootstrap.util.UberJarManifest;
+import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -78,24 +79,12 @@ public class MainTest {
     }
 
     Properties swarmProperties(Result result) throws IOException {
-        final Properties props = new Properties();
         try (InputStream in = result.archive
-                .get("META-INF/wildfly-swarm.properties")
+                .get(WildFlySwarmManifest.CLASSPATH_LOCATION)
                 .getAsset()
                 .openStream()) {
-            props.load(in);
-        }
-
-        return props;
-    }
-
-    UberJarManifest manifest(Result result) throws IOException {
-        try (InputStream in = result.archive
-                .get("META-INF/MANIFEST.MF")
-                .getAsset()
-                .openStream()) {
-
-            return new UberJarManifest(new Manifest(in));
+            WildFlySwarmManifest manifest = new WildFlySwarmManifest(in);
+            return manifest.getProperties();
         }
     }
 
@@ -144,12 +133,6 @@ public class MainTest {
     public void dependencies() throws Exception {
         assertThat(getBigJar().archive.contains("/m2repo")).isTrue();
         assertThat(getLittleJar().archive.contains("/m2repo")).isFalse();
-    }
-
-    @Test
-    public void settingMain() throws Exception {
-        assertThat(manifest(getLittleJar()).getMainClassName()).isEqualTo("org.foo.bar.Main");
-        assertThat(manifest(getBigJar()).getMainClassName()).isNull();
     }
 
     @Test

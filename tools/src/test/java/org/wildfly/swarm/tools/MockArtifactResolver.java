@@ -1,18 +1,3 @@
-/**
- * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.wildfly.swarm.tools;
 
 import java.io.File;
@@ -24,6 +9,7 @@ import java.util.function.Consumer;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
@@ -32,18 +18,38 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public class MockArtifactResolver implements ArtifactResolvingHelper {
 
-    private Map<ArtifactSpec, Archive> artifacts = new HashMap<>();
+    private Map<ArtifactSpec, Entry> entries = new HashMap<>();
 
+    private Map<ArtifactSpec, Archive> artifacts = new HashMap<>();
     private Map<ArtifactSpec, File> resolvedArtifacts = new HashMap<>();
 
-    public void add(String mscGav, Consumer<Archive> setup) {
-        add(ArtifactSpec.fromMscGav(mscGav), setup);
+    public void add(ArtifactSpec spec) {
+        Archive archive = ShrinkWrap.create(JavaArchive.class);
+        archive.add(EmptyAsset.INSTANCE, "nothing" );
+
+        Entry entry = new Entry( spec );
+
+        this.entries.put(spec, entry);
+        this.artifacts.put( spec, archive );
     }
 
-    public void add(ArtifactSpec spec, Consumer<Archive> setup) {
+    public void add(ArtifactSpec spec, Consumer<Entry> config) {
         Archive archive = ShrinkWrap.create(JavaArchive.class);
-        setup.accept(archive);
-        this.artifacts.put(spec, archive);
+        archive.add(EmptyAsset.INSTANCE, "nothing" );
+
+        Entry entry = new Entry( spec );
+        config.accept( entry );
+
+        this.entries.put(spec, entry);
+        this.artifacts.put( spec, archive );
+    }
+
+    public void add(ArtifactSpec spec, Archive archive, Consumer<Entry> config) {
+        Entry entry = new Entry( spec );
+        config.accept( entry );
+
+        this.entries.put(spec, entry);
+        this.artifacts.put( spec, archive );
     }
 
     @Override
@@ -70,7 +76,26 @@ public class MockArtifactResolver implements ArtifactResolvingHelper {
         Set<ArtifactSpec> resolved = new HashSet<>();
         for (ArtifactSpec spec : specs) {
             resolved.add(resolve(spec));
+            resolved.addAll( resolveAll( this.entries.get( spec ).getDependencies() ) );
         }
         return resolved;
+    }
+
+    public static class Entry {
+        private final ArtifactSpec root;
+        private final Set<ArtifactSpec> dependencies = new HashSet<>();
+
+        public Entry(ArtifactSpec root) {
+            this.root = root;
+        }
+
+        public void addDependency(ArtifactSpec dep) {
+            this.dependencies.add( dep );
+        }
+
+        public Set<ArtifactSpec> getDependencies() {
+            return this.dependencies;
+        }
+
     }
 }

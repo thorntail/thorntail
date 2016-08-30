@@ -18,7 +18,19 @@
         <path name="org/wildfly/swarm/internal"/>
       </paths>
     </system>
-    <module name="org.wildfly.swarm.container" slot="api" services="import" export="true"/>
+    <module name="org.wildfly.swarm.container" slot="api" services="import" export="true">
+      <imports>
+        <include path="**"/>
+        <include path="org/wildfly/swarm/cli"/>
+        <include path="org/wildfly/swarm/container"/>
+        <include path="org/wildfly/swarm/container/internal"/>
+        <include path="org/wildfly/swarm/container/util"/>
+        <include path="org/wildfly/swarm/internal"/>
+      </imports>
+      <exports>
+        <include path="**"/>
+      </exports>
+    </module>
   </dependencies>
 
 </module>
