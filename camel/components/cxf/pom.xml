@@ -34,7 +34,7 @@
   <artifactId>camel-cxf</artifactId>
 
   <properties>
-    <swarm.fraction.tags>Camel</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration,EIP,WebServices</swarm.fraction.tags>
   </properties>
 
   <dependencies>

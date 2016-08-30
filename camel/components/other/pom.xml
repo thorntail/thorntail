@@ -34,7 +34,7 @@
   <artifactId>camel-other</artifactId>
 
   <properties>
-    <swarm.fraction.tags>Camel</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration,EIP</swarm.fraction.tags>
   </properties>
 
 

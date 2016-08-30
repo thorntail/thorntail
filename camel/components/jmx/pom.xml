@@ -34,7 +34,7 @@
   <artifactId>camel-jmx</artifactId>
 
   <properties>
-    <swarm.fraction.tags>Camel</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration,EIP,JMX</swarm.fraction.tags>
   </properties>
 
 
