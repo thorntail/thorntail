@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -25,9 +22,11 @@ import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.undertow.Server;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 import org.wildfly.swarm.undertow.UndertowFraction;
+import org.wildfly.swarm.undertow.descriptors.CertInfo;
 
 /**
  * @author Bob McWhirter
@@ -44,38 +43,38 @@ public class HTTPSCustomizer implements Customizer {
     @Any
     private Instance<ManagementCoreService> managementCoreService;
 
-    public HTTPSCustomizer() {
-    }
+    @Inject
+    private CertInfo certInfo;
 
     public void customize() {
         if (!this.managementCoreService.isUnsatisfied()) {
             UndertowFraction fraction = undertowInstance.get();
-            if (fraction.keystorePassword() != null & fraction.keystorePassword() != null && fraction.alias() != null) {
+            if (certInfo.isValid()) {
                 ManagementCoreService management = this.managementCoreService.get();
                 if (management == null) {
-                    throw new RuntimeException("HTTPS configured but org.wildfly.swarm:management not available");
+                    throw SwarmMessages.MESSAGES.httpsRequiresManagementFraction();
                 }
 
-                List<Server> servers = fraction.subresources().servers();
-
-                for (Server server : servers) {
+                for (Server server : fraction.subresources().servers()) {
                     if (server.subresources().httpsListeners().isEmpty()) {
                         server.httpsListener("default-https", (listener) -> {
-                            listener.securityRealm("SSLRealm");
-                            listener.socketBinding("https");
+                            listener.securityRealm("SSLRealm")
+                                    .socketBinding("https");
                         });
                     }
                 }
 
                 management.securityRealm("SSLRealm", (realm) -> {
                     realm.sslServerIdentity((identity) -> {
-                        identity.keystorePath(fraction.keystorePath());
-                        identity.keystorePassword(fraction.keystorePassword());
-                        identity.alias(fraction.alias());
+                        identity.keystorePath(certInfo.keystorePath())
+                                .keystoreRelativeTo(certInfo.keystoreRelativeTo())
+                                .keystorePassword(certInfo.keystorePassword())
+                                .keyPassword(certInfo.keyPassword())
+                                .alias(certInfo.keystoreAlias())
+                                .generateSelfSignedCertificateHost(certInfo.generateSelfSignedCertificateHost());
                     });
                 });
             }
         }
     }
-
 }

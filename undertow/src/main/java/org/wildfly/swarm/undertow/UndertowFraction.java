@@ -144,8 +144,26 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
      * @return This fraction.
      */
     public UndertowFraction enableHTTPS(String path, String password, String alias) {
+        return enableHTTPS(path, password, password, alias);
+    }
+
+    /**
+     * Enable HTTPS on this fraction.
+     *
+     * <p>This will enable HTTPS of the fraction. The application also
+     * <b>must</b> include the <code>management</code> fraction in its
+     * dependencies.</p>
+     *
+     * @param path             The keystore path.
+     * @param keystorePassword The keystore password.
+     * @param keyPassword      The key password inside the keystore.
+     * @param alias            The server certificate alias.
+     * @return This fraction.
+     */
+    public UndertowFraction enableHTTPS(String path, String keystorePassword, String keyPassword, String alias) {
         this.keystorePath = path;
-        this.keystorePassword = password;
+        this.keystorePassword = keystorePassword;
+        this.keyPassword = keyPassword;
         this.alias = alias;
         return this;
     }
@@ -162,6 +180,10 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
 
     public String keystorePassword() {
         return this.keystorePassword;
+    }
+
+    public String keyPassword() {
+        return this.keyPassword;
     }
 
     public String keystorePath() {
@@ -213,6 +235,11 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
      * Password for the keystore.
      */
     private String keystorePassword;
+
+    /**
+     * Password for the key.
+     */
+    private String keyPassword;
 
     /**
      * Server certificate alias.

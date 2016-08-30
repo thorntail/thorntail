@@ -152,4 +152,7 @@ public interface SwarmMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.DEBUG)
     @Message(id = 32, value = "Load standalone.xml via %s from %s")
     void loadingStandaloneXml(String loader, String location);
+
+    @Message(id = 33, value = "HTTP/S is configured correctly, but org.wildfly.swarm:management is not available")
+    RuntimeException httpsRequiresManagementFraction();
 }
