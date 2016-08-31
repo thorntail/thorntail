@@ -34,6 +34,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.NonTransitiveStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.jboss.shrinkwrap.resolver.impl.maven.ConfigurableMavenWorkingSessionImpl;
 import org.jboss.shrinkwrap.resolver.impl.maven.MavenWorkingSessionContainer;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
@@ -56,8 +59,8 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
 
             MavenRemoteRepository jbossPublic =
                     MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
-                                                                   "http://repository.jboss.org/nexus/content/groups/public/",
-                                                                   "default");
+                            "http://repository.jboss.org/nexus/content/groups/public/",
+                            "default");
             jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
             jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
@@ -110,27 +113,28 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs) {
+    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean trasitive) {
         if (specs.isEmpty()) {
-
             return specs;
         }
+
+        MavenResolutionStrategy transitivityStrategy = (trasitive ? TransitiveStrategy.INSTANCE : NonTransitiveStrategy.INSTANCE);
 
         resetListeners();
         final MavenResolvedArtifact[] artifacts =
                 withResolver(r -> r.resolve(specs.stream().map(ArtifactSpec::mavenGav).collect(Collectors.toList()))
-                        .withTransitivity()
+                        .using(transitivityStrategy)
                         .as(MavenResolvedArtifact.class));
 
         return Arrays.stream(artifacts).map(artifact -> {
             final MavenCoordinate coord = artifact.getCoordinate();
             return new ArtifactSpec("compile",
-                                    coord.getGroupId(),
-                                    coord.getArtifactId(),
-                                    coord.getVersion(),
-                                    coord.getPackaging().getId(),
-                                    coord.getClassifier(),
-                                    artifact.asFile());
+                    coord.getGroupId(),
+                    coord.getArtifactId(),
+                    coord.getVersion(),
+                    coord.getPackaging().getId(),
+                    coord.getClassifier(),
+                    artifact.asFile());
         }).collect(Collectors.toSet());
     }
 

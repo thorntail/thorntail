@@ -72,11 +72,13 @@ public class MockArtifactResolver implements ArtifactResolvingHelper {
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
+    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive) throws Exception {
         Set<ArtifactSpec> resolved = new HashSet<>();
         for (ArtifactSpec spec : specs) {
             resolved.add(resolve(spec));
-            resolved.addAll( resolveAll( this.entries.get( spec ).getDependencies() ) );
+            if ( transitive ) {
+                resolved.addAll(resolveAll(this.entries.get(spec).getDependencies()));
+            }
         }
         return resolved;
     }

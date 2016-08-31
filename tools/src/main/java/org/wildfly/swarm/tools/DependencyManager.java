@@ -147,17 +147,17 @@ public class DependencyManager {
             dependencies.add(dependency);
         }
 
-        resolveAllArtifacts(dependencies);
+        resolveAllArtifactsNonTransitively(dependencies);
         for (ArtifactSpec dependency : dependencies) {
             addArtifactToArchiveMavenRepository(archive, dependency);
         }
     }
 
     public void populateUserMavenRepository() throws Exception {
-        resolveAllArtifacts(this.dependencies);
-        for (ArtifactSpec each : this.moduleDependencies) {
-            resolveArtifact(each);
-        }
+        Set<ArtifactSpec> dependencies = new HashSet<>();
+        dependencies.addAll( this.dependencies );
+        dependencies.addAll( this.moduleDependencies );
+        resolveAllArtifactsNonTransitively( dependencies );
     }
 
     public void addArtifactToArchiveMavenRepository(Archive archive, ArtifactSpec artifact) throws Exception {
@@ -199,7 +199,7 @@ public class DependencyManager {
     }
 
     protected void analyzeDependencies(boolean autodetect) throws Exception {
-        Set<ArtifactSpec> allResolvedDependencies = resolveAllArtifacts(this.explicitDependencies);
+        Set<ArtifactSpec> allResolvedDependencies = resolveAllArtifactsTransitively(this.explicitDependencies);
 
         /*
         for (ArtifactSpec each : allResolvedDependencies) {
@@ -269,7 +269,7 @@ public class DependencyManager {
 
         // re-resolve the application's dependencies minus
         // any of our swarm dependencies
-        Set<ArtifactSpec> simplifiedDeps = resolveAllArtifacts(nonBootstrapDeps);
+        Set<ArtifactSpec> simplifiedDeps = resolveAllArtifactsTransitively(nonBootstrapDeps);
 
         /*
         for (ArtifactSpec each : simplifiedDeps) {
@@ -431,8 +431,12 @@ public class DependencyManager {
         return spec;
     }
 
-    protected Set<ArtifactSpec> resolveAllArtifacts(Set<ArtifactSpec> specs) throws Exception {
+    protected Set<ArtifactSpec> resolveAllArtifactsTransitively(Set<ArtifactSpec> specs) throws Exception {
         return this.resolver.resolveAll(specs);
+    }
+
+    protected Set<ArtifactSpec> resolveAllArtifactsNonTransitively(Set<ArtifactSpec> specs) throws Exception {
+        return this.resolver.resolveAll(specs, false);
     }
 
     private final WildFlySwarmManifest applicationManifest = new WildFlySwarmManifest();
