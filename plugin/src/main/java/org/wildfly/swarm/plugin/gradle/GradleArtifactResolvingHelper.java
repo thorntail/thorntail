@@ -82,14 +82,14 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs) throws Exception {
+    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean transitive) throws Exception {
         if (specs.isEmpty()) {
             return specs;
         }
 
         final Set<ArtifactSpec> resolvedSpecs = new HashSet<>();
 
-        doResolve(specs, true).forEach(dep -> dep.getModuleArtifacts()
+        doResolve(specs, transitive).forEach(dep -> dep.getModuleArtifacts()
                 .forEach(artifact -> resolvedSpecs
                         .add(new ArtifactSpec(dep.getConfiguration(),
                                 dep.getModuleGroup(),

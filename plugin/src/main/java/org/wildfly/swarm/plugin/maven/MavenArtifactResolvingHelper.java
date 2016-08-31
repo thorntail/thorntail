@@ -28,6 +28,7 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.CollectResult;
+import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.ArtifactResolver;
@@ -61,9 +62,9 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         this.session = session;
         this.proxy = proxy;
         this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
-                                                          "http://repository.jboss.org/nexus/content/groups/public/",
-                                                          null,
-                                                          this.proxy));
+                "http://repository.jboss.org/nexus/content/groups/public/",
+                null,
+                this.proxy));
     }
 
     public void remoteRepository(ArtifactRepository repo) {
@@ -94,7 +95,6 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                         spec.file = result.getArtifact().getFile();
                     }
                 } catch (ArtifactResolutionException e) {
-                    System.err.println("ERR " + e);
                     e.printStackTrace();
                 }
             }
@@ -105,36 +105,52 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
+    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive) throws Exception {
         if (specs.isEmpty()) {
             return specs;
         }
 
-        final CollectRequest request = new CollectRequest();
-        request.setRepositories(this.remoteRepositories);
+        List<DependencyNode> nodes = null;
 
-        specs.forEach(spec -> request
-                .addDependency(new Dependency(new DefaultArtifact(spec.groupId(),
+        if (transitive) {
+            final CollectRequest request = new CollectRequest();
+            request.setRepositories(this.remoteRepositories);
+
+            specs.forEach(spec -> request
+                    .addDependency(new Dependency(new DefaultArtifact(spec.groupId(),
+                            spec.artifactId(),
+                            spec.classifier(),
+                            spec.type(),
+                            spec.version()),
+                            "compile")));
+
+            RepositorySystemSession tempSession =
+                    new RepositorySystemSessionWrapper(this.session,
+                            new ConflictResolver(new NewestVersionSelector(),
+                                    new JavaScopeSelector(),
+                                    new SimpleOptionalitySelector(),
+                                    new JavaScopeDeriver()
+                            )
+                    );
+
+            CollectResult result = this.system.collectDependencies(tempSession, request);
+
+            PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
+            result.getRoot().accept(gen);
+            nodes = gen.getNodes();
+        } else {
+            nodes = new ArrayList<>();
+            for ( ArtifactSpec spec : specs ) {
+                Dependency dependency = new Dependency(new DefaultArtifact(spec.groupId(),
                         spec.artifactId(),
                         spec.classifier(),
                         spec.type(),
                         spec.version()),
-                        "compile")));
-
-        RepositorySystemSession tempSession =
-                new RepositorySystemSessionWrapper(this.session,
-                                                   new ConflictResolver(new NewestVersionSelector(),
-                                                                        new JavaScopeSelector(),
-                                                                        new SimpleOptionalitySelector(),
-                                                                        new JavaScopeDeriver()
-                                                   )
-                );
-
-        CollectResult result = this.system.collectDependencies(tempSession, request);
-
-        PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
-        result.getRoot().accept(gen);
-        List<DependencyNode> nodes = gen.getNodes();
+                        "compile");
+                DefaultDependencyNode node = new DefaultDependencyNode( dependency );
+                nodes.add( node );
+            };
+        }
 
         resolveDependenciesInParallel(nodes);
 
@@ -158,8 +174,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     private void resolveDependenciesInParallel(List<DependencyNode> nodes) {
         List<ArtifactRequest> artifactRequests = nodes.stream()
-            .map(node -> new ArtifactRequest(node.getArtifact(), this.remoteRepositories, null))
-            .collect(Collectors.toList());
+                .map(node -> new ArtifactRequest(node.getArtifact(), this.remoteRepositories, null))
+                .collect(Collectors.toList());
 
         try {
             this.resolver.resolveArtifacts(this.session, artifactRequests);
@@ -175,8 +191,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 auth.getUsername() != null &&
                 auth.getPassword() != null) {
             builder.setAuthentication(new AuthenticationBuilder()
-                                              .addUsername(auth.getUsername())
-                                              .addPassword(auth.getPassword()).build());
+                    .addUsername(auth.getUsername())
+                    .addPassword(auth.getPassword()).build());
         }
 
         if (proxy != null) {
