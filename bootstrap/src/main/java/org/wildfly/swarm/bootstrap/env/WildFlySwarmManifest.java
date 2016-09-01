@@ -149,7 +149,9 @@ public class WildFlySwarmManifest {
     }
 
     public void setAsset(String asset) {
-        this.asset = asset;
+        if (!this.isHollow()) {
+            this.asset = asset;
+        }
     }
 
     public String getAsset() {
@@ -187,6 +189,10 @@ public class WildFlySwarmManifest {
 
     public void setHollow(boolean hollow) {
         this.hollow = hollow;
+
+        if (this.isHollow()) {
+            this.asset = null;
+        }
     }
 
     public boolean isHollow() {

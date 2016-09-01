@@ -56,6 +56,7 @@ import org.jboss.shrinkwrap.impl.base.importer.ExplodedImporterImpl;
 import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
@@ -387,15 +388,15 @@ public class Swarm {
             throw SwarmMessages.MESSAGES.containerNotStarted("deploy()");
         }
 
-        if (System.getProperty("swarm.hollow") == null) {
-            this.server.deployer().deploy();
-        } else {
+        if (ApplicationEnvironment.get().isHollow()) {
             this.server.deployer().deploy(
                     getCommandLine().extraArguments()
                             .stream()
                             .map(e -> Paths.get(e))
                             .collect(Collectors.toList())
             );
+        } else {
+            this.server.deployer().deploy();
         }
         return this;
     }

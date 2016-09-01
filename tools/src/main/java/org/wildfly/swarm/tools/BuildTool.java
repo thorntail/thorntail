@@ -88,7 +88,7 @@ public class BuildTool {
     public BuildTool projectArtifact(String groupId, String artifactId, String version,
                                      String packaging, File file, String artifactName) {
         this.projectAsset = new ArtifactAsset(new ArtifactSpec(null, groupId, artifactId, version, packaging, null, file),
-                artifactName);
+                                              artifactName);
         this.dependencyManager.setProjectAsset(this.projectAsset);
         return this;
     }
@@ -108,7 +108,7 @@ public class BuildTool {
     public BuildTool explicitDependency(String scope, String groupId, String artifactId, String version,
                                         String packaging, String classifier, File file) {
         explicitDependency(new ArtifactSpec(scope, groupId, artifactId, version,
-                packaging, classifier, file));
+                                            packaging, classifier, file));
 
         return this;
     }
@@ -121,7 +121,7 @@ public class BuildTool {
     public BuildTool presolvedDependency(String scope, String groupId, String artifactId, String version,
                                          String packaging, String classifier, File file) {
         presolvedDependency(new ArtifactSpec(scope, groupId, artifactId, version,
-                packaging, classifier, file));
+                                             packaging, classifier, file));
 
         return this;
     }
@@ -275,16 +275,16 @@ public class BuildTool {
 
         //don't overwrite fractions added by the user
         detectedFractions.removeAll(this.fractions.stream()
-                .map(x -> FractionDescriptor.fromArtifactSpec(x))
-                .collect(Collectors.toSet()));
+                                            .map(x -> FractionDescriptor.fromArtifactSpec(x))
+                                            .collect(Collectors.toSet()));
 
         this.log.info(String.format("Detected %sfractions: %s",
-                this.fractions.isEmpty() ? "" : "additional ",
-                String.join(", ",
-                        detectedFractions.stream()
-                                .map(FractionDescriptor::av)
-                                .sorted()
-                                .collect(Collectors.toList()))));
+                                    this.fractions.isEmpty() ? "" : "additional ",
+                                    String.join(", ",
+                                                detectedFractions.stream()
+                                                        .map(FractionDescriptor::av)
+                                                        .sorted()
+                                                        .collect(Collectors.toList()))));
         detectedFractions.stream()
                 .map(FractionDescriptor::toArtifactSpec)
                 .forEach(this::fraction);
@@ -311,10 +311,10 @@ public class BuildTool {
                 .forEach(allFractions::add);
 
         this.log.info("Adding fractions: " +
-                String.join(", ", allFractions.stream()
-                        .map(BuildTool::strippedSwarmGav)
-                        .sorted()
-                        .collect(Collectors.toList())));
+                              String.join(", ", allFractions.stream()
+                                      .map(BuildTool::strippedSwarmGav)
+                                      .sorted()
+                                      .collect(Collectors.toList())));
 
         allFractions.forEach(f -> this.dependencyManager.addExplicitDependency(f));
         analyzeDependencies(true);
@@ -377,7 +377,7 @@ public class BuildTool {
             manifest.write(out);
             out.close();
             byte[] bytes = out.toByteArray();
-            this.archive.addAsManifestResource( new ByteArrayAsset( bytes ), "MANIFEST.MF" );
+            this.archive.addAsManifestResource(new ByteArrayAsset(bytes), "MANIFEST.MF");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -389,12 +389,14 @@ public class BuildTool {
         String timestamp = ISO_DATE.format(new Date());
         this.properties.put("swarm.uberjar.build.timestamp", timestamp);
         this.properties.put("swarm.uberjar.build.user", System.getProperty("user.name"));
-        this.properties.put(BootstrapProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
+        if (!this.hollow) {
+            this.properties.put(BootstrapProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
+        }
 
         manifest.setProperties(this.properties);
         manifest.bundleDependencies(this.bundleDependencies);
-        manifest.setMainClass( this.mainClass );
-        manifest.setHollow( this.hollow );
+        manifest.setMainClass(this.mainClass);
+        manifest.setHollow(this.hollow);
         this.archive.add(new StringAsset(manifest.toString()), WildFlySwarmManifest.CLASSPATH_LOCATION);
 
     }
@@ -428,7 +430,7 @@ public class BuildTool {
             final File moduleDir = new File(additionalModule);
             this.archive.addAsResource(moduleDir, "modules");
             Files.find(moduleDir.toPath(), 20,
-                    (p, __) -> p.getFileName().toString().equals("module.xml"))
+                       (p, __) -> p.getFileName().toString().equals("module.xml"))
                     .forEach(p -> this.dependencyManager.addAdditionalModule(p));
 
         }

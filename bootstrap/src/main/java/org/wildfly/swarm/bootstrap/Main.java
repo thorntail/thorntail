@@ -33,8 +33,6 @@ import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
  */
 public class Main {
 
-    public static final String DEFAULT_MAIN_CLASS_NAME = "org.wildfly.swarm.Swarm";
-
     public Main(String... args) throws Throwable {
         this.args = args;
     }

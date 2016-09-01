@@ -408,8 +408,10 @@ public class DependencyManager {
     }
 
     void setProjectAsset(ProjectAsset projectAsset) {
-        this.projectAsset = projectAsset;
-        this.applicationManifest.setAsset(this.projectAsset.getName());
+        if (!this.applicationManifest.isHollow()) {
+            this.projectAsset = projectAsset;
+            this.applicationManifest.setAsset(this.projectAsset.getName());
+        }
     }
 
     protected WildFlySwarmManifest getWildFlySwarmManifest() {
