@@ -50,6 +50,7 @@
   <modules>
     <module>keycloak</module>
     <module>management-console</module>
+    <module>microprofile</module>
     <module>swagger-ui</module>
   </modules>
 
