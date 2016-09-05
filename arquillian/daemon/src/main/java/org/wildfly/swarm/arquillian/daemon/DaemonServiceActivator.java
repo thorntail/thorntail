@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.arquillian.daemon;
 
+import java.net.BindException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.Services;
@@ -32,6 +36,7 @@ import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.arquillian.daemon.server.Server;
 import org.wildfly.swarm.arquillian.daemon.server.ServerLifecycleException;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 public class DaemonServiceActivator implements ServiceActivator {
 
@@ -41,16 +46,25 @@ public class DaemonServiceActivator implements ServiceActivator {
     }
 
     static class DaemonService implements Service<Void> {
+        private static final Logger log = Logger.getLogger(DaemonService.class.getName());
 
         @Override
         public void start(StartContext context) throws StartException {
+            int port = Integer.getInteger(SwarmProperties.ARQUILLIAN_DAEMON_PORT, 12345);
+
             try {
                 DeploymentUnit depunit = injectedDeploymentUnit.getValue();
-
-                //TODO: allow overriding the default port?
-                this.server = Server.create("localhost", 12345, depunit);
+                this.server = Server.create("localhost", port, depunit);
                 this.server.start();
-            } catch (ServerLifecycleException e) {
+            } catch (Exception e) {
+                // this shouldn't be possible per Java control flow rules, but there is a "sneaky throw" somewhere
+                //noinspection ConstantConditions
+                if (e instanceof BindException) {
+                    log.log(Level.SEVERE, "Couldn't bind Arquillian Daemon on localhost:" + port
+                            + "; you can change the port using system property '"
+                            + SwarmProperties.ARQUILLIAN_DAEMON_PORT + "'", e);
+                }
+
                 throw new StartException(e);
             }
         }

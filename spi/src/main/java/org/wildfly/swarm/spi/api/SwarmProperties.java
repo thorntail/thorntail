@@ -138,6 +138,11 @@ public interface SwarmProperties {
     String DATABASE_DRIVER = "swarm.jdbc.driver";
 
     /**
+     * Port number for Swarm's Arquillian Daemon.
+     */
+    String ARQUILLIAN_DAEMON_PORT = "swarm.arquillian.daemon.port";
+
+    /**
      * Formats a property as ${property}
      *
      * @param property the property to be formatted
