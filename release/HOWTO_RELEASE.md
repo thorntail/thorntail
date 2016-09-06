@@ -19,7 +19,7 @@ The build both regular and uberjar versions
 
 # Gather contributors:
 
-git log 2016.8...2016.9 | grep Author | sort | uniq
+    node fetch-contributors 2016.8 2016.9
 
 # Gather JIRA issues
 
