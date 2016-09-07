@@ -65,7 +65,8 @@
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
     <version.postgresql>9.4.1208</version.postgresql>
-
+    <version.eclipse.link>2.6.0</version.eclipse.link>
+    <version.jipi.japa>10.1.0.Final</version.jipi.japa>
     <version.com.orbitz.consul>0.9.16</version.com.orbitz.consul>
 
     <version.openshift.client>3.0.1.Final</version.openshift.client>
@@ -1107,6 +1108,7 @@
     <module>jmx</module>
     <module>jolokia</module>
     <module>jpa</module>
+    <!--<module>jpa-eclipselink</module>-->
     <module>jsf</module>
     <module>keycloak</module>
     <module>keycloak-server</module>
