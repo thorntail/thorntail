@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm</artifactId>
+        <version>2016.9-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+
+
+    <artifactId>jpa-eclipselink</artifactId>
+
+    <name>JPA EclipseLink</name>
+    <description>Java Persistence API with EclipseLink</description>
+
+    <properties>
+        <swarm.fraction.stability>stable</swarm.fraction.stability>
+        <swarm.fraction.tags>JavaEE,Data,EclipseLink</swarm.fraction.tags>
+    </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencies>
+        <!-- Fraction Dependencies -->
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>jipijapa-eclipselink</artifactId>
+            <version>${version.jipi.japa}</version>
+        </dependency>
+
+        <!--JPA -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>${version.eclipse.link}</version>
+        </dependency>
+
+    <!--&lt;!&ndash; persistence provider javax.persistence.* &ndash;&gt;-->
+    <!--<dependency>-->
+        <!--<groupId>org.eclipse.persistence</groupId>-->
+        <!--<artifactId>org.eclipse.persistence.jpa</artifactId>-->
+        <!--<version>${version.eclipse.link}</version>-->
+    <!--</dependency>-->
+    </dependencies>
+
+
+
+</project>
