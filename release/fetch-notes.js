@@ -17,10 +17,7 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?jql=project=SWARM%20
 
   result.on( 'end', function() {
     var json = JSON.parse( buf );
-    //console.log( json );
     json.issues.forEach( function(e) {
-      //console.log( e );
-      //console.log( e.fields.issuetype.name + ' * [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary );
       var members = partitions[e.fields.issuetype.name];
       if ( ! members ) {
         members = [];
@@ -28,9 +25,8 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?jql=project=SWARM%20
       }
       members.push( e );
     } );
-    console.log( partitions );
     Object.keys( partitions ).forEach( function(type) {
-      console.log( "## " + type );
+      console.log( "=== " + type );
       partitions[type].forEach( function(e) {
         console.log( '* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary );
       } );
