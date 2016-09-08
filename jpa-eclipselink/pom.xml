@@ -7,9 +7,10 @@
     <parent>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm</artifactId>
-        <version>2016.9-SNAPSHOT</version>
+        <version>2016.10-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
+
 
 
 
@@ -42,22 +43,8 @@
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>jipijapa-eclipselink</artifactId>
-            <version>${version.jipi.japa}</version>
         </dependency>
 
-        <!--JPA -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>${version.eclipse.link}</version>
-        </dependency>
-
-    <!--&lt;!&ndash; persistence provider javax.persistence.* &ndash;&gt;-->
-    <!--<dependency>-->
-        <!--<groupId>org.eclipse.persistence</groupId>-->
-        <!--<artifactId>org.eclipse.persistence.jpa</artifactId>-->
-        <!--<version>${version.eclipse.link}</version>-->
-    <!--</dependency>-->
     </dependencies>
 
 
