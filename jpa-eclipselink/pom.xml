@@ -7,9 +7,10 @@
     <parent>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm</artifactId>
-        <version>2016.9-SNAPSHOT</version>
+        <version>2016.10-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
+
 
 
 
@@ -19,6 +20,8 @@
     <description>Java Persistence API with EclipseLink</description>
 
     <properties>
+        <version.eclipse.link>2.6.0</version.eclipse.link>
+        <version.jipi.japa>10.1.0.Final</version.jipi.japa>
         <swarm.fraction.stability>stable</swarm.fraction.stability>
         <swarm.fraction.tags>JavaEE,Data,EclipseLink</swarm.fraction.tags>
     </properties>

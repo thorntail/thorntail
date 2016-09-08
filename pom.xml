@@ -656,6 +656,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-eclipselink</artifactId>
+        <version>2016.10-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-mysql</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
@@ -1108,7 +1114,7 @@
     <module>jmx</module>
     <module>jolokia</module>
     <module>jpa</module>
-    <!--<module>jpa-eclipselink</module>-->
+    <module>jpa-eclipselink</module>
     <module>jsf</module>
     <module>keycloak</module>
     <module>keycloak-server</module>
