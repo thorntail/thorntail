@@ -15,6 +15,17 @@
  */
 package org.wildfly.swarm.jolokia;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.jolokia.access.APIJolokiaAccessPreparer;
+import org.wildfly.swarm.jolokia.access.FileJolokiaAccessPreparer;
+import org.wildfly.swarm.jolokia.access.JolokiaAccess;
+import org.wildfly.swarm.jolokia.access.URLJolokiaAccessPreparer;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -39,5 +50,36 @@ public class JolokiaFraction implements Fraction<JolokiaFraction> {
         return this.context;
     }
 
+    public JolokiaFraction prepareJolokiaWar(Consumer<Archive> jolokiaWarPreparer) {
+        this.jolokiaWarPreparer = jolokiaWarPreparer;
+        return this;
+    }
+
+    public Consumer<Archive> jolokiaWarPreparer() {
+        return this.jolokiaWarPreparer;
+    }
+
+    public static Consumer<Archive> jolokiaAccessXml(File file) {
+        return new FileJolokiaAccessPreparer( file );
+
+    }
+
+    public static Consumer<Archive> jolokiaAccessXml(URL url) {
+        return new URLJolokiaAccessPreparer(url);
+    }
+
+    public static Consumer<Archive> jolokiaAccess(Consumer<JolokiaAccess> config) {
+        JolokiaAccess access = new JolokiaAccess();
+        config.accept( access );
+        return new APIJolokiaAccessPreparer( access );
+    }
+
+    public static Consumer<Archive> jolokiaAccess(Supplier<JolokiaAccess> supplier) {
+        return new APIJolokiaAccessPreparer( supplier.get() );
+    }
+
     private String context;
+
+    private Consumer<Archive> jolokiaWarPreparer;
+
 }
