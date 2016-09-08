@@ -34,7 +34,11 @@ public class MavenDependencyResolution implements DependencyResolution {
 
                     try {
                         final File artifact = MavenResolvers.get().resolveJarArtifact( coords );
-                        archivePaths.add( artifact.getAbsolutePath() );
+                        if ( artifact == null ) {
+                            System.err.println( "Unable to resolve artifact: " + coords );
+                        } else {
+                            archivePaths.add(artifact.getAbsolutePath());
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
