@@ -20,8 +20,6 @@
     <description>Java Persistence API with EclipseLink</description>
 
     <properties>
-        <version.eclipse.link>2.6.0</version.eclipse.link>
-        <version.jipi.japa>10.1.0.Final</version.jipi.japa>
         <swarm.fraction.stability>stable</swarm.fraction.stability>
         <swarm.fraction.tags>JavaEE,Data,EclipseLink</swarm.fraction.tags>
     </properties>
@@ -45,22 +43,8 @@
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>jipijapa-eclipselink</artifactId>
-            <version>${version.jipi.japa}</version>
         </dependency>
 
-        <!--JPA -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>${version.eclipse.link}</version>
-        </dependency>
-
-    <!--&lt;!&ndash; persistence provider javax.persistence.* &ndash;&gt;-->
-    <!--<dependency>-->
-        <!--<groupId>org.eclipse.persistence</groupId>-->
-        <!--<artifactId>org.eclipse.persistence.jpa</artifactId>-->
-        <!--<version>${version.eclipse.link}</version>-->
-    <!--</dependency>-->
     </dependencies>
 
 
