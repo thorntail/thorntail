@@ -70,18 +70,6 @@ public class Container extends Swarm {
 
     @Override
     @Deprecated
-    public Container iface(String name, String expression) {
-        return (Container) super.iface(name, expression);
-    }
-
-    @Override
-    @Deprecated
-    public Container socketBindingGroup(SocketBindingGroup group) {
-        return (Container) super.socketBindingGroup(group);
-    }
-
-    @Override
-    @Deprecated
     public Container start(boolean eagerlyOpen) throws Exception {
         return (Container) super.start(eagerlyOpen);
     }

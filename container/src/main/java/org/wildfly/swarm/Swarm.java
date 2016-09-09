@@ -263,54 +263,6 @@ public class Swarm {
     }
 
     /**
-     * Configure a network interface.
-     *
-     * @param name       The name of the interface.
-     * @param expression The expression to define the interface.
-     * @return The container.
-     */
-    public Swarm iface(String name, String expression) {
-        //swarmConfigurator.iface(name, expression);
-        return this;
-    }
-
-    public List<Interface> ifaces() {
-        //return swarmConfigurator.ifaces();
-        return null;
-    }
-
-    /**
-     * Configure a socket-binding-group.
-     *
-     * @param group The socket-binding group to add.
-     * @return The container.
-     */
-    public Swarm socketBindingGroup(SocketBindingGroup group) {
-        //swarmConfigurator.socketBindingGroup(group);
-        return this;
-    }
-
-    public List<SocketBindingGroup> socketBindingGroups() {
-        //return swarmConfigurator.socketBindingGroups();
-        return null;
-    }
-
-    public SocketBindingGroup getSocketBindingGroup(String name) {
-        //return swarmConfigurator.getSocketBindingGroup(name);
-        return null;
-    }
-
-    public Map<String, List<SocketBinding>> socketBindings() {
-        //return swarmConfigurator.socketBindings();
-        return null;
-    }
-
-    public Map<String, List<OutboundSocketBinding>> outboundSocketBindings() {
-        //return swarmConfigurator.outboundSocketBindings();
-        return null;
-    }
-
-    /**
      * Start the container.
      *
      * @return The container.
