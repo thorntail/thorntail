@@ -52,7 +52,7 @@
     <version.fest-assert>1.4</version.fest-assert>
     <version.junit>4.12</version.junit>
 
-    <version.jolokia>1.3.1</version.jolokia>
+    <version.jolokia>1.3.4</version.jolokia>
     <version.io.swagger>1.5.5</version.io.swagger>
     <version.org.webjars.swagger-ui>2.1.4</version.org.webjars.swagger-ui>
     <version.swagger.jackson>2.4.5</version.swagger.jackson>
