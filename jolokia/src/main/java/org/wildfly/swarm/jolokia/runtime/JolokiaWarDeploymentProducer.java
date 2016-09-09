@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.jolokia.runtime;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -22,6 +24,8 @@ import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.jolokia.JolokiaFraction;
+import org.wildfly.swarm.jolokia.JolokiaProperties;
+import org.wildfly.swarm.jolokia.access.ConfigurationValueAccessPreparer;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.undertow.WARArchive;
@@ -32,27 +36,40 @@ import org.wildfly.swarm.undertow.WARArchive;
 @Singleton
 public class JolokiaWarDeploymentProducer {
 
+    public static final String DEPLOYMENT_GAV = "org.jolokia:jolokia-war:war:*";
+    public static final String DEPLOYMENT_NAME = "jolokia.war";
+
     @Inject
     @Any
-    private JolokiaFraction fraction;
+    JolokiaFraction fraction;
 
     @Inject
-    private ArtifactLookup lookup;
+    ArtifactLookup lookup;
 
     @Inject
-    @ConfigurationValue( "swarm.jolokia.context")
+    @ConfigurationValue(JolokiaProperties.ACCESS_XML)
+    String jolokiaAccessXML;
+
+    @ConfigurationValue(JolokiaProperties.CONTEXT)
     private String context;
 
     @Produces
     public Archive jolokiaWar() throws Exception {
 
-        if ( this.context == null ) {
+        if (this.context == null) {
             this.context = this.fraction.context();
         }
 
-        Archive deployment = this.lookup.artifact("org.jolokia:jolokia-war:war:*", "jolokia.war");
+        Archive deployment = this.lookup.artifact(DEPLOYMENT_GAV, DEPLOYMENT_NAME );
 
-        deployment.as( WARArchive.class).setContextRoot( this.context );
+        deployment.as(WARArchive.class).setContextRoot(this.context);
+
+        Consumer<Archive> preparer = new ConfigurationValueAccessPreparer( this.jolokiaAccessXML );
+        if ( this.fraction.jolokiaWarPreparer() != null ) {
+            preparer = preparer.andThen( this.fraction.jolokiaWarPreparer() );
+        }
+
+        preparer.accept( deployment );
 
         return deployment;
     }
