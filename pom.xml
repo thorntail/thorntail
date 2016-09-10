@@ -62,6 +62,7 @@
     <version.swagger.javassist>3.18.2-GA</version.swagger.javassist>
     <version.swagger.commons.lang>3.2.1</version.swagger.commons.lang>
 
+    <version.eclipse.link>2.6.2</version.eclipse.link>
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
     <version.postgresql>9.4.1208</version.postgresql>
@@ -655,6 +656,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-eclipselink</artifactId>
+        <version>2016.10-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-mysql</artifactId>
         <version>2016.7-SNAPSHOT</version>
       </dependency>
@@ -1107,6 +1114,7 @@
     <module>jmx</module>
     <module>jolokia</module>
     <module>jpa</module>
+    <module>jpa-eclipselink</module>
     <module>jsf</module>
     <module>keycloak</module>
     <module>keycloak-server</module>
