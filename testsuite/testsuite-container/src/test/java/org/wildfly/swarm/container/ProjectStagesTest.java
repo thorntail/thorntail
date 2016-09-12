@@ -15,7 +15,18 @@
  */
 package org.wildfly.swarm.container;
 
-import org.junit.Ignore;
+import org.junit.*;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
+import org.wildfly.swarm.spi.api.ProjectStage;
+import org.wildfly.swarm.spi.api.StageConfig;
+import org.wildfly.swarm.spi.api.SwarmProperties;
+
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Heiko Braun
@@ -24,7 +35,6 @@ import org.junit.Ignore;
 @Ignore
 public class ProjectStagesTest {
 
-    /*
     @Before
     public void prepareStage() {
         testStages = new ProjectStageFactory().loadStages(
@@ -34,14 +44,12 @@ public class ProjectStagesTest {
 
     @After
     public void clearProps() {
-
         // cleanup the props used, otherwise they interfere with followup tests
         for (ProjectStage stage : testStages) {
             for (String key : stage.getProperties().keySet()) {
                 System.clearProperty(key);
             }
         }
-
         System.clearProperty(SwarmProperties.PROJECT_STAGE);
     }
 
@@ -58,10 +66,10 @@ public class ProjectStagesTest {
         for (ProjectStage stage : stages) {
             System.out.println("["+stage.getName()+"]");
             Map<String, String> properties = stage.getProperties();
-            Assert.assertEquals(6, properties.keySet().size());
+            assertEquals(6, properties.keySet().size());
 
-            Assert.assertTrue("Property is missing", properties.keySet().contains("swarm.magic.enabled"));
-            Assert.assertTrue("Property is missing", properties.keySet().contains(SwarmProperties.PORT_OFFSET));
+            assertTrue("Property is missing", properties.keySet().contains("swarm.magic.enabled"));
+            assertTrue("Property is missing", properties.keySet().contains(SwarmProperties.PORT_OFFSET));
             properties.entrySet().forEach(e -> System.out.println(e.getKey()+"="+e.getValue()));
         }
 
@@ -72,20 +80,39 @@ public class ProjectStagesTest {
 
         System.setProperty(SwarmProperties.PROJECT_STAGE, "development");
 
-        Container container = new Container()
+        Swarm container = new Swarm()
                 .withStageConfig(
                         ProjectStagesTest.class.getClassLoader().getResource("project-stages.yml")
                 );
+
         container.start();
 
-
-        Assert.assertEquals("50", System.getProperty(SwarmProperties.PORT_OFFSET));
-        Assert.assertEquals("DEBUG", System.getProperty("logger.level"));
+        assertEquals("50", System.getProperty(SwarmProperties.PORT_OFFSET));
+        assertEquals("DEBUG", System.getProperty("logger.level"));
 
         container.stop();
-
     }
 
+    @Test
+    public void testStageConfigurationUrlLoading() throws Exception {
+
+        System.setProperty(SwarmProperties.PROJECT_STAGE, "development");
+
+        ClassLoader cl = this.getClass().getClassLoader();
+        URL stageConfig = cl.getResource("project-stages.yml");
+
+        assert stageConfig != null : "Failed to load stage configuration";
+
+        Swarm container = new Swarm()
+                .withStageConfig(stageConfig);
+
+        container.start();
+
+        assertEquals("50", System.getProperty(SwarmProperties.PORT_OFFSET));
+        assertEquals("DEBUG", System.getProperty("logger.level"));
+
+        container.stop();
+    }
 
     @Test
     public void testArgsPrecendence() throws Exception {
@@ -93,118 +120,63 @@ public class ProjectStagesTest {
         System.setProperty(SwarmProperties.PROJECT_STAGE, "development");
         System.setProperty(SwarmProperties.PORT_OFFSET, "150");
 
-        Container container = new Container()
+        Swarm container = new Swarm()
                 .withStageConfig(
                         ProjectStagesTest.class.getClassLoader().getResource("project-stages.yml")
                 );
         container.start();
 
-        Assert.assertEquals("150", System.getProperty(SwarmProperties.PORT_OFFSET));
+        assertEquals("150", System.getProperty(SwarmProperties.PORT_OFFSET));
 
         container.stop();
 
     }
 
     @Test
-    public void testFractionStageAccess() throws Exception {
-
-        System.setProperty(SwarmProperties.PROJECT_STAGE, "development");
-
-        Container container = new Container()
-                .withStageConfig(
-                        ProjectStagesTest.class.getClassLoader().getResource("project-stages.yml")
-                )
-                .fraction(new Fraction() {
-                    @Override
-                    public void initialize(InitContext initContext) {
-                        Assert.assertTrue("stage config is not present", initContext.projectStage().isPresent());
-                        StageConfig stageConfig = initContext.projectStage().get();
-                        Assert.assertEquals("development", stageConfig.getName());
-                        stageConfig.keys().contains("logger.level");
-                    }
-                });
-
-        container.start().stop();
-    }
-
-
-    @Test
-    @Ignore
     public void testUnknownStageConfiguration() throws Exception {
 
+        Swarm container = null;
         System.setProperty(SwarmProperties.PROJECT_STAGE, "foobar");
-
-        Container container = new Container();
-        boolean yieldException = false;
-
         try {
-            container.withStageConfig(
-                    ProjectStagesTest.class.getClassLoader().getResource("project-stages.yml")
-            );
-        } catch (Throwable e) {
-            yieldException = true;
+            container = new Swarm();
+            container.withStageConfig(ProjectStagesTest.class.getClassLoader().getResource("project-stages.yml"));
+            fail();
+        } catch(RuntimeException ex) {
+            // TODO
+            assertEquals(true,ex.getMessage().contains("WFSWARM0003"));
         }
-
-        container.start();
-        Assert.assertTrue(yieldException);
-
-        container.stop();
 
     }
 
     @Test
     public void testStageConfigAPI() throws Exception {
 
-        Container container = new Container()
+        Swarm container = new Swarm()
                 .withStageConfig(
                         ProjectStagesTest.class.getClassLoader().getResource("project-stages.yml")
-                )
-                .fraction(new Fraction() {
-                    @Override
-                    public void initialize(InitContext initContext) {
-                        Assert.assertTrue("stage config is not present", initContext.projectStage().isPresent());
-                        StageConfig stageConfig = initContext.projectStage().get();
-                        Assert.assertEquals("DEBUG", stageConfig.resolve("logger.level").getValue());
+                );
 
-                        Integer intVal = stageConfig
-                                .resolve(SwarmProperties.PORT_OFFSET)
-                                .as(Integer.class)
-                                .getValue();
+        StageConfig stageConfig = container.stageConfig();
+        assertNotNull(stageConfig);
 
-                        Assert.assertEquals(new Integer(10), intVal);
+        assertEquals("DEBUG", stageConfig.resolve("logger.level").getValue());
 
-                        Boolean boolVal = stageConfig
-                                .resolve("swarm.magic.enabled")
-                                .as(Boolean.class)
-                                .getValue();
+        Integer intVal = stageConfig
+                .resolve(SwarmProperties.PORT_OFFSET)
+                .as(Integer.class)
+                .getValue();
 
-                        Assert.assertEquals(Boolean.TRUE, boolVal);
-                    }
-                });
+        assertEquals(new Integer(10), intVal);
+
+        Boolean boolVal = stageConfig
+                .resolve("swarm.magic.enabled")
+                .as(Boolean.class)
+                .getValue();
+
+        assertEquals(Boolean.TRUE, boolVal);
 
         container.start().stop();
     }
-
-    //
-    // Project stage shsould be discovered from classpath (modular or not)
-    // See https://issues.jboss.org/browse/SWARM-486
-    //
-    @Test
-    public void testStageConfigDiscovery() throws Exception {
-
-        Container container = new Container()
-                .fraction(new Fraction() {
-                    @Override
-                    public void initialize(InitContext initContext) {
-                        Assert.assertTrue("stage config is not present", initContext.projectStage().isPresent());
-                        StageConfig stageConfig = initContext.projectStage().get();
-                    }
-                });
-
-        container.start().stop();
-    }
-
 
     private List<ProjectStage> testStages;
-    */
 }
