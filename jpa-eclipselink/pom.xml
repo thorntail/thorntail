@@ -45,6 +45,14 @@
             <artifactId>jipijapa-eclipselink</artifactId>
         </dependency>
 
+        <!-- Provided Dependencies -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>${version.eclipse.link}</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 
