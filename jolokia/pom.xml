@@ -37,6 +37,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>keycloak</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>staxmapper</artifactId>
       <scope>provided</scope>
