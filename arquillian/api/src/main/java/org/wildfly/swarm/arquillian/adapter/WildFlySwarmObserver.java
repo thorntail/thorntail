@@ -64,7 +64,7 @@ public class WildFlySwarmObserver {
         // Gather test and provided dependencies
         final ShrinkwrapArtifactResolvingHelper resolvingHelper = ShrinkwrapArtifactResolvingHelper.defaultInstance();
         final MavenResolvedArtifact[] deps =
-                resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
                         .importDependencies(ScopeType.TEST, ScopeType.PROVIDED)
                         .resolve()
                         .withTransitivity()

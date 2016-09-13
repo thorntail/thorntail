@@ -167,7 +167,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         if (!hasRequestedArtifacts) {
             final MavenResolvedArtifact[] explicitDeps =
-                    resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                    resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
                             .importRuntimeAndTestDependencies()
                             .resolve()
                             .withoutTransitivity()
@@ -181,7 +181,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
             }
 
             final MavenResolvedArtifact[] presolvedDeps =
-                    resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                    resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
                             .importRuntimeAndTestDependencies()
                             .resolve()
                             .withTransitivity()
@@ -198,7 +198,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
             this.requestedMavenArtifacts.add("org.wildfly.swarm:arquillian-daemon");
             for (String requestedDep : this.requestedMavenArtifacts) {
                 final MavenResolvedArtifact[] explicitDeps =
-                        resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                        resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
                                 .resolve(requestedDep)
                                 .withoutTransitivity()
                                 .asResolvedArtifact());
@@ -211,7 +211,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 }
 
                 final MavenResolvedArtifact[] presolvedDeps =
-                        resolvingHelper.withResolver(r -> r.loadPomFromFile("pom.xml")
+                        resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
                                 .resolve(requestedDep)
                                 .withTransitivity()
                                 .asResolvedArtifact());
