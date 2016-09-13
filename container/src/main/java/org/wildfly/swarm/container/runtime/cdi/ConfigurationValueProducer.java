@@ -16,6 +16,9 @@
 package org.wildfly.swarm.container.runtime.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
@@ -85,6 +88,31 @@ public class ConfigurationValueProducer {
     Double produceDoubleConfigValue(InjectionPoint injectionPoint) {
         return resolve(injectionPoint, Double.class);
     }
+
+    @ConfigurationValue("")
+    @Dependent
+    @Produces
+    <T> Optional<T> produceOptionalConfigValue(InjectionPoint injectionPoint) {
+        Type type = injectionPoint.getAnnotated().getBaseType();
+        final Class<T> valueType;
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            valueType = unwrapType(typeArguments[0]);
+        } else {
+            valueType = (Class<T>) String.class;
+        }
+        return Optional.ofNullable(resolve(injectionPoint, valueType));
+    }
+
+    private <T> Class<T> unwrapType(Type type) {
+        if (type instanceof ParameterizedType) {
+            type = ((ParameterizedType) type).getRawType();
+        }
+        return (Class<T>) type;
+    }
+
 
     private <T> T resolve(InjectionPoint injectionPoint, Class<T> target) {
         Resolver<String> resolver = resolver(injectionPoint);
