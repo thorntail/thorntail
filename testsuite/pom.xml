@@ -104,6 +104,7 @@
     <module>testsuite-jolokia</module>
     <module>testsuite-jolokia-keycloak</module>
     <module>testsuite-jpa</module>
+    <module>testsuite-jpa-transactional</module>
     <module>testsuite-jpa-mysql</module>
     <module>testsuite-jpa-postgresql</module>
     <module>testsuite-jsf</module>

@@ -2,7 +2,7 @@ package org.wildfly.swarm.container.runtime.deployments;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
+import org.wildfly.swarm.spi.runtime.DefaultDeploymentFactory;
 
 import static org.fest.assertions.Assertions.assertThat;
 

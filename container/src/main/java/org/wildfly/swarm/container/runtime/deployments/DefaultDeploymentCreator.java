@@ -5,31 +5,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.DefaultDeploymentFactory;
 
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 public class DefaultDeploymentCreator {
 
-    private Map<String,DefaultDeploymentFactory> factories = new HashMap<>();
+    private Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
 
     @Inject
     public DefaultDeploymentCreator(@Any Instance<DefaultDeploymentFactory> factories) {
-        this( (Iterable<DefaultDeploymentFactory>) factories );
+        this((Iterable<DefaultDeploymentFactory>) factories);
     }
 
-    public DefaultDeploymentCreator(DefaultDeploymentFactory...factories) {
-        this(Arrays.asList( factories ) );
+    public DefaultDeploymentCreator(DefaultDeploymentFactory... factories) {
+        this(Arrays.asList(factories));
     }
 
     public DefaultDeploymentCreator(Iterable<DefaultDeploymentFactory> factories) {
@@ -46,9 +47,35 @@ public class DefaultDeploymentCreator {
         }
     }
 
+    private static final String[] EFFECTIVE_TYPES = {
+            "ear",
+            "war",
+            "rar",
+            "jar",
+    };
+
+    protected String effectiveType(String nativeType) {
+        if (!nativeType.equals("jar")) {
+            return nativeType;
+        }
+
+        for (String each : EFFECTIVE_TYPES) {
+            if (this.factories.containsKey(each)) {
+                return each;
+            }
+        }
+
+        return nativeType;
+    }
+
     public Archive<?> createDefaultDeployment(String type) {
         try {
-            return getFactory(type).create();
+            DefaultDeploymentFactory factory = getFactory(effectiveType(type));
+
+            if (type.equals("jar")) {
+                return factory.createFromJar();
+            }
+            return factory.create();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -56,7 +83,7 @@ public class DefaultDeploymentCreator {
 
     DefaultDeploymentFactory getFactory(String type) {
         DefaultDeploymentFactory factory = this.factories.get(type);
-        if ( factory != null ) {
+        if (factory != null) {
             return factory;
         }
         return new EmptyJARArchiveDeploymentFactory(type);
@@ -82,10 +109,16 @@ public class DefaultDeploymentCreator {
 
         @Override
         public Archive create() throws Exception {
-            return ShrinkWrap.create(JARArchive.class, UUID.randomUUID().toString() + "." + this.type );
+            JARArchive archive = ShrinkWrap.create(JARArchive.class, UUID.randomUUID().toString() + "." + this.type);
+            archive.add(EmptyAsset.INSTANCE, "empty.txt" );
+            return archive;
         }
 
         @Override
+        public Archive createFromJar() throws Exception {
+            return create();
+        }
+
         protected boolean setupUsingMaven(Archive<?> archive) throws Exception {
             return false;
         }

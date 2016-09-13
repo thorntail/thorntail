@@ -114,7 +114,8 @@ public class ArqSecuredManagementInterfaceTest {
         assertThat(myappResult).isNotNull();
         assertThat(myappResult.isDefined()).isTrue();
 
-        assertThat(myappResult.get("name").asString()).isEqualTo("myapp.jar");
+        // .war instead of .jar because of magic!
+        assertThat(myappResult.get("name").asString()).isEqualTo("myapp.war");
 
     }
 

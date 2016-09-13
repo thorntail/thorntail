@@ -30,5 +30,6 @@
     <module name="javax.enterprise.api"/>
     <module name="javax.api" export="true"/>
     <module name="org.jboss.staxmapper" export="true"/>
+    <module name="org.jboss.shrinkwrap"/>
   </dependencies>
 </module>

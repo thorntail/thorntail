@@ -1,7 +1,7 @@
 package org.wildfly.swarm.container.runtime.deployments;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
+import org.wildfly.swarm.spi.runtime.DefaultDeploymentFactory;
 
 /**
  * @author Bob McWhirter
@@ -31,7 +31,8 @@ public class MockDefaultDeploymentFactory extends DefaultDeploymentFactory {
     }
 
     @Override
-    protected boolean setupUsingMaven(Archive<?> archive) throws Exception {
-        return false;
+    public Archive createFromJar() throws Exception {
+        return null;
     }
+
 }

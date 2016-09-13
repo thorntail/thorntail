@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.undertow;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
-import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -25,9 +25,10 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class JbossWebContainerTest {
 
+
     @Test
     public void testSettingContextRoot() throws Exception {
-        WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
+        WARArchive archive = ShrinkWrap.create(WARArchive.class );
 
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("/");
@@ -43,7 +44,7 @@ public class JbossWebContainerTest {
 
     @Test
     public void testDefaultContextRootWontOverride() throws Exception {
-        WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
+        WARArchive archive = ShrinkWrap.create(WARArchive.class );
 
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("/");
@@ -59,7 +60,7 @@ public class JbossWebContainerTest {
 
     @Test
     public void testSettingSecurityDomain() throws Exception {
-        WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
+        WARArchive archive = ShrinkWrap.create(WARArchive.class );
 
         assertThat(archive.getSecurityDomain()).isNull();
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.undertow.internal;
+package org.wildfly.swarm.undertow.runtime;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -22,30 +22,36 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.wildfly.swarm.bootstrap.env.NativeDeploymentFactory;
+import org.wildfly.swarm.container.runtime.deployments.DefaultJarDeploymentFactory;
 import org.wildfly.swarm.internal.FileSystemLayout;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
+import org.wildfly.swarm.spi.runtime.DefaultDeploymentFactory;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Bob McWhirter
  * @author Heiko Braun
  */
-@ApplicationScoped
+@Singleton
 public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
-    public static WARArchive archiveFromCurrentApp() throws Exception {
-        final WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
-        final DefaultDeploymentFactory factory = new DefaultWarDeploymentFactory();
-        factory.setup(archive);
-        //archive.addModule("org.wildfly.swarm.undertow", "runtime");
+    @Inject
+    DefaultJarDeploymentFactory jarDeploymentFactory;
 
-        return archive;
+    NativeDeploymentFactory nativeDeploymentFactory;
+
+    @Inject
+    public DefaultWarDeploymentFactory(NativeDeploymentFactory nativeDeploymentFactory) {
+        this.nativeDeploymentFactory = nativeDeploymentFactory;
     }
 
     @Override
@@ -60,8 +66,61 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
     public Archive create() throws Exception {
-        return archiveFromCurrentApp().staticContent();
+        Archive archive = getNativeDeployment();
+        if (archive == null) {
+            archive = createEmptyArchive();
+            setupUsingMaven(archive);
+        }
+        //return archiveFromCurrentApp().staticContent();
+        return archive.as(WARArchive.class).staticContent();
     }
+
+    @Override
+    public Archive createFromJar() throws Exception {
+        Archive jar = this.jarDeploymentFactory.create();
+
+        WARArchive war = ShrinkWrap.create(WARArchive.class, determineName());
+
+        war.merge(jar, "/", (path) -> {
+            String p = path.get();
+            if (p.equals("/META-INF/jboss-deployment-structure.xml") || p.startsWith("/META-INF/services")) {
+                return true;
+            }
+            return false;
+        });
+        war.merge(jar, "/WEB-INF/classes", (path) -> {
+            String p = path.get();
+            // because the filtered path is the final destination path...
+            if (p.equals("/WEB-INF/classes/META-INF/jboss-deployment-structure.xml") || p.startsWith("/WEB-INF/classes/META-INF/services")) {
+                return false;
+            }
+            return true;
+        });
+
+        boolean hasClasses = false;
+
+        for (ArchivePath path : war.getContent().keySet()) {
+            if (path.get().endsWith(".class")) {
+                hasClasses = true;
+                break;
+            }
+        }
+
+        if (hasClasses) {
+            war.addAllDependencies();
+        }
+
+        return war;
+    }
+
+    protected Archive getNativeDeployment() throws IOException {
+        return this.nativeDeploymentFactory.nativeDeployment();
+    }
+
+    protected Archive createEmptyArchive() {
+        return this.nativeDeploymentFactory.createEmptyArchive( WARArchive.class, ".war" );
+    }
+
 
     public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {
         final DependenciesContainer<?> archive = (DependenciesContainer<?>) givenArchive;

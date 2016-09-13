@@ -18,6 +18,7 @@ import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
+import org.wildfly.swarm.container.runtime.cdi.NativeDeploymentFactoryProducingExtension;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageProducingExtension;
 import org.wildfly.swarm.container.runtime.cdi.XMLConfigProducingExtension;
 import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
@@ -89,6 +90,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         weld.addExtension(new CommandLineArgsExtension(args));
         weld.addExtension(new ProjectStageProducingExtension(this.stageConfig));
         weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
+        weld.addExtension(new NativeDeploymentFactoryProducingExtension( ApplicationEnvironment.get().nativeDeploymentFactory() ));
 
         for (Class<?> each : this.userComponents) {
             weld.addBeanClass(each);

@@ -61,12 +61,24 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>transactions</artifactId>
+      <artifactId>logging</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>transactions</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.wildfly.swarm</groupId>
+          <artifactId>undertow</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+<!--
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>undertow</artifactId>
     </dependency>
+-->
 
     <!-- Provided APIs -->
     <dependency>

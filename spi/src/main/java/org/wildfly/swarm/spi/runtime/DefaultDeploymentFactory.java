@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.spi.api;
+package org.wildfly.swarm.spi.runtime;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,17 +44,32 @@ public abstract class DefaultDeploymentFactory {
     public abstract String getType();
 
     public abstract Archive create() throws Exception;
+    public abstract Archive createFromJar() throws Exception;
 
+    /*
     public boolean setup(Archive<?> archive) throws Exception {
         return setupUsingAppPath(archive) ||
                 setupUsingAppArtifact(archive) ||
                 setupUsingMaven(archive);
     }
+    */
+
+    protected static String swapSuffix(String name, String suffix) {
+        int lastDotLoc = name.lastIndexOf( '.');
+        if ( lastDotLoc < 0 ) {
+            return name + suffix;
+        }
+
+        return name.substring( 0, lastDotLoc ) + suffix;
+    }
 
     protected static String determineName(final String suffix) {
         String prop = System.getProperty(APP_NAME);
         if (prop != null) {
-            return prop;
+            if ( prop.endsWith(suffix)) {
+                return prop;
+            }
+            return swapSuffix( prop, suffix );
         }
 
         prop = System.getProperty(APP_PATH);
@@ -62,15 +77,20 @@ public abstract class DefaultDeploymentFactory {
             final File file = new File(prop);
             final String name = file.getName();
             if (name.endsWith(suffix)) {
-
                 return name;
             }
 
-            return name + suffix;
+            return swapSuffix( name, suffix );
         }
 
         prop = System.getProperty(APP_ARTIFACT);
         if (prop != null) {
+            if ( prop.endsWith( suffix ) ) {
+                return prop;
+            }
+
+            prop = swapSuffix( prop, suffix );
+            System.setProperty( APP_ARTIFACT, prop );
             return prop;
         }
 
@@ -87,6 +107,7 @@ public abstract class DefaultDeploymentFactory {
         return convertedPath;
     }
 
+    /*
     protected boolean setupUsingAppPath(Archive<?> archive) throws IOException {
         final String appPath = System.getProperty(APP_PATH);
 
@@ -126,4 +147,5 @@ public abstract class DefaultDeploymentFactory {
     }
 
     protected abstract boolean setupUsingMaven(Archive<?> archive) throws Exception;
+    */
 }

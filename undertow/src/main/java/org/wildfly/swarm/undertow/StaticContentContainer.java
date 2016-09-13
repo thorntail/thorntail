@@ -15,9 +15,14 @@
  */
 package org.wildfly.swarm.undertow;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,8 +33,11 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
-import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
+import org.wildfly.swarm.bootstrap.env.NativeDeploymentFactory;
+import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 
 /**
@@ -51,10 +59,34 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
 
         try {
             // Add all the static content from the current app to the archive
-            Archive allResources = DefaultWarDeploymentFactory.archiveFromCurrentApp();
-            // Here we define static as basically anything that's not a
-            // Java class file or under WEB-INF or META-INF
-            mergeIgnoringDuplicates(allResources, base, Filters.exclude(".*\\.class$"));
+            NativeDeploymentFactory nativeDeploymentFactory = ApplicationEnvironment.get().nativeDeploymentFactory();
+
+            boolean accomplished = false;
+
+            if ( nativeDeploymentFactory != null ) {
+                Archive nativeDeployment = nativeDeploymentFactory.nativeDeployment();
+                if (nativeDeployment != null) {
+                    mergeIgnoringDuplicates(nativeDeployment, base, Filters.exclude(".*\\.class$"));
+                    accomplished = true;
+                }
+            }
+            if ( ! accomplished ) {
+                FileSystemLayout fsLayout = FileSystemLayout.create();
+                final Path webapp = fsLayout.resolveSrcWebAppDir();
+
+                final Path root = webapp.resolve( base );
+
+                if (Files.exists(root)) {
+                    Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                            Path simple = root.relativize(file);
+                            add(new FileAsset(file.toFile()), convertSeparators( simple ) );
+                            return super.visitFile(file, attrs);
+                        }
+                    });
+                }
+            }
         } catch (Exception ex) {
             log.log(Level.WARNING, "Error setting up static resources", ex);
         }
@@ -93,6 +125,17 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
 
         return (T) this;
     }
+
+    static String convertSeparators(Path path) {
+        String convertedPath = path.toString();
+
+        if (convertedPath.contains(File.separator)) {
+            convertedPath = convertedPath.replace(File.separator, "/");
+        }
+
+        return convertedPath;
+    }
+
 
     @SuppressWarnings("unchecked")
     default T mergeIgnoringDuplicates(Archive<?> source, String base, Filter<ArchivePath> filter) {

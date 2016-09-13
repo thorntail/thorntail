@@ -49,11 +49,10 @@ public class JBossWebAsset implements Asset {
 
     public void setContextRoot(String contextRoot) {
         this.descriptor.contextRoot(contextRoot);
-        rootSet = true;
     }
 
     public boolean isRootSet() {
-        return rootSet;
+        return this.descriptor.getContextRoot() != null;
     }
 
     public String getSecurityDomain() {
@@ -70,7 +69,5 @@ public class JBossWebAsset implements Asset {
     }
 
     private final JbossWebDescriptor descriptor;
-
-    private boolean rootSet = false;
 
 }

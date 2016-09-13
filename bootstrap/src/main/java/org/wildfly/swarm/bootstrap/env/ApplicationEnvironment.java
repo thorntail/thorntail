@@ -271,6 +271,23 @@ public class ApplicationEnvironment {
         return this.manifests;
     }
 
+    public NativeDeploymentFactory nativeDeploymentFactory() {
+        return this.nativeDeploymentFactory.updateAndGet( (factory)->{
+            if ( factory != null ) {
+                return factory;
+            }
+
+            try {
+                Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.container", "runtime"));
+                Class<NativeDeploymentFactory> cls = (Class<NativeDeploymentFactory>) module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.NativeDeploymentFactoryImpl");
+                return cls.newInstance();
+            } catch (ModuleLoadException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                // ignore, not running in uberjar scenario apparently.
+            }
+            return null;
+        });
+    }
+
     private enum Mode {
         UBERJAR,
         CLASSPATH
@@ -287,6 +304,8 @@ public class ApplicationEnvironment {
     private List<String> bootstrapArtifacts = new ArrayList<>();
 
     private List<String> removeableDependencies = new ArrayList<>();
+
+    private AtomicReference<NativeDeploymentFactory> nativeDeploymentFactory = new AtomicReference<>();
 
     private static AtomicReference<ApplicationEnvironment> INSTANCE = new AtomicReference<>();
 
