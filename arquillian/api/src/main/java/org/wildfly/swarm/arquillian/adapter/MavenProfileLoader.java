@@ -26,9 +26,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
  */
 public final class MavenProfileLoader {
 
-    private static Pattern profilePattern = Pattern.compile("-P([\\w\\-,]+)");
+    private static final Pattern profilePattern = Pattern.compile("-P([\\w\\-,]+)");
 
-    private static String[] profiles = new String[]{};
+    private static String[] profiles = new String[0];
 
     private static boolean profilesDiscovered = false;
 
@@ -36,17 +36,23 @@ public final class MavenProfileLoader {
     }
 
     public static PomEquippedResolveStage loadPom(ConfigurableMavenResolverSystem resolver) {
+        return resolver.loadPomFromFile("pom.xml", determineProfiles());
+    }
+
+    public static String[] determineProfiles() {
         if (!profilesDiscovered) {
             String mavenArgs = System.getProperty("env.MAVEN_CMD_LINE_ARGS");
 
-            final Matcher matcher = profilePattern.matcher(mavenArgs);
-            if (matcher.find()) {
-                String activatedProfiles = matcher.group(1);
-                profiles = activatedProfiles.split(",");
+            if (mavenArgs != null) {
+                final Matcher matcher = profilePattern.matcher(mavenArgs);
+                if (matcher.find()) {
+                    String activatedProfiles = matcher.group(1);
+                    profiles = activatedProfiles.split(",");
+                }
+                profilesDiscovered = true;
             }
-            profilesDiscovered = true;
         }
 
-        return resolver.loadPomFromFile("pom.xml", profiles);
+        return profiles;
     }
 }
