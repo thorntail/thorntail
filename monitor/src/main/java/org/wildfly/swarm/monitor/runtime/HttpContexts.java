@@ -25,6 +25,8 @@ import io.undertow.attribute.ReadOnlyAttributeException;
 import io.undertow.attribute.RelativePathAttribute;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
+import io.undertow.util.StatusCodes;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.monitor.HealthMetaData;
 
@@ -59,18 +61,14 @@ class HttpContexts implements HttpHandler {
         } else if (THREADS.equals(exchange.getRequestPath())) {
             threads(exchange);
             return;
-        }
-        else if(Queries.preventDirectAccess(monitor, exchange.getRelativePath()))
-        {
-            exchange.setStatusCode(403);
-            exchange.endExchange();
+        } else if (Queries.isDirectAccessToHealthEndpoint(monitor, exchange.getRelativePath())) {
+            exchange.setStatusCode(StatusCodes.MOVED_PERMANENTLY);
+            exchange.getResponseHeaders().put(Headers.LOCATION, HEALTH + exchange.getRelativePath());
             return;
-        }
-        else if (HEALTH.equals(exchange.getRequestPath())) {
+        } else if (HEALTH.equals(exchange.getRequestPath())) {
             listHealtSubresources(exchange);
             return;
-        }
-        else if (exchange.getRelativePath().startsWith(HEALTH)) {
+        } else if (exchange.getRelativePath().startsWith(HEALTH)) {
             healthRedirect(exchange);
             if(exchange.isResponseStarted()) // allow the redirect handler to proceed
                 return;
