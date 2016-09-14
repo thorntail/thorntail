@@ -38,9 +38,9 @@ class Queries {
         });
     }
 
-    public final static boolean preventDirectAccess(Monitor monitor, String relativePath) {
+    public final static boolean isDirectAccessToHealthEndpoint(Monitor monitor, String relativePath) {
         return query(monitor, metaData -> {
-            return relativePath.equals(metaData.getWebContext()) && metaData.isSecure();
+            return relativePath.equals(metaData.getWebContext());
         });
     }
 

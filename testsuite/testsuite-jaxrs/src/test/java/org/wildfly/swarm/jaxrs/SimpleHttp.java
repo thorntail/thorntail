@@ -38,6 +38,10 @@ public class SimpleHttp {
     }
 
     protected Response getUrlContents(String theUrl, boolean useAuth) {
+        return getUrlContents(theUrl, useAuth, true);
+    }
+
+    protected Response getUrlContents(String theUrl, boolean useAuth, boolean followRedirects) {
 
         StringBuilder content = new StringBuilder();
         int code;
@@ -49,6 +53,7 @@ public class SimpleHttp {
             provider.setCredentials(AuthScope.ANY, credentials);
 
             HttpClientBuilder builder = HttpClientBuilder.create();
+            if (!followRedirects) builder.disableRedirectHandling();
             if (useAuth) builder.setDefaultCredentialsProvider(provider);
             HttpClient client = builder.build();
 

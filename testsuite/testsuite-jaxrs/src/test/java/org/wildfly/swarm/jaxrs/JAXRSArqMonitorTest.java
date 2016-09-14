@@ -75,45 +75,36 @@ public class JAXRSArqMonitorTest extends SimpleHttp {
 
         // verify listing of subresources
         Response endpointList = getUrlContents("http://localhost:8080/health");
-
-        Assert.assertTrue(endpointList.getBody().contains("links") ); //hateos structure
-
+        Assert.assertTrue(endpointList.getBody().contains("links")); //hateoas structure
         System.out.println(endpointList.getBody());
-
-        Assert.assertTrue(endpointList.getBody().contains("/health/rest/v1/monitor/health-secure") );
+        Assert.assertTrue(endpointList.getBody().contains("/health/rest/v1/monitor/health-secure"));
 
         // verify direct access to secure resources
-        Response response = getUrlContents("http://localhost:8080/rest/v1/monitor/health-secure"); // 403
-
-        Assert.assertTrue("Expected 403 when directly accessing secured health endpoint", response.getStatus() == 403);
+        Response response = getUrlContents("http://localhost:8080/rest/v1/monitor/health-secure", true, false);
+        Assert.assertEquals("Expected 301 when directly accessing secured health endpoint", 301, response.getStatus());
 
         // verify indirect access to secure resources
         response = getUrlContents("http://localhost:8080/health/rest/v1/monitor/health-secure");
-
-        Assert.assertTrue(response.getBody(). contains("UP") );
+        Assert.assertTrue(response.getBody().contains("UP"));
 
         // verify indirect access, without auth, to secure resources
         response = getUrlContents("http://localhost:8080/health/rest/v1/monitor/health-secure", false);
         Assert.assertEquals(401, response.getStatus());
 
         // verify direct access to insecure resources
-        response = getUrlContents("http://localhost:8080/rest/v1/monitor/health-insecure");
-        Assert.assertTrue(response.getBody(). contains("UP") );
+        response = getUrlContents("http://localhost:8080/rest/v1/monitor/health-insecure", true, false);
+        Assert.assertEquals("Expected 301 when directly accessing secured health endpoint", 301, response.getStatus());
 
         // verify indirect access, without auth, to insecure resources
         response = getUrlContents("http://localhost:8080/health/rest/v1/monitor/health-insecure", false);
-
         Assert.assertEquals(200, response.getStatus());
 
         // verify indirect access to insecure resources
         response = getUrlContents("http://localhost:8080/health/rest/v1/monitor/health-insecure");
-        Assert.assertTrue(response.getBody(). contains("UP") );
+        Assert.assertTrue(response.getBody().contains("UP"));
 
         // verify other resources remain untouched
         response = getUrlContents("http://localhost:8080/rest/v1/another-app/time");
-
-        Assert.assertTrue(response.getBody(). contains("Time") );
-
-
+        Assert.assertTrue(response.getBody().contains("Time"));
     }
 }
