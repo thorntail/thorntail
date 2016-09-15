@@ -43,6 +43,7 @@
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
+
     <version.org.arquillian>1.1.10.Final</version.org.arquillian>
     <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
     <version.org.jboss.arquillian.drone>2.0.1.Final</version.org.jboss.arquillian.drone>

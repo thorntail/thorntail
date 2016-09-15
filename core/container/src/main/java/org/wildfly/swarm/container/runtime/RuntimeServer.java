@@ -209,6 +209,7 @@ public class RuntimeServer implements Server {
     public void stop() throws Exception {
 
         this.container.stop();
+        this.container=null;
         this.client = null;
         this.deployer = null;
     }
