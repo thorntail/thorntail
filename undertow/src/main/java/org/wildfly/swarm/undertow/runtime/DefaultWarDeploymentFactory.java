@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Map;
 
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.wildfly.swarm.bootstrap.env.NativeDeploymentFactory;
@@ -108,6 +110,12 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
         if (hasClasses) {
             war.addAllDependencies();
+        }
+
+        Map<ArchivePath, Node> content = war.getContent();
+
+        for (ArchivePath archivePath : content.keySet()) {
+            System.err.println( "synthetic war: " + archivePath );
         }
 
         return war;

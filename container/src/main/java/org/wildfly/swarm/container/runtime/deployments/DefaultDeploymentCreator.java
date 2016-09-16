@@ -72,9 +72,12 @@ public class DefaultDeploymentCreator {
         try {
             DefaultDeploymentFactory factory = getFactory(effectiveType(type));
 
+            System.err.println( "creating default deployment of " + type + " using " + factory  );
             if (type.equals("jar")) {
+                System.err.println( "from native .jar" );
                 return factory.createFromJar();
             }
+            System.err.println( "as-is");
             return factory.create();
         } catch (Exception e) {
             throw new RuntimeException(e);
