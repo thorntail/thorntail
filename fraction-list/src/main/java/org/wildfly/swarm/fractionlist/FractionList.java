@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.fractionlist;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,74 +50,49 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
         try (InputStreamReader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("fraction-list.json"))) {
             Json.parse(reader).asArray().forEach(entry -> {
                 JsonObject fraction = entry.asObject();
-                String groupId = toString(fraction.get("groupId"));
-                String artifactId = toString(fraction.get("artifactId"));
-                String version = toString(fraction.get("version"));
-                String name = toString(fraction.get("name"));
-                String description = toString(fraction.get("description"));
-                String tags = toString(fraction.get("tags"));
-                boolean internal = toBoolean(fraction.get("internal"));
-
-                JsonValue stabilityIndexJson = fraction.get("stabilityIndex");
-                int stabilityIndex = stabilityIndexJson == null || stabilityIndexJson.isNull() ? FractionStability.UNSTABLE.ordinal() : stabilityIndexJson.asInt();
-                FractionStability stability;
-                if (stabilityIndex < 0 || stabilityIndex >= FractionStability.values().length) {
-                    stability = FractionStability.UNSTABLE;
-                } else {
-                    stability = FractionStability.values()[stabilityIndex];
-                }
-
-                FractionDescriptor fd = new FractionDescriptor(groupId, artifactId, version, name, description, tags, internal, stability);
-                descriptors.put(groupId + ":" + artifactId, fd);
+                FractionDescriptor fd = getFractionDescriptor(fraction);
+                addDependencies(fraction, fd);
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // Set up dependencies
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("fraction-list.txt")))) {
+    }
 
-            String line = null;
-
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-
-                String[] sides = line.split("=");
-
-                String lhs = sides[0].trim();
-                String lhsKey = toKey(lhs);
-                FractionDescriptor desc = this.descriptors.get(lhsKey);
-                if (desc == null) {
-                    String[] gavParts = lhs.split(":");
-                    desc = new FractionDescriptor(gavParts[0], gavParts[1], gavParts[2]);
-                    this.descriptors.put(lhsKey, desc);
-                }
-
-                if (sides.length > 1) {
-                    String rhs = sides[1].trim();
-                    String[] deps = rhs.split(",");
-
-                    for (String dep : deps) {
-                        dep = dep.trim();
-                        if (dep.isEmpty()) {
-                            continue;
-                        }
-                        String depKey = toKey(dep);
-                        FractionDescriptor depDesc = this.descriptors.get(depKey);
-                        if (depDesc == null) {
-                            String[] gavParts = dep.split(":");
-                            depDesc = new FractionDescriptor(gavParts[0], gavParts[1], gavParts[2]);
-                            this.descriptors.put(depKey, depDesc);
-                        }
-                        desc.addDependency(depDesc);
-                    }
-                }
+    private void addDependencies(JsonObject fraction, FractionDescriptor parent) {
+        fraction.get("fractionDependencies").asArray().forEach(entry -> {
+            JsonObject dependency = entry.asObject();
+            FractionDescriptor descriptor = getFractionDescriptor(dependency);
+            if (parent != null) {
+                parent.addDependency(descriptor);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            addDependencies(dependency, descriptor);
+        });
+    }
+
+    private FractionDescriptor getFractionDescriptor(JsonObject fraction) {
+        String groupId = toString(fraction.get("groupId"));
+        String artifactId = toString(fraction.get("artifactId"));
+        String key = groupId + ":" + artifactId;
+        FractionDescriptor descriptor = descriptors.get(key);
+        if (descriptor == null) {
+            String version = toString(fraction.get("version"));
+            String name = toString(fraction.get("name"));
+            String description = toString(fraction.get("description"));
+            String tags = toString(fraction.get("tags"));
+            boolean internal = toBoolean(fraction.get("internal"));
+
+            JsonValue stabilityIndexJson = fraction.get("stabilityIndex");
+            int stabilityIndex = stabilityIndexJson == null || stabilityIndexJson.isNull() ? FractionStability.UNSTABLE.ordinal() : stabilityIndexJson.asInt();
+            FractionStability stability;
+            if (stabilityIndex < 0 || stabilityIndex >= FractionStability.values().length) {
+                stability = FractionStability.UNSTABLE;
+            } else {
+                stability = FractionStability.values()[stabilityIndex];
+            }
+            descriptor = new FractionDescriptor(groupId, artifactId, version, name, description, tags, internal, stability);
+            descriptors.put(key, descriptor);
         }
+        return descriptor;
     }
 
     private boolean toBoolean(JsonValue jsonValue) {
@@ -127,14 +101,6 @@ public class FractionList implements org.wildfly.swarm.tools.FractionList {
 
     private String toString(JsonValue jsonValue) {
         return jsonValue.isNull() ? null : jsonValue.asString();
-    }
-
-    /**
-     * @param a groupId:artifactId:version string
-     * @return the groupId:artifactId
-     */
-    private String toKey(String gav) {
-        return gav.substring(0, gav.lastIndexOf(':'));
     }
 
     @Override
