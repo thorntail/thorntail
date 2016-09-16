@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
@@ -42,7 +43,8 @@ public class KeycloakArquillianTest {
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new KeycloakFraction());
+        return new Swarm().fraction(new KeycloakFraction())
+                .fraction(LoggingFraction.createDebugLoggingFraction());
     }
 
     @Test
