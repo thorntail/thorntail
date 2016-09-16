@@ -85,4 +85,10 @@ public class FractionListTest {
         assertThat(dependencies).contains(naming, container);
     }
 
+    @Test
+    public void testArchaiusFractionShouldBeInternal() {
+        FractionDescriptor archaius = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "archaius");
+        assertThat(archaius.isInternal()).isTrue();;
+    }
+
 }
