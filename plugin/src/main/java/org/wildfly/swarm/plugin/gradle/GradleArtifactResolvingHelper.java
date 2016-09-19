@@ -22,14 +22,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.DependencySet;
-import org.gradle.api.artifacts.ResolvedDependency;
-import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
+import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.internal.artifacts.dependencies.DefaultDependencyArtifact;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency;
@@ -51,15 +48,11 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
     public GradleArtifactResolvingHelper(Project project) {
         this.project = project;
         this.projects = project.getRootProject().getAllprojects().stream().collect(Collectors.toMap(p -> p.getGroup() + ":" + p.getName() + ":" + p.getVersion(), p -> p));
-        this.project.getRepositories().maven(new Action<MavenArtifactRepository>() {
-            @Override
-            public void execute(MavenArtifactRepository repo) {
-                repo.setName("jboss-public");
-                repo.setUrl("http://repository.jboss.org/nexus/content/groups/public/");
-            }
+        this.project.getRepositories().maven(repo -> {
+            repo.setName("jboss-public");
+            repo.setUrl("http://repository.jboss.org/nexus/content/groups/public/");
         });
     }
-
 
     @Override
     public ArtifactSpec resolve(final ArtifactSpec spec) {
@@ -67,13 +60,10 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
             return spec;
         }
 
-        final Iterator<ResolvedDependency> iterator =
+        final Iterator<ResolvedArtifact> iterator =
                 doResolve(new HashSet<>(Collections.singletonList(spec)), false).iterator();
         if (iterator.hasNext()) {
-            spec.file = iterator.next()
-                    .getModuleArtifacts()
-                    .iterator().next()
-                    .getFile();
+            spec.file = iterator.next().getFile();
 
             return spec;
         }
@@ -87,26 +77,24 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
             return specs;
         }
 
-        final Set<ArtifactSpec> resolvedSpecs = new HashSet<>();
-
-        doResolve(specs, transitive).forEach(dep -> dep.getModuleArtifacts()
-                .forEach(artifact -> resolvedSpecs
-                        .add(new ArtifactSpec(dep.getConfiguration(),
-                                dep.getModuleGroup(),
-                                artifact.getName(),
-                                dep.getModuleVersion(),
+        return doResolve(specs, transitive)
+            .stream()
+            .map(artifact -> new ArtifactSpec("default",
+                                artifact.getModuleVersion().getId().getGroup(),
+                                artifact.getModuleVersion().getId().getName(),
+                                artifact.getModuleVersion().getId().getVersion(),
                                 artifact.getExtension(),
                                 artifact.getClassifier(),
-                                artifact.getFile()))));
-
-        return resolvedSpecs.stream()
-                .filter(a -> !"system".equals(a.scope))
-                .collect(Collectors.toSet());
+                                artifact.getFile()))
+            .collect(Collectors.toSet());
     }
 
-    private Set<ResolvedDependency> doResolve(final Collection<ArtifactSpec> deps, boolean transitive) {
+    private Collection<ResolvedArtifact> doResolve(final Collection<ArtifactSpec> deps, boolean transitive) {
         final Configuration config = this.project.getConfigurations().detachedConfiguration();
         final DependencySet dependencySet = config.getDependencies();
+
+        config.getResolutionStrategy().setForcedModules(
+                this.project.getConfigurations().getByName("compile").getResolutionStrategy().getForcedModules());
 
         deps.stream()
                 .forEach(spec -> {
@@ -122,22 +110,19 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
                     }
                 });
 
-        if ( transitive ) {
-            return config.getResolvedConfiguration().getFirstLevelModuleDependencies()
-                    .stream()
-                    .flatMap(this::fullTree)
-                    .collect(Collectors.toSet());
+        if (transitive) {
+            return config
+                .getResolvedConfiguration()
+                .getResolvedArtifacts();
         }
-        return config.getResolvedConfiguration().getFirstLevelModuleDependencies();
-    }
 
-    private Stream<ResolvedDependency> fullTree(ResolvedDependency root) {
-        return Stream.concat( Stream.of( root ), subTree( root ) );
-    }
-
-    private Stream<ResolvedDependency> subTree(ResolvedDependency root) {
-        return root.getChildren().stream()
-                .flatMap( e-> fullTree( e ));
+        return config
+            .getResolvedConfiguration()
+            .getFirstLevelModuleDependencies()
+            .stream()
+            .map(dep -> dep.getModuleArtifacts())
+            .flatMap(artifacts -> artifacts.stream())
+            .collect(Collectors.toList());
     }
 
 }
