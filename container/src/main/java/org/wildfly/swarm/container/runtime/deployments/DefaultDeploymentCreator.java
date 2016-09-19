@@ -90,9 +90,9 @@ public class DefaultDeploymentCreator {
             jarArchive.addAsManifestResource(new Asset() {
                 @Override
                 public InputStream openStream() {
-                    return new ByteArrayInputStream(new String("Produced by EmptyJARArchiveDeploymentFactory").getBytes());
+                    return new ByteArrayInputStream(new String("Created-By: WildFly Swarm\n").getBytes());
                 }
-            }, ArchivePaths.create("readme.txt"));
+            }, ArchivePaths.create("MANIFEST.MF"));
             return jarArchive;
         }
 
