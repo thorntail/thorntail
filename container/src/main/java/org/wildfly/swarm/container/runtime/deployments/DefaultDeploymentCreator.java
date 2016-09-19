@@ -1,5 +1,7 @@
 package org.wildfly.swarm.container.runtime.deployments;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,9 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.JARArchive;
 
@@ -82,7 +86,14 @@ public class DefaultDeploymentCreator {
 
         @Override
         public Archive create() throws Exception {
-            return ShrinkWrap.create(JARArchive.class, UUID.randomUUID().toString() + "." + this.type );
+            JARArchive jarArchive = ShrinkWrap.create(JARArchive.class, UUID.randomUUID().toString() + "." + this.type);
+            jarArchive.addAsManifestResource(new Asset() {
+                @Override
+                public InputStream openStream() {
+                    return new ByteArrayInputStream(new String("Produced by EmptyJARArchiveDeploymentFactory").getBytes());
+                }
+            }, ArchivePaths.create("readme.txt"));
+            return jarArchive;
         }
 
         @Override
