@@ -11,7 +11,9 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.JARArchive;
 
@@ -82,7 +84,9 @@ public class DefaultDeploymentCreator {
 
         @Override
         public Archive create() throws Exception {
-            return ShrinkWrap.create(JARArchive.class, UUID.randomUUID().toString() + "." + this.type );
+            JARArchive jarArchive = ShrinkWrap.create(JARArchive.class, UUID.randomUUID().toString() + "." + this.type);
+            jarArchive.addAsManifestResource(new StringAsset("Created-By: WildFly Swarm\n"), ArchivePaths.create("MANIFEST.MF"));
+            return jarArchive;
         }
 
         @Override

@@ -21,6 +21,7 @@ public class DefaultDeploymentCreatorTest {
         Archive archive = factory.create();
         assertThat(archive).isNotNull();
         assertThat(archive.getName()).endsWith(".foo");
+        assertThat(archive.getContent().size()).isGreaterThan(0);
     }
 
     @Test
