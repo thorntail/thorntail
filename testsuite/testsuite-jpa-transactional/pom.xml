@@ -15,15 +15,23 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>testsuite-jpa</artifactId>
+  <artifactId>testsuite-jpa-transactional</artifactId>
 
-  <name>Test Suite: JPA</name>
-  <description>Test Suite: JPA</description>
+  <name>Test Suite: JPA Transactional</name>
+  <description>Test Suite: JPA Transactional</description>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

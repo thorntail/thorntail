@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -34,7 +35,8 @@ public class JolokiaKeycloakTest {
     @CreateSwarm
     public static Swarm createSwarm() throws Exception {
         System.setProperty( JolokiaProperties.KEYCLOAK_ROLE, "admin" );
-        return new Swarm();
+        return new Swarm()
+                .fraction(LoggingFraction.createDebugLoggingFraction() );
     }
 
     @Test

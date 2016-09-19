@@ -92,6 +92,7 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.yaml.snakeyaml")));
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
 
         HashSet<String> paths = new HashSet<String>();
         paths.add("org/wildfly/swarm/bootstrap/logging");

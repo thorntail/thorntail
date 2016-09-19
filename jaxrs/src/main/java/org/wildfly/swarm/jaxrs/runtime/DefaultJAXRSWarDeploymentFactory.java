@@ -13,20 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs.internal;
+package org.wildfly.swarm.jaxrs.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.wildfly.swarm.bootstrap.env.NativeDeploymentFactory;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
-import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
+import org.wildfly.swarm.undertow.runtime.DefaultWarDeploymentFactory;
 
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
+@Singleton
 public class DefaultJAXRSWarDeploymentFactory extends DefaultWarDeploymentFactory {
+
+    @Inject
+    public DefaultJAXRSWarDeploymentFactory(NativeDeploymentFactory nativeDeploymentFactory) {
+        super( nativeDeploymentFactory );
+    }
 
     @Override
     public int getPriority() {
@@ -40,8 +47,11 @@ public class DefaultJAXRSWarDeploymentFactory extends DefaultWarDeploymentFactor
 
     @Override
     public Archive create() throws Exception {
-        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class, determineName());
-        setup(archive);
-        return archive.staticContent();
+        return super.create().as(JAXRSArchive.class);
+    }
+
+    @Override
+    public Archive createFromJar() throws Exception {
+        return super.createFromJar().as(JAXRSArchive.class);
     }
 }

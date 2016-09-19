@@ -23,13 +23,14 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.wildfly.swarm.bootstrap.env.NativeDeploymentFactory;
 import org.wildfly.swarm.internal.FileSystemLayout;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.DefaultDeploymentFactory;
 
 /**
  * @author Bob McWhirter
@@ -37,6 +38,13 @@ import org.wildfly.swarm.spi.api.JARArchive;
  */
 @ApplicationScoped
 public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
+
+    private NativeDeploymentFactory nativeDeploymentFactory;
+
+    @Inject
+    public DefaultJarDeploymentFactory(NativeDeploymentFactory nativeDeploymentFactory ) {
+        this.nativeDeploymentFactory = nativeDeploymentFactory;
+    }
 
     @Override
     public int getPriority() {
@@ -50,12 +58,21 @@ public class DefaultJarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
     public Archive create() throws Exception {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class, determineName());
-        setup(archive);
+        Archive archive = this.nativeDeploymentFactory.nativeDeployment();
+        if (archive != null) {
+            return archive;
+        }
+
+        archive = this.nativeDeploymentFactory.createEmptyArchive( JARArchive.class, ".jar" );
+        setupUsingMaven( archive );
         return archive;
     }
 
     @Override
+    public Archive createFromJar() throws Exception {
+        return create();
+    }
+
     public boolean setupUsingMaven(Archive<?> archive) throws Exception {
 
         FileSystemLayout fsLayout = FileSystemLayout.create();

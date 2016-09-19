@@ -86,8 +86,11 @@ public class DaemonServiceActivator implements ServiceActivator {
         static void addService(ServiceTarget serviceTarget) {
 
             final String artifactName = System.getProperty(BootstrapProperties.APP_ARTIFACT);
-            if (artifactName == null)
+            if (artifactName == null) {
                 throw new IllegalStateException("Failed to find artifact name under " + BootstrapProperties.APP_ARTIFACT);
+            }
+
+            System.err.println( "Arquillian will wait for deployment: " + artifactName );
 
             DaemonService runner = new DaemonService();
             serviceTarget

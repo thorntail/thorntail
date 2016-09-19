@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.resource.adapters.internal;
+package org.wildfly.swarm.resource.adapters.runtime;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -23,14 +23,16 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
+import org.wildfly.swarm.bootstrap.env.NativeDeploymentFactory;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.resource.adapters.RARArchive;
-import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
+import org.wildfly.swarm.spi.runtime.DefaultDeploymentFactory;
 
 /**
  * @author Ralf Battenfeld
@@ -38,12 +40,9 @@ import org.wildfly.swarm.spi.api.DependenciesContainer;
 @ApplicationScoped
 public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
 
-    public static RARArchive archiveFromCurrentApp() throws Exception {
-        final RARArchive archive = ShrinkWrap.create(RARArchive.class, determineName());
-        final DefaultDeploymentFactory factory = new DefaultRarDeploymentFactory();
-        factory.setup(archive);
-        return archive;
-    }
+
+    @Inject
+    NativeDeploymentFactory nativeDeploymentFactory;
 
     @Override
     public int getPriority() {
@@ -57,10 +56,21 @@ public class DefaultRarDeploymentFactory extends DefaultDeploymentFactory {
 
     @Override
     public Archive<?> create() throws Exception {
-        return archiveFromCurrentApp();
+        Archive archive = this.nativeDeploymentFactory.nativeDeployment();
+        if ( archive != null ) {
+            return archive;
+        }
+
+        archive = this.nativeDeploymentFactory.createEmptyArchive(RARArchive.class, ".rar" );
+        setupUsingMaven( archive );
+        return archive;
     }
 
     @Override
+    public Archive createFromJar() throws Exception {
+        return create();
+    }
+
     public boolean setupUsingMaven(final Archive<?> givenArchive) throws Exception {
         final DependenciesContainer<?> archive = (DependenciesContainer<?>) givenArchive;
 
