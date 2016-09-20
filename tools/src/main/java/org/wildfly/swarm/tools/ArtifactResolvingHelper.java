@@ -31,8 +31,8 @@ public interface ArtifactResolvingHelper {
     ArtifactSpec resolve(ArtifactSpec spec) throws Exception;
 
     default Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
-        return resolveAll( specs, true );
+        return resolveAll( specs, true, false );
     }
 
-    Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive) throws Exception;
+    Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception;
 }

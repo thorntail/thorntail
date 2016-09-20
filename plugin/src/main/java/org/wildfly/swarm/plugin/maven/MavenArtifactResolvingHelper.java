@@ -105,7 +105,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive) throws Exception {
+    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         if (specs.isEmpty()) {
             return specs;
         }
@@ -130,7 +130,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                                     new JavaScopeSelector(),
                                     new SimpleOptionalitySelector(),
                                     new JavaScopeDeriver()
-                            )
+                            ), defaultExcludes
                     );
 
             CollectResult result = this.system.collectDependencies(tempSession, request);

@@ -113,7 +113,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean trasitive) {
+    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean trasitive, boolean defaultExcludes) {
         if (specs.isEmpty()) {
             return specs;
         }

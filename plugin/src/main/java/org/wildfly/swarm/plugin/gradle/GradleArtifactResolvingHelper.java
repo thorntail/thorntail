@@ -72,7 +72,7 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean transitive) throws Exception {
+    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         if (specs.isEmpty()) {
             return specs;
         }
