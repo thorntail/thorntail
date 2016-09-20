@@ -21,6 +21,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
  * @author Bob McWhirter
@@ -32,7 +33,10 @@ public class DefaultSocketBindingGroupProducer {
 
     @Produces @Singleton @Named( STANDARD_SOCKETS )
     public SocketBindingGroup standardSockets() {
-        return new SocketBindingGroup( "standard-sockets", "public", "0");
+        return new SocketBindingGroup(
+                "standard-sockets",
+                "public",
+                SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"));
     }
 
 }
