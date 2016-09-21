@@ -196,14 +196,22 @@ public class BuildTool {
     public void repackageWar(File file) throws IOException {
         this.log.info("Repackaging .war: " + file);
 
-        Path backupPath = Paths.get(file.toString() + ".original");
-        Files.move(file.toPath(), backupPath, StandardCopyOption.REPLACE_EXISTING);
+        Path backupPath = get(file);
+        move(file, backupPath);
 
         Archive original = ShrinkWrap.create(JavaArchive.class);
         original.as(ZipImporter.class).importFrom(backupPath.toFile());
 
         WebInfLibFilteringArchive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
         repackaged.as(ZipExporter.class).exportTo(file, true);
+    }
+
+    private static synchronized Path get(File file) {
+        return Paths.get(file.toString() + ".original");
+    }
+
+    private static synchronized void move(File file, Path backupPath) throws IOException {
+        Files.move(file.toPath(), backupPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     public Archive build() throws Exception {
@@ -429,11 +437,15 @@ public class BuildTool {
         for (String additionalModule : additionalModules) {
             final File moduleDir = new File(additionalModule);
             this.archive.addAsResource(moduleDir, "modules");
-            Files.find(moduleDir.toPath(), 20,
-                       (p, __) -> p.getFileName().toString().equals("module.xml"))
-                    .forEach(p -> this.dependencyManager.addAdditionalModule(p));
+            find(moduleDir, dependencyManager);
 
         }
+    }
+
+    private static synchronized void find(File moduleDir, DependencyManager dependencyManager) throws IOException {
+        Files.find(moduleDir.toPath(), 20,
+                   (p, __) -> p.getFileName().toString().equals("module.xml"))
+                .forEach(dependencyManager::addAdditionalModule);
     }
 
     private void populateUberJarMavenRepository() throws Exception {
