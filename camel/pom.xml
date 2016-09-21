@@ -31,7 +31,7 @@
   </parent>
 
     <name>Camel</name>
-    <description>Camel</description>
+    <description>Java Integration Framework implementing the Enterprise Integration Patterns</description>
 
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>camel</artifactId>

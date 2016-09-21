@@ -30,6 +30,9 @@
   </parent>
 
   <name>Camel Other</name>
+  <description>
+    This fraction contains additional Camel components and data formats which are not yet packaged as individual fraction. The list of the modules is available here : https://github.com/wildfly-swarm/wildfly-swarm/blob/master/camel/components/other/module.conf
+  </description>
 
   <artifactId>camel-other</artifactId>
 

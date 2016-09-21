@@ -30,6 +30,9 @@
   </parent>
 
   <name>Camel Mail</name>
+  <description>
+    Java Mail Client implemented using Spring Mail project and able to fetch messages from a SMTP server using IMAP/POP3 protocols or issuing messages to a mail server.
+  </description>
 
   <artifactId>camel-mail</artifactId>
 
