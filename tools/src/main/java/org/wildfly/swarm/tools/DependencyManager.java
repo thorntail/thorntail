@@ -178,8 +178,8 @@ public class DependencyManager {
 
     protected static Stream<ModuleAnalyzer> findModuleXmls(File file) {
         List<ModuleAnalyzer> analyzers = new ArrayList<>();
-        try {
-            JarFile jar = new JarFile(file);
+        try (JarFile jar = new JarFile(file)){
+
             Enumeration<JarEntry> entries = jar.entries();
 
             while (entries.hasMoreElements()) {
@@ -187,8 +187,11 @@ public class DependencyManager {
                 String name = each.getName();
 
                 if (name.startsWith("modules/") && name.endsWith("module.xml")) {
-                    InputStream in = jar.getInputStream(each);
-                    analyzers.add(new ModuleAnalyzer(in));
+                    try (InputStream in = jar.getInputStream(each)){
+                        analyzers.add(new ModuleAnalyzer(in));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } catch (IOException e) {
@@ -329,15 +332,14 @@ public class DependencyManager {
         }
 
         String path = node.getPath().get();
-
-        try {
-            byte[] checksum = checksum(asset.openStream());
+        try (final InputStream inputStream = asset.openStream()){
+            byte[] checksum = checksum(inputStream);
 
             return this.removableDependencies.stream()
                     .filter(e -> path.endsWith(e.artifactId() + "-" + e.version() + ".jar"))
                     .map(e -> {
-                        try {
-                            return checksum(new FileInputStream(e.file));
+                        try (final FileInputStream in = new FileInputStream(e.file)){
+                            return checksum(in);
                         } catch (IOException | NoSuchAlgorithmException | DigestException e1) {
                             return null;
                         }
