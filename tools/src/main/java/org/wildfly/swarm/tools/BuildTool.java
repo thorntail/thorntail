@@ -427,7 +427,7 @@ public class BuildTool {
 
     private File createJar(String baseName, Path dir) throws IOException {
         File out = new File(dir.toFile(), baseName + "-swarm.jar");
-        if(!out.getParentFile().mkdirs()){
+        if(!out.getParentFile().exists() && !out.getParentFile().mkdirs()){
             this.log.error("Failed to create parent directory for: " + out.getAbsolutePath());
         }
         ZipExporter exporter = this.archive.as(ZipExporter.class);
