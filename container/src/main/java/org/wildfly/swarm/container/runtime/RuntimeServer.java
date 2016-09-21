@@ -104,6 +104,16 @@ public class RuntimeServer implements Server {
     private StageConfig stageConfig;
 
     public RuntimeServer() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if(serviceContainer!=null) {
+                try {
+                    LOG.info("Shutdown requested ...");
+                    stop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
     }
 
     @Produces
