@@ -30,6 +30,10 @@
   </parent>
 
   <name>Camel Undertow</name>
+  <description>
+    The Camel undertow component provides HTTP-based endpoints for consuming and producing HTTP requests. That is, the Undertow component behaves as a simple Web server
+    and can be used with the Camel REST DSL to design REST Services
+  </description>
 
   <artifactId>camel-undertow</artifactId>
 

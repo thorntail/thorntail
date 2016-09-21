@@ -30,6 +30,12 @@
   </parent>
 
   <name>Camel CDI</name>
+  <description>
+    Provides auto-configuration for Apache Camel using CDI as dependency injection framework based on convention-over-configuration.
+    It auto-detects Camel routes available in the application and provides beans for common Camel primitives like Endpoint, ProducerTemplate or TypeConverter.
+    It implements standard Camel bean integration so that Camel annotations like @Consume, @Produce and @PropertyInject can be used seamlessly in CDI beans.
+  </description>
+
 
   <artifactId>camel-cdi</artifactId>
 

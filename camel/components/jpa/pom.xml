@@ -30,6 +30,9 @@
   </parent>
 
   <name>Camel JPA</name>
+  <description>
+    The Camel JPA Component enables you to store and retrieve Java objects from persistent storage using EJB 3's Java Persistence Architecture (JPA).
+  </description>
 
   <artifactId>camel-jpa</artifactId>
 

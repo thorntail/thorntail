@@ -30,6 +30,10 @@
   </parent>
 
   <name>Camel CXF</name>
+  <description>
+    This component allows to expose Web Services or REST Services using the Apache CXF Framework according to different Data Format type; Bean, XML, Payload.
+    It can also be used as a client to issue HTTP Request containing XML payload or formatted according to the RESTFull spec.
+  </description>
 
   <artifactId>camel-cxf</artifactId>
 
