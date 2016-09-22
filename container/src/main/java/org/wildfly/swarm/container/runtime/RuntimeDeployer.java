@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
@@ -245,6 +246,7 @@ public class RuntimeDeployer implements Deployer {
         }
     }
 
+    @PreDestroy
     void stop() {
         for (Closeable each : this.mountPoints) {
             try {

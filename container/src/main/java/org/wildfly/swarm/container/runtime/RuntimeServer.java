@@ -197,7 +197,6 @@ public class RuntimeServer implements Server {
 
         latch.await();
 
-        this.deployer.get().stop();
         this.serviceContainer = null;
         this.client = null;
         this.deployer = null;
