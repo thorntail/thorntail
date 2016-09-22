@@ -30,6 +30,7 @@
   </parent>
 
   <name>Camel JAXB</name>
+  <description>Supports the JAXB Api to marshalling/unmarshall objects extracted from the messages in order to transform them from Java Beans to XML or vice versa.</description>
 
   <artifactId>camel-jaxb</artifactId>
 

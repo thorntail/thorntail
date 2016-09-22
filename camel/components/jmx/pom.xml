@@ -30,6 +30,10 @@
   </parent>
 
   <name>Camel JMX</name>
+  <description>
+    Acts as a polling client able to subscribe to a JMX Server in order to be notified from MBeans. The component supports passing the Notification object directly through the Exchange or serializing it to XML according
+    to the schema provided within this project. This is a consumer only component.
+  </description>
 
   <artifactId>camel-jmx</artifactId>
 

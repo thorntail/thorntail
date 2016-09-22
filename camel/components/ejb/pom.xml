@@ -32,6 +32,9 @@
   <name>Camel EJB</name>
 
   <artifactId>camel-ejb</artifactId>
+  <description>
+    Client performing calls against EJB beans registered within an EJB container and using a JndiContext.
+  </description>
 
   <properties>
     <swarm.fraction.tags>Camel,Integration,EIP,EJB</swarm.fraction.tags>

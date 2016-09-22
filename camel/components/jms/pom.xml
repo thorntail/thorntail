@@ -30,6 +30,7 @@
   </parent>
 
   <name>Camel JMS</name>
+  <description>JMS Spec 1.1 client based on Spring JMS project and able to produce or consume JMS messages from queues/topics exposed by a JMS Broker or Apache ActiveMQ.</description>
 
   <artifactId>camel-jms</artifactId>
 

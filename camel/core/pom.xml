@@ -30,6 +30,10 @@
   </parent>
 
   <name>Camel Core</name>
+  <description>
+    Java Integration Framework implementing the Enterprise Integration Patterns, doing the mediation and routing of the messages using a DSL Language (Java, Spring XML or Blueprint XML). This core module
+    contains the logic to support the different patterns, many languages (Simple, constant, header, body) to manipulate the content &amp; expressions to take decisions during the routing.
+  </description>
 
   <artifactId>camel-core-parent</artifactId>
   <packaging>pom</packaging>
