@@ -160,12 +160,7 @@ public class RuntimeDeployer implements Deployer {
     @Override
     public void deploy(Archive<?> deployment) throws DeploymentException {
 
-        // 1. give fractions a chance to handle the deployment
-        for (ArchivePreparer preparer : this.archivePreparers) {
-            preparer.prepareArchive(deployment);
-        }
-
-        // 2. create a meta data index, but only if we have processors for it
+        // 1. create a meta data index, but only if we have processors for it
         if (!this.archiveMetadataProcessors.isUnsatisfied()) {
             Indexer indexer = new Indexer();
             Map<ArchivePath, Node> c = deployment.getContent();
@@ -185,6 +180,11 @@ public class RuntimeDeployer implements Deployer {
             for (ArchiveMetadataProcessor processor : this.archiveMetadataProcessors) {
                 processor.processArchive(deployment, index);
             }
+        }
+
+        // 2. give fractions a chance to handle the deployment
+        for (ArchivePreparer preparer : this.archivePreparers) {
+            preparer.prepareArchive(deployment);
         }
 
         if (this.debug) {
