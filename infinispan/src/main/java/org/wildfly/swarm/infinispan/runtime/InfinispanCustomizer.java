@@ -74,6 +74,7 @@ public class InfinispanCustomizer implements Customizer {
                 cc -> cc.defaultCache("default")
                         .alias("singleton")
                         .alias("cluster")
+                        .module("org.wildfly.clustering.server")
                         .jgroupsTransport(t -> t.lockTimeout(60000L))
                         .replicatedCache("default",
                                 c -> c.mode(Mode.SYNC)
@@ -81,6 +82,7 @@ public class InfinispanCustomizer implements Customizer {
         if (!this.undertow.isUnsatisfied()) {
             this.fraction.cacheContainer("web",
                     cc -> cc.defaultCache("dist")
+                            .module("org.wildfly.clustering.web.infinispan")
                             .jgroupsTransport(t -> t.lockTimeout(60000L))
                             .distributedCache("dist",
                                     c -> c.mode(Mode.ASYNC)
@@ -95,6 +97,7 @@ public class InfinispanCustomizer implements Customizer {
             this.fraction.cacheContainer("ejb",
                     cc -> cc.defaultCache("dist")
                             .alias("sfsb")
+                            .module("org.wildfly.clustering.ejb.infinispan")
                             .jgroupsTransport(t -> t.lockTimeout(60000L))
                             .distributedCache("dist",
                                     c -> c.mode(Mode.ASYNC)
@@ -109,6 +112,7 @@ public class InfinispanCustomizer implements Customizer {
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
                     cc -> cc.defaultCache("local-query")
+                            .module("org.hibernate.infinispan")
                             .jgroupsTransport(t -> t.lockTimeout(60000L))
                             .localCache("local-query",
                                     c -> c.evictionComponent(ec -> ec.maxEntries(10000L).strategy(EvictionComponent.Strategy.LRU))
