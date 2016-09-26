@@ -1,12 +1,12 @@
 /**
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -196,14 +196,38 @@ public class BuildTool {
     public void repackageWar(File file) throws IOException {
         this.log.info("Repackaging .war: " + file);
 
-        Path backupPath = Paths.get(file.toString() + ".original");
-        Files.move(file.toPath(), backupPath, StandardCopyOption.REPLACE_EXISTING);
+        Path backupPath = get(file);
+        move(file, backupPath, this.log);
 
         Archive original = ShrinkWrap.create(JavaArchive.class);
         original.as(ZipImporter.class).importFrom(backupPath.toFile());
 
         WebInfLibFilteringArchive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
         repackaged.as(ZipExporter.class).exportTo(file, true);
+        this.log.info("Repackaged .war: " + file);
+    }
+
+    private static synchronized Path get(File file) {
+        return Paths.get(file.toString() + ".original");
+    }
+
+    private static synchronized void move(File file, Path backupPath, SimpleLogger log) throws IOException {
+
+        final Path path = file.toPath();
+
+        try {
+            Files.move(path, backupPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            log.info("Fallback file move: " + file.getAbsolutePath());
+            //Fallback strategy - Create the backup and delete target path
+            Files.copy(path, backupPath, StandardCopyOption.COPY_ATTRIBUTES);
+            log.info("Copied " + path  + " to " + backupPath);
+            try {
+                Files.deleteIfExists(path);
+            } catch (IOException del) {
+                log.info("Fallback failed to delete, will overwrite existing file: " + file.getAbsolutePath());
+            }
+        }
     }
 
     public Archive build() throws Exception {
@@ -403,7 +427,9 @@ public class BuildTool {
 
     private File createJar(String baseName, Path dir) throws IOException {
         File out = new File(dir.toFile(), baseName + "-swarm.jar");
-        out.getParentFile().mkdirs();
+        if(!out.getParentFile().exists() && !out.getParentFile().mkdirs()){
+            this.log.error("Failed to create parent directory for: " + out.getAbsolutePath());
+        }
         ZipExporter exporter = this.archive.as(ZipExporter.class);
         try (FileOutputStream fos = new FileOutputStream(out)) {
             if (executable) {
@@ -414,7 +440,9 @@ public class BuildTool {
             exporter.exportTo(fos);
         }
         if (executable) {
-            out.setExecutable(true);
+            if(!out.setExecutable(true)){
+                this.log.error("Failed to set executable flag");
+            }
         }
         return out;
     }
@@ -429,11 +457,15 @@ public class BuildTool {
         for (String additionalModule : additionalModules) {
             final File moduleDir = new File(additionalModule);
             this.archive.addAsResource(moduleDir, "modules");
-            Files.find(moduleDir.toPath(), 20,
-                       (p, __) -> p.getFileName().toString().equals("module.xml"))
-                    .forEach(p -> this.dependencyManager.addAdditionalModule(p));
+            find(moduleDir, dependencyManager);
 
         }
+    }
+
+    private static synchronized void find(File moduleDir, DependencyManager dependencyManager) throws IOException {
+        Files.find(moduleDir.toPath(), 20,
+                (p, __) -> p.getFileName().toString().equals("module.xml"))
+                .forEach(dependencyManager::addAdditionalModule);
     }
 
     private void populateUberJarMavenRepository() throws Exception {
