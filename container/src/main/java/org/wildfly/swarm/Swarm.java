@@ -68,6 +68,8 @@ import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
 import org.wildfly.swarm.container.runtime.logging.JBossLoggingManager;
 import org.wildfly.swarm.internal.ArtifactManager;
+import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
+import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -262,6 +264,16 @@ public class Swarm {
         return this;
     }
 
+    public Swarm outboundSocketBinding(String socketBindingGroup, OutboundSocketBinding binding) {
+        this.outboundSocketBindings.add( new OutboundSocketBindingRequest( socketBindingGroup, binding ) );
+        return this;
+    }
+
+    public Swarm socketBinding(String socketBindingGroup, SocketBinding binding) {
+        this.socketBindings.add( new SocketBindingRequest( socketBindingGroup, binding ));
+        return this;
+    }
+
     /**
      * Start the container.
      *
@@ -282,6 +294,8 @@ public class Swarm {
                 .withArguments(this.args)
                 .withBootstrapDebug(this.debugBootstrap)
                 .withExplicitlyInstalledFractions(this.explicitlyInstalledFractions)
+                .withSocketBindings(this.socketBindings)
+                .withOutboundSocketBindings(this.outboundSocketBindings)
                 .withUserComponents(this.userComponentClasses)
                 .withXmlConfig(this.xmlConfig);
 
@@ -517,6 +531,10 @@ public class Swarm {
     private Server server;
 
     private Set<Class<?>> userComponentClasses = new HashSet<>();
+
+    private List<SocketBindingRequest> socketBindings = new ArrayList<>();
+
+    private List<OutboundSocketBindingRequest> outboundSocketBindings = new ArrayList<>();
 
     private List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
 
