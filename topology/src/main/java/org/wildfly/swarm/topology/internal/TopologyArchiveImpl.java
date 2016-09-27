@@ -15,10 +15,15 @@
  */
 package org.wildfly.swarm.topology.internal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
@@ -41,6 +46,18 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
      */
     public TopologyArchiveImpl(ArchiveBase<?> archive) {
         super(archive);
+
+        Node regConf = as(JARArchive.class).get(REGISTRATION_CONF);
+        if ( regConf != null && regConf.getAsset() != null ) {
+            try ( BufferedReader reader = new BufferedReader( new InputStreamReader( regConf.getAsset().openStream() ) ) ) {
+                reader.lines()
+                        .forEach( line->{
+                            this.serviceNames.add( line );
+                        });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -56,6 +73,17 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
         }
 
         return advertise();
+    }
+
+    @Override
+    public TopologyArchive advertise(Collection<String> serviceNames) {
+        this.serviceNames.addAll( serviceNames );
+        return advertise();
+    }
+
+    @Override
+    public List<String> advertisements() {
+        return Collections.unmodifiableList( this.serviceNames );
     }
 
     @Override
