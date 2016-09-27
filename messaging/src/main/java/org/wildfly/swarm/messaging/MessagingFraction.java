@@ -32,9 +32,8 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @DeploymentModule(name = "javax.jms.api")
 public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> implements Fraction<MessagingFraction> {
 
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
+    public MessagingFraction() {
+
     }
 
     /**

@@ -1,11 +1,11 @@
 package org.wildfly.swarm.container.runtime;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Enumeration;
+import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 
 import org.jboss.logging.Logger;
@@ -18,12 +18,18 @@ import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
+import org.wildfly.swarm.container.runtime.cdi.OutboundSocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageProducingExtension;
+import org.wildfly.swarm.container.runtime.cdi.SocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.XMLConfigProducingExtension;
 import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
+import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
+import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
+import org.wildfly.swarm.spi.api.SocketBinding;
 
 /**
  * @author Bob McWhirter
@@ -75,6 +81,18 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     }
 
     @Override
+    public ServerBootstrap withSocketBindings(List<SocketBindingRequest> bindings) {
+        this.socketBindings = bindings;
+        return this;
+    }
+
+    @Override
+    public ServerBootstrap withOutboundSocketBindings(List<OutboundSocketBindingRequest> bindings) {
+        this.outboundSocketBindings = bindings;
+        return this;
+    }
+
+    @Override
     public Server bootstrap() throws Exception {
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
         Thread.currentThread().setContextClassLoader(module.getClassLoader());
@@ -89,6 +107,8 @@ public class ServerBootstrapImpl implements ServerBootstrap {
         weld.addExtension(new CommandLineArgsExtension(args));
         weld.addExtension(new ProjectStageProducingExtension(this.stageConfig));
         weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
+        weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
+        weld.addExtension(new SocketBindingExtension(this.socketBindings));
 
         for (Class<?> each : this.userComponents) {
             weld.addBeanClass(each);
@@ -126,6 +146,10 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     private Optional<URL> xmlConfigURL = Optional.empty();
 
     private boolean bootstrapDebug;
+
+    private List<SocketBindingRequest> socketBindings;
+
+    private List<OutboundSocketBindingRequest> outboundSocketBindings;
 
     private String stageConfigUrl;
 }
