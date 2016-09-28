@@ -44,6 +44,8 @@ public class TopologyManagerActivator implements ServiceActivator {
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
         ServiceTarget target = context.getServiceTarget();
 
+        TopologyManager.INSTANCE.setServiceTarget( target );
+
         target.addService(SERVICE_NAME, new ValueService<>(new ImmediateValue<>(TopologyManager.INSTANCE)))
                 .install();
 

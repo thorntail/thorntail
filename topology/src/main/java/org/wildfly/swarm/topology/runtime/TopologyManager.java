@@ -25,6 +25,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceTarget;
+import org.wildfly.swarm.topology.AdvertisemetHandle;
+import org.wildfly.swarm.topology.deployment.RegistrationAdvertiser;
 import org.wildfly.swarm.topology.Topology;
 import org.wildfly.swarm.topology.TopologyListener;
 
@@ -35,12 +39,23 @@ public class TopologyManager implements Topology {
 
     public static final TopologyManager INSTANCE = new TopologyManager();
 
+    public void setServiceTarget(ServiceTarget serviceTarget) {
+        this.serviceTarget = serviceTarget;
+    }
+
     public synchronized void addListener(TopologyListener listener) {
         this.listeners.add(listener);
     }
 
     public synchronized void removeListener(TopologyListener listener) {
         this.listeners.remove(listener);
+    }
+
+    @Override
+    public AdvertisemetHandle advertise(String name) {
+        ServiceController<Void> httpAdvert = RegistrationAdvertiser.install(this.serviceTarget, name, "http");
+        ServiceController<Void> httpsAdvert = RegistrationAdvertiser.install( this.serviceTarget, name, "https" );
+        return new AdvertisementHandleImpl( httpAdvert, httpsAdvert );
     }
 
     public synchronized Set<Registration> registrationsForSourceKey(String sourceKey) {
@@ -136,5 +151,8 @@ public class TopologyManager implements Topology {
     private List<Registration> registrations = new ArrayList<>();
 
     private Executor executor = Executors.newFixedThreadPool(2);
+
+    private ServiceTarget serviceTarget;
+
 
 }

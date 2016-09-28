@@ -36,6 +36,8 @@ public interface Topology {
 
     void removeListener(TopologyListener listener);
 
+    AdvertisemetHandle advertise(String name);
+
     Map<String, List<Entry>> asMap();
 
     interface Entry {
