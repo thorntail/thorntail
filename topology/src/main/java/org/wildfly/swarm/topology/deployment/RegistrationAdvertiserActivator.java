@@ -20,22 +20,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.jboss.as.network.SocketBinding;
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
-import org.jboss.msc.service.ServiceController;
-import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.TopologyArchive;
-import org.wildfly.swarm.topology.TopologyConnector;
-import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class RegistrationAdvertiserActivator implements ServiceActivator {
-    public static final ServiceName CONNECTOR_SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
@@ -55,8 +52,8 @@ public class RegistrationAdvertiserActivator implements ServiceActivator {
             while ((serviceName = reader.readLine()) != null) {
                 serviceName = serviceName.trim();
                 if (!serviceName.isEmpty()) {
-                    installAdvertiser(target, serviceName, "http");
-                    installAdvertiser(target, serviceName, "https");
+                    RegistrationAdvertiser.install(target, serviceName, "http");
+                    RegistrationAdvertiser.install(target, serviceName, "https");
                 }
             }
 
@@ -65,14 +62,5 @@ public class RegistrationAdvertiserActivator implements ServiceActivator {
         }
     }
 
-    private void installAdvertiser(ServiceTarget target, String serviceName, String socketBindingName) {
-        ServiceName socketBinding = ServiceName.parse("org.wildfly.network.socket-binding." + socketBindingName);
-        RegistrationAdvertiser advertiser = new RegistrationAdvertiser(serviceName, socketBindingName);
 
-        target.addService(ServiceName.of("swarm", "topology", "register", serviceName, socketBindingName), advertiser)
-                .addDependency(CONNECTOR_SERVICE_NAME, TopologyConnector.class, advertiser.getTopologyConnectorInjector())
-                .addDependency(socketBinding, SocketBinding.class, advertiser.getSocketBindingInjector())
-                .setInitialMode(ServiceController.Mode.PASSIVE)
-                .install();
-    }
 }

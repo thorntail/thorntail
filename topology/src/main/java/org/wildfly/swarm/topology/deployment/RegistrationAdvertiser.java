@@ -15,9 +15,14 @@
  */
 package org.wildfly.swarm.topology.deployment;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.as.network.SocketBinding;
 import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.Service;
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
@@ -27,18 +32,32 @@ import org.wildfly.swarm.topology.TopologyConnector;
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class RegistrationAdvertiser implements Service<Void> {
 
-    public RegistrationAdvertiser(String name, String... tags) {
+    public static final ServiceName CONNECTOR_SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
+
+    public static ServiceController<Void> install(ServiceTarget target, String serviceName, String socketBindingName) {
+        ServiceName socketBinding = ServiceName.parse("org.wildfly.network.socket-binding." + socketBindingName);
+        RegistrationAdvertiser advertiser = new RegistrationAdvertiser(serviceName, socketBindingName);
+
+        return target.addService(ServiceName.of("swarm", "topology", "register", serviceName, socketBindingName), advertiser)
+                .addDependency(CONNECTOR_SERVICE_NAME, TopologyConnector.class, advertiser.getTopologyConnectorInjector())
+                .addDependency(socketBinding, SocketBinding.class, advertiser.getSocketBindingInjector())
+                .setInitialMode(ServiceController.Mode.PASSIVE)
+                .install();
+    }
+
+    RegistrationAdvertiser(String name, String... tags) {
         this.name = name;
         this.tags = tags;
     }
 
-    public Injector<TopologyConnector> getTopologyConnectorInjector() {
+    Injector<TopologyConnector> getTopologyConnectorInjector() {
         return this.topologyConnectorInjector;
     }
 
-    public Injector<SocketBinding> getSocketBindingInjector() {
+    Injector<SocketBinding> getSocketBindingInjector() {
         return this.socketBindingInjector;
     }
 

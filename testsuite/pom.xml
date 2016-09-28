@@ -130,6 +130,7 @@
     <module>testsuite-swagger</module>
     <module>testsuite-swagger-webapp</module>
     <module>testsuite-topology</module>
+    <module>testsuite-topology-api</module>
     <module>testsuite-topology-consul</module>
     <module>testsuite-topology-jgroups</module>
     <module>testsuite-topology-openshift</module>
