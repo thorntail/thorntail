@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.logging;
 
+import java.io.File;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.wildfly.swarm.config.logging.CustomFormatter;
 import org.wildfly.swarm.config.logging.CustomHandler;
 import org.wildfly.swarm.config.logging.FileHandler;
 import org.wildfly.swarm.config.logging.Level;
+import org.wildfly.swarm.config.logging.Logger;
 import org.wildfly.swarm.config.logging.PatternFormatter;
 import org.wildfly.swarm.config.logging.RootLogger;
 import org.wildfly.swarm.config.logging.SyslogHandler;
@@ -35,10 +37,17 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
+import static org.wildfly.swarm.logging.LoggingProperties.DEFAULT_COLOR_PATTERN;
+import static org.wildfly.swarm.logging.LoggingProperties.DEFAULT_FILE_HANDLER_NAME;
+import static org.wildfly.swarm.logging.LoggingProperties.DEFAULT_LOGGING_DIR;
+import static org.wildfly.swarm.logging.LoggingProperties.DEFAULT_LOGGING_FILE_NAME;
+import static org.wildfly.swarm.logging.LoggingProperties.DEFAULT_PATTERN;
+
 /**
  * @author Bob McWhirter
  * @author Ken Finnigan
  * @author Lance Ball
+ * @author Charles Moulliard
  */
 @SuppressWarnings("unused")
 @WildFlyExtension(module = "org.jboss.as.logging")
@@ -51,6 +60,9 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
 
     public static final String COLOR_PATTERN = "COLOR_PATTERN";
 
+    public static LoggingFraction loggingFraction;
+
+    public RootLogger rootLogger = new RootLogger();
 
     public LoggingFraction applyDefaults() {
         Level level = Level.INFO;
@@ -74,6 +86,13 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
                 .rootLogger(level, CONSOLE);
 
         return this;
+    }
+
+    public static LoggingFraction getInstance() {
+        if (loggingFraction == null) {
+            loggingFraction = new LoggingFraction();
+        }
+        return loggingFraction;
     }
 
     /**
@@ -118,7 +137,67 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return The fully-configured fraction.
      */
     public static LoggingFraction createDefaultLoggingFraction(Level level) {
-        return new LoggingFraction().applyDefaults(level);
+        return getInstance().applyDefaults(level);
+    }
+
+    /**
+     * Create a default INFO File logging fraction using as name swarm.log and located under the user directory.
+     *
+     * @return The fully-configured fraction.
+     */
+    public static LoggingFraction createFileLoggingFraction() {
+        return createDefaultFileLoggingFraction(DEFAULT_LOGGING_DIR, DEFAULT_LOGGING_FILE_NAME, Level.INFO, null);
+    }
+
+    /**
+     * Create an INFO File logging fraction using as file parameter and path the path defined and the logging file name.
+     *
+     * @return The fully-configured fraction.
+     */
+    public static LoggingFraction createFileLoggingFraction(String path, String file) {
+        return createDefaultFileLoggingFraction(path, file, Level.INFO, null);
+    }
+
+    /**
+     * Create a File logging fraction using as parameter the logging level, logging file name & path.
+     *
+     * @return The fully-configured fraction.
+     */
+    public static LoggingFraction createFileLoggingFraction(String path, String file, Level level) {
+        return createDefaultFileLoggingFraction(path, file, level, null);
+    }
+
+    /**
+     * Create a File logging fraction using as parameter the logging level, logging file name, path & package name linked to the Level.
+     *
+     * @return The fully-configured fraction.
+     */
+    public static LoggingFraction createFileLoggingFraction(String path, String file, Level level, String packageName) {
+        return createDefaultFileLoggingFraction(path, file, level, packageName);
+    }
+
+    /**
+     * Create a Default LoggingFraction
+     *
+     * @param path        The log file path
+     * @param file        The logging file name
+     * @param level       The logging level
+     * @param packageName The name of the package
+     * @return This fraction
+     */
+    private static LoggingFraction createDefaultFileLoggingFraction(String path, String file, Level level, String packageName) {
+        Map<Object, Object> fileProperties = new HashMap<>();
+        fileProperties.put("path", path + File.separator + file);
+
+        getInstance().fileHandler(new FileHandler(DEFAULT_FILE_HANDLER_NAME)
+                     .formatter(DEFAULT_PATTERN)
+                     .file(fileProperties));
+
+        if (packageName != null) {
+            getInstance().logger(new Logger(packageName).level(level).handler(DEFAULT_FILE_HANDLER_NAME));
+        }
+
+        return loggingFraction;
     }
 
     // ------- FORMATTERS ---------
@@ -129,7 +208,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return This fraction.
      */
     public LoggingFraction defaultFormatter() {
-        return formatter(PATTERN, "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
+        return formatter(PATTERN, DEFAULT_PATTERN);
     }
 
     /**
@@ -138,7 +217,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return This fraction.
      */
     public LoggingFraction defaultColorFormatter() {
-        return formatter(COLOR_PATTERN, "%K{level}%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
+        return formatter(COLOR_PATTERN, DEFAULT_COLOR_PATTERN);
     }
 
 
@@ -326,7 +405,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      * @return this fraction
      */
     public LoggingFraction rootLogger(Level level, String... handlers) {
-        rootLogger(new RootLogger().level(level)
+        rootLogger(this.rootLogger.level(level)
                            .handlers(handlers));
         return this;
     }
