@@ -15,7 +15,9 @@
  */
 package org.wildfly.swarm.messaging;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.wildfly.swarm.config.messaging.activemq.server.BroadcastGroup;
@@ -45,13 +47,13 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         inVmAcceptor("in-vm", (a) -> a.serverId(serverId));
 
         connectionFactory(new ConnectionFactory("InVmConnectionFactory")
-                                  .connectors(Collections.singletonList("in-vm"))
-                                  .entries(Collections.singletonList("java:/ConnectionFactory")));
+                .connectors(Collections.singletonList("in-vm"))
+                .entries(Collections.singletonList("java:/ConnectionFactory")));
 
         pooledConnectionFactory(new PooledConnectionFactory("activemq-ra")
-                                        .entries(Collections.singletonList("java:jboss/DefaultJMSConnectionFactory"))
-                                        .connectors(Collections.singletonList("in-vm"))
-                                        .transaction("xa"));
+                .entries(Collections.singletonList("java:jboss/DefaultJMSConnectionFactory"))
+                .connectors(Collections.singletonList("in-vm"))
+                .transaction("xa"));
         return this;
     }
 
@@ -74,12 +76,77 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         return this;
     }
 
+    /** Setup a remote connection to a remote message broker.
+     *
+     * @param connection The connection defailts.
+     * @return This server.
+     */
+    public EnhancedServer remoteConnection(RemoteConnection connection) {
+        return remoteConnection(() -> connection);
+    }
+
+    /** Setup a default remote connection to a remote message broker.
+     *
+     * <p>By default, it sets up a connection named <code>remote-mq</code>,
+     * connecting to <code>localhost</code> at port <code>61616</code>.
+     * The connection factory is named <code>java:/jms/remote-mq</code>.</p>
+     *
+     * @return This server.
+     */
+    public EnhancedServer remoteConnection() {
+        return remoteConnection(MessagingProperties.DEFAULT_REMOTE_MQ_NAME);
+    }
+
+    /** Setup a default named remote connection to a remote message broker.
+     *
+     * <p>By default, it sets up a connection
+     * connecting to <code>localhost</code> at port <code>61616</code>.
+     * The connection factory is named <code>java:/jms/<b>name</b></code>.</p>
+     *
+     * @return This server.
+     */
+    public EnhancedServer remoteConnection(String name) {
+        return remoteConnection( name, (config)->{} );
+    }
+
+    /** Setup a named remote connection to a remote message broker.
+     *
+     * @param name The name of the connection.
+     * @param config The configuration.
+     * @return This server.
+     */
+    public EnhancedServer remoteConnection(String name, RemoteConnection.Consumer config) {
+        return remoteConnection(() -> {
+            RemoteConnection connection = new RemoteConnection(name);
+            config.accept(connection);
+            return connection;
+        });
+    }
+
+
+    /** Setup a remote connection to a remote message broker.
+     *
+     * @param supplier The supplier of the configuration.
+     *
+     * @return This server.
+     */
+    public EnhancedServer remoteConnection(RemoteConnection.Supplier supplier) {
+        RemoteConnection connection = supplier.get();
+
+
+
+        this.remoteConnections.add(connection);
+
+        return this;
+    }
+
+
     public EnhancedServer enableRemote() {
         enableHTTPConnections();
 
         connectionFactory(new ConnectionFactory("RemoteConnectionFactory")
-                                  .connectors(Collections.singletonList("http-connector"))
-                                  .entries("java:/RemoteConnectionFactory", "java:jboss/exported/jms/RemoteConnectionFactory"));
+                .connectors(Collections.singletonList("http-connector"))
+                .entries("java:/RemoteConnectionFactory", "java:jboss/exported/jms/RemoteConnectionFactory"));
         return this;
     }
 
@@ -156,6 +223,12 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
             }
         });
     }
+
+    public List<RemoteConnection> remoteConnections() {
+        return this.remoteConnections;
+    }
+
+    private List<RemoteConnection> remoteConnections = new ArrayList<>();
 
     private static final AtomicInteger COUNTER = new AtomicInteger();
 }
