@@ -1,12 +1,12 @@
 package org.wildfly.swarm.topology.runtime;
 
 import org.jboss.msc.service.ServiceController;
-import org.wildfly.swarm.topology.AdvertisemetHandle;
+import org.wildfly.swarm.topology.AdvertisementHandle;
 
 /**
  * @author Bob McWhirter
  */
-class AdvertisementHandleImpl implements AdvertisemetHandle {
+class AdvertisementHandleImpl implements AdvertisementHandle {
 
     AdvertisementHandleImpl(ServiceController<?>...controllers) {
         this.controllers = controllers;

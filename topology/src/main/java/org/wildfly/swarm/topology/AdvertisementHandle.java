@@ -3,6 +3,6 @@ package org.wildfly.swarm.topology;
 /**
  * @author Bob McWhirter
  */
-public interface AdvertisemetHandle {
+public interface AdvertisementHandle {
     void unadvertise();
 }
