@@ -95,7 +95,7 @@ class HttpContexts implements HttpHandler {
     }
 
     private void noHealthEndpoints(HttpServerExchange exchange) {
-        exchange.setStatusCode(503);
+        exchange.setStatusCode(204);
         exchange.getResponseSender().send("No health endpoints configured!");
     }
 
