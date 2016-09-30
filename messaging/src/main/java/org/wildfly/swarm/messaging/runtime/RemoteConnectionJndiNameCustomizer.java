@@ -1,6 +1,7 @@
 package org.wildfly.swarm.messaging.runtime;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -28,34 +29,26 @@ public class RemoteConnectionJndiNameCustomizer implements Customizer {
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_MQ_NAME)
-    String mqName;
+    Optional<String> mqName = Optional.empty();
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_JNDI_NAME)
-    String jndiName;
+    Optional<String> jndiName = Optional.empty();
 
     @Override
     public void customize() {
         List<Server> servers = fraction.subresources().servers();
 
-        String mqName = this.mqName;
-        if ( mqName == null ) {
-            mqName = MessagingProperties.DEFAULT_REMOTE_MQ_NAME;
-        }
-
-        String finalMqName = mqName;
+        String mqName = this.mqName.orElse( MessagingProperties.DEFAULT_REMOTE_MQ_NAME );
         servers.stream()
                 .filter(e -> e instanceof EnhancedServer)
                 .forEach( server->{
                     ((EnhancedServer) server).remoteConnections()
                             .stream()
-                            .filter( e->e.name().equals( finalMqName ) )
+                            .filter( e->e.name().equals( mqName ) )
                             .findFirst()
                             .ifPresent(connection -> {
-                                String jndiName = this.jndiName;
-                                if ( jndiName != null ) {
-                                    connection.jndiName( jndiName );
-                                }
+                                this.jndiName.ifPresent(connection::jndiName);
                             });
                 });
 

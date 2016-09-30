@@ -1,5 +1,7 @@
 package org.wildfly.swarm.messaging.runtime;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.wildfly.swarm.messaging.EnhancedServer;
@@ -50,7 +52,7 @@ public class RemoteConnectionJndiNameCustomizerTest {
             server.remoteConnection( "other-mq" );
         });
 
-        this.customizer.jndiName = "java:/jms/tacos";
+        this.customizer.jndiName = Optional.of("java:/jms/tacos");
 
         this.customizer.customize();
 

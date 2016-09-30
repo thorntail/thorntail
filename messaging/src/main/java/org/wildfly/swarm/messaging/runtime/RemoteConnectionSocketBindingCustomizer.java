@@ -1,13 +1,11 @@
 package org.wildfly.swarm.messaging.runtime;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Optional;
 
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.messaging.activemq.Server;
 import org.wildfly.swarm.messaging.EnhancedServer;
@@ -18,9 +16,10 @@ import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
-import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
-/** Creates an outbound-socket binding for each RemoteConnection.
+/**
+ * Creates an outbound-socket binding for each RemoteConnection.
+ *
  * @author Bob McWhirter
  */
 @Post
@@ -36,26 +35,21 @@ public class RemoteConnectionSocketBindingCustomizer implements Customizer {
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_MQ_NAME)
-    String mqName;
+    Optional<String> mqName = Optional.empty();
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_HOST)
-    String remoteHost;
+    Optional<String> remoteHost = Optional.empty();
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_PORT)
-    String remotePort;
+    Optional<String> remotePort = Optional.empty();
 
     @Override
     public void customize() {
         List<Server> servers = fraction.subresources().servers();
 
-        String mqName = this.mqName;
-        if (mqName == null) {
-            mqName = MessagingProperties.DEFAULT_REMOTE_MQ_NAME;
-        }
-
-        String finalMqName = mqName;
+        String mqName = this.mqName.orElse(MessagingProperties.DEFAULT_REMOTE_MQ_NAME);
 
         servers.stream()
                 .filter(e -> e instanceof EnhancedServer)
@@ -63,19 +57,9 @@ public class RemoteConnectionSocketBindingCustomizer implements Customizer {
                     ((EnhancedServer) server).remoteConnections()
                             .forEach(connection -> {
                                 OutboundSocketBinding binding = new OutboundSocketBinding(connection.name());
-                                if (connection.name().equals(finalMqName)) {
-                                    String host = this.remoteHost;
-                                    if (host == null) {
-                                        host = connection.host();
-                                    }
-
-                                    String port = this.remotePort;
-                                    if (port == null) {
-                                        port = connection.port();
-                                    }
-
-                                    binding.remoteHost(host)
-                                            .remotePort(port);
+                                if (connection.name().equals(mqName)) {
+                                    binding.remoteHost(this.remoteHost.orElse(connection.host()))
+                                            .remotePort(this.remotePort.orElse(connection.port()));
                                 } else {
                                     binding.remoteHost(connection.host())
                                             .remotePort(connection.port());

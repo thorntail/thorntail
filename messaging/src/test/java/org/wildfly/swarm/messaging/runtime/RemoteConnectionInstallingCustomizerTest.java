@@ -1,5 +1,7 @@
 package org.wildfly.swarm.messaging.runtime;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.wildfly.swarm.messaging.EnhancedServer;
@@ -33,7 +35,7 @@ public class RemoteConnectionInstallingCustomizerTest {
 
     @Test
     public void testIfPortSet() {
-        customizer.remotePort = "61666";
+        customizer.remotePort = Optional.of("61666");
         customizer.customize();
 
         assertThat( fraction.subresources().servers() ).hasSize(1);
@@ -54,7 +56,7 @@ public class RemoteConnectionInstallingCustomizerTest {
 
     @Test
     public void testIfHostSet() {
-        customizer.remoteHost = "mq.foo.com";
+        customizer.remoteHost = Optional.of("mq.foo.com");
         customizer.customize();
 
         assertThat( fraction.subresources().servers() ).hasSize(1);
@@ -75,7 +77,7 @@ public class RemoteConnectionInstallingCustomizerTest {
 
     @Test
     public void testIfJndiNameSet() {
-        customizer.jndiName = "java:/jms/iliketacos";
+        customizer.jndiName = Optional.of("java:/jms/iliketacos");
         customizer.customize();
 
         assertThat( fraction.subresources().servers() ).hasSize(1);
@@ -96,7 +98,7 @@ public class RemoteConnectionInstallingCustomizerTest {
 
     @Test
     public void testIfMqNameSet() {
-        customizer.remoteMqName = "postoffice";
+        customizer.remoteMqName = Optional.of("postoffice");
         customizer.customize();
 
         assertThat( fraction.subresources().servers() ).hasSize(1);
@@ -117,7 +119,7 @@ public class RemoteConnectionInstallingCustomizerTest {
 
     @Test
     public void testIfRemoteFlagSet() {
-        customizer.remote = true;
+        customizer.remote = Optional.of(true);
         customizer.customize();
 
         assertThat( fraction.subresources().servers() ).hasSize(1);

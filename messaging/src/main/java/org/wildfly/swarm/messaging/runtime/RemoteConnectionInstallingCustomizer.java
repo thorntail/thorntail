@@ -1,8 +1,9 @@
 package org.wildfly.swarm.messaging.runtime;
 
+import java.util.Optional;
+
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.messaging.MessagingFraction;
 import org.wildfly.swarm.messaging.MessagingProperties;
@@ -28,47 +29,35 @@ public class RemoteConnectionInstallingCustomizer implements Customizer {
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_MQ_NAME)
-    Boolean remote;
+    Optional<Boolean> remote = Optional.empty();
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_MQ_NAME)
-    String remoteMqName;
+    Optional<String> remoteMqName = Optional.empty();
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_JNDI_NAME)
-    String jndiName;
+    Optional<String> jndiName = Optional.empty();
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_HOST)
-    String remoteHost;
+    Optional<String> remoteHost = Optional.empty();
 
     @Inject
     @ConfigurationValue(MessagingProperties.REMOTE_PORT)
-    String remotePort;
+    Optional<String> remotePort = Optional.empty();
 
     @Override
     public void customize() {
-        if ( ( this.remote != null && this.remote ) || this.remoteMqName != null || this.jndiName != null || this.remoteHost != null || this.remotePort != null ) {
+        if ( this.remote.isPresent() || this.remoteMqName.isPresent() || this.jndiName.isPresent()|| this.remoteHost.isPresent()|| this.remotePort.isPresent() ) {
 
             fraction.defaultServer( (server)->{
-                String mqName = this.remoteMqName;
-
-                if ( mqName == null ) {
-                    mqName = MessagingProperties.DEFAULT_REMOTE_MQ_NAME;
-                }
+                String mqName = this.remoteMqName.orElse( MessagingProperties.DEFAULT_REMOTE_MQ_NAME );
 
                 server.remoteConnection( mqName, (config)->{
-                    if ( this.jndiName != null ) {
-                        config.jndiName( this.jndiName );
-                    }
-
-                    if ( this.remoteHost != null ) {
-                        config.host( this.remoteHost );
-                    }
-
-                    if ( this.remotePort != null ) {
-                        config.port( this.remotePort );
-                    }
+                    this.jndiName.ifPresent(config::jndiName);
+                    this.remoteHost.ifPresent(config::host);
+                    this.remotePort.ifPresent(config::port);
                 });
             });
         }
