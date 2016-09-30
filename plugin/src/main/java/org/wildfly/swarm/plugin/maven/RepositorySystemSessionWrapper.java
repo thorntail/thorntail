@@ -22,11 +22,13 @@ import org.eclipse.aether.RepositoryListener;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.SessionData;
 import org.eclipse.aether.artifact.ArtifactTypeRegistry;
+import org.eclipse.aether.collection.DependencyCollectionContext;
 import org.eclipse.aether.collection.DependencyGraphTransformer;
 import org.eclipse.aether.collection.DependencyManager;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.collection.DependencyTraverser;
 import org.eclipse.aether.collection.VersionFilter;
+import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.AuthenticationSelector;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.LocalRepositoryManager;
@@ -42,9 +44,14 @@ import org.eclipse.aether.transfer.TransferListener;
  */
 final class RepositorySystemSessionWrapper implements RepositorySystemSession {
 
-    RepositorySystemSessionWrapper(RepositorySystemSession delegate, DependencyGraphTransformer transformer) {
+    public RepositorySystemSessionWrapper(RepositorySystemSession delegate, DependencyGraphTransformer transformer) {
+        this(delegate, transformer, false);
+    }
+
+    RepositorySystemSessionWrapper(RepositorySystemSession delegate, DependencyGraphTransformer transformer, boolean excludeSwarm) {
         this.delegate = delegate;
         this.transformer = transformer;
+        this.excludeSwarm = excludeSwarm;
     }
 
     @Override
@@ -139,7 +146,7 @@ final class RepositorySystemSessionWrapper implements RepositorySystemSession {
 
     @Override
     public DependencyTraverser getDependencyTraverser() {
-        return delegate.getDependencyTraverser();
+        return excludeSwarm ? new SwarmExcludedTraverser() : delegate.getDependencyTraverser();
     }
 
     @Override
@@ -149,7 +156,15 @@ final class RepositorySystemSessionWrapper implements RepositorySystemSession {
 
     @Override
     public DependencySelector getDependencySelector() {
+        /*if(defaultExcludes) {
+            Set<Exclusion> exclusions = Collections.singleton(new Exclusion("org.wildfly.swarm", "*", "*", "*"));
+            return new ExclusionDependencySelector(exclusions);
+        } else {
+            return delegate.getDependencySelector();
+        }*/
+
         return delegate.getDependencySelector();
+
     }
 
     @Override
@@ -175,4 +190,24 @@ final class RepositorySystemSessionWrapper implements RepositorySystemSession {
     private RepositorySystemSession delegate;
 
     private DependencyGraphTransformer transformer;
+
+    private boolean excludeSwarm;
+
+    public class SwarmExcludedTraverser implements DependencyTraverser
+    {
+
+       @Override
+       public boolean traverseDependency(Dependency dependency)
+       {
+          return !SWARM_GROUP_ID.equals(dependency.getArtifact().getGroupId());
+       }
+
+       @Override
+       public DependencyTraverser deriveChildTraverser(DependencyCollectionContext context)
+       {
+          return this;
+       }
+
+        private static final String SWARM_GROUP_ID = "org.wildfly.swarm";
+    }
 }

@@ -202,7 +202,7 @@ public class DependencyManager {
     }
 
     protected void analyzeDependencies(boolean autodetect) throws Exception {
-        Set<ArtifactSpec> allResolvedDependencies = resolveAllArtifactsTransitively(this.explicitDependencies);
+        Set<ArtifactSpec> allResolvedDependencies = resolveAllArtifactsTransitively(this.explicitDependencies, false);
 
         /*
         for (ArtifactSpec each : allResolvedDependencies) {
@@ -272,7 +272,7 @@ public class DependencyManager {
 
         // re-resolve the application's dependencies minus
         // any of our swarm dependencies
-        Set<ArtifactSpec> simplifiedDeps = resolveAllArtifactsTransitively(nonBootstrapDeps);
+        Set<ArtifactSpec> simplifiedDeps = resolveAllArtifactsTransitively(nonBootstrapDeps, true);
 
         /*
         for (ArtifactSpec each : simplifiedDeps) {
@@ -435,12 +435,12 @@ public class DependencyManager {
         return spec;
     }
 
-    protected Set<ArtifactSpec> resolveAllArtifactsTransitively(Set<ArtifactSpec> specs) throws Exception {
-        return this.resolver.resolveAll(specs);
+    protected Set<ArtifactSpec> resolveAllArtifactsTransitively(Set<ArtifactSpec> specs, boolean defaultExcludes) throws Exception {
+        return this.resolver.resolveAll(specs, true, defaultExcludes);
     }
 
     protected Set<ArtifactSpec> resolveAllArtifactsNonTransitively(Set<ArtifactSpec> specs) throws Exception {
-        return this.resolver.resolveAll(specs, false);
+        return this.resolver.resolveAll(specs, false, false);
     }
 
     private final WildFlySwarmManifest applicationManifest = new WildFlySwarmManifest();
