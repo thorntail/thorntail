@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>testsuite</artifactId>
-    <version>2016.10-SNAPSHOT</version>
+    <version>2016.10.0</version>
   </parent>
 
   <name>Test Suite: Camel CDI</name>
