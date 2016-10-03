@@ -11,11 +11,30 @@ of `2016.9`
 
     mvn versions:set -DnewVersion=2016.9
 
-The build both regular and uberjar versions
+Then build both regular and uberjar versions
 
     mvn clean && mvn install 
 
     mvn clean && mvn install -Puberjar
+
+If successful, commit the version change.
+
+    git commit -a
+
+And tag it
+
+    git tag 2016.9
+
+Then prepare for the next development version:
+
+    mvn versions:set -DnewVersion=2016.10.0-SNAPSHOT
+
+And commit, and push it all
+
+    git commit -a
+
+    git push origin master
+
 
 # Tag the documentation
 
@@ -48,6 +67,8 @@ run the local fetch-notes.js with node.js, passing the version
 
 * Update the CURRENT_RELEASE variable in `build.js`
 * Add a redirect to the above tagged documentation
+* Update the documentation page, moving the previous release to the
+  previous release section, and changing the current release pointer.
 
 # Blog it all
 
