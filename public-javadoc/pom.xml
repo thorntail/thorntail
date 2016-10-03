@@ -10,12 +10,12 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
-    <version>2016.10.0</version>
+    <version>2016.11.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <artifactId>public-javadoc</artifactId>
-  <version>2016.10.0</version>
+  <version>2016.11.0-SNAPSHOT</version>
 
   <name>Public javadocs</name>
   <description>Public javadocs</description>
