@@ -230,7 +230,7 @@ public class Swarm {
     public Swarm withStageConfig(URL url) {
         this.stageConfigUrl = Optional.of(url);
 
-        if (!this.stageConfig.isPresent()) {
+        if (this.stageConfig.isPresent()) {
             loadStageConfiguration(stageConfigUrl.get());
         } else {
             SwarmMessages.MESSAGES.stageConfigSuperseded(System.getProperty(SwarmProperties.PROJECT_STAGE_FILE));
