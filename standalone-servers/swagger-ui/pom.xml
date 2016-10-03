@@ -32,6 +32,7 @@
         </configuration>
         <executions>
           <execution>
+            <id>package</id>
             <goals>
               <goal>package</goal>
             </goals>
