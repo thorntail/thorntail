@@ -155,4 +155,8 @@ public interface SwarmMessages extends BasicLogger {
 
     @Message(id = 33, value = "HTTP/S is configured correctly, but org.wildfly.swarm:management is not available")
     RuntimeException httpsRequiresManagementFraction();
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 34, value = "Ignoring subsystem %s:%s")
+    void ignoringSubsystem(String nsURI, String name);
 }
