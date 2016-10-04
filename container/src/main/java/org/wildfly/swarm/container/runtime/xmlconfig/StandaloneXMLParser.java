@@ -17,11 +17,15 @@ package org.wildfly.swarm.container.runtime.xmlconfig;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
@@ -47,6 +51,8 @@ import org.jboss.staxmapper.XMLMapper;
 @Vetoed
 public class StandaloneXMLParser {
 
+    private Set<QName> recognizedNames = new HashSet<>();
+
     public StandaloneXMLParser() {
 
         parserDelegate = new StandaloneXml(new ExtensionHandler() {
@@ -67,8 +73,10 @@ public class StandaloneXMLParser {
         }, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
         xmlMapper = XMLMapper.Factory.create();
-        xmlMapper.registerRootElement(new QName("urn:jboss:domain:4.0", "server"), parserDelegate);
 
+        QName serverElementName = new QName("urn:jboss:domain:4.0", "server");
+        this.recognizedNames.add( serverElementName );
+        xmlMapper.registerRootElement(serverElementName, parserDelegate);
     }
 
     /**
@@ -79,6 +87,7 @@ public class StandaloneXMLParser {
      * @return
      */
     public StandaloneXMLParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>>  parser) {
+        this.recognizedNames.add( elementName );
         xmlMapper.registerRootElement(elementName, parser);
         return this;
     }
@@ -92,9 +101,10 @@ public class StandaloneXMLParser {
             input = xml.openStream();
 
             final XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
-
-            xmlMapper.parseDocument(operationList, reader);
-        } catch (Throwable t) {
+            WrappedXMLStreamReader wrappedReader = new WrappedXMLStreamReader( reader, this.recognizedNames, xmlMapper  );
+            xmlMapper.parseDocument(operationList, wrappedReader );
+        } catch (XMLStreamException t) {
+            System.err.println( "------" );
             t.printStackTrace();
         } finally {
             try {
