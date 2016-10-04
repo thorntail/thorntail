@@ -87,13 +87,13 @@ public class WebXmlAsset implements NamedAsset {
     }
 
     public void setLoginConfig(String authMethod, String realmName) {
-        this.descriptor.createLoginConfig()
+        this.descriptor.getOrCreateLoginConfig()
                 .authMethod(authMethod)
                 .realmName(realmName);
     }
 
     public void setFormLoginConfig(String realmName, String loginPage, String errorPage) {
-        this.descriptor.createLoginConfig()
+        this.descriptor.getOrCreateLoginConfig()
                 .authMethod("FORM")
                 .realmName(realmName)
                 .getOrCreateFormLoginConfig()
