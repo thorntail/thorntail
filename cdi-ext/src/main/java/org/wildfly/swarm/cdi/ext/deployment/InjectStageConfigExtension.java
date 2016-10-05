@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi;
+package org.wildfly.swarm.cdi.ext.deployment;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -27,6 +28,7 @@ import org.wildfly.swarm.spi.api.StageConfig;
 /**
  * @author Ken Finnigan
  */
+@Vetoed
 public class InjectStageConfigExtension implements Extension {
 
     private static StageConfig stageConfig;

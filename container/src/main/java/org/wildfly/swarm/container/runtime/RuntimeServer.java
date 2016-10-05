@@ -15,18 +15,14 @@
  */
 package org.wildfly.swarm.container.runtime;
 
-import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
@@ -38,9 +34,6 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceContainer;
 import org.jboss.msc.service.ServiceController;
@@ -52,16 +45,14 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
-import org.wildfly.swarm.container.runtime.cdi.ProjectStageImpl;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.marshal.DMRMarshaller;
 import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
 import org.wildfly.swarm.container.runtime.wildfly.UUIDFactory;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
+import org.wildfly.swarm.spi.api.UserSpaceExtensionFactory;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
@@ -102,6 +93,10 @@ public class RuntimeServer implements Server {
 
     @Inject
     private StageConfig stageConfig;
+
+    @Inject
+    @Any
+    private Instance<UserSpaceExtensionFactory> userSpaceExtensionFactories;
 
     public RuntimeServer() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -166,7 +161,7 @@ public class RuntimeServer implements Server {
 
         this.serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Deployer>(deployer))).install();
 
-        setupUserSpaceExtension();
+        configureUserSpaceExtensions();
 
         for (Archive each : this.implicitDeployments) {
             deployer.deploy(each);
@@ -175,19 +170,14 @@ public class RuntimeServer implements Server {
         return deployer;
     }
 
-    private void setupUserSpaceExtension() {
-        try {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.cdi", "ext"));
-            Class<?> use = module.getClassLoader().loadClass("org.wildfly.swarm.cdi.InjectStageConfigExtension");
-            Field field = use.getDeclaredField("stageConfig");
-            field.setAccessible(true);
-            field.set(null, this.stageConfig);
-        } catch (ModuleLoadException e) {
-            // ignore, don't do it.
-        } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-
+    private void configureUserSpaceExtensions() {
+        this.userSpaceExtensionFactories.forEach( factory->{
+            try {
+                factory.configure();
+            } catch (Exception e) {
+                SwarmMessages.MESSAGES.errorInstallingUserSpaceExtension( factory.getClass().getName() );
+            }
+        });
     }
 
     public void stop() throws Exception {

@@ -163,4 +163,9 @@ public interface SwarmMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.WARN)
     @Message(id = 35, value = "Failed to register modules mbeans")
     void moduleMBeanServerNotInstalled(@Cause Throwable cause);
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 36, value = "Error installing user-space CDI extension: %s")
+    void errorInstallingUserSpaceExtension(String factoryClassName);
+
 }
