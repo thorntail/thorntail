@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -62,9 +61,9 @@ import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
-import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
+import org.wildfly.swarm.container.internal.WeldShutdown;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
 import org.wildfly.swarm.container.runtime.logging.JBossLoggingManager;
 import org.wildfly.swarm.internal.ArtifactManager;
@@ -76,7 +75,6 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
@@ -265,12 +263,12 @@ public class Swarm {
     }
 
     public Swarm outboundSocketBinding(String socketBindingGroup, OutboundSocketBinding binding) {
-        this.outboundSocketBindings.add( new OutboundSocketBindingRequest( socketBindingGroup, binding ) );
+        this.outboundSocketBindings.add(new OutboundSocketBindingRequest(socketBindingGroup, binding));
         return this;
     }
 
     public Swarm socketBinding(String socketBindingGroup, SocketBinding binding) {
-        this.socketBindings.add( new SocketBindingRequest( socketBindingGroup, binding ));
+        this.socketBindings.add(new SocketBindingRequest(socketBindingGroup, binding));
         return this;
     }
 
@@ -335,6 +333,12 @@ public class Swarm {
         if (this.server == null) {
             throw SwarmMessages.MESSAGES.containerNotStarted("stop()");
         }
+
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+        Class<?> shutdownClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.WeldShutdownImpl");
+
+        WeldShutdown shutdown = (WeldShutdown) shutdownClass.newInstance();
+        shutdown.shutdown();
 
         this.server.stop();
         this.server = null;
@@ -437,7 +441,7 @@ public class Swarm {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
