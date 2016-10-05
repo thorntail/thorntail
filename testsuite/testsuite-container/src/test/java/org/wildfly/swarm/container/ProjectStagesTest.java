@@ -32,7 +32,6 @@ import static org.junit.Assert.*;
  * @author Heiko Braun
  * @since 07/04/16
  */
-@Ignore
 public class ProjectStagesTest {
 
     @Before
