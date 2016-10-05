@@ -26,7 +26,6 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.weld")
 @MarshalDMR
-@DeploymentModule(name = "org.wildfly.swarm.cdi", slot = "ext", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 public class CDIFraction extends Weld<CDIFraction> implements Fraction<CDIFraction> {
 
     public CDIFraction() {

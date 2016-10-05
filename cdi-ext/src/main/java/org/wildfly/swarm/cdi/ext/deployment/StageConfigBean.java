@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi;
+package org.wildfly.swarm.cdi.ext.deployment;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
