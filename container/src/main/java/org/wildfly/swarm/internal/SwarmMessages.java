@@ -159,4 +159,9 @@ public interface SwarmMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.WARN)
     @Message(id = 34, value = "Ignoring subsystem %s:%s")
     void ignoringSubsystem(String nsURI, String name);
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 36, value = "Error installing user-space CDI extension: %s")
+    void errorInstallingUserSpaceExtension(String factoryClassName);
+
 }

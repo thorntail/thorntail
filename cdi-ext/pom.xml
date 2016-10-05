@@ -24,7 +24,6 @@
 
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.bootstrap>false</swarm.fraction.bootstrap>
   </properties>
 
   <dependencies>
