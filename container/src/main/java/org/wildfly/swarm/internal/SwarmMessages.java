@@ -159,4 +159,8 @@ public interface SwarmMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.WARN)
     @Message(id = 34, value = "Ignoring subsystem %s:%s")
     void ignoringSubsystem(String nsURI, String name);
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 35, value = "Failed to register modules mbeans")
+    void moduleMBeanServerNotInstalled(@Cause Throwable cause);
 }

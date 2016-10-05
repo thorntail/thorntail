@@ -17,6 +17,7 @@ package org.wildfly.swarm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,6 +40,7 @@ import javax.enterprise.inject.Vetoed;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.log.StreamModuleLogger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Domain;
@@ -91,7 +93,7 @@ import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 @Vetoed
 public class Swarm {
 
-    public static final String VERSION;
+    public static final String VERSION = Swarm.class.getPackage().getImplementationVersion();
 
     public static ArtifactManager ARTIFACT_MANAGER;
 
@@ -168,7 +170,7 @@ public class Swarm {
         } catch (ModuleLoadException e) {
             System.err.println("[WARN] logging not available, logging will not be configured");
         }
-
+        installModuleMBeanServer();
         createShrinkWrapDomain();
 
         this.commandLine = CommandLine.parse(args);
@@ -515,19 +517,17 @@ public class Swarm {
         return artifactManager().allArtifacts();
     }
 
-    static {
-        /*
-        InputStream in = SwarmConfigurator.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
-        Properties props = new Properties();
+    /**
+     * Installs the Module MBeanServer.
+     */
+    private void installModuleMBeanServer() {
         try {
-            props.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Method method = ModuleLoader.class.getDeclaredMethod("installMBeanServer");
+            method.setAccessible(true);
+            method.invoke(null);
+        } catch (Exception e) {
+            SwarmMessages.MESSAGES.moduleMBeanServerNotInstalled(e);
         }
-
-        VERSION = props.getProperty("version", "unknown");
-        */
-        VERSION = "unknown";
     }
 
     private String[] args;
