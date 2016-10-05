@@ -16,6 +16,8 @@
 package org.wildfly.swarm.plugin.maven;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.maven.artifact.Artifact;
@@ -24,6 +26,7 @@ import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -62,18 +65,43 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Parameter(alias = "hollow", defaultValue = "false", property = "swarm.hollow")
     protected boolean hollow;
 
+    protected File divineFile() {
+        if ( this.project.getArtifact().getFile() != null ) {
+            return this.project.getArtifact().getFile();
+        }
+
+        String finalName = this.project.getBuild().getFinalName();
+
+        Path candidate = Paths.get(this.projectBuildDir, finalName + "." + this.project.getPackaging() );
+
+        if (Files.exists(candidate)) {
+            return candidate.toFile();
+        }
+        return null;
+    }
+
+
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         initProperties(false);
         final Artifact primaryArtifact = this.project.getArtifact();
         final String finalName = this.project.getBuild().getFinalName();
         final String type = primaryArtifact.getType();
+
+        final File primaryArtifactFile = divineFile();
+
+        if ( primaryArtifactFile == null ) {
+            throw new MojoExecutionException( "Cannot package without a primary artifact; please `mvn package` prior to invoking wildfly-swarm:package from the command-line" );
+        }
+
+
         final BuildTool tool = new BuildTool()
                 .projectArtifact(primaryArtifact.getGroupId(),
                         primaryArtifact.getArtifactId(),
                         primaryArtifact.getBaseVersion(),
                         type,
-                        primaryArtifact.getFile(),
+                        primaryArtifactFile,
                         finalName.endsWith("." + type) ?
                                 finalName :
                                 String.format("%s.%s", finalName, type))
@@ -147,7 +175,7 @@ public class PackageMojo extends AbstractSwarmMojo {
             this.project.addAttachedArtifact(swarmJarArtifact);
 
             if (this.project.getPackaging().equals("war")) {
-                tool.repackageWar(this.project.getArtifact().getFile());
+                tool.repackageWar(primaryArtifactFile);
             }
         } catch (Exception e) {
             throw new MojoFailureException("Unable to create -swarm.jar", e);
