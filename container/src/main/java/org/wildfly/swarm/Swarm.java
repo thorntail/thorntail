@@ -17,6 +17,7 @@ package org.wildfly.swarm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -26,7 +27,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -40,6 +40,7 @@ import javax.enterprise.inject.Vetoed;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.log.StreamModuleLogger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Domain;
@@ -62,7 +63,6 @@ import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
-import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
@@ -76,7 +76,6 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
@@ -93,7 +92,7 @@ import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 @Vetoed
 public class Swarm {
 
-    public static final String VERSION;
+    public static final String VERSION = Swarm.class.getPackage().getImplementationVersion();
 
     public static ArtifactManager ARTIFACT_MANAGER;
 
@@ -170,7 +169,7 @@ public class Swarm {
         } catch (ModuleLoadException e) {
             System.err.println("[WARN] logging not available, logging will not be configured");
         }
-
+        installModuleMBeanServer();
         createShrinkWrapDomain();
 
         this.commandLine = CommandLine.parse(args);
@@ -265,12 +264,12 @@ public class Swarm {
     }
 
     public Swarm outboundSocketBinding(String socketBindingGroup, OutboundSocketBinding binding) {
-        this.outboundSocketBindings.add( new OutboundSocketBindingRequest( socketBindingGroup, binding ) );
+        this.outboundSocketBindings.add(new OutboundSocketBindingRequest(socketBindingGroup, binding));
         return this;
     }
 
     public Swarm socketBinding(String socketBindingGroup, SocketBinding binding) {
-        this.socketBindings.add( new SocketBindingRequest( socketBindingGroup, binding ));
+        this.socketBindings.add(new SocketBindingRequest(socketBindingGroup, binding));
         return this;
     }
 
@@ -437,7 +436,7 @@ public class Swarm {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -511,19 +510,17 @@ public class Swarm {
         return artifactManager().allArtifacts();
     }
 
-    static {
-        /*
-        InputStream in = SwarmConfigurator.class.getClassLoader().getResourceAsStream("wildfly-swarm.properties");
-        Properties props = new Properties();
+    /**
+     * Installs the Module MBeanServer.
+     */
+    private void installModuleMBeanServer() {
         try {
-            props.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Method method = ModuleLoader.class.getDeclaredMethod("installMBeanServer");
+            method.setAccessible(true);
+            method.invoke(null);
+        } catch (Exception e) {
+            SwarmMessages.MESSAGES.moduleMBeanServerNotInstalled(e);
         }
-
-        VERSION = props.getProperty("version", "unknown");
-        */
-        VERSION = "unknown";
     }
 
     private String[] args;
