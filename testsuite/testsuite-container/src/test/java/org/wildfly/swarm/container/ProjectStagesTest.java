@@ -25,6 +25,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -72,6 +73,20 @@ public class ProjectStagesTest {
             properties.entrySet().forEach(e -> System.out.println(e.getKey()+"="+e.getValue()));
         }
 
+    }
+
+    @Test
+    public void testStageConfigurationDefaultLoading() throws Exception {
+
+        System.setProperty(SwarmProperties.PROJECT_STAGE, "default");
+
+        Swarm container = new Swarm();
+        container.start();
+
+        assertEquals("10", System.getProperty(SwarmProperties.PORT_OFFSET));
+        assertEquals("some.where.com", System.getProperty("remote.hosts[0]"));
+
+        container.stop();
     }
 
     @Test
