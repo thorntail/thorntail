@@ -18,4 +18,14 @@ package org.wildfly.swarm.logging;
 public class LoggingProperties {
     //public
     public static final String LOGGING = "swarm.logging";
+
+    public static final String DEFAULT_FILE_HANDLER_NAME = "FILE";
+
+    public static final String DEFAULT_LOGGING_FILE_NAME = "swarm.log";
+
+    public static final String DEFAULT_LOGGING_DIR = System.getProperty("user.dir");
+
+    public static final String DEFAULT_PATTERN = "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n";
+
+    public static final String DEFAULT_COLOR_PATTERN = "%K{level}%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n";
 }
