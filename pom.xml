@@ -954,7 +954,7 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>cdi-ext</artifactId>
+        <artifactId>cdi-config</artifactId>
         <version>2016.11.0-SNAPSHOT</version>
       </dependency>
 
@@ -1075,77 +1075,80 @@
     <module>arquillian</module>
 
     <!-- base -->
-    <module>bootstrap</module>
-    <module>spi</module>
-    <module>container</module>
+    <module>core/bootstrap</module>
+    <module>core/spi</module>
+    <module>core/container</module>
 
-    <module>management</module>
+    <module>fractions/management</module>
 
     <!-- fractions -->
-    <module>batch-jberet</module>
-    <module>bean-validation</module>
-    <module>camel</module>
-    <module>cdi</module>
-    <module>cdi-ext</module>
-    <module>connector</module>
-    <module>databases/h2</module>
-    <module>databases/mysql</module>
-    <module>databases/postgresql</module>
-    <module>datasources</module>
-    <module>drools-server</module>
-    <module>ee</module>
-    <module>ejb</module>
-    <module>ejb-remote</module>
-    <module>hibernate-search</module>
-    <module>hibernate-validator</module>
-    <module>infinispan</module>
-    <module>io</module>
-    <module>javafx</module>
-    <module>jaxrs</module>
-    <module>jaxrs-cdi</module>
-    <module>jaxrs-jaxb</module>
-    <module>jaxrs-jsonp</module>
-    <module>jaxrs-multipart</module>
-    <module>jaxrs-validator</module>
-    <module>jca</module>
-    <module>jdr</module>
-    <module>jgroups</module>
-    <module>jgroups-module</module>
-    <module>jmx</module>
-    <module>jolokia</module>
-    <module>jpa</module>
-    <module>jpa-eclipselink</module>
-    <module>jsf</module>
-    <module>keycloak</module>
-    <module>keycloak-server</module>
-    <module>logging</module>
-    <module>logstash</module>
-    <module>mail</module>
-    <module>management-console</module>
-    <module>messaging</module>
-    <module>microprofile</module>
-    <module>msc</module>
-    <module>monitor</module>
-    <module>mod_cluster</module>
-    <module>naming</module>
-    <module>netflix</module>
-    <module>remoting</module>
-    <module>request-controller</module>
-    <module>resource-adapters</module>
-    <module>security</module>
-    <module>spring</module>
-    <module>swagger</module>
-    <module>swagger-webapp</module>
-    <module>topology</module>
-    <module>topology-consul</module>
-    <module>topology-jgroups</module>
-    <module>topology-openshift</module>
-    <module>topology-webapp</module>
-    <module>transactions</module>
-    <module>undertow</module>
-    <module>undertow-js</module>
-    <module>vertx</module>
-    <module>webservices</module>
+    <module>fractions/javaee/batch-jberet</module>
+    <module>fractions/javaee/bean-validation</module>
+    <module>fractions/javaee/cdi</module>
+    <module>fractions/javaee/connector</module>
+    <module>fractions/javaee/datasources</module>
+    <module>fractions/javaee/ee</module>
+    <module>fractions/javaee/ejb</module>
+    <module>fractions/javaee/ejb-remote</module>
+    <module>fractions/javaee/jaxrs</module>
+    <module>fractions/javaee/jaxrs-cdi</module>
+    <module>fractions/javaee/jaxrs-jaxb</module>
+    <module>fractions/javaee/jaxrs-jsonp</module>
+    <module>fractions/javaee/jaxrs-multipart</module>
+    <module>fractions/javaee/jaxrs-validator</module>
+    <module>fractions/javaee/jca</module>
+    <module>fractions/javaee/jdr</module>
+    <module>fractions/javaee/jmx</module>
+    <module>fractions/javaee/jpa</module>
+    <module>fractions/javaee/jpa-eclipselink</module>
+    <module>fractions/javaee/jsf</module>
+    <module>fractions/javaee/mail</module>
+    <module>fractions/javaee/messaging</module>
+    <module>fractions/javaee/naming</module>
+    <module>fractions/javaee/remoting</module>
+    <module>fractions/javaee/resource-adapters</module>
+    <module>fractions/javaee/transactions</module>
+    <module>fractions/javaee/undertow</module>
+    <module>fractions/javaee/webservices</module>
+
+    <module>fractions/camel</module>
+    <module>fractions/databases/h2</module>
+    <module>fractions/databases/mysql</module>
+    <module>fractions/databases/postgresql</module>
+    <module>fractions/drools-server</module>
+    <module>fractions/hibernate-search</module>
+    <module>fractions/hibernate-validator</module>
+    <module>fractions/infinispan</module>
+    <module>fractions/io</module>
+    <module>fractions/javafx</module>
+    <module>fractions/jgroups</module>
+    <module>fractions/jolokia</module>
+    <module>fractions/keycloak</module>
+    <module>fractions/keycloak-server</module>
+    <module>fractions/logging</module>
+    <module>fractions/logstash</module>
+    <module>fractions/management-console</module>
+    <module>fractions/microprofile</module>
+    <module>fractions/msc</module>
+    <module>fractions/monitor</module>
+    <module>fractions/mod_cluster</module>
+    <module>fractions/netflix</module>
+    <module>fractions/request-controller</module>
+    <module>fractions/security</module>
+    <module>fractions/spring</module>
+    <module>fractions/swagger</module>
+    <module>fractions/swagger-webapp</module>
+    <module>fractions/topology</module>
+    <module>fractions/topology-consul</module>
+    <module>fractions/topology-jgroups</module>
+    <module>fractions/topology-openshift</module>
+    <module>fractions/topology-webapp</module>
+    <module>fractions/undertow-js</module>
+    <module>fractions/vertx</module>
+
+    <module>fractions/cdi-extensions/cdi-config</module>
+
+    <module>fractions/etc/jgroups-module</module>
 
     <module>testsuite</module>
 
