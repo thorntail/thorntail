@@ -37,6 +37,7 @@
   </description>
 
   <properties>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Camel,Integration,EIP,EJB</swarm.fraction.tags>
   </properties>
 
@@ -44,7 +45,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>camel-core</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>

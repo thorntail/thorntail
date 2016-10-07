@@ -1,7 +1,10 @@
 package org.wildfly.swarm.camel.core.runtime;
 
+import static org.wildfly.swarm.camel.core.AbstractCamelFraction.LOGGER;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,13 +29,9 @@ import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
-import org.jboss.msc.value.InjectedValue;
 import org.wildfly.extension.camel.CamelConstants;
 import org.wildfly.extension.camel.handler.ModuleClassLoaderAssociationHandler;
-import org.wildfly.extension.camel.service.CamelContextRegistryService;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
-
-import static org.wildfly.swarm.camel.core.AbstractCamelFraction.LOGGER;
 
 /**
  * @author Bob McWhirter
@@ -53,17 +52,14 @@ public class CamelServiceActivator implements ServiceActivator {
 
         static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("wildfly", "swarm", "camel", "bootstrap");
 
-        InjectedValue<CamelContextRegistryService.MutableCamelContextRegistry> injectedContextRegistry = new InjectedValue<>();
-
         List<CamelContext> systemContexts = new ArrayList<>();
-
         CamelCoreFraction fraction;
 
         static ServiceController<Void> addService(ServiceTarget serviceTarget, CamelCoreFraction fraction) {
             BootstrapCamelContextService service = new BootstrapCamelContextService(fraction);
             ServiceName serviceName = SERVICE_NAME;
             ServiceBuilder<Void> builder = serviceTarget.addService(serviceName, service);
-            builder.addDependency(CamelConstants.CAMEL_CONTEXT_REGISTRY_SERVICE_NAME, CamelContextRegistryService.MutableCamelContextRegistry.class, service.injectedContextRegistry);
+            builder.addDependency(CamelConstants.CAMEL_CONTEXT_REGISTRY_SERVICE_NAME);
             return builder.install();
         }
 
@@ -74,7 +70,6 @@ public class CamelServiceActivator implements ServiceActivator {
         @Override
         public void start(StartContext startContext) throws StartException {
             try {
-                CamelContextRegistryService.MutableCamelContextRegistry contextRegistry = injectedContextRegistry.getValue();
                 Module appModule = Module.getCallerModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
                 ModuleClassLoaderAssociationHandler.associate(appModule.getClassLoader());
                 try {
@@ -86,7 +81,6 @@ public class CamelServiceActivator implements ServiceActivator {
                             camelctx.setNameStrategy(new ExplicitCamelContextNameStrategy(name));
                         }
                         builder.addRoutesToCamelContext(camelctx);
-                        contextRegistry.addCamelContext(camelctx);
                         systemContexts.add(camelctx);
                     }
                 } finally {
@@ -102,17 +96,16 @@ public class CamelServiceActivator implements ServiceActivator {
 
         @Override
         public void stop(StopContext startContext) {
-            CamelContextRegistryService.MutableCamelContextRegistry contextRegistry = injectedContextRegistry.getValue();
             Collections.reverse(systemContexts);
-            for (CamelContext camelctx : systemContexts) {
+            Iterator<CamelContext> iterator = systemContexts.iterator();
+            while (iterator.hasNext()) {
+                CamelContext camelctx = iterator.next();
                 try {
                     camelctx.stop();
                 } catch (Exception ex) {
                     LOGGER.error("Cannot stop context: " + camelctx, ex);
                 }
-            }
-            for (CamelContext camelctx : systemContexts) {
-                contextRegistry.removeCamelContext(camelctx);
+                iterator.remove();
             }
         }
     }

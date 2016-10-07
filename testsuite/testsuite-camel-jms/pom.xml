@@ -37,7 +37,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>camel-jms</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

@@ -29,7 +29,7 @@
     <version>2016.11.0-SNAPSHOT</version>
   </parent>
 
-  <name>Camel Core</name>
+  <name>Camel Core :: Parent</name>
 
   <artifactId>camel-core-parent</artifactId>
   <packaging>pom</packaging>

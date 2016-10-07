@@ -39,9 +39,9 @@
 
     <!-- Properties -->
     <properties>
-        <!-- keep in sync with wildfly-camel -->
-        <version.apache.camel>2.17.2</version.apache.camel>
-        <version.wildfly.camel>4.2.1</version.wildfly.camel>
+        <!-- keep in sync -->
+        <version.wildfly.camel>4.3.0</version.wildfly.camel>
+        <version.apache.camel>2.18.0</version.apache.camel>
     </properties>
 
     <!-- Modules -->
