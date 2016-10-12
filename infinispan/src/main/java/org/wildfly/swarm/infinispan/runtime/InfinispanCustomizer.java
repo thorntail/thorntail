@@ -109,6 +109,7 @@ public class InfinispanCustomizer implements Customizer {
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
                     cc -> cc.defaultCache("local-query")
+                            .module("org.hibernate.infinispan")
                             .jgroupsTransport(t -> t.lockTimeout(60000L))
                             .localCache("local-query",
                                     c -> c.evictionComponent(ec -> ec.maxEntries(10000L).strategy(EvictionComponent.Strategy.LRU))
@@ -159,6 +160,7 @@ public class InfinispanCustomizer implements Customizer {
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
                     cc -> cc.defaultCache("local-query")
+                            .module("org.hibernate.infinispan")
                             .localCache("entity",
                                     c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
                                             .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
