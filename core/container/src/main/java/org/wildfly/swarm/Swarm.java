@@ -464,7 +464,14 @@ public class Swarm {
 
     private void loadStageConfiguration(URL url) {
         List<ProjectStage> projectStages = new ProjectStageFactory().loadStages(url);
-        String stageName = System.getProperty(SwarmProperties.PROJECT_STAGE, "default");
+        String stageName = System.getProperty(SwarmProperties.PROJECT_STAGE);
+        if (stageName == null) {
+            // Try with SWARM_PROJECT_STAGE
+            stageName = System.getenv(SwarmProperties.PROJECT_STAGE.replace('.', '_').toUpperCase());
+        }
+        if (stageName == null) {
+            stageName = "default";
+        }
         ProjectStage stage = null;
         for (ProjectStage projectStage : projectStages) {
             if (projectStage.getName().equals(stageName)) {
