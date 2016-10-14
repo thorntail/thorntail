@@ -78,7 +78,7 @@ mvn clean install -DskipTests
 
 # Issue Tracking
 
-Issues are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/secure/RapidBoard.jspa?rapidView=2972) (JIRA). Bug reports and feature requests are greatly appreciated.
+Issues are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/projects/SWARM/issues?filter=allopenissues) (JIRA). Bug reports and feature requests are greatly appreciated.
 
 # Documentation
 
@@ -89,6 +89,3 @@ Guide](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/).
 
 * We hang out in `#wildfly-swarm` on irc.freenode.net.
 * Logs can be found [here](http://transcripts.jboss.org/channel/irc.freenode.org/%23wildfly-swarm/)
-
-
-
