@@ -30,11 +30,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.settings.Proxy;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactResolver;
-import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.PropertiesUtil;
@@ -124,26 +122,11 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
     }
 
-    // borrowed from https://github.com/forge/furnace/blob/master/manager/resolver/maven/src/main/java/org/jboss/forge/furnace/manager/maven/MavenContainer.java#L216
-    public static org.eclipse.aether.repository.Proxy convertFromMavenProxy(Proxy proxy) {
-        if (proxy != null) {
-            return  new org.eclipse.aether.repository.Proxy(proxy.getProtocol(),
-                                                            proxy.getHost(),
-                                                            proxy.getPort(),
-                                                            new AuthenticationBuilder()
-                                                                    .addUsername(proxy.getUsername())
-                                                                    .addPassword(proxy.getPassword())
-                                                                    .build());
-        }
-
-        return null;
-    }
     protected MavenArtifactResolvingHelper mavenArtifactResolvingHelper() {
         MavenArtifactResolvingHelper resolvingHelper =
                 new MavenArtifactResolvingHelper(this.resolver,
                                                  this.repositorySystem,
-                                                 this.repositorySystemSession,
-                                                 convertFromMavenProxy(this.mavenSession.getSettings().getActiveProxy()));
+                                                 this.repositorySystemSession);
         this.remoteRepositories.forEach(resolvingHelper::remoteRepository);
 
         return resolvingHelper;

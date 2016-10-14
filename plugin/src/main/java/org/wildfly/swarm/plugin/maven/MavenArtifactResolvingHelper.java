@@ -55,20 +55,18 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     public MavenArtifactResolvingHelper(ArtifactResolver resolver,
                                         RepositorySystem system,
-                                        RepositorySystemSession session,
-                                        Proxy proxy) {
+                                        RepositorySystemSession session) {
         this.resolver = resolver;
         this.system = system;
         this.session = session;
-        this.proxy = proxy;
         this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
                 "http://repository.jboss.org/nexus/content/groups/public/",
                 null,
-                this.proxy));
+                this.session));
     }
 
     public void remoteRepository(ArtifactRepository repo) {
-        remoteRepository(buildRemoteRepository(repo.getId(), repo.getUrl(), repo.getAuthentication(), this.proxy));
+        remoteRepository(buildRemoteRepository(repo.getId(), repo.getUrl(), repo.getAuthentication(), this.session));
     }
 
     public void remoteRepository(RemoteRepository repo) {
@@ -184,8 +182,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
     }
 
-    protected static RemoteRepository buildRemoteRepository(final String id, final String url,
-                                                            final Authentication auth, final Proxy proxy) {
+    protected RemoteRepository buildRemoteRepository(final String id, final String url,
+                                                            final Authentication auth, final RepositorySystemSession session) {
         RemoteRepository.Builder builder = new RemoteRepository.Builder(id, "default", url);
         if (auth != null &&
                 auth.getUsername() != null &&
@@ -195,11 +193,21 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                     .addPassword(auth.getPassword()).build());
         }
 
-        if (proxy != null) {
-            builder.setProxy(proxy);
+        RemoteRepository repository = builder.build();
+
+        RemoteRepository mirror = session.getMirrorSelector().getMirror(repository);
+
+        if (mirror != null) {
+            repository = mirror;
         }
 
-        return builder.build();
+        Proxy proxy = session.getProxySelector().getProxy(repository);
+
+        if (proxy != null) {
+            repository = new RemoteRepository.Builder(repository).setProxy(proxy).build();
+        }
+
+        return repository;
     }
 
     final protected RepositorySystemSession session;
@@ -209,6 +217,4 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     final private ArtifactResolver resolver;
 
     final private RepositorySystem system;
-
-    final private Proxy proxy;
 }
