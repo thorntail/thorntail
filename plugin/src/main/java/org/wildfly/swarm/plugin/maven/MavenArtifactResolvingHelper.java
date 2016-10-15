@@ -59,10 +59,6 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         this.resolver = resolver;
         this.system = system;
         this.session = session;
-        this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
-                "http://repository.jboss.org/nexus/content/groups/public/",
-                null,
-                this.session));
     }
 
     public void remoteRepository(ArtifactRepository repo) {
