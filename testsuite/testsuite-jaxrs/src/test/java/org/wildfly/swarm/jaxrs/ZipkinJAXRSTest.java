@@ -9,13 +9,13 @@ import java.util.Scanner;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
@@ -75,8 +75,7 @@ public class ZipkinJAXRSTest {
         WebTarget target = client.target("http://localhost:8080");
 
         javax.ws.rs.core.Response response = target.request(MediaType.TEXT_PLAIN).get();
-        System.out.println(response.getStatus());
-        System.out.println(response.readEntity(String.class));
+        Assert.assertEquals(200, response.getStatus());
 
         // check log file for span reporting
         // the default zipkin fraction logs to system out
