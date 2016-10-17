@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee">
+
+  <scan>
+    <exclude name="com.github.kristofa.brave.jaxrs2.**" />
+  </scan>
+
+</beans>
