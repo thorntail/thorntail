@@ -47,29 +47,20 @@
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
+            <id>unpack</id>
+            <phase>process-classes</phase>
             <goals>
-              <goal>shade</goal>
+              <goal>unpack-dependencies</goal>
             </goals>
             <configuration>
-              <artifactSet>
-                <includes>
-                  <include>org.jboss.modules:jboss-modules:*:*</include>
-                  <include>org.yaml:snakeyaml:*:*</include>
-                </includes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>org.jboss.modules:jboss-modules</artifact>
-                  <excludes>
-                    <exclude>org/jboss/modules/maven/MavenArtifactUtil.class</exclude>
-                    <exclude>org/jboss/modules/maven/ArtifactCoordinates.class</exclude>
-                  </excludes>
-                </filter>
-              </filters>
+              <excludeTransitive>true</excludeTransitive>
+              <includeGroupIds>org.jboss.modules,org.yaml</includeGroupIds>
+              <includeScope>compile</includeScope>
+              <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class</excludes>
+              <outputDirectory>${project.build.directory}/classes</outputDirectory>
             </configuration>
           </execution>
         </executions>
