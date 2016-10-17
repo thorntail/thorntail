@@ -14,24 +14,17 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>testsuite-jaxrs</artifactId>
+  <artifactId>testsuite-zipkin-jaxrs</artifactId>
 
-  <name>Test Suite: JAX-RS</name>
-  <description>Test Suite: JAX-RS</description>
+  <name>Test Suite: Zipkin JAX-RS</name>
+  <description>Test Suite: Zipkin JAX-RS</description>
 
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>monitor</artifactId>
-      <version>${project.version}</version>
+      <artifactId>zipkin-jaxrs</artifactId>
     </dependency>
 
     <dependency>
@@ -48,6 +41,12 @@
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+      <version>${version.resteasy}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

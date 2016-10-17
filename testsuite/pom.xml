@@ -140,5 +140,6 @@
     <module>testsuite-undertow</module>
     <module>testsuite-vertx</module>
     <module>testsuite-webservices</module>
+    <module>testsuite-zipkin-jaxrs</module>
   </modules>
 </project>
