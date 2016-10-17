@@ -1,7 +1,5 @@
 package org.wildfly.swarm.jaxrs.btm.runtime;
 
-import javax.inject.Singleton;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.jaxrs.btm.zipkin.ServerRequestInterceptor;
@@ -12,7 +10,6 @@ import org.wildfly.swarm.spi.api.ArchivePreparer;
  * @author Heiko Braun
  * @since 17/10/16
  */
-@Singleton
 public class WebXMLAdapter implements ArchivePreparer {
 
     private final static String SERVER_SIDE_FILTERS =

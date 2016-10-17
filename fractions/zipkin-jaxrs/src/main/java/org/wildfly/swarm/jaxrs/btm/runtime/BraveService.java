@@ -3,13 +3,13 @@ package org.wildfly.swarm.jaxrs.btm.runtime;
 import javax.enterprise.inject.Vetoed;
 
 import com.github.kristofa.brave.Brave;
+import org.jboss.logging.Logger;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.wildfly.swarm.jaxrs.btm.BraveLookup;
-import org.wildfly.swarm.jaxrs.btm.zipkin.BraveFactory;
 
 /**
  * @author Heiko Braun
@@ -19,6 +19,8 @@ import org.wildfly.swarm.jaxrs.btm.zipkin.BraveFactory;
 public class BraveService implements BraveLookup, Service<BraveService> {
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "zipkin", "brave");
+
+    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.jaxrs.btm");
 
     public BraveService(Brave braveInstance) {
         this.brave = braveInstance;
@@ -31,13 +33,13 @@ public class BraveService implements BraveLookup, Service<BraveService> {
 
     @Override
     public void start(StartContext startContext) throws StartException {
-        System.out.println("Zipkin BTM services started: " + this.brave);
+        LOG.info("Zipkin BTM services started: " + this.brave);
     }
 
     @Override
     public void stop(StopContext stopContext) {
         if(this.brave!=null){
-            System.out.println("Shutdown Zipkin BTM services");
+            LOG.info("Shutdown Zipkin BTM services");
             this.brave.serverTracer().setStateNoTracing();
         }
     }
