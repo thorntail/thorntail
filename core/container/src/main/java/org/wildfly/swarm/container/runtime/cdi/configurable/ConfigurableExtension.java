@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -28,7 +27,10 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.inject.Singleton;
 
+import org.jboss.weld.literal.DefaultLiteral;
 import org.wildfly.swarm.container.runtime.ConfigurableManager;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -85,11 +87,14 @@ public class ConfigurableExtension implements Extension {
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
-        abd.addBean()
-                .types(ConfigurableManager.class)
+        CommonBean<ConfigurableManager> configurableManagerBean = CommonBeanBuilder.newBuilder()
+                .beanClass(ConfigurableExtension.class)
                 .scope(Singleton.class)
-                .qualifiers(Default.Literal.INSTANCE)
-                .producing(this.configurableManager);
+                .addQualifier(DefaultLiteral.INSTANCE)
+                .createSupplier(() -> configurableManager)
+                .addType(ConfigurableManager.class)
+                .addType(Object.class).build();
+        abd.addBean(configurableManagerBean);
     }
 
 }

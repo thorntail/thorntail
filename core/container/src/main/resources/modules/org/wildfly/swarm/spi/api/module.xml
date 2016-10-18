@@ -23,10 +23,7 @@
   </resources>
   <dependencies>
     <module name="javax.enterprise.api"/>
-    <module name="org.jboss.weld.api" slot="3"/>
-    <module name="org.jboss.weld.spi" slot="3"/>
-    <module name="org.jboss.weld.core" slot="3"/>
-    <module name="org.jboss.weld.se" slot="3"/>
+    <module name="org.jboss.weld.se"/>
     <module name="org.wildfly.swarm.container"/>
     <module name="org.jboss.shrinkwrap"/>
     <module name="org.jboss.shrinkwrap.descriptors"/>

@@ -25,9 +25,9 @@
   <properties>
     <swarm.fraction.internal>true</swarm.fraction.internal>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <version.weld-api>3.0.Alpha19</version.weld-api>
-    <version.weld>3.0.0.Alpha16</version.weld>
-    <version.cdi2>2.0.Alpha4</version.cdi2>
+    <version.weld-api>2.3.SP2</version.weld-api>
+    <version.weld>2.3.5.Final</version.weld>
+    <version.cdi>1.2</version.cdi>
   </properties>
 
   <build>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
-      <version>${version.cdi2}</version>
+      <version>${version.cdi}</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -99,18 +99,6 @@
           <artifactId>javax.interceptor-api</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-api</artifactId>
-      <version>${version.weld-api}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-spi</artifactId>
-      <version>${version.weld-api}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>

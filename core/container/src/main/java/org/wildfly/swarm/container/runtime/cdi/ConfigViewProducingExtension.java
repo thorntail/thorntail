@@ -22,6 +22,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.literal.DefaultLiteral;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 
 /**
@@ -38,12 +40,14 @@ public class ConfigViewProducingExtension implements Extension {
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        abd.addBean().addType(ConfigView.class)
+        CommonBean<ConfigView> configViewBean = CommonBeanBuilder.newBuilder()
+                .beanClass(ConfigViewProducingExtension.class)
                 .scope(Dependent.class)
-                .qualifiers(DefaultLiteral.INSTANCE)
-                .produceWith(() -> {
-                    return this.configView;
-                });
+                .addQualifier(DefaultLiteral.INSTANCE)
+                .createSupplier(() -> configView)
+                .addType(ConfigView.class)
+                .addType(Object.class).build();
+        abd.addBean(configViewBean);
     }
 
     public ConfigView getConfigView() {
