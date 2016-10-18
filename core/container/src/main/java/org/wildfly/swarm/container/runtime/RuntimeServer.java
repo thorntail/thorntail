@@ -15,11 +15,13 @@
  */
 package org.wildfly.swarm.container.runtime;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,7 +33,10 @@ import javax.inject.Singleton;
 
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.controller.persistence.ExtensibleConfigurationPersister;
+import org.jboss.as.server.Bootstrap;
 import org.jboss.as.server.SelfContainedContainer;
+import org.jboss.as.server.ServerEnvironment;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceActivator;
@@ -43,12 +48,15 @@ import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.marshal.DMRMarshaller;
 import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
 import org.wildfly.swarm.container.runtime.wildfly.UUIDFactory;
+import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapConfiguration;
+import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapPersister;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.StageConfig;
@@ -100,7 +108,7 @@ public class RuntimeServer implements Server {
 
     public RuntimeServer() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if(serviceContainer!=null) {
+            if(container!=null) {
                 try {
                     LOG.info("Shutdown requested ...");
                     stop();
@@ -122,6 +130,24 @@ public class RuntimeServer implements Server {
         UUID uuid = UUIDFactory.getUUID();
         System.setProperty("jboss.server.management.uuid", uuid.toString());
 
+        File configurationFile;
+        try {
+            configurationFile = TempFileManager.INSTANCE.newTempFile("swarm-config-", ".xml");
+            LOG.debug("Temporarily storing configuration at: "+ configurationFile.getAbsolutePath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        List<ModelNode> bootstrapOperations = new ArrayList<>();
+        BootstrapConfiguration bootstrapConfiguration = () -> bootstrapOperations;
+
+        this.container = new SelfContainedContainer(new Bootstrap.ConfigurationPersisterFactory() {
+            @Override
+            public ExtensibleConfigurationPersister createConfigurationPersister(ServerEnvironment serverEnvironment, ExecutorService executorService) {
+                return new BootstrapPersister(bootstrapConfiguration, configurationFile);
+            }
+        });
+
         for (Customizer each : this.preCustomizers) {
             SwarmMessages.MESSAGES.callingPreCustomizer(each);
             each.customize();
@@ -132,7 +158,7 @@ public class RuntimeServer implements Server {
             each.customize();
         }
 
-        List<ModelNode> bootstrapOperations = new ArrayList<>();
+
         this.dmrMarshaller.marshal(bootstrapOperations);
 
         SwarmMessages.MESSAGES.wildflyBootstrap(bootstrapOperations.toString());
@@ -181,12 +207,8 @@ public class RuntimeServer implements Server {
     }
 
     public void stop() throws Exception {
-        final CountDownLatch latch = new CountDownLatch(1);
-        this.serviceContainer.addTerminateListener(info -> latch.countDown());
-        this.serviceContainer.shutdown();
 
-        latch.await();
-
+        this.container.stop();
         this.serviceContainer = null;
         this.client = null;
         this.deployer = null;
@@ -197,7 +219,7 @@ public class RuntimeServer implements Server {
         return this.deployer.get();
     }
 
-    private SelfContainedContainer container = new SelfContainedContainer();
+    private SelfContainedContainer container;
 
     private ServiceContainer serviceContainer;
 

@@ -73,6 +73,7 @@ public class StandaloneXMLParser {
         }, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
         xmlMapper = XMLMapper.Factory.create();
+        xmlMapper.registerRootElement(new QName(Namespace.CURRENT.getUriString(), "server"), parserDelegate);
 
         QName serverElementName = new QName("urn:jboss:domain:4.0", "server");
         this.recognizedNames.add( serverElementName );

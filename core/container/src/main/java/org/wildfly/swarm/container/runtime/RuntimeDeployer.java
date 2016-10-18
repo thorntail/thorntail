@@ -73,10 +73,12 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HAS
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OPERATION_HEADERS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PERSISTENT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUNTIME_NAME;
 
 /**
  * @author Bob McWhirter
+ * @author Heiko Braun
  */
 @Singleton
 public class RuntimeDeployer implements Deployer {
@@ -250,6 +252,7 @@ public class RuntimeDeployer implements Deployer {
         deploymentAdd.get(OP_ADDR).set("deployment", deployment.getName());
         deploymentAdd.get(RUNTIME_NAME).set(deployment.getName());
         deploymentAdd.get(ENABLED).set(true);
+        deploymentAdd.get(PERSISTENT).set(true);
 
         int deploymentTimeout = Integer.getInteger(SwarmProperties.DEPLOYMENT_TIMEOUT, 300);
 
