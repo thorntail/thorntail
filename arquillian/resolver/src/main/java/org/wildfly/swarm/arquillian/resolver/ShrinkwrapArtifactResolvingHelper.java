@@ -65,9 +65,19 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
 
+            MavenRemoteRepository gradleTools =
+                    MavenRemoteRepositories.createRemoteRepository("gradle",
+                                        "http://repo.gradle.org/gradle/libs-releases-local",
+                                        "default");
+            gradleTools.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
+            gradleTools.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
+
+            Boolean offline = Boolean.valueOf(System.getProperty("swarm.resolver.offline", "false"));
             final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
                     .withMavenCentralRepo(true)
-                    .withRemoteRepo(jbossPublic);
+                    .withRemoteRepo(jbossPublic)
+                    .withRemoteRepo(gradleTools)
+                    .workOffline(offline);
 
             final String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
             if (additionalRepos != null) {
@@ -113,12 +123,12 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean trasitive, boolean defaultExcludes) {
+    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) {
         if (specs.isEmpty()) {
             return specs;
         }
 
-        MavenResolutionStrategy transitivityStrategy = (trasitive ? TransitiveStrategy.INSTANCE : NonTransitiveStrategy.INSTANCE);
+        MavenResolutionStrategy transitivityStrategy = (transitive ? TransitiveStrategy.INSTANCE : NonTransitiveStrategy.INSTANCE);
 
         resetListeners();
         final MavenResolvedArtifact[] artifacts =

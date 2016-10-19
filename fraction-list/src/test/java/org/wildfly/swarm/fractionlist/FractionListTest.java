@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.wildfly.swarm.tools.FractionDescriptor;
 
@@ -86,6 +87,7 @@ public class FractionListTest {
     }
 
     @Test
+    @Ignore
     public void testArchaiusFractionShouldBeInternal() {
         FractionDescriptor archaius = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "archaius");
         assertThat(archaius.isInternal()).isTrue();;

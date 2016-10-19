@@ -27,17 +27,21 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public interface DependenciesContainer<T extends Archive<T>> extends LibraryContainer<T>, MarkerContainer<T>, Archive<T> {
 
+
+    /**
+     * The actual dependencies are added in the runtime stage.
+     * See RuntimeDeployer#deploy(...) for further details.
+     */
     @SuppressWarnings("unchecked")
     default T addAllDependencies() throws Exception {
-        if (!hasMarker("org.wildfly.swarm.allDependencies")) {
-            List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts("org.wildfly.swarm");
-            addAsLibraries(artifacts);
-            addMarker("org.wildfly.swarm.allDependencies");
-        }
+        // flag to instruct the container to add the missing deps upon deploy time
+        addMarker("org.wildfly.swarm.allDependencies");
         return (T) this;
     }
 
+
     @SuppressWarnings("unchecked")
+    // [hb] TODO: is this actually needed anymore? looks brittle to add swarm deps tp the deployment ...
     default T addAllDependencies(boolean includingWildFlySwarm) throws Exception {
         if (!includingWildFlySwarm) {
             return addAllDependencies();
@@ -48,7 +52,10 @@ public interface DependenciesContainer<T extends Archive<T>> extends LibraryCont
             addAsLibraries(artifacts);
             addMarker("org.wildfly.swarm.allDependencies");
         }
+
         return (T) this;
+
+
     }
 
     /**

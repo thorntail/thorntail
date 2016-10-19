@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 
 /**
+ * [hb] TODO: rename to SystemDependencies
  * @author Heiko Braun
  * @since 18/07/16
  */
@@ -18,6 +19,9 @@ public class SystemDependencyResolution implements DependencyResolution {
 
 
     public SystemDependencyResolution() {
+
+        System.out.println("<< Thread - SystemDependencyResolution : "+Thread.currentThread()+">>");
+
         final String classpathProp = System.getProperty("java.class.path");
         final String javaHomProp = System.getProperty("java.home");
         final String userDirProp = System.getProperty("user.dir");

@@ -75,6 +75,11 @@ public class MavenFileSystemLayout extends FileSystemLayout {
         return type;
     }
 
+    @Override
+    public Path getRootPath() {
+        return rootPath;
+    }
+
     private static final String TARGET = "target";
 
     private static final String CLASSES = "classes";

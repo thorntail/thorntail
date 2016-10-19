@@ -83,6 +83,10 @@ public class ApplicationEnvironment {
         return this.bootstrapArtifacts;
     }
 
+    public Mode getMode() {
+        return mode;
+    }
+
     private boolean loadWildFlySwarmApplicationManifestFromClasspath() throws IOException {
         return loadWildFlySwarmApplicationManifest(ClassLoader.getSystemClassLoader());
     }
@@ -181,7 +185,11 @@ public class ApplicationEnvironment {
         return this.removeableDependencies;
     }
 
-    /** Resolve the application's dependencies.
+    /**
+     *
+     * [hb] TODO: these javadocs are wrong and describe a previous implementation of this method
+     *
+     * Resolve the application's dependencies.
      *
      * <p>Using combinations of {@link #getDependencies()}} and {@link #getRemovableDependencies()},
      * depending on execution mode, resolves application dependencies, taking
@@ -271,7 +279,7 @@ public class ApplicationEnvironment {
         return this.manifests;
     }
 
-    private enum Mode {
+    public enum Mode {
         UBERJAR,
         CLASSPATH
     }

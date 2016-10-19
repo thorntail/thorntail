@@ -30,8 +30,6 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public boolean shouldGather = true;
 
-    public boolean gathered = false;
-
     public ArtifactSpec(final String scope,
                         final String groupId,
                         final String artifactId,
@@ -72,7 +70,13 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
                              version(), jarName());
     }
 
+    public boolean isResolved() {
+        return this.file!=null;
+    }
+
     public String toString() {
         return mavenGav() + " [" + this.scope + "]";
     }
+
+
 }

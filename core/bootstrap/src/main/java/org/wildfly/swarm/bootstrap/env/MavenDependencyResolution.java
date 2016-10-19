@@ -10,6 +10,7 @@ import org.jboss.modules.maven.ArtifactCoordinates;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 
 /**
+ * [hb] TODO: rename to UberJarDependencies
  * @author Heiko Braun
  * @since 18/07/16
  */

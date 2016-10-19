@@ -14,30 +14,30 @@ import org.jboss.shrinkwrap.impl.base.GenericArchiveImpl;
  */
 public class WebInfLibFilteringArchive extends GenericArchiveImpl {
 
-    public WebInfLibFilteringArchive(Archive<?> archive, DependencyManager dependencyManager) {
+    public WebInfLibFilteringArchive(Archive<?> archive, ResolvedDependencies resolvedDependencies) {
         super(archive);
-        filter(dependencyManager);
+        filter(resolvedDependencies);
     }
 
-    protected void filter(DependencyManager dependencyManager) {
+    protected void filter(ResolvedDependencies resolvedDependencies) {
         Set<ArchivePath> remove = new HashSet<>();
-        filter(remove, getArchive().get(ArchivePaths.root()), dependencyManager);
+        filter(remove, getArchive().get(ArchivePaths.root()), resolvedDependencies);
 
         for (ArchivePath each : remove) {
             getArchive().delete(each);
         }
     }
 
-    protected void filter(Set<ArchivePath> remove, Node node, DependencyManager dependencyManager) {
+    protected void filter(Set<ArchivePath> remove, Node node, ResolvedDependencies resolvedDependencies) {
         String path = node.getPath().get();
         if (path.startsWith("/WEB-INF/lib") && path.endsWith(".jar")) {
-            if (dependencyManager.isRemovable(node)) {
+            if (resolvedDependencies.isRemovable(node)) {
                 remove.add(node.getPath());
             }
         }
 
         for (Node each : node.getChildren()) {
-            filter(remove, each, dependencyManager);
+            filter(remove, each, resolvedDependencies);
         }
     }
 }

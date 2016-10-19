@@ -1,4 +1,5 @@
 # ignore .svn metadata files
+wip-notes.txt
 .svn
 # ignore Maven generated target folders
 ~
@@ -56,3 +57,4 @@ tmp
 log
 *.log
 embedded-cassandra.log*
+diagrams

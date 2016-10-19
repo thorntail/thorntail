@@ -23,52 +23,28 @@ import java.nio.file.Path;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 
 /**
  * @author Bob McWhirter
  * @author Ken Finnigan
+ * @author Heiko Braun
  */
-public class DependencyManager {
+public class DependencyManager implements ResolvedDependencies {
 
-    public static final String WILDFLY_SWARM_GROUP_ID = "org.wildfly.swarm";
-
-    public static final String WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID = "bootstrap";
-
-    public static final String JBOSS_MODULES_GROUP_ID = "org.jboss.modules";
-
-    public static final String JBOSS_MODULES_ARTIFACT_ID = "jboss-modules";
-
-    public DependencyManager() {
-    }
-
-    public void setArtifactResolvingHelper(ArtifactResolvingHelper resolver) {
+    public DependencyManager(ArtifactResolver resolver) {
         this.resolver = resolver;
-    }
-
-    public void addExplicitDependency(ArtifactSpec dep) {
-        this.explicitDependencies.add(dep);
-    }
-
-    public void addPresolvedDependency(ArtifactSpec dep) {
-        this.presolvedDependencies.add(dep);
     }
 
     public void addAdditionalModule(Path module) {
@@ -79,28 +55,22 @@ public class DependencyManager {
         }
     }
 
+    @Override
     public Set<ArtifactSpec> getDependencies() {
         return this.dependencies;
     }
 
-    public boolean isExplodedBootstrap(ArtifactSpec dependency) {
-        if (dependency.groupId().equals(JBOSS_MODULES_GROUP_ID) && dependency.artifactId().equals(JBOSS_MODULES_ARTIFACT_ID)) {
-            return true;
-        }
-        if (dependency.groupId().equals(WILDFLY_SWARM_GROUP_ID) && dependency.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
-            return true;
-        }
-        return false;
-    }
-
+    @Override
     public ArtifactSpec findWildFlySwarmBootstrapJar() {
-        return findArtifact(WILDFLY_SWARM_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, "jar", null);
+        return findArtifact(WILDFLY_SWARM_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, JAR, null);
     }
 
+    @Override
     public ArtifactSpec findJBossModulesJar() {
-        return findArtifact(JBOSS_MODULES_GROUP_ID, JBOSS_MODULES_ARTIFACT_ID, null, "jar", null);
+        return findArtifact(JBOSS_MODULES_GROUP_ID, JBOSS_MODULES_ARTIFACT_ID, null, JAR, null);
     }
 
+    @Override
     public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier) {
         for (ArtifactSpec each : this.dependencies) {
             if (groupId != null && !groupId.equals(each.groupId())) {
@@ -129,180 +99,135 @@ public class DependencyManager {
         return null;
     }
 
-    public void populateUberJarMavenRepository(Archive archive) throws Exception {
-        Set<ArtifactSpec> dependencies = new HashSet<>();
-        for (ArtifactSpec dependency : this.dependencies) {
-            if (!isExplodedBootstrap(dependency)) {
-                dependency.shouldGather = true;
-            }
-            if (isExplodedBootstrap(dependency)) {
-                dependency.shouldGather = false;
-            }
-            if (dependency.shouldGather) {
-                dependencies.add(dependency);
-            }
-        }
+    public ResolvedDependencies analyzeDependencies(boolean autodetect, DeclaredDependencies declaredDependencies) throws Exception {
 
-        for (ArtifactSpec dependency : this.moduleDependencies) {
-            dependencies.add(dependency);
-        }
+        // resolve to local files
+        resolveDependencies(declaredDependencies, autodetect);
 
-        resolveAllArtifactsNonTransitively(dependencies);
-        for (ArtifactSpec dependency : dependencies) {
-            addArtifactToArchiveMavenRepository(archive, dependency);
-        }
-    }
-
-    public void populateUserMavenRepository() throws Exception {
-        Set<ArtifactSpec> dependencies = new HashSet<>();
-        dependencies.addAll( this.dependencies );
-        dependencies.addAll( this.moduleDependencies );
-        resolveAllArtifactsNonTransitively( dependencies );
-    }
-
-    public void addArtifactToArchiveMavenRepository(Archive archive, ArtifactSpec artifact) throws Exception {
-        if (artifact.gathered) {
-            return;
-        }
-
-        artifact = resolveArtifact(artifact);
-
-        StringBuilder artifactPath = new StringBuilder("m2repo/");
-        artifactPath.append(artifact.repoPath(true));
-
-        archive.add(new FileAsset(artifact.file), artifactPath.toString());
-
-        artifact.gathered = true;
-
-    }
-
-    protected static Stream<ModuleAnalyzer> findModuleXmls(File file) {
-        List<ModuleAnalyzer> analyzers = new ArrayList<>();
-        try (JarFile jar = new JarFile(file)){
-
-            Enumeration<JarEntry> entries = jar.entries();
-
-            while (entries.hasMoreElements()) {
-                JarEntry each = entries.nextElement();
-                String name = each.getName();
-
-                if (name.startsWith("modules/") && name.endsWith("module.xml")) {
-                    try (InputStream in = jar.getInputStream(each)){
-                        analyzers.add(new ModuleAnalyzer(in));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return analyzers.stream();
-    }
-
-    protected void analyzeDependencies(boolean autodetect) throws Exception {
-        Set<ArtifactSpec> allResolvedDependencies = resolveAllArtifactsTransitively(this.explicitDependencies, false);
-
-        /*
-        for (ArtifactSpec each : allResolvedDependencies) {
-            System.err.println("all-resolve: " + each);
-        }
-        */
-
-        this.dependencies.clear();
-
-        if (this.presolvedDependencies.isEmpty()) {
-            // add all dependencies, because we have no idea about
-            // any pre-solution that might involve <exclusions> etc
-            this.dependencies.addAll(allResolvedDependencies);
-        } else {
-            // if we're in auto-detect mode, then all mentioned
-            // dependencies should be added, else, only add
-            // those that were pre-solved to accomodate <exclusions>
-            allResolvedDependencies.stream()
-                    .filter(dep -> autodetect || this.presolvedDependencies.contains(dep))
-                    .forEach(dep -> this.dependencies.add(dep));
-        }
-
-        analyzeRemovableDependencies();
-        analyzeFractionManifests();
+        // sort out removals, modules, etc
+        analyzeRemovableDependencies(declaredDependencies);
+        analyzeFractionManifests(declaredDependencies);
 
         this.dependencies.stream()
                 .filter(e -> !this.removableDependencies.contains(e))
                 .forEach(e -> {
                     this.applicationManifest.addDependency(e.mavenGav());
                 });
-        analyzeModuleDependencies();
+
+        analyzeModuleDependencies(declaredDependencies);
+
+        return this;
     }
 
-    protected void analyzeModuleDependencies() {
+    /**
+     * Resolve declared dependencies to local files, aka turning them into @{@link ResolvedDependencies)
+     *
+     * @param declaredDependencies
+     * @throws Exception
+     */
+    private void resolveDependencies(DeclaredDependencies declaredDependencies, boolean autodetect) throws Exception {
+        this.dependencies.clear();
+
+        // resolve the explicit deps to local files
+        // expand to transitive if these are not pre-solved
+        boolean resolveExplicitsTransitively = !declaredDependencies.isPresolved() || autodetect;
+        Set<ArtifactSpec> resolvedExplicitDependencies = resolveExplicitsTransitively ?
+                resolver.resolveAllArtifactsTransitively(declaredDependencies.getExplicitDependencies(), false) :
+                resolver.resolveAllArtifactsNonTransitively(declaredDependencies.getExplicitDependencies());
+
+        this.dependencies.addAll(resolvedExplicitDependencies);
+
+        // resolve transitives if not pre-computed (i.e. from maven/gradle plugin)
+        if(declaredDependencies.getTransientDependencies().isEmpty()) {
+
+            Set<ArtifactSpec> inputSet = declaredDependencies.getExplicitDependencies();
+            Set<ArtifactSpec> filtered = inputSet
+                    .stream()
+                    .filter(dep -> dep.type().equals(JAR)) // filter out composite types, like ear, war, etc
+                    .collect(Collectors.toSet());
+
+            Set<ArtifactSpec> resolvedTransientDependencies = resolver.resolveAllArtifactsTransitively(
+                    filtered, false
+            );
+
+            this.dependencies.addAll(resolvedTransientDependencies);
+
+            // add the remaining transitive ones that have not been filtered
+            Set<ArtifactSpec> remainder = new HashSet<>();
+            inputSet.stream().forEach(remainder::add);
+            remainder.removeAll(resolvedTransientDependencies);
+
+            this.dependencies.addAll(
+                    resolver.resolveAllArtifactsNonTransitively(remainder)
+            );
+        }
+
+        // if transitive deps are pre-computed, resolve them to local files if needed
+        else {
+            Set<ArtifactSpec> inputSet = declaredDependencies.getTransientDependencies();
+            Set<ArtifactSpec> filtered = inputSet
+                    .stream()
+                    .filter(dep -> dep.type().equals(JAR))
+                    .collect(Collectors.toSet());
+
+            Set<ArtifactSpec> resolvedTransientDependencies = Collections.EMPTY_SET;
+            if(filtered.size()>0) {
+
+                resolvedTransientDependencies = resolver.resolveAllArtifactsNonTransitively(filtered);
+                this.dependencies.addAll(resolvedTransientDependencies);
+            }
+
+            // add the remaining transitive ones that have not been filtered
+            Set<ArtifactSpec> remainder = new HashSet<>();
+            inputSet.stream().forEach(remainder::add);
+            remainder.removeAll(resolvedTransientDependencies);
+
+            this.dependencies.addAll(
+                    resolver.resolveAllArtifactsNonTransitively(remainder)
+            );
+        }
+
+    }
+
+    private void analyzeModuleDependencies(DeclaredDependencies artifactReport) {
         this.dependencies.stream()
-                .filter(e -> e.type().equals("jar"))
+                .filter(e -> e.type().equals(JAR))
                 .map(e -> e.file)
-                .flatMap(DependencyManager::findModuleXmls)
+                .flatMap(ResolvedDependencies::findModuleXmls)
                 .forEach(this::analyzeModuleDependencies);
 
     }
 
-    protected void analyzeModuleDependencies(ModuleAnalyzer analyzer) {
+    private void analyzeModuleDependencies(ModuleAnalyzer analyzer) {
         this.moduleDependencies.addAll(analyzer.getDependencies());
     }
 
-    protected void analyzeRemovableDependencies() throws Exception {
+    private void analyzeRemovableDependencies(DeclaredDependencies declaredDependencies) throws Exception {
+
         Set<ArtifactSpec> bootstrapDeps = this.dependencies.stream()
                 .filter(e -> isFractionJar(e.file))
                 .collect(Collectors.toSet());
 
-        /*
-        for (ArtifactSpec each : bootstrapDeps) {
-            System.err.println("bootstrap: " + each);
-        }
-        */
-
         Set<ArtifactSpec> nonBootstrapDeps = new HashSet<>();
-        nonBootstrapDeps.addAll(this.explicitDependencies);
+        nonBootstrapDeps.addAll(declaredDependencies.getExplicitDependencies());
         nonBootstrapDeps.removeAll(bootstrapDeps);
 
-        /*
-        for (ArtifactSpec each : nonBootstrapDeps) {
-            System.err.println("non-bootstrap: " + each);
-        }
-        */
-
-        // re-resolve the application's dependencies minus
-        // any of our swarm dependencies
-        Set<ArtifactSpec> simplifiedDeps = resolveAllArtifactsTransitively(nonBootstrapDeps, true);
-
-        /*
-        for (ArtifactSpec each : simplifiedDeps) {
-            System.err.println("simplified: " + each);
-        }
-        */
-
-        Set<ArtifactSpec> justJars = this.dependencies
-                .stream()
-                .filter(e -> e.type().equals("jar"))
-                .collect(Collectors.toSet());
-
-        /*
-        for (ArtifactSpec each : this.dependencies) {
-            System.err.println("core: " + each);
-        }
-        */
+        // re-resolve the application's dependencies minus any of our swarm dependencies
+        // [hb] TODO this can be improved to use the previous results if the data-structure allows to reason about the parent of transitive deps
+        Set<ArtifactSpec> nonBootstrapTransitive = resolver.resolveAllArtifactsTransitively(nonBootstrapDeps, true);
 
         // do not remove .war or .rar or anything else weird-o like.
-        this.removableDependencies.addAll(justJars);
-        this.removableDependencies.removeAll(simplifiedDeps);
+        Set<ArtifactSpec> justJars = this.dependencies
+                .stream()
+                .filter(e -> e.type().equals(JAR))
+                .collect(Collectors.toSet());
 
-        /*
-        for (ArtifactSpec each : this.removableDependencies) {
-            System.err.println("removable: " + each);
-        }
-        */
+        this.removableDependencies.addAll(justJars);
+        this.removableDependencies.removeAll(nonBootstrapTransitive);
+
     }
 
-    protected void analyzeFractionManifests() {
+    private void analyzeFractionManifests(DeclaredDependencies artifactReport) {
         this.dependencies.stream()
                 .map(e -> fractionManifest(e.file))
                 .filter(e -> e != null)
@@ -321,10 +246,11 @@ public class DependencyManager {
 
     }
 
-    public Set<ArtifactSpec> getRemovableDependencies() {
+    Set<ArtifactSpec> getRemovableDependencies() {
         return this.removableDependencies;
     }
 
+    @Override
     public boolean isRemovable(Node node) {
         Asset asset = node.getAsset();
         if (asset == null) {
@@ -382,7 +308,7 @@ public class DependencyManager {
 
     }
 
-    protected boolean isFractionJar(File file) {
+    public static boolean isFractionJar(File file) {
         if (file == null) {
             return false;
         }
@@ -420,28 +346,12 @@ public class DependencyManager {
         return this.applicationManifest;
     }
 
-
-    protected ArtifactSpec resolveArtifact(ArtifactSpec spec) throws Exception {
-        if (spec.file == null) {
-            ArtifactSpec newArtifact = this.resolver.resolve(spec);
-
-            if (newArtifact == null) {
-                throw new BuildException("Unable to resolve artifact: " + spec);
-            }
-
-            spec.file = newArtifact.file;
-        }
-
-        return spec;
+    @Override
+    public Set<ArtifactSpec> getModuleDependencies() {
+        return moduleDependencies;
     }
 
-    protected Set<ArtifactSpec> resolveAllArtifactsTransitively(Set<ArtifactSpec> specs, boolean defaultExcludes) throws Exception {
-        return this.resolver.resolveAll(specs, true, defaultExcludes);
-    }
-
-    protected Set<ArtifactSpec> resolveAllArtifactsNonTransitively(Set<ArtifactSpec> specs) throws Exception {
-        return this.resolver.resolveAll(specs, false, false);
-    }
+    private static final String JAR = "jar";
 
     private final WildFlySwarmManifest applicationManifest = new WildFlySwarmManifest();
 
@@ -451,12 +361,8 @@ public class DependencyManager {
 
     private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
 
-    private final Set<ArtifactSpec> explicitDependencies = new HashSet<>();
-
-    private final Set<ArtifactSpec> presolvedDependencies = new HashSet<>();
-
     private ProjectAsset projectAsset;
 
-    private ArtifactResolvingHelper resolver;
+    private ArtifactResolver resolver;
 
 }

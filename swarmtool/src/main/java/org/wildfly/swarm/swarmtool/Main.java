@@ -36,6 +36,7 @@ import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.DeclaredDependencies;
 import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
@@ -215,9 +216,9 @@ public class Main {
         final String jarName = foundOptions.has(NAME_OPT) ? foundOptions.valueOf(NAME_OPT) : baseName;
         final String outDir = new File(foundOptions.valueOf(OUTPUT_DIR_OPT)).getCanonicalPath();
         final String suffix = foundOptions.has(HOLLOW_OPT) ? "-hollow-swarm" : "-swarm";
-        final BuildTool tool = new BuildTool()
-                .artifactResolvingHelper(getResolvingHelper(foundOptions.valuesOf(REPOS_OPT)))
+        final BuildTool tool = new BuildTool(getResolvingHelper(foundOptions.valuesOf(REPOS_OPT)))
                 .projectArtifact("", baseName, "", type, source)
+                .declaredDependencies(new DeclaredDependencies())
                 .fractionList(FractionList.get())
                 .fractionDetectionMode(foundOptions.has(DISABLE_AUTO_DETECT_OPT) ?
                                              BuildTool.FractionDetectionMode.never :

@@ -32,6 +32,7 @@ import org.gradle.api.tasks.bundling.Jar;
 import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.DeclaredDependencies;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
@@ -71,8 +72,7 @@ public class PackageTask extends DefaultTask {
             }
         }
 
-        this.tool = new BuildTool()
-                .artifactResolvingHelper(new GradleArtifactResolvingHelper(project))
+        this.tool = new BuildTool(new GradleArtifactResolvingHelper(project))
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
                         jarTask.getExtension(), jarTask.getArchivePath())
                 .mainClass(ext.getMainClassName())
@@ -105,6 +105,7 @@ public class PackageTask extends DefaultTask {
                     }
                 });
 
+        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
         List<ArtifactSpec> explicitDependencies = new ArrayList<>();
 
         project.getConfigurations()
@@ -120,7 +121,9 @@ public class PackageTask extends DefaultTask {
                 .getByName("compile")
                 .getResolvedConfiguration()
                 .getResolvedArtifacts()
-                .forEach(e -> addDependency(explicitDependencies, e));
+                .forEach(e -> addDependency(declaredDependencies, explicitDependencies, e));
+
+        tool.declaredDependencies(declaredDependencies);
 
         final Boolean bundleDependencies = ext.getBundleDependencies();
         if (bundleDependencies != null) {
@@ -130,20 +133,25 @@ public class PackageTask extends DefaultTask {
         this.tool.build(project.getName(), project.getBuildDir().toPath().resolve("libs"));
     }
 
-    private void addDependency(final List<ArtifactSpec> explicitDependencies, final ResolvedArtifact artifact) {
-        String groupId = artifact.getModuleVersion().getId().getGroup();
-        String artifactId = artifact.getModuleVersion().getId().getName();
-        String version = artifact.getModuleVersion().getId().getVersion();
-        String extension = artifact.getExtension();
-        String classifier = artifact.getClassifier();
-        File file = artifact.getFile();
+    private void addDependency(DeclaredDependencies declaredDependencies, final List<ArtifactSpec> explicitDependencies, final ResolvedArtifact gradleArtifact) {
 
-        this.tool.presolvedDependency("compile", groupId, artifactId, version, extension, classifier, file);
+        String groupId = gradleArtifact.getModuleVersion().getId().getGroup();
+        String artifactId = gradleArtifact.getModuleVersion().getId().getName();
+        String version = gradleArtifact.getModuleVersion().getId().getVersion();
+        String extension = gradleArtifact.getExtension();
+        String classifier = gradleArtifact.getClassifier();
+        File file = gradleArtifact.getFile();
 
+        boolean isExplicit = false;
         for (ArtifactSpec each : explicitDependencies) {
             if ( each.groupId().equals( groupId ) && each.artifactId().equals( artifactId ) ) {
-                this.tool.explicitDependency("compile", groupId, artifactId, version, extension, classifier, file);
+                declaredDependencies.addExplicitDependency(new ArtifactSpec("compile", groupId, artifactId, version, extension, classifier, file));
+                isExplicit = true;
+                break;
             }
         }
+
+        if(!isExplicit)
+            declaredDependencies.addTransientDependency(new ArtifactSpec("compile", groupId, artifactId, version, extension, classifier, file));
     }
 }

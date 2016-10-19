@@ -1,12 +1,10 @@
 package org.wildfly.swarm.tools;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Before;
@@ -45,21 +43,21 @@ public class DependencyManagerTest {
 
     @Before
     public void setUp() {
-        this.manager = new DependencyManager();
-        this.manager.setArtifactResolvingHelper(RESOLVER);
+        this.manager = new DependencyManager(RESOLVER);
     }
 
     @Test
     public void testNoSwarmJars() throws Exception {
         // Explicitly asked-for dependencies are also the full resolved tree
-        manager.addExplicitDependency(JAXRS_SPEC);
-        manager.addExplicitDependency(COMMON_DEP);
+        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
+        declaredDependencies.addExplicitDependency(JAXRS_SPEC);
+        declaredDependencies.addExplicitDependency(COMMON_DEP);
 
-        manager.addPresolvedDependency(JAXRS_SPEC);
-        manager.addPresolvedDependency(COMMON_DEP);
-        manager.addPresolvedDependency(SERVLET_SPEC);
+        declaredDependencies.addTransientDependency(JAXRS_SPEC);
+        declaredDependencies.addTransientDependency(COMMON_DEP);
+        declaredDependencies.addTransientDependency(SERVLET_SPEC);
 
-        manager.analyzeDependencies(false);
+        manager.analyzeDependencies(false, declaredDependencies);
         assertThat(manager.getRemovableDependencies()).isEmpty();
 
         assertThat(manager.getDependencies()).containsOnly(JAXRS_SPEC, SERVLET_SPEC, COMMON_DEP);
@@ -79,17 +77,19 @@ public class DependencyManagerTest {
     @Test
     public void testAutodetectedSwarmJar() throws Exception {
         // Explicitly asked-for dependencies are also the full resolved tree
-        manager.addExplicitDependency(JAXRS_SPEC);
-        manager.addExplicitDependency(COMMON_DEP);
+        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
+        declaredDependencies.addExplicitDependency(JAXRS_SPEC);
+        declaredDependencies.addExplicitDependency(COMMON_DEP);
 
         // auto-detected, not pre-solved
-        manager.addExplicitDependency(JAXRS_FRACTION);
+        declaredDependencies.addExplicitDependency(JAXRS_FRACTION);
 
-        manager.addPresolvedDependency(JAXRS_SPEC);
-        manager.addPresolvedDependency(SERVLET_SPEC);
-        manager.addPresolvedDependency(COMMON_DEP);
+        declaredDependencies.addTransientDependency(UNDERTOW_FRACTION);
+        declaredDependencies.addTransientDependency(JAXRS_SPEC);
+        declaredDependencies.addTransientDependency(SERVLET_SPEC);
+        declaredDependencies.addTransientDependency(COMMON_DEP);
 
-        manager.analyzeDependencies(true);
+        manager.analyzeDependencies(true, declaredDependencies);
         assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION);
         assertThat(manager.getDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION, JAXRS_SPEC, SERVLET_SPEC, COMMON_DEP);
 
@@ -108,15 +108,20 @@ public class DependencyManagerTest {
     @Test
     public void testAutodetectedSwarmJarNoExplicitCommon() throws Exception {
         // Explicitly asked-for dependencies are also the full resolved tree
-        manager.addExplicitDependency(JAXRS_SPEC);
+        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
+        declaredDependencies.addExplicitDependency(JAXRS_SPEC);
 
         // auto-detected, not pre-solved
-        manager.addExplicitDependency(JAXRS_FRACTION);
+        declaredDependencies.addExplicitDependency(JAXRS_FRACTION);
 
-        manager.addPresolvedDependency(JAXRS_SPEC);
-        manager.addPresolvedDependency(SERVLET_SPEC);
+        declaredDependencies.addTransientDependency(UNDERTOW_FRACTION);
+        declaredDependencies.addTransientDependency(SERVLET_SPEC);
+        declaredDependencies.addTransientDependency(COMMON_DEP);
 
-        manager.analyzeDependencies(true);
+        declaredDependencies.addTransientDependency(JAXRS_SPEC);
+        declaredDependencies.addTransientDependency(SERVLET_SPEC);
+
+        manager.analyzeDependencies(true, declaredDependencies);
         assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION, COMMON_DEP);
         assertThat(manager.getDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION, SERVLET_SPEC, JAXRS_SPEC, COMMON_DEP);
 
@@ -132,14 +137,15 @@ public class DependencyManagerTest {
     @Test
     public void testWithSwarmJarBeingOnlyUserOfDep() throws Exception {
         // Only :jaxrs is the explicit resolved tree, but brings in jaxrs-spec and common dep
-        manager.addExplicitDependency(JAXRS_FRACTION);
+        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
+        declaredDependencies.addExplicitDependency(JAXRS_FRACTION);
 
-        manager.addPresolvedDependency(JAXRS_FRACTION);
-        manager.addPresolvedDependency(JAXRS_SPEC);
-        manager.addPresolvedDependency(UNDERTOW_FRACTION);
-        manager.addPresolvedDependency(SERVLET_SPEC);
-        manager.addPresolvedDependency(COMMON_DEP);
-        manager.analyzeDependencies(false);
+        declaredDependencies.addTransientDependency(JAXRS_FRACTION);
+        declaredDependencies.addTransientDependency(JAXRS_SPEC);
+        declaredDependencies.addTransientDependency(UNDERTOW_FRACTION);
+        declaredDependencies.addTransientDependency(SERVLET_SPEC);
+        declaredDependencies.addTransientDependency(COMMON_DEP);
+        manager.analyzeDependencies(false, declaredDependencies);
 
         assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, UNDERTOW_FRACTION, SERVLET_SPEC, COMMON_DEP);
         assertThat(manager.getDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, UNDERTOW_FRACTION, SERVLET_SPEC, COMMON_DEP);
@@ -154,17 +160,17 @@ public class DependencyManagerTest {
     @Test
     public void testWithApplicationAlsoUsingDep() throws Exception {
         // :jaxrs and common dep are explicit, implying application needs common
+        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
+        declaredDependencies.addExplicitDependency(JAXRS_FRACTION);
+        declaredDependencies.addExplicitDependency(COMMON_DEP);
 
-        manager.addExplicitDependency(JAXRS_FRACTION);
-        manager.addExplicitDependency(COMMON_DEP);
+        declaredDependencies.addTransientDependency(JAXRS_FRACTION);
+        declaredDependencies.addTransientDependency(JAXRS_SPEC);
+        declaredDependencies.addTransientDependency(UNDERTOW_FRACTION);
+        declaredDependencies.addTransientDependency(SERVLET_SPEC);
+        declaredDependencies.addTransientDependency(COMMON_DEP);
 
-        manager.addPresolvedDependency(JAXRS_FRACTION);
-        manager.addPresolvedDependency(JAXRS_SPEC);
-        manager.addPresolvedDependency(UNDERTOW_FRACTION);
-        manager.addPresolvedDependency(SERVLET_SPEC);
-        manager.addPresolvedDependency(COMMON_DEP);
-
-        manager.analyzeDependencies(false);
+        manager.analyzeDependencies(false, declaredDependencies);
         assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, UNDERTOW_FRACTION, SERVLET_SPEC);
         assertThat(manager.getDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, COMMON_DEP, UNDERTOW_FRACTION, SERVLET_SPEC);
 
@@ -173,6 +179,19 @@ public class DependencyManagerTest {
         assertThat(manifest.bootstrapModules()).containsOnly("org.wildfly.swarm.jaxrs", "org.wildfly.swarm.undertow");
 
         assertThat( manifest.getDependencies() ).containsOnly( COMMON_DEP.mavenGav() );
+    }
+
+    @Test
+    public void testComparison() throws Exception {
+        Set<ArtifactSpec> samples = new HashSet<>();
+        samples.add(JAXRS_SPEC);
+        samples.add(COMMON_DEP);
+
+        ArtifactSpec sameCommonSpec = ArtifactSpec.fromMscGav("org.useful:utility:1.0");
+
+        assertThat(samples).contains(sameCommonSpec);
+        org.junit.Assert.assertFalse(samples.contains(SERVLET_SPEC));
+
     }
 
     private static ArtifactSpec simple(String gav) {

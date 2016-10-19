@@ -15,10 +15,8 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,13 +24,11 @@ import java.util.stream.Stream;
 import org.jboss.arquillian.container.spi.event.container.AfterSetup;
 import org.jboss.arquillian.container.test.impl.client.deployment.event.GenerateDeployment;
 import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.wildfly.swarm.arquillian.ArtifactDependencies;
-import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 
 /**
  * @author Bob McWhirter
+ * @author Heiko Braun
  */
 public class WildFlySwarmObserver {
 
@@ -59,29 +55,8 @@ public class WildFlySwarmObserver {
             dependencyMethod.setAccessible(true);
             validate(dependencyMethod);
 
-            List<String> artifactDependencies = new ArrayList<>();
-            artifactDependencies.addAll( (List<String>) dependencyMethod.invoke(null) );
-            artifactDependencies.add( "org.wildfly.swarm:arquillian" );
-            this.container.setRequestedMavenArtifacts(artifactDependencies);
+            this.container.setRequestedMavenArtifacts((List<String>) dependencyMethod.invoke(null));
         }
-
-        // Gather test and provided dependencies
-        final ShrinkwrapArtifactResolvingHelper resolvingHelper = ShrinkwrapArtifactResolvingHelper.defaultInstance();
-        final MavenResolvedArtifact[] deps =
-                resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
-                        .importDependencies(ScopeType.TEST, ScopeType.PROVIDED)
-                        .resolve()
-                        .withTransitivity()
-                        .asResolvedArtifact());
-
-        StringBuffer buffer = new StringBuffer();
-
-        for (MavenResolvedArtifact artifact : deps) {
-            buffer.append(artifact.asFile().getAbsolutePath());
-            buffer.append(File.pathSeparator);
-        }
-
-        System.setProperty("swarm.test.dependencies", buffer.toString());
     }
 
     private void validate(Method dependencyMethod) {
@@ -99,4 +74,5 @@ public class WildFlySwarmObserver {
     }
 
     private WildFlySwarmContainer container;
+
 }
