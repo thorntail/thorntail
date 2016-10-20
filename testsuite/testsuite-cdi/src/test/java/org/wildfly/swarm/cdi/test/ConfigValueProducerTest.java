@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi;
+package org.wildfly.swarm.cdi.test;
 
-import java.io.File;
-
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,28 +29,8 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(Arquillian.class)
 @Ignore
+@DefaultDeployment
 public class ConfigValueProducerTest {
-
-    @Deployment
-    public static Archive<?> createDeployment() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class)
-                .add(new FileAsset(new File("src/test/resources/beans.xml")),
-                        "META-INF/beans.xml")
-                .add(new FileAsset(
-                                new File("src/test/resources/project-stages.yml")),
-                        "project-stages.yml")
-                .addClass(ConfigAwareBean.class);
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .withStageConfig(ConfigValueProducerTest.class.getClassLoader()
-                        .getResource("project-stages.yml"))
-                //.fraction(LoggingFraction.createDebugLoggingFraction())
-                .fraction(new CDIFraction());
-    }
 
     @Test
     public void testInjection(ConfigAwareBean configAwareBean) {
