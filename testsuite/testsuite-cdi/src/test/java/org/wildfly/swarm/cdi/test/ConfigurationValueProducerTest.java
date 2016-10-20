@@ -13,40 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi;
+package org.wildfly.swarm.cdi.test;
 
 import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 /**
  * @author George Gastaldi
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class ConfigurationValueProducerTest {
 
     @Inject
     @ConfigurationValue("logger.level")
     private Optional<String> loggerLevel;
-
-    @Deployment
-    public static Archive<?> createDeployment() throws Exception {
-        return ShrinkWrap.create(JARArchive.class, "arqDeployment.jar")
-                .add(new ClassLoaderAsset("project-stages.yml", ConfigurationValueProducerTest.class.getClassLoader()), "project-stages.yml")
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-    }
 
     @Test
     public void testServerAddressExists() {
