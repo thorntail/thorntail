@@ -34,6 +34,7 @@ public class TestRunner {
 
     public Serializable executeTest(final String testClassName, final String methodName) {
 
+
         final ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
         try {
             // We have to set the TCCL here due to ARQ-1181; if that's resolved we can remove all TCCL mucking

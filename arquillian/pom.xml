@@ -23,9 +23,10 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>api</module>
+    <module>adapter</module>
     <module>daemon</module>
     <module>resolver</module>
+    <module>arquillian</module>
     <module>test</module>
   </modules>
 

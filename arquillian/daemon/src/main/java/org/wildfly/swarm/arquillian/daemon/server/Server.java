@@ -67,10 +67,12 @@ public class Server {
 
     public static final int MAX_PORT = 65535;
 
-    Server(final InetSocketAddress bindAddress, DeploymentUnit deploymentUnit) {
+    private DeploymentUnit deploymentUnit;
+
+
+    Server(final InetSocketAddress bindAddress) {
         // Precondition checks
         assert bindAddress != null : "Bind address must be specified";
-        assert deploymentUnit != null : "DeploymentUnit must be specified";
 
         // Determine the ClassLoader to use in creating the SW Domain
         final ClassLoader thisCl = Server.class.getClassLoader();
@@ -82,11 +84,10 @@ public class Server {
         this.shrinkwrapDomain = ShrinkWrap.createDomain(new ConfigurationBuilder().classLoaders(classloaders));
 
         // Set
-        this.deploymentUnit = deploymentUnit;
         this.bindAddress = bindAddress;
     }
 
-    public static Server create(final String bindAddress, final int bindPort, final DeploymentUnit depunit) throws IllegalArgumentException {
+    public static Server create(final String bindAddress, final int bindPort) throws IllegalArgumentException {
 
         // Precondition checks
         if (bindPort < 0 || bindPort > MAX_PORT) {
@@ -101,7 +102,7 @@ public class Server {
         }
 
         // Create and return a new server instance
-        return new Server(resolvedInetAddress, depunit);
+        return new Server(resolvedInetAddress);
     }
 
     public final void start() throws ServerLifecycleException, IllegalStateException {
@@ -237,6 +238,10 @@ public class Server {
         return shrinkwrapDomain;
     }
 
+    public void setDeploymentUnit(DeploymentUnit deploymentUnit) {
+        this.deploymentUnit = deploymentUnit;
+    }
+
     protected final Serializable executeTest(final String testClassName, final String methodName) {
         return new TestRunner(deploymentUnit).executeTest(testClassName, methodName);
     }
@@ -275,8 +280,6 @@ public class Server {
     private final Domain shrinkwrapDomain;
 
     private final InetSocketAddress bindAddress;
-
-    private final DeploymentUnit deploymentUnit;
 
     private ExecutorService shutdownService;
 

@@ -15,19 +15,15 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>arquillian-daemon</artifactId>
+  <artifactId>arquillian</artifactId>
 
-  <name>Arquillian Daemon</name>
-  <description>Arquillian Daemon</description>
+  <name>Arquillian</name>
+  <description>Arquillian</description>
 
   <packaging>jar</packaging>
 
-<!--
   <properties>
-    <swarm.fraction.cdi>false</swarm.fraction.cdi>
-    <swarm.fraction.bootstrap>org.wildfly.swarm.arquillian.daemon</swarm.fraction.bootstrap>
   </properties>
--->
 
   <build>
     <resources>
@@ -43,6 +39,27 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>arquillian-daemon</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>arquillian-adapter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+<!--
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
@@ -70,6 +87,7 @@
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
     </dependency>
+-->
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-feature-pack</artifactId>
