@@ -13,7 +13,6 @@
     <version>7</version>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm</artifactId>
   <version>2016.11.0-SNAPSHOT</version>
 
@@ -79,6 +78,8 @@
     <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
 
     <version.org.kie>6.4.0.Final</version.org.kie>
+
+    <version.flyway>4.0.3</version.flyway>
 
     <version.gradle>2.4</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
@@ -541,6 +542,17 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ejb-remote</artifactId>
+        <version>2016.11.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>${version.flyway}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>flyway</artifactId>
         <version>2016.11.0-SNAPSHOT</version>
       </dependency>
 
@@ -1127,6 +1139,7 @@
     <module>fractions/databases/mysql</module>
     <module>fractions/databases/postgresql</module>
     <module>fractions/drools-server</module>
+    <module>fractions/flyway</module>
     <module>fractions/hibernate-search</module>
     <module>fractions/hibernate-validator</module>
     <module>fractions/infinispan</module>
