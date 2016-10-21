@@ -1,4 +1,4 @@
-package org.wildfly.swarm.cdi.test;
+package org.wildfly.swarm.cdi;
 
 import javax.inject.Singleton;
 

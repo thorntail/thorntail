@@ -25,5 +25,16 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Documented
 public @interface DefaultDeployment {
+
+    public enum  Type {
+        JAR,
+        WAR;
+
+        public String toString() {
+            return "." + super.toString().toLowerCase();
+        }
+    }
+
+    Type type() default Type.JAR;
     boolean testable() default true;
 }

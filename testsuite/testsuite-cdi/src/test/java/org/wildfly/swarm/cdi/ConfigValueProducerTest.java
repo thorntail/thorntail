@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi.test;
+package org.wildfly.swarm.cdi;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.cdi.ConfigAwareBean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

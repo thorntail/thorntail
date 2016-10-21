@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.Services;
@@ -14,12 +16,11 @@ import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.wildfly.swarm.arquillian.daemon.server.Server;
-import org.wildfly.swarm.arquillian.runtime.DaemonService;
-import org.wildfly.swarm.arquillian.runtime.DaemonServiceActivator;
 
 /**
  * @author Bob McWhirter
  */
+@Vetoed
 public class TestableArchiveServiceActivator implements ServiceActivator {
 
     @Override

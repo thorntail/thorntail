@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.camel.test.cxf.ws.subA.Endpoint;
 import org.wildfly.swarm.camel.test.cxf.ws.subA.EndpointImpl;
@@ -51,19 +52,8 @@ import org.wildfly.swarm.camel.test.cxf.ws.subA.EndpointImpl;
  */
 @CamelAware
 @RunWith(Arquillian.class)
+@DefaultDeployment(type = DefaultDeployment.Type.WAR)
 public class CXFWSProducerIntegrationTest {
-
-    @Deployment
-    public static WebArchive deployment() {
-        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "cxf-ws-producer-tests.war");
-        archive.addClasses(Endpoint.class, EndpointImpl.class);
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction());
-    }
 
     @Test
     public void testSimpleWar() throws Exception {

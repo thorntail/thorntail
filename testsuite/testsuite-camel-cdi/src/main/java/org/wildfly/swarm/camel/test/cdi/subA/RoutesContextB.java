@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,21 +48,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Uses contextA with explicit context names on all Camel annotations
+ * Uses contextB with explicit context names on all Camel annotations
  */
-@ContextName("contextA")
-public class RoutesContextA extends RouteBuilder {
-    private static final Logger LOG = LoggerFactory.getLogger(RoutesContextA.class);
+@ContextName("contextB")
+public class RoutesContextB extends RouteBuilder {
+    private static final Logger LOG = LoggerFactory.getLogger(RoutesContextB.class);
 
-    @EndpointInject(uri = "mock:A.b", context = "contextA")
+    @EndpointInject(uri = "mock:B.b", context = "contextB")
     public MockEndpoint b;
 
-    @ContextName("contextA")
-    @Inject @Uri(value = "seda:A.a")
+    @ContextName("contextB")
+    @Inject @Uri(value = "seda:B.a")
     Endpoint a;
 
-    @ContextName("contextA")
-    @Inject @Uri(value = "seda:A.a")
+    @ContextName("contextB")
+    @Inject @Uri(value = "seda:B.a")
     ProducerTemplate producer;
 
     @Override
@@ -72,7 +72,7 @@ public class RoutesContextA extends RouteBuilder {
     }
 
     public void sendMessages() {
-        for (Object expectedBody : Constants.EXPECTED_BODIES_A) {
+        for (Object expectedBody : Constants.EXPECTED_BODIES_B) {
             LOG.info("Sending " + expectedBody + " to " + producer.getDefaultEndpoint());
             producer.sendBody(expectedBody);
         }
