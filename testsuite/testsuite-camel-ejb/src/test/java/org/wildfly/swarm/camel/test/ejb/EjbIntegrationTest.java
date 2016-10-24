@@ -33,25 +33,15 @@ import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.camel.test.ejb.subA.HelloBean;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 @CamelAware
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class EjbIntegrationTest {
-
-    @Deployment
-    public static JARArchive deployment() {
-        final JARArchive archive = ShrinkWrap.create(JARArchive.class);
-        archive.addClasses(HelloBean.class);
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction());
-    }
 
     @Test
     public void testStatelessSessionBean() throws Exception {

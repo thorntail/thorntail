@@ -51,6 +51,7 @@ import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.config.messaging.activemq.server.JMSQueue;
 import org.wildfly.swarm.messaging.MessagingFraction;
@@ -64,28 +65,11 @@ import org.wildfly.swarm.spi.api.JARArchive;
  */
 @CamelAware
 @RunWith(Arquillian.class)
+@DefaultDeployment(main = Main.class)
 public class JMSIntegrationTest {
 
     static final String QUEUE_NAME = "camel-jms-queue";
     static final String QUEUE_JNDI_NAME = "java:/" + QUEUE_NAME;
-
-    @Deployment
-    public static JARArchive deployment() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class, "camel-jms-tests.jar");
-        archive.addModule("org.wildfly.swarm.messaging");
-        return archive;
-    }
-
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        Swarm container = new Swarm().fraction(new CamelCoreFraction());
-        container.fraction(MessagingFraction.createDefaultFraction()
-                .defaultServer((s) -> {
-                    s.jmsQueue(new JMSQueue<>(QUEUE_NAME).entry(QUEUE_JNDI_NAME));
-                }));
-        return container;
-    }
 
     @Test
     public void testMessageConsumerRoute() throws Exception {
@@ -94,7 +78,7 @@ public class JMSIntegrationTest {
         camelctx.addRoutes(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("jms:queue:" + QUEUE_NAME + "?connectionFactory=ConnectionFactory").
+                from("jms:queue:" + Main.QUEUE_NAME + "?connectionFactory=ConnectionFactory").
                 transform(body().prepend("Hello ")).to("direct:end");
             }
         });
@@ -110,7 +94,7 @@ public class JMSIntegrationTest {
             ConnectionFactory cfactory = (ConnectionFactory) initialctx.lookup("java:/ConnectionFactory");
             Connection connection = cfactory.createConnection();
             try {
-                sendMessage(connection, QUEUE_JNDI_NAME, "Kermit");
+                sendMessage(connection, Main.QUEUE_JNDI_NAME, "Kermit");
                 String result = consumer.receive().getIn().getBody(String.class);
                 Assert.assertEquals("Hello Kermit", result);
             } finally {
@@ -130,7 +114,7 @@ public class JMSIntegrationTest {
             public void configure() throws Exception {
                 from("direct:start").
                 transform(body().prepend("Hello ")).
-                to("jms:queue:" + QUEUE_NAME + "?connectionFactory=ConnectionFactory");
+                to("jms:queue:" + Main.QUEUE_NAME + "?connectionFactory=ConnectionFactory");
             }
         });
 
@@ -144,7 +128,7 @@ public class JMSIntegrationTest {
             ConnectionFactory cfactory = (ConnectionFactory) initialctx.lookup("java:/ConnectionFactory");
             Connection connection = cfactory.createConnection();
             try {
-                receiveMessage(connection, QUEUE_JNDI_NAME, new MessageListener() {
+                receiveMessage(connection, Main.QUEUE_JNDI_NAME, new MessageListener() {
                     @Override
                     public void onMessage(Message message) {
                         TextMessage text = (TextMessage) message;
