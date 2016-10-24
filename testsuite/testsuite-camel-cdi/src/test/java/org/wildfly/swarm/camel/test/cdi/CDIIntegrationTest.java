@@ -48,25 +48,20 @@ import org.apache.camel.cdi.ContextName;
 import org.apache.camel.cdi.Uri;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.util.CamelContextHelper;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelContextRegistry;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.camel.core.CamelCoreFraction;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.camel.test.cdi.subA.Constants;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextA;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextB;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextC;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextD;
-import org.wildfly.swarm.spi.api.JARArchive;
 
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class CDIIntegrationTest {
 
     @Resource(name = "java:jboss/camel/CamelContextRegistry")
@@ -88,19 +83,6 @@ public class CDIIntegrationTest {
     @Inject
     @Uri(value = "seda:foo", context = "contextD")
     ProducerTemplate producerD;
-
-    @Deployment
-    public static JARArchive deployment() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class, "camel-cdi-tests.jar");
-        archive.addPackage(RoutesContextA.class.getPackage());
-        archive.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction());
-    }
 
     @Test
     public void checkContextsHaveCorrectEndpointsAndRoutes() throws Exception {

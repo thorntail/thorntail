@@ -26,35 +26,18 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.camel.core.CamelCoreFraction;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.camel.test.jaxrs.subA.GreetingService;
-import org.wildfly.swarm.camel.test.jaxrs.subA.RestApplication;
 
 @CamelAware
 @RunWith(Arquillian.class)
+@DefaultDeployment(type= DefaultDeployment.Type.WAR)
 public class JAXRSProducerTest {
-
-    @Deployment
-    public static WebArchive deployment() {
-        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "jaxrs-endpoint.war");
-        archive.addPackage(RestApplication.class.getPackage());
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction());
-    }
 
     @Test
     public void testJaxrsProducer() throws Exception {

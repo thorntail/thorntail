@@ -19,12 +19,15 @@ import java.util.stream.Collectors;
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentDescription;
 import org.jboss.arquillian.container.test.impl.client.deployment.AnnotationDeploymentScenarioGenerator;
 import org.jboss.arquillian.test.spi.TestClass;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
 import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
@@ -41,11 +44,21 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
     public List<DeploymentDescription> generate(TestClass testClass) {
         DefaultDeployment anno = testClass.getAnnotation(DefaultDeployment.class);
 
-        if ( anno == null ) {
+        if (anno == null) {
             return super.generate(testClass);
         }
 
-        JARArchive archive = ShrinkWrap.create(JARArchive.class, testClass.getJavaClass().getSimpleName() + ".jar");
+        String classPrefix = (
+                anno.type() == DefaultDeployment.Type.JAR
+                        ? ""
+                        : "WEB-INF/classes"
+        );
+
+        Archive archive = (
+                anno.type() == DefaultDeployment.Type.JAR
+                        ? ShrinkWrap.create(JavaArchive.class, testClass.getJavaClass().getSimpleName() + ".jar")
+                        : ShrinkWrap.create(WebArchive.class, testClass.getJavaClass().getSimpleName() + ".war")
+        );
 
         ClassLoader cl = testClass.getJavaClass().getClassLoader();
 
@@ -53,7 +66,7 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
 
         URLPackageScanner.Callback callback = (className, asset) -> {
             ArchivePath classNamePath = AssetUtil.getFullPathForClassResource(className);
-            ArchivePath location = new BasicPath("", classNamePath);
+            ArchivePath location = new BasicPath(classPrefix, classNamePath);
             archive.add(asset, location);
 
             try {
@@ -89,13 +102,15 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
                     .filter(e -> e.getProtocol().equals("file"))
                     .map(e -> e.getPath())
                     .map(e -> Paths.get(e))
-                    .filter( e->Files.isDirectory( e ) )
+                    .filter(e -> Files.isDirectory(e))
                     .forEach(e -> {
                         try {
                             Files.walkFileTree(e, new SimpleFileVisitor<Path>() {
                                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                    Path location = e.relativize(file);
-                                    archive.add(new FileAsset(file.toFile()), location.toString());
+                                    if (!file.toString().endsWith(".class")) {
+                                        Path location = e.relativize(file);
+                                        archive.add(new FileAsset(file.toFile()), location.toString());
+                                    }
                                     return super.visitFile(file, attrs);
                                 }
                             });
@@ -104,8 +119,15 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
                     });
 
         } catch (IOException e) {
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
+
+        /*
+        Map<ArchivePath, Node> content = archive.getContent();
+        for (ArchivePath each : content.keySet()) {
+            System.err.println(" --> " + each);
+        }
+        */
 
         DeploymentDescription description = new DeploymentDescription(testClass.getName(), archive);
 
