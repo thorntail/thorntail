@@ -12,7 +12,6 @@ import java.security.CodeSource;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,18 +20,15 @@ import org.jboss.arquillian.container.test.impl.client.deployment.AnnotationDepl
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
 import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * @author Bob McWhirter
@@ -130,6 +126,11 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
         */
 
         DeploymentDescription description = new DeploymentDescription(testClass.getName(), archive);
+
+        Class<?> mainClass = anno.main();
+        if ( mainClass != Void.class ) {
+            archive.add(new StringAsset( mainClass.getName() ), "META-INF/arquillian-main-class" );
+        }
 
         description.shouldBeTestable(anno.testable());
 

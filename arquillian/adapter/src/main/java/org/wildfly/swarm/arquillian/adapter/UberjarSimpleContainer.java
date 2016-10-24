@@ -15,7 +15,9 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -24,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
@@ -108,8 +111,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
             } else {
                 throw new IllegalArgumentException(
                         String.format("Method annotated with %s is %s but it is not static",
-                                      CreateSwarm.class.getSimpleName(),
-                                      swarmMethod));
+                                CreateSwarm.class.getSimpleName(),
+                                swarmMethod));
             }
         }
 
@@ -138,7 +141,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         String additionalModules = System.getProperty(SwarmInternalProperties.BUILD_MODULES);
 
         // See https://issues.jboss.org/browse/SWARM-571
-        if(null==additionalModules) {
+        if (null == additionalModules) {
             // see if we can find it
             File modulesDir = new File("target/classes/modules");
             additionalModules = modulesDir.exists() ? modulesDir.getAbsolutePath() : null;
@@ -146,10 +149,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
-                                           .map(File::new)
-                                           .filter(File::exists)
-                                           .map(File::getAbsolutePath)
-                                           .collect(Collectors.toList()));
+                    .map(File::new)
+                    .filter(File::exists)
+                    .map(File::getAbsolutePath)
+                    .collect(Collectors.toList()));
         }
 
         final SwarmExecutor executor = new SwarmExecutor().withDefaultSystemProperties();
@@ -179,8 +182,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
             for (MavenResolvedArtifact dep : explicitDeps) {
                 MavenCoordinate coord = dep.getCoordinate();
                 tool.explicitDependency(dep.getScope().name(), coord.getGroupId(),
-                                coord.getArtifactId(), coord.getVersion(),
-                                coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                        coord.getArtifactId(), coord.getVersion(),
+                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
             }
 
             final MavenResolvedArtifact[] presolvedDeps =
@@ -209,8 +212,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 for (MavenResolvedArtifact dep : explicitDeps) {
                     MavenCoordinate coord = dep.getCoordinate();
                     tool.explicitDependency(dep.getScope().name(), coord.getGroupId(),
-                                    coord.getArtifactId(), coord.getVersion(),
-                                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
+                            coord.getArtifactId(), coord.getVersion(),
+                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
                 }
 
                 final MavenResolvedArtifact[] presolvedDeps =
@@ -234,7 +237,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", SwarmProperties.DEBUG_PORT, debug),
-                                                   e);
+                        e);
             }
         }
 
@@ -248,7 +251,14 @@ public class UberjarSimpleContainer implements SimpleContainer {
         } else if (annotatedCreateSwarm) {
             tool.mainClass(AnnotationBasedMain.class.getName());
         } else {
-            tool.mainClass(Swarm.class.getName());
+            Optional<String> mainClassName = Optional.empty();
+            Node node = archive.get("META-INF/arquillian-main-class");
+            if (node != null && node.getAsset() != null) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(node.getAsset().openStream()))) {
+                    mainClassName = reader.lines().findFirst();
+                }
+            }
+            tool.mainClass(mainClassName.orElse(Swarm.class.getName()));
         }
 
         Archive<?> wrapped = null;
@@ -313,7 +323,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
     private void registerContainerFactory(Archive<?> archive, Class<?> clazz) {
         archive.as(JavaArchive.class)
                 .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                                      clazz.getName())
+                        clazz.getName())
                 .addClass(clazz);
         archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
         archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");
