@@ -31,7 +31,7 @@ import org.flywaydb.core.Flyway;
  * A ServletContextListener implementation that performs DB migration with
  * Flyway
  *
- * @author @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
+ * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
 @Vetoed
 @WebListener
