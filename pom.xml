@@ -1167,7 +1167,6 @@
     <module>fractions/topology-jgroups</module>
     <module>fractions/topology-openshift</module>
     <module>fractions/topology-webapp</module>
-    <module>fractions/undertow-js</module>
     <module>fractions/vertx</module>
     <module>fractions/zipkin-jaxrs</module>
 
