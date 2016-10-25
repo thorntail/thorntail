@@ -1,4 +1,4 @@
-package org.wildfly.swarm.datasources;
+package org.wildfly.swarm.datasources.test;
 
 import java.sql.Connection;
 import java.sql.SQLException;

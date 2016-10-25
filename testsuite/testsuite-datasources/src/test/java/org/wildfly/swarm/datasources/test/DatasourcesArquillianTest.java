@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.connector;
+package org.wildfly.swarm.datasources.test;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
@@ -24,12 +28,16 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment
-public class ConnectorArquillianTest {
+@DefaultDeployment(
+        main = Main.class
+)
+public class DatasourcesArquillianTest {
+
+    @ArquillianResource
+    InitialContext context;
 
     @Test
-    public void testNothing() throws Exception {
-
+    public void testDatasource() throws NamingException {
+        assert (context.lookup("java:jboss/datasources/ExampleDS") != null);
     }
-
 }

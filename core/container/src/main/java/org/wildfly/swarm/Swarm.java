@@ -147,7 +147,7 @@ public class Swarm {
             Module.setModuleLogger(new StreamModuleLogger(System.err));
         }
 
-        System.setProperty(SwarmInternalProperties.VERSION, VERSION);
+        System.setProperty(SwarmInternalProperties.VERSION, ( VERSION == null ? "unknown" : VERSION ) );
 
         setArgs(args);
         this.debugBootstrap = debugBootstrap;

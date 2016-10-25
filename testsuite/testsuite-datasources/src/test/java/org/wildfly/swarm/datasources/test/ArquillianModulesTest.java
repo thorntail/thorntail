@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.datasources;
+package org.wildfly.swarm.datasources.test;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -29,6 +29,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.datasources.test.Main;
+import org.wildfly.swarm.datasources.test.MyResource;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -37,43 +40,17 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Heiko Braun
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment(
+        testable = false,
+        type = DefaultDeployment.Type.WAR,
+        main = Main.class
+)
 public class ArquillianModulesTest {
 
-    @Deployment(testable = false)
-    public static Archive createDeployment() {
-        JAXRSArchive appDeployment = ShrinkWrap.create(JAXRSArchive.class);
-        appDeployment.addResource(MyResource.class);
-        appDeployment.addModule("com.h2database.h2");
-        return appDeployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        Swarm swarm = new Swarm();
-
-        swarm.fraction(
-                new DatasourcesFraction()
-                        .jdbcDriver("h2", (d) -> {
-                            d.driverClassName("org.h2.Driver");
-                            d.xaDatasourceClass("org.h2.jdbcx.JdbcDataSource");
-                            d.driverModuleName("com.h2database.h2");
-                        })
-                        .dataSource("ExampleDS", (ds) -> {
-                            ds.driverName("h2");
-                            ds.connectionUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
-                            ds.userName("sa");
-                            ds.password("sa");
-                        })
-        );
-
-        return swarm;
-    }
-
     @Test
-    @RunAsClient
     public void testDatasource() {
         String response = getUrlContents("http://localhost:8080/");
-        assertThat(response).contains("Howdy using connection: org.jboss.jca.adapters.jdbc.jdk7.WrappedConnectionJDK7" );
+        assertThat(response).contains("Howdy using connection: org.jboss.jca.adapters.jdbc.jdk7.WrappedConnectionJDK7");
     }
 
     private static String getUrlContents(String theUrl) {
