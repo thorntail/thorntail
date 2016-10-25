@@ -13,46 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.flyway;
+package org.wildfly.swarm.flyway.test;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.database.h2.H2Fraction;
-import org.wildfly.swarm.undertow.WARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 /**
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment(type = DefaultDeployment.Type.WAR)
 public class FlywayArquillianTest {
-
-    @Deployment
-    public static Archive<?> getDeployment() throws Exception {
-        return ShrinkWrap.create(WARArchive.class, "deployment.war")
-                .addAllDependencies()
-                .addAsResource(new File("src/test/resources/db"), "db");
-    }
-
-    @CreateSwarm
-    public static Swarm createSwarm() throws Exception {
-        return new Swarm()
-                .fraction(new H2Fraction())
-                .fraction(new FlywayFraction());
-    }
 
     @Test
     public void testDataSourceContents() throws Exception {

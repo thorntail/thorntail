@@ -1,4 +1,4 @@
-package org.wildfly.swarm.infinispan;
+package org.wildfly.swarm.infinispan.test;
 
 /**
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
@@ -31,6 +31,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.infinispan.InfinispanFraction;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.jaxrs.JAXRSFraction;
 
@@ -40,24 +42,12 @@ import static org.junit.Assert.assertNotNull;
  * @author Heiko Braun
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment(
+        testable = false,
+        type = DefaultDeployment.Type.WAR
+)
 public class Swarm551Test {
 
-    @Deployment(testable = false)
-    public static Archive deployment() {
-        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class, "testDeployment.war");
-        archive.addResource(MyResource.class);
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm create() throws Exception {
-        Swarm container = new Swarm();
-        container.fraction(new JAXRSFraction());
-        container.fraction(InfinispanFraction.createDefaultFraction());
-        return container;
-    }
-
-    @RunAsClient
     @Test
     public void testAccess() {
         String response = getUrlContents("http://localhost:8080");
