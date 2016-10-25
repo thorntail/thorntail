@@ -17,6 +17,7 @@ package org.wildfly.swarm.plugin.maven;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,6 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
-import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
@@ -39,6 +39,8 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.resolution.DependencyRequest;
+import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeDeriver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeSelector;
@@ -54,15 +56,18 @@ import org.wildfly.swarm.tools.ArtifactSpec;
 public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     public MavenArtifactResolvingHelper(ArtifactResolver resolver,
-                                        RepositorySystem system,
-                                        RepositorySystemSession session) {
+            RepositorySystem system,
+            RepositorySystemSession session) {
         this.resolver = resolver;
         this.system = system;
         this.session = session;
+        this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
+                "http://repository.jboss.org/nexus/content/groups/public/",
+                null));
     }
 
     public void remoteRepository(ArtifactRepository repo) {
-        remoteRepository(buildRemoteRepository(repo.getId(), repo.getUrl(), repo.getAuthentication(), this.session));
+        remoteRepository(buildRemoteRepository(repo.getId(), repo.getUrl(), repo.getAuthentication()));
     }
 
     public void remoteRepository(RemoteRepository repo) {
@@ -95,17 +100,14 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
 
         return spec.file != null ? spec : null;
-
     }
-
+    
     @Override
     public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         if (specs.isEmpty()) {
             return specs;
         }
-
         List<DependencyNode> nodes = null;
-
         if (transitive) {
             final CollectRequest request = new CollectRequest();
             request.setRepositories(this.remoteRepositories);
@@ -118,72 +120,54 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                             spec.version()),
                             "compile")));
 
-            RepositorySystemSession tempSession =
-                    new RepositorySystemSessionWrapper(this.session,
+            RepositorySystemSession tempSession
+                    = new RepositorySystemSessionWrapper(this.session,
                             new ConflictResolver(new NewestVersionSelector(),
                                     new JavaScopeSelector(),
                                     new SimpleOptionalitySelector(),
                                     new JavaScopeDeriver()
                             ), defaultExcludes
                     );
-
-            CollectResult result = this.system.collectDependencies(tempSession, request);
-
+            DependencyResult result = this.system.resolveDependencies(tempSession, new DependencyRequest(request, null));
             PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
             result.getRoot().accept(gen);
             nodes = gen.getNodes();
         } else {
             nodes = new ArrayList<>();
-            for ( ArtifactSpec spec : specs ) {
+            for (ArtifactSpec spec : specs) {
                 Dependency dependency = new Dependency(new DefaultArtifact(spec.groupId(),
                         spec.artifactId(),
                         spec.classifier(),
                         spec.type(),
                         spec.version()),
                         "compile");
-                DefaultDependencyNode node = new DefaultDependencyNode( dependency );
-                nodes.add( node );
-            };
+                DefaultDependencyNode node = new DefaultDependencyNode(dependency);
+                nodes.add(node);
+            }
         }
-
-        resolveDependenciesInParallel(nodes);
 
         return nodes.stream()
                 .filter(node -> !"system".equals(node.getDependency().getScope()))
                 .map(node -> {
                     final Artifact artifact = node.getArtifact();
-
                     return new ArtifactSpec(node.getDependency().getScope(),
                             artifact.getGroupId(),
                             artifact.getArtifactId(),
                             artifact.getVersion(),
                             artifact.getExtension(),
                             artifact.getClassifier(),
-                            null);
+                            artifact.getFile());
                 })
                 .map(this::resolve)
-                .filter(x -> x != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
-    private void resolveDependenciesInParallel(List<DependencyNode> nodes) {
-        List<ArtifactRequest> artifactRequests = nodes.stream()
-                .map(node -> new ArtifactRequest(node.getArtifact(), this.remoteRepositories, null))
-                .collect(Collectors.toList());
-
-        try {
-            this.resolver.resolveArtifacts(this.session, artifactRequests);
-        } catch (ArtifactResolutionException e) {
-            // ignore, error will be printed by resolve(ArtifactSpec)
-        }
-    }
-
-    protected RemoteRepository buildRemoteRepository(final String id, final String url,
-                                                            final Authentication auth, final RepositorySystemSession session) {
+    protected RemoteRepository buildRemoteRepository(final String id, final String url, final Authentication auth) {
         RemoteRepository.Builder builder = new RemoteRepository.Builder(id, "default", url);
-        if (auth != null &&
-                auth.getUsername() != null &&
-                auth.getPassword() != null) {
+        if (auth != null
+                && auth.getUsername() != null
+                && auth.getPassword() != null) {
             builder.setAuthentication(new AuthenticationBuilder()
                     .addUsername(auth.getUsername())
                     .addPassword(auth.getPassword()).build());
