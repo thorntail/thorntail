@@ -21,6 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.wildfly.swarm.Swarm;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
@@ -37,4 +39,6 @@ public @interface DefaultDeployment {
 
     Type type() default Type.JAR;
     boolean testable() default true;
+    Class<?> main() default Void.class;
+
 }
