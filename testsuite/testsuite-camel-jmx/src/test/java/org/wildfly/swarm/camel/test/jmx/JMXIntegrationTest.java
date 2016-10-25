@@ -39,6 +39,7 @@ import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.extension.camel.CamelContextRegistry;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
@@ -50,24 +51,8 @@ import org.wildfly.swarm.spi.api.JARArchive;
  */
 @CamelAware
 @RunWith(Arquillian.class)
+@DefaultDeployment(main = Main.class)
 public class JMXIntegrationTest {
-
-    @Deployment
-    public static JARArchive deployment() {
-        final JARArchive archive = ShrinkWrap.create(JARArchive.class, "jmx-integration.jar");
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction().addRouteBuilder(new RouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                from("direct:start")
-                        .transform(simple("Hello ${body}"));
-            }
-        }));
-    }
 
     @Test
     public void testMonitorMBeanAttribute() throws Exception {

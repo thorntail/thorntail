@@ -23,7 +23,6 @@ import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.wildfly.swarm.spi.api.JARArchive;
 
 public class WildFlySwarmDeploymentAppender extends CachedAuxilliaryArchiveAppender {
     @Override

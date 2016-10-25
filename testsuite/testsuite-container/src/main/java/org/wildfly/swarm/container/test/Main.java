@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.connector;
+package org.wildfly.swarm.container.test;
 
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.Swarm;
 
 /**
- * @author Bob McWhirter
+ * @author Heiko Braun
  */
-@RunWith(Arquillian.class)
-@DefaultDeployment
-public class ConnectorArquillianTest {
+public class Main {
 
-    @Test
-    public void testNothing() throws Exception {
+    /**
+     * Test loading of project-stages.yml in arq test cases
+     * See https://issues.jboss.org/browse/SWARM-486
+     */
+    public static void main(String...args) throws Exception {
+        Swarm swarm = new Swarm(args)
+                .component(ProjectStageInjectable.class);
 
+        swarm.start().deploy();
     }
 
 }

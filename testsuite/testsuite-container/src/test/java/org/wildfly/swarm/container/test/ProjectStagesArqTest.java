@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.connector;
+package org.wildfly.swarm.container.test;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.container.test.Main;
 
 /**
- * @author Bob McWhirter
+ * @author Heiko Braun
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment
-public class ConnectorArquillianTest {
+@DefaultDeployment(main=Main.class)
+public class ProjectStagesArqTest {
 
     @Test
-    public void testNothing() throws Exception {
-
+    public void testThatTheMainDidNotThrow() {
+        // nothing, here, the component in main() is the assertioning thing.
     }
 
 }

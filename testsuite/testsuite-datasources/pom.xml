@@ -40,27 +40,14 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>datasources</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>arquillian</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-connector</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -68,14 +55,6 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>${version.h2}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>staxmapper</artifactId>
-      <version>1.2.0.Final</version>
-      <type>jar</type>
       <scope>test</scope>
     </dependency>
 

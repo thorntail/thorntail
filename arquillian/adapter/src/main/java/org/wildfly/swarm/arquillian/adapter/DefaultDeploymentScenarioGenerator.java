@@ -68,8 +68,8 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
             try {
                 Class<?> cls = cl.loadClass(className);
                 codeSources.add(cls.getProtectionDomain().getCodeSource());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (ClassNotFoundException|NoClassDefFoundError e) {
+                //e.printStackTrace();
             }
         };
 

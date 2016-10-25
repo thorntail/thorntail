@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.container;
+package org.wildfly.swarm.container.test;
 
 import org.junit.*;
 import org.wildfly.swarm.Swarm;
@@ -22,10 +22,10 @@ import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -37,9 +37,8 @@ public class ProjectStagesTest {
 
     @Before
     public void prepareStage() {
-        testStages = new ProjectStageFactory().loadStages(
-                ProjectStagesTest.class.getClassLoader().getResourceAsStream("project-stages.yml")
-        );
+        InputStream in = ProjectStagesTest.class.getClassLoader().getResourceAsStream("project-stages.yml");
+        testStages = new ProjectStageFactory().loadStages( in );
     }
 
     @After

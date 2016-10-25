@@ -27,45 +27,17 @@ import javax.persistence.EntityManagerFactory;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.jpa.JpaComponent;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelContextRegistry;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.camel.core.CamelCoreFraction;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.camel.test.jpa.subA.Account;
-import org.wildfly.swarm.datasources.DatasourcesFraction;
-import org.wildfly.swarm.jpa.JPAFraction;
 
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class JPATransactionManagerIntegrationTest {
-
-    @Deployment
-    public static JavaArchive deployment() {
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "camel-jpa-tests.jar");
-        archive.addClasses(Account.class);
-        archive.addAsResource("jpa/persistence-local.xml", "META-INF/persistence.xml");
-        archive.addAsResource("jpa/jpa-camel-context.xml", "META-INF/jpa-camel-context.xml");
-        archive.addAsResource("standalone.xml");
-        archive.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        Swarm container = new Swarm();
-        container.fraction(new CamelCoreFraction());
-        container.fraction(new DatasourcesFraction());
-        container.fraction(new JPAFraction());
-		container.withXmlConfig(JPATransactionManagerIntegrationTest.class.getResource("/standalone.xml"));
-        return container;
-    }
 
     @Test
     public void testJpaTransactionManagerRoute() throws Exception {
