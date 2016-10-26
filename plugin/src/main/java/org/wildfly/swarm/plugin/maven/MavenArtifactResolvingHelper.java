@@ -28,6 +28,7 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
@@ -39,8 +40,6 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.eclipse.aether.resolution.DependencyRequest;
-import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeDeriver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeSelector;
@@ -128,7 +127,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                                     new JavaScopeDeriver()
                             ), defaultExcludes
                     );
-            DependencyResult result = this.system.resolveDependencies(tempSession, new DependencyRequest(request, null));
+            CollectResult result = this.system.collectDependencies(tempSession, request);
             PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
             result.getRoot().accept(gen);
             nodes = gen.getNodes();
@@ -156,7 +155,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                             artifact.getVersion(),
                             artifact.getExtension(),
                             artifact.getClassifier(),
-                            artifact.getFile());
+                            null);
                 })
                 .map(this::resolve)
                 .filter(Objects::nonNull)
