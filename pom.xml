@@ -72,7 +72,7 @@
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.10.Final</version.org.jgroups>
 
-    <version.vertx>3.3.2</version.vertx>
+    <version.vertx>3.3.3</version.vertx>
 
     <version.keycloak>2.1.0.Final</version.keycloak>
     <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
