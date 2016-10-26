@@ -71,6 +71,9 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
                     }
                     try {
                         File artifact = MavenResolvers.get().resolveJarArtifact(coords);
+                        if ( artifact == null ) {
+                            throw new RuntimeException( "Unable to resolve artifact from coordinates: " + coords );
+                        }
                         JarFile jar = new JarFile(artifact);
                         ResourceLoader originaloader = ResourceLoaders.createJarResourceLoader(artifact.getName(), jar);
 
