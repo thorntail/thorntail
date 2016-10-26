@@ -153,7 +153,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                     return new ArtifactSpec(node.getDependency().getScope(),
                             artifact.getGroupId(),
                             artifact.getArtifactId(),
-                            artifact.getVersion(),
+                            artifact.getBaseVersion(),
                             artifact.getExtension(),
                             artifact.getClassifier(),
                             artifact.getFile());
