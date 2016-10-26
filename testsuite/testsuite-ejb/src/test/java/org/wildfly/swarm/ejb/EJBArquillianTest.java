@@ -17,16 +17,11 @@ package org.wildfly.swarm.ejb;
 
 import javax.ejb.EJB;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,19 +30,8 @@ import static org.junit.Assert.assertEquals;
  */
 @Ignore
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class EJBArquillianTest {
-
-    @Deployment
-    public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class, "ejb-test.jar");
-        deployment.addClass(GreeterEJB.class);
-        return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(EJBFraction.createDefaultFraction());
-    }
 
     @Test
     public void testFromInside() {

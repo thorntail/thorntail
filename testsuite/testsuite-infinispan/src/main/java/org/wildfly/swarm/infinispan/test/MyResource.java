@@ -1,4 +1,4 @@
-package org.wildfly.swarm.infinispan;
+package org.wildfly.swarm.infinispan.test;
 
 import java.util.UUID;
 

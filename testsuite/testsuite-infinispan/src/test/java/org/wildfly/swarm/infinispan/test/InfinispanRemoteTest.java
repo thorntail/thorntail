@@ -13,31 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.infinispan;
+package org.wildfly.swarm.infinispan.test;
 
 import javax.naming.InitialContext;
 
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
-import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.msc.service.ServiceRegistry;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.junit.runner.RunWith;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings({"unchecked", "unused"})
-public class InfinispanTests {
-    @Deployment
-    public static Archive createDeployment() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class)
-                .addClass(InfinispanTests.class);
-        archive.addModule("org.infinispan");
-        return archive;
-    }
+@RunWith(Arquillian.class)
+@DefaultDeployment
+public class InfinispanRemoteTest {
 
     @ArquillianResource
     ServiceRegistry registry;
@@ -50,5 +43,4 @@ public class InfinispanTests {
         cache.put("ham", "biscuit");
         assertEquals("biscuit", cache.get("ham"));
     }
-
 }

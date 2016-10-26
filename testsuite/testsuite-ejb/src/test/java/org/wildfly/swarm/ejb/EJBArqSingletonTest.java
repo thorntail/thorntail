@@ -17,35 +17,19 @@ package org.wildfly.swarm.ejb;
 
 import javax.naming.InitialContext;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class EJBArqSingletonTest {
-
-    @Deployment
-    public static JARArchive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.addClasses(MySingleton.class, MySingletonBean.class);
-        return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(EJBFraction.createDefaultFraction());
-    }
-
     @Test
     public void testHowdy() throws Exception {
         InitialContext context = new InitialContext();
