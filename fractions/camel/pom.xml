@@ -68,15 +68,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- Repositories -->
-    <repositories>
-        <repository>
-            <!-- for restlet -->
-            <id>springsource-libs-releases</id>
-            <url>http://repo.springsource.org/libs-release-remote</url>
-        </repository>
-    </repositories>
-
     <!-- Profiles -->
     <profiles>
         <profile>
