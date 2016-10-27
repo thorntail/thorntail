@@ -100,7 +100,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         return spec.file != null ? spec : null;
     }
-    
+
     @Override
     public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         if (specs.isEmpty()) {
@@ -145,6 +145,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
             }
         }
 
+        resolveDependenciesInParallel(nodes);
+
         return nodes.stream()
                 .filter(node -> !"system".equals(node.getDependency().getScope()))
                 .map(node -> {
@@ -160,6 +162,21 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 .map(this::resolve)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * This is needed to speed up things.
+     */
+    private void resolveDependenciesInParallel(List<DependencyNode> nodes) {
+        List<ArtifactRequest> artifactRequests = nodes.stream()
+                .map(node -> new ArtifactRequest(node.getArtifact(), this.remoteRepositories, null))
+                .collect(Collectors.toList());
+
+        try {
+            this.resolver.resolveArtifacts(this.session, artifactRequests);
+        } catch (ArtifactResolutionException e) {
+            // ignore, error will be printed by resolve(ArtifactSpec)
+        }
     }
 
     protected RemoteRepository buildRemoteRepository(final String id, final String url, final Authentication auth) {
