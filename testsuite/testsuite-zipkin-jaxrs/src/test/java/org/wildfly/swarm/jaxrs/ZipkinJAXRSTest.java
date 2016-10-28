@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
@@ -32,7 +33,11 @@ import org.wildfly.swarm.logging.LoggingFraction;
 @RunWith(Arquillian.class)
 public class ZipkinJAXRSTest {
 
-    static String logFile = System.getProperty("user.dir") + File.separator + "swarm-test.log";
+    private static final String LOG_FILE = System.getProperty("user.dir") + File.separator + "swarm-test.log";
+    private static final String SERVICE_NAME = "wildfly-swarm-service";
+    private static final String SPAN_COLLECTOR = "com.github.kristofa.brave.LoggingSpanCollector";
+
+
 
     @Deployment
     public static Archive createDeployment() throws Exception {
@@ -44,9 +49,7 @@ public class ZipkinJAXRSTest {
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-
-
-        System.out.println("Log file: " + logFile);
+        System.out.println("Log file: " + LOG_FILE);
 
         return new Swarm()
                 .fraction(
@@ -56,7 +59,7 @@ public class ZipkinJAXRSTest {
                                 .fileHandler("FILE", f -> {
 
                                     Map<String, String> fileProps = new HashMap<>();
-                                    fileProps.put("path", logFile);
+                                    fileProps.put("path", LOG_FILE);
                                     f.file(fileProps);
                                     f.level(Level.INFO);
                                     f.formatter("%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
@@ -64,7 +67,7 @@ public class ZipkinJAXRSTest {
                                 })
                                 .rootLogger(Level.INFO, "CONSOLE", "FILE")
                 )
-                .fraction(new ZipkinFraction());
+                .fraction(new ZipkinFraction("wildfly-swarm-service"));
     }
 
     @Test
@@ -76,11 +79,14 @@ public class ZipkinJAXRSTest {
         Response response = client.target("http://localhost:8080").request(MediaType.TEXT_PLAIN).get();
         Assert.assertEquals(200, response.getStatus());
 
-        // check log file for span reporting
+        // check log file for span reporting & the specified service name
         // the default zipkin fraction logs to system out
 
-        boolean conditionMet = Files.readAllLines(Paths.get(logFile)).stream().anyMatch(line -> line.contains("com.github.kristofa.brave.LoggingSpanCollector"));
-        Assert.assertTrue("Span logging missing from log file", conditionMet);
-    }
+        List<String> logContent = Files.readAllLines(Paths.get(LOG_FILE));
+        boolean spanPresent = logContent.stream().anyMatch(line -> line.contains(SPAN_COLLECTOR));
+        Assert.assertTrue("Span logging missing from log file", spanPresent);
 
+        boolean serviceNamePresent = logContent.stream().anyMatch(line -> line.contains(SERVICE_NAME));
+        Assert.assertTrue("Service name " + SERVICE_NAME + " missing from log file", serviceNamePresent);
+    }
 }
