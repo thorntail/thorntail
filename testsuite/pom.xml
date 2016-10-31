@@ -75,7 +75,6 @@
   <modules>
     <module>testsuite-batch-jberet</module>
     <module>testsuite-buildtool</module>
-    <module>testsuite-cdi</module>
     <module>testsuite-camel-cdi</module>
     <module>testsuite-camel-cxf</module>
     <module>testsuite-camel-ejb</module>
@@ -83,6 +82,8 @@
     <module>testsuite-camel-jmx</module>
     <module>testsuite-camel-jpa</module>
     <module>testsuite-camel-other</module>
+    <module>testsuite-cdi</module>
+    <module>testsuite-cdi-jaxrsapi</module>
     <module>testsuite-connector</module>
     <module>testsuite-container</module>
     <module>testsuite-datasources</module>

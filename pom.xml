@@ -973,6 +973,11 @@
         <artifactId>cdi-config</artifactId>
         <version>2016.11.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>cdi-jaxrsapi</artifactId>
+        <version>2016.11.0-SNAPSHOT</version>
+      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -1171,6 +1176,7 @@
     <module>fractions/zipkin-jaxrs</module>
 
     <module>fractions/cdi-extensions/cdi-config</module>
+    <module>fractions/cdi-extensions/cdi-jaxrsapi</module>
 
     <module>fractions/etc/jgroups-module</module>
 

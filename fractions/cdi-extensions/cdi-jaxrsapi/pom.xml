@@ -15,58 +15,50 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jaxrs-cdi</artifactId>
+  <artifactId>cdi-jaxrsapi</artifactId>
 
-  <name>JAX-RS with CDI</name>
-  <description>Provide CDI injection into RESTful services</description>
+  <name>CDI JAX-RS API Enhancements</name>
+  <description>CDI JAX-RS API Enhancements</description>
 
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
-    <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
+    <swarm.fraction.stability>unstable</swarm.fraction.stability>
   </properties>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
-
   <dependencies>
-    <!-- Fraction Dependencies -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
+
+    <!-- Provided APIs -->
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>cdi</artifactId>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>cdi-jaxrsapi</artifactId>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-server</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-servlet-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
       <exclusions>
@@ -88,6 +80,48 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
   </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.jandex</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>1.0.4</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+  </build>
 
 </project>
