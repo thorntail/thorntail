@@ -18,12 +18,13 @@
   <artifactId>cdi-jaxrsapi</artifactId>
 
   <name>CDI JAX-RS API Enhancements</name>
-  <description>CDI JAX-RS API Enhancements</description>
+  <description>Generates implementation of external service from interface which can then be injected to call that service.</description>
 
   <packaging>jar</packaging>
 
   <properties>
     <swarm.fraction.stability>unstable</swarm.fraction.stability>
+    <swarm.fraction.tags>JavaEE,Service Discovery</swarm.fraction.tags>
   </properties>
 
   <dependencies>
