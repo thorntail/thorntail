@@ -17,6 +17,7 @@
 
   <properties>
     <swarm.fraction.tags>Data,PostgreSQL</swarm.fraction.tags>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
   </properties>
 
   <build>
