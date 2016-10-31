@@ -1120,7 +1120,6 @@
     <module>fractions/javaee/jaxrs-multipart</module>
     <module>fractions/javaee/jaxrs-validator</module>
     <module>fractions/javaee/jca</module>
-    <module>fractions/javaee/jdr</module>
     <module>fractions/javaee/jmx</module>
     <module>fractions/javaee/jpa</module>
     <module>fractions/javaee/jpa-eclipselink</module>
@@ -1145,6 +1144,7 @@
     <module>fractions/infinispan</module>
     <module>fractions/io</module>
     <module>fractions/javafx</module>
+    <module>fractions/jdr</module>
     <module>fractions/jgroups</module>
     <module>fractions/jolokia</module>
     <module>fractions/keycloak</module>
