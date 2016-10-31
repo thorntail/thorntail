@@ -39,6 +39,10 @@ public class ZipkinFraction implements Fraction<ZipkinFraction> {
         this.builder = new Brave.Builder();
     }
 
+    public ZipkinFraction(String serviceName) {
+        this.builder = new Brave.Builder(serviceName);
+    }
+
     @Override
     public ZipkinFraction applyDefaults() {
         builder.reporter(new LoggingReporter())
