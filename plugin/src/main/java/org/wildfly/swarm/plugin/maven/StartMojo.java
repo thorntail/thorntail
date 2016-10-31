@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
@@ -249,8 +250,8 @@ public class StartMojo extends AbstractSwarmMojo {
                 .collect(Collectors.toList())));
 
         fractions.addAll(this.additionalFractions.stream()
-                         .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))
-                         .collect(Collectors.toSet()));
+                                 .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))
+                                 .collect(Collectors.toSet()));
 
         final Set<FractionDescriptor> allFractions = new HashSet<>(fractions);
         allFractions.addAll(fractions.stream()
@@ -306,7 +307,11 @@ public class StartMojo extends AbstractSwarmMojo {
         if (fractionDetectMode != BuildTool.FractionDetectionMode.never) {
             if (fractionDetectMode == BuildTool.FractionDetectionMode.force ||
                     !hasSwarmDeps) {
-                elements.addAll(findNeededFractions(artifacts, archiveContent, scanDependencies));
+                List<Path> fractionDeps = findNeededFractions(artifacts, archiveContent, scanDependencies);
+                for(Path p : fractionDeps) {
+                    if(!elements.contains(p))
+                        elements.add(p);
+                }
             }
         } else if (!hasSwarmDeps) {
             getLog().warn("No WildFly Swarm dependencies found and fraction detection disabled");

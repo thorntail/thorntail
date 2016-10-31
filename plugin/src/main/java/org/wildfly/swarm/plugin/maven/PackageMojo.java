@@ -26,7 +26,6 @@ import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -34,6 +33,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.FractionDescriptor;
+import org.wildfly.swarm.tools.DeclaredDependencies;
 
 /**
  * @author Bob McWhirter
@@ -95,8 +95,9 @@ public class PackageMojo extends AbstractSwarmMojo {
             throw new MojoExecutionException( "Cannot package without a primary artifact; please `mvn package` prior to invoking wildfly-swarm:package from the command-line" );
         }
 
+        final DeclaredDependencies declaredDependencies = new DeclaredDependencies();
 
-        final BuildTool tool = new BuildTool()
+        final BuildTool tool = new BuildTool(mavenArtifactResolvingHelper())
                 .projectArtifact(primaryArtifact.getGroupId(),
                         primaryArtifact.getArtifactId(),
                         primaryArtifact.getBaseVersion(),
@@ -112,7 +113,6 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .executable(executable)
                 .executableScript(executableScript)
                 .fractionDetectionMode(fractionDetectMode)
-                .artifactResolvingHelper(mavenArtifactResolvingHelper())
                 .hollow(hollow)
                 .logger(new BuildTool.SimpleLogger() {
                     @Override
@@ -142,10 +142,12 @@ public class PackageMojo extends AbstractSwarmMojo {
                     String scope = e.getScope();
                     return (scope.equals("compile") || scope.equals("runtime"));
                 })
-                .forEach(dep -> tool.explicitDependency(artifactToArtifactSpec(dep)));
+                .forEach(dep -> declaredDependencies.addExplicitDependency(artifactToArtifactSpec(dep)));
 
         this.project.getArtifacts()
-                .forEach( dep-> tool.presolvedDependency( artifactToArtifactSpec(dep)));
+                .forEach( dep-> declaredDependencies.addTransientDependency(artifactToArtifactSpec(dep)));
+
+        tool.declaredDependencies(declaredDependencies);
 
         this.project.getResources()
                 .forEach(r -> tool.resourceDirectory(r.getDirectory()));

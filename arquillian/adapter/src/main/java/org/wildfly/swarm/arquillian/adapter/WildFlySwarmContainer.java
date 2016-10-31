@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -108,7 +109,7 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     public void undeploy(Descriptor descriptor) throws DeploymentException {
     }
 
-    private Set<String> requestedMavenArtifacts;
+    private Set<String> requestedMavenArtifacts = new HashSet<>();
 
     private SimpleContainer delegateContainer;
 

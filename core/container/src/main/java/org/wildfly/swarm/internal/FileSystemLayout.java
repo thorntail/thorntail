@@ -82,6 +82,7 @@ public abstract class FileSystemLayout {
         throw SwarmMessages.MESSAGES.cannotIdentifyFileSystemLayout(root);
     }
 
+    public abstract Path getRootPath();
 
     private static final String POM_XML = "pom.xml";
 
@@ -100,4 +101,5 @@ public abstract class FileSystemLayout {
     protected static final String TYPE_JAR = "jar";
 
     protected static final String TYPE_WAR = "war";
+
 }

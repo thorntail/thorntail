@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,9 +81,18 @@ public class ModuleAnalyzer {
 
         List<ArtifactSpec> dependencies = new ArrayList<>();
 
+        String localRepo = System.getProperty("user.home") + File.separator+".m2"+File.separator+"repository";
+
         for (ArtifactType<ResourcesType<ModuleDescriptor>> artifact : artifacts) {
             ArtifactSpec dep = ArtifactSpec.fromMscGav(artifact.getName());
-            dep.shouldGather = true;
+
+            File file = Paths.get(localRepo, dep.jarRepoPath()).toFile();
+            if(!file.exists()) {
+                dep.shouldGather = true;
+            }  else {
+                dep.file = file;
+                dep.shouldGather = false;
+            }
             dependencies.add(dep);
         }
 

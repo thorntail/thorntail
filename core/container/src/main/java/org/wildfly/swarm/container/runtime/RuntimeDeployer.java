@@ -20,17 +20,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -39,7 +38,6 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 import org.jboss.logging.Logger;
-import org.jboss.msc.service.ServiceContainer;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
@@ -50,16 +48,20 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
+import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
+import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
@@ -159,6 +161,37 @@ public class RuntimeDeployer implements Deployer {
 
     @Override
     public void deploy(Archive<?> deployment) throws DeploymentException {
+
+        // check for "org.wildfly.swarm.allDependencies" flag
+        // see DependenciesContainer#addAllDependencies()
+        if(deployment instanceof DependenciesContainer) {
+            DependenciesContainer depContainer = (DependenciesContainer)deployment;
+            if(depContainer.hasMarker("org.wildfly.swarm.allDependencies")){
+                if(!depContainer.hasMarker("org.wildfly.swarm.allDependencies.added")) {
+                    try {
+
+                        ApplicationEnvironment appEnv = ApplicationEnvironment.get();
+
+                        if(ApplicationEnvironment.Mode.UBERJAR == appEnv.getMode()) {
+                            ArtifactManager artifactManager = Swarm.artifactManager();
+                            for (String gav : appEnv.getDependencies()) {
+                                depContainer.addAsLibraries(artifactManager.artifact(gav));
+                            }
+                        } else {
+                            Set<String> paths = appEnv.resolveDependencies(Collections.EMPTY_LIST);
+                            for (String path : paths) {
+                                depContainer.addAsLibraries(new File(path));
+                            }
+                        }
+
+
+                        depContainer.addMarker("org.wildfly.swarm.allDependencies.added") ;
+                    } catch (Throwable t) {
+                        throw new RuntimeException("Failed to resolve archive dependencies", t);
+                    }
+                }
+            }
+        }
 
         // 1. create a meta data index, but only if we have processors for it
         if (!this.archiveMetadataProcessors.isUnsatisfied()) {

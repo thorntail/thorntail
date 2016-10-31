@@ -74,18 +74,6 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-
-        if (!(obj instanceof MavenArtifactDescriptor)) {
-            return false;
-        }
-        return this.mavenGav().equals(((MavenArtifactDescriptor) obj).mavenGav());
-    }
-
-    @Override
     public int compareTo(MavenArtifactDescriptor that) {
         int result = this.groupId.compareTo( that.groupId );
         if ( result != 0 ) {
@@ -125,11 +113,6 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
         }
 
         return this.classifier.compareTo( that.classifier );
-    }
-
-    @Override
-    public int hashCode() {
-        return mavenGav().hashCode();
     }
 
     public String groupId() {
@@ -260,5 +243,30 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
         public MavenArtifactDescriptor build() {
             return MavenArtifactDescriptor.this;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MavenArtifactDescriptor that = (MavenArtifactDescriptor) o;
+
+        if (!groupId.equals(that.groupId)) return false;
+        if (!artifactId.equals(that.artifactId)) return false;
+        if (version != null ? !version.equals(that.version) : that.version != null) return false;
+        if (classifier != null ? !classifier.equals(that.classifier) : that.classifier != null) return false;
+        return type.equals(that.type);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = groupId.hashCode();
+        result = 31 * result + artifactId.hashCode();
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        result = 31 * result + (classifier != null ? classifier.hashCode() : 0);
+        result = 31 * result + type.hashCode();
+        return result;
     }
 }

@@ -16,12 +16,13 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 /**
  * @author Bob McWhirter
  */
-public class MockArtifactResolver implements ArtifactResolvingHelper {
+public class MockArtifactResolver implements ArtifactResolver, ArtifactResolvingHelper {
 
     private Map<ArtifactSpec, Entry> entries = new HashMap<>();
 
     private Map<ArtifactSpec, Archive> artifacts = new HashMap<>();
     private Map<ArtifactSpec, File> resolvedArtifacts = new HashMap<>();
+
 
     public void add(ArtifactSpec spec) {
         Archive archive = ShrinkWrap.create(JavaArchive.class);
@@ -50,6 +51,21 @@ public class MockArtifactResolver implements ArtifactResolvingHelper {
 
         this.entries.put(spec, entry);
         this.artifacts.put( spec, archive );
+    }
+
+    @Override
+    public ArtifactSpec resolveArtifact(ArtifactSpec spec) throws Exception {
+        return resolve(spec);
+    }
+
+    @Override
+    public Set<ArtifactSpec> resolveAllArtifactsTransitively(Set<ArtifactSpec> specs, boolean excludes) throws Exception {
+        return resolveAll(specs, true, excludes);
+    }
+
+    @Override
+    public Set<ArtifactSpec> resolveAllArtifactsNonTransitively(Set<ArtifactSpec> specs) throws Exception {
+        return resolveAll(specs, false, false);
     }
 
     @Override

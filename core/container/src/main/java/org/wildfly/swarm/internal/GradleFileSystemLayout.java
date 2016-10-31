@@ -53,6 +53,11 @@ public class GradleFileSystemLayout extends FileSystemLayout {
         return rootPath.resolve(SRC).resolve(MAIN).resolve(WEBAPP);
     }
 
+    @Override
+    public Path getRootPath() {
+        return rootPath;
+    }
+
     private static final String BUILD = "build";
 
     private static final String CLASSES = "classes";

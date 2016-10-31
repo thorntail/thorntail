@@ -24,8 +24,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -36,22 +36,24 @@ import java.util.stream.Stream;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.container.ClassContainer;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.internal.FileSystemLayout;
+import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
+import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.DeclaredDependencies;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -78,14 +80,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     @Override
     public void start(Archive<?> archive) throws Exception {
-        /*
-        System.err.println( ">>> CORE" );
-        System.err.println(" NAME: " + archive.getName());
-        for (Map.Entry<ArchivePath, Node> each : archive.getContent().entrySet()) {
-            System.err.println("-> " + each.getKey());
-        }
-        System.err.println( "<<< CORE" );
-        */
 
         archive.add(EmptyAsset.INSTANCE, "META-INF/arquillian-testable" );
 
@@ -94,7 +88,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
         boolean annotatedCreateSwarm = false;
 
         Method swarmMethod = getAnnotatedMethodWithAnnotation(this.testClass, CreateSwarm.class);
-
 
         List<Class<?>> types = determineTypes(this.testClass);
 
@@ -125,16 +118,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
             }
         }
 
-        /*
-        archive.as(ServiceActivatorArchive.class)
-                .addServiceActivator(DaemonServiceActivator.class);
-        archive.as(JARArchive.class).addModule("org.wildfly.swarm.arquillian.daemon");
-        archive.as(JARArchive.class).addModule("org.jboss.modules");
-        archive.as(JARArchive.class).addModule("org.jboss.msc");
-        */
 
-        BuildTool tool = new BuildTool()
-                .projectArchive(archive)
+        final ShrinkwrapArtifactResolvingHelper resolvingHelper = ShrinkwrapArtifactResolvingHelper.defaultInstance();
+
+        BuildTool tool = new BuildTool(resolvingHelper)
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.never)
                 .bundleDependencies(false);
 
@@ -166,78 +153,33 @@ public class UberjarSimpleContainer implements SimpleContainer {
             executor.withProperty("remote.maven.repo", additionalRepos);
         }
 
-        final ShrinkwrapArtifactResolvingHelper resolvingHelper = ShrinkwrapArtifactResolvingHelper.defaultInstance();
-        tool.artifactResolvingHelper(resolvingHelper);
 
-        boolean hasRequestedArtifacts = this.requestedMavenArtifacts != null && this.requestedMavenArtifacts.size() > 0;
+        // project dependencies
+        FileSystemLayout fsLayout = FileSystemLayout.create();
+        DeclaredDependencies declaredDependencies =
+                DependencyDeclarationFactory.newInstance(fsLayout).create(resolvingHelper);
+        tool.declaredDependencies(declaredDependencies);
 
-        if (!hasRequestedArtifacts) {
-            final MavenResolvedArtifact[] explicitDeps =
-                    resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
-                            .importRuntimeAndTestDependencies()
-                            .resolve()
-                            .withoutTransitivity()
-                            .asResolvedArtifact());
-
-            for (MavenResolvedArtifact dep : explicitDeps) {
-                MavenCoordinate coord = dep.getCoordinate();
-                tool.explicitDependency(dep.getScope().name(), coord.getGroupId(),
-                        coord.getArtifactId(), coord.getVersion(),
-                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
-            }
-
-            final MavenResolvedArtifact[] presolvedDeps =
-                    resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
-                            .importRuntimeAndTestDependencies()
-                            .resolve()
-                            .withTransitivity()
-                            .asResolvedArtifact());
-
-            for (MavenResolvedArtifact dep : presolvedDeps) {
-                MavenCoordinate coord = dep.getCoordinate();
-                tool.presolvedDependency(dep.getScope().name(), coord.getGroupId(),
-                        coord.getArtifactId(), coord.getVersion(),
-                        coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
-            }
-        } else {
-            // ensure that arq daemon is available
-            this.requestedMavenArtifacts.add("org.wildfly.swarm:arquillian-daemon");
-            for (String requestedDep : this.requestedMavenArtifacts) {
-                final MavenResolvedArtifact[] explicitDeps =
-                        resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
-                                .resolve(requestedDep)
-                                .withoutTransitivity()
-                                .asResolvedArtifact());
-
-                for (MavenResolvedArtifact dep : explicitDeps) {
-                    MavenCoordinate coord = dep.getCoordinate();
-                    tool.explicitDependency(dep.getScope().name(), coord.getGroupId(),
-                            coord.getArtifactId(), coord.getVersion(),
-                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
-                }
-
-                final MavenResolvedArtifact[] presolvedDeps =
-                        resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
-                                .resolve(requestedDep)
-                                .withTransitivity()
-                                .asResolvedArtifact());
-
-                for (MavenResolvedArtifact dep : presolvedDeps) {
-                    MavenCoordinate coord = dep.getCoordinate();
-                    tool.presolvedDependency(dep.getScope().name(), coord.getGroupId(),
-                            coord.getArtifactId(), coord.getVersion(),
-                            coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile());
-                }
+        // check for "org.wildfly.swarm.allDependencies" flag
+        // see DependenciesContainer#addAllDependencies()
+        if(archive instanceof DependenciesContainer) {
+            DependenciesContainer depContainer = (DependenciesContainer)archive;
+            if(depContainer.hasMarker("org.wildfly.swarm.allDependencies")){
+                munge(depContainer, declaredDependencies);
             }
         }
+
+        tool.projectArchive(archive);
+
 
         final String debug = System.getProperty(SwarmProperties.DEBUG_PORT);
         if (debug != null) {
             try {
                 executor.withDebug(Integer.parseInt(debug));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(String.format("Failed to parse %s of \"%s\"", SwarmProperties.DEBUG_PORT, debug),
-                        e);
+                throw new IllegalArgumentException(
+                        String.format("Failed to parse %s of \"%s\"", SwarmProperties.DEBUG_PORT, debug), e
+                );
             }
         }
 
@@ -305,6 +247,19 @@ public class UberjarSimpleContainer implements SimpleContainer {
         }
     }
 
+    private void munge(DependenciesContainer depContainer, DeclaredDependencies declaredDependencies) {
+
+        for(ArtifactSpec artifact : declaredDependencies.getExplicitDependencies()) { // [hb] TODO: this should actually be transient deps
+            depContainer.addAsLibraries(artifact.file);
+        }
+
+        try {
+            depContainer.addMarker("org.wildfly.swarm.allDependencies.added");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private List<Class<?>> determineTypes(Class<?> testClass) {
         List<Class<?>> types = new ArrayList<>();
 
@@ -367,7 +322,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     private SwarmProcess process;
 
-    private Set<String> requestedMavenArtifacts;
+    private Set<String> requestedMavenArtifacts = new HashSet<>();
 
     private String javaVmArguments;
 
