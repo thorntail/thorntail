@@ -15,15 +15,6 @@
  */
 package org.wildfly.swarm.bootstrap;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.URISyntaxException;
-
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
@@ -50,35 +41,12 @@ public class Main {
 
     public void run() throws Throwable {
         setupBootModuleLoader();
-        invoke(getMainClass());
+        new MainInvoker( ApplicationEnvironment.get().getMainClassName(), this.args ).invoke();
     }
 
     public void setupBootModuleLoader() {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
     }
 
-    public Class<?> getMainClass() throws IOException, URISyntaxException, ModuleLoadException, ClassNotFoundException {
-        String mainClassName = ApplicationEnvironment.get().getMainClassName();
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-        return module.getClassLoader().loadClass(mainClassName);
-    }
-
-    public String getMainClassName() {
-        return ApplicationEnvironment.get().getMainClassName();
-    }
-
-    public void invoke(Class<?> mainClass) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        final Method mainMethod = mainClass.getMethod("main", String[].class);
-
-        final int modifiers = mainMethod.getModifiers();
-        if (!Modifier.isStatic(modifiers)) {
-            throw new NoSuchMethodException("Main method is not static for " + mainClass);
-        }
-
-        mainMethod.invoke(null, new Object[]{this.args});
-    }
-
     private final String[] args;
-
-
 }

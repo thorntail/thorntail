@@ -163,7 +163,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
         try {
             SwarmProcess launched = executor.execute();
-            launched.awaitDeploy(30, TimeUnit.SECONDS);
+            launched.awaitReadiness(30, TimeUnit.SECONDS);
             procs.add(launched);
         } catch (IOException | InterruptedException e) {
             throw new MojoFailureException("Unable to execute: " + artifact, e);

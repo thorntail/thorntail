@@ -15,8 +15,10 @@
  */
 package org.wildfly.swarm.tools.exec;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.wildfly.swarm.bootstrap.MainInvoker;
 
 /**
  * @author Bob McWhirter
@@ -29,7 +31,10 @@ public class MainClass implements Executable {
 
     @Override
     public List<? extends String> toArguments() {
-        return Collections.singletonList(this.className);
+        List<String> args = new ArrayList<>();
+        args.add( MainInvoker.class.getName());
+        args.add( this.className );
+        return args;
     }
 
     private final String className;

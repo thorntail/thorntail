@@ -168,4 +168,9 @@ public interface SwarmMessages extends BasicLogger {
     @Message(id = 36, value = "Error installing user-space CDI extension: %s")
     void errorInstallingUserSpaceExtension(String factoryClassName);
 
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 99999, value = "WildFly Swarm is Ready")
+    void wildflySwarmIsReady();
+
+
 }

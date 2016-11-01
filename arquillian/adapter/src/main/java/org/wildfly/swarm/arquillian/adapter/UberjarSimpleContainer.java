@@ -237,7 +237,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         this.process = executor.execute();
         this.process.getOutputStream().close();
 
-        this.process.awaitDeploy(2, TimeUnit.MINUTES);
+        this.process.awaitReadiness(2, TimeUnit.MINUTES);
 
         if (!this.process.isAlive()) {
             throw new DeploymentException("Process failed to start");

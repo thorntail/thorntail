@@ -244,7 +244,6 @@ public class SwarmExecutor {
         cli.addAll(this.executable.toArguments());
         cli.addAll(this.arguments);
 
-
         final ProcessBuilder processBuilder = new ProcessBuilder(cli)
                 .directory(this.workingDirectory.toFile());
         processBuilder.environment().putAll(environment);

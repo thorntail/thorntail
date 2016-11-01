@@ -87,7 +87,7 @@ public class SwarmProcess {
         return process.exitValue();
     }
 
-    public void awaitDeploy(long timeout, TimeUnit timeUnit) throws InterruptedException {
+    public void awaitReadiness(long timeout, TimeUnit timeUnit) throws InterruptedException {
         this.latch.await(timeout, timeUnit);
     }
 
