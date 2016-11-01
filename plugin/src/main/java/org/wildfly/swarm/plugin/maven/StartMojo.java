@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
@@ -132,7 +131,7 @@ public class StartMojo extends AbstractSwarmMojo {
                 }
             }));
 
-            process.awaitDeploy(2, TimeUnit.MINUTES);
+            process.awaitReadiness(2, TimeUnit.MINUTES);
 
             if (!process.isAlive()) {
                 throw new MojoFailureException("Process failed to start");

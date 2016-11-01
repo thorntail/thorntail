@@ -81,7 +81,7 @@ public class IOBridge implements Runnable, Closeable {
             fileOut.newLine();
             fileOut.flush();
         }
-        if (line.contains("WFLYSRV0010")) {
+        if (line.contains("WFSWARM99999")) {
             this.latch.countDown();
         }
     }
