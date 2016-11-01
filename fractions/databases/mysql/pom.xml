@@ -17,6 +17,7 @@
 
   <properties>
     <swarm.fraction.tags>Data,MySQL</swarm.fraction.tags>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
   </properties>
 
   <build>
