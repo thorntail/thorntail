@@ -110,6 +110,9 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
                                 new DefaultExternalModuleDependency(spec.groupId(), spec.artifactId(), spec.version());
                         final DefaultDependencyArtifact da =
                                 new DefaultDependencyArtifact(spec.artifactId(), spec.type(), spec.type(), spec.classifier(), null);
+
+                        System.err.println( "defaultExternalModuleDep: " + d.getName() + " " + d.getVersion() );
+                        System.err.println( "defaultDepArtifact: " + da.getName() + " " + da.getClassifier() );
                         d.addArtifact(da);
                         dependencySet.add(d);
                     }
@@ -125,7 +128,10 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
                 .getResolvedConfiguration()
                 .getFirstLevelModuleDependencies()
                 .stream()
-                .map(dep -> dep.getModuleArtifacts())
+                .map(dep -> {
+                    System.err.println( "first-level: " + dep.getName() + " " + dep.getModuleVersion() );
+                    return dep.getModuleArtifacts();
+                })
                 .flatMap(artifacts -> artifacts.stream())
                 .map(e -> {
                     System.err.println("doResolve'd: " + e.getName() + " " + e.getModuleVersion() + " as " + e.getFile() );
