@@ -485,8 +485,10 @@ public class BuildTool {
 
         for (ArtifactSpec dependency : resolvedDependencies.getModuleDependencies()) {
             if(!dependency.isResolved()) {
+                System.err.println( "module dependency needs resolution: " + dependency );
                 toBeResolved.add(dependency);
             } else {
+                System.err.println( "module dependency needs no resolution: " + dependency );
                 alreadyResolved.add(dependency);
             }
         }
@@ -501,6 +503,7 @@ public class BuildTool {
         }
 
         for (ArtifactSpec dependency : alreadyResolved) {
+            System.err.println( "adding to uberjar: " + dependency );
             addArtifactToArchiveMavenRepository(archive, dependency);
         }
     }
@@ -535,6 +538,8 @@ public class BuildTool {
 
         StringBuilder artifactPath = new StringBuilder("m2repo/");
         artifactPath.append(artifact.repoPath(true));
+
+        System.err.println( "adding " + archive + " from " + artifact.file + " to " + artifactPath );
 
         archive.add(new FileAsset(artifact.file), artifactPath.toString());
     }
