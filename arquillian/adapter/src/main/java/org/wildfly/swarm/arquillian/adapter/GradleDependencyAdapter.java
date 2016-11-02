@@ -95,10 +95,8 @@ public class GradleDependencyAdapter {
                     String version = coords[2];
                     if(version.contains(VERSION_UP)) {
                         String s = coords[0]+":"+coords[1]+":"+ version.substring(version.indexOf(VERSION_UP)+VERSION_UP.length(), version.length());
-                        System.err.println( "add coordinates: " + s );
                         coordinates.add(s);
                     } else {
-                        System.err.println( "add coordinates: " + line );
                         coordinates.add(line);
                     }
                 } else {
