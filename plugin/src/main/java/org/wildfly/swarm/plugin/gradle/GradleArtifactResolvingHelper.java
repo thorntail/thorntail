@@ -90,7 +90,6 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     private Collection<ResolvedArtifact> doResolve(final Collection<ArtifactSpec> deps, boolean transitive) {
-        System.err.println( "start doResolve" );
         final Configuration config = this.project.getConfigurations().detachedConfiguration();
         final DependencySet dependencySet = config.getDependencies();
 
@@ -128,7 +127,7 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
                 .map(dep -> dep.getModuleArtifacts())
                 .flatMap(artifacts -> artifacts.stream())
                 .map(e -> {
-                    System.err.println("doResolve'd: " + e.getName() + " " + e.getModuleVersion() + " as " + e.getFile() );
+                    System.err.println("doResolve'd: " + e);
                     return e;
                 })
                 .collect(Collectors.toList());
