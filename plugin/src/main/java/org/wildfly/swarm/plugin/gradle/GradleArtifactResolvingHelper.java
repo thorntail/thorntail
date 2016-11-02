@@ -78,20 +78,24 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
 
         return doResolve(specs, transitive)
-            .stream()
-            .map(artifact -> new ArtifactSpec("default",
-                                artifact.getModuleVersion().getId().getGroup(),
-                                artifact.getModuleVersion().getId().getName(),
-                                artifact.getModuleVersion().getId().getVersion(),
-                                artifact.getExtension(),
-                                artifact.getClassifier(),
-                                artifact.getFile()))
-            .collect(Collectors.toSet());
+                .stream()
+                .map(artifact -> new ArtifactSpec("default",
+                        artifact.getModuleVersion().getId().getGroup(),
+                        artifact.getModuleVersion().getId().getName(),
+                        artifact.getModuleVersion().getId().getVersion(),
+                        artifact.getExtension(),
+                        artifact.getClassifier(),
+                        artifact.getFile()))
+                .collect(Collectors.toSet());
     }
 
     private Collection<ResolvedArtifact> doResolve(final Collection<ArtifactSpec> deps, boolean transitive) {
         final Configuration config = this.project.getConfigurations().detachedConfiguration();
         final DependencySet dependencySet = config.getDependencies();
+
+        for (ArtifactSpec dep : deps) {
+            System.err.println("doResolve: " + dep);
+        }
 
         config.getResolutionStrategy().setForcedModules(
                 this.project.getConfigurations().getByName("compile").getResolutionStrategy().getForcedModules());
@@ -112,17 +116,21 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         if (transitive) {
             return config
-                .getResolvedConfiguration()
-                .getResolvedArtifacts();
+                    .getResolvedConfiguration()
+                    .getResolvedArtifacts();
         }
 
         return config
-            .getResolvedConfiguration()
-            .getFirstLevelModuleDependencies()
-            .stream()
-            .map(dep -> dep.getModuleArtifacts())
-            .flatMap(artifacts -> artifacts.stream())
-            .collect(Collectors.toList());
+                .getResolvedConfiguration()
+                .getFirstLevelModuleDependencies()
+                .stream()
+                .map(dep -> dep.getModuleArtifacts())
+                .flatMap(artifacts -> artifacts.stream())
+                .map(e -> {
+                    System.err.println("doResolve'd: " + e);
+                    return e;
+                })
+                .collect(Collectors.toList());
     }
 
 }
