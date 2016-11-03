@@ -93,22 +93,26 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
         final Configuration config = this.project.getConfigurations().detachedConfiguration();
         final DependencySet dependencySet = config.getDependencies();
 
-        config.getResolutionStrategy().setForcedModules(
-                this.project.getConfigurations().getByName("compile").getResolutionStrategy().getForcedModules());
+        if ( transitive ) {
+            // if transitive, then dependency-manage everything,
+            // if non-transitive, we want exactly what we've asked for, and don't force
+            // to the project's dependencies.
+            config.getResolutionStrategy().setForcedModules(
+                    this.project.getConfigurations().getByName("compile").getResolutionStrategy().getForcedModules());
+        }
 
-        deps.stream()
-                .forEach(spec -> {
-                    if (projects.containsKey(spec.groupId() + ":" + spec.artifactId() + ":" + spec.version())) {
-                        dependencySet.add(new DefaultProjectDependency((ProjectInternal) projects.get(spec.groupId() + ":" + spec.artifactId() + ":" + spec.version()), new DefaultProjectAccessListener(), false));
-                    } else {
-                        final DefaultExternalModuleDependency d =
-                                new DefaultExternalModuleDependency(spec.groupId(), spec.artifactId(), spec.version());
-                        final DefaultDependencyArtifact da =
-                                new DefaultDependencyArtifact(spec.artifactId(), spec.type(), spec.type(), spec.classifier(), null);
-                        d.addArtifact(da);
-                        dependencySet.add(d);
-                    }
-                });
+        deps.forEach(spec -> {
+            if (projects.containsKey(spec.groupId() + ":" + spec.artifactId() + ":" + spec.version())) {
+                dependencySet.add(new DefaultProjectDependency((ProjectInternal) projects.get(spec.groupId() + ":" + spec.artifactId() + ":" + spec.version()), new DefaultProjectAccessListener(), false));
+            } else {
+                final DefaultExternalModuleDependency d =
+                        new DefaultExternalModuleDependency(spec.groupId(), spec.artifactId(), spec.version());
+                final DefaultDependencyArtifact da =
+                        new DefaultDependencyArtifact(spec.artifactId(), spec.type(), spec.type(), spec.classifier(), null);
+                d.addArtifact(da);
+                dependencySet.add(d);
+            }
+        });
 
         if (transitive) {
             return config
