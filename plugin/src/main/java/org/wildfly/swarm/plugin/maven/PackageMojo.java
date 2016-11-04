@@ -145,6 +145,11 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .forEach(dep -> declaredDependencies.addExplicitDependency(artifactToArtifactSpec(dep)));
 
         this.project.getArtifacts()
+                .stream()
+                .filter(e -> {
+                    String scope = e.getScope();
+                    return !scope.equals("provided");
+                })
                 .forEach( dep-> declaredDependencies.addTransientDependency(artifactToArtifactSpec(dep)));
 
         tool.declaredDependencies(declaredDependencies);
