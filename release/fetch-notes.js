@@ -17,18 +17,27 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?jql=project=SWARM%20
 
   result.on( 'end', function() {
     var json = JSON.parse( buf );
+
+    var jiraVersion;
+ 
     json.issues.forEach( function(e) {
       var members = partitions[e.fields.issuetype.name];
+      jiraVersion = e.fields.fixVersions[0].id;
       if ( ! members ) {
         members = [];
         partitions[e.fields.issuetype.name] = members;
       }
       members.push( e );
     } );
+
+    console.log( "== Changelog" );
+    console.log( "Release notes for " + version + " are available https://issues.jboss.org/secure/ReleaseNote.jspa?projectId=12317020&version=" + jiraVersion + "[here]." );
+    console.log();
+
     Object.keys( partitions ).forEach( function(type) {
       console.log( "=== " + type );
       partitions[type].forEach( function(e) {
-        console.log( '* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary );
+        console.log( '* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary + ' (' + e.fields.resolution.name + ')' );
       } );
       console.log( " " );
     } );
