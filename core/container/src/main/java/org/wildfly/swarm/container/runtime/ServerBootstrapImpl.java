@@ -139,11 +139,15 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     }
 
     protected void logFraction(FractionManifest manifest) {
-        int stabilityIndex = manifest.getStabilityIndex();
-        if ( stabilityIndex < 3 ) {
-            LOG.warn(SwarmMessages.MESSAGES.availableFraction(manifest.getName(), manifest.getStabilityLevel(), manifest.getGroupId(), manifest.getArtifactId(), manifest.getVersion()));
+        if (manifest.isInternal()) {
+            LOG.debug(SwarmMessages.MESSAGES.availableFraction(manifest.getName(), manifest.getStabilityLevel(), manifest.getGroupId(), manifest.getArtifactId(), manifest.getVersion()));
         } else {
-            LOG.info(SwarmMessages.MESSAGES.availableFraction(manifest.getName(), manifest.getStabilityLevel(), manifest.getGroupId(), manifest.getArtifactId(), manifest.getVersion()));
+            int stabilityIndex = manifest.getStabilityIndex();
+            if (stabilityIndex < 3) {
+                LOG.warn(SwarmMessages.MESSAGES.availableFraction(manifest.getName(), manifest.getStabilityLevel(), manifest.getGroupId(), manifest.getArtifactId(), manifest.getVersion()));
+            } else {
+                LOG.info(SwarmMessages.MESSAGES.availableFraction(manifest.getName(), manifest.getStabilityLevel(), manifest.getGroupId(), manifest.getArtifactId(), manifest.getVersion()));
+            }
         }
     }
 

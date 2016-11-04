@@ -31,6 +31,8 @@ public class FractionManifest {
 
     private String stabilityLevel;
 
+    private boolean internal;
+
     private List<String> dependencies = new ArrayList<>();
 
     public FractionManifest() {
@@ -61,6 +63,10 @@ public class FractionManifest {
         setArtifactId((String) data.get("artifactId"));
         setVersion((String) data.get("version"));
         setDependencies((Collection<String>) data.get("dependencies"));
+        Object internal = data.get("internal");
+        if (internal != null) {
+            setInternal((Boolean) internal);
+        }
         Map stability = (Map) data.get("stability");
         if ( stability != null ) {
             setStabilityIndex((Integer) stability.get("index"));
@@ -98,6 +104,14 @@ public class FractionManifest {
 
     public void setStabilityLevel(String stabilityLevel) {
         this.stabilityLevel = stabilityLevel;
+    }
+
+    public boolean isInternal() {
+        return internal;
+    }
+
+    public void setInternal(boolean internal) {
+        this.internal = internal;
     }
 
     public void setDependencies(Collection<String> dependencies) {
