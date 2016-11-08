@@ -98,6 +98,9 @@ public class RuntimeServer implements Server {
     @Any
     private Instance<UserSpaceExtensionFactory> userSpaceExtensionFactories;
 
+    @Inject
+    private ConfigurableManager configurableManager;
+
     public RuntimeServer() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if(serviceContainer!=null) {
@@ -131,6 +134,8 @@ public class RuntimeServer implements Server {
             SwarmMessages.MESSAGES.callingPostCustomizer(each);
             each.customize();
         }
+
+        this.configurableManager.log();
 
         List<ModelNode> bootstrapOperations = new ArrayList<>();
         this.dmrMarshaller.marshal(bootstrapOperations);

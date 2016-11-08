@@ -18,7 +18,15 @@ package org.wildfly.swarm.logstash;
 import java.util.Properties;
 
 import org.wildfly.swarm.config.logging.Level;
+import org.wildfly.swarm.spi.api.Configurable;
 import org.wildfly.swarm.spi.api.Fraction;
+
+import static org.wildfly.swarm.logstash.LogstashProperties.DEFAULT_HOSTNAME;
+import static org.wildfly.swarm.logstash.LogstashProperties.DEFAULT_PORT;
+import static org.wildfly.swarm.spi.api.Configurable.ifAnyExplicitlySet;
+import static org.wildfly.swarm.spi.api.Configurable.integer;
+import static org.wildfly.swarm.spi.api.Configurable.string;
+
 
 /**
  * @author Ken Finnigan
@@ -47,21 +55,21 @@ public class LogstashFraction implements Fraction<LogstashFraction> {
     }
 
     public LogstashFraction hostname(String hostname) {
-        this.hostname = hostname;
+        this.hostname.set(hostname);
         return this;
     }
 
     public String hostname() {
-        return this.hostname;
+        return this.hostname.get();
     }
 
     public LogstashFraction port(int port) {
-        this.port = port;
+        this.port.set(port);
         return this;
     }
 
     public int port() {
-        return this.port;
+        return this.port.get();
     }
 
     public Properties formatterProperties() {
@@ -73,9 +81,20 @@ public class LogstashFraction implements Fraction<LogstashFraction> {
         return this;
     }
 
-    private String hostname;
+    public LogstashFraction enabled(boolean enable) {
+        this.enabled.set(enable);
+        return this;
+    }
 
-    private int port;
+    public boolean enabled() {
+        return this.enabled.get();
+    }
+
+    private Configurable<String> hostname = string("swarm.logstash.hostname", DEFAULT_HOSTNAME);
+
+    private Configurable<Integer> port = integer( "swarm.logstash.port", DEFAULT_PORT );
+
+    private Configurable<Boolean> enabled = ifAnyExplicitlySet("swarm.logstash.enabled", hostname, port);
 
     private Properties formatterProperties = new Properties();
 

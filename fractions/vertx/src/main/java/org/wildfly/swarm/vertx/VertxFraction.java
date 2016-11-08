@@ -15,9 +15,15 @@
  */
 package org.wildfly.swarm.vertx;
 
+import org.wildfly.swarm.spi.api.Configurable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+
+import static org.wildfly.swarm.spi.api.Configurable.*;
+import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_CLUSTER_HOST;
+import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_JNDI_NAME;
+import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_CLUSTER_PORT;
 
 /**
  * @author George Gastaldi
@@ -33,29 +39,29 @@ public class VertxFraction implements Fraction<VertxFraction> {
     }
 
     public String jndiName() {
-        return jndiName;
+        return jndiName.get();
     }
 
     public VertxFraction jndiName(String jndiName) {
-        this.jndiName = jndiName;
+        this.jndiName.set(jndiName);
         return this;
     }
 
     public String clusterHost() {
-        return clusterHost;
+        return clusterHost.get();
     }
 
     public VertxFraction clusterHost(String clusterHost) {
-        this.clusterHost = clusterHost;
+        this.clusterHost.set( clusterHost );
         return this;
     }
 
     public int clusterPort() {
-        return clusterPort;
+        return clusterPort.get();
     }
 
     public VertxFraction clusterPort(int clusterPort) {
-        this.clusterPort = clusterPort;
+        this.clusterPort.set(clusterPort);
         return this;
     }
 
@@ -65,9 +71,9 @@ public class VertxFraction implements Fraction<VertxFraction> {
 
     private boolean inhibitAdapterDeployment;
 
-    private String jndiName = "java:/eis/VertxConnectionFactory";
+    private Configurable<String> jndiName = string("swarm.vertx.jndi-name", DEFAULT_JNDI_NAME);
 
-    private String clusterHost = "localhost";
+    private Configurable<String> clusterHost = string("swarm.vertx.cluster.host", DEFAULT_CLUSTER_HOST);
 
-    private int clusterPort;
+    private Configurable<Integer> clusterPort = integer( "swarm.vertx.cluster.port", DEFAULT_CLUSTER_PORT );
 }

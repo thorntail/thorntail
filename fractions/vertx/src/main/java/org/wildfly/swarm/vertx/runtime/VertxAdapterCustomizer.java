@@ -17,7 +17,6 @@ package org.wildfly.swarm.vertx.runtime;
 
 import java.util.Arrays;
 
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,11 +35,9 @@ import org.wildfly.swarm.vertx.VertxFraction;
 @Singleton
 public class VertxAdapterCustomizer implements Customizer {
     @Inject
-    @Any
     Instance<ResourceAdapterFraction> resourceAdapterFractionInstance;
 
     @Inject
-    @Any
     Instance<VertxFraction> vertxFractionInstance;
 
     @Override

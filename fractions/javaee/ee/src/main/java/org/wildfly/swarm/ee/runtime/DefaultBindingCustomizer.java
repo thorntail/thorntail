@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.ee.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,10 +33,9 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
 public class DefaultBindingCustomizer implements Customizer {
 
     @Inject
-    @Any
     private Instance<MessagingActiveMQ> messaging;
 
-    @Inject @Any
+    @Inject
     private EEFraction fraction;
 
     @Override

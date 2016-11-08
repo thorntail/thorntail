@@ -30,15 +30,8 @@ public class RemotingLegacyConnectorCustomizer implements Customizer {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.remoting");
 
-    /** Default legacy remoting port. */
-    public static final int DEFAULT_LEGACY_REMOTING_PORT = 4777;
-
     @Inject
     private RemotingFraction remoting;
-
-    @Inject
-    @ConfigurationValue(RemotingProperties.REMOTING_PORT)
-    private Integer port;
 
     @Inject
     @Named(DefaultSocketBindingGroupProducer.STANDARD_SOCKETS)
@@ -46,16 +39,12 @@ public class RemotingLegacyConnectorCustomizer implements Customizer {
 
     @Override
     public void customize() {
-        if (this.remoting.isRequireLegacyConnector() || this.port != null ) {
+        if (this.remoting.isRequireLegacyConnector() ) {
             LOG.info("Remoting installed but Undertnow not available. Enabled legacy connector on port 4777.");
             this.remoting.connector("legacy", (connector) -> {
                 connector.socketBinding("legacy-remoting");
             });
-            if ( this.port == null ) {
-                this.port = DEFAULT_LEGACY_REMOTING_PORT;
-
-            }
-            group.socketBinding(new SocketBinding("legacy-remoting").port(this.port));
+            group.socketBinding(new SocketBinding("legacy-remoting").port(this.remoting.port()));
         }
     }
 }

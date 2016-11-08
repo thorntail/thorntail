@@ -41,5 +41,4 @@ public class InjectStageConfigExtension implements Extension {
         abd.addBean(new StageConfigBean(stageConfig));
     }
 
-
 }

@@ -39,12 +39,7 @@ public class MailFraction extends Mail<MailFraction> implements Fraction<MailFra
     }
 
     public MailFraction applyDefaults() {
-        mailSession("Default", (session) -> {
-            session.smtpServer((server) -> {
-                server.host("localhost");
-                server.port("25");
-            });
-        });
+        mailSession("Default", EnhancedMailSession::smtpServer);
 
         return this;
     }

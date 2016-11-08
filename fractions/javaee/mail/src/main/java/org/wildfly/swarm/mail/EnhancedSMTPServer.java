@@ -16,7 +16,11 @@
 package org.wildfly.swarm.mail;
 
 import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
+import org.wildfly.swarm.spi.api.Configurable;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+
+import static org.wildfly.swarm.spi.api.Configurable.integer;
+import static org.wildfly.swarm.spi.api.Configurable.string;
 
 /**
  * @author Bob McWhirter
@@ -27,21 +31,29 @@ public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
         this.sessionKey = sessionKey;
     }
 
+    public String sessionKey() {
+        return this.sessionKey;
+    }
+
     public EnhancedSMTPServer host(String host) {
-        this.host = host;
+        this.host.set( host );
         return this;
     }
 
-    public EnhancedSMTPServer port(String port) {
-        this.port = port;
-        return this;
+    public String host() {
+        return this.host.get();
     }
 
     public EnhancedSMTPServer port(int port) {
-        this.port = "" + port;
+        this.port.set( port );
         return this;
     }
 
+    public int port() {
+        return this.port.get();
+    }
+
+    /*
     public OutboundSocketBinding outboundSocketBinding() {
         if (this.host == null && this.port == null) {
             return null;
@@ -53,12 +65,13 @@ public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
                 .remoteHost(this.host)
                 .remotePort(this.port);
     }
+    */
 
     private final String sessionKey;
 
-    private String host;
+    private Configurable<String> host = string( "swarm.mail.smtp.host", "localhost");
 
-    private String port;
+    private Configurable<Integer> port = integer( "swarm.mail.smtp.port", 25 );
 
 
 }

@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.container.runtime.cdi;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,16 +25,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Singleton;
 
+import org.jboss.weld.literal.AnyLiteral;
+import org.wildfly.swarm.container.runtime.ConfigurableManager;
+import org.wildfly.swarm.container.runtime.cdi.configurable.ConfigurableFractionBean;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -41,12 +41,15 @@ import org.wildfly.swarm.spi.api.Fraction;
  */
 public class FractionProducingExtension implements Extension {
 
-    private Set<Class<? extends Fraction>> fractionClasses = new HashSet<>();
+    private final Set<Class<? extends Fraction>> fractionClasses = new HashSet<>();
 
-    private List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
+    private final List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
 
-    public FractionProducingExtension(Collection<Fraction> explicitlyInstalled) {
+    private final ConfigurableManager configurableManager;
+
+    public FractionProducingExtension(Collection<Fraction> explicitlyInstalled, ConfigurableManager configurableManager) {
         this.explicitlyInstalledFractions.addAll(explicitlyInstalled);
+        this.configurableManager = configurableManager;
     }
 
     <T> void processAnnotatedType(@Observes ProcessAnnotatedType<? extends Fraction> pat) {
@@ -72,18 +75,16 @@ public class FractionProducingExtension implements Extension {
         Set<Type> preExistingFractionClasses = new HashSet<>();
 
         for (Fraction fraction : explicitlyInstalledFractions) {
-            abd.addBean()
-                    .addTypes(applicableClasses(fraction.getClass()))
-                    .scope(Singleton.class)
-                    .addQualifier(new AnnotationLiteral<Default>() {
-                    })
-                    .produceWith(() -> fraction);
+            try {
+                abd.addBean( new ConfigurableFractionBean<>(fraction, this.configurableManager) );
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
 
             preExistingFractionClasses.add(fraction.getClass());
         }
 
-        Set<Bean<?>> availableFractionBeans = beanManager.getBeans(Fraction.class, new AnnotationLiteral<Any>() {
-        });
+        Set<Bean<?>> availableFractionBeans = beanManager.getBeans(Fraction.class, AnyLiteral.INSTANCE);
 
         preExistingFractionClasses.addAll(
                 availableFractionBeans.stream()
@@ -95,39 +96,11 @@ public class FractionProducingExtension implements Extension {
         fractionClasses.stream()
                 .filter(cls -> !preExistingFractionClasses.contains(cls))
                 .forEach((cls) -> {
-                    abd.addBean()
-                            .addTypes(applicableClasses(cls))
-                            .scope(Singleton.class)
-                            .addQualifier(new AnnotationLiteral<Default>() {
-                            })
-                            .produceWith(() -> {
-                                try {
-                                    return cls.newInstance().applyDefaults();
-                                } catch (InstantiationException | IllegalAccessException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-
+                    try {
+                        abd.addBean( new ConfigurableFractionBean<>(cls, this.configurableManager) );
+                    } catch (IllegalAccessException|InstantiationException| NoSuchMethodException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
-    }
-
-    Set<Type> applicableClasses(Class cur) {
-        Set<Type> classes = new HashSet<>();
-        applicableClasses(cur, classes);
-        return classes;
-    }
-
-    void applicableClasses(Class cur, Set<Type> set) {
-        if (cur == null) {
-            return;
-        }
-
-        set.add(cur);
-
-        for (Class each : cur.getInterfaces()) {
-            applicableClasses(each, set);
-        }
-
-        applicableClasses(cur.getSuperclass(), set);
     }
 }

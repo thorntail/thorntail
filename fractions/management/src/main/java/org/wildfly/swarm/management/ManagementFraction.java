@@ -19,8 +19,14 @@ import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
+import org.wildfly.swarm.spi.api.Configurable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
+
+import static org.wildfly.swarm.management.ManagementProperties.DEFAULT_HTTPS_PORT;
+import static org.wildfly.swarm.management.ManagementProperties.DEFAULT_HTTP_PORT;
+import static org.wildfly.swarm.spi.api.Configurable.integer;
+import static org.wildfly.swarm.spi.api.SwarmProperties.HTTP_PORT;
 
 /**
  * @author Bob McWhirter
@@ -71,4 +77,25 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
         });
     }
 
+    public ManagementFraction httpPort(int port) {
+        this.httpPort.set(port);
+        return this;
+    }
+
+    public int httpPort() {
+        return this.httpPort.get();
+    }
+
+    public ManagementFraction httpsPort(int port) {
+        this.httpsPort.set(port);
+        return this;
+    }
+
+    public int httpsPort() {
+        return this.httpsPort.get();
+    }
+
+    private Configurable<Integer> httpPort = integer("swarm.management.http.port", DEFAULT_HTTP_PORT);
+
+    private Configurable<Integer> httpsPort = integer("swarm.management.https.port", DEFAULT_HTTPS_PORT);
 }

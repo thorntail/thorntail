@@ -15,16 +15,14 @@
  */
 package org.wildfly.swarm.management.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.wildfly.swarm.management.ManagementProperties;
+import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
 /**
@@ -38,10 +36,13 @@ public class ManagementSocketBindingsCustomizer implements Customizer {
     @Named("standard-sockets")
     private SocketBindingGroup group;
 
+    @Inject
+    ManagementFraction fraction;
+
     public void customize() {
         this.group.socketBinding(new SocketBinding("management-http")
-                .port(SwarmProperties.propertyVar(ManagementProperties.HTTP_PORT, "9990")));
+                .port(fraction.httpPort()));
         this.group.socketBinding(new SocketBinding("management-https")
-                .port(SwarmProperties.propertyVar(ManagementProperties.HTTPS_PORT, "9993")));
+                .port(fraction.httpsPort()));
     }
 }
