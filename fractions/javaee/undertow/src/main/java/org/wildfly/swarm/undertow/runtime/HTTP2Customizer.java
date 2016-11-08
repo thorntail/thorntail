@@ -16,12 +16,9 @@
 package org.wildfly.swarm.undertow.runtime;
 
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.config.undertow.Server;
-import org.wildfly.swarm.config.undertow.server.HttpsListener;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.undertow.UndertowFraction;
@@ -35,13 +32,11 @@ import org.wildfly.swarm.undertow.UndertowFraction;
 public class HTTP2Customizer implements Customizer {
 
     @Inject
-    @Any
-    private Instance<UndertowFraction> undertowInstance;
+    private UndertowFraction undertow;
 
     @Override
     public void customize() {
-        UndertowFraction undertowFraction = undertowInstance.get();
-        for (Server server : undertowFraction.subresources().servers()) {
+        for (Server server : undertow.subresources().servers()) {
             server.subresources().httpsListeners().forEach(httpsListener -> httpsListener.enableHttp2(true));
         }
     }

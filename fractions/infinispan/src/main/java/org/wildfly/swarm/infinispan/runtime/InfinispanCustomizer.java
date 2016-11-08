@@ -39,22 +39,20 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 @Singleton
 public class InfinispanCustomizer implements Customizer {
 
-    @Inject @Any
+    @Inject
     private InfinispanFraction fraction;
 
-    @Inject @Any
+    @Inject
     private Instance<JGroups> jgroups;
 
-    @Inject @Any
+    @Inject
     private Instance<Undertow> undertow;
 
-    @Inject @Any
+    @Inject
     private Instance<EJB3> ejb;
 
-    @Inject @Any
+    @Inject
     private Instance<JPA> jpa;
-
-
 
     @Override
     public void customize() {

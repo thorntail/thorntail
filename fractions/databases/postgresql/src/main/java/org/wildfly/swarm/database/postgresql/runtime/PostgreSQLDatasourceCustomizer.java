@@ -31,8 +31,8 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
 @Singleton
 @Pre
 public class PostgreSQLDatasourceCustomizer implements Customizer {
+
     @Inject
-    @Any
     Instance<DatasourcesFraction> datasourcesFractionInstance;
 
     @Override

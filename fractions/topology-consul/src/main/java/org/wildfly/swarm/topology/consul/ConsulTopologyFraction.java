@@ -20,6 +20,7 @@ import java.net.URL;
 
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
  * Consul topology-management fractoin.
@@ -30,6 +31,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
  * @author John Hovell
  * @author Bob McWhirter
  */
+@Configurable("swarm.topology.consul")
 public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> {
 
     public ConsulTopologyFraction() {

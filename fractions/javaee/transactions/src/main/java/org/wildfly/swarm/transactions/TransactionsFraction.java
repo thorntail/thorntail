@@ -18,10 +18,15 @@ package org.wildfly.swarm.transactions;
 import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.Transactions;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
+
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.transactions.TransactionsProperties.DEFAULT_PORT;
+import static org.wildfly.swarm.transactions.TransactionsProperties.DEFAULT_STATUS_PORT;
 
 /**
  * @author Bob McWhirter
@@ -48,24 +53,23 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
     }
 
     public TransactionsFraction port(int port) {
-        this.port = port;
+        this.port.set(port);
         return this;
     }
 
     public int port() {
-        return this.port;
+        return this.port.get();
     }
 
     public TransactionsFraction statusPort(int statusPort) {
-        this.statusPort = statusPort;
+        this.statusPort.set(statusPort);
         return this;
     }
 
     public int statusPort() {
-        return this.statusPort;
+        return this.statusPort.get();
     }
 
-    private int port = 4712;
-
-    private int statusPort = 4713;
+    private Defaultable<Integer> port = integer(DEFAULT_PORT );
+    private Defaultable<Integer> statusPort = integer(DEFAULT_STATUS_PORT );
 }

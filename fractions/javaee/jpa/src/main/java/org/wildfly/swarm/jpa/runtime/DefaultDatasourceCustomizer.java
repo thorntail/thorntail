@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.jpa.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -29,16 +27,15 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 /**
  * @author Ken Finnigan
  */
-
 @Post
 @Singleton
 public class DefaultDatasourceCustomizer implements Customizer {
+
     @Inject
     @DefaultDatasource
     Instance<String> defaultDatasourceInstance;
 
     @Inject
-    @Any
     Instance<JPAFraction> jpaFractionInstance;
 
     @Override

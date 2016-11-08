@@ -169,6 +169,13 @@ public interface SwarmMessages extends BasicLogger {
     void errorInstallingUserSpaceExtension(String factoryClassName);
 
     @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 37, value = "Configuration:\n%s")
+    void configuration(String configuration);
+
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+
+    @LogMessage(level = Logger.Level.INFO)
     @Message(id = 99999, value = "WildFly Swarm is Ready")
     void wildflySwarmIsReady();
 

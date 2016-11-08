@@ -36,6 +36,7 @@ import org.wildfly.swarm.container.runtime.cdi.OutboundSocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.ProjectStageProducingExtension;
 import org.wildfly.swarm.container.runtime.cdi.SocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.XMLConfigProducingExtension;
+import org.wildfly.swarm.container.runtime.cdi.configurable.ConfigurableExtension;
 import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
@@ -48,7 +49,7 @@ import org.wildfly.swarm.spi.api.ProjectStage;
  */
 public class ServerBootstrapImpl implements ServerBootstrap {
 
-    private static Logger LOG = Logger.getLogger( "org.wildfly.swarm" );
+    private static Logger LOG = Logger.getLogger("org.wildfly.swarm");
 
     @Override
     public ServerBootstrap withArguments(String[] args) {
@@ -111,26 +112,35 @@ public class ServerBootstrapImpl implements ServerBootstrap {
 
         logFractions();
 
-        Weld weld = new Weld(WELD_INSTANCE_ID);
-        weld.setClassLoader(module.getClassLoader());
+        return LogSilencer.silently("org.jboss.weld").execute(() -> {
 
-        // Add Extension that adds User custom bits into configurator
-        weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions));
-        weld.addExtension(new CommandLineArgsExtension(args));
-        weld.addExtension(new ProjectStageProducingExtension(this.stageConfig));
-        weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
-        weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
-        weld.addExtension(new SocketBindingExtension(this.socketBindings));
+            Weld weld = new Weld(WELD_INSTANCE_ID);
+            weld.setClassLoader(module.getClassLoader());
 
-        for (Class<?> each : this.userComponents) {
-            weld.addBeanClass(each);
-        }
+            ProjectStageProducingExtension projectStageProducingExtension = new ProjectStageProducingExtension(this.stageConfig);
 
-        WeldContainer weldContainer = weld.initialize();
+            ConfigurableManager configurableManager = new ConfigurableManager(projectStageProducingExtension.getStageConfig());
 
-        RuntimeServer server = weldContainer.select(RuntimeServer.class).get();
-        server.start(true);
-        return server;
+            // Add Extension that adds User custom bits into configurator
+            weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions, configurableManager));
+            weld.addExtension(new ConfigurableExtension(configurableManager));
+            weld.addExtension(new CommandLineArgsExtension(args));
+            weld.addExtension(projectStageProducingExtension);
+            weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
+            weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
+            weld.addExtension(new SocketBindingExtension(this.socketBindings));
+
+            for (Class<?> each : this.userComponents) {
+                weld.addBeanClass(each);
+            }
+
+            WeldContainer weldContainer = weld.initialize();
+
+            RuntimeServer server = weldContainer.select(RuntimeServer.class).get();
+
+            server.start(true);
+            return server;
+        });
     }
 
     protected void logFractions() throws IOException {

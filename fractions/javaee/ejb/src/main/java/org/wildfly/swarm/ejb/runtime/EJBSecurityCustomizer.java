@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.ejb.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,8 +33,8 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 @Post
 @Singleton
 public class EJBSecurityCustomizer implements Customizer {
+
     @Inject
-    @Any
     private Instance<SecurityFraction> securityInstance;
 
     @Override

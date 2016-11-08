@@ -26,6 +26,10 @@ public class EnhancedMailSession extends MailSession<EnhancedMailSession> {
         super(key);
     }
 
+    public EnhancedMailSession smtpServer() {
+        return super.smtpServer(new EnhancedSMTPServer(getKey()));
+    }
+
     public EnhancedMailSession smtpServer(EnhancedSMTPServerConsumer consumer) {
         EnhancedSMTPServer server = new EnhancedSMTPServer(getKey());
         return super.smtpServer(() -> {

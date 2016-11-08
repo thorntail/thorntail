@@ -15,14 +15,15 @@
  */
 package org.wildfly.swarm.remoting;
 
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.Remoting;
 import org.wildfly.swarm.config.remoting.EndpointConfiguration;
 import org.wildfly.swarm.config.remoting.HTTPConnector;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
+
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
 
 /**
  * @author Ken Finnigan
@@ -39,7 +40,7 @@ public class RemotingFraction extends Remoting<RemotingFraction> implements Frac
     }
 
     public boolean isRequireLegacyConnector() {
-        return this.required;
+        return this.required || this.port.isExplicit();
     }
 
     public static RemotingFraction defaultFraction() {
@@ -53,4 +54,14 @@ public class RemotingFraction extends Remoting<RemotingFraction> implements Frac
 
         return this;
     }
+
+    public RemotingFraction port(int port) {
+        this.port.set( port );
+        return this;
+    }
+
+    public int port() {
+        return this.port.get();
+    }
+    private Defaultable<Integer> port = integer(4777);
 }

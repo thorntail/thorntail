@@ -16,10 +16,12 @@
 package org.wildfly.swarm.management.console;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
  * Created by ggastald on 02/06/16.
  */
+@Configurable("swarm.management-console")
 public class ManagementConsoleFraction implements Fraction<ManagementConsoleFraction> {
 
     public ManagementConsoleFraction() {
@@ -35,7 +37,7 @@ public class ManagementConsoleFraction implements Fraction<ManagementConsoleFrac
         return context;
     }
 
-    private final String DEFAULT_CONTEXT = "/console";
+    private static final String DEFAULT_CONTEXT = "/console";
 
     private String context = DEFAULT_CONTEXT;
 }

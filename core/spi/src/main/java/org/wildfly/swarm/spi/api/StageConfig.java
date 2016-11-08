@@ -15,7 +15,9 @@
  */
 package org.wildfly.swarm.spi.api;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Heiko Braun
@@ -37,6 +39,48 @@ public class StageConfig {
         return this.stage.getProperties().keySet();
     }
 
+    public Set<String> simpleSubkeys(String prefix) {
+
+        String searchPrefix = prefix + ".";
+
+        Set<String> allKeys = new HashSet<>();
+        for (Object o : System.getProperties().keySet()) {
+            allKeys.add( o.toString() );
+        }
+
+        allKeys.addAll( keys() );
+
+        return allKeys
+                .stream()
+                .filter( e-> e.startsWith(searchPrefix) )
+                .map( e->e.replace( searchPrefix, "" ) )
+                .map( e->{
+                    int dotLoc = e.indexOf('.');
+                    if ( dotLoc < 0 ) {
+                        return e;
+                    }
+                    return e.substring( 0, dotLoc );
+                })
+                .collect(Collectors.toSet());
+    }
+
+
+    public boolean hasKeyOrSubkeys(String key) {
+        String searchPrefix = key + ".";
+
+        Set<String> allKeys = new HashSet<>();
+        for (Object o : System.getProperties().keySet()) {
+            allKeys.add( o.toString() );
+        }
+
+        allKeys.addAll( keys() );
+
+        return allKeys
+                .stream()
+                .anyMatch( e-> e.equals(key) || e.startsWith( searchPrefix ));
+    }
+
+
     public String getName() {
         return this.stage.getName();
     }
@@ -45,6 +89,7 @@ public class StageConfig {
 
     public interface Resolver<T> {
         T getValue();
+        boolean hasValue();
         Resolver<T> withDefault(T value);
         String getKey();
         <N> Resolver<N> as(Class<N> clazz);
@@ -88,10 +133,21 @@ public class StageConfig {
             }
             T value = convert(valueStr);
 
-            if(null==value)
-                throw new RuntimeException("Stage config '"+key+"' is missing");
+            if(null==value) {
+                throw new RuntimeException("Stage config '" + key + "' is missing");
+            }
 
             return value;
+        }
+
+        @Override
+        public boolean hasValue() {
+            String valueStr = stage.getProperties().get(key);
+            if ( valueStr == null ) {
+                valueStr = System.getProperty(key);
+            }
+
+            return valueStr != null;
         }
 
         public Resolver<T> withDefault(T value)

@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -25,7 +22,6 @@ import javax.inject.Singleton;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
@@ -37,8 +33,7 @@ import org.wildfly.swarm.undertow.UndertowFraction;
 public class AJPCustomizer implements Customizer {
 
     @Inject
-    @Any
-    private Instance<UndertowFraction> undertowInstance;
+    private UndertowFraction undertow;
 
     @Inject
     @Named("standard-sockets")
@@ -52,14 +47,15 @@ public class AJPCustomizer implements Customizer {
     }
 
     public void customize() {
-        UndertowFraction fraction = undertowInstance.get();
-        if (fraction.isEnableAJP()) {
-            fraction.subresources().servers().stream()
+        if (undertow.isEnableAJP()) {
+
+            undertow.subresources().servers().stream()
                     .filter(server -> server.subresources().ajpListeners().isEmpty())
                     .forEach(server -> server.ajpListener("ajp", listener -> listener.socketBinding("ajp")));
 
-            this.group.socketBinding(new SocketBinding("ajp")
-                                             .port(SwarmProperties.propertyVar(SwarmProperties.AJP_PORT, "8009")));
+            this.group.socketBinding(
+                    new SocketBinding("ajp")
+                            .port(undertow.ajpPort()));
         }
     }
 

@@ -32,7 +32,6 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
 @Pre
 public class MySQLDatasourceCustomizer implements Customizer {
     @Inject
-    @Any
     Instance<DatasourcesFraction> datasourcesFractionInstance;
 
     @Override

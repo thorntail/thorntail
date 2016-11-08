@@ -20,7 +20,6 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 public class RemoteConnectionCustomizer implements Customizer {
 
     @Inject
-    @Any
     MessagingFraction fraction;
 
     @Override
