@@ -11,6 +11,7 @@
     <system export="true">
       <paths>
         <path name="org/wildfly/swarm"/>
+        <path name="org/wildfly/swarm/cdi"/>
         <path name="org/wildfly/swarm/cli"/>
         <path name="org/wildfly/swarm/container"/>
         <path name="org/wildfly/swarm/container/internal"/>
@@ -21,6 +22,7 @@
     <module name="org.wildfly.swarm.container" slot="api" services="import" export="true">
       <imports>
         <include path="**"/>
+        <include path="org/wildfly/swarm/cdi"/>
         <include path="org/wildfly/swarm/cli"/>
         <include path="org/wildfly/swarm/container"/>
         <include path="org/wildfly/swarm/container/internal"/>

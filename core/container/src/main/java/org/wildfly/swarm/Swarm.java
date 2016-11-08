@@ -58,22 +58,21 @@ import org.jboss.shrinkwrap.impl.base.importer.zip.ZipImporterImpl;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
+import org.wildfly.swarm.bootstrap.logging.BackingLoggerManager;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
+import org.wildfly.swarm.container.cdi.ProjectStageFactory;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.internal.WeldShutdown;
-import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
-import org.wildfly.swarm.container.runtime.logging.JBossLoggingManager;
 import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
-import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.ProjectStage;
@@ -148,7 +147,7 @@ public class Swarm {
             Module.setModuleLogger(new StreamModuleLogger(System.err));
         }
 
-        System.setProperty(SwarmInternalProperties.VERSION, ( VERSION == null ? "unknown" : VERSION ) );
+        System.setProperty(SwarmInternalProperties.VERSION, (VERSION == null ? "unknown" : VERSION));
 
         setArgs(args);
         this.debugBootstrap = debugBootstrap;
@@ -164,7 +163,8 @@ public class Swarm {
                 System.setProperty("org.jboss.logmanager.configurator", "org.wildfly.swarm.container.runtime.wildfly.LoggingConfigurator");
                 //force logging init
                 LogManager.getLogManager();
-                BootstrapLogger.setBackingLoggerManager(new JBossLoggingManager());
+                Class<?> logManagerClass = loggingModule.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.logging.JBossLoggingManager");
+                BootstrapLogger.setBackingLoggerManager((BackingLoggerManager) logManagerClass.newInstance());
             } finally {
                 Thread.currentThread().setContextClassLoader(originalCl);
             }

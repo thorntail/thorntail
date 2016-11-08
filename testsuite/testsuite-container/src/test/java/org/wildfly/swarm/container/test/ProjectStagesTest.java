@@ -17,7 +17,7 @@ package org.wildfly.swarm.container.test;
 
 import org.junit.*;
 import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
+import org.wildfly.swarm.container.cdi.ProjectStageFactory;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
