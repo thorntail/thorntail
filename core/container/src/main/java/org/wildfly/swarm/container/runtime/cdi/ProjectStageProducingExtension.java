@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.literal.DefaultLiteral;
+import org.wildfly.swarm.container.cdi.ProjectStageImpl;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wildfly.swarm.container.runtime.cdi.ProjectStageFactory;
+import org.wildfly.swarm.container.cdi.ProjectStageFactory;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
 
