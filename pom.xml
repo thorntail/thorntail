@@ -39,6 +39,7 @@
     <version.maven.aether>3.2.5</version.maven.aether>
     <version.wildfly.config-api>0.4.8</version.wildfly.config-api>
     <version.wildfly>10.1.0.Final</version.wildfly>
+    <version.org.wildfly.core>2.2.1.CR1</version.org.wildfly.core>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
@@ -230,6 +231,15 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.wildfly.core</groupId>
+        <artifactId>wildfly-core-parent</artifactId>
+        <type>pom</type>
+        <version>${version.org.wildfly.core}</version>
+        <scope>import</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-parent</artifactId>
@@ -237,9 +247,10 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!--
-        org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
-    -->
+
+    <!--
+      org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
+  -->
 
       <dependency>
         <groupId>org.yaml</groupId>
@@ -1012,6 +1023,19 @@
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-feature-pack</artifactId>
         <version>${version.wildfly}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-core-feature-pack</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.core</groupId>
+        <artifactId>wildfly-core-feature-pack</artifactId>
+        <version>${version.org.wildfly.core}</version>
         <type>zip</type>
         <scope>provided</scope>
       </dependency>
