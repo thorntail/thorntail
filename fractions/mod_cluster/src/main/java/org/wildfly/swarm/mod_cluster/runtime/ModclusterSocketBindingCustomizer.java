@@ -35,7 +35,7 @@ public class ModclusterSocketBindingCustomizer implements Customizer {
     public void customize() {
 
         if ( this.address == null ) {
-            this.address = "224.01.105";
+            this.address = "224.0.1.105";
         }
 
         if ( this.port == null ) {
