@@ -27,6 +27,7 @@ import org.wildfly.swarm.mail.EnhancedSMTPServer;
 import org.wildfly.swarm.mail.MailFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
@@ -52,9 +53,14 @@ public class SocketBindingCustomizer implements Customizer {
             for (MailSession session : mailFraction.subresources().mailSessions()) {
                 SMTPServer server = session.subresources().smtpServer();
                 if (server != null && server instanceof EnhancedSMTPServer) {
-                    OutboundSocketBinding socketBinding = ((EnhancedSMTPServer) server).outboundSocketBinding();
-                    if (socketBinding != null) {
-                        this.group.outboundSocketBinding(socketBinding);
+                    if (server.outboundSocketBindingRef() == null) {
+                        String ref = "mail-smtp-" + ((EnhancedSMTPServer) server).sessionKey();
+                        this.group.outboundSocketBinding(
+                                new OutboundSocketBinding(ref)
+                                        .remoteHost(((EnhancedSMTPServer) server).host())
+                                        .remotePort(((EnhancedSMTPServer) server).port()));
+
+                        ((EnhancedSMTPServer) server).outboundSocketBindingRef(ref);
                     }
                 }
             }

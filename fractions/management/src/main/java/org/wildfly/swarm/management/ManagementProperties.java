@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.management;
 
-public class ManagementProperties {
-    //public
-    public static final String HTTP_PORT = "swarm.management.http.port";
-
-    //public
-    public static final String HTTPS_PORT = "swarm.management.https.port";
+public interface ManagementProperties {
+    int DEFAULT_HTTP_PORT = 9990;
+    int DEFAULT_HTTPS_PORT = 9993;
 }

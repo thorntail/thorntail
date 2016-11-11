@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -24,9 +22,6 @@ import javax.inject.Singleton;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.api.SwarmProperties;
-import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
-import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 import org.wildfly.swarm.undertow.UndertowFraction;
 
@@ -42,31 +37,16 @@ public class UndertowSocketBindingsCustomizer implements Customizer {
     private SocketBindingGroup group;
 
     @Inject
-    @Any
     UndertowFraction fraction;
 
-    @Inject
-    @ConfigurationValue(SwarmProperties.HTTP_PORT)
-    Integer httpPort;
-
-    @Inject
-    @ConfigurationValue(SwarmProperties.HTTPS_PORT)
-    Integer httpsPort;
-
     public void customize() {
+        this.group.socketBinding(
+                new SocketBinding("http")
+                        .port(fraction.httpPort()));
 
-        if (this.httpPort == null) {
-            this.httpPort = this.fraction.httpPort();
-        }
-
-        if (this.httpsPort == null) {
-            this.httpsPort = this.fraction.httpsPort();
-        }
-
-        this.group.socketBinding(new SocketBinding("http")
-                .port(this.httpPort));
-        this.group.socketBinding(new SocketBinding("https")
-                .port(this.httpsPort));
+        this.group.socketBinding(
+                new SocketBinding("https")
+                        .port(fraction.httpsPort()));
     }
 
 }

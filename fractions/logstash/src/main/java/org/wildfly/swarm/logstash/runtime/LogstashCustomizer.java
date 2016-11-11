@@ -17,16 +17,13 @@ package org.wildfly.swarm.logstash.runtime;
 
 import java.util.Properties;
 
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.logging.CustomHandler;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.logstash.LogstashFraction;
-import org.wildfly.swarm.logstash.LogstashProperties;
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
 /**
@@ -37,49 +34,31 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 public class LogstashCustomizer implements Customizer {
 
     @Inject
-    @Any
-    private LogstashFraction logstashFraction;
+    public LogstashFraction logstash;
 
     @Inject
-    @Any
-    private LoggingFraction loggingFraction;
-
-    @Inject
-    @ConfigurationValue(LogstashProperties.HOSTNAME)
-    private String hostname;
-
-    @Inject
-    @ConfigurationValue(LogstashProperties.PORT)
-    private Integer port;
+    public LoggingFraction logging;
 
     @Override
     public void customize() {
-        try {
-            String hostname = (this.hostname != null ? this.hostname : this.logstashFraction.hostname());
-            int port = (this.port != null ? this.port : this.logstashFraction.port());
 
-            if (hostname != null) {
-                Properties handlerProps = new Properties();
+        if (logstash.enabled()) {
+            Properties handlerProps = new Properties();
 
-                handlerProps.put("hostname", hostname);
-                handlerProps.put("port", "" + port);
+            handlerProps.put("hostname", this.logstash.hostname() );
+            handlerProps.put("port", "" + this.logstash.port() );
 
-                final CustomHandler<?> logstashHandler = new CustomHandler<>("logstash-handler")
-                        .module("org.jboss.logmanager.config")
-                        .attributeClass("org.jboss.logmanager.config.handlers.SocketHandler")
-                        .namedFormatter("logstash")
-                        .properties(handlerProps);
+            final CustomHandler<?> logstashHandler = new CustomHandler<>("logstash-handler")
+                    .module("org.jboss.logmanager.ext")
+                    .attributeClass("org.jboss.logmanager.ext.handlers.SocketHandler")
+                    .namedFormatter("logstash")
+                    .properties(handlerProps);
 
-                this.loggingFraction
-                        .customFormatter("logstash", "org.jboss.logmanager.config", "org.jboss.logmanager.config.formatters.LogstashFormatter",
-                                this.logstashFraction.formatterProperties())
-                        .customHandler(logstashHandler)
-                        .rootLogger(this.logstashFraction.level(), logstashHandler.getKey());
-            } else {
-                System.err.println("not enabling logstash, no host set");
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
+            this.logging
+                    .customFormatter("logstash", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.formatters.LogstashFormatter",
+                            this.logstash.formatterProperties())
+                    .customHandler(logstashHandler)
+                    .rootLogger(this.logstash.level(), logstashHandler.getKey());
         }
     }
 }

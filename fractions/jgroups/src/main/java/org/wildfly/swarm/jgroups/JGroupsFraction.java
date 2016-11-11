@@ -18,10 +18,13 @@ package org.wildfly.swarm.jgroups;
 import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.JGroups;
+import org.wildfly.swarm.spi.api.Configurable;
 import org.wildfly.swarm.spi.api.Environment;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
+
+import static org.wildfly.swarm.spi.api.Configurable.string;
 
 /**
  * @author Bob McWhirter
@@ -112,14 +115,14 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
     }
 
     public JGroupsFraction defaultMulticastAddress(String defaultMulticastAddress) {
-        this.defaultMulticastAddress = defaultMulticastAddress;
+        this.defaultMulticastAddress.set(defaultMulticastAddress);
         return this;
     }
 
     public String defaultMulticastAddress() {
-        return this.defaultMulticastAddress;
+        return this.defaultMulticastAddress.get();
     }
 
-    private String defaultMulticastAddress = "230.0.0.4";
+    private Configurable<String> defaultMulticastAddress = string("swarm.default.multicast.address", "230.0.0.4");
 
 }

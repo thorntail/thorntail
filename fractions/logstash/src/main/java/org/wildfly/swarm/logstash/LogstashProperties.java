@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.logstash;
 
-public class LogstashProperties {
-    //public
-    public static final String HOSTNAME = "swarm.logstash.hostname";
-
-    //public
-    public static final String PORT = "swarm.logstash.port";
+public interface LogstashProperties {
+    String DEFAULT_HOSTNAME = "localhost";
+    int DEFAULT_PORT = 9300;
 }

@@ -1,8 +1,12 @@
 package org.wildfly.swarm.messaging;
 
-import java.util.function.Consumer;
+import org.wildfly.swarm.spi.api.Configurable;
 
-import org.wildfly.swarm.spi.api.OutboundSocketBinding;
+import static org.wildfly.swarm.messaging.MessagingProperties.DEFAULT_REMOTE_HOST;
+import static org.wildfly.swarm.messaging.MessagingProperties.DEFAULT_REMOTE_MQ_NAME;
+import static org.wildfly.swarm.messaging.MessagingProperties.DEFAULT_REMOTE_PORT;
+import static org.wildfly.swarm.spi.api.Configurable.integer;
+import static org.wildfly.swarm.spi.api.Configurable.string;
 
 /** Details for a remote message-queue connection.
  *
@@ -25,7 +29,7 @@ public class RemoteConnection {
      * @param name The name of the connection. Also used for {@link #jndiName}.
      */
     public RemoteConnection(String name) {
-        this.name = name;
+        this.name.set( name );
     }
 
     /** Retrieve the name of the connection.
@@ -33,7 +37,7 @@ public class RemoteConnection {
      * @return The name.
      */
     public String name() {
-        return this.name;
+        return this.name.get();
     }
 
     /** Set the host (or host expression).
@@ -42,7 +46,7 @@ public class RemoteConnection {
      * @return This connection.
      */
     public RemoteConnection host(String host) {
-        this.host = host;
+        this.host.set( host );
         return this;
     }
 
@@ -51,17 +55,7 @@ public class RemoteConnection {
      * @return The host (or host expression).
      */
     public String host() {
-        return this.host;
-    }
-
-    /** Set the port.
-     *
-     * @param port The port.
-     * @return This connection.
-     */
-    public RemoteConnection port(int port) {
-        this.port = "" + port;
-        return this;
+        return this.host.get();
     }
 
     /** Set the port (or port expression).
@@ -69,8 +63,8 @@ public class RemoteConnection {
      * @param port The port (or port expression).
      * @return This connectoin.
      */
-    public RemoteConnection port(String port) {
-        this.port = port;
+    public RemoteConnection port(int port) {
+        this.port.set( port );
         return this;
     }
 
@@ -78,8 +72,8 @@ public class RemoteConnection {
      *
      * @return The port (or port expression).
      */
-    public String port() {
-        return this.port;
+    public int port() {
+        return this.port.get();
     }
 
     /** Set the JNDI name for the associated connection factory.
@@ -92,7 +86,7 @@ public class RemoteConnection {
      * @return This connection.
      */
     public RemoteConnection jndiName(String jndiName) {
-        this.jndiName = jndiName;
+        this.jndiName.set( jndiName );
         return this;
     }
 
@@ -101,17 +95,13 @@ public class RemoteConnection {
      * @return The JNDI name of the associated connection factory.
      */
     public String jndiName() {
-        if ( jndiName != null ) {
-            return this.jndiName;
-        }
-
-        return "java:/jms/" + this.name;
+        return this.jndiName.get();
     }
 
-    private String name;
-    private String host = MessagingProperties.DEFAULT_REMOTE_HOST;
-    private String port = MessagingProperties.DEFAULT_REMOTE_PORT;
-    private String jndiName;
+    private final Configurable<String> name = string( null, DEFAULT_REMOTE_MQ_NAME );
+    private final Configurable<String> host = string(null, DEFAULT_REMOTE_HOST);
+    private final Configurable<Integer> port = integer(null, DEFAULT_REMOTE_PORT);
+    private final Configurable<String> jndiName = string(null, ()->"java:/jms/" + name.get() );
 
 
 }

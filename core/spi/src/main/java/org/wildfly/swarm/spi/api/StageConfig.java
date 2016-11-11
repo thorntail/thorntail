@@ -45,6 +45,7 @@ public class StageConfig {
 
     public interface Resolver<T> {
         T getValue();
+        boolean hasValue();
         Resolver<T> withDefault(T value);
         String getKey();
         <N> Resolver<N> as(Class<N> clazz);
@@ -88,10 +89,21 @@ public class StageConfig {
             }
             T value = convert(valueStr);
 
-            if(null==value)
-                throw new RuntimeException("Stage config '"+key+"' is missing");
+            if(null==value) {
+                throw new RuntimeException("Stage config '" + key + "' is missing");
+            }
 
             return value;
+        }
+
+        @Override
+        public boolean hasValue() {
+            String valueStr = stage.getProperties().get(key);
+            if ( valueStr == null ) {
+                valueStr = System.getProperty(key);
+            }
+
+            return valueStr != null;
         }
 
         public Resolver<T> withDefault(T value)

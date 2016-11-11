@@ -50,7 +50,7 @@ public class RemoteConnectionSocketBindingCustomizerTest {
         OutboundSocketBinding binding = this.group.outboundSocketBindings().get(0);
 
         assertThat( binding.name() ).isEqualTo( "postoffice" );
-        assertThat( binding.remotePortExpression() ).isEqualTo(MessagingProperties.DEFAULT_REMOTE_PORT );
+        assertThat( binding.remotePortExpression() ).isEqualTo("" +MessagingProperties.DEFAULT_REMOTE_PORT );
         assertThat( binding.remoteHostExpression() ).isEqualTo(MessagingProperties.DEFAULT_REMOTE_HOST );
 
     }
