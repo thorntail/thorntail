@@ -169,23 +169,23 @@ public class RuntimeServer implements Server {
 
         this.serviceActivators.forEach(activators::add);
 
-        this.serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
-        for (ServiceName serviceName : this.serviceContainer.getServiceNames()) {
-            ServiceController<?> serviceController = this.serviceContainer.getService(serviceName);
+        final ServiceContainer serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
+        for (ServiceName serviceName : serviceContainer.getServiceNames()) {
+            ServiceController<?> serviceController = serviceContainer.getService(serviceName);
             StartException exception = serviceController.getStartException();
             if (exception != null) {
                 throw exception;
             }
         }
 
-        ModelController controller = (ModelController) this.serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
+        ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
         Executor executor = Executors.newSingleThreadExecutor();
 
         this.client = controller.createClient(executor);
 
         RuntimeDeployer deployer = this.deployer.get();
 
-        this.serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Deployer>(deployer))).install();
+        serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Deployer>(deployer))).install();
 
         configureUserSpaceExtensions();
 
@@ -209,7 +209,6 @@ public class RuntimeServer implements Server {
     public void stop() throws Exception {
 
         this.container.stop();
-        this.serviceContainer = null;
         this.client = null;
         this.deployer = null;
     }
@@ -220,8 +219,6 @@ public class RuntimeServer implements Server {
     }
 
     private SelfContainedContainer container;
-
-    private ServiceContainer serviceContainer;
 
     private ModelControllerClient client;
 
