@@ -1168,6 +1168,7 @@
     <module>fractions/databases/mysql</module>
     <module>fractions/databases/postgresql</module>
     <module>fractions/drools-server</module>
+    <module>fractions/fluentd</module>
     <module>fractions/flyway</module>
     <module>fractions/hibernate-search</module>
     <module>fractions/hibernate-validator</module>
