@@ -18,6 +18,7 @@ package org.wildfly.swarm.container.internal;
 import java.nio.file.Path;
 import java.util.Collection;
 
+import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.DeploymentException;
 
