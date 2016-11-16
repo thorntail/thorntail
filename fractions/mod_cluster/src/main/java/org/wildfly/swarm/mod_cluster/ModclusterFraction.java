@@ -19,9 +19,13 @@ import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.Modcluster;
 import org.wildfly.swarm.config.modcluster.ConfigurationModClusterConfig;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
+
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 /**
  * @author Stuart Douglas
@@ -48,6 +52,30 @@ public class ModclusterFraction extends Modcluster<ModclusterFraction> implement
                 .advertise(true)
                 .connector("default"));
     }
+
+    public ModclusterFraction multicastAddress(String address) {
+        this.multicastAddress.set( address );
+        return this;
+    }
+
+    public String multicastAddress() {
+        return this.multicastAddress.get();
+    }
+
+    public ModclusterFraction multicastPort(int port) {
+        this.multicastPort.set( port );
+        return this;
+    }
+
+    public int multicastPort() {
+        return this.multicastPort.get();
+    }
+
+    private Defaultable<String> multicastAddress = string("224.01.105");
+    private Defaultable<Integer> multicastPort = integer(23364);
+
+    //private Defaultable<String> multicastAddress = string("swarm.modcluster.multicast.address", "224.01.105");
+    //private Defaultable<Integer> multicastPort = integer("swarm.modcluster.multicast.port", 23364);
 
 
 }

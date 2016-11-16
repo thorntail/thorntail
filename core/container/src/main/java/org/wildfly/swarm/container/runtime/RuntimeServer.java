@@ -106,6 +106,9 @@ public class RuntimeServer implements Server {
     @Any
     private Instance<UserSpaceExtensionFactory> userSpaceExtensionFactories;
 
+    @Inject
+    private ConfigurableManager configurableManager;
+
     public RuntimeServer() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if(container!=null) {
@@ -158,6 +161,8 @@ public class RuntimeServer implements Server {
             each.customize();
         }
 
+        this.configurableManager.log();
+        this.configurableManager.close();
 
         this.dmrMarshaller.marshal(bootstrapOperations);
 

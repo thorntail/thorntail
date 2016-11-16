@@ -56,7 +56,7 @@ public class MailArquillianTest {
     public void testIt() throws NamingException {
         InitialContext context = new InitialContext();
 
-        Object session = context.lookup("java:jboss/mail/Default");
+        Object session = context.lookup("java:jboss/mail/default");
         assertThat(session).isNotNull();
         assertThat(session).isInstanceOf(Session.class);
     }

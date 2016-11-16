@@ -15,9 +15,16 @@
  */
 package org.wildfly.swarm.vertx;
 
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.Module;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+
+import static org.wildfly.swarm.spi.api.Defaultable.*;
+import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_CLUSTER_HOST;
+import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_JNDI_NAME;
+import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_CLUSTER_PORT;
 
 /**
  * @author George Gastaldi
@@ -25,6 +32,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 @DeploymentModule(name = "io.vertx.jca", slot = "api")
 @DeploymentModule(name = "io.vertx.jca", slot = "ra", services = Module.ServiceHandling.IMPORT )
 @DeploymentModule(name = "com.hazelcast" )
+@Configurable("swarm.vertx")
 public class VertxFraction implements Fraction<VertxFraction> {
 
     public VertxFraction inhibitAdapterDeployment() {
@@ -33,29 +41,29 @@ public class VertxFraction implements Fraction<VertxFraction> {
     }
 
     public String jndiName() {
-        return jndiName;
+        return jndiName.get();
     }
 
     public VertxFraction jndiName(String jndiName) {
-        this.jndiName = jndiName;
+        this.jndiName.set(jndiName);
         return this;
     }
 
     public String clusterHost() {
-        return clusterHost;
+        return clusterHost.get();
     }
 
     public VertxFraction clusterHost(String clusterHost) {
-        this.clusterHost = clusterHost;
+        this.clusterHost.set( clusterHost );
         return this;
     }
 
     public int clusterPort() {
-        return clusterPort;
+        return clusterPort.get();
     }
 
     public VertxFraction clusterPort(int clusterPort) {
-        this.clusterPort = clusterPort;
+        this.clusterPort.set(clusterPort);
         return this;
     }
 
@@ -65,9 +73,12 @@ public class VertxFraction implements Fraction<VertxFraction> {
 
     private boolean inhibitAdapterDeployment;
 
-    private String jndiName = "java:/eis/VertxConnectionFactory";
+    @Configurable("swarm.vertx.jndi-name")
+    private Defaultable<String> jndiName = string(DEFAULT_JNDI_NAME);
 
-    private String clusterHost = "localhost";
+    @Configurable("swarm.vertx.cluster.host")
+    private Defaultable<String> clusterHost = string(DEFAULT_CLUSTER_HOST);
 
-    private int clusterPort;
+    @Configurable("swarm.vertx.cluster.port")
+    private Defaultable<Integer> clusterPort = integer(DEFAULT_CLUSTER_PORT );
 }

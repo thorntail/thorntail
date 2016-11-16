@@ -20,11 +20,13 @@
 package org.wildfly.swarm.camel.core;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 
 @WildFlyExtension(module = "org.wildfly.extension.camel")
 @WildFlySubsystem("camel")
+@Configurable("swarm.camel")
 public final class CamelCoreFraction extends AbstractCamelFraction<CamelCoreFraction> implements Fraction<CamelCoreFraction> {
 
 }

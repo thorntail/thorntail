@@ -16,6 +16,7 @@
 package org.wildfly.swarm.flyway;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
@@ -24,6 +25,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
 @DeploymentModule(name = "org.wildfly.swarm.flyway", slot = "deployment")
+@Configurable("swarm.flyway")
 public class FlywayFraction implements Fraction<FlywayFraction> {
 
     /**

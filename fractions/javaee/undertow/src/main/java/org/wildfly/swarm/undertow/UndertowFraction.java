@@ -25,9 +25,18 @@ import org.wildfly.swarm.config.undertow.ServletContainer;
 import org.wildfly.swarm.config.undertow.server.Host;
 import org.wildfly.swarm.config.undertow.servlet_container.JSPSetting;
 import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
+
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
+import static org.wildfly.swarm.spi.api.Defaultable.ifAnyExplicitlySet;
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_AJP_PORT;
+import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTPS_PORT;
+import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTP_PORT;
 
 /**
  * @author Bob McWhirter
@@ -174,7 +183,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
      * @return This fraction.
      */
     public UndertowFraction enableAJP() {
-        this.enableAJP = true;
+        this.enableAJP.set(true);
         return this;
     }
 
@@ -195,7 +204,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     public boolean isEnableAJP() {
-        return this.enableAJP;
+        return this.enableAJP.get();
     }
 
     private UndertowFraction removeHttpListenersFromDefaultServer() {
@@ -205,26 +214,40 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     public UndertowFraction httpPort(int httpPort) {
-        this.httpPort = httpPort;
+        this.httpPort.set(httpPort);
         return this;
     }
 
     public int httpPort() {
-        return this.httpPort;
+        return this.httpPort.get();
     }
 
     public UndertowFraction httpsPort(int httpsPort) {
-        this.httpsPort = httpsPort;
+        this.httpsPort.set( httpsPort );
         return this;
     }
 
     public int httpsPort() {
-        return this.httpsPort;
+        return this.httpsPort.get();
     }
 
-    private int httpPort = 8080;
+    public UndertowFraction ajpPort(int ajpPort) {
+        this.ajpPort.set( ajpPort );
+        return this;
+    }
 
-    private int httpsPort = 8443;
+    public int ajpPort() {
+        return this.ajpPort.get();
+    }
+
+    @Configurable("swarm.http.port")
+    private Defaultable<Integer> httpPort = integer(DEFAULT_HTTP_PORT);
+
+    @Configurable("swarm.https.port")
+    private Defaultable<Integer> httpsPort = integer(DEFAULT_HTTPS_PORT);
+
+    @Configurable("swarm.ajp.port")
+    private Defaultable<Integer> ajpPort = integer(DEFAULT_AJP_PORT);
 
     /**
      * Path to the keystore.
@@ -249,6 +272,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     /**
      * Whether or not enabling AJP
      */
-    private boolean enableAJP;
+    @Configurable("swarm.ajp.enable")
+    private Defaultable<Boolean> enableAJP = ifAnyExplicitlySet(this.ajpPort);
 
 }

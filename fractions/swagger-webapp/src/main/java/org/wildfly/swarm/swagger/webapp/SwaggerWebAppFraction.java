@@ -25,11 +25,13 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 
 /**
  * @author Lance Ball
  */
+@Configurable("swarm.swagger.web-app")
 public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
 
     public SwaggerWebAppFraction() {
@@ -88,7 +90,7 @@ public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
         return archive;
     }
 
-    private final String DEFAULT_CONTEXT = "/swagger-ui";
+    private static final String DEFAULT_CONTEXT = "/swagger-ui";
 
     private String context = DEFAULT_CONTEXT;
 

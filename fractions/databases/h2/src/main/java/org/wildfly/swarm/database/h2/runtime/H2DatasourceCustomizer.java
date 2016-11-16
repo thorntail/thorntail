@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.database.h2.runtime;
 
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,8 +30,8 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
 @Singleton
 @Pre
 public class H2DatasourceCustomizer implements Customizer {
+
     @Inject
-    @Any
     Instance<DatasourcesFraction> datasourcesFractionInstance;
 
     @Override

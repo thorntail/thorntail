@@ -36,6 +36,7 @@ import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 @Singleton
 public class ConfigurationValueProducer {
 
+
     @Inject
     private StageConfig stageConfig;
 

@@ -18,11 +18,21 @@ package org.wildfly.swarm.logstash;
 import java.util.Properties;
 
 import org.wildfly.swarm.config.logging.Level;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
+
+import static org.wildfly.swarm.logstash.LogstashProperties.DEFAULT_HOSTNAME;
+import static org.wildfly.swarm.logstash.LogstashProperties.DEFAULT_PORT;
+import static org.wildfly.swarm.spi.api.Defaultable.ifAnyExplicitlySet;
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
+
 
 /**
  * @author Ken Finnigan
  */
+@Configurable("swarm.logstash")
 public class LogstashFraction implements Fraction<LogstashFraction> {
 
     public LogstashFraction() {
@@ -47,21 +57,21 @@ public class LogstashFraction implements Fraction<LogstashFraction> {
     }
 
     public LogstashFraction hostname(String hostname) {
-        this.hostname = hostname;
+        this.hostname.set(hostname);
         return this;
     }
 
     public String hostname() {
-        return this.hostname;
+        return this.hostname.get();
     }
 
     public LogstashFraction port(int port) {
-        this.port = port;
+        this.port.set(port);
         return this;
     }
 
     public int port() {
-        return this.port;
+        return this.port.get();
     }
 
     public Properties formatterProperties() {
@@ -73,9 +83,20 @@ public class LogstashFraction implements Fraction<LogstashFraction> {
         return this;
     }
 
-    private String hostname;
+    public LogstashFraction enabled(boolean enable) {
+        this.enabled.set(enable);
+        return this;
+    }
 
-    private int port;
+    public boolean enabled() {
+        return this.enabled.get();
+    }
+
+    private Defaultable<String> hostname = string( DEFAULT_HOSTNAME);
+
+    private Defaultable<Integer> port = integer( DEFAULT_PORT );
+
+    private Defaultable<Boolean> enabled = ifAnyExplicitlySet(hostname, port);
 
     private Properties formatterProperties = new Properties();
 

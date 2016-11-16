@@ -19,10 +19,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
  * @author Lance Ball
  */
+@Configurable("swarm.topology.web-app")
 public class TopologyWebAppFraction implements Fraction<TopologyWebAppFraction> {
 
     public static final String DEFAULT_CONTEXT = "/topology";

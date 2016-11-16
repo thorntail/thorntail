@@ -48,7 +48,8 @@ public class ConfigRemoteMessagingArquillianTest {
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        System.setProperty( MessagingProperties.REMOTE_MQ_NAME, "my-remote-activemq" );
+        System.setProperty( "swarm.messaging.remote.name", "my-remote-activemq" );
+        System.err.println( "property is: " + System.getProperty( "swarm.messaging.remote.name" ) );
         return new Swarm();
     }
 

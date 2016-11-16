@@ -36,8 +36,7 @@ import org.wildfly.swarm.undertow.descriptors.CertInfo;
 public class HTTPSCustomizer implements Customizer {
 
     @Inject
-    @Any
-    private Instance<UndertowFraction> undertowInstance;
+    private UndertowFraction undertow;
 
     @Inject
     @Any
@@ -48,14 +47,13 @@ public class HTTPSCustomizer implements Customizer {
 
     public void customize() {
         if (!this.managementCoreService.isUnsatisfied()) {
-            UndertowFraction fraction = undertowInstance.get();
             if (certInfo.isValid()) {
                 ManagementCoreService management = this.managementCoreService.get();
                 if (management == null) {
                     throw SwarmMessages.MESSAGES.httpsRequiresManagementFraction();
                 }
 
-                for (Server server : fraction.subresources().servers()) {
+                for (Server server : undertow.subresources().servers()) {
                     if (server.subresources().httpsListeners().isEmpty()) {
                         server.httpsListener("default-https", (listener) -> {
                             listener.securityRealm("SSLRealm")

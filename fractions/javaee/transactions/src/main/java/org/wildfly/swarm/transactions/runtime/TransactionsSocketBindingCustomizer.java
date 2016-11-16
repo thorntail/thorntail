@@ -39,15 +39,15 @@ public class TransactionsSocketBindingCustomizer implements Customizer {
     @Named("standard-sockets")
     private SocketBindingGroup group;
 
-    @Inject @Any
-    private Instance<TransactionsFraction> fraction;
+    @Inject
+    private TransactionsFraction fraction;
 
     @Override
     public void customize() {
         this.group.socketBinding(new SocketBinding("txn-recovery-environment")
-                .port(this.fraction.get().port()));
+                .port(this.fraction.port()));
 
         this.group.socketBinding(new SocketBinding("txn-status-manager")
-                .port(this.fraction.get().statusPort()));
+                .port(this.fraction.statusPort()));
     }
 }

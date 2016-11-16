@@ -32,7 +32,6 @@ import org.wildfly.swarm.undertow.UndertowFraction;
 @Singleton
 public class UndertowFilterCustomizer implements Customizer {
     @Inject
-    @Any
     Instance<UndertowFraction> undertowFractionInstance;
 
     @Override
