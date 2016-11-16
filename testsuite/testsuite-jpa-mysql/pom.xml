@@ -24,16 +24,11 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jpa</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>h2</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>mysql</artifactId>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${version.mysql}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

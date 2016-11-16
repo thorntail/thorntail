@@ -24,16 +24,11 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jpa</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>h2</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
+      <version>${version.postgresql}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

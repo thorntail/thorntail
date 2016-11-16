@@ -43,10 +43,12 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>datasources</artifactId>
     </dependency>
+<!--
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>h2</artifactId>
     </dependency>
+-->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>ee</artifactId>
