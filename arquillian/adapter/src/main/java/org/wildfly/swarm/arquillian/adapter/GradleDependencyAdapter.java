@@ -90,6 +90,9 @@ public class GradleDependencyAdapter {
                     line = line.substring(0, line.indexOf(SUFFIX));
                 }
 
+                if(line.startsWith("project")) // Always skip 'project' dependencies.
+                    continue;
+
                 String[] coords = line.split(":");
                 if(3==coords.length) {
                     String version = coords[2];
