@@ -29,6 +29,10 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>topology-jgroups</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>logging</artifactId>
     </dependency>
     <dependency>

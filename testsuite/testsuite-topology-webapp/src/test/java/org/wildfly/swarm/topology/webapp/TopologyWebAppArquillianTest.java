@@ -16,8 +16,11 @@
 package org.wildfly.swarm.topology.webapp;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceRegistry;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -26,14 +29,18 @@ import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.topology.jgroups.JGroupsTopologyFraction;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Lance Ball
+ * @author Ken Finnigan
  */
 @RunWith(Arquillian.class)
 public class TopologyWebAppArquillianTest {
 
-    @Deployment(testable = false)
+    @Deployment
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
@@ -42,14 +49,24 @@ public class TopologyWebAppArquillianTest {
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
+        TopologyWebAppFraction topology = new TopologyWebAppFraction();
+        topology.proxyService("myService", "/my-proxy");
+
         return new Swarm()
-                .fraction(new TopologyWebAppFraction());
+                .fraction(topology)
+                .fraction(new JGroupsTopologyFraction());
     }
+
+    @ArquillianResource
+    private ServiceRegistry registry;
 
     @Test
-    @RunAsClient
-    public void testNothing() throws InterruptedException {
+    public void testTopologyProxyHandlerPresence() throws Exception {
+        ServiceController<?> proxyService = registry.getService(ServiceName.parse("swarm.topology.proxy"));
+        assertNotNull("TopologyProxyService is not available in service registry", proxyService);
 
+        ServiceController<?> proxyHandler = registry
+                .getService(ServiceName.parse("jboss.undertow.handler.myService-proxy-handler"));
+        assertNotNull("`myService` Undertow handler is not available in service registry", proxyHandler);
     }
-
 }
