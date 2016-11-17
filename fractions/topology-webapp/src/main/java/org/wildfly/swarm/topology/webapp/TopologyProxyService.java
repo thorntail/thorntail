@@ -44,7 +44,7 @@ import org.wildfly.swarm.topology.TopologyListener;
 
 public class TopologyProxyService implements Service<TopologyProxyService>, TopologyListener {
 
-    public static final ServiceName SERVICE_NAME = ServiceName.of("swarm.topology.proxy");
+    public static final ServiceName SERVICE_NAME = ServiceName.parse("swarm.topology.proxy");
 
     public TopologyProxyService(Set<String> serviceNames) {
         this.serviceNames = serviceNames;

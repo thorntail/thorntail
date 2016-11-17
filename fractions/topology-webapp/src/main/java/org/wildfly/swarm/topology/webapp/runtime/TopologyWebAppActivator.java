@@ -15,8 +15,12 @@
  */
 package org.wildfly.swarm.topology.webapp.runtime;
 
+import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.undertow.server.HttpHandler;
@@ -25,20 +29,24 @@ import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.topology.TopologyConnector;
 import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 import org.wildfly.swarm.topology.webapp.TopologyProxyService;
+import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;
 
 @Singleton
 public class TopologyWebAppActivator implements ServiceActivator {
 
-    public TopologyWebAppActivator(Set<String> serviceNames) {
-        this.serviceNames = serviceNames;
-    }
+    @Inject
+    @Any
+    private Instance<TopologyWebAppFraction> topologyWebAppFractionInstance;
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
         ServiceTarget target = context.getServiceTarget();
+
+        if (!topologyWebAppFractionInstance.isUnsatisfied()) {
+            serviceNames = topologyWebAppFractionInstance.get().proxiedServiceMappings().keySet();
+        }
 
         TopologyProxyService proxyService = new TopologyProxyService(serviceNames);
         ServiceBuilder<TopologyProxyService> serviceBuilder = target
@@ -51,5 +59,5 @@ public class TopologyWebAppActivator implements ServiceActivator {
         serviceBuilder.install();
     }
 
-    private final Set<String> serviceNames;
+    private Set<String> serviceNames = Collections.emptySet();
 }
