@@ -30,7 +30,6 @@ import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
-import org.wildfly.swarm.topology.webapp.TopologyProxyService;
 import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;
 
 @Singleton
