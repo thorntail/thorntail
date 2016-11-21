@@ -32,6 +32,7 @@ public class BootModuleLoader extends ModuleLoader {
                 new ClasspathModuleFinder(),
                 new ContainerModuleFinder(),
                 new ApplicationModuleFinder(),
+                new DynamicModuleFinder(),
         });
     }
 }

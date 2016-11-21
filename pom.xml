@@ -570,12 +570,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>h2</artifactId>
-        <version>2016.12.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>hibernate-search</artifactId>
         <version>2016.12.0-SNAPSHOT</version>
       </dependency>
@@ -686,18 +680,6 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-eclipselink</artifactId>
         <version>2016.12.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jpa-mysql</artifactId>
-        <version>2016.7-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jpa-postgresql</artifactId>
-        <version>2016.7-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -821,19 +803,7 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>mysql</artifactId>
-        <version>2016.12.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming</artifactId>
-        <version>2016.12.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>postgresql</artifactId>
         <version>2016.12.0-SNAPSHOT</version>
       </dependency>
 
@@ -1164,9 +1134,7 @@
     <module>fractions/javaee/webservices</module>
 
     <module>fractions/camel</module>
-    <module>fractions/databases/h2</module>
-    <module>fractions/databases/mysql</module>
-    <module>fractions/databases/postgresql</module>
+
     <module>fractions/drools-server</module>
     <module>fractions/fluentd</module>
     <module>fractions/flyway</module>

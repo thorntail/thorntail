@@ -113,31 +113,6 @@ public interface SwarmProperties {
     String DEPLOYMENT_TIMEOUT = "swarm.deployment.timeout";
 
     /**
-     * Name of the datasource, i.e. 'ExampleDS'
-     */
-    String DATASOURCE_NAME = "swarm.ds.name";
-
-    /**
-     * Username for database access
-     */
-    String DATASOURCE_USERNAME = "swarm.ds.username";
-
-    /**
-     * Password for database access
-     */
-    String DATASOURCE_PASSWORD = "swarm.ds.password";
-
-    /**
-     * JDBC Connection URL
-     */
-    String DATASOURCE_CONNECTION_URL = "swarm.ds.connection.url";
-
-    /**
-     * Database Driver name
-     */
-    String DATABASE_DRIVER = "swarm.jdbc.driver";
-
-    /**
      * Port number for Swarm's Arquillian Daemon.
      */
     String ARQUILLIAN_DAEMON_PORT = "swarm.arquillian.daemon.port";

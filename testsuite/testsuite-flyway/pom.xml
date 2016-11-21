@@ -25,9 +25,10 @@
       <artifactId>flyway</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-    </dependency>    
+      <version>${version.h2}</version>
+    </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>arquillian</artifactId>
