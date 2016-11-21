@@ -25,19 +25,34 @@ import org.jboss.dmr.ModelNode;
  */
 public class HealthStatus implements Status {
 
+    private final String name;
+
     private Optional<ModelNode> message = Optional.empty();
-    private final State state;
+    private State state;
 
-    HealthStatus(State state) {
-        this.state = state;
+    HealthStatus(String name) {
+        this.name = name;
     }
 
-    public static HealthStatus up() {
-        return new HealthStatus(State.UP);
+    public static HealthStatus named(String name)
+    {
+        return new HealthStatus(name);
     }
 
-    public static HealthStatus down() {
-        return new HealthStatus(State.DOWN);
+    public HealthStatus up() {
+        assertNamed();
+        this.state = State.UP;
+        return this;
+    }
+
+    private void assertNamed() {
+        if(null==this.name)
+            throw new IllegalStateException("HealthStatus need to be named");
+    }
+
+    public HealthStatus down() {
+        this.state = State.DOWN;
+        return this;
     }
 
     public HealthStatus withAttribute(String key, String value) {
@@ -70,5 +85,16 @@ public class HealthStatus implements Status {
 
     public State getState() {
         return state;
+    }
+
+    @Override
+    public String toJson() {
+        ModelNode wrapper = new ModelNode();
+        wrapper.get("id").set(name);
+        wrapper.get("result").set(state.name());
+        if(message.isPresent()) {
+            wrapper.get("data").set(message.get());
+        }
+        return wrapper.toJSONString(false);
     }
 }

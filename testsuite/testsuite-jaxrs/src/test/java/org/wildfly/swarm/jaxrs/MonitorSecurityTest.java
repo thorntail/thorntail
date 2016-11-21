@@ -34,7 +34,7 @@ import org.wildfly.swarm.monitor.MonitorFraction;
  * @author Heiko Braun
  */
 @RunWith(Arquillian.class)
-public class JAXRSArqMonitorTest extends SimpleHttp {
+public class MonitorSecurityTest extends SimpleHttp {
 
     @Deployment
     public static Archive getDeployment() throws Exception {
@@ -42,7 +42,7 @@ public class JAXRSArqMonitorTest extends SimpleHttp {
         deployment.addClass(TimeResource.class);
         deployment.addClass(SimpleHttp.class);
         deployment.addClass(JaxRsActivator.class);
-        deployment.addClass(HealthCheckResource.class);
+        deployment.addClass(SuccessfulChecks.class);
         deployment.addAllDependencies();
         deployment.setContextRoot("rest");
         return deployment;
@@ -52,7 +52,6 @@ public class JAXRSArqMonitorTest extends SimpleHttp {
     public static Swarm getContainer() throws Exception {
         Swarm container = new Swarm();
         container.fraction(new JAXRSFraction());
-        //container.fraction(LoggingFraction.createDebugLoggingFraction());
         container.fraction(new MonitorFraction().securityRealm("TestRealm"));
         container.fraction(
                 new ManagementFraction()
@@ -73,35 +72,27 @@ public class JAXRSArqMonitorTest extends SimpleHttp {
     @RunAsClient
     public void testHealthIntegration() throws Exception {
 
-        // verify listing of subresources
-        Response endpointList = getUrlContents("http://localhost:8080/health");
-        Assert.assertTrue(endpointList.getBody().contains("links")); //hateoas structure
-        System.out.println(endpointList.getBody());
-        Assert.assertTrue(endpointList.getBody().contains("/health/rest/v1/monitor/health-secure"));
+        // aggregator / with auth
+        Response response = getUrlContents("http://localhost:8080/health");
+        System.out.println(response.getBody());
+        Assert.assertTrue(
+                response.getBody().contains("first") &&
+                        response.getBody().contains("second")
+        );
 
-        // verify direct access to secure resources
-        Response response = getUrlContents("http://localhost:8080/rest/v1/monitor/health-secure", true, false);
-        Assert.assertEquals("Expected 301 when directly accessing secured health endpoint", 301, response.getStatus());
+        // aggregator / no auth
+        response = getUrlContents("http://localhost:8080/health", false);
+        Assert.assertEquals("Expected 401 when accessing aggregator wihthout credentials", 401, response.getStatus());
 
-        // verify indirect access to secure resources
-        response = getUrlContents("http://localhost:8080/health/rest/v1/monitor/health-secure");
-        Assert.assertTrue(response.getBody().contains("UP"));
+        // direct / no auth
+        response = getUrlContents("http://localhost:8080/rest/v1/success/first", false);
+        Assert.assertEquals("Expected 401 when directly accessing secured health endpoint wihthout credentials", 401, response.getStatus());
 
-        // verify indirect access, without auth, to secure resources
-        response = getUrlContents("http://localhost:8080/health/rest/v1/monitor/health-secure", false);
-        Assert.assertEquals(401, response.getStatus());
 
-        // verify direct access to insecure resources
-        response = getUrlContents("http://localhost:8080/rest/v1/monitor/health-insecure", true, false);
-        Assert.assertEquals("Expected 301 when directly accessing secured health endpoint", 301, response.getStatus());
-
-        // verify indirect access, without auth, to insecure resources
-        response = getUrlContents("http://localhost:8080/health/rest/v1/monitor/health-insecure", false);
-        Assert.assertEquals(200, response.getStatus());
-
-        // verify indirect access to insecure resources
-        response = getUrlContents("http://localhost:8080/health/rest/v1/monitor/health-insecure");
-        Assert.assertTrue(response.getBody().contains("UP"));
+        // direct // with auth
+        response = getUrlContents("http://localhost:8080/rest/v1/success/first", true);
+        Assert.assertEquals("Expected 200 when directly accessing secured health endpoint with credentials", 200, response.getStatus());
+        Assert.assertTrue(response.getBody().contains("first") && response.getBody().contains("UP"));
 
         // verify other resources remain untouched
         response = getUrlContents("http://localhost:8080/rest/v1/another-app/time");

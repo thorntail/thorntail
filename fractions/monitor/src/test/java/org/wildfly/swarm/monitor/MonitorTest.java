@@ -28,7 +28,8 @@ public class MonitorTest {
     @Test
     public void testAttributes() {
 
-        HealthStatus healthStatus = HealthStatus.up()
+        HealthStatus healthStatus = HealthStatus.named("test")
+                .up()
                 .withAttribute("a", "b")
                 .withAttribute("c", "d");
 

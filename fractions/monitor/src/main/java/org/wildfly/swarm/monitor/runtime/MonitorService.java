@@ -60,6 +60,11 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     }
 
     @Override
+    public long getProbeTimeoutSeconds() {
+        return DEFAULT_PROBE_TIMEOUT_SECONDS;
+    }
+
+    @Override
     public void start(StartContext startContext) throws StartException {
         executorService = Executors.newSingleThreadExecutor();
         serverEnvironment = serverEnvironmentValue.getValue();
@@ -193,6 +198,8 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     public Injector<SecurityRealm> getSecurityRealmInjector() {
         return this.securityRealmServiceValue;
     }
+
+    private static final long DEFAULT_PROBE_TIMEOUT_SECONDS = 2;
 
     private final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
 

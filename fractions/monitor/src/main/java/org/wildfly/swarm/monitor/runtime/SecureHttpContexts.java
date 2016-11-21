@@ -39,6 +39,7 @@ import io.undertow.security.impl.SimpleNonceManager;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PredicateHandler;
+import io.undertow.util.HeaderValues;
 import org.jboss.as.domain.http.server.security.AuthenticationMechanismWrapper;
 import org.jboss.as.domain.http.server.security.RealmIdentityManager;
 import org.jboss.as.domain.management.AuthMechanism;
@@ -119,12 +120,23 @@ public class SecureHttpContexts implements HttpHandler {
         // the predicate handler takes care that all of the above
         // will only be enacted on relevant web contexts
         handler = new PredicateHandler(exchange -> {
-            return Queries.isSecuredHealthEndpoint(monitor, exchange.getRelativePath())
-                    || HttpContexts.getDefaultContextNames().contains(exchange.getRelativePath());
+            return monitor.getSecurityRealm().isPresent() &&
+                    (
+                            Queries.isAggregatorEndpoint(monitor, exchange.getRelativePath()) ||
+                                    (Queries.isDirectAccessToHealthEndpoint(monitor, exchange.getRelativePath())
+                                    && !hasTokenAuth(exchange)) ||
+                            HttpContexts.getDefaultContextNames().contains(exchange.getRelativePath())
+                    );
         }, handler, toWrap);
 
 
         return handler;
+    }
+
+    private boolean hasTokenAuth(HttpServerExchange exchange) {
+
+        HeaderValues token = exchange.getRequestHeaders().get(HttpContexts.X_SWARM_HEALTH_TOKEN);
+        return token != null && HttpContexts.EPHEMERAL_TOKEN.equals(token.getFirst());
     }
 
     private static AuthenticationMechanism wrap(final AuthenticationMechanism toWrap, final AuthMechanism mechanism) {

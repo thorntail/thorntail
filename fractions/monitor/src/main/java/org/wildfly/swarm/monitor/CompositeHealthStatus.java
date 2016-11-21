@@ -22,10 +22,11 @@ import java.util.Optional;
 import org.jboss.dmr.ModelNode;
 
 /**
+ * TODO: remove
  * @author Heiko Braun
  * @since 23/03/16
  */
-public class CompositeHealthStatus implements Status {
+class CompositeHealthStatus implements Status {
 
     private final Policy policy;
 
@@ -105,5 +106,10 @@ public class CompositeHealthStatus implements Status {
     public interface Policy {
         State apply(List<HealthStatus> states);
         Optional<String> message(List<HealthStatus> states);
+    }
+
+    @Override
+    public String toJson() {
+        return null;
     }
 }
