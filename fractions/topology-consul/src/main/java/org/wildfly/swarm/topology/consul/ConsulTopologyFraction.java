@@ -18,12 +18,13 @@ package org.wildfly.swarm.topology.consul;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
- * Consul topology-management fractoin.
+ * Consul topology-management fraction.
  *
  * This fraction allows for the use of a cluster of Consul servers and agents
  * to manage topology information.
@@ -63,7 +64,7 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
      * @return this fraction.
      */
     public ConsulTopologyFraction url(URL url) {
-        this.url = url;
+        this.url.set( url );
         return this;
     }
 
@@ -75,7 +76,7 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
      * @throws MalformedURLException if an error occurs parsing the URL.
      */
     public ConsulTopologyFraction url(String url) throws MalformedURLException {
-        this.url = new URL(url);
+        this.url.set( new URL(url) );
         return this;
     }
 
@@ -85,7 +86,7 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
      * @return The agent URL.
      */
     public URL url() {
-        return this.url;
+        return this.url.get();
     }
 
     /**
@@ -96,15 +97,13 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
     static {
         URL tmp = null;
         try {
-            String consulUrl = System.getProperty(SwarmProperties.CONSUL_URL, "http://localhost:8500/");
-            tmp = new URL(consulUrl);
+            tmp = new URL("http://localhost:8500");
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         DEFAULT_URL = tmp;
     }
 
-    private URL url = null;
-
+    private Defaultable<URL> url = Defaultable.url(DEFAULT_URL);
 
 }

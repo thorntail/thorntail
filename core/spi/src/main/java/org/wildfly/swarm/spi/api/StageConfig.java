@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.spi.api;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -131,7 +133,12 @@ public class StageConfig {
             if ( valueStr == null ) {
                 valueStr = System.getProperty(key);
             }
-            T value = convert(valueStr);
+            T value = null;
+            try {
+                value = convert(valueStr);
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
 
             if(null==value) {
                 throw new RuntimeException("Stage config '" + key + "' is missing");
@@ -156,8 +163,7 @@ public class StageConfig {
             return this;
         }
 
-        private T convert(String value)
-        {
+        private T convert(String value) throws MalformedURLException {
 
             if (value == null)
             {
@@ -212,6 +218,9 @@ public class StageConfig {
             else if (Double.class.equals(targetType))
             {
                 result = Double.parseDouble(value);
+            }
+            else if ( URL.class.equals(targetType)) {
+                result = new URL( value );
             }
 
             return (T) result;

@@ -18,9 +18,8 @@ package org.wildfly.swarm.netflix.hystrix;
 /**
  * @author Ken Finnigan
  */
-public final class HystrixProperties {
-    public static final String HYSTRIX_STREAM_PATH = "swarm.hystrix.stream.path";
+public interface HystrixProperties {
 
-    private HystrixProperties() {
-    }
+    String DEFAULT_STREAM_PATH = "/hystrix.stream";
+
 }

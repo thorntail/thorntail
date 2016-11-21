@@ -15,15 +15,9 @@
  */
 package org.wildfly.swarm.webservices;
 
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.Webservices;
-import org.wildfly.swarm.config.webservices.ClientConfig;
 import org.wildfly.swarm.config.webservices.EndpointConfig;
-import org.wildfly.swarm.config.webservices.Handler;
-import org.wildfly.swarm.config.webservices.PreHandlerChain;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -31,36 +25,29 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @MarshalDMR
 public class WebServicesFraction extends Webservices<WebServicesFraction> implements Fraction<WebServicesFraction> {
 
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
-
     public static WebServicesFraction createDefaultFraction() {
         return new WebServicesFraction().applyDefaults();
     }
 
+    @Override
     public WebServicesFraction applyDefaults() {
-        String SoapHost = System.getProperty(SwarmProperties.BIND_ADDRESS, SOAP_HOST);
-
-        wsdlHost(SoapHost)
-                .endpointConfig(new EndpointConfig(STANDARD_ENDPOINT_CONFIG))
-                .endpointConfig(createRemoteEndpoint())
-                .clientConfig(new ClientConfig(STANDARD_CLIENT_CONFIG));
+        endpointConfig(STANDARD_ENDPOINT_CONFIG);
+        endpointConfig(RECORDING_ENDPOINT_CONFIG, this::configureRemoteEndpoint);
+        clientConfig(STANDARD_CLIENT_CONFIG);
 
         return this;
     }
 
-    private static final EndpointConfig createRemoteEndpoint() {
-        return new EndpointConfig(RECORDING)
-                .preHandlerChain(new PreHandlerChain(RECORDING_HANDLERS)
-                                         .protocolBindings(SOAP_PROTOCOLS)
-                                         .handler(new Handler(RECORDING_HANDLER).attributeClass(RECORDING_HANDLER_CLASS)));
+    private final void configureRemoteEndpoint(EndpointConfig<?> endpoint) {
+        endpoint.preHandlerChain(RECORDING_HANDLERS, (chain) ->
+                chain.protocolBindings(SOAP_PROTOCOLS)
+                        .handler(RECORDING_HANDLER, (handler) ->
+                                handler.attributeClass(RECORDING_HANDLER_CLASS)));
     }
 
     private static final String STANDARD_ENDPOINT_CONFIG = "Standard-Endpoint-Config";
 
-    private static final String RECORDING = "Recording-Endpoint-Config";
+    private static final String RECORDING_ENDPOINT_CONFIG = "Recording-Endpoint-Config";
 
     private static final String RECORDING_HANDLERS = "recording-handlers";
 
@@ -69,8 +56,6 @@ public class WebServicesFraction extends Webservices<WebServicesFraction> implem
     private static final String RECORDING_HANDLER = "RecordingHandler";
 
     private static final String RECORDING_HANDLER_CLASS = "org.jboss.ws.common.invocation.RecordingServerHandler";
-
-    private static final String SOAP_HOST = "127.0.0.1";
 
     private static final String STANDARD_CLIENT_CONFIG = "Standard-Client-Config";
 }

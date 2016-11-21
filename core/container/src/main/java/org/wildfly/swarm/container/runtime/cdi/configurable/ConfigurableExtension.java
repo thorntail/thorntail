@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.inject.Singleton;
 
+import org.jboss.msc.service.ServiceActivator;
 import org.wildfly.swarm.container.runtime.ConfigurableManager;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
