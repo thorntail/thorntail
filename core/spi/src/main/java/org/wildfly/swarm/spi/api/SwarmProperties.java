@@ -103,11 +103,6 @@ public interface SwarmProperties {
     String PROJECT_STAGE_FILE = "swarm.project.stage.file";
 
     /**
-     * Full qualified http address, i.e. 'http://localhost:8500/'
-     */
-    String CONSUL_URL = "swarm.consul.url";
-
-    /**
      * Timeout, in seconds, to wait for a deployment to occur, defaults to 300
      */
     String DEPLOYMENT_TIMEOUT = "swarm.deployment.timeout";

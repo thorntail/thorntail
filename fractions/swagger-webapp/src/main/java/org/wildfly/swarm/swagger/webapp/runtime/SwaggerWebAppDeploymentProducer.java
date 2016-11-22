@@ -38,15 +38,8 @@ public class SwaggerWebAppDeploymentProducer {
     @Inject @Any
     private SwaggerWebAppFraction fraction;
 
-    @Inject @ConfigurationValue(SwaggerWebAppProperties.CONTEXT)
-    private String context;
-
     @Produces
     public Archive swaggerWebApp() throws ModuleLoadException, IOException {
-
-        if ( this.context == null ) {
-            this.context = fraction.getContext();
-        }
 
         // Load the swagger-ui webjars.
         Module module = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "org.webjars.swagger-ui" ) );
@@ -76,7 +69,7 @@ public class SwaggerWebAppDeploymentProducer {
 
         WARArchive war = ShrinkWrap.create(WARArchive.class, "swagger-ui.war")
                 .addAsLibrary(relocatedJar)
-                .setContextRoot(this.context);
+                .setContextRoot(this.fraction.getContext());
 
         // If any user content has been provided, merge that with the swagger-ui bits
         Archive<?> userContent = this.fraction.getWebContent();

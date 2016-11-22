@@ -1,9 +1,10 @@
 package org.wildfly.swarm.netflix.hystrix.runtime;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.netflix.hystrix.HystrixProperties;
+import org.wildfly.swarm.netflix.hystrix.HystrixFraction;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.undertow.WARArchive;
 
@@ -12,12 +13,15 @@ import org.wildfly.swarm.undertow.WARArchive;
  */
 @Singleton
 public class HystrixArchivePreparer implements ArchivePreparer {
+    @Inject
+    HystrixFraction fraction;
+
     @Override
     public void prepareArchive(Archive<?> archive) {
         // Add Hystrix Metrix Stream Servlet
         archive.as(WARArchive.class)
                 .addServlet("HystrixMetricsStreamServlet", "com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet")
                 .withDisplayName("HystrixMetricsStreamServlet")
-                .withUrlPattern(System.getProperty(HystrixProperties.HYSTRIX_STREAM_PATH, "/hystrix.stream"));
+                .withUrlPattern(this.fraction.streamPath());
     }
 }

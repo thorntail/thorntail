@@ -15,9 +15,14 @@
  */
 package org.wildfly.swarm.netflix.hystrix;
 
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
+
+import static org.wildfly.swarm.netflix.hystrix.HystrixProperties.DEFAULT_STREAM_PATH;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 /**
  * @author Ken Finnigan
@@ -27,4 +32,16 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
         @DeploymentModule(name = "io.reactivex.rxjava")
 })
 public class HystrixFraction implements Fraction<HystrixFraction> {
+
+    public HystrixFraction streamPath(String streamPath) {
+        this.streamPath.set( streamPath );
+        return this;
+    }
+
+    public String streamPath() {
+        return this.streamPath.get();
+    }
+
+    @Configurable("swarm.hystrix.stream.path")
+    private Defaultable<String> streamPath = string(DEFAULT_STREAM_PATH);
 }

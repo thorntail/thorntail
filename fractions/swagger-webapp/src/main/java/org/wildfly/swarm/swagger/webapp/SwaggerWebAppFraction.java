@@ -22,10 +22,14 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+
+import static org.wildfly.swarm.spi.api.Defaultable.string;
+import static org.wildfly.swarm.swagger.webapp.SwaggerWebAppProperties.DEFAULT_CONTEXT;
 
 
 /**
@@ -35,15 +39,14 @@ import org.wildfly.swarm.spi.api.annotations.Configurable;
 public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
 
     public SwaggerWebAppFraction() {
-        context = System.getProperty(SwarmProperties.CONTEXT_PATH, DEFAULT_CONTEXT);
     }
 
     public String getContext() {
-        return context;
+        return context.get();
     }
 
     public void setContext(String context) {
-        this.context = context;
+        this.context.set(context);
     }
 
     /**
@@ -90,9 +93,7 @@ public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
         return archive;
     }
 
-    private static final String DEFAULT_CONTEXT = "/swagger-ui";
-
-    private String context = DEFAULT_CONTEXT;
+    private Defaultable<String> context = string(DEFAULT_CONTEXT);
 
     private Archive<?> webContent;
 }

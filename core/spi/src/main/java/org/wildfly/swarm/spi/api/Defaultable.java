@@ -1,5 +1,6 @@
 package org.wildfly.swarm.spi.api;
 
+import java.net.URL;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -35,6 +36,14 @@ public class Defaultable<T> implements Supplier<T> {
 
     public static Defaultable<Boolean> bool(Supplier<Boolean> defaultValueSupplier) {
         return new Defaultable<>(Boolean.class, defaultValueSupplier);
+    }
+
+    public static Defaultable<URL> url(URL defaultValue) {
+        return url( ()->defaultValue );
+    }
+
+    public static Defaultable<URL> url(Supplier<URL> defaultValueSupplier) {
+        return new Defaultable<>(URL.class, defaultValueSupplier);
     }
 
     /**
