@@ -21,7 +21,10 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.container.ManifestContainer;
 
-/**
+/** Utility to track internal markers regarding operations performed upon archives.
+ *
+ * @apiNote Used by fraction authors.
+ *
  * @author Ken Finnigan
  */
 public interface MarkerContainer<T extends Archive<T>> extends ManifestContainer<T>, Archive<T> {

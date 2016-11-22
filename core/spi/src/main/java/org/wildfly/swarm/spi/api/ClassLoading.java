@@ -17,6 +17,10 @@ package org.wildfly.swarm.spi.api;
 
 import java.util.concurrent.Callable;
 
+/**
+ * Utility to execute code within a context using a particular {@code ClassLoader} as the
+ * thread-context-classloader.
+ */
 public interface ClassLoading {
 
     static <T> T withTCCL(ClassLoader loader, Callable<T> action) {

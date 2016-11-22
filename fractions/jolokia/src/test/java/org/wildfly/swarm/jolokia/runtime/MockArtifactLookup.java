@@ -13,12 +13,12 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
 public class MockArtifactLookup implements ArtifactLookup {
 
     @Override
-    public Archive artifact(String gav) throws Exception {
+    public JavaArchive artifact(String gav) throws Exception {
         return ShrinkWrap.create( JavaArchive.class, gav + ".jar" );
     }
 
     @Override
-    public Archive artifact(String gav, String asName) throws Exception {
+    public JavaArchive artifact(String gav, String asName) throws Exception {
         return ShrinkWrap.create( JavaArchive.class, asName );
     }
 

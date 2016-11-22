@@ -17,7 +17,14 @@ package org.wildfly.swarm.container;
 
 import javax.enterprise.inject.Vetoed;
 
-/**
+/** A network-level interface configured for the container.
+ *
+ * <p>An interface dictates which IP address other sockets are bound to,
+ * by way of a {@link org.wildfly.swarm.spi.api.SocketBindingGroup}.</p>
+ *
+ * @see org.wildfly.swarm.spi.api.SocketBindingGroup
+ * @see org.wildfly.swarm.spi.api.SocketBinding
+ * @see org.wildfly.swarm.spi.api.OutboundSocketBinding
  * @author Bob McWhirter
  */
 @Vetoed

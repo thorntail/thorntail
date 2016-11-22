@@ -70,12 +70,6 @@ public class Container extends Swarm {
 
     @Override
     @Deprecated
-    public Container start(boolean eagerlyOpen) throws Exception {
-        return (Container) super.start(eagerlyOpen);
-    }
-
-    @Override
-    @Deprecated
     public Container stop() throws Exception {
         return (Container) super.stop();
     }
@@ -94,7 +88,7 @@ public class Container extends Swarm {
 
     @Override
     @Deprecated
-    public Container deploy() throws Exception {
+    public Container deploy() throws DeploymentException, IllegalStateException {
         return (Container) super.deploy();
     }
 

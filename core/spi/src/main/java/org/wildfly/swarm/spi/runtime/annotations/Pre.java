@@ -22,7 +22,14 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
-/**
+/** Qualifier attached to a {@link org.wildfly.swarm.spi.api.Customizer} to assist in ordering.
+ *
+ * <p>After all fractions are configured by user actions, all instances of {@code Customizer} are
+ * executed.  First all marked as {@code Pre} are executed in an arbitrary order, followed by
+ * all marked as {@code Post}, also in an arbitrary order.</p>
+ *
+ * @see Post
+ *
  * @author Ken Finnigan
  */
 @Qualifier

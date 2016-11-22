@@ -18,7 +18,17 @@ package org.wildfly.swarm.spi.api;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 
-/**
+/** An improvement of the ShrinkWrap {@code JavaArchive}.
+ *
+ * <p>Like the {@code JavaArchive}, this archive type supports adding
+ * classes and resources.  Additionally, it supports smarter addition
+ * of service-providers to be discovered through the JDK {@code ServiceLoader}
+ * patterns.  Additionally, it supports adding modules as though through
+ * {@code jboss-deployment-structure.xml}.</p>
+ *
+ * @see ServiceProviderContainer
+ * @see JBossDeploymentStructureContainer
+ *
  * @author Bob McWhirter
  */
 public interface JARArchive extends

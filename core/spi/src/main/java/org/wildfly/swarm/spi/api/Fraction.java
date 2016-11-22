@@ -15,11 +15,32 @@
  */
 package org.wildfly.swarm.spi.api;
 
-/**
+/** Root of a tree of configuration for a particular subset of functionality.
+ *
+ * <p>While each portion of functionality is called a "fraction", this class
+ * maps to the configuration there-of.  It should be implemented to include
+ * whatever configuration is appropriate for the subset of functionality.</p>
+ *
+ * <p>In the event a logical "fraction" requires no configuration, a subclass
+ * of this class is <b>not</b> required.</p>
+ *
+ * <p>For functionality coming in through WildFly, the implementation is
+ * a sub-class of the matching WildFly subsystem configuration tree from
+ * the {@code wildfly-config-api} project.</p>
+ *
+ * @link https://github.com/wildfly-swarm/wildfly-config-api
+ *
  * @author Bob McWhirter
  */
 public interface Fraction<T extends Fraction> {
 
+    /** Apply whatever defaults are required if this fraction
+     * was not explicitly configured by a user.
+     *
+     * @implNote The default implementation for this is a no-op.
+     *
+     * @return this fraction.
+     */
     default T applyDefaults() {
         return (T) this;
     }

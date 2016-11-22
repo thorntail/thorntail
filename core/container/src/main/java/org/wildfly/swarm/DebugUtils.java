@@ -24,11 +24,11 @@ import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureAsset;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 
-/**
+/** Non-public class for debugging by the WildFly Swarm developers.
+ *
  * @author Bob McWhirter
  */
 public class DebugUtils {
-
     public static void dumpJBossDeploymentStructure(Archive archive) {
         System.err.println( "--- start jboss-deployment-structure.xml" );
         JBossDeploymentStructureAsset asset = archive.as(JARArchive.class).getDescriptorAsset();

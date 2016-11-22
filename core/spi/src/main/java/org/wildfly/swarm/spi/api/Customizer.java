@@ -15,10 +15,27 @@
  */
 package org.wildfly.swarm.spi.api;
 
-/**
+/** A CDI component which may customize the fraction configuration.
+ *
+ * <p>Customizers run after all configurations have been applied to
+ * the fractions, including XML, YAML and system properties.  They may
+ * then perform additional work to further customize the configuration.</p>
+ *
+ * <p>The execution of customizers is currently divided into two phases,
+ * {@link org.wildfly.swarm.spi.runtime.annotations.Pre} and {@link org.wildfly.swarm.spi.runtime.annotations.Post}.
+ * All {@code Pre} customizers are executed in arbitrary order, followed immediately
+ * by all {@code Post} customizers, also in arbitrary order.</p>
+ *
+ * <p>Usually a {@code Customizer} may {@link javax.inject.Inject} various other
+ * components, such as various {@link Fraction} or {@link SocketBindingGroup} instances.</p>
+ *
+ * @apiNote Used by {@code Fraction} authors.
+ *
  * @author Bob McWhirter
  */
 public interface Customizer {
 
+    /** Perform customization.
+     */
     void customize();
 }

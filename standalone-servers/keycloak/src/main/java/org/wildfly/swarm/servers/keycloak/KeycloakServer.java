@@ -7,6 +7,6 @@ import org.wildfly.swarm.Swarm;
  */
 public class KeycloakServer {
     public static void main(String... args) throws Exception {
-        (new Swarm()).start(true);
+        (new Swarm()).start();
     }
 }

@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.spi.api;
 
+/** Utility to determine what sort of environment the application is running within.
+ *
+ * @apiNote Internal usage.
+ */
 public class Environment {
 
     public static boolean openshift() {

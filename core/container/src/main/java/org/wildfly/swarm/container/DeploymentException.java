@@ -19,7 +19,11 @@ import javax.enterprise.inject.Vetoed;
 
 import org.jboss.shrinkwrap.api.Archive;
 
-/**
+/** Thrown in the case an error occurs when deploying.
+ *
+ * @see org.wildfly.swarm.Swarm#deploy()
+ * @see org.wildfly.swarm.Swarm#deploy(Archive)
+ *
  * @author Bob McWhirter
  */
 @Vetoed
@@ -49,6 +53,10 @@ public class DeploymentException extends Exception {
         this.archive = archive;
     }
 
+    /** Retrieve the archive which caused the deployment error.
+     *
+     * @return The archive in error.
+     */
     public Archive<?> getArchive() {
         return this.archive;
     }
