@@ -16,38 +16,33 @@
 package org.wildfly.swarm.monitor.runtime;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
 
-import io.undertow.attribute.ReadOnlyAttributeException;
-import io.undertow.attribute.RelativePathAttribute;
 import io.undertow.client.ClientCallback;
-import io.undertow.client.ClientConnection;
 import io.undertow.client.ClientExchange;
-import io.undertow.client.ClientRequest;
 import io.undertow.client.ClientResponse;
-import io.undertow.client.UndertowClient;
-import io.undertow.server.DefaultByteBufferPool;
+import io.undertow.server.Connectors;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.ServerConnection;
+import io.undertow.server.protocol.http.HttpServerConnection;
 import io.undertow.util.AttachmentKey;
+import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import io.undertow.util.Protocols;
-import io.undertow.util.SameThreadExecutor;
-import io.undertow.util.StatusCodes;
 import io.undertow.util.StringReadChannelListener;
-import org.jboss.dmr.ModelNode;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.monitor.HealthMetaData;
 import org.xnio.ChannelListeners;
+import org.xnio.IoUtils;
 import org.xnio.OptionMap;
 import org.xnio.Options;
 import org.xnio.Xnio;
@@ -61,6 +56,9 @@ import org.xnio.channels.StreamSinkChannel;
  */
 @Vetoed
 class HttpContexts implements HttpHandler {
+
+    protected ThreadLocal<CountDownLatch> dispatched = new ThreadLocal<>();
+    private AttachmentKey RESPONSES = AttachmentKey.create(List.class);
 
     public HttpContexts(HttpHandler next) {
 
@@ -90,6 +88,14 @@ class HttpContexts implements HttpHandler {
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
 
+        //System.out.println(exchange.getRequestPath() +" on "+Thread.currentThread());
+
+        if (dispatched.get()!=null && dispatched.get().getCount()==1) {
+            next.handleRequest(exchange);
+            dispatched.set(null);
+            return;
+        }
+
         if (NODE.equals(exchange.getRequestPath())) {
             nodeInfo(exchange);
             return;
@@ -113,97 +119,114 @@ class HttpContexts implements HttpHandler {
             noHealthEndpoints(exchange);
         } else {
 
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
+            try {
+                final List<InVMResponse> responses = new CopyOnWriteArrayList<>();
+                CountDownLatch latch = new CountDownLatch(monitor.getHealthURIs().size());
+                dispatched.set(latch);
 
-                    try {
-
-                        final UndertowClient client = UndertowClient.getInstance();
-                        final List<ClientResponse> responses = new ArrayList();
-
-                        ClientConnection connection =
-                                client.connect(
-                                        new URL("http://" + exchange.getHostAndPort()).toURI(),
-                                        worker,
-                                        new DefaultByteBufferPool(false, 1024, 100, 12),
-                                        OptionMap.EMPTY
-                                ).get();
-
-                        //  probe each health endpoint
-                        for(HealthMetaData healthCheck : monitor.getHealthURIs()) {
-
-                            try {
-                                ClientRequest request = new ClientRequest();
-                                request.setProtocol(Protocols.HTTP_1_1);
-                                request.setPath(healthCheck.getWebContext());
-                                request.getRequestHeaders().add(X_SWARM_HEALTH_TOKEN, EPHEMERAL_TOKEN);
-                                final CountDownLatch latch = new CountDownLatch(1);
-                                connection.sendRequest(request, createClientCallback(responses, latch));
-                                latch.await(monitor.getProbeTimeoutSeconds(), TimeUnit.SECONDS);
-
-                                if(latch.getCount()>0)
-                                    throw new Exception("Probing "+healthCheck.getWebContext() + " timed out");
-
-                            } catch (Exception e) {
-                                connection.close();
-                                throw new RuntimeException("Failed to process health check "+ healthCheck.getWebContext(), e);
-                            }
-                        }
-
-                        // process responses
-                        boolean failed = false;
-                        if (!responses.isEmpty()) {
-
-                            StringBuffer sb = new StringBuffer("{");
-                            sb.append("\"checks\": [\n");
-
-                            int i=0;
-                            for(ClientResponse resp : responses) {
-                                if(200==resp.getResponseCode()) {
-                                    sb.append(resp.getAttachment(RESPONSE_BODY));
-                                } else if(503==resp.getResponseCode()){
-                                    sb.append(resp.getAttachment(RESPONSE_BODY));
-                                    failed = true;
-                                } else {
-                                    throw new RuntimeException("Unexpected status code: "+resp.getResponseCode());
-                                }
-                                if(i<responses.size()-1)
-                                    sb.append(",\n");
-                                i++;
-                            }
-                            sb.append("],\n");
-
-                            String outcome = failed ? "DOWN":"UP"; // we don't have policies yet, so keep it simple
-                            sb.append("\"outcome\": \""+outcome+"\"\n");
-                            sb.append("}\n");
-
-                            // send a response
-                            if(failed)
-                                exchange.setStatusCode(503);
-                            exchange.getResponseSender().send(sb.toString());
-
-                        } else {
-                            exchange.setStatusCode(204);
-                        }
-
-                        connection.close();
-                        exchange.endExchange();
-
-                    } catch (Throwable t) {
-                        LOG.error("Health check failed", t);
-
-                        if(!exchange.isResponseStarted())
-                            exchange.setStatusCode(500);
-                        exchange.endExchange();
-                    }
+                for(HealthMetaData healthCheck : monitor.getHealthURIs()) {
+                    invokeHealthInVM(exchange, healthCheck, responses, latch);
                 }
-            };
 
-            exchange.dispatch(exchange.isInIoThread() ? SameThreadExecutor.INSTANCE : exchange.getIoThread(), r);
+                latch.await(10, TimeUnit.SECONDS);
+
+                if(latch.getCount()>0)
+                    throw new Exception("Probe timed out");
+
+
+                boolean failed = false;
+                if (!responses.isEmpty()) {
+
+                    if(responses.size()!=monitor.getHealthURIs().size())
+                        throw new RuntimeException("The number of responses does not match!");
+
+                    StringBuffer sb = new StringBuffer("{");
+                    sb.append("\"checks\": [\n");
+
+                    int i=0;
+                    for(InVMResponse resp : responses) {
+                        if(200==resp.getStatus()) {
+                            sb.append(resp.getPayload());
+                        } else if(503==resp.getStatus()){
+                            sb.append(resp.getPayload());
+                            failed = true;
+                        } else {
+                            throw new RuntimeException("Unexpected status code: "+resp.getStatus());
+                        }
+                        if(i<responses.size()-1)
+                            sb.append(",\n");
+                        i++;
+                    }
+                    sb.append("],\n");
+
+                    String outcome = failed ? "DOWN":"UP"; // we don't have policies yet, so keep it simple
+                    sb.append("\"outcome\": \""+outcome+"\"\n");
+                    sb.append("}\n");
+
+                    // send a response
+                    if(failed)
+                        exchange.setStatusCode(503);
+                    exchange.getResponseSender().send(sb.toString());
+
+                } else {
+                    new RuntimeException("Responses should not be empty").printStackTrace();
+                    exchange.setStatusCode(500);
+                }
+
+                exchange.endExchange();
+
+
+            } catch (Throwable t) {
+                LOG.error("Health check failed", t);
+
+                if(!exchange.isResponseStarted())
+                    exchange.setStatusCode(500);
+                exchange.endExchange();
+            }
 
         }
 
+    }
+
+    private void invokeHealthInVM(final HttpServerExchange exchange, HealthMetaData healthCheck, List<InVMResponse> responses, CountDownLatch latch) {
+        try {
+
+            String delegateContext = healthCheck.getWebContext();
+
+            final InVMConnection connection = new InVMConnection(worker);
+            final HttpServerExchange mockExchange = new HttpServerExchange(connection);
+            mockExchange.setRequestScheme("http");
+            mockExchange.setRequestMethod(new HttpString("GET"));
+            mockExchange.setProtocol(Protocols.HTTP_1_0);
+            mockExchange.setRequestURI(delegateContext);
+            mockExchange.setRequestPath(delegateContext);
+            mockExchange.setRelativePath(delegateContext);
+            mockExchange.getRequestHeaders().add(Headers.HOST, exchange.getRequestHeaders().get(Headers.HOST).getFirst());
+            mockExchange.getRequestHeaders().add(X_SWARM_HEALTH_TOKEN, EPHEMERAL_TOKEN);
+            mockExchange.putAttachment(RESPONSES, responses);
+            connection.addCloseListener(new ServerConnection.CloseListener() {
+                @Override
+                public void closed(ServerConnection connection) {
+                    LOG.trace("Mock connection closed");
+                    StringBuffer sb = new StringBuffer();
+                    ((InVMConnection)connection).flushTo(sb);
+                    LOG.trace("Response payload: " + sb.toString());
+                    responses.add(new InVMResponse(mockExchange.getStatusCode(), sb.toString()));
+                    mockExchange.removeAttachment(RESPONSES);
+                    IoUtils.safeClose(connection);
+                    latch.countDown();
+                }
+            });
+
+            HttpServerConnection httpConnection = (HttpServerConnection) exchange.getConnection();
+            mockExchange.startBlocking();
+            Connectors.executeRootHandler(httpConnection.getRootHandler(), mockExchange);
+
+
+        } catch (Throwable t) {
+            LOG.error("Health check failed", t);
+            latch.countDown();
+        }
     }
 
     private static final AttachmentKey<String> RESPONSE_BODY = AttachmentKey.create(String.class);
@@ -299,27 +322,26 @@ class HttpContexts implements HttpHandler {
 
     private final Monitor monitor;
 
-    class RoundRobin {
-        private final List<HealthMetaData> contexts;
-        private int pos = 0;
+    private final HttpHandler next;
 
-        public RoundRobin(List<HealthMetaData> contexts) {
-            this.contexts = contexts;
+    private XnioWorker worker;
+
+    class InVMResponse {
+        private int status;
+        private String payload;
+
+        public InVMResponse(int status, String payload) {
+            this.status = status;
+            this.payload = payload;
         }
 
-        String next() {
-            if(pos>=contexts.size())
-                pos = 0;
+        public int getStatus() {
+            return status;
+        }
 
-            String next = contexts.get(pos).getWebContext();
-            pos++;
-            return next;
+        public String getPayload() {
+            return payload;
         }
     }
 
-    private final HttpHandler next;
-
-    private RoundRobin roundRobin;
-
-    private XnioWorker worker;
 }
