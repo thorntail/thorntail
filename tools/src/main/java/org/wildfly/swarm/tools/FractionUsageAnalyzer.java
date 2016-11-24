@@ -50,13 +50,20 @@ public class FractionUsageAnalyzer {
         return this;
     }
 
+    public FractionUsageAnalyzer logger(final BuildTool.SimpleLogger log) {
+        this.log = log;
+        return this;
+    }
+
     public Set<FractionDescriptor> detectNeededFractions() throws IOException {
         if (this.fractionList == null) {
 
             return Collections.emptySet();
         }
         final Set<FractionDescriptor> specs = new HashSet<>();
-        final ClassAndPackageDetector detector = new ClassAndPackageDetector().detect(this.sources);
+        final ClassAndPackageDetector detector = new ClassAndPackageDetector()
+                .logger(log)
+                .detect(this.sources);
         final Set<String> detectables = new HashSet<>(detector.packages());
         detectables.addAll(detector.classes().stream()
                                    .map(FractionUsageAnalyzer::asClassNameMatch)
@@ -115,6 +122,7 @@ public class FractionUsageAnalyzer {
 
     private final FractionList fractionList;
 
+    private BuildTool.SimpleLogger log = BuildTool.NOP_LOGGER;
 
     private static class StatefulMatcher {
         StatefulMatcher(FractionDescriptor desc, String... matchSpecs) {

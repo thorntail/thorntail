@@ -116,6 +116,11 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .hollow(hollow)
                 .logger(new BuildTool.SimpleLogger() {
                     @Override
+                    public void debug(String msg) {
+                        getLog().debug(msg);
+                    }
+
+                    @Override
                     public void info(String msg) {
                         getLog().info(msg);
                     }

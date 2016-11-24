@@ -90,6 +90,11 @@ public class PackageTask extends DefaultTask {
                         .collect(Collectors.toList()))
                 .logger(new BuildTool.SimpleLogger() {
                     @Override
+                    public void debug(String msg) {
+                        getLogger().debug(msg);
+                    }
+
+                    @Override
                     public void info(String msg) {
                         getLogger().info(msg);
                     }

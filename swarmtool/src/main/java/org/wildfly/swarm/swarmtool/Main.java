@@ -67,6 +67,9 @@ public class Main {
     private static final OptionSpec<Void> EXECUTABLE_OPT =
             OPT_PARSER.accepts("executable", "make the swarm jar executable");
 
+    private static final OptionSpec<Void> DEBUG_LOGGING =
+            OPT_PARSER.accepts("debug", "enable debug logging");
+
     private static final OptionSpec<String> FRACTIONS_OPT =
             OPT_PARSER.acceptsAll(asList("f", "fractions"), "swarm fractions to include")
                     .withRequiredArg()
@@ -233,6 +236,9 @@ public class Main {
         }
         if (foundOptions.has(MODULES_OPT)) {
             tool.additionalModules(foundOptions.valuesOf(MODULES_OPT));
+        }
+        if (foundOptions.has(DEBUG_LOGGING)) {
+            tool.logger(BuildTool.STD_LOGGER_WITH_DEBUG);
         }
 
         addSwarmFractions(tool, foundOptions.valuesOf(FRACTIONS_OPT));
