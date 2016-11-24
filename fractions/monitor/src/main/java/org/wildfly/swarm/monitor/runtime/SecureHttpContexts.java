@@ -135,8 +135,8 @@ public class SecureHttpContexts implements HttpHandler {
 
     private boolean hasTokenAuth(HttpServerExchange exchange) {
 
-        HeaderValues token = exchange.getRequestHeaders().get(HttpContexts.X_SWARM_HEALTH_TOKEN);
-        return token != null && HttpContexts.EPHEMERAL_TOKEN.equals(token.getFirst());
+        String token = exchange.getAttachment(HttpContexts.TOKEN);
+        return token != null && HttpContexts.EPHEMERAL_TOKEN.equals(token);
     }
 
     private static AuthenticationMechanism wrap(final AuthenticationMechanism toWrap, final AuthMechanism mechanism) {

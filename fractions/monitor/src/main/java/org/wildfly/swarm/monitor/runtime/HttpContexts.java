@@ -58,7 +58,8 @@ import org.xnio.channels.StreamSinkChannel;
 class HttpContexts implements HttpHandler {
 
     protected ThreadLocal<CountDownLatch> dispatched = new ThreadLocal<>();
-    private AttachmentKey RESPONSES = AttachmentKey.create(List.class);
+    private AttachmentKey<List> RESPONSES = AttachmentKey.create(List.class);
+    static AttachmentKey<String> TOKEN = AttachmentKey.create(String.class);
 
     public HttpContexts(HttpHandler next) {
 
@@ -202,7 +203,7 @@ class HttpContexts implements HttpHandler {
             mockExchange.setRequestPath(delegateContext);
             mockExchange.setRelativePath(delegateContext);
             mockExchange.getRequestHeaders().add(Headers.HOST, exchange.getRequestHeaders().get(Headers.HOST).getFirst());
-            mockExchange.getRequestHeaders().add(X_SWARM_HEALTH_TOKEN, EPHEMERAL_TOKEN);
+            mockExchange.putAttachment(TOKEN, EPHEMERAL_TOKEN);
             mockExchange.putAttachment(RESPONSES, responses);
             connection.addCloseListener(new ServerConnection.CloseListener() {
                 @Override
@@ -317,8 +318,6 @@ class HttpContexts implements HttpHandler {
     public static final String HEALTH = "/health";
 
     final static String EPHEMERAL_TOKEN = UUID.randomUUID().toString();
-
-    static final HttpString X_SWARM_HEALTH_TOKEN = HttpString.tryFromString("X_SWARM_HEALTH_TOKEN");
 
     private final Monitor monitor;
 
