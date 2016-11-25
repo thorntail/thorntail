@@ -51,4 +51,10 @@ public interface Monitor {
     List<HealthMetaData> getHealthURIs();
 
     Optional<SecurityRealm> getSecurityRealm();
+
+    /**
+     * The timeout in seconds
+     * @return
+     */
+    long getProbeTimeoutSeconds();
 }

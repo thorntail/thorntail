@@ -40,7 +40,7 @@ public class JAXRSArquillianTest {
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
-        deployment.addClass(HealthCheckResource.class);
+        deployment.addClass(SuccessfulChecks.class);
         deployment.addClass(CustomJsonProvider.class);
         deployment.addClass(MyResource.class);
         deployment.setContextRoot("rest");
@@ -56,7 +56,7 @@ public class JAXRSArquillianTest {
     @Test
     @RunAsClient
     public void testResource() {
-        browser.navigate().to("http://localhost:8080/health/rest/monitor/health-secure");
+        browser.navigate().to("http://localhost:8080/rest/success/first");
         assertThat(browser.getPageSource()).contains("UP");
     }
 

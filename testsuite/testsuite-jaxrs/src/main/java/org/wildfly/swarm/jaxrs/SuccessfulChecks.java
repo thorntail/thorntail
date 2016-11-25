@@ -24,21 +24,21 @@ import org.wildfly.swarm.monitor.HealthStatus;
 /**
  * @author Heiko Braun
  */
-@Path("/monitor")
-public class HealthCheckResource {
+@Path("/success")
+public class SuccessfulChecks {
 
 
     @GET
     @Health
-    @Path("/health-secure")
+    @Path("/first")
     public HealthStatus checkHealth() {
-        return HealthStatus.up().withAttribute("status", "UP");
+        return HealthStatus.named("first").up();
     }
 
     @GET
-    @Health(inheritSecurity = false)
-    @Path("/health-insecure")
+    @Health
+    @Path("/second")
     public HealthStatus checkHealthInsecure() {
-        return HealthStatus.up().withAttribute("status", "UP");
+        return HealthStatus.named("second").up().withAttribute("time", System.currentTimeMillis());
     }
 }

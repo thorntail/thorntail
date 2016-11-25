@@ -33,10 +33,7 @@ public class HealthResponseFilter implements ContainerResponseFilter {
             Status status = (Status) resp.getEntity();
             int code = (Status.State.UP == status.getState()) ? 200 : 503;
             resp.setStatus(code);
-            if (status.getMessage().isPresent())
-                resp.setEntity(status.getMessage().get());
-            else
-                resp.setEntity("{ \"status\": \"" + status.getState().name() + "\"}");
+            resp.setEntity(status.toJson());
         }
     }
 

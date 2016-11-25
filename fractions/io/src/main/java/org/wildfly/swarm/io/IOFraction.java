@@ -30,7 +30,11 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 public class IOFraction extends IO<IOFraction> implements Fraction<IOFraction> {
 
     public IOFraction applyDefaults() {
-        return worker(new Worker("default"))
+        return worker(
+                "default", w -> {
+                    w.ioThreads(100);
+                    w.taskMaxThreads(20);
+                })
                 .bufferPool(new BufferPool("default"));
     }
 }

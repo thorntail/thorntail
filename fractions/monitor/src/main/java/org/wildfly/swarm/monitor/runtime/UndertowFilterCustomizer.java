@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -38,6 +38,12 @@ class Queries {
         });
     }
 
+    public final static boolean isAggregatorEndpoint(Monitor monitor, String relativePath) {
+        return query(monitor, metaData -> {
+            return relativePath.equals(HttpContexts.HEALTH);
+        });
+    }
+
     public final static boolean isDirectAccessToHealthEndpoint(Monitor monitor, String relativePath) {
         return query(monitor, metaData -> {
             return relativePath.equals(metaData.getWebContext());
