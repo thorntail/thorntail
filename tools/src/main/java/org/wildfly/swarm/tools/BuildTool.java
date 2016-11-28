@@ -276,6 +276,7 @@ public class BuildTool {
         tmpFile.deleteOnExit();
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
         final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer(this.fractionList)
+                .logger(log)
                 .source(tmpFile);
 
         resolvedDependencies.getDependencies().stream()
@@ -539,7 +540,11 @@ public class BuildTool {
         archive.add(new FileAsset(artifact.file), artifactPath.toString());
     }
 
-    private static SimpleLogger STD_LOGGER = new SimpleLogger() {
+    public static final SimpleLogger STD_LOGGER = new SimpleLogger() {
+        @Override
+        public void debug(String msg) {
+        }
+
         @Override
         public void info(String msg) {
             System.out.println(msg);
@@ -557,7 +562,50 @@ public class BuildTool {
         }
     };
 
+    public static final SimpleLogger STD_LOGGER_WITH_DEBUG = new SimpleLogger() {
+        @Override
+        public void debug(String msg) {
+            System.out.println(msg);
+        }
+
+        @Override
+        public void info(String msg) {
+            System.out.println(msg);
+        }
+
+        @Override
+        public void error(String msg) {
+            System.err.println(msg);
+        }
+
+        @Override
+        public void error(String msg, Throwable t) {
+            error(msg);
+            t.printStackTrace();
+        }
+    };
+
+    public static final SimpleLogger NOP_LOGGER = new SimpleLogger() {
+        @Override
+        public void debug(String msg) {
+        }
+
+        @Override
+        public void info(String msg) {
+        }
+
+        @Override
+        public void error(String msg) {
+        }
+
+        @Override
+        public void error(String msg, Throwable t) {
+        }
+    };
+
     public interface SimpleLogger {
+        void debug(String msg);
+
         void info(String msg);
 
         void error(String msg);

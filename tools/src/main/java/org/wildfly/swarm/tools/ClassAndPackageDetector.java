@@ -46,6 +46,11 @@ import org.objectweb.asm.signature.SignatureVisitor;
 
 public class ClassAndPackageDetector {
 
+    public ClassAndPackageDetector logger(BuildTool.SimpleLogger log) {
+        this.log = log;
+        return this;
+    }
+
     public ClassAndPackageDetector detect(final List<File> files) throws IOException {
         for (File f : files) {
             detect(f);
@@ -55,6 +60,8 @@ public class ClassAndPackageDetector {
     }
 
     public ClassAndPackageDetector detect(final File file) throws IOException {
+        log.debug("Scanning " + file);
+
         if (file.isDirectory()) {
             detectInDir(file);
         } else if (file.getName().endsWith(".jar") || file.getName().endsWith(".war")) {
@@ -125,6 +132,8 @@ public class ClassAndPackageDetector {
     }
 
     final private PackageCollector visitor = new PackageCollector();
+
+    private BuildTool.SimpleLogger log = BuildTool.NOP_LOGGER;
 
     static class PackageCollector extends ClassVisitor {
 
