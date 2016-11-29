@@ -39,6 +39,19 @@ public class FractionDescriptor {
         this(groupId, artifactId, version, null, null, null, false, FractionStability.UNSTABLE);
     }
 
+    /**
+     * Retrieves a {@link FractionDescriptor} from the {@code fractionList} based on the {@code gav} string.
+     *
+     * <p>The {@code gav} string contains colon-delimited Maven artifact coordinates. Supported formats are:</p>
+     *
+     * <ul>
+     *     <li>{@code artifactId}: the groupId {@code org.wildfly.swarm} is presumed</li>
+     *     <li>{@code artifactId:version}: the groupId {@code org.wildfly.swarm} is presumed</li>
+     *     <li>{@code groupId:artifactId:version}</li>
+     * </ul>
+     *
+     * <p>If the {@code fractionList} doesn't contain such fraction, an exception is thrown.</p>
+     */
     public static FractionDescriptor fromGav(final FractionList fractionList, final String gav) {
         final String[] parts = gav.split(":");
         FractionDescriptor desc = null;
@@ -46,17 +59,30 @@ public class FractionDescriptor {
         switch (parts.length) {
             case 1:
                 desc = fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, parts[0]);
+                if (desc == null) {
+                    throw new RuntimeException("Fraction not found: " + gav);
+                }
                 break;
             case 2:
-                desc = new FractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, parts[0], parts[1]);
+                desc = fractionList.getFractionDescriptor(DependencyManager.WILDFLY_SWARM_GROUP_ID, parts[0]);
+                if (desc == null) {
+                    throw new RuntimeException("Fraction not found: " + gav);
+                }
+                if (!desc.getVersion().equals(parts[1])) {
+                    throw new RuntimeException("Version mismatch: requested " + gav + ", found " + desc.av());
+                }
                 break;
             case 3:
-                desc = new FractionDescriptor(parts[0], parts[1], parts[2]);
+                desc = fractionList.getFractionDescriptor(parts[0], parts[1]);
+                if (desc == null) {
+                    throw new RuntimeException("Fraction not found: " + gav);
+                }
+                if (!desc.getVersion().equals(parts[2])) {
+                    throw new RuntimeException("Version mismatch: requested " + gav + ", found " + desc.gav());
+                }
                 break;
-        }
-
-        if (desc == null) {
-            throw new RuntimeException("Invalid fraction spec: " + gav);
+            default:
+                throw new RuntimeException("Invalid fraction spec: " + gav);
         }
 
         return desc;
