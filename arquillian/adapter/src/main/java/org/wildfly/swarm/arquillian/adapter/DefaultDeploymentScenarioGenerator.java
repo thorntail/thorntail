@@ -1,6 +1,8 @@
 package org.wildfly.swarm.arquillian.adapter;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -9,6 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.CodeSource;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -70,7 +73,7 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
             try {
                 Class<?> cls = cl.loadClass(className);
                 codeSources.add(cls.getProtectionDomain().getCodeSource());
-            } catch (ClassNotFoundException|NoClassDefFoundError e) {
+            } catch (ClassNotFoundException | NoClassDefFoundError e) {
                 //e.printStackTrace();
             }
         };
@@ -98,7 +101,7 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
                         return false;
                     })
                     .filter(e -> e.getProtocol().equals("file"))
-                    .map(e -> e.getPath())
+                    .map(e -> getPlatformPath(e.getPath()))
                     .map(e -> Paths.get(e))
                     .filter(e -> Files.isDirectory(e))
                     .forEach(e -> {
@@ -107,7 +110,7 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
                                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                                     if (!file.toString().endsWith(".class")) {
                                         Path location = e.relativize(file);
-                                        archive.add(new FileAsset(file.toFile()), location.toString());
+                                        archive.add(new FileAsset(file.toFile()), javaSlashize(location));
                                     }
                                     return super.visitFile(file, attrs);
                                 }
@@ -130,12 +133,40 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
         DeploymentDescription description = new DeploymentDescription(testClass.getName(), archive);
 
         Class<?> mainClass = anno.main();
-        if ( mainClass != Void.class ) {
-            archive.add(new StringAsset( mainClass.getName() ), "META-INF/arquillian-main-class" );
+        if (mainClass != Void.class) {
+            archive.add(new StringAsset(mainClass.getName()), "META-INF/arquillian-main-class");
         }
 
         description.shouldBeTestable(anno.testable());
 
         return Collections.singletonList(description);
+    }
+
+    protected String getPlatformPath(String path) {
+        if (!isWindows()) {
+            return path;
+        }
+
+        URI uri = URI.create("file://" + path);
+        return Paths.get(uri).toString();
+    }
+
+    protected boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
+    }
+
+    public String javaSlashize(Path path) {
+
+        List<String> parts = new ArrayList<>();
+
+        int numParts = path.getNameCount();
+
+        for ( int i = 0 ; i < numParts ; ++i ) {
+            parts.add( path.getName(i).toString());
+        }
+
+
+        return String.join( "/", parts);
+
     }
 }

@@ -17,9 +17,13 @@ package org.wildfly.swarm.datasources.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -189,6 +193,8 @@ public abstract class DriverInfo {
                 locationStr = locationStr.substring(0, bangLoc);
             }
 
+            locationStr = getPlatformPath(locationStr);
+
             File locationFile = Paths.get(locationStr).toFile();
 
             return locationFile;
@@ -197,6 +203,19 @@ public abstract class DriverInfo {
         }
 
         return null;
+    }
+
+    protected String getPlatformPath(String path) {
+        if (!isWindows()) {
+            return path;
+        }
+
+        URI uri = URI.create("file://" + path);
+        return Paths.get(uri).toString();
+    }
+
+    protected boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
     }
 
     public boolean isInstalled() {
@@ -214,4 +233,5 @@ public abstract class DriverInfo {
             config.accept(ds);
         });
     }
+
 }
