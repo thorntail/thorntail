@@ -5,7 +5,7 @@
 
   <dependencies>
     <module name="org.wildfly.swarm.netflix.ribbon"/>
-    <module name="org.wildfly.swarm.keycloak" slot="runtime"/>
+    <module name="org.wildfly.swarm.keycloak" slot="deployment"/>
     <module name="org.keycloak.keycloak-core"/>
     <module name="com.netflix.ribbon"/>
     <module name="io.reactivex.rxnetty"/>
