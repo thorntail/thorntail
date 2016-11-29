@@ -7,8 +7,10 @@
     <module name="javax.api"/>
     <module name="org.apache.commons.io"/>
     <module name="org.apache.commons.lang"/>
-    <module name="org.apache.httpcomponents"/>
     <module name="org.jboss.dmr"/>
+    <module name="org.yaml.snakeyaml"/>
+    <module name="com.squareup.okhttp3"/>
+    <module name="org.apache.log4j"/>
     <module name="org.slf4j"/>
   </dependencies>
 

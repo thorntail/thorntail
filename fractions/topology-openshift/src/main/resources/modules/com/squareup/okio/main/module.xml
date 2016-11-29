@@ -1,0 +1,10 @@
+<module xmlns="urn:jboss:module:1.3" name="com.squareup.okio">
+  <resources>
+    <artifact name="com.squareup.okio:okio:${version.com.squareup.okio}"/>
+  </resources>
+
+  <dependencies>
+    <module name="javax.api"/>
+  </dependencies>
+
+</module>
