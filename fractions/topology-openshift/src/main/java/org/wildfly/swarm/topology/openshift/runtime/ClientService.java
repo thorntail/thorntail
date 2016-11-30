@@ -20,10 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.openshift.restclient.ClientFactory;
+import com.openshift.restclient.ClientBuilder;
 import com.openshift.restclient.IClient;
-import com.openshift.restclient.NoopSSLCertificateCallback;
-import com.openshift.restclient.authorization.TokenAuthorizationStrategy;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
@@ -50,7 +48,7 @@ public class ClientService implements Service<IClient> {
             this.client = openshiftClient();
             // Trigger an API call to ensure we fail-fast if we can't talk
             // to the API
-            this.client.getCurrentUser().getName();
+            this.client.getServerReadyStatus();
         } catch (IOException ex) {
             throw new StartException(ex);
         }
@@ -78,12 +76,9 @@ public class ClientService implements Service<IClient> {
             scheme = "https";
         }
 
-        IClient client = new ClientFactory().create(scheme + "://" + kubeHost + ":" + kubePort, new NoopSSLCertificateCallback());
-        if (token != null) {
-            client.setAuthorizationStrategy(new TokenAuthorizationStrategy(token));
-        }
-
-        return client;
+        return new ClientBuilder(scheme + "://" + kubeHost + ":" + kubePort)
+                .usingToken(token)
+                .build();
     }
 
     protected String serviceHost(String serviceName) {

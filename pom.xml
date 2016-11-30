@@ -70,7 +70,9 @@
 
     <version.com.orbitz.consul>0.9.16</version.com.orbitz.consul>
 
-    <version.openshift.client>3.0.1.Final</version.openshift.client>
+    <version.openshift.client>5.2.0.Final</version.openshift.client>
+    <version.com.squareup.okhttp>3.3.1</version.com.squareup.okhttp>
+    <version.com.squareup.okio>1.8.0</version.com.squareup.okio>
     <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
     <version.org.jgroups>3.6.10.Final</version.org.jgroups>
 
