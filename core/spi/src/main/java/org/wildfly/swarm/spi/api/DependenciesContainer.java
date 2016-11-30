@@ -22,18 +22,30 @@ import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
+ * Archive mix-in capable of supporting {@code addAllDependencies}
+ *
+ * <p>While not used directly, this interface is exposed through sub-classes
+ * that support adding all dependencies.</p>
+ *
+ * <p>It is a syntactic sugar for ShrinkWrap's own {@code addAsLibraries} along
+ * with {@link ArtifactLookup#allArtifacts()}</p>
+ *
  * @author Bob McWhirter
  * @author Ken Finnigan
+ * @see ArtifactLookup
  */
 public interface DependenciesContainer<T extends Archive<T>> extends LibraryContainer<T>, MarkerContainer<T>, Archive<T> {
 
 
-    /**
-     * The actual dependencies are added in the runtime stage.
-     * See RuntimeDeployer#deploy(...) for further details.
+    /** Add all application dependencies to this deployment.
+     *
+     * @return this archive.
      */
     @SuppressWarnings("unchecked")
     default T addAllDependencies() throws Exception {
+        // The actual dependencies are added in the runtime stage.
+        // See RuntimeDeployer#deploy(...) for further details.
+
         // flag to instruct the container to add the missing deps upon deploy time
         addMarker("org.wildfly.swarm.allDependencies");
         return (T) this;
@@ -61,14 +73,16 @@ public interface DependenciesContainer<T extends Archive<T>> extends LibraryCont
     /**
      * Add a single Maven dependency into the Archive.
      * The following dependency formats are supported:
-     *   groupId:artifactId
-     *   groupId:artifactId:version
-     *   groupId:artifactId:packaging:version
-     *   groupId:artifactId:packaging:version:classifier
+     *
+     * groupId:artifactId
+     * groupId:artifactId:version
+     * groupId:artifactId:packaging:version
+     * groupId:artifactId:packaging:version:classifier
      *
      * @param gav String coordinates of the Maven dependency
      * @return Archive instance
      * @throws Exception
+     * @see ArtifactLookup#artifact(String)
      */
     @SuppressWarnings("unchecked")
     default T addDependency(String gav) throws Exception {

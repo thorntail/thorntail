@@ -18,7 +18,13 @@ package org.wildfly.swarm.spi.api;
 import org.jboss.jandex.Index;
 import org.jboss.shrinkwrap.api.Archive;
 
-/**
+/** Deployment processor capable of inspecting the Jandex metadata of an archive.
+ *
+ * <p>Typically an internal component to fractions which desire to scan each
+ * deployment in order to locate particular annotations or implementations.</p>
+ *
+ * @apiNote Used by {@code Fraction} authors.
+ *
  * @author Ken Finnigan
  */
 public interface ArchiveMetadataProcessor {

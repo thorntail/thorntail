@@ -30,7 +30,10 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 
-/**
+/** Abstract factory for creating default deployments automatically.
+ *
+ * @apiNote Used by {@code Fraction} authors.
+ *
  * @author Bob McWhirter
  */
 public abstract class DefaultDeploymentFactory {

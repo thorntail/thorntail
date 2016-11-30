@@ -87,6 +87,33 @@ import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
  * <p>This simply constructs a default container, starts it and performs
  * a default deployment.  Typically only useful for barren WAR applications.</p>
  *
+ * <p>If providing their own {@code main(...)}, then the following needs to be known:</p>
+ *
+ * <ul>
+ * <li>Any usage of {@code java.util.logging} may only follow the initial constructor
+ * of {@code new Swarm()}.</li>
+ * <li>While this object may appear to be thread-safe, it does rely on general
+ * static instances for some facilities.  Therefore, it should not be instantiated
+ * several times concurrently.</li>
+ * <li>It can be instantiated multiple times <b>serially</b>, as long as one instance
+ * is disposed before another is created and used.  This limitation may be removed
+ * in a future version, if required.</li>
+ * </ul>
+ *
+ * <p>If using this class either directly or implicit as a {@code main(...)}, certain
+ * command-line facilities are available.  If used directly, the user should pass the
+ * {@code String...args} from his own {@code main(...)} to the constructor of this
+ * class if these command-line facilities are desired.</p>
+ *
+ * <p>Many internal aspects of the runtime container may be configured using the Java
+ * APIs for various fractions, XML configuration files, YAML configuration files, and
+ * Java system properties.</p>
+ *
+ * <p>Configuration ordering works as follows: Fractions configured through an XML
+ * configuration file takes precedence over the same fraction configured through the
+ * Java API.  YAML or system properties may override portions or attributes of fractions
+ * defined either way.  A system property override binds more strongly than YAML configuration.</p>
+ *
  * @author Bob McWhirter
  * @author Ken Finnigan
  */
@@ -215,19 +242,53 @@ public class Swarm {
         }
     }
 
+    /**
+     * Retrieve the parsed command-line from this instance.
+     *
+     * <p>This method is only applicable if the {@code String...args} was passed through
+     * the constructor or {@link #setArgs(String...)} was called to provide the command-line
+     * arguments.</p>
+     *
+     * @return The parsed command-line.
+     */
     public CommandLine getCommandLine() {
         return this.commandLine;
     }
 
+    /**
+     * Pass the effective command-line arguments to this instance.
+     *
+     * @param args The arguments.
+     */
     public void setArgs(String... args) {
         this.args = args;
     }
 
+    /**
+     * Specify an XML configuration file (in usual WildFly {@code standalone.xml}) format.
+     *
+     * <p>Usage of an XML configuration file is <b>not</b> exclusive with other configuration
+     * methods.</p>
+     *
+     * @param url The URL of the XML configuration file.
+     * @return This instance.
+     * @see #withStageConfig(URL)
+     */
     public Swarm withXmlConfig(URL url) {
         this.xmlConfig = Optional.of(url);
         return this;
     }
 
+    /**
+     * Specify a {@code project-stages.yml} configuration.
+     *
+     * <p>Usage of a YAML configuration is <b>not</b> exclusive with other configuration
+     * methods.</p>
+     *
+     * @param url The URL of the YAML configurable.
+     * @return This instance.
+     * @see #withXmlConfig(URL)
+     */
     public Swarm withStageConfig(URL url) {
         this.stageConfigUrl = Optional.of(url);
 
@@ -239,12 +300,22 @@ public class Swarm {
         return this;
     }
 
+    /**
+     * Retrieve the currently-active {@code StageConfig}.
+     *
+     * @return The currently-active {@link StageConfig}
+     */
     public StageConfig stageConfig() {
         if (!stageConfig.isPresent())
             throw SwarmMessages.MESSAGES.missingStageConfig();
         return new StageConfig(stageConfig.get());
     }
 
+    /**
+     * Determine if a currently-active {@code StageConfig} exists.
+     *
+     * @return {@code true} if there is a currently-active {@code StageConfig}, otherwise {@code false}.
+     */
     public boolean hasStageConfig() {
         return stageConfig.isPresent();
     }
@@ -265,11 +336,35 @@ public class Swarm {
         return this;
     }
 
+    /**
+     * Add an outbound socket-binding to the container.
+     *
+     * <p>In the event the specified {@code socketBindingGroup} does not exist, the socket-binding
+     * will be completely ignored.</p>
+     *
+     * TODO fix the above-mentioned issue.
+     *
+     * @param socketBindingGroup The name of the socket-binding group to attach a binding to.
+     * @param binding            The outbound socket-binding to add.
+     * @return This container.
+     */
     public Swarm outboundSocketBinding(String socketBindingGroup, OutboundSocketBinding binding) {
         this.outboundSocketBindings.add(new OutboundSocketBindingRequest(socketBindingGroup, binding));
         return this;
     }
 
+    /**
+     * Add an inbound socket-binding to the container.
+     *
+     * <p>In the even the specified {@code socketBindingGroup} does no exist, the socket-binding
+     * will be completely ignored.</p>
+     *
+     * TODO fix the above-mentioned issue.
+     *
+     * @param socketBindingGroup The name of the socket-binding group to attach a binding to.
+     * @param binding            The inbound socket-binding to add.
+     * @return This container.
+     */
     public Swarm socketBinding(String socketBindingGroup, SocketBinding binding) {
         this.socketBindings.add(new SocketBindingRequest(socketBindingGroup, binding));
         return this;
@@ -278,15 +373,13 @@ public class Swarm {
     /**
      * Start the container.
      *
+     * <p>This is a blocking call, which guarateens that when it returns without error, the
+     * container is fully started.</p>
+     *
      * @return The container.
      * @throws Exception if an error occurs.
      */
     public Swarm start() throws Exception {
-        this.start(false);
-        return this;
-    }
-
-    public Swarm start(boolean eagerlyOpen) throws Exception {
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
         Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
@@ -313,7 +406,7 @@ public class Swarm {
 
     /**
      * Start the container with a deployment.
-     * <p/>
+     *
      * <p>Effectively calls {@code start().deploy(deployment)}</p>
      *
      * @param deployment The deployment to deploy.
@@ -327,7 +420,7 @@ public class Swarm {
     }
 
     /**
-     * Stop the container, undeploying all deployments.
+     * Stop the container, first undeploying all deployments.
      *
      * @return THe container.
      * @throws Exception If an error occurs.
@@ -349,14 +442,23 @@ public class Swarm {
     }
 
     /**
-     * Deploy the default WAR deployment.
-     * <p/>
-     * <p>For WAR-based applications, the primary WAR artifact will be deployed.</p>
+     * Perform a default deployment.
+     *
+     * <p>For regular uberjars, it is effectively a short-cut for {@code deploy(swarm.createDefaultDeployment())},
+     * deploying the baked-in deployment.</p>
+     *
+     * <p>For hollow uberjars, it deploys whatever deployments were passed through the command-line, as
+     * none are baked-in.</p>
      *
      * @return The container.
      * @throws DeploymentException if an error occurs.
+     * @throws IllegalStateException if the container has not already been started.
+     * @see #Swarm(String...)
+     * @see #setArgs(String...)
+     * @see #deploy(Archive)
+     * @see #createDefaultDeployment()
      */
-    public Swarm deploy() throws Exception {
+    public Swarm deploy() throws IllegalStateException, DeploymentException {
         if (this.server == null) {
             throw SwarmMessages.MESSAGES.containerNotStarted("deploy()");
         }
@@ -391,7 +493,9 @@ public class Swarm {
     }
 
     /**
-     * Provides access to the default ShrinkWrap deployment.
+     * Retrieve the default ShrinkWrap deployment.
+     *
+     * @return The default deployment, unmodified.
      */
     public Archive<?> createDefaultDeployment() throws Exception {
         if (this.server == null) {
@@ -444,7 +548,7 @@ public class Swarm {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -490,9 +594,12 @@ public class Swarm {
     }
 
     /**
-     * Main entry-point.
+     * Main entry-point if a user does not specify a custom {@code main(...)}-containing class.
      *
-     * @param args Ignored.
+     * <p>The default behaviour of this {@code main(...)} is to start the container entirely
+     * with defaults and deploy the default deployment.</p>
+     *
+     * @param args The command-line arguments from the invocation.
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
@@ -500,29 +607,63 @@ public class Swarm {
             System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
 
-        //TODO Support user constructed container via annotations for testing and custom use
         Swarm swarm = new Swarm(args);
         swarm.start().deploy();
     }
 
-    public static ArtifactManager artifactManager() throws IOException {
-        if (ARTIFACT_MANAGER == null) {
-            ARTIFACT_MANAGER = new ArtifactManager();
-            ArtifactLookup.INSTANCE.set(ARTIFACT_MANAGER);
-        }
-        return ARTIFACT_MANAGER;
+    private static ArtifactLookup artifactLookup() {
+        return ArtifactLookup.get();
     }
 
+    /** Retrieve an artifact that was part of the original build using a
+     * full or simplified Maven GAV specifier.
+     *
+     * <p>The following formats of GAVs are supported:</p>
+     *
+     * <ul>
+     *   <li>groupId:artifactId</li>
+     *   <li>groupId:artifactId:version</li>
+     *   <li>groupId:artifactId:packaging:version</li>
+     *   <li>groupId:artifactId:packaging:version:classifier</li>
+     * </ul>
+     *
+     * <p>Only artifacts that were compiled with the user's project with
+     * a scope of {@code compile} are available through lookup.</p>
+     *
+     * <p>In the variants that include a {@code version} parameter, it may be
+     * replaced by a literal asterisk in order to avoid hard-coding versions
+     * into the application.</p>
+     *
+     * @param gav The Maven GAV.
+     * @return The located artifact, as a {@code JavaArchive}.
+     * @throws Exception If the specified artifact is not locatable.
+     */
     public static JavaArchive artifact(String gav) throws Exception {
-        return artifactManager().artifact(gav);
+        return artifactLookup().artifact(gav);
     }
 
+    /** Retrieve an artifact that was part of the original build using a
+     * full or simplified Maven GAV specifier, returning an archive with a
+     * specified name.
+     *
+     * @see #artifact(String)
+     *
+     * @param gav The Maven GAV.
+     * @return The located artifact, as a {@code JavaArchive}.
+     * @return The located artifact, as a {@code JavaArchive} with the specified name.
+     * @throws Exception If the specified artifact is not locatable.
+     */
     public static JavaArchive artifact(String gav, String asName) throws Exception {
-        return artifactManager().artifact(gav, asName);
+        return artifactLookup().artifact(gav, asName);
     }
 
+    /** Retrieve all dependency artifacts for the user's project.
+     *
+     * @return All dependencies, as {@code JavaArchive} objects.
+     * @throws Exception
+     */
     public static List<JavaArchive> allArtifacts() throws Exception {
-        return artifactManager().allArtifacts();
+        return artifactLookup().allArtifacts();
     }
 
     /**

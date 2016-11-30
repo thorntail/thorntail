@@ -61,6 +61,7 @@ import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
+import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
@@ -175,9 +176,9 @@ public class RuntimeDeployer implements Deployer {
                         ApplicationEnvironment appEnv = ApplicationEnvironment.get();
 
                         if(ApplicationEnvironment.Mode.UBERJAR == appEnv.getMode()) {
-                            ArtifactManager artifactManager = Swarm.artifactManager();
+                            ArtifactLookup artifactLookup = ArtifactLookup.get();
                             for (String gav : appEnv.getDependencies()) {
-                                depContainer.addAsLibraries(artifactManager.artifact(gav));
+                                depContainer.addAsLibraries(artifactLookup.artifact(gav));
                             }
                         } else {
                             Set<String> paths = appEnv.resolveDependencies(Collections.EMPTY_LIST);
