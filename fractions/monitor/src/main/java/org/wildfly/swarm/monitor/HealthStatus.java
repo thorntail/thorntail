@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.monitor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-
-import org.jboss.dmr.ModelNode;
 
 /**
  * @author Heiko Braun
@@ -25,9 +25,15 @@ import org.jboss.dmr.ModelNode;
  */
 public class HealthStatus implements Status {
 
+    private static final String ID = "id";
+
+    private static final String RESULT = "result";
+
+    private static final String DATA = "data";
+
     private final String name;
 
-    private Optional<ModelNode> message = Optional.empty();
+    private Optional<Map<String, Object>> message = Optional.empty();
     private State state;
 
     HealthStatus(String name) {
@@ -56,31 +62,31 @@ public class HealthStatus implements Status {
     }
 
     public HealthStatus withAttribute(String key, String value) {
-        ModelNode payload = getPayloadWrapper();
-        payload.get(key).set(value);
+        Map<String,Object> payload = getPayloadWrapper();
+        payload.put(key, value);
         return this;
     }
 
     public HealthStatus withAttribute(String key, long value) {
-        ModelNode payload = getPayloadWrapper();
-        payload.get(key).set(value);
+        Map<String,Object> payload = getPayloadWrapper();
+        payload.put(key, value);
         return this;
     }
 
-    public HealthStatus withAttribute(String key, boolean b) {
-        ModelNode payload = getPayloadWrapper();
-        payload.get(key).set(b);
+    public HealthStatus withAttribute(String key, boolean value) {
+        Map<String,Object> payload = getPayloadWrapper();
+        payload.put(key, value);
         return this;
     }
 
-    private ModelNode getPayloadWrapper() {
+    private Map<String,Object> getPayloadWrapper() {
         if(!this.message.isPresent())
-            this.message = Optional.of(new ModelNode());
+            this.message = Optional.of(new HashMap<>());
         return this.message.get();
     }
 
     public Optional<String> getMessage() {
-        return message.isPresent() ? Optional.of(getPayloadWrapper().toJSONString(false)) : Optional.empty();
+        return message.isPresent() ? Optional.of(toJson()) : Optional.empty();
     }
 
     public State getState() {
@@ -89,12 +95,36 @@ public class HealthStatus implements Status {
 
     @Override
     public String toJson() {
-        ModelNode wrapper = new ModelNode();
-        wrapper.get("id").set(name);
-        wrapper.get("result").set(state.name());
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"").append(ID).append("\":\"").append(name).append("\",");
+        sb.append("\"").append(RESULT).append("\":\"").append(state.name()).append("\",");
         if(message.isPresent()) {
-            wrapper.get("data").set(message.get());
+            sb.append("\"").append(DATA).append("\": {");
+            Map<String, Object> atts = message.get();
+            int i = 0;
+            for(String key : atts.keySet()) {
+                sb.append("\"").append(key).append("\":").append(encode(atts.get(key)));
+                if(i<atts.keySet().size()-1)
+                    sb.append(",");
+                i++;
+            }
+            sb.append("}");
         }
-        return wrapper.toJSONString(false);
+
+        sb.append("}");
+        return sb.toString();
+    }
+
+    private String encode(Object o) {
+        String res = null;
+        if(o instanceof String) {
+            res = "\""+o.toString()+"\"";
+        }
+        else {
+            res = o.toString();
+        }
+
+        return res;
     }
 }
