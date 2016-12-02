@@ -40,7 +40,7 @@ public class RemotingLegacyConnectorCustomizer implements Customizer {
     @Override
     public void customize() {
         if (this.remoting.isRequireLegacyConnector() ) {
-            LOG.info("Remoting installed but Undertnow not available. Enabled legacy connector on port 4447.");
+            LOG.info("Remoting installed but Undertow not available. Enabled legacy connector on port 4447.");
             this.remoting.connector("legacy", (connector) -> {
                 connector.socketBinding("legacy-remoting");
             });
