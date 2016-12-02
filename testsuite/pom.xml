@@ -118,6 +118,7 @@
     <module>testsuite-mail</module>
     <module>testsuite-management</module>
     <module>testsuite-management-console</module>
+    <module>testsuite-maven-plugin</module>
     <module>testsuite-messaging</module>
     <module>testsuite-messaging-remote</module>
     <module>testsuite-mod_cluster</module>
