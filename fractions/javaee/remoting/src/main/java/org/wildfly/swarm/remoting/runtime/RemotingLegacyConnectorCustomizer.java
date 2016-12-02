@@ -19,7 +19,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * <p>In the event {@link RemotingFraction#requireLegacyConnector(boolean)}</p> has been
  * set to <code>true</code> or if configuration property <code>swarm.remoting.port</code>
  * is set to any value, this customizer will install a socket-binding named
- * <code>legacy-remoting</code> for port <code>4777</code> or whatever value
+ * <code>legacy-remoting</code> for port <code>4447</code> or whatever value
  * configuration property <code>swarm.remoting.port</code> is set to.</p>
  *
  * @author Bob McWhirter
@@ -40,7 +40,7 @@ public class RemotingLegacyConnectorCustomizer implements Customizer {
     @Override
     public void customize() {
         if (this.remoting.isRequireLegacyConnector() ) {
-            LOG.info("Remoting installed but Undertnow not available. Enabled legacy connector on port 4777.");
+            LOG.info("Remoting installed but Undertow not available. Enabled legacy connector on port 4447.");
             this.remoting.connector("legacy", (connector) -> {
                 connector.socketBinding("legacy-remoting");
             });
