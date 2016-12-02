@@ -60,7 +60,7 @@ public class JMXRemoteManagementAutoEndpointArquillianTest {
     @Test
     @RunAsClient
     public void testRemoteConnection() throws Exception {
-        String urlString = "service:jmx:remote://localhost:4777";
+        String urlString = "service:jmx:remote://localhost:4447";
 
         JMXServiceURL serviceURL = new JMXServiceURL(urlString);
         JMXConnector jmxConnector = JMXConnectorFactory.connect(serviceURL, null);
