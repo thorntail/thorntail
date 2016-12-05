@@ -20,13 +20,32 @@ import org.jboss.shrinkwrap.api.Assignable;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.DataSourceConsumer;
 
-/**
+/** A simplistic archive to allow deployment-based creation of datasources.
+ *
+ * <p>While not the recommended method for deploying datasources, this archive
+ * type helps with the creation of WildFly-specific {@code -ds.xml} files
+ * within an archive.  It can be driver by exactly the same API for creating
+ * datasources through {@link DatasourcesFraction} configuration</p>
+ *
+ * @see DatasourcesFraction
+ *
  * @author Bob McWhirter
  */
 public interface DatasourceArchive extends Assignable, Archive<DatasourceArchive> {
 
+    /** Create an configure a datasource.
+     *
+     * @param key The key of the datasource.
+     * @param consumer The configuring consumer.
+     * @return This archive.
+     */
     DatasourceArchive dataSource(String key, DataSourceConsumer consumer);
 
+    /** Create a configured datasource
+     *
+     * @param ds The completely configured datasource.
+     * @return This archive.
+     */
     DatasourceArchive dataSource(DataSource ds);
 
 }

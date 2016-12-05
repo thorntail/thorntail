@@ -27,7 +27,12 @@ import org.wildfly.swarm.undertow.StaticContentContainer;
 import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 import org.wildfly.swarm.undertow.descriptors.WebXmlContainer;
 
-/**
+/** An archive supporting easy usage of JAX-RS applications.
+ *
+ * <p>This archive type provides all capabilities of usual {@link .war} archives,
+ * while also supporting the auto-creation of {@link javax.ws.rs.core.Application} class
+ * if none is provided by the user.</p>
+ *
  * @author Bob McWhirter
  */
 public interface JAXRSArchive extends

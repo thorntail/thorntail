@@ -22,7 +22,10 @@ import java.util.function.Supplier;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
 
-/**
+/** Interface to extend to create a CDI-based JAXRS client.
+ *
+ * @see Service
+ *
  * @author Ken Finnigan
  */
 public interface ServiceClient<T> {

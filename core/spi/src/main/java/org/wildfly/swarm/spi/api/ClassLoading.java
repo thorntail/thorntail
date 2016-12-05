@@ -20,9 +20,22 @@ import java.util.concurrent.Callable;
 /**
  * Utility to execute code within a context using a particular {@code ClassLoader} as the
  * thread-context-classloader.
+ *
+ * @apiNote Internal usage
  */
 public interface ClassLoading {
 
+    /** With a given {@code ClassLoader}, execute an action with that classloader as the TCCL.
+     *
+     * <p>This method will safely reset the TCCL for the duration of the action, while
+     * returning it to it's original value when the action completes, either successfully
+     * or exceptionally.</p>
+     *
+     * @param loader The classloader.
+     * @param action The action to execute.
+     * @param <T> The return type from the action.
+     * @return
+     */
     static <T> T withTCCL(ClassLoader loader, Callable<T> action) {
         ClassLoader oldTCCL = Thread.currentThread().getContextClassLoader();
         try {

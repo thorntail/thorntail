@@ -20,11 +20,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
+/** Annotation for configuring a {@link ServiceClient} interface.
+ *
  * @author Ken Finnigan
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface Service {
+    /** The base URL for the underlying service. */
     String baseUrl() default "";
 }

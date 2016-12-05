@@ -27,11 +27,18 @@ import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 import org.wildfly.swarm.undertow.internal.FaviconServletExtension;
 
-/**
+/** Archive mix-in supporting manipulation of {@code web.xml}.
+ *
  * @author Ken Finnigan
  */
 public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, ServiceProviderContainer<T>, JBossDeploymentStructureContainer<T> {
 
+    /** Add a context parameter.
+     *
+     * @param name The name of the context parameter.
+     * @param values The values for the context parameter.
+     * @return This archive.
+     */
     @SuppressWarnings("unchecked")
     default T addContextParam(String name, String... values) {
         findWebXmlAsset().setContextParam(name, values);
@@ -39,10 +46,19 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         return (T) this;
     }
 
+    /** Retrieve the context parameter value.
+     *
+     * @param name The name of the context parameter.
+     * @return Thie value of the context parameter.
+     */
     default String getContextParamValue(String name) {
         return findWebXmlAsset().getContextParam(name);
     }
 
+    /** Add the default WildFly Swarm {@code favicon.ico} handler.
+     *
+     * @return This archive.
+     */
     @SuppressWarnings("unchecked")
     default T addFaviconExceptionHandler() {
         // Add FaviconServletExtension
@@ -74,14 +90,29 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         return (T) this;
     }
 
+    /** Add a servlet.
+     *
+     * @param servletName The name of the servlet.
+     * @param servletClass The class of the servlet.
+     * @return This archive.
+     */
     default Servlet addServlet(String servletName, String servletClass) {
         return findWebXmlAsset().addServlet(servletName, servletClass);
     }
 
+    /** Retrieve a servlet by class.
+     *
+     * @param servletClass The servlet class.
+     * @return The servlet descriptor.
+     */
     default Servlet servlet(String servletClass) {
         return findWebXmlAsset().getServlet(servletClass);
     }
 
+    /** Locate or create a {@code web.xml} asset.
+     *
+     * @return The existing or new {@code web.xml}.
+     */
     default WebXmlAsset findWebXmlAsset() {
         final Node webXml = this.get(WebXmlAsset.NAME);
         NamedAsset asset;

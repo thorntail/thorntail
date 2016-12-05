@@ -20,12 +20,20 @@ import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
-/**
+/** An archive mix-in supporting {@code jboss-web.xml} capabilities.
+ *
  * @author Bob McWhirter
  */
 public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
     String JBOSS_WEB_PATH = "WEB-INF/jboss-web.xml";
 
+    /** Set the default content-root of this deployment.
+     *
+     * <p>This will set the context-root to be {@code /} instead of based upon the
+     * archive name.</p>
+     *
+     * @return This archive.
+     */
     @SuppressWarnings("unchecked")
     default T setDefaultContextRoot() {
         JBossWebAsset asset = findJbossWebAsset();
@@ -39,6 +47,11 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
         return (T) this;
     }
 
+    /** Set the context root of this deployments.
+     *
+     * @param contextRoot The context root.
+     * @return This archive.
+     */
     @SuppressWarnings("unchecked")
     default T setContextRoot(String contextRoot) {
         findJbossWebAsset().setContextRoot(contextRoot);
@@ -46,14 +59,27 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
         return (T) this;
     }
 
+    /** Retrieve the context root of this deployment.
+     *
+     * @return The context root.
+     */
     default String getContextRoot() {
         return findJbossWebAsset().getContextRoot();
     }
 
+    /** Retrieve the security domain of this deployment.
+     *
+     * @return The security domain.
+     */
     default String getSecurityDomain() {
         return findJbossWebAsset().getSecurityDomain();
     }
 
+    /** Set the security domain of this deployment.
+     *
+     * @param securityDomain The security domain.
+     * @return This archive.
+     */
     @SuppressWarnings("unchecked")
     default T setSecurityDomain(String securityDomain) {
         findJbossWebAsset().setSecurityDomain(securityDomain);
@@ -61,6 +87,10 @@ public interface JBossWebContainer<T extends Archive<T>> extends Archive<T> {
         return (T) this;
     }
 
+    /** Locate and load, or create a {@code jboss-web.xml} asset for this archive.
+     *
+     * @return The existing or new {@code jboss-web.xml} asset.
+     */
     default JBossWebAsset findJbossWebAsset() {
         final Node jbossWeb = this.get(JBOSS_WEB_PATH);
         Asset asset;

@@ -26,7 +26,8 @@ import org.wildfly.swarm.spi.api.MarkerContainer;
 import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 import org.wildfly.swarm.undertow.descriptors.WebXmlContainer;
 
-/**
+/** An enhanced ShrinkWrap archive to support normal .war deployments.
+ *
  * @author Bob McWhirter
  */
 public interface WARArchive extends
