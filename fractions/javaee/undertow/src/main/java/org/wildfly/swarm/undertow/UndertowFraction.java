@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.undertow;
 
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.Undertow;
 import org.wildfly.swarm.config.undertow.BufferCache;
 import org.wildfly.swarm.config.undertow.HandlerConfiguration;
@@ -31,12 +29,14 @@ import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
-import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.ifAnyExplicitlySet;
 import static org.wildfly.swarm.spi.api.Defaultable.integer;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_AJP_PORT;
+import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HOST;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTPS_PORT;
+import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTP_LISTENER;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTP_PORT;
+import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_SERVER;
 
 /**
  * @author Bob McWhirter
@@ -55,21 +55,16 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return fraction.applyDefaults();
     }
 
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
-
     public UndertowFraction applyDefaults() {
-        server(new Server("default-server")
-                       .httpListener("default", (listener) -> {
-                           listener.socketBinding("http");
-                       })
-                       .host(new Host("default-host")))
+        server(new Server(DEFAULT_SERVER)
+                .httpListener(DEFAULT_HTTP_LISTENER, (listener) -> {
+                    listener.socketBinding("http");
+                })
+                .host(new Host(DEFAULT_HOST)))
                 .bufferCache(new BufferCache("default"))
                 .servletContainer(new ServletContainer("default")
-                                          .websocketsSetting(new WebsocketsSetting())
-                                          .jspSetting(new JSPSetting()))
+                        .websocketsSetting(new WebsocketsSetting())
+                        .jspSetting(new JSPSetting()))
                 .handlerConfiguration(new HandlerConfiguration());
 
         return this;
@@ -223,7 +218,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     public UndertowFraction httpsPort(int httpsPort) {
-        this.httpsPort.set( httpsPort );
+        this.httpsPort.set(httpsPort);
         return this;
     }
 
@@ -232,7 +227,7 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     public UndertowFraction ajpPort(int ajpPort) {
-        this.ajpPort.set( ajpPort );
+        this.ajpPort.set(ajpPort);
         return this;
     }
 
@@ -252,21 +247,25 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     /**
      * Path to the keystore.
      */
+    @Configurable("swarm.http.keystore.path")
     private String keystorePath;
 
     /**
      * Password for the keystore.
      */
+    @Configurable("swarm.http.keystore.password")
     private String keystorePassword;
 
     /**
      * Password for the key.
      */
+    @Configurable("swarm.http.key.password")
     private String keyPassword;
 
     /**
      * Server certificate alias.
      */
+    @Configurable("swarm.http.certificate.alias")
     private String alias;
 
     /**

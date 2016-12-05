@@ -36,14 +36,14 @@ import org.wildfly.swarm.undertow.descriptors.CertInfo;
 public class HTTPSCustomizer implements Customizer {
 
     @Inject
-    private UndertowFraction undertow;
+    UndertowFraction undertow;
 
     @Inject
     @Any
-    private Instance<ManagementCoreService> managementCoreService;
+    Instance<ManagementCoreService> managementCoreService;
 
     @Inject
-    private CertInfo certInfo;
+    CertInfo certInfo;
 
     public void customize() {
         if (!this.managementCoreService.isUnsatisfied()) {
