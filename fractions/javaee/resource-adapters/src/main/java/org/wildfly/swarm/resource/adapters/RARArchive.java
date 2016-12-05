@@ -26,16 +26,43 @@ import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapterConsumer;
 
-/**
+/** A resource-adapter archive.
+ *
+ * <p>This archive provides a way to deploy a resource-adapter similar to the
+ * Fraction-level configuration of a resource-adapter.</p>
+ *
+ * @see ResourceAdapterFraction
+ *
  * @author Ralf Battenfeld
  */
 public interface RARArchive extends Archive<RARArchive>, ManifestContainer<RARArchive>, LibraryContainer<RARArchive>, ResourceContainer<RARArchive>, ResourceAdapterContainer<RARArchive> {
 
+    /** Add and configure a resource-adapter.
+     *
+     * @param key The key of the resource-adapter.
+     * @param consumer The configuring consumer of the resource-adapter.
+     * @return This archive.
+     */
     RARArchive resourceAdapter(final String key, final ResourceAdapterConsumer consumer);
 
+    /** Add a fully-configured resource-adapter.
+     *
+     * @param ra The configured resource-adapter.
+     * @return This archive.
+     */
     RARArchive resourceAdapter(final ResourceAdapter ra);
 
+    /** Add an IronJacamar file.
+     *
+     * @param ironjacamarFile The IronJacamar file.
+     * @return This archive.
+     */
     RARArchive resourceAdapter(final File ironjacamarFile);
 
+    /** Add an IronJacamar asset.
+     *
+     * @param ironjacamarAsset The IronJacamar asset.
+     * @return This archive.
+     */
     RARArchive resourceAdapter(final Asset ironjacamarAsset);
 }

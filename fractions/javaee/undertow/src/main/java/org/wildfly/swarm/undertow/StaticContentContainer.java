@@ -32,7 +32,8 @@ import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 
-/**
+/** Archive mix-in supporting static content serving for .war files.
+ *
  * @author Bob McWhirter
  */
 public interface StaticContentContainer<T extends Archive<T>> extends Archive<T> {
@@ -41,10 +42,19 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
 
     String EXTERNAL_MOUNT_PATH = "WEB-INF/undertow-external-mounts.conf";
 
+    /** Enable static content to be served from the root of the classpath.
+     *
+     * @return This archive.
+     */
     default T staticContent() {
         return staticContent("");
     }
 
+    /** Enable static content to be served from a given base in the classpath.
+     *
+     * @param base The path prefix to use for static content.
+     * @return
+     */
     @SuppressWarnings("unchecked")
     default T staticContent(String base) {
         //as(WARArchive.class).addModule("org.wildfly.swarm.undertow", "runtime");
