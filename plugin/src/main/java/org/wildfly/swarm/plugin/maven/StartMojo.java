@@ -17,6 +17,7 @@ package org.wildfly.swarm.plugin.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.DeclaredDependencies;
 import org.wildfly.swarm.tools.DependencyManager;
 import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.FractionUsageAnalyzer;
@@ -286,7 +288,15 @@ public class StartMojo extends AbstractSwarmMojo {
         final List<Path> elements = new ArrayList<>();
         final Set<Artifact> artifacts = this.project.getArtifacts();
         boolean hasSwarmDeps = false;
+
+        final DeclaredDependencies declaredDependencies = new DeclaredDependencies();
+
         for (Artifact each : artifacts) {
+
+            String parentDep = each.getDependencyTrail().get(1);
+
+            declaredDependencies.add(DeclaredDependencies.createSpec(parentDep), DeclaredDependencies.createSpec(each.toString()));
+
             if (each.getGroupId().equals(DependencyManager.WILDFLY_SWARM_GROUP_ID)
                     && each.getArtifactId().equals(DependencyManager.WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
                 hasSwarmDeps = true;
@@ -299,6 +309,25 @@ public class StartMojo extends AbstractSwarmMojo {
                 continue;
             }
             elements.add(each.getFile().toPath());
+        }
+
+        if(declaredDependencies.getDirectDeps().size()>0) {
+            try {
+
+                // multi-start doesn't have a projectBuildDir
+
+                File tmp = this.projectBuildDir!=null ?
+                        Files.createTempFile(Paths.get(this.projectBuildDir), "swarm-", "-cp.txt").toFile() :
+                        Files.createTempFile("swarm-", "-cp.txt").toFile() ;
+
+                tmp.deleteOnExit();
+                declaredDependencies.writeTo(tmp);
+                getLog().debug("dependency info stored at: " + tmp.getAbsolutePath());
+                this.properties.setProperty("swarm.cp.info", tmp.getAbsolutePath());
+
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
 
         elements.add(Paths.get(this.project.getBuild().getOutputDirectory()));

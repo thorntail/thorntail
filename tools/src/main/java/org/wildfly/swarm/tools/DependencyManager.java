@@ -189,7 +189,7 @@ public class DependencyManager implements ResolvedDependencies {
 
     }
 
-    private void analyzeModuleDependencies(DeclaredDependencies artifactReport) {
+    private void analyzeModuleDependencies(DeclaredDependencies declaredDependencies) {
         this.dependencies.stream()
                 .filter(e -> e.type().equals(JAR))
                 .map(e -> e.file)
@@ -202,6 +202,9 @@ public class DependencyManager implements ResolvedDependencies {
         this.moduleDependencies.addAll(analyzer.getDependencies());
     }
 
+    /**
+     * Removable are basically all dependencies that are brought in by fractions.
+     */
     private void analyzeRemovableDependencies(DeclaredDependencies declaredDependencies) throws Exception {
 
         Set<ArtifactSpec> bootstrapDeps = this.dependencies.stream()
@@ -227,7 +230,7 @@ public class DependencyManager implements ResolvedDependencies {
 
     }
 
-    private void analyzeFractionManifests(DeclaredDependencies artifactReport) {
+    private void analyzeFractionManifests(DeclaredDependencies declaredDependencies) {
         this.dependencies.stream()
                 .map(e -> fractionManifest(e.file))
                 .filter(e -> e != null)

@@ -15,44 +15,55 @@
  */
 package org.wildfly.swarm.tools;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.wildfly.swarm.bootstrap.env.DependencyTree;
+import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+
 /**
- * The declaration of build artifacts, explicit and transient dependencies declared by a project build.
- * These are all unresolved dependencies, which means you cannot assume they are available in any local repository.
+ * The declaration of direct and transient dependencies declared by a project build.
+ * These maye be unresolved, which means you cannot assume they are available in any local repository.
  *
  * @author Heiko Braun
  * @since 24/10/2016
  */
-public class DeclaredDependencies {
+public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
 
+    @Deprecated
     public void addExplicitDependency(ArtifactSpec artifactSpec) {
-        this.explicitDependencies.add(artifactSpec);
+        throw new IllegalArgumentException("To be removed");
     }
 
-    public void addBuildArtifact(ArtifactSpec artifactSpec) {
-        this.buildArtifacts.add(artifactSpec);
-    }
-
+    @Deprecated
     public void addTransientDependency(ArtifactSpec artifactSpec) {
-        this.transientDependencies.add(artifactSpec);
-    }
-
-    public Set<ArtifactSpec> getBuildArtifacts() {
-        return buildArtifacts;
+        throw new IllegalArgumentException("To be removed");
     }
 
     public Set<ArtifactSpec> getExplicitDependencies() {
-        return explicitDependencies;
+        return getDirectDeps();
     }
 
     public Set<ArtifactSpec> getTransientDependencies() {
-        return transientDependencies;
+        if(null==allTransient) {
+            allTransient = new HashSet<>();
+            for (ArtifactSpec directDep : getDirectDeps()) {
+                allTransient.addAll(getTransientDependencies(directDep));
+            }
+        }
+        return allTransient;
+    }
+
+    public Set<ArtifactSpec> getTransientDependencies(ArtifactSpec artifact) {
+        return getTransientDeps(artifact);
     }
 
     /**
-     * Presolved means a build local component (i.e. mojo) to pre-compute the transient dependencies
+     * 'Presolved' means a build component (i.e. mojo) pre-computed the transient dependencies
      * and thus we can assume this set is fully and correctly resolved
      * @return
      */
@@ -60,8 +71,46 @@ public class DeclaredDependencies {
         return getTransientDependencies().size()>0;
     }
 
-    private Set<ArtifactSpec> buildArtifacts = new HashSet<>();
-    private Set<ArtifactSpec> explicitDependencies = new HashSet<>();
-    private Set<ArtifactSpec> transientDependencies = new HashSet<>();
+    public static ArtifactSpec createSpec(String gav) {
+        return createSpec(gav, "compile");
+    }
 
+    public static ArtifactSpec createSpec(String gav, String scope) {
+
+        try {
+            MavenArtifactDescriptor maven = ArtifactSpec.fromMavenGav(gav);
+            return new ArtifactSpec(
+                    scope,
+                    maven.groupId(),
+                    maven.artifactId(),
+                    maven.version(),
+                    maven.type(),
+                    null,
+                    null
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void writeTo(File file) {
+        try {
+            Writer w = new FileWriter(file);
+            for(ArtifactSpec key : depTree.keySet()) {
+                w.write(key.mavenGav());
+                w.write(":\n");
+                for(ArtifactSpec s : depTree.get(key)) {
+                    w.write("  - ");
+                    w.write(s.mavenGav());
+                    w.write("\n");
+                }
+            }
+            w.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write dependency tree", e);
+        }
+    }
+
+    private HashSet<ArtifactSpec> allTransient;
 }

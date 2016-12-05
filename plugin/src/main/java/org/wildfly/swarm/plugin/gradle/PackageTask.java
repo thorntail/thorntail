@@ -18,14 +18,19 @@ package org.wildfly.swarm.plugin.gradle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.ResolvedArtifact;
+import org.gradle.api.artifacts.ResolvedConfiguration;
+import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
@@ -72,7 +77,8 @@ public class PackageTask extends DefaultTask {
             }
         }
 
-        this.tool = new BuildTool(new GradleArtifactResolvingHelper(project))
+        GradleArtifactResolvingHelper resolvingHelper = new GradleArtifactResolvingHelper(project);
+        this.tool = new BuildTool(resolvingHelper)
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
                         jarTask.getExtension(), jarTask.getArchivePath())
                 .mainClass(ext.getMainClassName())
@@ -113,7 +119,7 @@ public class PackageTask extends DefaultTask {
         DeclaredDependencies declaredDependencies = new DeclaredDependencies();
         List<ArtifactSpec> explicitDependencies = new ArrayList<>();
 
-        project.getConfigurations()
+       /* project.getConfigurations()
                 .getByName("compile")
                 .getAllDependencies()
                 .forEach((artifact) -> {
@@ -126,7 +132,31 @@ public class PackageTask extends DefaultTask {
                 .getByName("compile")
                 .getResolvedConfiguration()
                 .getResolvedArtifacts()
-                .forEach(e -> addDependency(declaredDependencies, explicitDependencies, e));
+                .forEach(e -> addDependency(declaredDependencies, explicitDependencies, e));*/
+
+        ResolvedConfiguration resolvedConfiguration = project.getConfigurations()
+                .getByName("compile")
+                .getResolvedConfiguration();
+
+        Set<ResolvedDependency> directDeps = resolvedConfiguration
+                .getFirstLevelModuleDependencies();
+
+        for(ResolvedDependency directDep : directDeps) {
+
+            assert directDep.getModuleArtifacts().iterator().hasNext() : "Expected module artifacts";
+
+            ArtifactSpec parent = new ArtifactSpec(
+                    "compile",
+                    directDep.getModule().getId().getGroup(),
+                    directDep.getModule().getId().getName(),
+                    directDep.getModule().getId().getVersion(),
+                    directDep.getModuleArtifacts().iterator().next().getExtension(),
+                    null,
+                    null
+            );
+            Set<ArtifactSpec> artifactSpecs = resolvingHelper.resolveAll(new HashSet<>(Collections.singletonList(parent)));
+            artifactSpecs.forEach(a -> declaredDependencies.add(parent, a));
+        }
 
         tool.declaredDependencies(declaredDependencies);
 
@@ -138,7 +168,7 @@ public class PackageTask extends DefaultTask {
         this.tool.build(project.getName(), project.getBuildDir().toPath().resolve("libs"));
     }
 
-    private void addDependency(DeclaredDependencies declaredDependencies, final List<ArtifactSpec> explicitDependencies, final ResolvedArtifact gradleArtifact) {
+    /*private void addDependency(DeclaredDependencies declaredDependencies, final List<ArtifactSpec> explicitDependencies, final ResolvedArtifact gradleArtifact) {
 
         String groupId = gradleArtifact.getModuleVersion().getId().getGroup();
         String artifactId = gradleArtifact.getModuleVersion().getId().getName();
@@ -158,5 +188,5 @@ public class PackageTask extends DefaultTask {
 
         if(!isExplicit)
             declaredDependencies.addTransientDependency(new ArtifactSpec("compile", groupId, artifactId, version, extension, classifier, file));
-    }
+    }*/
 }

@@ -16,7 +16,6 @@
 package org.wildfly.swarm.arquillian.adapter;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DeclaredDependencies;
@@ -38,39 +37,46 @@ class MavenDependencyDeclarationFactory extends DependencyDeclarationFactory {
                         .importRuntimeAndTestDependencies()
                         .resolve()
                         .withoutTransitivity()
-                        .asResolvedArtifact());
-
-        for (MavenResolvedArtifact dep : explicitDeps) {
-            MavenCoordinate coord = dep.getCoordinate();
-            ArtifactSpec artifactSpec = new ArtifactSpec(
-                    dep.getScope().name(), coord.getGroupId(),
-                    coord.getArtifactId(), coord.getVersion(),
-                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile()
-            );
-            declaredDependencies.addExplicitDependency(artifactSpec);
-        }
+                        .asResolvedArtifact()
+                );
 
         // TransitiveStrategy
+        for (MavenResolvedArtifact directDep : explicitDeps) {
 
-        final MavenResolvedArtifact[] presolvedDeps =
-                resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
-                        .importRuntimeAndTestDependencies()
-                        .resolve()
-                        .withTransitivity()
-                        .asResolvedArtifact());
-
-        for (MavenResolvedArtifact dep : presolvedDeps) {
-            MavenCoordinate coord = dep.getCoordinate();
-            ArtifactSpec artifactSpec = new ArtifactSpec(
-                    dep.getScope().name(), coord.getGroupId(),
-                    coord.getArtifactId(), coord.getVersion(),
-                    coord.getPackaging().getExtension(), coord.getClassifier(), dep.asFile()
+            ArtifactSpec parent = new ArtifactSpec(
+                    directDep.getScope().toString(),
+                    directDep.getCoordinate().getGroupId(),
+                    directDep.getCoordinate().getArtifactId(),
+                    directDep.getCoordinate().getVersion(),
+                    directDep.getCoordinate().getPackaging().toString(),
+                    directDep.getCoordinate().getClassifier(),
+                    directDep.asFile()
             );
-            declaredDependencies.addTransientDependency(artifactSpec);
+            MavenResolvedArtifact[] bucket = resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
+                    .resolve(parent.mavenGav())
+                    .withTransitivity()
+                    .asResolvedArtifact()
+            );
+
+            for(MavenResolvedArtifact dep : bucket) {
+
+                ArtifactSpec child = new ArtifactSpec(
+                        dep.getScope().toString(),
+                        dep.getCoordinate().getGroupId(),
+                        dep.getCoordinate().getArtifactId(),
+                        dep.getCoordinate().getVersion(),
+                        dep.getCoordinate().getPackaging().toString(),
+                        dep.getCoordinate().getClassifier(),
+                        dep.asFile()
+                );
+
+                declaredDependencies.add(
+                        parent,
+                        child
+                );
+            }
         }
 
         return declaredDependencies;
     }
-
-
 }
