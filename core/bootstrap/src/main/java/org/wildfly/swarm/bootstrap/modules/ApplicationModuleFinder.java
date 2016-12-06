@@ -157,7 +157,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                     if ( parts.length == 4 ) {
                         coords = new ArtifactCoordinates( parts[0], parts[1], parts[3] );
                     } else if ( parts.length == 5 ) {
-                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[3], parts[4] );
+                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[4], parts[3] );
                     }
                     try {
                         File artifact = MavenResolvers.get().resolveJarArtifact(coords);
