@@ -21,6 +21,8 @@ import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
@@ -31,6 +33,7 @@ import org.wildfly.swarm.container.runtime.ConfigurableManager;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
  * @author Ken Finnigan
@@ -39,6 +42,7 @@ public class ConfigurableExtension implements Extension {
 
     private final ConfigurableManager configurableManager;
 
+    // Short-cut for-sure expect these to be Configurable owners.
     private static final Set<Class<?>> APPLICABLE_CLASSES = new HashSet<Class<?>>() {{
         add(Customizer.class);
         add(ArchivePreparer.class);
@@ -50,14 +54,30 @@ public class ConfigurableExtension implements Extension {
     }
 
     void processInjectionTarget(@Observes ProcessInjectionTarget pit, BeanManager beanManager) throws InstantiationException, IllegalAccessException {
-        if ( isApplicable( pit.getAnnotatedType().getJavaClass() ) ) {
+        if (isApplicable(pit.getAnnotatedType())) {
             pit.setInjectionTarget(new ConfigurableInjectionTarget<>(pit.getInjectionTarget(), this.configurableManager));
         }
     }
 
+    static <T> boolean isApplicable(AnnotatedType<T> at) {
+        if (isApplicable(at.getJavaClass())) {
+            return true;
+        }
+
+        Set<AnnotatedField<? super T>> fields = at.getFields();
+
+        for (AnnotatedField<? super T> field : fields) {
+            if ( field.isAnnotationPresent( Configurable.class ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     static boolean isApplicable(Class<?> cls) {
         for (Class<?> each : APPLICABLE_CLASSES) {
-            if ( each.isAssignableFrom( cls ) ) {
+            if (each.isAssignableFrom(cls)) {
                 return true;
             }
         }

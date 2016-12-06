@@ -10,10 +10,15 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.undertow.UndertowFraction;
 import org.wildfly.swarm.undertow.descriptors.CertInfo;
+
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 /**
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
@@ -21,26 +26,18 @@ import org.wildfly.swarm.undertow.descriptors.CertInfo;
 public class CertInfoProducer {
 
     @Inject
-    @Any
-    private Instance<UndertowFraction> undertowInstance;
+    UndertowFraction undertow;
 
-    @Inject
-    @ConfigurationValue(SwarmProperties.HTTPS_GENERATE_SELF_SIGNED_CERTIFICATE)
-    private Boolean generateSelfCertificate;
+    @Configurable("swarm.https.certificate.generate")
+    Defaultable<Boolean> generateSelfCertificate = bool(false);
 
-    @Inject
-    @ConfigurationValue(SwarmProperties.HTTPS_GENERATE_SELF_SIGNED_CERTIFICATE_HOST)
-    private String selfCertificateHost;
+    @Configurable( "swarm.https.certificate.generate.host")
+    Defaultable<String> selfCertificateHost = string("localhost");
 
     @Produces
     @Singleton
     public CertInfo produceCertInfo() {
-        if (undertowInstance.isUnsatisfied()) {
-            return CertInfo.INVALID;
-        }
-        UndertowFraction undertowFraction = undertowInstance.get();
-
-        if (generateSelfCertificate != null && generateSelfCertificate) {
+        if (generateSelfCertificate.get()) {
             // Remove when SWARM-634 is fixed
             if (System.getProperty("jboss.server.data.dir") == null) {
                 File tmpDir = null;
@@ -51,13 +48,13 @@ public class CertInfoProducer {
                     // Ignore
                 }
             }
-            return new CertInfo(selfCertificateHost, "jboss.server.data.dir");
+            return new CertInfo(selfCertificateHost.get(), "jboss.server.data.dir");
 
         } else {
-            String keystorePath = undertowFraction.keystorePath();
-            String keystorePassword = undertowFraction.keystorePassword();
-            String keyPassword = undertowFraction.keyPassword();
-            String keystoreAlias = undertowFraction.alias();
+            String keystorePath = undertow.keystorePath();
+            String keystorePassword = undertow.keystorePassword();
+            String keyPassword = undertow.keyPassword();
+            String keystoreAlias = undertow.alias();
             return new CertInfo(keystorePath, keystorePassword, keyPassword, keystoreAlias);
         }
     }

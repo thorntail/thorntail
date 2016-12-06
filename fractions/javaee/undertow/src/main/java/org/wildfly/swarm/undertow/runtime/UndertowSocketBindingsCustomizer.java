@@ -34,7 +34,7 @@ public class UndertowSocketBindingsCustomizer implements Customizer {
 
     @Inject
     @Named("standard-sockets")
-    private SocketBindingGroup group;
+    SocketBindingGroup group;
 
     @Inject
     UndertowFraction fraction;

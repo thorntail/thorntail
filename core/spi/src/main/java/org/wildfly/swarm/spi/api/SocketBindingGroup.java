@@ -89,6 +89,15 @@ public class SocketBindingGroup {
         return this;
     }
 
+    /** Retrieve a socket-binding by name.
+     *
+     * @param name The socket-binding name.
+     * @return The socket-binding if present, otherwise {@code null}.
+     */
+    public SocketBinding socketBinding(String name) {
+        return this.socketBindings.stream().filter(e->e.name().equals(name)).findFirst().orElse(null);
+    }
+
     /** Retrieve all socket-bindings attached to this group.
      *
      * @return All socket-bindings attached to this group.

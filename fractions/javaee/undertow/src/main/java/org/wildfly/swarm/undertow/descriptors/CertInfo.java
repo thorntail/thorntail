@@ -1,5 +1,7 @@
 package org.wildfly.swarm.undertow.descriptors;
 
+import org.wildfly.swarm.undertow.UndertowProperties;
+
 /**
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
@@ -41,10 +43,10 @@ public class CertInfo {
     }
 
     public CertInfo(String generateSelfSignedCertificateHost, String keystoreRelativeTo) {
-        this.keystorePath = "application.keystore";
-        this.keystorePassword = "password";
-        this.keystoreAlias = "server";
-        this.keyPassword = "password";
+        this.keystorePath = UndertowProperties.DEFAULT_KEYSTORE_PATH;
+        this.keystorePassword = UndertowProperties.DEFAULT_KEYSTORE_PASSWORD;
+        this.keystoreAlias = UndertowProperties.DEFAULT_CERTIFICATE_ALIAS;
+        this.keyPassword = UndertowProperties.DEFAULT_KEY_PASSWORD;
 
         this.generateSelfSignedCertificateHost = generateSelfSignedCertificateHost == null ? "localhost" : generateSelfSignedCertificateHost;
         this.keystoreRelativeTo = keystoreRelativeTo;
