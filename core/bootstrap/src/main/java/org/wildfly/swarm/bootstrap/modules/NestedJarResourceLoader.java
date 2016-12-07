@@ -65,7 +65,12 @@ public class NestedJarResourceLoader {
 
                 String relativeRoot = urlString.substring(endLoc + 5);
                 File resourceRoot = new File(new File(exp, relativeRoot), loaderPath);
-                return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot);
+                if ( ! resourceRoot.isDirectory() && ( resourceRoot.getName().endsWith(".jar" ) || resourceRoot.getName().endsWith( ".war" ) ) ) {
+                    JarFile jar = new JarFile( resourceRoot );
+                    return ResourceLoaders.createJarResourceLoader(loaderName, jar);
+                } else {
+                    return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot);
+                }
             }
         } else if (urlString.startsWith("file:")) {
             return ResourceLoaders.createFileResourceLoader(

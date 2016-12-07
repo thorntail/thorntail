@@ -48,8 +48,6 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
             return null;
         }
 
-        //System.err.println( "BootstrapClasspathModuleFinder: " + identifier );
-
         ModuleSpec moduleSpec = null;
         InputStream in = null;
         try {
