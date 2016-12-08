@@ -21,4 +21,21 @@ import org.wildfly.swarm.arquillian.daemon.container.DaemonContainerConfiguratio
  * @author Bob McWhirter
  */
 public class WildFlySwarmContainerConfiguration extends DaemonContainerConfigurationBase {
+    @Override
+    public void validate() {
+        if (fractionDetectMode == null || fractionDetectMode.length() == 0) {
+            this.fractionDetectMode = null;
+        }
+    }
+
+
+    public String getFractionDetectMode() {
+        return fractionDetectMode;
+    }
+
+    public void setFractionDetectMode(String fractionDetectMode) {
+        this.fractionDetectMode = fractionDetectMode;
+    }
+
+    private String fractionDetectMode;
 }

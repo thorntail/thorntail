@@ -46,6 +46,7 @@ import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JARArchive;
@@ -59,8 +60,6 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 public class UberjarSimpleContainer implements SimpleContainer {
 
-    private final ContainerContext containerContext;
-
     public UberjarSimpleContainer(ContainerContext containerContext, Class<?> testClass) {
         this.containerContext = containerContext;
         this.testClass = testClass;
@@ -73,8 +72,17 @@ public class UberjarSimpleContainer implements SimpleContainer {
         return this;
     }
 
+    @Override
     public UberjarSimpleContainer setJavaVmArguments(String javaVmArguments) {
         this.javaVmArguments = javaVmArguments;
+        return this;
+    }
+
+    @Override
+    public UberjarSimpleContainer setFractionDetectMode(BuildTool.FractionDetectionMode fractionDetectMode) {
+        if (fractionDetectMode != null) {
+            this.fractionDetectMode = fractionDetectMode;
+        }
         return this;
     }
 
@@ -122,8 +130,13 @@ public class UberjarSimpleContainer implements SimpleContainer {
         final ShrinkwrapArtifactResolvingHelper resolvingHelper = ShrinkwrapArtifactResolvingHelper.defaultInstance();
 
         BuildTool tool = new BuildTool(resolvingHelper)
-                .fractionDetectionMode(BuildTool.FractionDetectionMode.never)
+                .fractionDetectionMode(fractionDetectMode)
                 .bundleDependencies(false);
+
+        // FractionList.get() is costly, so only perform if required
+        if (fractionDetectMode != BuildTool.FractionDetectionMode.never) {
+            tool.fractionList(FractionList.get());
+        }
 
         String additionalModules = System.getProperty(SwarmInternalProperties.BUILD_MODULES);
 
@@ -318,6 +331,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     }
 
+    private final ContainerContext containerContext;
+
     private final Class<?> testClass;
 
     private SwarmProcess process;
@@ -326,5 +341,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     private String javaVmArguments;
 
+    private BuildTool.FractionDetectionMode fractionDetectMode = BuildTool.FractionDetectionMode.never;
 }
 

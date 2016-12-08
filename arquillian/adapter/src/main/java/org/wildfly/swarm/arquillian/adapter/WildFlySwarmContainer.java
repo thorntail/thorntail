@@ -32,12 +32,13 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.wildfly.swarm.arquillian.StartupTimeout;
 import org.wildfly.swarm.arquillian.daemon.container.DaemonContainerConfigurationBase;
 import org.wildfly.swarm.arquillian.daemon.container.DaemonDeployableContainerBase;
+import org.wildfly.swarm.tools.BuildTool;
 
 /**
  * @author Bob McWhirter
  * @author Toby Crawley
  */
-public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonContainerConfigurationBase> {
+public class WildFlySwarmContainer extends DaemonDeployableContainerBase<WildFlySwarmContainerConfiguration> {
 
     @Inject
     Instance<ContainerContext> containerContext;
@@ -45,10 +46,18 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     @Inject
     Instance<DeploymentContext> deploymentContext;
 
+    @Override
+    public Class<WildFlySwarmContainerConfiguration> getConfigurationClass() {
+        return WildFlySwarmContainerConfiguration.class;
+    }
 
     @Override
-    public Class<DaemonContainerConfigurationBase> getConfigurationClass() {
-        return DaemonContainerConfigurationBase.class;
+    public void setup(WildFlySwarmContainerConfiguration configuration) {
+        super.setup(configuration);
+
+        if (configuration.getFractionDetectMode() != null) {
+            this.fractionDetectMode = BuildTool.FractionDetectionMode.valueOf(configuration.getFractionDetectMode());
+        }
     }
 
     @Override
@@ -78,6 +87,7 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
             this.delegateContainer
                     .setJavaVmArguments(this.getJavaVmArguments())
                     .requestedMavenArtifacts(this.requestedMavenArtifacts)
+                    .setFractionDetectMode(fractionDetectMode)
                     .start(archive);
             // start wants to connect to the remote container, which isn't up until now, so
             // we override start above and call it here instead
@@ -110,6 +120,8 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     }
 
     private Set<String> requestedMavenArtifacts = new HashSet<>();
+
+    private BuildTool.FractionDetectionMode fractionDetectMode;
 
     private SimpleContainer delegateContainer;
 

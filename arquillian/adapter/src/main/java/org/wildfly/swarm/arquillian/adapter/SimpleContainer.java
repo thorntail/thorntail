@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.arquillian.ReflectionUtil;
+import org.wildfly.swarm.tools.BuildTool;
 
 public interface SimpleContainer {
     void start(Archive<?> archive) throws Exception;
@@ -29,6 +30,8 @@ public interface SimpleContainer {
     void stop() throws Exception;
 
     SimpleContainer setJavaVmArguments(String javaVmArguments);
+
+    SimpleContainer setFractionDetectMode(BuildTool.FractionDetectionMode fractionDetectMode);
 
     default SimpleContainer requestedMavenArtifacts(Set<String> artifacts) {
         return this;
