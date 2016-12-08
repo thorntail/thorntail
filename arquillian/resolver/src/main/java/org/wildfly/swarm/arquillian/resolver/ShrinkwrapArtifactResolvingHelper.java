@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositoryListener;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
@@ -59,16 +60,16 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
 
             MavenRemoteRepository jbossPublic =
                     MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
-                            "http://repository.jboss.org/nexus/content/groups/public/",
-                            "default");
+                                                                   "http://repository.jboss.org/nexus/content/groups/public/",
+                                                                   "default");
             jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
             jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
 
             MavenRemoteRepository gradleTools =
                     MavenRemoteRepositories.createRemoteRepository("gradle",
-                                        "http://repo.gradle.org/gradle/libs-releases-local",
-                                        "default");
+                                                                   "http://repo.gradle.org/gradle/libs-releases-local",
+                                                                   "default");
             gradleTools.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
             gradleTools.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
@@ -91,8 +92,18 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
                         });
             }
 
-            return new ShrinkwrapArtifactResolvingHelper(resolver);
+
+            ShrinkwrapArtifactResolvingHelper helper = new ShrinkwrapArtifactResolvingHelper(resolver);
+            helper.session().setCache(new SimpleRepositoryCache());
+            helper.session().setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_DAILY);
+            helper.session().setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_IGNORE);
+
+            return helper;
         });
+    }
+
+    public ConfigurableMavenResolverSystem getResolver() {
+        return resolver;
     }
 
     public ShrinkwrapArtifactResolvingHelper(ConfigurableMavenResolverSystem resolver) {
@@ -139,12 +150,12 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
         return Arrays.stream(artifacts).map(artifact -> {
             final MavenCoordinate coord = artifact.getCoordinate();
             return new ArtifactSpec("compile",
-                    coord.getGroupId(),
-                    coord.getArtifactId(),
-                    coord.getVersion(),
-                    coord.getPackaging().getId(),
-                    coord.getClassifier(),
-                    artifact.asFile());
+                                    coord.getGroupId(),
+                                    coord.getArtifactId(),
+                                    coord.getVersion(),
+                                    coord.getPackaging().getId(),
+                                    coord.getClassifier(),
+                                    artifact.asFile());
         }).collect(Collectors.toSet());
     }
 
