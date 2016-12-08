@@ -36,7 +36,6 @@
 
   <modules>
     <module>main</module>
-    <module>tests</module>
   </modules>
 
   <build>

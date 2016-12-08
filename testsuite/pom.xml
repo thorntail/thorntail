@@ -76,6 +76,7 @@
     <module>testsuite-batch-jberet</module>
     <module>testsuite-buildtool</module>
     <module>testsuite-camel-cdi</module>
+    <module>testsuite-camel-core</module>
     <module>testsuite-camel-cxf</module>
     <module>testsuite-camel-ejb</module>
     <module>testsuite-camel-jms</module>
