@@ -19,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
@@ -65,28 +67,12 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
         getArchive().as(JARArchive.class).addModule("org.wildfly.swarm.keycloak", "deployment");
         getArchive().as(JARArchive.class).addAsServiceProvider("io.undertow.servlet.ServletExtension", "org.wildfly.swarm.keycloak.deployment.SecurityContextServletExtension");
 
-        InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
-        if (keycloakJson == null) {
-
-            String appArtifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
-
-            if (appArtifact != null) {
-                try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
-                    Archive tmpArchive = ShrinkWrap.create(JARArchive.class);
-                    tmpArchive.as(ZipImporter.class).importFrom(in);
-                    Node jsonNode = tmpArchive.get("keycloak.json");
-                    if (jsonNode == null) {
-                        jsonNode = tmpArchive.get("WEB-INF/keycloak.json");
-                    }
-
-                    if (jsonNode != null && jsonNode.getAsset() != null) {
-                        keycloakJson = jsonNode.getAsset().openStream();
-                    }
-                } catch (IOException e) {
-                    // ignore
-                    // e.printStackTrace();
-                }
-            }
+        InputStream keycloakJson;
+        String keycloakJsonPath = System.getProperty("swarm.keycloak.json.path");
+        if (keycloakJsonPath != null) {
+            keycloakJson = getKeycloakJson(keycloakJsonPath);
+        } else {
+            keycloakJson = getKeycloakJson();
         }
 
         // Setup web.xml
@@ -128,5 +114,41 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
     }
 
     private WebXmlAsset asset;
+
+    private InputStream getKeycloakJson(String path) {
+        try {
+            return Files.newInputStream(Paths.get(path));
+        } catch (IOException ignore) {}
+
+        return null;
+    }
+
+    private InputStream getKeycloakJson() {
+        InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
+        if (keycloakJson == null) {
+
+            String appArtifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
+
+            if (appArtifact != null) {
+                try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
+                    Archive tmpArchive = ShrinkWrap.create(JARArchive.class);
+                    tmpArchive.as(ZipImporter.class).importFrom(in);
+                    Node jsonNode = tmpArchive.get("keycloak.json");
+                    if (jsonNode == null) {
+                        jsonNode = tmpArchive.get("WEB-INF/keycloak.json");
+                    }
+
+                    if (jsonNode != null && jsonNode.getAsset() != null) {
+                        keycloakJson = jsonNode.getAsset().openStream();
+                    }
+                } catch (IOException e) {
+                    // ignore
+                    // e.printStackTrace();
+                }
+            }
+        }
+        return keycloakJson;
+    }
+
 }
 

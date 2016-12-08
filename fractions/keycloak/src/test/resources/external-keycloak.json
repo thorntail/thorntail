@@ -1,0 +1,10 @@
+{
+  "realm": "booker",
+  "realm-public-key": "MII...",
+  "auth-server-url": "http://localhost:19090/auth",
+  "ssl-required": "external",
+  "resource": "web-client",
+  "credentials": {
+    "secret": "deec63e4-d242-4180-b402-80fba0a9187e"
+  }
+}
