@@ -11,19 +11,18 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
     <version>2017.1.0-SNAPSHOT</version>
-    <relativePath>../../</relativePath>
+    <relativePath>../../../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jdr</artifactId>
+  <artifactId>security</artifactId>
 
-  <packaging>jar</packaging>
-
-  <name>JBoss Diagnostic Reporting</name>
-  <description> Enables the gathering of diagnostic data for use in remote analysis of error conditions. Although the data is in a simple format and could be useful to anyone, primarily useful for JBoss EAP subscribers who would provide the data to Red Hat when requesting support</description>
+  <name>Security</name>
+  <description>Security</description>
 
   <properties>
-    <swarm.fraction.tags>Reporting</swarm.fraction.tags>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
   </properties>
 
   <build>
@@ -42,30 +41,7 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>management</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-jdr</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+      <artifactId>ee</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>
@@ -90,6 +66,12 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- provided dependencies -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.2_spec</artifactId>
     </dependency>
 
   </dependencies>

@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
-  ~
-  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
-  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -11,20 +6,17 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
     <version>2017.1.0-SNAPSHOT</version>
-    <relativePath>../../</relativePath>
+    <relativePath>../../../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>jgroups</artifactId>
+  <artifactId>management-console</artifactId>
 
-  <name>JGroups</name>
-  <description>Reliable messaging for creating a cluster</description>
-
-  <packaging>jar</packaging>
+  <name>Management Console</name>
+  <description>UI to manage a running WildFly/Swarm server</description>
 
   <properties>
-    <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>JavaEE</swarm.fraction.tags>
+    <swarm.fraction.tags>Web,Management</swarm.fraction.tags>
   </properties>
 
   <build>
@@ -34,6 +26,27 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>swagger-ui</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.jboss.as</includeGroupIds>
+              <includeArtifactIds>jboss-as-console</includeArtifactIds>
+              <includeClassifiers>resources</includeClassifiers>
+              <outputDirectory>${project.build.directory}/classes/modules/org/jboss/as/console/main/</outputDirectory>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -43,9 +56,18 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jgroups-module</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-console</artifactId>
+      <classifier>resources</classifier>
+      <version>${version.jboss.management-console}</version>
+    </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
@@ -55,12 +77,6 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <!-- Fraction Dependencies -->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jmx</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>
@@ -74,29 +90,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-servlet-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
+
+
 </project>

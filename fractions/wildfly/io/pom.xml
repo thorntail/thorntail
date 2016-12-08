@@ -11,14 +11,14 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
     <version>2017.1.0-SNAPSHOT</version>
-    <relativePath>../../</relativePath>
+    <relativePath>../../../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>request-controller</artifactId>
+  <artifactId>io</artifactId>
 
-  <name>Request Controller</name>
-  <description>Request Controller</description>
+  <name>IO</name>
+  <description>IO</description>
 
   <packaging>jar</packaging>
 
@@ -40,19 +40,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>container</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-core-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 

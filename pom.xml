@@ -1116,8 +1116,6 @@
     <module>core/spi</module>
     <module>core/container</module>
 
-    <module>fractions/management</module>
-
     <!-- fractions -->
     <module>fractions/javaee/batch-jberet</module>
     <module>fractions/javaee/bean-validation</module>
@@ -1149,29 +1147,31 @@
 
     <module>fractions/camel</module>
 
+    <module>fractions/wildfly/hibernate-search</module>
+    <module>fractions/wildfly/hibernate-validator</module>
+    <module>fractions/wildfly/infinispan</module>
+    <module>fractions/wildfly/io</module>
+    <module>fractions/wildfly/jdr</module>
+    <module>fractions/wildfly/jgroups</module>
+    <module>fractions/wildfly/logging</module>
+    <module>fractions/wildfly/management</module>
+    <module>fractions/wildfly/management-console</module>
+    <module>fractions/wildfly/msc</module>
+    <module>fractions/wildfly/mod_cluster</module>
+    <module>fractions/wildfly/request-controller</module>
+    <module>fractions/wildfly/security</module>
+
     <module>fractions/drools-server</module>
     <module>fractions/fluentd</module>
     <module>fractions/flyway</module>
-    <module>fractions/hibernate-search</module>
-    <module>fractions/hibernate-validator</module>
-    <module>fractions/infinispan</module>
-    <module>fractions/io</module>
     <module>fractions/javafx</module>
-    <module>fractions/jdr</module>
-    <module>fractions/jgroups</module>
     <module>fractions/jolokia</module>
     <module>fractions/keycloak</module>
     <module>fractions/keycloak-server</module>
-    <module>fractions/logging</module>
     <module>fractions/logstash</module>
-    <module>fractions/management-console</module>
     <module>fractions/microprofile</module>
-    <module>fractions/msc</module>
     <module>fractions/monitor</module>
-    <module>fractions/mod_cluster</module>
     <module>fractions/netflix</module>
-    <module>fractions/request-controller</module>
-    <module>fractions/security</module>
     <module>fractions/spring</module>
     <module>fractions/swagger</module>
     <module>fractions/swagger-webapp</module>

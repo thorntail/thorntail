@@ -11,20 +11,21 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
     <version>2017.1.0-SNAPSHOT</version>
-    <relativePath>../../</relativePath>
+    <relativePath>../../../</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>logging</artifactId>
+  <artifactId>hibernate-validator</artifactId>
 
-  <name>Logging</name>
-  <description>Customizing the Logging for WildFly</description>
+  <name>Hibernate Validator</name>
+  <description>Validation annotations going beyond Bean Validation</description>
 
   <packaging>jar</packaging>
 
   <properties>
+    <swarm.fraction.bootstrap>true</swarm.fraction.bootstrap>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>Logging</swarm.fraction.tags>
+    <swarm.fraction.tags>JavaEE,Validation,Hibernate</swarm.fraction.tags>
   </properties>
 
   <build>
@@ -39,51 +40,38 @@
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>spi</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
+      <artifactId>bean-validation</artifactId>
     </dependency>
 
     <!-- Provided APIs -->
     <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-logging</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.spec.javax.el</groupId>
+      <artifactId>jboss-el-api_3.0_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.el-impl</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
       <exclusions>
