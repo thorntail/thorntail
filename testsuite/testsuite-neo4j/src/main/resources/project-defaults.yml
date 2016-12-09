@@ -1,0 +1,34 @@
+swarm:
+  neo4jdriver:
+    neo4js:
+      neo4jtestprofile:
+        jndi-name:  java:jboss/neo4jdriver/test
+        id: neo4jtestprofile
+        module:  org.neo4j.driver.custom
+        security-domain:  neo4jRealm
+        transaction:  1pc
+        hosts:
+          neo4jtesthost:
+            outbound-socket-binding-ref: neo4jtesthost
+  security:
+    security-domains:
+      neo4jRealm:
+        cache-type:
+        classic-authentication:
+          login-modules:
+            ConfiguredIdentity:
+              code:  ConfiguredIdentity
+              flag:  required
+              ConfiguredIdentity:
+              module-options: 
+                principal:  devuser
+                password:  changethis
+                username:  devuser
+  network:
+    socket-binding-groups:
+      standard-sockets:
+        outbound-socket-bindings:
+              neo4jtesthost:
+                remote-host: localhost
+                remote-port: 7687
+        

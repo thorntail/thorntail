@@ -1,0 +1,33 @@
+swarm:
+  cassandradriver:
+    cassandras:
+      cassandratestprofile:
+        database:    
+        jndi-name:  java:jboss/cassandradriver/test
+        id: cassandratestprofile
+        module:  org.cassandra.custom
+        security-domain:  cassandraRealm
+        hosts:
+          casstesthost:
+            outbound-socket-binding-ref: casstesthost
+  security:
+    security-domains:
+      cassandraRealm:
+        cache-type:
+        classic-authentication:
+          login-modules:
+            ConfiguredIdentity:
+              code:  ConfiguredIdentity
+              flag:  required
+              ConfiguredIdentity:
+              module-options: 
+                principal:  devuser
+                password:  changethis
+                username:  devuser
+  network:
+    socket-binding-groups:
+      standard-sockets:
+        outbound-socket-bindings:
+              casstesthost:
+                remote-host: localhost
+                remote-port: 9042

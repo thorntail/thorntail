@@ -1,0 +1,34 @@
+swarm:
+  orientdb:
+    orients:
+      orienttesttprofile:
+        database: test
+        jndi-name:  java:jboss/orientdb/test
+        id: orienttesttprofile
+        module:  org.orientdb.custom
+        security-domain:  orientRealm
+        hosts:
+          orienttesthost:
+            outbound-socket-binding-ref: orienttesthost
+  security:
+    security-domains:
+      orientRealm:
+        cache-type:
+        classic-authentication:
+          login-modules:
+            ConfiguredIdentity:
+              code:  ConfiguredIdentity
+              flag:  required
+              ConfiguredIdentity:
+              module-options: 
+                principal:  admin
+                password:  admin
+                username:  admin
+  network:
+    socket-binding-groups:
+      standard-sockets:
+        outbound-socket-bindings:
+              orienttesthost:
+                remote-host: localhost
+                remote-port: 2424
+        
