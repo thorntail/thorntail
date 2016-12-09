@@ -16,7 +16,11 @@
 package org.wildfly.swarm.undertow.runtime;
 
 
+import java.security.NoSuchAlgorithmException;
+
 import javax.inject.Inject;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
 
 import org.wildfly.swarm.config.undertow.Server;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -32,12 +36,33 @@ import org.wildfly.swarm.undertow.UndertowFraction;
 public class HTTP2Customizer implements Customizer {
 
     @Inject
-    private UndertowFraction undertow;
+    UndertowFraction undertow;
 
     @Override
     public void customize() {
+        if (!supportsHTTP2()) {
+            return;
+        }
         for (Server server : undertow.subresources().servers()) {
             server.subresources().httpsListeners().forEach(httpsListener -> httpsListener.enableHttp2(true));
         }
     }
+
+    public static final String REQUIRED_CIPHER = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256";
+
+    protected boolean supportsHTTP2() {
+        try {
+            SSLContext context = SSLContext.getDefault();
+            SSLEngine engine = context.createSSLEngine();
+            String[] ciphers = engine.getEnabledCipherSuites();
+            for (String i : ciphers) {
+                if (i.equals(REQUIRED_CIPHER)) {
+                    return true;
+                }
+            }
+        } catch (NoSuchAlgorithmException e) {
+        }
+        return false;
+    }
+
 }
