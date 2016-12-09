@@ -134,6 +134,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                 weld.addBeanClass(each);
             }
 
+            weld.property("org.jboss.weld.se.shutdownHook", false);
             WeldContainer weldContainer = weld.initialize();
 
             RuntimeServer server = weldContainer.select(RuntimeServer.class).get();
