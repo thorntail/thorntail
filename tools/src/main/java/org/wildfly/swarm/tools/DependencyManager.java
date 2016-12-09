@@ -26,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -138,7 +139,7 @@ public class DependencyManager implements ResolvedDependencies {
         this.dependencies.addAll(resolvedExplicitDependencies);
 
         // resolve transitives if not pre-computed (i.e. from maven/gradle plugin)
-        if(declaredDependencies.getTransientDependencies().isEmpty()) {
+        if (declaredDependencies.getTransientDependencies().isEmpty()) {
 
             Set<ArtifactSpec> inputSet = declaredDependencies.getExplicitDependencies();
             Set<ArtifactSpec> filtered = inputSet
@@ -171,7 +172,7 @@ public class DependencyManager implements ResolvedDependencies {
                     .collect(Collectors.toSet());
 
             Set<ArtifactSpec> resolvedTransientDependencies = Collections.EMPTY_SET;
-            if(filtered.size()>0) {
+            if (filtered.size() > 0) {
 
                 resolvedTransientDependencies = resolver.resolveAllArtifactsNonTransitively(filtered);
                 this.dependencies.addAll(resolvedTransientDependencies);
@@ -230,7 +231,7 @@ public class DependencyManager implements ResolvedDependencies {
     private void analyzeFractionManifests(DeclaredDependencies artifactReport) {
         this.dependencies.stream()
                 .map(e -> fractionManifest(e.file))
-                .filter(e -> e != null)
+                .filter(Objects::nonNull)
                 .forEach((manifest) -> {
                     String module = manifest.getModule();
                     if (module != null) {
@@ -253,32 +254,28 @@ public class DependencyManager implements ResolvedDependencies {
     @Override
     public boolean isRemovable(Node node) {
         Asset asset = node.getAsset();
-        if (asset == null) {
-            return false;
+        boolean result = false;
+        if (asset != null) {
+            String path = node.getPath().get();
+            try (final InputStream inputStream = asset.openStream()) {
+                byte[] checksum = checksum(inputStream);
+
+                result = this.removableDependencies.stream()
+                        .filter(spec -> path.endsWith(spec.artifactId() + "-" + spec.version() + ".jar"))
+                        .map(spec -> {
+                            try (final FileInputStream in = new FileInputStream(spec.file)) {
+                                return checksum(in);
+                            } catch (IOException | NoSuchAlgorithmException | DigestException e) {
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .anyMatch(bytes -> Arrays.equals(bytes, checksum));
+            } catch (NoSuchAlgorithmException | IOException | DigestException e) {
+                e.printStackTrace();
+            }
         }
-
-        String path = node.getPath().get();
-        try (final InputStream inputStream = asset.openStream()){
-            byte[] checksum = checksum(inputStream);
-
-            return this.removableDependencies.stream()
-                    .filter(e -> path.endsWith(e.artifactId() + "-" + e.version() + ".jar"))
-                    .map(e -> {
-                        try (final FileInputStream in = new FileInputStream(e.file)){
-                            return checksum(in);
-                        } catch (IOException | NoSuchAlgorithmException | DigestException e1) {
-                            return null;
-                        }
-                    })
-                    .filter(e -> e != null)
-                    .anyMatch(e -> {
-                        return Arrays.equals(e, checksum);
-                    });
-        } catch (NoSuchAlgorithmException | IOException | DigestException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        return result;
     }
 
     protected byte[] checksum(InputStream in) throws IOException, NoSuchAlgorithmException, DigestException {
