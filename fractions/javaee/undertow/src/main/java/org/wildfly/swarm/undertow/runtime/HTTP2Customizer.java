@@ -23,6 +23,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
 import org.wildfly.swarm.config.undertow.Server;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.undertow.UndertowFraction;
@@ -41,6 +42,7 @@ public class HTTP2Customizer implements Customizer {
     @Override
     public void customize() {
         if (!supportsHTTP2()) {
+            SwarmMessages.MESSAGES.http2NotSupported();
             return;
         }
         for (Server server : undertow.subresources().servers()) {

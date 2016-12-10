@@ -172,6 +172,11 @@ public interface SwarmMessages extends BasicLogger {
     @Message(id = 37, value = "Configuration:\n%s")
     void configuration(String configuration);
 
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 38, value = "HTTP/2 is not supported in this environment. " +
+            "Are the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for JDK/JRE 8 installed?")
+    void http2NotSupported();
+
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
 
