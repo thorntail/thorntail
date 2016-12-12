@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
@@ -31,7 +32,7 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
  * @author Bob McWhirter
  */
 @Singleton
-public class TempFileProviderProducer implements Runnable {
+public class TempFileProviderProducer {
 
     private TempFileProvider tempFileProvider = null;
 
@@ -45,20 +46,8 @@ public class TempFileProviderProducer implements Runnable {
             ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
             this.tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor, true);
 
-            Runtime.getRuntime().addShutdownHook(new Thread(this));
         } catch (IOException e) {
             //TODO This should be properly logged
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void run() {
-        try {
-            if (this.tempFileProvider != null) {
-                this.tempFileProvider.close();
-            }
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -66,6 +55,17 @@ public class TempFileProviderProducer implements Runnable {
     @Produces
     TempFileProvider tempFileProvider() {
         return this.tempFileProvider;
+    }
+
+    void dispose(@Disposes TempFileProvider provider) {
+        // To ensure we only close the one we produce
+        if ( this.tempFileProvider == provider ) {
+            try {
+                this.tempFileProvider.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
