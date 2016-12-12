@@ -95,8 +95,8 @@ public class SecuredImpl extends AssignableBase<ArchiveBase<?>> implements Secur
 
         if (keycloakJson != null) {
             getArchive().as(JARArchive.class).add(createAsset(keycloakJson), "WEB-INF/keycloak.json");
-        } else {
-            // not adding it.
+        } else if (Boolean.valueOf(System.getProperty(KeycloakJsonGenerator.PREFIX + "generated"))) {
+            getArchive().as(JARArchive.class).add(createAsset(KeycloakJsonGenerator.generate()), "WEB-INF/keycloak.json");
         }
     }
 
