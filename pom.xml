@@ -37,7 +37,7 @@
     <version.jboss.management-console>2.8.25.Final</version.jboss.management-console>
 
     <version.maven.aether>3.2.5</version.maven.aether>
-    <version.wildfly.config-api>0.4.9</version.wildfly.config-api>
+    <version.wildfly.config-api>0.5.0</version.wildfly.config-api>
     <version.wildfly>10.1.0.Final</version.wildfly>
     <version.org.wildfly.core>2.2.1.CR1</version.org.wildfly.core>
     <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
