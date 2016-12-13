@@ -429,6 +429,9 @@ public class Swarm {
         if (this.server == null) {
             throw SwarmMessages.MESSAGES.containerNotStarted("stop()");
         }
+        
+        this.server.stop();
+        this.server = null;
 
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
         Class<?> shutdownClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.WeldShutdownImpl");
@@ -436,8 +439,6 @@ public class Swarm {
         WeldShutdown shutdown = (WeldShutdown) shutdownClass.newInstance();
         shutdown.shutdown();
 
-        this.server.stop();
-        this.server = null;
         return this;
     }
 
