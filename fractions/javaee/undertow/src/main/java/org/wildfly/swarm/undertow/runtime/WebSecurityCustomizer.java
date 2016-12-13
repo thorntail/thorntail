@@ -13,44 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.ejb.runtime;
+package org.wildfly.swarm.undertow.runtime;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.wildfly.swarm.config.Security;
 import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
 import org.wildfly.swarm.config.security.security_domain.ClassicAuthorization;
 import org.wildfly.swarm.config.security.security_domain.authorization.PolicyModule;
-import org.wildfly.swarm.security.SecurityFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
-/**
- * @author Ken Finnigan
- */
 @Post
 @Singleton
-public class EJBSecurityCustomizer implements Customizer {
+public class WebSecurityCustomizer implements Customizer {
 
     @Inject
-    private Instance<SecurityFraction> securityInstance;
+    private Instance<Security> securityInstance;
 
     @Override
     public void customize() {
         if (!securityInstance.isUnsatisfied()) {
-            SecurityFraction security = securityInstance.get();
+            Security security = securityInstance.get();
 
-            SecurityDomain ejbPolicy = security.subresources().securityDomains().stream().filter((e) -> e.getKey().equals("jboss-ejb-policy")).findFirst().orElse(null);
-            if (ejbPolicy == null) {
-                ejbPolicy = new SecurityDomain("jboss-ejb-policy")
+            SecurityDomain webPolicy = security.subresources().securityDomains().stream().filter((e) -> e.getKey().equals("jboss-web-policy")).findFirst().orElse(null);
+            if (webPolicy == null) {
+                webPolicy = new SecurityDomain("jboss-web-policy")
                         .cacheType(SecurityDomain.CacheType.DEFAULT)
                         .classicAuthorization(new ClassicAuthorization()
                                                       .policyModule(new PolicyModule("Delegating")
                                                                             .code("Delegating")
                                                                             .flag(Flag.REQUIRED)));
-                security.securityDomain(ejbPolicy);
+                security.securityDomain(webPolicy);
             }
         }
     }
