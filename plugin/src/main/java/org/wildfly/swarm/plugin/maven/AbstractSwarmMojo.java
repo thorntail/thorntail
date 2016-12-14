@@ -191,7 +191,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
                             artifact.getScope(),
                             artifact.getGroupId(),
                             artifact.getArtifactId(),
-                            artifact.getVersion(),
+                            artifact.getBaseVersion(),
                             artifact.getType(),
                             artifact.getClassifier(),
                             artifact.getFile()
