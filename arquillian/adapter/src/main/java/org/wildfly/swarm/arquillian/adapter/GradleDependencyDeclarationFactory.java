@@ -16,9 +16,6 @@
 package org.wildfly.swarm.arquillian.adapter;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.internal.FileSystemLayout;
@@ -37,23 +34,13 @@ public class GradleDependencyDeclarationFactory extends DependencyDeclarationFac
 
     @Override
     public DeclaredDependencies create(ShrinkwrapArtifactResolvingHelper resolvingHelper) {
-        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
 
         GradleDependencyAdapter gradleAdapter = new GradleDependencyAdapter(fsLayout.getRootPath());
 
-        List<String> coordinates = gradleAdapter.parseDependencies(GradleDependencyAdapter.Configuration.TEST_RUNTIME);
-        List<ArtifactSpec> specs = coordinates.stream()
-                .map(c -> ArtifactSpec.fromMscGav(c))
-                .collect(Collectors.toList());
+        DeclaredDependencies declaredDependencies = gradleAdapter.parseDependencies(GradleDependencyAdapter.Configuration.TEST_RUNTIME);
 
-        Set<ArtifactSpec> artifactSpecs = resolvingHelper.resolveAll(new HashSet<ArtifactSpec>(specs), false, false);
-
-        for (ArtifactSpec artefact : artifactSpecs) {
-            if(null==artefact.file)
-                throw new RuntimeException("Artifact file not resolved");
-            declaredDependencies.addExplicitDependency(artefact);
-            //dependency.presolvedDependency(artefact);
-        }
+        // resolve to local files
+        resolvingHelper.resolveAll(new HashSet<ArtifactSpec>(declaredDependencies.getTransientDependencies()), false, false);
 
         return declaredDependencies;
     }

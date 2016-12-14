@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 
 /**
- * [hb] TODO: rename to SystemDependencies
  * @author Heiko Braun
  * @since 18/07/16
  */
@@ -19,9 +18,6 @@ public class SystemDependencyResolution implements DependencyResolution {
 
 
     public SystemDependencyResolution() {
-
-        System.out.println("<< Thread - SystemDependencyResolution : "+Thread.currentThread()+">>");
-
         final String classpathProp = System.getProperty("java.class.path");
         final String javaHomProp = System.getProperty("java.home");
         final String userDirProp = System.getProperty("user.dir");
@@ -32,13 +28,6 @@ public class SystemDependencyResolution implements DependencyResolution {
 
         this.pwd = userDirProp;
         this.javaHome = javaHomProp.endsWith(JRE) ? javaHomProp.substring(0, javaHomProp.lastIndexOf(JRE)) : javaHomProp;
-    }
-
-    SystemDependencyResolution(List<String> classpath, String javaHome, String pwd, List<String> testClasspath) {
-        this.classpath = classpath;
-        this.pwd = pwd;
-        this.javaHome = javaHome.endsWith(JRE) ? javaHome.substring(0, javaHome.lastIndexOf(JRE)) : javaHome;
-        this.testClasspath = testClasspath;
     }
 
     @Override
@@ -99,4 +88,5 @@ public class SystemDependencyResolution implements DependencyResolution {
     final String pwd;
 
     final List<String> testClasspath;
+
 }

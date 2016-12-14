@@ -19,6 +19,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
@@ -31,6 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wildfly.swarm.fractionlist.FractionList;
+import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.DeclaredDependencies;
@@ -141,16 +146,23 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .map(FractionDescriptor::toArtifactSpec)
                 .forEach(tool::fraction);
 
-        this.project.getDependencyArtifacts()
-                .stream()
-                .filter(e -> {
-                    String scope = e.getScope();
-                    return (scope.equals("compile") || scope.equals("runtime"));
-                })
-                .forEach(dep -> declaredDependencies.addExplicitDependency(artifactToArtifactSpec(dep)));
+        Map<ArtifactSpec, Set<ArtifactSpec>> buckets = createBuckets(this.project.getArtifacts(), this.project.getDependencies());
 
-        this.project.getArtifacts()
-                .forEach( dep-> declaredDependencies.addTransientDependency(artifactToArtifactSpec(dep)));
+        for(ArtifactSpec directDep : buckets.keySet()) {
+
+            if( !(directDep.scope.equals("compile") || directDep.scope.equals("runtime")) )
+                continue; // ignore anything but compile and runtime
+
+            Set<ArtifactSpec> transientDeps = buckets.get(directDep);
+            if(transientDeps.isEmpty()) {
+                declaredDependencies.add(directDep);
+            }
+            else {
+                for (ArtifactSpec transientDep : transientDeps) {
+                    declaredDependencies.add(directDep, transientDep);
+                }
+            }
+        }
 
         tool.declaredDependencies(declaredDependencies);
 

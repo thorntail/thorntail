@@ -50,12 +50,9 @@ public class DependencyManagerTest {
     public void testNoSwarmJars() throws Exception {
         // Explicitly asked-for dependencies are also the full resolved tree
         DeclaredDependencies declaredDependencies = new DeclaredDependencies();
-        declaredDependencies.addExplicitDependency(JAXRS_SPEC);
-        declaredDependencies.addExplicitDependency(COMMON_DEP);
 
-        declaredDependencies.addTransientDependency(JAXRS_SPEC);
-        declaredDependencies.addTransientDependency(COMMON_DEP);
-        declaredDependencies.addTransientDependency(SERVLET_SPEC);
+        declaredDependencies.add(JAXRS_SPEC, SERVLET_SPEC);
+        declaredDependencies.add(COMMON_DEP);
 
         manager.analyzeDependencies(false, declaredDependencies);
         assertThat(manager.getRemovableDependencies()).isEmpty();
@@ -78,16 +75,14 @@ public class DependencyManagerTest {
     public void testAutodetectedSwarmJar() throws Exception {
         // Explicitly asked-for dependencies are also the full resolved tree
         DeclaredDependencies declaredDependencies = new DeclaredDependencies();
-        declaredDependencies.addExplicitDependency(JAXRS_SPEC);
-        declaredDependencies.addExplicitDependency(COMMON_DEP);
 
-        // auto-detected, not pre-solved
-        declaredDependencies.addExplicitDependency(JAXRS_FRACTION);
+        declaredDependencies.add(JAXRS_SPEC, SERVLET_SPEC);
+        declaredDependencies.add(COMMON_DEP);
 
-        declaredDependencies.addTransientDependency(UNDERTOW_FRACTION);
-        declaredDependencies.addTransientDependency(JAXRS_SPEC);
-        declaredDependencies.addTransientDependency(SERVLET_SPEC);
-        declaredDependencies.addTransientDependency(COMMON_DEP);
+        declaredDependencies.add(JAXRS_FRACTION, JAXRS_SPEC);
+        declaredDependencies.add(JAXRS_FRACTION, COMMON_DEP);
+        declaredDependencies.add(JAXRS_FRACTION, UNDERTOW_FRACTION);
+        declaredDependencies.add(JAXRS_SPEC, SERVLET_SPEC);
 
         manager.analyzeDependencies(true, declaredDependencies);
         assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION);
@@ -109,17 +104,14 @@ public class DependencyManagerTest {
     public void testAutodetectedSwarmJarNoExplicitCommon() throws Exception {
         // Explicitly asked-for dependencies are also the full resolved tree
         DeclaredDependencies declaredDependencies = new DeclaredDependencies();
-        declaredDependencies.addExplicitDependency(JAXRS_SPEC);
 
-        // auto-detected, not pre-solved
-        declaredDependencies.addExplicitDependency(JAXRS_FRACTION);
+        declaredDependencies.add(JAXRS_SPEC, SERVLET_SPEC);
 
-        declaredDependencies.addTransientDependency(UNDERTOW_FRACTION);
-        declaredDependencies.addTransientDependency(SERVLET_SPEC);
-        declaredDependencies.addTransientDependency(COMMON_DEP);
+        declaredDependencies.add(JAXRS_FRACTION, JAXRS_SPEC);
+        declaredDependencies.add(JAXRS_FRACTION, COMMON_DEP);
+        declaredDependencies.add(JAXRS_FRACTION, UNDERTOW_FRACTION);
+        declaredDependencies.add(JAXRS_SPEC, SERVLET_SPEC);
 
-        declaredDependencies.addTransientDependency(JAXRS_SPEC);
-        declaredDependencies.addTransientDependency(SERVLET_SPEC);
 
         manager.analyzeDependencies(true, declaredDependencies);
         assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, UNDERTOW_FRACTION, COMMON_DEP);
@@ -138,13 +130,12 @@ public class DependencyManagerTest {
     public void testWithSwarmJarBeingOnlyUserOfDep() throws Exception {
         // Only :jaxrs is the explicit resolved tree, but brings in jaxrs-spec and common dep
         DeclaredDependencies declaredDependencies = new DeclaredDependencies();
-        declaredDependencies.addExplicitDependency(JAXRS_FRACTION);
 
-        declaredDependencies.addTransientDependency(JAXRS_FRACTION);
-        declaredDependencies.addTransientDependency(JAXRS_SPEC);
-        declaredDependencies.addTransientDependency(UNDERTOW_FRACTION);
-        declaredDependencies.addTransientDependency(SERVLET_SPEC);
-        declaredDependencies.addTransientDependency(COMMON_DEP);
+        declaredDependencies.add(JAXRS_FRACTION, JAXRS_SPEC);
+        declaredDependencies.add(JAXRS_FRACTION, COMMON_DEP);
+        declaredDependencies.add(JAXRS_FRACTION, UNDERTOW_FRACTION);
+        declaredDependencies.add(JAXRS_FRACTION, SERVLET_SPEC);
+
         manager.analyzeDependencies(false, declaredDependencies);
 
         assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, UNDERTOW_FRACTION, SERVLET_SPEC, COMMON_DEP);
@@ -161,14 +152,14 @@ public class DependencyManagerTest {
     public void testWithApplicationAlsoUsingDep() throws Exception {
         // :jaxrs and common dep are explicit, implying application needs common
         DeclaredDependencies declaredDependencies = new DeclaredDependencies();
-        declaredDependencies.addExplicitDependency(JAXRS_FRACTION);
-        declaredDependencies.addExplicitDependency(COMMON_DEP);
 
-        declaredDependencies.addTransientDependency(JAXRS_FRACTION);
-        declaredDependencies.addTransientDependency(JAXRS_SPEC);
-        declaredDependencies.addTransientDependency(UNDERTOW_FRACTION);
-        declaredDependencies.addTransientDependency(SERVLET_SPEC);
-        declaredDependencies.addTransientDependency(COMMON_DEP);
+        declaredDependencies.add(JAXRS_FRACTION, JAXRS_SPEC);
+        declaredDependencies.add(JAXRS_FRACTION, COMMON_DEP);
+        declaredDependencies.add(JAXRS_FRACTION, UNDERTOW_FRACTION);
+        declaredDependencies.add(JAXRS_FRACTION, SERVLET_SPEC);
+
+        declaredDependencies.add(COMMON_DEP);
+
 
         manager.analyzeDependencies(false, declaredDependencies);
         assertThat(manager.getRemovableDependencies()).containsOnly(JAXRS_FRACTION, JAXRS_SPEC, UNDERTOW_FRACTION, SERVLET_SPEC);

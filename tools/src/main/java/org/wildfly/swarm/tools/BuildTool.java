@@ -329,7 +329,7 @@ public class BuildTool {
                                       .sorted()
                                       .collect(Collectors.toList())));
 
-        allFractions.forEach(f -> this.declaredDependencies.addExplicitDependency(f));
+        allFractions.forEach(f -> this.declaredDependencies.add(f));
         analyzeDependencies(true);
     }
 

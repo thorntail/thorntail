@@ -17,14 +17,19 @@ package org.wildfly.swarm.plugin.maven;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -35,6 +40,7 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactResolver;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
+import org.wildfly.swarm.tools.DeclaredDependencies;
 import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
@@ -141,4 +147,55 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
                                 dep.getClassifier(),
                                 dep.getFile());
     }
+
+    protected Map<ArtifactSpec, Set<ArtifactSpec>> createBuckets(Set<Artifact> transientDeps, List<Dependency> directDeps) {
+        Map<ArtifactSpec,Set<ArtifactSpec>> buckets  = new HashMap<>();
+        for(Artifact dep : transientDeps) {
+            if(dep.getDependencyTrail().isEmpty()) {
+                throw new RuntimeException("Empty trail "+ asBucketKey(dep));
+            } else if(dep.getDependencyTrail().size()==2) {
+                ArtifactSpec key = asBucketKey(dep);
+                //System.out.println("Appears to be top level: "+ key);
+                if(!buckets.containsKey(key)) {
+                    buckets.put(key, new HashSet<>());
+                }
+            } else {
+
+                String owner = dep.getDependencyTrail().get(1);
+                String ownerScope = null;
+                String[] tokens = owner.split(":");
+                for(Dependency d : directDeps) {
+                    if(d.getGroupId().equals(tokens[0])
+                            && d.getArtifactId().equals(tokens[1]))
+                    {
+                        ownerScope = d.getScope();
+                        break;
+                    }
+                }
+
+                assert ownerScope !=null : "Failed to resolve owner scope";
+
+                ArtifactSpec parent = DeclaredDependencies.createSpec(owner, ownerScope);
+                if(!buckets.containsKey(parent)) {
+                    buckets.put(parent, new HashSet<>());
+                }
+                buckets.get(parent).add(asBucketKey(dep));
+            }
+        }
+        return buckets;
+    }
+
+    private static ArtifactSpec asBucketKey(Artifact artifact) {
+
+        return new ArtifactSpec(
+                            artifact.getScope(),
+                            artifact.getGroupId(),
+                            artifact.getArtifactId(),
+                            artifact.getVersion(),
+                            artifact.getType(),
+                            artifact.getClassifier(),
+                            artifact.getFile()
+                    );
+    }
+
 }

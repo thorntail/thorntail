@@ -1,14 +1,19 @@
 package org.wildfly.swarm.bootstrap.env;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -16,6 +21,8 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+import org.yaml.snakeyaml.Yaml;
 
 /** Entry-point to runtime environment.
  *
@@ -60,10 +67,42 @@ public class ApplicationEnvironment {
                 }
             } else {
                 this.mode = Mode.CLASSPATH;
+                loadDependencyTree();
                 loadFractionManifestsFromClasspath();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void loadDependencyTree() {
+        final String cpInfoProp = System.getProperty("swarm.cp.info");
+
+        if(cpInfoProp!=null) {
+            try {
+
+                DependencyTree<MavenArtifactDescriptor> dependencyTree = new DependencyTree<>();
+
+                Yaml yaml = new Yaml();
+                Map<String, Object> data = (Map) yaml.load(new FileInputStream(cpInfoProp));
+                for (String directDep : data.keySet()) {
+                    MavenArtifactDescriptor parent = MavenArtifactDescriptor.fromMavenGav(directDep);
+                    Collection<String> transientDeps = (Collection<String>) data.get(directDep);
+                    for(String transientDep : transientDeps) {
+                        dependencyTree.add(
+                                parent,
+                                MavenArtifactDescriptor.fromMavenGav(transientDep)
+                        );
+                    }
+
+                    if(transientDeps.isEmpty())
+                        dependencyTree.add(parent);
+                }
+                this.dependencyTree = Optional.of(dependencyTree);
+
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to load cp info", e);
+            }
         }
     }
 
@@ -155,9 +194,66 @@ public class ApplicationEnvironment {
                 this.bootstrapModules.add(manifest.getModule());
             }
             if (this.mode == Mode.CLASSPATH) {
+
+                Set<MavenArtifactDescriptor> applicationDependencies = new HashSet<>();
+
+                if(dependencyTree.isPresent()) {
+
+                    Set<MavenArtifactDescriptor> topLevelFractions = new HashSet<>();
+
+                    MavenArtifactDescriptor source = new MavenArtifactDescriptor(
+                            manifest.getGroupId(),
+                            manifest.getArtifactId(),
+                            manifest.getVersion()
+                    );
+
+                    for (MavenArtifactDescriptor target : dependencyTree.get().getDirectDeps()) {
+                        if(source.equals(target))  {
+                            topLevelFractions.add(target);
+                        }
+                    }
+
+                    Set<MavenArtifactDescriptor> keep = new HashSet<>(dependencyTree.get().getDirectDeps());
+                    keep.removeAll(topLevelFractions);
+
+                    for(MavenArtifactDescriptor dep : keep) {
+                        // the dep itself
+                        applicationDependencies.add(dep);
+
+                        // it's transient dependencies
+                        applicationDependencies.addAll(dependencyTree.get().getTransientDeps(dep));
+                    }
+
+
+                }
+
                 this.removeableDependencies.addAll(manifest.getDependencies());
+                this.removeableDependencies.removeAll(applicationDependencies);
+
             }
         }
+
+        // match existing dependency info (if given)
+        // for now we simply keep all explicit deps, but ignore their transient children
+        Set<String> keep = new HashSet<>();
+        if(dependencyTree.isPresent()) {
+
+            for(String toBeRemoved : removeableDependencies) {
+                MavenArtifactDescriptor source = MavenArtifactDescriptor.fromMavenGav(toBeRemoved);
+                for (MavenArtifactDescriptor target : dependencyTree.get().getDirectDeps()) {
+
+                    if (source.groupId().equals(target.groupId()) &&
+                            source.artifactId().equals(target.artifactId())
+                            ) {
+                        keep.add(toBeRemoved);
+                    }
+                }
+            }
+
+            removeableDependencies.removeAll(keep);
+
+        }
+
 
         this.manifests.sort( new ManifestComparator() );
     }
@@ -278,6 +374,8 @@ public class ApplicationEnvironment {
         }
         return this.manifests;
     }
+
+    private Optional<DependencyTree<MavenArtifactDescriptor>> dependencyTree = Optional.empty();
 
     public enum Mode {
         UBERJAR,
