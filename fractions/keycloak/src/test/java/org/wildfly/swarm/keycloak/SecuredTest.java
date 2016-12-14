@@ -42,4 +42,5 @@ public class SecuredTest {
         assertThat( lines ).contains( "<servlet-name>comingsoon</servlet-name>" );
         assertThat( lines ).contains( "<url-pattern>/cheddar</url-pattern>" );
     }
+
 }
