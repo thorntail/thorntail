@@ -1107,10 +1107,6 @@
   </pluginRepositories>
 
   <modules>
-    <!-- misc -->
-    <module>tools</module>
-    <module>arquillian</module>
-
     <!-- base -->
     <module>core/bootstrap</module>
     <module>core/spi</module>
@@ -1188,14 +1184,18 @@
 
     <module>fractions/etc/jgroups-module</module>
 
-    <module>testsuite</module>
-
     <module>fraction-list</module>
+
+    <!-- misc -->
+    <module>tools</module>
+    <module>arquillian</module>
     <module>plugin</module>
     <module>swarmtool</module>
     <module>boms</module>
 
     <module>standalone-servers</module>
+
+    <module>testsuite</module>
   </modules>
 
   <profiles>

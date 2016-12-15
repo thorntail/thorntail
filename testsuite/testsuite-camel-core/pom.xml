@@ -29,9 +29,9 @@
     <version>2017.1.0-SNAPSHOT</version>
   </parent>
 
-    <name>Camel Core :: Tests</name>
-    
-    <artifactId>camel-core-tests</artifactId>
+    <name>Test Suite: Camel Core</name>
+
+    <artifactId>testsuite-camel-core</artifactId>
 
     <dependencies>
         <dependency>
