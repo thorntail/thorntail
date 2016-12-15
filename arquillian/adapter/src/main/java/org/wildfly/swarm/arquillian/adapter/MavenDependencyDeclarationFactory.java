@@ -16,6 +16,7 @@
 package org.wildfly.swarm.arquillian.adapter;
 
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DeclaredDependencies;
@@ -31,9 +32,11 @@ class MavenDependencyDeclarationFactory extends DependencyDeclarationFactory {
     public DeclaredDependencies create(ShrinkwrapArtifactResolvingHelper resolvingHelper) {
         final DeclaredDependencies declaredDependencies = new DeclaredDependencies();
 
+        final PomEquippedResolveStage pom = MavenProfileLoader.loadPom(resolvingHelper.getResolver());
+
         // NonTransitiveStrategy
         final MavenResolvedArtifact[] explicitDeps =
-                resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
+                resolvingHelper.withResolver(r -> pom
                         .importRuntimeAndTestDependencies()
                         .resolve()
                         .withoutTransitivity()
@@ -52,7 +55,7 @@ class MavenDependencyDeclarationFactory extends DependencyDeclarationFactory {
                     directDep.getCoordinate().getClassifier(),
                     directDep.asFile()
             );
-            MavenResolvedArtifact[] bucket = resolvingHelper.withResolver(r -> MavenProfileLoader.loadPom(r)
+            MavenResolvedArtifact[] bucket = resolvingHelper.withResolver(r -> pom
                     .resolve(parent.mavenGav())
                     .withTransitivity()
                     .asResolvedArtifact()
