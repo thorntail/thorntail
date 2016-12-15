@@ -69,6 +69,8 @@ run the local fetch-notes.js with node.js, passing the version
 * Add a redirect to the above tagged documentation
 * Update the documentation page, moving the previous release to the
   previous release section, and changing the current release pointer.
+* Adjust generator.jade to reference the correct fraction-list for
+  the generator.
 
 # Blog it all
 

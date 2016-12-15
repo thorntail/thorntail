@@ -37,7 +37,9 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?jql=project=SWARM%20
     Object.keys( partitions ).forEach( function(type) {
       console.log( "=== " + type );
       partitions[type].forEach( function(e) {
-        console.log( '* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary + ' (' + e.fields.resolution.name + ')' );
+        if ( e.fields.resolution ) {
+          console.log( '* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary + ' (' + e.fields.resolution.name + ')' );
+        }
       } );
       console.log( " " );
     } );
