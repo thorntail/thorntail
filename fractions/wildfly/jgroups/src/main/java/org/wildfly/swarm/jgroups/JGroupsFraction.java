@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.JGroups;
 import org.wildfly.swarm.spi.api.Defaultable;
-import org.wildfly.swarm.spi.api.Environment;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -50,14 +49,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
         return new JGroupsFraction().applyMulticastDefaults();
     }
 
-    public static JGroupsFraction defaultOpenShiftFraction() {
-        return new JGroupsFraction().applyOpenShiftDefaults();
-    }
-
     public JGroupsFraction applyDefaults() {
-        if (Environment.openshift()) {
-            return applyOpenShiftDefaults();
-        }
         return applyMulticastDefaults();
     }
 
@@ -86,32 +78,6 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                 })
                 .channel("swarm-jgroups", (c) -> {
                     c.stack("udp");
-                });
-    }
-
-    public JGroupsFraction applyOpenShiftDefaults() {
-        return defaultChannel("swarm-jgroups")
-                .stack("tcp", (s) -> {
-                    s.transport("TCP", (t) -> {
-                        t.socketBinding("jgroups-tcp");
-                    });
-                    s.protocol("openshift.KUBE_PING");
-                    s.protocol("MERGE3");
-                    s.protocol("FD_SOCK", (p) -> {
-                        p.socketBinding("jgroups-tcp-fd");
-                    });
-                    s.protocol("FD_ALL");
-                    s.protocol("VERIFY_SUSPECT");
-                    s.protocol("pbcast.NAKACK2");
-                    s.protocol("UNICAST3");
-                    s.protocol("pbcast.STABLE");
-                    s.protocol("pbcast.GMS");
-                    s.protocol("MFC");
-                    s.protocol("FRAG2");
-                    s.protocol("RSVP");
-                })
-                .channel("swarm-jgroups", (c) -> {
-                    c.stack("tcp");
                 });
     }
 

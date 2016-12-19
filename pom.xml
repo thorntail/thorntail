@@ -74,8 +74,6 @@
     <version.openshift.client>5.2.0.Final</version.openshift.client>
     <version.com.squareup.okhttp>3.3.1</version.com.squareup.okhttp>
     <version.com.squareup.okio>1.8.0</version.com.squareup.okio>
-    <version.org.openshift.ping>1.0.0.Beta7-swarm-1</version.org.openshift.ping>
-    <version.org.jgroups>3.6.10.Final</version.org.jgroups>
 
     <version.vertx>3.3.3</version.vertx>
 
@@ -668,12 +666,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jgroups-module</artifactId>
-        <version>2017.1.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jmx</artifactId>
         <version>2017.1.0-SNAPSHOT</version>
       </dependency>
@@ -1185,8 +1177,6 @@
 
     <module>fractions/cdi-extensions/cdi-config</module>
     <module>fractions/cdi-extensions/cdi-jaxrsapi</module>
-
-    <module>fractions/etc/jgroups-module</module>
 
     <module>testsuite</module>
 
