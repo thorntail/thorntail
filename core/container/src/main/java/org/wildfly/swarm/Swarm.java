@@ -429,7 +429,7 @@ public class Swarm {
         if (this.server == null) {
             throw SwarmMessages.MESSAGES.containerNotStarted("stop()");
         }
-        
+
         this.server.stop();
         this.server = null;
 

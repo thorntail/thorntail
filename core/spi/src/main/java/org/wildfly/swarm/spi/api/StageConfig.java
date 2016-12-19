@@ -173,7 +173,7 @@ public class StageConfig {
          * @param <N> The value type to coerce to.
          * @return A new resolver capable of coercing to the given type.
          */
-        <N> Resolver<N> as(Class<N> clazz, Converter<T> converter);
+        <N> Resolver<N> as(Class<N> clazz, Converter<N> converter);
     }
 
     /** Converter capable of converting a native {@code String} value to a specific type.
@@ -197,7 +197,7 @@ public class StageConfig {
         }
 
         @Override
-        public <N> Resolver<N> as(Class<N> clazz, Converter<T> converter) {
+        public <N> Resolver<N> as(Class<N> clazz, Converter<N> converter) {
             targetType = clazz;
             this.converter = converter;
             return (Resolver<N>) this;
@@ -314,6 +314,6 @@ public class StageConfig {
 
         private T defaultValue;
 
-        private Converter<T> converter;
+        private Converter<?> converter;
     }
 }

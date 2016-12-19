@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,9 @@ public class ConfigurableManager implements AutoCloseable {
         add(Float.TYPE);
         add(String.class);
 
+        add(Map.class);
+        add(Properties.class);
+
         add(Defaultable.class);
     }};
 
@@ -73,12 +77,70 @@ public class ConfigurableManager implements AutoCloseable {
 
     protected <T> void configure(ConfigurableHandle configurable) throws IllegalAccessException {
         StageConfig.Resolver<?> resolver = this.stageConfig.resolve(configurable.name());
-        resolver = resolver.as(configurable.type());
 
-        if (resolver.hasValue()) {
-            Object resolvedValue = resolver.getValue();
-            configurable.set(configurable.type().cast(resolvedValue));
+        Class<?> resolvedType = configurable.type();
+
+        boolean isMap = false;
+        boolean isProperties = false;
+
+        if (resolvedType.isEnum()) {
+            resolver = resolver.as((Class<Enum>) resolvedType, converter((Class<Enum>) resolvedType));
+        } else if (Map.class.isAssignableFrom(resolvedType)) {
+            isMap = true;
+            resolver = mapResolver((StageConfig.Resolver<String>) resolver, configurable.name());
+        } else if (Properties.class.isAssignableFrom(resolvedType)) {
+            isProperties = true;
+            resolver = propertiesResolver((StageConfig.Resolver<String>) resolver, configurable.name());
+        } else {
+            resolver = resolver.as(configurable.type());
         }
+
+        if (isMap || isProperties || resolver.hasValue()) {
+            Object resolvedValue = resolver.getValue();
+            if ( isMap && ((Map)resolvedValue).isEmpty() ) {
+                // ignore
+            } else if ( isProperties && ((Properties)resolvedValue).isEmpty() ) {
+                // also ignore
+            } else {
+                configurable.set(configurable.type().cast(resolvedValue));
+            }
+        }
+    }
+
+    private <ENUMTYPE extends Enum<ENUMTYPE>> StageConfig.Converter<ENUMTYPE> converter(Class<ENUMTYPE> enumType) {
+        return (str) -> Enum.valueOf(enumType, str.toUpperCase().replace('-', '_'));
+    }
+
+    private StageConfig.Resolver<Map> mapResolver(StageConfig.Resolver<String> resolver, String name) {
+        return resolver.withDefault("").as(Map.class, mapConverter(name));
+    }
+
+    private StageConfig.Converter<Map> mapConverter(String name) {
+        return (ignored) -> {
+            Map map = new HashMap();
+            Set<String> subKeys = this.stageConfig.simpleSubkeys(name);
+
+            for (String subKey : subKeys) {
+                map.put(subKey, this.stageConfig.resolve(name + '.' + subKey).getValue());
+            }
+            return map;
+        };
+    }
+
+    private StageConfig.Resolver<Properties> propertiesResolver(StageConfig.Resolver<String> resolver, String name) {
+        return resolver.withDefault("").as(Properties.class, propertiesConverter(name));
+    }
+
+    private StageConfig.Converter<Properties> propertiesConverter(String name) {
+        return (ignored) -> {
+            Properties props = new Properties();
+            Set<String> subKeys = this.stageConfig.simpleSubkeys(name);
+
+            for (String subKey : subKeys) {
+                props.setProperty(subKey, this.stageConfig.resolve(name + '.' + subKey).getValue());
+            }
+            return props;
+        };
     }
 
     public void scan(Object instance) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -101,9 +163,9 @@ public class ConfigurableManager implements AutoCloseable {
         }
 
         Method getKey = findGetKeyMethod(object);
-        if ( getKey != null ) {
-            Object key = getKey.invoke( object );
-            if ( key != null ) {
+        if (getKey != null) {
+            Object key = getKey.invoke(object);
+            if (key != null) {
                 return key.toString();
             }
         }
@@ -114,19 +176,19 @@ public class ConfigurableManager implements AutoCloseable {
         Method[] methods = object.getClass().getMethods();
 
         for (Method method : methods) {
-            if ( ! Modifier.isPublic( method.getModifiers() ) ) {
+            if (!Modifier.isPublic(method.getModifiers())) {
                 continue;
             }
 
-            if (Modifier.isStatic(method.getModifiers() ) ) {
+            if (Modifier.isStatic(method.getModifiers())) {
                 continue;
             }
 
-            if ( ! method.getName().equals( "getKey" ) ) {
+            if (!method.getName().equals("getKey")) {
                 continue;
             }
 
-            if ( method.getParameterCount() != 0 ) {
+            if (method.getParameterCount() != 0) {
                 continue;
             }
 
@@ -144,8 +206,8 @@ public class ConfigurableManager implements AutoCloseable {
 
         String key = getKey(fraction);
 
-        if ( key == null ) {
-            key = fraction.getClass().getSimpleName().replace("Fraction", "" ).toLowerCase();
+        if (key == null) {
+            key = fraction.getClass().getSimpleName().replace("Fraction", "").toLowerCase();
         }
 
         return "swarm." + key;
@@ -183,7 +245,7 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     private boolean isConfigurableType(Class<?> type) {
-        return CONFIGURABLE_VALUE_TYPES.contains(type);
+        return type.isEnum() || CONFIGURABLE_VALUE_TYPES.contains(type);
     }
 
     private boolean isBlacklisted(Class<?> cls) {
@@ -257,11 +319,8 @@ public class ConfigurableManager implements AutoCloseable {
             }
             field.setAccessible(true);
             Object value = field.get(subresources);
-            if (value == null) {
-                continue;
-            }
             String subPrefix = prefix + "." + nameFor(field);
-            if (value instanceof List) {
+            if (value != null && value instanceof List) {
                 int index = 0;
                 Set<String> seenKeys = new HashSet<>();
                 for (Object each : ((List) value)) {
@@ -299,7 +358,7 @@ public class ConfigurableManager implements AutoCloseable {
                 if (value == null) {
                     // If doesn't exist, only create it if there's some
                     // configuration keys that imply we want it.
-                    if ( this.stageConfig.hasKeyOrSubkeys( subPrefix ) ) {
+                    if (this.stageConfig.hasKeyOrSubkeys(subPrefix)) {
                         Method factoryMethod = getNonKeyedFactoryMethod(instance, field);
                         if (factoryMethod != null) {
                             Object lambda = createLambda(subPrefix, factoryMethod);
@@ -320,7 +379,7 @@ public class ConfigurableManager implements AutoCloseable {
         MethodHandles.Lookup lookup = MethodHandles.lookup();
 
         // The consumer is the last parameter
-        Class<?> consumerType = factoryMethod.getParameterTypes()[factoryMethod.getParameterCount()-1];
+        Class<?> consumerType = factoryMethod.getParameterTypes()[factoryMethod.getParameterCount() - 1];
 
         try {
             Method acceptMethod = null;
@@ -388,6 +447,18 @@ public class ConfigurableManager implements AutoCloseable {
                     continue;
                 }
 
+                boolean acceptMethodFound = false;
+                for (Method paramMethod : method.getParameterTypes()[1].getMethods()) {
+                    if (paramMethod.getName().equals("accept")) {
+                        acceptMethodFound = true;
+                        break;
+                    }
+                }
+
+                if (!acceptMethodFound) {
+                    continue;
+                }
+
                 return method;
             }
 
@@ -416,6 +487,18 @@ public class ConfigurableManager implements AutoCloseable {
             }
 
             if (method.getParameterTypes()[0].getAnnotation(FunctionalInterface.class) == null) {
+                continue;
+            }
+
+            boolean acceptMethodFound = false;
+            for (Method paramMethod : method.getParameterTypes()[0].getMethods()) {
+                if (paramMethod.getName().equals("accept")) {
+                    acceptMethodFound = true;
+                    break;
+                }
+            }
+
+            if (!acceptMethodFound) {
                 continue;
             }
 
