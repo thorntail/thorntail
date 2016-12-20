@@ -148,10 +148,14 @@ public class UberjarSimpleContainer implements SimpleContainer {
             executor.withProperty(AnnotationBasedMain.ANNOTATED_CLASS_NAME, this.testClass.getName());
         }
 
-        final String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
+        String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
         if (additionalRepos != null) {
-            executor.withProperty("remote.maven.repo", additionalRepos);
+            additionalRepos = additionalRepos + ",";
+        } else {
+            additionalRepos = "";
         }
+        additionalRepos = additionalRepos + "http://repository.jboss.org/nexus/content/groups/public/";
+        executor.withProperty("remote.maven.repo", additionalRepos);
 
 
         // project dependencies
@@ -224,6 +228,12 @@ public class UberjarSimpleContainer implements SimpleContainer {
         File executable = File.createTempFile("arquillian", "-swarm.jar");
         wrapped.as(ZipExporter.class).exportTo(executable, true);
         executable.deleteOnExit();
+
+        String mavenRepoLocal = System.getProperty("maven.repo.local" );
+
+        if ( mavenRepoLocal != null ) {
+            executor.withProperty( "maven.repo.local", mavenRepoLocal );
+        }
 
         executor.withProperty("java.net.preferIPv4Stack", "true");
         executor.withJVMArguments(getJavaVmArgumentsList());
