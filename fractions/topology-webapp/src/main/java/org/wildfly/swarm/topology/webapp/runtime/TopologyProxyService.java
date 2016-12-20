@@ -68,7 +68,11 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
 
     @Override
     public void stop(StopContext context) {
-
+        try {
+            Topology.lookup().removeListener(this);
+        } catch (NamingException e) {
+            // Swallow, as we're closing anyway
+        }
     }
 
     @Override
@@ -99,7 +103,14 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
     }
 
     private void updateProxyHosts(String serviceName, List<Topology.Entry> entries) {
-        HttpHandler proxyHandler = proxyHandlerMap.get(serviceName).getValue();
+        HttpHandler proxyHandler = proxyHandlerMap.get(serviceName).getOptionalValue();
+
+        if (proxyHandler == null) {
+            // Service has been shutdown
+            proxyHandlerMap.remove(serviceName);
+            return;
+        }
+
         LoadBalancingProxyClient proxyClient = null;
 
         // with SWARM-189 the request controller subsystem does replace
