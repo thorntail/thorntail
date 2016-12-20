@@ -22,7 +22,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import javax.inject.Singleton;
 
 import org.jboss.weld.literal.DefaultLiteral;
 import org.wildfly.swarm.container.cdi.ProjectStageImpl;
@@ -47,12 +46,16 @@ public class ProjectStageProducingExtension implements Extension {
         abd.addBean().addType( ProjectStage.class )
                 .scope(Dependent.class)
                 .qualifiers( DefaultLiteral.INSTANCE )
-                .producing(this.projectStage);
+                .produceWith((injectionPointInstance) -> {
+                    return this.projectStage;
+                });
 
         abd.addBean().addType(StageConfig.class)
                 .scope(Dependent.class)
                 .qualifiers(DefaultLiteral.INSTANCE)
-                .producing(this.stageConfig);
+                .produceWith((injectionPointInstance) -> {
+                    return this.stageConfig;
+                });
     }
 
     public ProjectStage getProjectStage() {

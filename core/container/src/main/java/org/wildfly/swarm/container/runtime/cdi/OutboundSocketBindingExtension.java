@@ -20,13 +20,11 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.weld.literal.AnyLiteral;
@@ -54,7 +52,7 @@ public class OutboundSocketBindingExtension implements Extension {
                     .scope(Singleton.class)
                     .addQualifier(new AnnotationLiteral<Pre>() {
                     })
-                    .produceWith( ()-> (Customizer) () -> {
+                    .produceWith( (injectionPointInstance)-> (Customizer) () -> {
                         Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
 
                         groups.stream()
