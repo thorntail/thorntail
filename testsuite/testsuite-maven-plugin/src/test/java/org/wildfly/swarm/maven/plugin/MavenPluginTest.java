@@ -37,6 +37,7 @@ import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -188,6 +189,7 @@ public class MavenPluginTest {
         try {
             verifier.executeGoal(goal);
         } catch (VerificationException e) {
+            e.printStackTrace();
             if (testingProject.dependencies == Dependencies.JAVA_EE_APIS
                     && testingProject.autodetection == Autodetection.NEVER) {
                 // the only situation when build failure is expected

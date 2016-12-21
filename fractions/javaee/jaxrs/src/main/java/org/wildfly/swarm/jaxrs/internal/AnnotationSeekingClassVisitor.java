@@ -17,15 +17,20 @@ package org.wildfly.swarm.jaxrs.internal;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
 
 /**
  * @author Bob McWhirter
  */
-public class AnnotationSeekingClassVisitor extends ClassVisitor {
+public abstract class AnnotationSeekingClassVisitor extends ClassVisitor {
 
-    public AnnotationSeekingClassVisitor() {
+    private final String[] annotations;
+
+    public AnnotationSeekingClassVisitor(String... annotations) {
         super(Opcodes.ASM5);
+        this.annotations = annotations;
     }
 
     public boolean isFound() {
@@ -34,10 +39,40 @@ public class AnnotationSeekingClassVisitor extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-        if (desc.equals("Ljavax/ws/rs/ApplicationPath;")) {
+
+        if ( matches( desc ) ) {
             found = true;
         }
+
         return super.visitAnnotation(desc, visible);
+    }
+
+    @Override
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        return new MethodVisitor(Opcodes.ASM5) {
+            @Override
+            public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+                if ( matches( desc ) ) {
+                    found = true;
+                }
+                return super.visitAnnotation(desc, visible);
+            }
+        };
+    }
+
+    private boolean matches(String desc) {
+        for (String annotation : this.annotations) {
+            if (annotation.endsWith("*")) {
+                if (desc.startsWith("L" + annotation.substring(0, annotation.length() - 1))) {
+                    return true;
+                }
+            } else {
+                if (desc.equals("L" + annotation + ";")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean found = false;

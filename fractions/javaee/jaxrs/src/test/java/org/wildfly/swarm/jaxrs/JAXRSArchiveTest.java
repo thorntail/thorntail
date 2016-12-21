@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
+import org.wildfly.swarm.undertow.WARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -62,6 +63,27 @@ public class JAXRSArchiveTest {
 
         Node generated = archive.get(PATH);
         assertThat( generated ).isNull();
+    }
+
+    @Test
+    public void testDetectJAXRSness_isNot() {
+        WARArchive archive = ShrinkWrap.create( WARArchive.class );
+        archive.addClass( MyRandomClass.class );
+        assertThat( JAXRSArchive.isJAXRS( archive )).isFalse();
+    }
+
+    @Test
+    public void testDetectJAXRSness_classAnnotation() {
+        WARArchive archive = ShrinkWrap.create( WARArchive.class );
+        archive.addClass( MyResource.class );
+        assertThat( JAXRSArchive.isJAXRS( archive )).isTrue();
+    }
+
+    @Test
+    public void testDetectJAXRSness_methodAnnotation() {
+        WARArchive archive = ShrinkWrap.create( WARArchive.class );
+        archive.addClass( MyOtherResource.class );
+        assertThat( JAXRSArchive.isJAXRS( archive )).isTrue();
     }
 
 }

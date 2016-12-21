@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.wildfly.swarm.config.JAXRS;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 
@@ -40,8 +41,14 @@ public class DefaultJAXRSWarDeploymentFactory extends DefaultWarDeploymentFactor
 
     @Override
     public Archive create() throws Exception {
-        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class, determineName());
-        setup(archive);
-        return archive.staticContent();
+        Archive archive = super.create();
+        // SWARM-917: only implicitly consider it a JAXRS archive if it happens to actually be one,
+        // in order to prevent gratuitous creation of @ApplicationPath stuff just because
+        // jaxrs-api classes are on the classpath.
+        if ( JAXRSArchive.isJAXRS( archive ) ) {
+            archive = archive.as(JAXRSArchive.class).staticContent();
+            setup(archive);
+        }
+        return archive;
     }
 }

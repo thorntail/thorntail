@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 import org.jboss.shrinkwrap.api.container.WebContainer;
+import org.wildfly.swarm.jaxrs.internal.JAXRSArchiveImpl;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 import org.wildfly.swarm.spi.api.MarkerContainer;
@@ -50,4 +51,7 @@ public interface JAXRSArchive extends
 
     JAXRSArchive addResource(Class<?> resource);
 
+    static boolean isJAXRS(Archive archive) {
+        return JAXRSArchiveImpl.isJAXRS(archive);
+    }
 }

@@ -77,7 +77,7 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
 
         try (InputStream in = asset.openStream()) {
             ClassReader reader = new ClassReader(in);
-            AnnotationSeekingClassVisitor visitor = new AnnotationSeekingClassVisitor();
+            ApplicationPathAnnotationSeekingClassVisitor visitor = new ApplicationPathAnnotationSeekingClassVisitor();
             reader.accept(visitor, 0);
             return visitor.isFound();
         } catch (IOException ignored) {
@@ -145,13 +145,40 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         return PATH_RESOURCE;
     }
 
-    // -------------------------------------------------------------------------------------||
-    // Instance Members -------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
+    public static boolean isJAXRS(Archive<?> archive) {
+        Map<ArchivePath, Node> content = archive.getContent();
+        for (Map.Entry<ArchivePath, Node> entry : content.entrySet()) {
+            Node node = entry.getValue();
+            Asset asset = node.getAsset();
+            if (isJAXRS(node.getPath(), asset)) {
+                return true;
+            }
+        }
 
-    // -------------------------------------------------------------------------------------||
-    // Constructor ------------------------------------------------------------------------||
-    // -------------------------------------------------------------------------------------||
+        return false;
+    }
+
+    private static boolean isJAXRS(ArchivePath path, Asset asset) {
+        if ( asset == null ) {
+            return false;
+        }
+
+        if ( asset instanceof ArchiveAsset) {
+            return isJAXRS( ((ArchiveAsset) asset).getArchive() );
+        }
+
+        if ( ! path.get().endsWith( ".class" ) ) {
+            return false;
+        }
+        try (InputStream in = asset.openStream()) {
+            ClassReader reader = new ClassReader(in);
+            JAXRSAnnotationSeekingClassVisitor visitor = new JAXRSAnnotationSeekingClassVisitor();
+            reader.accept(visitor, 0);
+            return visitor.isFound();
+        } catch (IOException ignored) {
+        }
+        return false;
+    }
 
     /**
      * {@inheritDoc}
@@ -234,6 +261,7 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
      * Path to web archive service providers.
      */
     private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
+
 
     public static class ApplicationHandler implements ArchiveEventHandler {
 
