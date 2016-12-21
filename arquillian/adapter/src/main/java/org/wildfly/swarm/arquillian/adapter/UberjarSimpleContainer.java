@@ -30,20 +30,25 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
+import org.jboss.arquillian.container.spi.context.DeploymentContext;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.container.ClassContainer;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
+import org.wildfly.swarm.arquillian.adapter.resources.ContextRoot;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.internal.FileSystemLayout;
@@ -61,8 +66,11 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     private final ContainerContext containerContext;
 
-    public UberjarSimpleContainer(ContainerContext containerContext, Class<?> testClass) {
+    private final DeploymentContext deploymentContext;
+
+    public UberjarSimpleContainer(ContainerContext containerContext, DeploymentContext deploymentContext, Class<?> testClass) {
         this.containerContext = containerContext;
+        this.deploymentContext = deploymentContext;
         this.testClass = testClass;
     }
 
@@ -81,7 +89,28 @@ public class UberjarSimpleContainer implements SimpleContainer {
     @Override
     public void start(Archive<?> archive) throws Exception {
 
-        archive.add(EmptyAsset.INSTANCE, "META-INF/arquillian-testable" );
+        archive.add(EmptyAsset.INSTANCE, "META-INF/arquillian-testable");
+
+        ContextRoot contextRoot = null;
+        if (archive.getName().endsWith(".war")) {
+            contextRoot = new ContextRoot("/");
+            Node jbossWebNode = archive.as(WebArchive.class).get("WEB-INF/jboss-web.xml");
+            if (jbossWebNode != null) {
+                if (jbossWebNode.getAsset() != null)
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(jbossWebNode.getAsset().openStream()))) {
+                        String content = String.join("\n", reader.lines().collect(Collectors.toList()));
+
+                        Pattern pattern = Pattern.compile("<context-root>(.+)</context-root>" );
+                        Matcher matcher = pattern.matcher(content);
+                        if (matcher.find()) {
+                            contextRoot = new ContextRoot(matcher.group(1));
+                        }
+                    }
+            }
+
+            this.deploymentContext.getObjectStore().add(ContextRoot.class, contextRoot );
+        }
+
 
         MainSpecifier mainSpecifier = containerContext.getObjectStore().get(MainSpecifier.class);
 
@@ -148,6 +177,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
             executor.withProperty(AnnotationBasedMain.ANNOTATED_CLASS_NAME, this.testClass.getName());
         }
 
+        if ( contextRoot != null ) {
+            executor.withProperty(SwarmProperties.CONTEXT_PATH, contextRoot.context() );
+        }
+
         String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
         if (additionalRepos != null) {
             additionalRepos = additionalRepos + ",";
@@ -166,9 +199,9 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         // check for "org.wildfly.swarm.allDependencies" flag
         // see DependenciesContainer#addAllDependencies()
-        if(archive instanceof DependenciesContainer) {
-            DependenciesContainer depContainer = (DependenciesContainer)archive;
-            if(depContainer.hasMarker("org.wildfly.swarm.allDependencies")){
+        if (archive instanceof DependenciesContainer) {
+            DependenciesContainer depContainer = (DependenciesContainer) archive;
+            if (depContainer.hasMarker("org.wildfly.swarm.allDependencies")) {
                 munge(depContainer, declaredDependencies);
             }
         }
@@ -229,10 +262,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
         wrapped.as(ZipExporter.class).exportTo(executable, true);
         executable.deleteOnExit();
 
-        String mavenRepoLocal = System.getProperty("maven.repo.local" );
+        String mavenRepoLocal = System.getProperty("maven.repo.local");
 
-        if ( mavenRepoLocal != null ) {
-            executor.withProperty( "maven.repo.local", mavenRepoLocal );
+        if (mavenRepoLocal != null) {
+            executor.withProperty("maven.repo.local", mavenRepoLocal);
         }
 
         executor.withProperty("java.net.preferIPv4Stack", "true");
@@ -259,8 +292,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     private void munge(DependenciesContainer depContainer, DeclaredDependencies declaredDependencies) {
 
-        for(ArtifactSpec artifact : declaredDependencies.getExplicitDependencies()) { // [hb] TODO: this should actually be transient deps
-            assert artifact.file!=null : "artifact.file cannot be null at this point: "+artifact;
+        for (ArtifactSpec artifact : declaredDependencies.getExplicitDependencies()) { // [hb] TODO: this should actually be transient deps
+            assert artifact.file != null : "artifact.file cannot be null at this point: " + artifact;
             depContainer.addAsLibraries(artifact.file);
         }
 

@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.jboss.arquillian.container.spi.Container;
+import org.jboss.arquillian.container.spi.context.DeploymentContext;
 import org.jboss.arquillian.container.test.impl.enricher.resource.OperatesOnDeploymentAwareProvider;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -29,6 +30,9 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider {
+
+    @Inject
+    private Instance<DeploymentContext> deploymentContext;
 
     @Inject
     Instance<Container> containerInstance;
@@ -84,8 +88,18 @@ public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider 
         }
 
         String contextPath = System.getProperty(SwarmProperties.CONTEXT_PATH);
-        if (contextPath == null) {
+        if ( this.deploymentContext.get() != null ) {
+            if (this.deploymentContext.get().getObjectStore().get(ContextRoot.class) != null) {
+                contextPath = this.deploymentContext.get().getObjectStore().get(ContextRoot.class).context();
+            }
+        }
+
+        if ( contextPath == null ) {
             contextPath = "/";
+        }
+
+        if ( ! contextPath.startsWith("/" ) ) {
+            contextPath = "/" + contextPath;
         }
 
         try {
