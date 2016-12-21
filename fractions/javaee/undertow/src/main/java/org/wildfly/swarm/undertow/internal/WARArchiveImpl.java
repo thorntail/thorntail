@@ -42,7 +42,6 @@ public class WARArchiveImpl extends WebContainerBase<WARArchive> implements WARA
      */
     public WARArchiveImpl(Archive<?> delegate) {
         super(WARArchive.class, delegate);
-        setDefaultContextRoot();
         addFaviconExceptionHandler();
     }
 

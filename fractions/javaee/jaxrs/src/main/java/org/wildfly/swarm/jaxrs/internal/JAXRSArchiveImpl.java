@@ -52,7 +52,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     public JAXRSArchiveImpl(Archive<?> delegate) {
         super(JAXRSArchive.class, delegate);
 
-        setDefaultContextRoot();
         addGeneratedApplication();
         addFaviconExceptionHandler();
     }

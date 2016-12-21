@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.undertow;
+package org.wildfly.swarm.undertow.runtime;
 
 import org.junit.Test;
+import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -23,10 +24,22 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Ken Finnigan
  */
-public class JbossWebContainerTest {
+public class ContextPathArchivePreparerTest {
 
     @Test
-    public void testSettingContextRoot() throws Exception {
+    public void testDefaultContextRoot() throws Exception {
+        WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
+
+        assertThat(archive.getContextRoot()).isNull();
+
+        new ContextPathArchivePreparer().prepareArchive(archive);
+
+        assertThat(archive.getContextRoot()).isNotNull();
+        assertThat(archive.getContextRoot()).isEqualTo("/");
+    }
+
+    @Test
+    public void testDefaultContextRootWontOverride() throws Exception {
         WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
 
         assertThat(archive.getContextRoot()).isNull();
@@ -35,18 +48,23 @@ public class JbossWebContainerTest {
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("myRoot");
 
-        archive.setContextRoot("/someRoot");
+        new ContextPathArchivePreparer().prepareArchive(archive);
+
         assertThat(archive.getContextRoot()).isNotNull();
-        assertThat(archive.getContextRoot()).isEqualTo("/someRoot");
+        assertThat(archive.getContextRoot()).isEqualTo("myRoot");
     }
 
     @Test
-    public void testSettingSecurityDomain() throws Exception {
+    public void testContextPathProperty() throws Exception {
         WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
 
-        assertThat(archive.getSecurityDomain()).isNull();
+        assertThat(archive.getContextRoot()).isNull();
 
-        archive.setSecurityDomain("some-security-domain");
-        assertThat(archive.getSecurityDomain()).isEqualTo("some-security-domain");
+        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();
+        preparer.contextPath.set("/another-root");
+        preparer.prepareArchive(archive);
+
+        assertThat(archive.getContextRoot()).isNotNull();
+        assertThat(archive.getContextRoot()).isEqualTo("/another-root");
     }
 }
