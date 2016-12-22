@@ -90,8 +90,8 @@ public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider 
         String contextPath = System.getProperty(SwarmProperties.CONTEXT_PATH);
         DeploymentContext deploymentContext = this.deploymentContext.get();
         if ( deploymentContext != null && deploymentContext.isActive() ) {
-            if (this.deploymentContext.get().getObjectStore().get(ContextRoot.class) != null) {
-                contextPath = this.deploymentContext.get().getObjectStore().get(ContextRoot.class).context();
+            if (deploymentContext.getObjectStore().get(ContextRoot.class) != null) {
+                contextPath = deploymentContext.getObjectStore().get(ContextRoot.class).context();
             }
         }
 
