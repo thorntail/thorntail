@@ -130,6 +130,7 @@
           <runOrder>alphabetical</runOrder>
           <failIfNoTests>false</failIfNoTests>
           <systemPropertyVariables>
+            <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
             <swarm.bind.address>127.0.0.1</swarm.bind.address>
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
@@ -164,6 +165,9 @@
             </goals>
             <configuration>
               <testSourceDirectory>src/it/java</testSourceDirectory>
+              <systemPropertyVariables>
+                <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+              </systemPropertyVariables>
             </configuration>
           </execution>
         </executions>
