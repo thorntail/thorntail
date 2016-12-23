@@ -17,12 +17,15 @@ package org.wildfly.swarm.container.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
@@ -212,11 +215,22 @@ public class RuntimeServer implements Server {
     }
 
     public void stop() throws Exception {
-
         this.container.stop();
+        awaitContainerTermination();
         this.container=null;
         this.client = null;
         this.deployer = null;
+    }
+
+    private void awaitContainerTermination() {
+        try {
+            Field field = this.container.getClass().getDeclaredField("executor");
+            field.setAccessible(true);
+            ExecutorService executor = (ExecutorService) field.get( this.container );
+            executor.awaitTermination( 10, TimeUnit.SECONDS );
+        } catch (NoSuchFieldException | IllegalAccessException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
