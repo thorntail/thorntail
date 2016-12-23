@@ -110,7 +110,7 @@ public class ArtifactManager implements ArtifactLookup {
         // groupId:artifactId
         // groupId:artifactId:version
         // groupId:artifactId:packaging:version
-        // groupId:artifactId:packaging:version:classifier
+        // groupId:artifactId:packaging:classifier:version
 
         String[] parts = gav.split(":");
 
@@ -135,8 +135,8 @@ public class ArtifactManager implements ArtifactLookup {
 
         if (parts.length == 5) {
             packaging = parts[2];
-            version = parts[3];
-            classifier = parts[4];
+            classifier = parts[3];
+            version = parts[4];
         }
 
         if (version != null && (version.isEmpty() || version.equals("*"))) {
