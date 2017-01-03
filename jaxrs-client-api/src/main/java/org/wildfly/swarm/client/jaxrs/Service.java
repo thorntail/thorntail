@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi.jaxrsapi;
+package org.wildfly.swarm.client.jaxrs;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Annotation for configuring a {@link ServiceClient} interface.
+/**
+ * Annotation for configuring a {@link ServiceClient} interface.
  *
  * @author Ken Finnigan
  */

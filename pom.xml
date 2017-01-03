@@ -967,6 +967,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jaxrs-client-api</artifactId>
+        <version>2017.1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>cdi-jaxrsapi</artifactId>
         <version>2017.1.0-SNAPSHOT</version>
       </dependency>
@@ -976,7 +981,6 @@
         <artifactId>zipkin-jaxrs</artifactId>
         <version>2017.1.0-SNAPSHOT</version>
       </dependency>
-
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -1111,6 +1115,9 @@
     <module>core/bootstrap</module>
     <module>core/spi</module>
     <module>core/container</module>
+
+    <!-- other -->
+    <module>jaxrs-client-api</module>
 
     <!-- fractions -->
     <module>fractions/javaee/batch-jberet</module>
