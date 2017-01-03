@@ -37,7 +37,6 @@ import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -86,8 +85,12 @@ public class MavenPluginTest {
                                        AdditionalDependency.NON_JAVA_EE, AdditionalFraction.ALREADY_PRESENT),
 */
                     // SWARM-814
-/*
                     new TestingProject(Packaging.WAR, Dependencies.JAVA_EE_APIS, Autodetection.WHEN_MISSING,
+                                       new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.EJB},
+                                       AdditionalDependency.NONE, AdditionalFraction.NONE),
+                    // SWARM-970
+/*
+                    new TestingProject(Packaging.WAR, Dependencies.FRACTIONS, Autodetection.FORCE,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.EJB},
                                        AdditionalDependency.NONE, AdditionalFraction.NONE),
 */
@@ -134,14 +137,16 @@ public class MavenPluginTest {
                                     new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
                                     additionalDependency, additionalFraction
                             ));
-                            // a lot of these fail because of SWARM-814
-/*
+
+                            // a lot of these fail because of SWARM-970
+                            if (dependencies == Dependencies.FRACTIONS && autodetection == Autodetection.FORCE) {
+                                continue;
+                            }
                             testingProjects.add(new TestingProject(
                                     packaging, dependencies, autodetection,
                                     new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.EJB},
                                     additionalDependency, additionalFraction
                             ));
-*/
                         }
                     }
                 }
@@ -189,7 +194,6 @@ public class MavenPluginTest {
         try {
             verifier.executeGoal(goal);
         } catch (VerificationException e) {
-            e.printStackTrace();
             if (testingProject.dependencies == Dependencies.JAVA_EE_APIS
                     && testingProject.autodetection == Autodetection.NEVER) {
                 // the only situation when build failure is expected
