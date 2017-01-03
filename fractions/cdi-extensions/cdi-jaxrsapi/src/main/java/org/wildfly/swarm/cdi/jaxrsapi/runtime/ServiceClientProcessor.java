@@ -32,7 +32,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.wildfly.swarm.cdi.jaxrsapi.ServiceClient;
+import org.wildfly.swarm.client.jaxrs.ServiceClient;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 
@@ -99,7 +99,7 @@ public class ServiceClientProcessor implements ArchiveMetadataProcessor {
                 mv.visitEnd();
             }
 
-            List<AnnotationInstance> annotations = classInfo.annotations().get(DotName.createSimple("org.wildfly.swarm.cdi.jaxrsapi.Service"));
+            List<AnnotationInstance> annotations = classInfo.annotations().get(DotName.createSimple("org.wildfly.swarm.client.jaxrs.Service"));
             String baseUrl = (String) annotations.get(0).value("baseUrl").value();
             int lineNum = 18;
 

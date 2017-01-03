@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi.jaxrsapi;
+package org.wildfly.swarm.client.jaxrs;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -22,7 +22,8 @@ import java.util.function.Supplier;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
 
-/** Interface to extend to create a CDI-based JAXRS client.
+/**
+ * Interface to extend to create a CDI-based JAXRS client.
  *
  * @see Service
  *
