@@ -48,12 +48,13 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         inVmAcceptor("in-vm", (a) -> a.serverId(serverId));
 
         connectionFactory(new ConnectionFactory("InVmConnectionFactory")
-                .connectors(Collections.singletonList("in-vm"))
-                .entries(Collections.singletonList("java:/ConnectionFactory")));
+                .connector("in-vm")
+                .entry("java:/ConnectionFactory"));
 
         pooledConnectionFactory(new PooledConnectionFactory("activemq-ra")
-                .entries(Arrays.asList("java:/JmsXA", "java:jboss/DefaultJMSConnectionFactory"))
-                .connectors(Collections.singletonList("in-vm"))
+                .entry("java:jboss/DefaultJMSConnectionFactory")
+                .entry("java:/JmsXA")
+                .connector("in-vm")
                 .transaction("xa"));
         return this;
     }
@@ -77,7 +78,8 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         return this;
     }
 
-    /** Setup a remote connection to a remote message broker.
+    /**
+     * Setup a remote connection to a remote message broker.
      *
      * @param connection The connection defailts.
      * @return This server.
@@ -86,7 +88,8 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         return remoteConnection(() -> connection);
     }
 
-    /** Setup a default remote connection to a remote message broker.
+    /**
+     * Setup a default remote connection to a remote message broker.
      *
      * <p>By default, it sets up a connection named <code>remote-mq</code>,
      * connecting to <code>localhost</code> at port <code>61616</code>.
@@ -98,7 +101,8 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         return remoteConnection(MessagingProperties.DEFAULT_REMOTE_MQ_NAME);
     }
 
-    /** Setup a default named remote connection to a remote message broker.
+    /**
+     * Setup a default named remote connection to a remote message broker.
      *
      * <p>By default, it sets up a connection
      * connecting to <code>localhost</code> at port <code>61616</code>.
@@ -107,12 +111,14 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
      * @return This server.
      */
     public EnhancedServer remoteConnection(String name) {
-        return remoteConnection( name, (config)->{} );
+        return remoteConnection(name, (config) -> {
+        });
     }
 
-    /** Setup a named remote connection to a remote message broker.
+    /**
+     * Setup a named remote connection to a remote message broker.
      *
-     * @param name The name of the connection.
+     * @param name   The name of the connection.
      * @param config The configuration.
      * @return This server.
      */
@@ -125,15 +131,14 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
     }
 
 
-    /** Setup a remote connection to a remote message broker.
+    /**
+     * Setup a remote connection to a remote message broker.
      *
      * @param supplier The supplier of the configuration.
-     *
      * @return This server.
      */
     public EnhancedServer remoteConnection(RemoteConnection.Supplier supplier) {
         RemoteConnection connection = supplier.get();
-
 
 
         this.remoteConnections.add(connection);
