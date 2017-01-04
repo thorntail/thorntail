@@ -16,6 +16,7 @@
 package org.wildfly.swarm.messaging;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,7 +52,7 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
                 .entries(Collections.singletonList("java:/ConnectionFactory")));
 
         pooledConnectionFactory(new PooledConnectionFactory("activemq-ra")
-                .entries(Collections.singletonList("java:jboss/DefaultJMSConnectionFactory"))
+                .entries(Arrays.asList("java:/JmsXA", "java:jboss/DefaultJMSConnectionFactory"))
                 .connectors(Collections.singletonList("in-vm"))
                 .transaction("xa"));
         return this;
