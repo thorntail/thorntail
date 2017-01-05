@@ -15,27 +15,12 @@
  */
 package org.wildfly.swarm.container.internal;
 
-import java.net.URL;
-import java.util.Optional;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.container.DeploymentException;
-import org.wildfly.swarm.spi.api.ProjectStage;
-
 /**
  * @author Bob McWhirter
  */
 public interface Server {
 
-
     void stop() throws Exception;
-
-    /*
-    Archive<?> createDefaultDeployment();
-
-    void deploy() throws DeploymentException;
-    void deploy(Archive<?> deployment) throws DeploymentException;
-    */
 
     Deployer deployer();
 

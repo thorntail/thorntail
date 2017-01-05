@@ -21,7 +21,8 @@ import java.util.List;
 
 import javax.enterprise.inject.Vetoed;
 
-/** Options for command-line parsing.
+/**
+ * Options for command-line parsing.
  *
  * Options are matched in the order in which they are added.
  *
@@ -30,8 +31,8 @@ import javax.enterprise.inject.Vetoed;
 @Vetoed
 public class Options {
 
-
-    /** Construct.
+    /**
+     * Construct.
      *
      * @param options Zero or more options use initially.
      */
@@ -41,7 +42,8 @@ public class Options {
         }
     }
 
-    /** Fluent method to add more options.
+    /**
+     * Fluent method to add more options.
      *
      * @param option The option to add.
      * @return This options object.
@@ -51,7 +53,8 @@ public class Options {
         return this;
     }
 
-    /** Display the help to the specified output stream.
+    /**
+     * Display the help to the specified output stream.
      *
      * @param out The output stream.
      */
@@ -71,10 +74,10 @@ public class Options {
                 }
             }
             String arg = state.consume();
-            if ( arg.startsWith( "-" ) ) {
-                commandLine.invalidArgument( arg );
+            if (arg.startsWith("-")) {
+                commandLine.invalidArgument(arg);
             }
-            commandLine.extraArgument( arg );
+            commandLine.extraArgument(arg);
         }
     }
 

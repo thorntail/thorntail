@@ -45,6 +45,8 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 @Vetoed
 public class CommandLine {
 
+    private static final String CONFIG_ELEMENT = "<config>";
+
     /**
      * Default option for parsing -h and --help
      */
@@ -101,7 +103,7 @@ public class CommandLine {
     public static final Option<URL> SERVER_CONFIG = new Option<URL>()
             .withShort('c')
             .withLong("server-config")
-            .hasValue("<config>")
+            .hasValue(CONFIG_ELEMENT)
             .valueMayBeSeparate(true)
             .withDescription("URL of the server configuration (e.g. standalone.xml)")
             .withDefault(() -> {
@@ -116,7 +118,7 @@ public class CommandLine {
     public static final Option<URL> STAGE_CONFIG = new Option<URL>()
             .withShort('s')
             .withLong("stage-config")
-            .hasValue("<config>")
+            .hasValue(CONFIG_ELEMENT)
             .valueMayBeSeparate(true)
             .withDescription("URL to the stage configuration (e.g. config.yaml")
             .withDefault(() -> {

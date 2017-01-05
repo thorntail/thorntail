@@ -17,7 +17,6 @@ package org.wildfly.swarm.bootstrap.modules;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.jboss.modules.ModuleFinder;
@@ -34,13 +33,15 @@ import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
  */
 public class ClasspathModuleFinder implements ModuleFinder {
 
+    private static final char MODULE_SEPARATOR = '/';
+
     public String toString() {
         return getClass().getSimpleName();
     }
 
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        final String path = "modules/" + identifier.getName().replace('.', '/') + "/" + identifier.getSlot() + "/module.xml";
+        final String path = "modules/" + identifier.getName().replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + identifier.getSlot() + "/module.xml";
 
 
         if (LOG.isTraceEnabled()) {

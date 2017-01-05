@@ -30,10 +30,9 @@ public class GradleFileSystemLayout extends FileSystemLayout {
 
     @Override
     public String determinePackagingType() {
-        if(resolveSrcWebAppDir().toFile().exists()) {
+        if (resolveSrcWebAppDir().toFile().exists()) {
             return TYPE_WAR;
-        }
-        else {
+        } else {
             return TYPE_JAR;
         }
     }

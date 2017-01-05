@@ -43,7 +43,8 @@ import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
-/** Produces an XML configuration (standalone.xml) parser for available fractions.
+/**
+ * Produces an XML configuration (standalone.xml) parser for available fractions.
  *
  * @author Bob McWhirter
  */
@@ -69,7 +70,7 @@ public class StandaloneXMLParserProducer {
     private void setupFactory(Fraction fraction) {
         WildFlyExtension anno = fraction.getClass().getAnnotation(WildFlyExtension.class);
 
-        if ( anno == null ) {
+        if (anno == null) {
             return;
         }
 
@@ -136,7 +137,7 @@ public class StandaloneXMLParserProducer {
 
         @Override
         public void setSubsystemXmlMapping(String localName, String namespace, XMLElementReader<List<ModelNode>> parser) {
-            StandaloneXMLParserProducer.this.parser.addDelegate( new QName( namespace, "subsystem"), parser );
+            StandaloneXMLParserProducer.this.parser.addDelegate(new QName(namespace, "subsystem"), parser);
         }
 
         @Override

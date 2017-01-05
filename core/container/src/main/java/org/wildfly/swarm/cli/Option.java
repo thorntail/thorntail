@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.cli;
 
-import org.wildfly.swarm.internal.SwarmMessages;
-
 import java.io.File;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
@@ -27,6 +25,8 @@ import java.util.StringTokenizer;
 import java.util.function.Supplier;
 
 import javax.enterprise.inject.Vetoed;
+
+import org.wildfly.swarm.internal.SwarmMessages;
 
 /**
  * A single option specification.
@@ -49,26 +49,20 @@ import javax.enterprise.inject.Vetoed;
 @Vetoed
 public class Option<T> {
 
-    /**
-     * Callback functional interface for matched options.
-     */
-    public interface Action<T> {
-        /**
-         * Perform some action, being passed the value and the <code>CommandLine</code>.
-         *
-         * @param commandLine The state-holding <code>CommandLine</code> object.
-         * @param option      The matched option.
-         * @param value       The value to the option, if any.  Possibly <code>null</code>.
-         * @throws if an error occurs
-         */
-        void set(CommandLine commandLine, Option<T> option, String value) throws Exception;
-    }
+    private static final String EQUALS = "=";
+
+    private static final String HYPHEN = "-";
+
+    private static final String SPACE = " ";
+
+    private static final String DOUBLE_HYPHEN = "--";
+
+    private static final int MAX_LINE_LENGTH = 50;
 
     /**
      * Construct an empty option.
      */
     public Option() {
-
     }
 
     /**
@@ -96,44 +90,42 @@ public class Option<T> {
 
         if (this.shortArg != null) {
             if (hasValue()) {
-                if (this.valueDescription.contains("=")) {
-                    list.add("-" + this.shortArg + this.valueDescription);
+                if (this.valueDescription.contains(EQUALS)) {
+                    list.add(HYPHEN + this.shortArg + this.valueDescription);
                 } else {
-                    list.add("-" + this.shortArg + "=" + this.valueDescription);
+                    list.add(HYPHEN + this.shortArg + EQUALS + this.valueDescription);
                 }
                 if (this.valueMayBeSeparate) {
-                    if (this.valueDescription.contains("=")) {
-                        list.add("-" + this.shortArg + this.valueDescription.replace('=', ' '));
+                    if (this.valueDescription.contains(EQUALS)) {
+                        list.add(HYPHEN + this.shortArg + this.valueDescription.replace(EQUALS, SPACE));
                     } else {
-                        list.add("-" + this.shortArg + " " + this.valueDescription);
+                        list.add(HYPHEN + this.shortArg + SPACE + this.valueDescription);
                     }
                 }
             } else {
-                list.add("-" + this.shortArg);
+                list.add(HYPHEN + this.shortArg);
             }
         }
         if (this.longArg != null) {
             if (hasValue()) {
-                if (this.valueDescription.contains("=")) {
-                    list.add("--" + this.longArg + this.valueDescription);
+                if (this.valueDescription.contains(EQUALS)) {
+                    list.add(DOUBLE_HYPHEN + this.longArg + this.valueDescription);
                 } else {
-                    list.add("--" + this.longArg + "=" + this.valueDescription);
+                    list.add(DOUBLE_HYPHEN + this.longArg + EQUALS + this.valueDescription);
                 }
                 if (this.valueMayBeSeparate) {
-                    if (this.valueDescription.contains("=")) {
-                        list.add("--" + this.longArg + this.valueDescription.replace('=', ' '));
+                    if (this.valueDescription.contains(EQUALS)) {
+                        list.add(DOUBLE_HYPHEN + this.longArg + this.valueDescription.replace(EQUALS, SPACE));
                     } else {
-                        list.add("--" + this.longArg + " " + this.valueDescription);
+                        list.add(DOUBLE_HYPHEN + this.longArg + SPACE + this.valueDescription);
                     }
                 }
             } else {
-                list.add("--" + this.longArg);
+                list.add(DOUBLE_HYPHEN + this.longArg);
             }
         }
         return list;
     }
-
-    private static final int MAX_LINE_LENGTH = 50;
 
     private List<String> description() {
         List<String> list = new ArrayList<>();
@@ -145,13 +137,13 @@ public class Option<T> {
         while (tokens.hasMoreElements()) {
             String token = tokens.nextToken();
 
-            if (line.length() + (" " + token).length() > MAX_LINE_LENGTH) {
+            if (line.length() + (SPACE + token).length() > MAX_LINE_LENGTH) {
                 list.add(line.toString());
                 line = new StringBuilder();
             }
 
             if (line.length() != 0) {
-                line.append(" ");
+                line.append(SPACE);
             }
             line.append(token);
         }
@@ -293,8 +285,8 @@ public class Option<T> {
 
         String matchedArg = null;
 
-        if (this.shortArg != null && cur.startsWith("-" + this.shortArg)) {
-            matchedArg = "-" + this.shortArg;
+        if (this.shortArg != null && cur.startsWith(HYPHEN + this.shortArg)) {
+            matchedArg = HYPHEN + this.shortArg;
             if (hasValue() && cur.length() >= 3) {
                 if (cur.charAt(2) == '=') {
                     value = cur.substring(3);
@@ -302,8 +294,8 @@ public class Option<T> {
                     value = cur.substring(2);
                 }
             }
-        } else if (this.longArg != null && cur.startsWith("--" + this.longArg)) {
-            matchedArg = "--" + this.longArg;
+        } else if (this.longArg != null && cur.startsWith(DOUBLE_HYPHEN + this.longArg)) {
+            matchedArg = DOUBLE_HYPHEN + this.longArg;
             if (hasValue() && cur.length() >= this.longArg.length() + 3) {
                 if (cur.charAt(this.longArg.length() + 3) == '=') {
                     value = cur.substring(this.longArg.length() + 3);
@@ -376,4 +368,18 @@ public class Option<T> {
     private Supplier<T> supplier;
 
 
+    /**
+     * Callback functional interface for matched options.
+     */
+    public interface Action<T> {
+        /**
+         * Perform some action, being passed the value and the <code>CommandLine</code>.
+         *
+         * @param commandLine The state-holding <code>CommandLine</code> object.
+         * @param option      The matched option.
+         * @param value       The value to the option, if any.  Possibly <code>null</code>.
+         * @throws if an error occurs
+         */
+        void set(CommandLine commandLine, Option<T> option, String value) throws Exception;
+    }
 }

@@ -26,13 +26,13 @@ public class ConfigurableFractionBean<T extends Fraction> implements Bean<T> {
 
     public ConfigurableFractionBean(T instance, ConfigurableManager configurableManager) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         this.instance = instance;
-        configurableManager.scan( this.instance );
+        configurableManager.scan(this.instance);
     }
 
     public ConfigurableFractionBean(Class<T> cls, ConfigurableManager configurableManager) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         this.instance = cls.newInstance();
         this.instance.applyDefaults();
-        configurableManager.scan( this.instance );
+        configurableManager.scan(this.instance);
     }
 
     @Override

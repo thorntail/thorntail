@@ -29,6 +29,6 @@ public class DefaultInterfaceProducer {
 
     @Produces
     public Interface publicInterace() {
-        return new Interface( "public", SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
+        return new Interface("public", SwarmProperties.propertyVar(SwarmProperties.BIND_ADDRESS, "0.0.0.0"));
     }
 }

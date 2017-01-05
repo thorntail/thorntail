@@ -2,7 +2,8 @@ package org.wildfly.swarm.bootstrap.env;
 
 import java.util.Comparator;
 
-/** Comparator to sort Manifests based on dependency tree, complexity, and alphabetically.
+/**
+ * Comparator to sort Manifests based on dependency tree, complexity, and alphabetically.
  *
  * @author Bob McWhirter
  */
@@ -16,24 +17,24 @@ public class ManifestComparator implements Comparator<FractionManifest> {
             return 1;
         }
 
-        if ( right.getDependencies().contains(gav(left) ) ) {
+        if (right.getDependencies().contains(gav(left))) {
             return -1;
         }
 
         // simpler sort to the left
-        if ( left.getDependencies().size() < right.getDependencies().size() ) {
+        if (left.getDependencies().size() < right.getDependencies().size()) {
             return -1;
         }
 
-        if ( right.getDependencies().size() > left.getDependencies().size() ) {
+        if (right.getDependencies().size() > left.getDependencies().size()) {
             return 1;
         }
 
         // alphabetically
-        return left.getArtifactId().compareTo( right.getArtifactId() );
+        return left.getArtifactId().compareTo(right.getArtifactId());
     }
 
     protected String gav(FractionManifest manifest) {
-        return manifest.getGroupId() +":" + manifest.getArtifactId() + ":jar:" + manifest.getVersion();
+        return manifest.getGroupId() + ":" + manifest.getArtifactId() + ":jar:" + manifest.getVersion();
     }
 }

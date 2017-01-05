@@ -36,8 +36,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public interface DependenciesContainer<T extends Archive<T>> extends LibraryContainer<T>, MarkerContainer<T>, Archive<T> {
 
+    String ALL_DEPENDENCIES_MARKER = "org.wildfly.swarm.allDependencies";
 
-    /** Add all application dependencies to this deployment.
+    /**
+     * Add all application dependencies to this deployment.
      *
      * @return this archive.
      */
@@ -47,7 +49,7 @@ public interface DependenciesContainer<T extends Archive<T>> extends LibraryCont
         // See RuntimeDeployer#deploy(...) for further details.
 
         // flag to instruct the container to add the missing deps upon deploy time
-        addMarker("org.wildfly.swarm.allDependencies");
+        addMarker(ALL_DEPENDENCIES_MARKER);
         return (T) this;
     }
 
@@ -59,10 +61,10 @@ public interface DependenciesContainer<T extends Archive<T>> extends LibraryCont
             return addAllDependencies();
         }
 
-        if (!hasMarker("org.wildfly.swarm.allDependencies")) {
+        if (!hasMarker(ALL_DEPENDENCIES_MARKER)) {
             List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts();
             addAsLibraries(artifacts);
-            addMarker("org.wildfly.swarm.allDependencies");
+            addMarker(ALL_DEPENDENCIES_MARKER);
         }
 
         return (T) this;

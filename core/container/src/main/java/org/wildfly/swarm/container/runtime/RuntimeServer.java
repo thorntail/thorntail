@@ -21,7 +21,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -114,7 +113,7 @@ public class RuntimeServer implements Server {
 
     public RuntimeServer() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if(container!=null) {
+            if (container != null) {
                 try {
                     LOG.info("Shutdown requested ...");
                     stop();
@@ -139,7 +138,7 @@ public class RuntimeServer implements Server {
         File configurationFile;
         try {
             configurationFile = TempFileManager.INSTANCE.newTempFile("swarm-config-", ".xml");
-            LOG.debug("Temporarily storing configuration at: "+ configurationFile.getAbsolutePath());
+            LOG.debug("Temporarily storing configuration at: " + configurationFile.getAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -205,11 +204,11 @@ public class RuntimeServer implements Server {
     }
 
     private void configureUserSpaceExtensions() {
-        this.userSpaceExtensionFactories.forEach( factory->{
+        this.userSpaceExtensionFactories.forEach(factory -> {
             try {
                 factory.configure();
             } catch (Exception e) {
-                SwarmMessages.MESSAGES.errorInstallingUserSpaceExtension( factory.getClass().getName() );
+                SwarmMessages.MESSAGES.errorInstallingUserSpaceExtension(factory.getClass().getName());
             }
         });
     }
@@ -217,7 +216,7 @@ public class RuntimeServer implements Server {
     public void stop() throws Exception {
         this.container.stop();
         awaitContainerTermination();
-        this.container=null;
+        this.container = null;
         this.client = null;
         this.deployer = null;
     }
@@ -226,8 +225,8 @@ public class RuntimeServer implements Server {
         try {
             Field field = this.container.getClass().getDeclaredField("executor");
             field.setAccessible(true);
-            ExecutorService executor = (ExecutorService) field.get( this.container );
-            executor.awaitTermination( 10, TimeUnit.SECONDS );
+            ExecutorService executor = (ExecutorService) field.get(this.container);
+            executor.awaitTermination(10, TimeUnit.SECONDS);
         } catch (NoSuchFieldException | IllegalAccessException | InterruptedException e) {
             e.printStackTrace();
         }

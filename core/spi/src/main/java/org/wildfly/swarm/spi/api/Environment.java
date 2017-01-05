@@ -21,6 +21,9 @@ package org.wildfly.swarm.spi.api;
  */
 public class Environment {
 
+    private Environment() {
+    }
+
     public static boolean openshift() {
         return System.getenv("OPENSHIFT_BUILD_NAME") != null ||
                 System.getenv("OPENSHIFT_BUILD_REFERENCE") != null ||

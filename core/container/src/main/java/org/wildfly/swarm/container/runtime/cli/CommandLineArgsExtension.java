@@ -31,6 +31,7 @@ import javax.enterprise.util.TypeLiteral;
 public class CommandLineArgsExtension implements Extension {
 
     private final String[] args;
+
     private final List<String> argsList;
 
     public CommandLineArgsExtension(String... args) {
@@ -45,7 +46,8 @@ public class CommandLineArgsExtension implements Extension {
                 .producing(this.args);
 
         abd.addBean()
-                .addType(new TypeLiteral<List<String>>() { })
-                .producing( this.argsList );
+                .addType(new TypeLiteral<List<String>>() {
+                })
+                .producing(this.argsList);
     }
 }

@@ -34,17 +34,19 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
 @Singleton
 public class TempFileProviderProducer {
 
+    private static final String TEMP_DIR_NAME = "wildfly-swarm";
+
     private TempFileProvider tempFileProvider = null;
 
     @PostConstruct
     void init() {
         File serverTmp;
         try {
-            serverTmp = TempFileManager.INSTANCE.newTempDirectory("wildfly-swarm", ".d");
+            serverTmp = TempFileManager.INSTANCE.newTempDirectory(TEMP_DIR_NAME, ".d");
             System.setProperty("jboss.server.temp.dir", serverTmp.getAbsolutePath());
 
             ScheduledExecutorService tempFileExecutor = Executors.newSingleThreadScheduledExecutor();
-            this.tempFileProvider = TempFileProvider.create("wildfly-swarm", tempFileExecutor, true);
+            this.tempFileProvider = TempFileProvider.create(TEMP_DIR_NAME, tempFileExecutor, true);
 
         } catch (IOException e) {
             //TODO This should be properly logged
@@ -59,7 +61,7 @@ public class TempFileProviderProducer {
 
     void dispose(@Disposes TempFileProvider provider) {
         // To ensure we only close the one we produce
-        if ( this.tempFileProvider == provider ) {
+        if (this.tempFileProvider == provider) {
             try {
                 this.tempFileProvider.close();
             } catch (IOException e) {

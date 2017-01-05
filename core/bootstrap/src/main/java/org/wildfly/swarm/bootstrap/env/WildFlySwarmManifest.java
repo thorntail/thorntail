@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.yaml.snakeyaml.DumperOptions;
@@ -26,6 +25,22 @@ import org.yaml.snakeyaml.Yaml;
 public class WildFlySwarmManifest {
 
     public static final String CLASSPATH_LOCATION = "META-INF/wildfly-swarm-manifest.yaml";
+
+    private static final String ASSET = "asset";
+
+    private static final String MAIN_CLASS = "main-class";
+
+    private static final String HOLLOW = "hollow";
+
+    private static final String PROPERTIES = "properties";
+
+    private static final String MODULES = "modules";
+
+    private static final String BOOTSTRAP_ARTIFACTS = "bootstrap-artifacts";
+
+    private static final String BUNDLE_DEPENDENCIES = "bundle-dependencies";
+
+    private static final String DEPENDENCIES = "dependencies";
 
     public WildFlySwarmManifest() {
 
@@ -49,26 +64,26 @@ public class WildFlySwarmManifest {
         Yaml yaml = new Yaml();
         Map data = (Map) yaml.load(in);
 
-        this.asset = (String) data.get("asset");
+        this.asset = (String) data.get(ASSET);
 
-        this.mainClass = (String) data.get("main-class");
-        this.hollow = (boolean) data.get("hollow");
+        this.mainClass = (String) data.get(MAIN_CLASS);
+        this.hollow = (boolean) data.get(HOLLOW);
 
         this.properties.clear();
-        this.properties.putAll((Map<?, ?>) data.get("properties"));
+        this.properties.putAll((Map<?, ?>) data.get(PROPERTIES));
 
         this.bootstrapModules.clear();
-        this.bootstrapModules.addAll((Collection<? extends String>) data.get("modules"));
+        this.bootstrapModules.addAll((Collection<? extends String>) data.get(MODULES));
 
         this.bootstrapArtifacts.clear();
-        this.bootstrapArtifacts.addAll((Collection<? extends String>) data.get("bootstrap-artifacts"));
+        this.bootstrapArtifacts.addAll((Collection<? extends String>) data.get(BOOTSTRAP_ARTIFACTS));
 
-        if ( data.get( "bundle-dependencies") != null ) {
-            this.bundleDependencies = (boolean) data.get("bundle-dependencies");
+        if (data.get(BUNDLE_DEPENDENCIES) != null) {
+            this.bundleDependencies = (boolean) data.get(BUNDLE_DEPENDENCIES);
         }
 
         this.dependencies.clear();
-        this.dependencies.addAll((Collection<? extends String>) data.get("dependencies"));
+        this.dependencies.addAll((Collection<? extends String>) data.get(DEPENDENCIES));
 
         setupProperties();
     }
@@ -85,15 +100,15 @@ public class WildFlySwarmManifest {
     public String toString() {
         Map data = new LinkedHashMap() {{
             if (asset != null) {
-                put("asset", asset);
+                put(ASSET, asset);
             }
-            put("main-class", mainClass);
-            put("hollow", hollow);
-            put("properties", properties);
-            put("modules", bootstrapModules);
-            put("bootstrap-artifacts", bootstrapArtifacts);
-            put("bundle-dependencies", bundleDependencies);
-            put("dependencies", dependencies);
+            put(MAIN_CLASS, mainClass);
+            put(HOLLOW, hollow);
+            put(PROPERTIES, properties);
+            put(MODULES, bootstrapModules);
+            put(BOOTSTRAP_ARTIFACTS, bootstrapArtifacts);
+            put(BUNDLE_DEPENDENCIES, bundleDependencies);
+            put(DEPENDENCIES, dependencies);
         }};
 
         DumperOptions options = new DumperOptions();
@@ -109,18 +124,18 @@ public class WildFlySwarmManifest {
         // values, because Gradle (and others) can set non-string
         // values for things like swarm.http.port (integer)
         Enumeration<?> names = this.properties.propertyNames();
-        while ( names.hasMoreElements() ) {
+        while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-            Object value = this.properties.get( name );
-            if ( value != null ) {
+            Object value = this.properties.get(name);
+            if (value != null) {
                 if (System.getProperty(name) == null) {
                     System.setProperty(name, value.toString());
                 }
             }
         }
 
-        if (this.bundleDependencies != null && this.bundleDependencies ) {
-            System.setProperty(BootstrapProperties.BUNDLED_DEPENDENCIES, this.bundleDependencies.toString() );
+        if (this.bundleDependencies != null && this.bundleDependencies) {
+            System.setProperty(BootstrapProperties.BUNDLED_DEPENDENCIES, this.bundleDependencies.toString());
         }
     }
 
@@ -171,7 +186,7 @@ public class WildFlySwarmManifest {
     }
 
     public boolean isBundleDependencies() {
-        if ( this.bundleDependencies == null ) {
+        if (this.bundleDependencies == null) {
             return true;
         }
         return this.bundleDependencies;

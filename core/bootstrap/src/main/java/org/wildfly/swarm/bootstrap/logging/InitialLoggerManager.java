@@ -30,6 +30,10 @@ public class InitialLoggerManager implements BackingLoggerManager {
 
     public static final InitialLoggerManager INSTANCE = new InitialLoggerManager();
 
+    private static final String LOGGER_ROOT = "ROOT";
+
+    private static final String FORMAT = "%s %s [%s] (%s) %s";
+
     private InitialLoggerManager() {
         Properties props = System.getProperties();
         Set<String> names = props.stringPropertyNames();
@@ -57,7 +61,7 @@ public class InitialLoggerManager implements BackingLoggerManager {
 
         categories.sort((l, r) -> l.compareTo(r));
 
-        BootstrapLogger.Level rootLevel = levels.get("ROOT");
+        BootstrapLogger.Level rootLevel = levels.get(LOGGER_ROOT);
         if (rootLevel == null) {
             rootLevel = BootstrapLogger.Level.NONE;
         }
@@ -65,7 +69,7 @@ public class InitialLoggerManager implements BackingLoggerManager {
         this.root = new LevelNode("", rootLevel);
 
         for (String each : categories) {
-            if (each.equals("ROOT")) {
+            if (each.equals(LOGGER_ROOT)) {
                 continue;
             }
 
@@ -106,7 +110,7 @@ public class InitialLoggerManager implements BackingLoggerManager {
         String[] lines = message.split("\n");
 
         for (String line : lines) {
-            System.err.println(String.format("%s %s [%s] (%s) %s",
+            System.err.println(String.format(FORMAT,
                                              now,
                                              level.toString(),
                                              logger.getCategory(),
@@ -116,7 +120,7 @@ public class InitialLoggerManager implements BackingLoggerManager {
     }
 
     private void log(InitialBackingLogger logger, BootstrapLogger.Level level, Throwable t) {
-        System.err.println(String.format("%s %s [%s] (%s) %s",
+        System.err.println(String.format(FORMAT,
                                          new Date().toString(),
                                          level,
                                          logger.getCategory(),

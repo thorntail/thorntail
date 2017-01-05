@@ -22,31 +22,32 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import javax.inject.Singleton;
 
 import org.jboss.weld.literal.DefaultLiteral;
 import org.wildfly.swarm.container.cdi.ProjectStageImpl;
 import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.StageConfig;
 
-/** Produces an explicitly set project-stage.
+/**
+ * Produces an explicitly set project-stage.
  *
  * @author Bob McWhirter
  */
 public class ProjectStageProducingExtension implements Extension {
 
     private final ProjectStage projectStage;
+
     private final StageConfig stageConfig;
 
     public ProjectStageProducingExtension(Optional<ProjectStage> projectStage) {
-        this.projectStage = projectStage.orElse( new ProjectStageImpl( "default" ) );
-        this.stageConfig = new StageConfig( this.projectStage );
+        this.projectStage = projectStage.orElse(new ProjectStageImpl("default"));
+        this.stageConfig = new StageConfig(this.projectStage);
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        abd.addBean().addType( ProjectStage.class )
+        abd.addBean().addType(ProjectStage.class)
                 .scope(Dependent.class)
-                .qualifiers( DefaultLiteral.INSTANCE )
+                .qualifiers(DefaultLiteral.INSTANCE)
                 .producing(this.projectStage);
 
         abd.addBean().addType(StageConfig.class)

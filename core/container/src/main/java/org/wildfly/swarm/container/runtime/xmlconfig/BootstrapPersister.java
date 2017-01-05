@@ -31,7 +31,6 @@ import org.jboss.staxmapper.XMLElementWriter;
  *
  * @author Heiko Braun
  * @since 14/09/16
- *
  */
 public class BootstrapPersister implements ExtensibleConfigurationPersister {
 
@@ -59,7 +58,7 @@ public class BootstrapPersister implements ExtensibleConfigurationPersister {
 
     @Override
     public List<ModelNode> load() throws ConfigurationPersistenceException {
-        if(!configurationFile.exists()) {
+        if (!configurationFile.exists()) {
             return bootstrapConfig.get();
         } else {
             return delegate.load();

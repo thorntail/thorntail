@@ -18,7 +18,6 @@ package org.wildfly.swarm.container.internal;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.container.DeploymentException;
 
@@ -27,7 +26,10 @@ import org.wildfly.swarm.container.DeploymentException;
  */
 public interface Deployer {
     void deploy() throws DeploymentException;
+
     void deploy(Archive<?> deployment) throws DeploymentException;
+
     void deploy(Collection<Path> paths) throws DeploymentException;
+
     Archive<?> createDefaultDeployment();
 }

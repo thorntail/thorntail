@@ -45,6 +45,8 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
 @Vetoed
 public class ArtifactManager implements ArtifactLookup {
 
+    private static final String COLON = ":";
+
     public ArtifactManager() {
     }
 
@@ -112,7 +114,7 @@ public class ArtifactManager implements ArtifactLookup {
         // groupId:artifactId:packaging:version
         // groupId:artifactId:packaging:classifier:version
 
-        String[] parts = gav.split(":");
+        String[] parts = gav.split(COLON);
 
         if (parts.length < 2) {
             throw SwarmMessages.MESSAGES.gavMinimumSegments();
@@ -154,47 +156,47 @@ public class ArtifactManager implements ArtifactLookup {
         if (version == null) {
             throw SwarmMessages.MESSAGES.unableToDetermineVersion(gav);
         }
-        ArtifactCoordinates coords= new ArtifactCoordinates(
+        ArtifactCoordinates coords = new ArtifactCoordinates(
                 groupId,
                 artifactId,
                 version,
                 classifier == null ? "" : classifier);
 
-        return MavenResolvers.get().resolveArtifact( coords, packaging );
+        return MavenResolvers.get().resolveArtifact(coords, packaging);
     }
 
 
     String determineVersionViaApplicationEnvironment(String groupId, String artifactId, String packaging, String classifier) throws IOException {
         ApplicationEnvironment env = ApplicationEnvironment.get();
 
-        if ( classifier.isEmpty() ) {
+        if (classifier.isEmpty()) {
             classifier = null;
         }
 
         for (String dep : env.getDependencies()) {
-            String[] parts = dep.split(":");
+            String[] parts = dep.split(COLON);
 
             String depGroupId = parts[0];
             String depArtifactId = parts[1];
             String depPackaging = parts[2];
             String depVersion = null;
             String depClassifier = null;
-            if ( parts.length == 4 ) {
+            if (parts.length == 4) {
                 depVersion = parts[3];
             } else {
                 depClassifier = parts[3];
                 depVersion = parts[4];
             }
 
-            if ( groupId.equals( depGroupId ) ) {
-                if ( artifactId.equals( depArtifactId ) ) {
-                    if ( packaging.equals( depPackaging ) ) {
-                        if ( classifier == null ) {
-                            if ( depClassifier == null ) {
+            if (groupId.equals(depGroupId)) {
+                if (artifactId.equals(depArtifactId)) {
+                    if (packaging.equals(depPackaging)) {
+                        if (classifier == null) {
+                            if (depClassifier == null) {
                                 return depVersion;
                             }
                         } else {
-                            if ( depClassifier != null && classifier.equals( depClassifier ) ) {
+                            if (depClassifier != null && classifier.equals(depClassifier)) {
                                 return depVersion;
                             }
                         }

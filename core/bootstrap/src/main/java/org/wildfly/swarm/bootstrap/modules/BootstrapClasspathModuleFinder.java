@@ -33,13 +33,15 @@ import org.jboss.modules.xml.ModuleXmlParser;
  */
 public class BootstrapClasspathModuleFinder implements ModuleFinder {
 
+    private static final char MODULE_SEPARATOR = '/';
+
     public String toString() {
         return getClass().getSimpleName();
     }
 
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        final String path = "modules/" + identifier.getName().replace('.', '/') + "/" + identifier.getSlot() + "/module.xml";
+        final String path = "modules/" + identifier.getName().replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + identifier.getSlot() + "/module.xml";
 
         ClassLoader cl = BootstrapClasspathModuleFinder.class.getClassLoader();
         URL url = cl.getResource(path);

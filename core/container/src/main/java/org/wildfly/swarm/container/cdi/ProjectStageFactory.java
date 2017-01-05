@@ -72,8 +72,9 @@ public class ProjectStageFactory {
                     .filter(stage -> DEFAULT.equals(stage.getName()))
                     .findFirst();
 
-            if (!defaultStage.isPresent())
+            if (!defaultStage.isPresent()) {
                 throw SwarmMessages.MESSAGES.missingDefaultStage();
+            }
 
             // inherit values from default stage
             final Map<String, String> defaults = defaultStage.get().getProperties();
@@ -84,8 +85,9 @@ public class ProjectStageFactory {
                         Set<String> currentKeys = current.keySet();
                         defaults.keySet().forEach(
                                 key -> {
-                                    if (!currentKeys.contains(key))
+                                    if (!currentKeys.contains(key)) {
                                         current.put(key, defaults.get(key));
+                                    }
                                 }
                         );
                     });

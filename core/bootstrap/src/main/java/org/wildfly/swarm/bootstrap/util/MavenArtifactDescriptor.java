@@ -25,12 +25,17 @@ import org.jboss.modules.maven.ArtifactCoordinates;
  */
 public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescriptor> {
 
-    private MavenArtifactDescriptor() {
+    private static final String INVALID_GAV_MESSAGE = "Invalid gav: ";
 
+    private static final String JAR_PACKAGING = "jar";
+
+    private static final String COLON = ":";
+
+    private MavenArtifactDescriptor() {
     }
 
     public MavenArtifactDescriptor(String groupId, String artifactId, String version) {
-        this(groupId, artifactId, "jar", null, version);
+        this(groupId, artifactId, JAR_PACKAGING, null, version);
     }
 
     public MavenArtifactDescriptor(String groupId, String artifactId, String type, String classifier, String version) {
@@ -44,22 +49,22 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
     }
 
     public static Builder build() {
-        return new MavenArtifactDescriptor().builder().type("jar");
+        return new MavenArtifactDescriptor().builder().type(JAR_PACKAGING);
     }
 
     public static MavenArtifactDescriptor fromMscGav(String gav) throws IOException {
-        String[] parts = gav.split(":");
+        String[] parts = gav.split(COLON);
         if (parts.length == 3) {
             return new MavenArtifactDescriptor(parts[0], parts[1], parts[2]);
         } else if (parts.length == 4) {
-            return new MavenArtifactDescriptor(parts[0], parts[1], "jar", parts[3], parts[2]);
+            return new MavenArtifactDescriptor(parts[0], parts[1], JAR_PACKAGING, parts[3], parts[2]);
         } else {
-            throw new IOException("Invalid gav: " + gav);
+            throw new IOException(INVALID_GAV_MESSAGE + gav);
         }
     }
 
     public static MavenArtifactDescriptor fromMavenGav(String gav) throws IOException {
-        String[] parts = gav.split(":");
+        String[] parts = gav.split(COLON);
 
         if (parts.length == 3) {
             return new MavenArtifactDescriptor(parts[0], parts[1], parts[2]);
@@ -69,53 +74,52 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
             return new MavenArtifactDescriptor(parts[0], parts[1], parts[2], parts[3], parts[4]);
         } else if (parts.length == 6) {
             return new MavenArtifactDescriptor(parts[0], parts[1], parts[2], parts[3], parts[4]);
-        }
-        else {
-            throw new IOException("Invalid gav: " + gav);
+        } else {
+            throw new IOException(INVALID_GAV_MESSAGE + gav);
         }
 
     }
 
     @Override
     public int compareTo(MavenArtifactDescriptor that) {
-        int result = this.groupId.compareTo( that.groupId );
-        if ( result != 0 ) {
+        int result = this.groupId.compareTo(that.groupId);
+        if (result != 0) {
             return result;
         }
 
-        result = this.artifactId.compareTo( that.artifactId );
-        if ( result != 0 ) {
+        result = this.artifactId.compareTo(that.artifactId);
+        if (result != 0) {
             return result;
         }
 
-        result = this.version.compareTo( that.version );
-        if ( result != 0 ) {
+        result = this.version.compareTo(that.version);
+        if (result != 0) {
             return result;
         }
 
-        if ( this.type != null && that.type == null ) {
+        if (this.type != null && that.type == null) {
             return 1;
         }
 
-        if ( this.type == null && that.type != null ) {
+        if (this.type == null && that.type != null) {
             return -1;
         }
 
-        result = this.type.compareTo( that.type );
+        result = this.type.compareTo(that.type);
 
-        if ( result != 0 ) {
+        if (result != 0) {
             return result;
         }
 
-        if ( this.classifier != null && that.classifier == null ) {
+        if (this.classifier != null && that.classifier == null) {
             return 1;
         }
 
-        if ( this.classifier == null && that.classifier != null ) {
+        if (this.classifier == null && that.classifier != null) {
             return -1;
         }
 
-        return this.classifier.compareTo( that.classifier );
+        return this.classifier.compareTo(that.classifier);
     }
 
     public String groupId() {
@@ -139,10 +143,10 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
     }
 
     public String mscGav() {
-        return this.groupId + ":" +
-                this.artifactId + ":" +
+        return this.groupId + COLON +
+                this.artifactId + COLON +
                 this.version +
-                (this.classifier == null ? "" : ":" + this.classifier);
+                (this.classifier == null ? "" : COLON + this.classifier);
     }
 
     public ArtifactCoordinates mscCoordinates() {
@@ -154,10 +158,10 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
     }
 
     public String mavenGav() {
-        return this.groupId + ":" +
-                this.artifactId + ":" +
-                (this.type == null ? "jar" : this.type) + ":" +
-                (this.classifier == null ? "" : this.classifier + ":") +
+        return this.groupId + COLON +
+                this.artifactId + COLON +
+                (this.type == null ? JAR_PACKAGING : this.type) + COLON +
+                (this.classifier == null ? "" : this.classifier + COLON) +
                 this.version;
     }
 
@@ -215,6 +219,42 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
 
     private String type;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MavenArtifactDescriptor that = (MavenArtifactDescriptor) o;
+
+        if (!groupId.equals(that.groupId)) {
+            return false;
+        }
+        if (!artifactId.equals(that.artifactId)) {
+            return false;
+        }
+        if (version != null ? !version.equals(that.version) : that.version != null) {
+            return false;
+        }
+        if (classifier != null ? !classifier.equals(that.classifier) : that.classifier != null) {
+            return false;
+        }
+        return type.equals(that.type);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = groupId.hashCode();
+        result = 31 * result + artifactId.hashCode();
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        result = 31 * result + (classifier != null ? classifier.hashCode() : 0);
+        result = 31 * result + type.hashCode();
+        return result;
+    }
 
     public class Builder {
 
@@ -246,30 +286,5 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
         public MavenArtifactDescriptor build() {
             return MavenArtifactDescriptor.this;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MavenArtifactDescriptor that = (MavenArtifactDescriptor) o;
-
-        if (!groupId.equals(that.groupId)) return false;
-        if (!artifactId.equals(that.artifactId)) return false;
-        if (version != null ? !version.equals(that.version) : that.version != null) return false;
-        if (classifier != null ? !classifier.equals(that.classifier) : that.classifier != null) return false;
-        return type.equals(that.type);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = groupId.hashCode();
-        result = 31 * result + artifactId.hashCode();
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (classifier != null ? classifier.hashCode() : 0);
-        result = 31 * result + type.hashCode();
-        return result;
     }
 }

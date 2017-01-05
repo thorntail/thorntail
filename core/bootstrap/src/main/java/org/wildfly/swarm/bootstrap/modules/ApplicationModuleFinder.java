@@ -44,7 +44,7 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
  */
 public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
-    public final static String MODULE_NAME = "swarm.application";
+    public static final String MODULE_NAME = "swarm.application";
 
     public ApplicationModuleFinder() {
         super(MODULE_NAME);
@@ -106,7 +106,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
     protected void addAsset(ModuleSpec.Builder builder, ApplicationEnvironment env) throws IOException {
         String path = env.getAsset();
-        if ( path == null ) {
+        if (path == null) {
             return;
         }
 
@@ -132,13 +132,13 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
         final String jarName = tmp.getName().toString();
         final JarFile jarFile = new JarFile(tmp);
         final ResourceLoader jarLoader = ResourceLoaders.createJarResourceLoader(jarName,
-                jarFile);
+                                                                                 jarFile);
         builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(jarLoader));
 
         if (".war".equalsIgnoreCase(ext)) {
             final ResourceLoader warLoader = ResourceLoaders.createJarResourceLoader(jarName,
-                    jarFile,
-                    "WEB-INF/classes");
+                                                                                     jarFile,
+                                                                                     "WEB-INF/classes");
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));
         }
 
@@ -146,23 +146,23 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
     protected void addDependencies(ModuleSpec.Builder builder, ApplicationEnvironment env) {
         env.getDependencies()
-                .forEach( (dep)->{
+                .forEach((dep) -> {
                     String[] parts = dep.split(":");
                     ArtifactCoordinates coords = null;
 
-                    if ( ! parts[2].equals( "jar" ) ) {
+                    if (!parts[2].equals("jar")) {
                         return;
                     }
 
-                    if ( parts.length == 4 ) {
-                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[3] );
-                    } else if ( parts.length == 5 ) {
-                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[4], parts[3] );
+                    if (parts.length == 4) {
+                        coords = new ArtifactCoordinates(parts[0], parts[1], parts[3]);
+                    } else if (parts.length == 5) {
+                        coords = new ArtifactCoordinates(parts[0], parts[1], parts[4], parts[3]);
                     }
                     try {
                         File artifact = MavenResolvers.get().resolveJarArtifact(coords);
-                        if ( artifact == null ) {
-                            LOG.error( "Unable to find artifact for " + coords );
+                        if (artifact == null) {
+                            LOG.error("Unable to find artifact for " + coords);
                             return;
                         }
                         JarFile jar = new JarFile(artifact);

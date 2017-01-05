@@ -23,7 +23,7 @@ public class Defaultable<T> implements Supplier<T> {
     }
 
     public static Defaultable<Integer> integer(int defaultValue) {
-        return integer( () -> defaultValue);
+        return integer(() -> defaultValue);
     }
 
     public static Defaultable<Integer> integer(Supplier<Integer> defaultValueSupplier) {
@@ -31,7 +31,7 @@ public class Defaultable<T> implements Supplier<T> {
     }
 
     public static Defaultable<Boolean> bool(boolean defaultValue) {
-        return bool( () -> defaultValue);
+        return bool(() -> defaultValue);
     }
 
     public static Defaultable<Boolean> bool(Supplier<Boolean> defaultValueSupplier) {
@@ -39,7 +39,7 @@ public class Defaultable<T> implements Supplier<T> {
     }
 
     public static Defaultable<URL> url(URL defaultValue) {
-        return url( ()->defaultValue );
+        return url(() -> defaultValue);
     }
 
     public static Defaultable<URL> url(Supplier<URL> defaultValueSupplier) {
@@ -53,7 +53,7 @@ public class Defaultable<T> implements Supplier<T> {
      * @return The new item.
      */
     public static Defaultable<Boolean> ifAllExplicitlySet(Defaultable<?>... items) {
-        return bool( () -> {
+        return bool(() -> {
             for (Defaultable<?> item : items) {
                 if (!item.isExplicit()) {
                     return false;
@@ -69,8 +69,8 @@ public class Defaultable<T> implements Supplier<T> {
      * @param items The items to test.
      * @return The new item.
      */
-    public static Defaultable<Boolean> ifAnyExplicitlySet( Defaultable<?>... items) {
-        return bool( () -> {
+    public static Defaultable<Boolean> ifAnyExplicitlySet(Defaultable<?>... items) {
+        return bool(() -> {
             for (Defaultable<?> item : items) {
                 if (item.isExplicit()) {
                     return true;

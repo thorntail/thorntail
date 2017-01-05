@@ -17,15 +17,12 @@ package org.wildfly.swarm.container.runtime.xmlconfig;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
@@ -51,6 +48,8 @@ import org.jboss.staxmapper.XMLMapper;
 @Vetoed
 public class StandaloneXMLParser {
 
+    private static final String SERVER = "server";
+
     private Set<QName> recognizedNames = new HashSet<>();
 
     public StandaloneXMLParser() {
@@ -73,10 +72,10 @@ public class StandaloneXMLParser {
         }, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
         xmlMapper = XMLMapper.Factory.create();
-        xmlMapper.registerRootElement(new QName(Namespace.CURRENT.getUriString(), "server"), parserDelegate);
+        xmlMapper.registerRootElement(new QName(Namespace.CURRENT.getUriString(), SERVER), parserDelegate);
 
-        QName serverElementName = new QName("urn:jboss:domain:4.0", "server");
-        this.recognizedNames.add( serverElementName );
+        QName serverElementName = new QName("urn:jboss:domain:4.0", SERVER);
+        this.recognizedNames.add(serverElementName);
         xmlMapper.registerRootElement(serverElementName, parserDelegate);
     }
 
@@ -87,8 +86,8 @@ public class StandaloneXMLParser {
      * @param parser      creates ModelNode's from XML input
      * @return
      */
-    public StandaloneXMLParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>>  parser) {
-        this.recognizedNames.add( elementName );
+    public StandaloneXMLParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>> parser) {
+        this.recognizedNames.add(elementName);
         xmlMapper.registerRootElement(elementName, parser);
         return this;
     }
@@ -102,14 +101,16 @@ public class StandaloneXMLParser {
             input = xml.openStream();
 
             final XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
-            WrappedXMLStreamReader wrappedReader = new WrappedXMLStreamReader( reader, this.recognizedNames, xmlMapper  );
-            xmlMapper.parseDocument(operationList, wrappedReader );
+            WrappedXMLStreamReader wrappedReader = new WrappedXMLStreamReader(reader, this.recognizedNames, xmlMapper);
+            xmlMapper.parseDocument(operationList, wrappedReader);
         } catch (XMLStreamException t) {
-            System.err.println( "------" );
+            System.err.println("------");
             t.printStackTrace();
         } finally {
             try {
-                if (input != null) input.close();
+                if (input != null) {
+                    input.close();
+                }
             } catch (IOException e) {
                 // ignore
             }

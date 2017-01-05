@@ -35,6 +35,9 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
  */
 public class NestedJarResourceLoader {
 
+    private NestedJarResourceLoader() {
+    }
+
     public static ResourceLoader loaderFor(URL base, String rootPath, String loaderPath, String loaderName) throws IOException {
 
         String urlString = base.toExternalForm();
@@ -65,8 +68,8 @@ public class NestedJarResourceLoader {
 
                 String relativeRoot = urlString.substring(endLoc + 5);
                 File resourceRoot = new File(new File(exp, relativeRoot), loaderPath);
-                if ( ! resourceRoot.isDirectory() && ( resourceRoot.getName().endsWith(".jar" ) || resourceRoot.getName().endsWith( ".war" ) ) ) {
-                    JarFile jar = new JarFile( resourceRoot );
+                if (!resourceRoot.isDirectory() && (resourceRoot.getName().endsWith(".jar") || resourceRoot.getName().endsWith(".war"))) {
+                    JarFile jar = new JarFile(resourceRoot);
                     return ResourceLoaders.createJarResourceLoader(loaderName, jar);
                 } else {
                     return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot);

@@ -25,14 +25,14 @@ public class ConfigurableInjectionTarget<T> implements InjectionTarget<T> {
 
     @Override
     public void inject(T instance, CreationalContext<T> ctx) {
-        this.delegate.inject( instance, ctx );
+        this.delegate.inject(instance, ctx);
     }
 
     @Override
     public void postConstruct(T instance) {
-        this.delegate.postConstruct( instance );
+        this.delegate.postConstruct(instance);
         try {
-            this.configurableManager.scan( instance );
+            this.configurableManager.scan(instance);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -40,17 +40,17 @@ public class ConfigurableInjectionTarget<T> implements InjectionTarget<T> {
 
     @Override
     public void preDestroy(T instance) {
-        this.delegate.preDestroy( instance );
+        this.delegate.preDestroy(instance);
     }
 
     @Override
     public T produce(CreationalContext<T> ctx) {
-        return this.delegate.produce( ctx );
+        return this.delegate.produce(ctx);
     }
 
     @Override
     public void dispose(T instance) {
-        this.delegate.dispose( instance );
+        this.delegate.dispose(instance);
     }
 
     @Override

@@ -68,7 +68,6 @@ import org.wildfly.swarm.container.cdi.ProjectStageFactory;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.internal.WeldShutdown;
-import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
@@ -122,7 +121,13 @@ public class Swarm {
 
     public static final String VERSION = Swarm.class.getPackage().getImplementationVersion();
 
-    public static ArtifactManager ARTIFACT_MANAGER;
+    private static final String BOOT_MODULE_PROPERTY = "boot.module.loader";
+
+    private static final String APPLICATION_MODULE_NAME = "swarm.application";
+
+    private static final String CONTAINER_MODULE_NAME = "swarm.container";
+
+    private static final String PROJECT_STAGES_FILE = "project-stages.yml";
 
     private final CommandLine commandLine;
 
@@ -167,8 +172,8 @@ public class Swarm {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Swarm(boolean debugBootstrap, String... args) throws Exception {
-        if (System.getProperty("boot.module.loader") == null) {
-            System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+        if (System.getProperty(BOOT_MODULE_PROPERTY) == null) {
+            System.setProperty(BOOT_MODULE_PROPERTY, BootModuleLoader.class.getName());
         }
         if (debugBootstrap) {
             Module.setModuleLogger(new StreamModuleLogger(System.err));
@@ -215,10 +220,10 @@ public class Swarm {
                     url = new URL(stageFile);
                 } else {
                     try {
-                        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-                        url = module.getClassLoader().getResource("project-stages.yml");
+                        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
+                        url = module.getClassLoader().getResource(PROJECT_STAGES_FILE);
                         if (url != null) {
-                            SwarmMessages.MESSAGES.stageConfigLocation("'swarm.application' module", url.toExternalForm());
+                            SwarmMessages.MESSAGES.stageConfigLocation("'" + APPLICATION_MODULE_NAME + "' module", url.toExternalForm());
                         }
                     } catch (ModuleLoadException e) {
                         e.printStackTrace();
@@ -226,7 +231,7 @@ public class Swarm {
                 }
 
                 if (url == null) {
-                    url = ClassLoader.getSystemClassLoader().getResource("project-stages.yml");
+                    url = ClassLoader.getSystemClassLoader().getResource(PROJECT_STAGES_FILE);
                     if (url != null) {
                         SwarmMessages.MESSAGES.stageConfigLocation("ClassLoader", url.toExternalForm());
                     }
@@ -306,8 +311,9 @@ public class Swarm {
      * @return The currently-active {@link StageConfig}
      */
     public StageConfig stageConfig() {
-        if (!stageConfig.isPresent())
+        if (!stageConfig.isPresent()) {
             throw SwarmMessages.MESSAGES.missingStageConfig();
+        }
         return new StageConfig(stageConfig.get());
     }
 
@@ -380,7 +386,7 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public Swarm start() throws Exception {
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
         Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
         ServerBootstrap bootstrap = (ServerBootstrap) bootstrapClass.newInstance();
@@ -433,7 +439,7 @@ public class Swarm {
         this.server.stop();
         this.server = null;
 
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
         Class<?> shutdownClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.WeldShutdownImpl");
 
         WeldShutdown shutdown = (WeldShutdown) shutdownClass.newInstance();
@@ -452,7 +458,7 @@ public class Swarm {
      * none are baked-in.</p>
      *
      * @return The container.
-     * @throws DeploymentException if an error occurs.
+     * @throws DeploymentException   if an error occurs.
      * @throws IllegalStateException if the container has not already been started.
      * @see #Swarm(String...)
      * @see #setArgs(String...)
@@ -510,7 +516,7 @@ public class Swarm {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             if (isFatJar()) {
-                Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
                 Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
             }
             Domain domain = ShrinkWrap.getDefaultDomain();
@@ -549,7 +555,7 @@ public class Swarm {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -586,8 +592,9 @@ public class Swarm {
             }
         }
 
-        if (null == stage)
+        if (null == stage) {
             throw SwarmMessages.MESSAGES.stageNotFound(stageName);
+        }
 
         SwarmMessages.MESSAGES.usingProjectStage(stageName);
 
@@ -604,8 +611,8 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public static void main(String... args) throws Exception {
-        if (System.getProperty("boot.module.loader") == null) {
-            System.setProperty("boot.module.loader", "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
+        if (System.getProperty(BOOT_MODULE_PROPERTY) == null) {
+            System.setProperty(BOOT_MODULE_PROPERTY, "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
 
         Swarm swarm = new Swarm(args);
@@ -616,16 +623,17 @@ public class Swarm {
         return ArtifactLookup.get();
     }
 
-    /** Retrieve an artifact that was part of the original build using a
+    /**
+     * Retrieve an artifact that was part of the original build using a
      * full or simplified Maven GAV specifier.
      *
      * <p>The following formats of GAVs are supported:</p>
      *
      * <ul>
-     *   <li>groupId:artifactId</li>
-     *   <li>groupId:artifactId:version</li>
-     *   <li>groupId:artifactId:packaging:version</li>
-     *   <li>groupId:artifactId:packaging:version:classifier</li>
+     * <li>groupId:artifactId</li>
+     * <li>groupId:artifactId:version</li>
+     * <li>groupId:artifactId:packaging:version</li>
+     * <li>groupId:artifactId:packaging:version:classifier</li>
      * </ul>
      *
      * <p>Only artifacts that were compiled with the user's project with
@@ -643,22 +651,22 @@ public class Swarm {
         return artifactLookup().artifact(gav);
     }
 
-    /** Retrieve an artifact that was part of the original build using a
+    /**
+     * Retrieve an artifact that was part of the original build using a
      * full or simplified Maven GAV specifier, returning an archive with a
      * specified name.
      *
-     * @see #artifact(String)
-     *
      * @param gav The Maven GAV.
-     * @return The located artifact, as a {@code JavaArchive}.
      * @return The located artifact, as a {@code JavaArchive} with the specified name.
      * @throws Exception If the specified artifact is not locatable.
+     * @see #artifact(String)
      */
     public static JavaArchive artifact(String gav, String asName) throws Exception {
         return artifactLookup().artifact(gav, asName);
     }
 
-    /** Retrieve all dependency artifacts for the user's project.
+    /**
+     * Retrieve all dependency artifacts for the user's project.
      *
      * @return All dependencies, as {@code JavaArchive} objects.
      * @throws Exception

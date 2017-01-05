@@ -9,8 +9,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 
-import org.jboss.staxmapper.XMLElementReader;
-import org.jboss.staxmapper.XMLExtendedStreamReader;
 import org.jboss.staxmapper.XMLMapper;
 import org.wildfly.swarm.internal.SwarmMessages;
 
@@ -46,6 +44,8 @@ public class WrappedXMLStreamReader implements XMLStreamReader {
                             break;
                         case XMLEvent.END_ELEMENT:
                             --closesNeeded;
+                            break;
+                        default:
                             break;
                     }
                 }

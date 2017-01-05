@@ -68,7 +68,7 @@ public class MavenFileSystemLayout extends FileSystemLayout {
             throw new RuntimeException(e.getMessage());
         }
 
-        if(null==type) {
+        if (null == type) {
             type = resolveSrcWebAppDir().toFile().exists() ? TYPE_WAR : TYPE_JAR;
         }
 

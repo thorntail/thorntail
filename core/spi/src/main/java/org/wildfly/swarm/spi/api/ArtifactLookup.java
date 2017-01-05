@@ -15,15 +15,13 @@
  */
 package org.wildfly.swarm.spi.api;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
-/** Manager capable of locating artifacts from the application build.
- *
+/**
+ * Manager capable of locating artifacts from the application build.
  *
  * @author Bob McWhirter
  * @author Ken Finnigan
@@ -51,16 +49,17 @@ public interface ArtifactLookup {
         });
     }
 
-    /** Retrieve an artifact that was part of the original build using a
+    /**
+     * Retrieve an artifact that was part of the original build using a
      * full or simplified Maven GAV specifier.
      *
      * <p>The following formats of GAVs are supported:</p>
      *
      * <ul>
-     *   <li>groupId:artifactId</li>
-     *   <li>groupId:artifactId:version</li>
-     *   <li>groupId:artifactId:packaging:version</li>
-     *   <li>groupId:artifactId:packaging:version:classifier</li>
+     * <li>groupId:artifactId</li>
+     * <li>groupId:artifactId:version</li>
+     * <li>groupId:artifactId:packaging:version</li>
+     * <li>groupId:artifactId:packaging:version:classifier</li>
      * </ul>
      *
      * <p>Only artifacts that were compiled with the user's project with
@@ -76,20 +75,20 @@ public interface ArtifactLookup {
      */
     JavaArchive artifact(String gav) throws Exception;
 
-    /** Retrieve an artifact that was part of the original build using a
+    /**
+     * Retrieve an artifact that was part of the original build using a
      * full or simplified Maven GAV specifier, returning an archive with a
      * specified name.
      *
-     * @see #artifact(String)
-     *
      * @param gav The Maven GAV.
-     * @return The located artifact, as a {@code JavaArchive}.
      * @return The located artifact, as a {@code JavaArchive} with the specified name.
      * @throws Exception if an error occurs locating or loading the artifact.
+     * @see #artifact(String)
      */
     JavaArchive artifact(String gav, String asName) throws Exception;
 
-    /** Retrieve all dependency artifacts for the user's project.
+    /**
+     * Retrieve all dependency artifacts for the user's project.
      *
      * @return All dependencies, as {@code JavaArchive} objects.
      * @throws Exception if an error occurs locating or loading any artifact.

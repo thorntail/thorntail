@@ -18,7 +18,6 @@ package org.wildfly.swarm.container.runtime.wildfly;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.Vetoed;
 import javax.inject.Singleton;
 
 import org.jboss.as.selfcontained.ContentProvider;

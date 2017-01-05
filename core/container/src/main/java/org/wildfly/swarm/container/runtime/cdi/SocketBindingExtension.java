@@ -25,7 +25,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.weld.literal.AnyLiteral;
@@ -48,25 +47,25 @@ public class SocketBindingExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
 
-        for (SocketBindingRequest each : this.bindings ) {
+        for (SocketBindingRequest each : this.bindings) {
             abd.addBean()
                     .addTypes(Customizer.class)
                     .scope(Singleton.class)
                     .addQualifier(new AnnotationLiteral<Pre>() {
                     })
-                    .produceWith( ()-> (Customizer) () -> {
+                    .produceWith(() -> (Customizer) () -> {
                         Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
 
 
                         groups.stream()
-                                .map( (Bean e)->{
+                                .map((Bean e) -> {
                                     CreationalContext<SocketBindingGroup> ctx = beanManager.createCreationalContext(e);
                                     return (SocketBindingGroup) beanManager.getReference(e, SocketBindingGroup.class, ctx);
                                 })
-                                .filter( group-> group.name().equals( each.socketBindingGroup() ))
+                                .filter(group -> group.name().equals(each.socketBindingGroup()))
                                 .findFirst()
-                                .ifPresent( (group)->{
-                                    group.socketBinding( each.socketBinding() );
+                                .ifPresent((group) -> {
+                                    group.socketBinding(each.socketBinding());
                                 });
                     });
         }

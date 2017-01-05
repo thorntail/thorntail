@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({ METHOD, PARAMETER, FIELD })
+@Target({METHOD, PARAMETER, FIELD})
 public @interface CommandLineArgs {
     class Literal extends AnnotationLiteral<CommandLineArgs> implements CommandLineArgs {
         public static Literal INSTANCE = new Literal();

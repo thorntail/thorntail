@@ -16,23 +16,26 @@ public class DependencyTree<T> {
 
     /**
      * A transient dependencies linked ot a parent (origin)
+     *
      * @param parent
      */
     public void add(T parent, T child) {
-        if(!depTree.keySet().contains(parent)) {
+        if (!depTree.keySet().contains(parent)) {
             depTree.put(parent, new HashSet<>());
         }
-        if(!child.equals(parent))
+        if (!child.equals(parent)) {
             depTree.get(parent).add(child);
+        }
     }
 
 
     /**
      * Direct dep without any transient dependencies
+     *
      * @param parent
      */
     public void add(T parent) {
-        if(!depTree.keySet().contains(parent)) {
+        if (!depTree.keySet().contains(parent)) {
             depTree.put(parent, new HashSet<>());
         }
     }
@@ -43,11 +46,12 @@ public class DependencyTree<T> {
 
     public Set<T> getTransientDeps(T parent) {
         Set<T> deps = depTree.get(parent);
-        if(null==deps)
-            throw new IllegalArgumentException("Unknown dependency "+parent);
+        if (null == deps) {
+            throw new IllegalArgumentException("Unknown dependency " + parent);
+        }
         return deps;
     }
 
-    protected Map<T,Set<T>> depTree = new HashMap<>();
+    protected Map<T, Set<T>> depTree = new HashMap<>();
 
 }
