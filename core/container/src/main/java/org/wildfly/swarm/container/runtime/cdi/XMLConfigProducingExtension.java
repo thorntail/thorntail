@@ -42,7 +42,9 @@ public class XMLConfigProducingExtension implements Extension {
         abd.addBean().addType( URL.class )
                 .scope(Dependent.class)
                 .qualifiers( XMLConfig.Literal.INSTANCE )
-                .produceWith(this::getXMLConfig);
+                .produceWith((injectionPointInstance) -> {
+                    return getXMLConfig();
+                });
     }
 
     protected URL getXMLConfig() {

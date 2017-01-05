@@ -42,10 +42,15 @@ public class CommandLineArgsExtension implements Extension {
         abd.addBean()
                 .addType(String[].class)
                 .addQualifier(CommandLineArgs.Literal.INSTANCE)
-                .producing(this.args);
+                .produceWith((injectionPointInstance) -> {
+                    return this.args;
+                });
 
         abd.addBean()
-                .addType(new TypeLiteral<List<String>>() { })
-                .producing( this.argsList );
+                .addType(new TypeLiteral<List<String>>() {
+                })
+                .produceWith((injectionPointInstance) -> {
+                    return this.argsList;
+                });
     }
 }

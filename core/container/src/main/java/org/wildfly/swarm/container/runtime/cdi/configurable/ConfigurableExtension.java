@@ -89,7 +89,9 @@ public class ConfigurableExtension implements Extension {
                 .types(ConfigurableManager.class)
                 .scope(Singleton.class)
                 .qualifiers(Default.Literal.INSTANCE)
-                .producing(this.configurableManager);
+                .produceWith((injectionPointInstance) -> {
+                    return configurableManager;
+                });
     }
 
 }
