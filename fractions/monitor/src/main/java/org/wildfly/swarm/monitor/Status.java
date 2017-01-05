@@ -25,7 +25,7 @@ public interface Status {
 
     String toJson();
 
-    enum State {UP,DOWN}
+    enum State { UP, DOWN }
 
     State getState();
 

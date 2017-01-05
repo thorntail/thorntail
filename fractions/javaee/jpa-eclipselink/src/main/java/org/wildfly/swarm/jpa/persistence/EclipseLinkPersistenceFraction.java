@@ -19,6 +19,6 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 
-@DeploymentModule(name="org.eclipse.persistence")
+@DeploymentModule(name = "org.eclipse.persistence")
 public class EclipseLinkPersistenceFraction implements Fraction<EclipseLinkPersistenceFraction> {
 }

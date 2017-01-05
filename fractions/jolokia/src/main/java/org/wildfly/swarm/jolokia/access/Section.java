@@ -3,15 +3,12 @@ package org.wildfly.swarm.jolokia.access;
 import java.util.ArrayList;
 import java.util.List;
 
-/** An allow or deny section.
+/**
+ * An allow or deny section.
  *
  * @author Bob McWhirter
  */
 public class Section {
-
-    public interface Consumer extends java.util.function.Consumer<Section> {
-
-    }
 
     public static Section allow() {
         return new Section(Type.allow);
@@ -34,16 +31,17 @@ public class Section {
         return this.type.toString();
     }
 
-    /** Define a rule for a given MBean.
+    /**
+     * Define a rule for a given MBean.
      *
-     * @param name The mbean name or pattern.
+     * @param name   The mbean name or pattern.
      * @param config Configuration.
      * @return This section.
      */
     public Section mbean(String name, MBeanRule.Consumer config) {
         MBeanRule rule = new MBeanRule(name);
-        config.accept( rule );
-        this.rules.add( rule );
+        config.accept(rule);
+        this.rules.add(rule);
         return this;
     }
 
@@ -52,5 +50,9 @@ public class Section {
     }
 
     private Type type;
+
     private List<MBeanRule> rules = new ArrayList<>();
+
+    public interface Consumer extends java.util.function.Consumer<Section> {
+    }
 }

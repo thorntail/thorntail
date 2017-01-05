@@ -36,13 +36,13 @@ import org.jboss.shrinkwrap.api.Node;
  */
 public interface ResolvedDependencies {
 
-    public static final String WILDFLY_SWARM_GROUP_ID = "org.wildfly.swarm";
+    String WILDFLY_SWARM_GROUP_ID = "org.wildfly.swarm";
 
-    public static final String WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID = "bootstrap";
+    String WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID = "bootstrap";
 
-    public static final String JBOSS_MODULES_GROUP_ID = "org.jboss.modules";
+    String JBOSS_MODULES_GROUP_ID = "org.jboss.modules";
 
-    public static final String JBOSS_MODULES_ARTIFACT_ID = "jboss-modules";
+    String JBOSS_MODULES_ARTIFACT_ID = "jboss-modules";
 
 
     Set<ArtifactSpec> getDependencies();
@@ -65,7 +65,7 @@ public interface ResolvedDependencies {
 
     static Stream<ModuleAnalyzer> findModuleXmls(File file) {
         List<ModuleAnalyzer> analyzers = new ArrayList<>();
-        try (JarFile jar = new JarFile(file)){
+        try (JarFile jar = new JarFile(file)) {
 
             Enumeration<JarEntry> entries = jar.entries();
 
@@ -74,7 +74,7 @@ public interface ResolvedDependencies {
                 String name = each.getName();
 
                 if (name.startsWith("modules/") && name.endsWith("module.xml")) {
-                    try (InputStream in = jar.getInputStream(each)){
+                    try (InputStream in = jar.getInputStream(each)) {
                         analyzers.add(new ModuleAnalyzer(in));
                     } catch (IOException e) {
                         e.printStackTrace();

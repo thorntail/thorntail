@@ -19,11 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -119,7 +116,7 @@ public abstract class DriverInfo {
                                 ResourceLoaders.createIterableJarResourceLoader(jar.getName(), jar)
                         ));
                     } catch (IOException e) {
-                        DatasourcesMessages.MESSAGES.errorLoadingAutodetectedJdbcDriver( this.name, e );
+                        DatasourcesMessages.MESSAGES.errorLoadingAutodetectedJdbcDriver(this.name, e);
                         return null;
                     }
                 }

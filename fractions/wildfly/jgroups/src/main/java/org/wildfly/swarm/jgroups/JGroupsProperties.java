@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.jgroups;
 
-public class JGroupsProperties {
+public interface JGroupsProperties {
 
     //public
-    public static final String DEFAULT_MULTICAST_ADDRESS = "swarm.default.multicast.address";
+    String DEFAULT_MULTICAST_ADDRESS = "swarm.default.multicast.address";
 }

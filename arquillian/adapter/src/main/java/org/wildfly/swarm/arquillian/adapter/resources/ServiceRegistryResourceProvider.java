@@ -20,6 +20,6 @@ public class ServiceRegistryResourceProvider extends OperatesOnDeploymentAwarePr
 
     @Override
     public boolean canProvide(Class<?> type) {
-        return ServiceRegistry.class.isAssignableFrom( type );
+        return ServiceRegistry.class.isAssignableFrom(type);
     }
 }

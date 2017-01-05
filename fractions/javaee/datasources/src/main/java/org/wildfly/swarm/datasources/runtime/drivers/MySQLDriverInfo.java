@@ -22,7 +22,8 @@ import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
 
-/** Auto-detection for MySQL
+/**
+ * Auto-detection for MySQL
  *
  * @author Bob McWhirter
  */
@@ -30,11 +31,13 @@ import org.wildfly.swarm.datasources.runtime.DriverInfo;
 public class MySQLDriverInfo extends DriverInfo {
 
     public static final String DEFAULT_CONNECTION_URL = "jdbc:mysql://localhost:3306/test";
+
     public static final String DEFAULT_USER_NAME = "root";
+
     public static final String DEFAULT_PASSWORD = "root";
 
     public MySQLDriverInfo() {
-        super("mysql", ModuleIdentifier.create("com.mysql"), "com.mysql.jdbc.Driver" );
+        super("mysql", ModuleIdentifier.create("com.mysql"), "com.mysql.jdbc.Driver");
     }
 
     @Override
@@ -44,8 +47,8 @@ public class MySQLDriverInfo extends DriverInfo {
 
     @Override
     protected void configureDefaultDS(DataSource datasource) {
-        datasource.connectionUrl( DEFAULT_CONNECTION_URL );
-        datasource.userName( DEFAULT_USER_NAME );
-        datasource.password( DEFAULT_PASSWORD );
+        datasource.connectionUrl(DEFAULT_CONNECTION_URL);
+        datasource.userName(DEFAULT_USER_NAME);
+        datasource.password(DEFAULT_PASSWORD);
     }
 }

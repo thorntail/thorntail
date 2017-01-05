@@ -30,10 +30,22 @@ import org.wildfly.swarm.container.util.XmlWriter;
 enum IronJacamarXmlAssetImpl {
     INSTANCE;
 
+    private static final String IRONJACAMAR = "ironjacamar";
+
+    private static final String CONNECTION_DEFINITION = "connection-definition";
+
+    private static final String POOL = "pool";
+
+    private static final String TIMEOUT = "timeout";
+
+    private static final String RECOVERY = "recovery";
+
+    private static final String ADMIN_OBJECT = "admin-object";
+
     public String transform(final ResourceAdapter<?> ra) {
         final StringWriter str = new StringWriter();
         try (XmlWriter out = new XmlWriter(str)) {
-            XmlWriter.Element ironJacamarElement = out.element("ironjacamar");
+            XmlWriter.Element ironJacamarElement = out.element(IRONJACAMAR);
             if (ra.beanvalidationgroups() != null && !ra.beanvalidationgroups().isEmpty()) {
                 XmlWriter.Element beanValidationGroupsElement = null;
                 for (final Object group : ra.beanvalidationgroups()) {
@@ -42,34 +54,34 @@ enum IronJacamarXmlAssetImpl {
                 beanValidationGroupsElement.end();
             }
 
-            ironJacamarElement = writeElement(null, ironJacamarElement, "ironjacamar", "bootstrap-context", ra.bootstrapContext());
+            ironJacamarElement = writeElement(null, ironJacamarElement, IRONJACAMAR, "bootstrap-context", ra.bootstrapContext());
             for (final ConfigProperties<?> prop : ra.subresources().configProperties()) {
-                ironJacamarElement = writeConfigProperty(null, ironJacamarElement, "ironjacamar", prop);
+                ironJacamarElement = writeConfigProperty(null, ironJacamarElement, IRONJACAMAR, prop);
             }
-            ironJacamarElement = writeElement(null, ironJacamarElement, "ironjacamar", "transaction-support", ra.transactionSupport());
+            ironJacamarElement = writeElement(null, ironJacamarElement, IRONJACAMAR, "transaction-support", ra.transactionSupport());
 
             if (ra.subresources().connectionDefinitions() != null && !ra.subresources().connectionDefinitions().isEmpty()) {
                 final XmlWriter.Element connDefsElement = ironJacamarElement.element("connection-definitions");
                 for (final ConnectionDefinitions<?> connDef : ra.subresources().connectionDefinitions()) {
                     XmlWriter.Element connDefElement = null;
-                    connDefElement = writeAttribute(connDefsElement, connDefElement, "connection-definition", "use-ccm", connDef.useCcm());
-                    connDefElement = writeAttribute(connDefsElement, connDefElement, "connection-definition", "class-name", connDef.className());
-                    connDefElement = writeAttribute(connDefsElement, connDefElement, "connection-definition", "jndi-name", connDef.jndiName());
-                    connDefElement = writeAttribute(connDefsElement, connDefElement, "connection-definition", "enabled", connDef.enabled());
-                    connDefElement = writeAttribute(connDefsElement, connDefElement, "connection-definition", "use-java-context", connDef.useJavaContext());
+                    connDefElement = writeAttribute(connDefsElement, connDefElement, CONNECTION_DEFINITION, "use-ccm", connDef.useCcm());
+                    connDefElement = writeAttribute(connDefsElement, connDefElement, CONNECTION_DEFINITION, "class-name", connDef.className());
+                    connDefElement = writeAttribute(connDefsElement, connDefElement, CONNECTION_DEFINITION, "jndi-name", connDef.jndiName());
+                    connDefElement = writeAttribute(connDefsElement, connDefElement, CONNECTION_DEFINITION, "enabled", connDef.enabled());
+                    connDefElement = writeAttribute(connDefsElement, connDefElement, CONNECTION_DEFINITION, "use-java-context", connDef.useJavaContext());
 
                     if (connDef.subresources().configProperties() != null && !connDef.subresources().configProperties().isEmpty()) {
                         for (final ConfigProperties<?> prop : connDef.subresources().configProperties()) {
-                            connDefElement = writeConfigProperty(connDefsElement, connDefElement, "connection-definition", prop);
+                            connDefElement = writeConfigProperty(connDefsElement, connDefElement, CONNECTION_DEFINITION, prop);
                         }
                     }
 
                     XmlWriter.Element poolElement = null;
-                    poolElement = writeElement(connDefElement, poolElement, "pool", "min-pool-size", connDef.minPoolSize());
-                    poolElement = writeElement(connDefElement, poolElement, "pool", "max-pool-size", connDef.maxPoolSize());
-                    poolElement = writeElement(connDefElement, poolElement, "pool", "prefill", connDef.poolPrefill());
-                    poolElement = writeElement(connDefElement, poolElement, "pool", "use-strict-min", connDef.poolUseStrictMin());
-                    poolElement = writeElement(connDefElement, poolElement, "pool", "flush-strategy", connDef.flushStrategy());
+                    poolElement = writeElement(connDefElement, poolElement, POOL, "min-pool-size", connDef.minPoolSize());
+                    poolElement = writeElement(connDefElement, poolElement, POOL, "max-pool-size", connDef.maxPoolSize());
+                    poolElement = writeElement(connDefElement, poolElement, POOL, "prefill", connDef.poolPrefill());
+                    poolElement = writeElement(connDefElement, poolElement, POOL, "use-strict-min", connDef.poolUseStrictMin());
+                    poolElement = writeElement(connDefElement, poolElement, POOL, "flush-strategy", connDef.flushStrategy());
                     if (poolElement != null) {
                         poolElement.end();
                     }
@@ -82,16 +94,16 @@ enum IronJacamarXmlAssetImpl {
                     }
 
                     XmlWriter.Element timeoutElement = null;
-                    timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "blocking-timeout-millis", connDef.blockingTimeoutWaitMillis());
+                    timeoutElement = writeElement(connDefsElement, timeoutElement, TIMEOUT, "blocking-timeout-millis", connDef.blockingTimeoutWaitMillis());
                     // TODO
                     // check
                     // why
                     // not
                     // blockingTimeoutMillis())
-                    timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "idle-timeout-minutes", connDef.idleTimeoutMinutes());
-                    timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "allocation-retry", connDef.allocationRetry());
-                    timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "allocation-retry-wait-millis", connDef.allocationRetryWaitMillis());
-                    timeoutElement = writeElement(connDefsElement, timeoutElement, "timeout", "xa-resource-timeout", connDef.xaResourceTimeout());
+                    timeoutElement = writeElement(connDefsElement, timeoutElement, TIMEOUT, "idle-timeout-minutes", connDef.idleTimeoutMinutes());
+                    timeoutElement = writeElement(connDefsElement, timeoutElement, TIMEOUT, "allocation-retry", connDef.allocationRetry());
+                    timeoutElement = writeElement(connDefsElement, timeoutElement, TIMEOUT, "allocation-retry-wait-millis", connDef.allocationRetryWaitMillis());
+                    timeoutElement = writeElement(connDefsElement, timeoutElement, TIMEOUT, "xa-resource-timeout", connDef.xaResourceTimeout());
                     if (timeoutElement != null) {
                         timeoutElement.end();
                     }
@@ -108,8 +120,8 @@ enum IronJacamarXmlAssetImpl {
                     XmlWriter.Element recoverCredentialElement = null;
                     XmlWriter.Element recoveryPluginElement = null;
                     if (connDef.recoveryUsername() != null || connDef.recoveryPassword() != null || connDef.recoverySecurityDomain() != null) {
-                        recoveryElement = connDefsElement.element("recovery");
-                        recoveryElement = writeAttribute(connDefsElement, recoveryElement, "recovery", "no-recovery", connDef.noRecovery());
+                        recoveryElement = connDefsElement.element(RECOVERY);
+                        recoveryElement = writeAttribute(connDefsElement, recoveryElement, RECOVERY, "no-recovery", connDef.noRecovery());
                         recoverCredentialElement = writeElement(recoveryElement, recoverCredentialElement, "recover-credential", "user-name", connDef.recoveryUsername());
                         recoverCredentialElement = writeElement(recoveryElement, recoverCredentialElement, "recover-credential", "password", connDef.recoveryPassword());
                         recoverCredentialElement = writeElement(recoveryElement, recoverCredentialElement, "recover-credential", "security-domain", connDef.recoverySecurityDomain());
@@ -119,8 +131,8 @@ enum IronJacamarXmlAssetImpl {
                     }
                     if (connDef.recoveryPluginClassName() != null || (connDef.recoveryPluginProperties() != null && !connDef.recoveryPluginProperties().isEmpty())) {
                         if (recoveryElement == null) {
-                            recoveryElement = connDefsElement.element("recovery");
-                            recoveryElement = writeAttribute(connDefsElement, recoveryElement, "recovery", "no-recovery", connDef.noRecovery());
+                            recoveryElement = connDefsElement.element(RECOVERY);
+                            recoveryElement = writeAttribute(connDefsElement, recoveryElement, RECOVERY, "no-recovery", connDef.noRecovery());
                         }
                         recoveryPluginElement = writeAttribute(recoveryElement, recoveryPluginElement, "recover-plugin", "class-name", connDef.recoveryPluginClassName());
                         recoveryPluginElement = writeElement(recoveryElement, recoveryPluginElement, "recover-plugin", "user-name", connDef.recoveryUsername());
@@ -143,12 +155,12 @@ enum IronJacamarXmlAssetImpl {
                 final XmlWriter.Element adminObjsElement = ironJacamarElement.element("admin-objects");
                 for (final AdminObjects<?> adminObject : ra.subresources().adminObjects()) {
                     XmlWriter.Element adminObjElement = null;
-                    adminObjElement = writeAttribute(adminObjsElement, adminObjElement, "admin-object", "class-name", adminObject.className());
-                    adminObjElement = writeAttribute(adminObjsElement, adminObjElement, "admin-object", "jndi-name", adminObject.jndiName());
-                    adminObjElement = writeAttribute(adminObjsElement, adminObjElement, "admin-object", "enabled", adminObject.enabled());
-                    adminObjElement = writeAttribute(adminObjsElement, adminObjElement, "admin-object", "use-java-context", adminObject.useJavaContext());
+                    adminObjElement = writeAttribute(adminObjsElement, adminObjElement, ADMIN_OBJECT, "class-name", adminObject.className());
+                    adminObjElement = writeAttribute(adminObjsElement, adminObjElement, ADMIN_OBJECT, "jndi-name", adminObject.jndiName());
+                    adminObjElement = writeAttribute(adminObjsElement, adminObjElement, ADMIN_OBJECT, "enabled", adminObject.enabled());
+                    adminObjElement = writeAttribute(adminObjsElement, adminObjElement, ADMIN_OBJECT, "use-java-context", adminObject.useJavaContext());
                     for (final ConfigProperties<?> prop : adminObject.subresources().configProperties()) {
-                        adminObjElement = writeConfigProperty(adminObjsElement, adminObjElement, "admin-object", prop);
+                        adminObjElement = writeConfigProperty(adminObjsElement, adminObjElement, ADMIN_OBJECT, prop);
                     }
                     if (adminObjElement != null) {
                         adminObjElement.end();

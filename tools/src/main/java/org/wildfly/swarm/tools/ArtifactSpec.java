@@ -71,7 +71,7 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
     }
 
     public boolean isResolved() {
-        return this.file!=null;
+        return this.file != null;
     }
 
     public String toString() {

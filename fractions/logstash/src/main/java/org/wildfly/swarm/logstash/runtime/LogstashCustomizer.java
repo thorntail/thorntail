@@ -45,8 +45,8 @@ public class LogstashCustomizer implements Customizer {
         if (logstash.enabled()) {
             Properties handlerProps = new Properties();
 
-            handlerProps.put("hostname", this.logstash.hostname() );
-            handlerProps.put("port", "" + this.logstash.port() );
+            handlerProps.put("hostname", this.logstash.hostname());
+            handlerProps.put("port", "" + this.logstash.port());
 
             final CustomHandler<?> logstashHandler = new CustomHandler<>("logstash-handler")
                     .module("org.jboss.logmanager.ext")
@@ -56,7 +56,7 @@ public class LogstashCustomizer implements Customizer {
 
             this.logging
                     .customFormatter("logstash", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.formatters.LogstashFormatter",
-                            this.logstash.formatterProperties())
+                                     this.logstash.formatterProperties())
                     .customHandler(logstashHandler)
                     .rootLogger(this.logstash.level(), logstashHandler.getKey());
         }

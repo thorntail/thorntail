@@ -34,7 +34,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 public class HystrixFraction implements Fraction<HystrixFraction> {
 
     public HystrixFraction streamPath(String streamPath) {
-        this.streamPath.set( streamPath );
+        this.streamPath.set(streamPath);
         return this;
     }
 

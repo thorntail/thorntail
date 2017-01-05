@@ -30,7 +30,6 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.management.console.ManagementConsoleFraction;
 import org.wildfly.swarm.management.console.ManagementConsoleProperties;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.undertow.WARArchive;
 
@@ -43,7 +42,8 @@ public class ManagementConsoleDeploymentProducer {
     @Inject
     private ArtifactLookup lookup;
 
-    @Inject @Any
+    @Inject
+    @Any
     private ManagementConsoleFraction fraction;
 
     @Inject
@@ -52,17 +52,17 @@ public class ManagementConsoleDeploymentProducer {
 
     @Produces
     public Archive managementConsoleWar() throws Exception {
-        if ( this.context == null ) {
+        if (this.context == null) {
             this.context = fraction.contextRoot();
         }
 
         // Load the swagger-ui webjars.
-        Module module = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "org.jboss.as.console" ) );
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.jboss.as.console"));
         URL resource = module.getExportedResource("jboss-as-console-resources.jar");
-        WARArchive war = ShrinkWrap.create(WARArchive.class, "management-console-ui.war" );
-        war.as(ZipImporter.class).importFrom( resource.openStream() );
+        WARArchive war = ShrinkWrap.create(WARArchive.class, "management-console-ui.war");
+        war.as(ZipImporter.class).importFrom(resource.openStream());
 
-        war.setContextRoot( this.context );
+        war.setContextRoot(this.context);
 
         return war;
     }

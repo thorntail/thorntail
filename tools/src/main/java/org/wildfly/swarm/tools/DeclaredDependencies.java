@@ -49,7 +49,7 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
     }
 
     public Set<ArtifactSpec> getTransientDependencies() {
-        if(null==allTransient) {
+        if (null == allTransient) {
             allTransient = new HashSet<>();
             for (ArtifactSpec directDep : getDirectDeps()) {
                 allTransient.addAll(getTransientDependencies(directDep));
@@ -65,10 +65,11 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
     /**
      * 'Presolved' means a build component (i.e. mojo) pre-computed the transient dependencies
      * and thus we can assume this set is fully and correctly resolved
+     *
      * @return
      */
     public boolean isPresolved() {
-        return getTransientDependencies().size()>0;
+        return getTransientDependencies().size() > 0;
     }
 
     public static ArtifactSpec createSpec(String gav) {
@@ -97,10 +98,10 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
     public void writeTo(File file) {
         try {
             Writer w = new FileWriter(file);
-            for(ArtifactSpec key : depTree.keySet()) {
+            for (ArtifactSpec key : depTree.keySet()) {
                 w.write(key.mavenGav());
                 w.write(":\n");
-                for(ArtifactSpec s : depTree.get(key)) {
+                for (ArtifactSpec s : depTree.get(key)) {
                     w.write("  - ");
                     w.write(s.mavenGav());
                     w.write("\n");

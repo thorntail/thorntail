@@ -15,10 +15,6 @@
  */
 package org.wildfly.swarm.jaxrs.internal;
 
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
-
 /**
  * @author Bob McWhirter
  */

@@ -4,7 +4,7 @@ package org.wildfly.swarm.remoting;
  *
  * @author Bob McWhirter
  */
-public class RemotingProperties {
+public interface RemotingProperties {
     /** Port upon standard-stockets for remoting binding. */
-    public static final String REMOTING_PORT = "swarm.remoting.port";
+    String REMOTING_PORT = "swarm.remoting.port";
 }

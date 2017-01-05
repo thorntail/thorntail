@@ -32,8 +32,8 @@ public class MainClass implements Executable {
     @Override
     public List<? extends String> toArguments() {
         List<String> args = new ArrayList<>();
-        args.add( MainInvoker.class.getName());
-        args.add( this.className );
+        args.add(MainInvoker.class.getName());
+        args.add(this.className);
         return args;
     }
 

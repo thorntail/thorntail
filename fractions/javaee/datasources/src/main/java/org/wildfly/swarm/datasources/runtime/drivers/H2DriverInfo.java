@@ -22,7 +22,8 @@ import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
 
-/** Auto-detection for H2.
+/**
+ * Auto-detection for H2.
  *
  * @author Bob McWhirter
  */
@@ -30,7 +31,9 @@ import org.wildfly.swarm.datasources.runtime.DriverInfo;
 public class H2DriverInfo extends DriverInfo {
 
     public static final String DEFAULT_CONNETION_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+
     public static final String DEFAULT_USER_NAME = "sa";
+
     public static final String DEFAULT_PASSWORD = "sa";
 
     public H2DriverInfo() {
@@ -44,9 +47,9 @@ public class H2DriverInfo extends DriverInfo {
 
     @Override
     protected void configureDefaultDS(DataSource datasource) {
-        datasource.connectionUrl( DEFAULT_CONNETION_URL );
-        datasource.userName( DEFAULT_USER_NAME );
-        datasource.password( DEFAULT_PASSWORD );
+        datasource.connectionUrl(DEFAULT_CONNETION_URL);
+        datasource.userName(DEFAULT_USER_NAME);
+        datasource.password(DEFAULT_PASSWORD);
     }
 }
 

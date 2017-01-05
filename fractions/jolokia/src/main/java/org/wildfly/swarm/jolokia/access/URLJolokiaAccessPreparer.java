@@ -16,7 +16,7 @@ public class URLJolokiaAccessPreparer extends AbstractJolokiaAccessPreparer {
 
     @Override
     protected Asset getJolokiaAccessXmlAsset() {
-        return new UrlAsset( this.url );
+        return new UrlAsset(this.url);
     }
 
     private final URL url;

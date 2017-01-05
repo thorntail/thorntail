@@ -37,6 +37,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 public class JolokiaWarDeploymentProducer {
 
     public static final String DEPLOYMENT_GAV = "org.jolokia:jolokia-war:war:*";
+
     public static final String DEPLOYMENT_NAME = "jolokia.war";
 
     @Inject
@@ -60,16 +61,16 @@ public class JolokiaWarDeploymentProducer {
             this.context = this.fraction.context();
         }
 
-        Archive deployment = this.lookup.artifact(DEPLOYMENT_GAV, DEPLOYMENT_NAME );
+        Archive deployment = this.lookup.artifact(DEPLOYMENT_GAV, DEPLOYMENT_NAME);
 
         deployment.as(WARArchive.class).setContextRoot(this.context);
 
-        Consumer<Archive> preparer = new ConfigurationValueAccessPreparer( this.jolokiaAccessXML );
-        if ( this.fraction.jolokiaWarPreparer() != null ) {
-            preparer = preparer.andThen( this.fraction.jolokiaWarPreparer() );
+        Consumer<Archive> preparer = new ConfigurationValueAccessPreparer(this.jolokiaAccessXML);
+        if (this.fraction.jolokiaWarPreparer() != null) {
+            preparer = preparer.andThen(this.fraction.jolokiaWarPreparer());
         }
 
-        preparer.accept( deployment );
+        preparer.accept(deployment);
 
         return deployment;
     }

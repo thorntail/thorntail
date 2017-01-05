@@ -36,7 +36,7 @@ public class SQLServerDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "admin";
 
     public SQLServerDriverInfo() {
-        super("sqlserver", ModuleIdentifier.create("com.microsoft"), "com.microsoft.sqlserver.jdbc.SQLServerDriver" );
+        super("sqlserver", ModuleIdentifier.create("com.microsoft"), "com.microsoft.sqlserver.jdbc.SQLServerDriver");
     }
 
     @Override

@@ -39,7 +39,7 @@ public final class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBas
     }
 
     private String path() {
-        if ( getArchive().getName().endsWith( ".war" ) ) {
+        if (getArchive().getName().endsWith(".war")) {
             return "WEB-INF/classes/META-INF/services/" + ServiceActivator.class.getName();
         }
 
@@ -57,17 +57,17 @@ public final class ServiceActivatorArchiveImpl extends AssignableBase<ArchiveBas
     }
 
     protected void prepareAsset() {
-        Node node = getArchive().get( path() );
+        Node node = getArchive().get(path());
         if (node != null) {
             Asset maybeCorrect = node.getAsset();
             if (maybeCorrect instanceof ServiceActivatorAsset) {
                 setAsset((ServiceActivatorAsset) maybeCorrect);
             } else {
                 ServiceActivatorAsset read = new ServiceActivatorAsset(maybeCorrect.openStream());
-                setAsset( read );
+                setAsset(read);
             }
         } else {
-            setAsset( new ServiceActivatorAsset() );
+            setAsset(new ServiceActivatorAsset());
         }
     }
 

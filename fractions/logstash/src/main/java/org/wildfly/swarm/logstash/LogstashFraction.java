@@ -92,9 +92,9 @@ public class LogstashFraction implements Fraction<LogstashFraction> {
         return this.enabled.get();
     }
 
-    private Defaultable<String> hostname = string( DEFAULT_HOSTNAME);
+    private Defaultable<String> hostname = string(DEFAULT_HOSTNAME);
 
-    private Defaultable<Integer> port = integer( DEFAULT_PORT );
+    private Defaultable<Integer> port = integer(DEFAULT_PORT);
 
     private Defaultable<Boolean> enabled = ifAnyExplicitlySet(hostname, port);
 

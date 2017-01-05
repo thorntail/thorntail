@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.infinispan.runtime;
 
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,6 +38,14 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
 @Singleton
 public class InfinispanCustomizer implements Customizer {
 
+    private static final String DEFAULT = "default";
+
+    private static final String DIST = "dist";
+
+    private static final String LOCAL_QUERY = "local-query";
+
+    private static final String PASSIVATION = "passivation";
+
     @Inject
     private InfinispanFraction fraction;
 
@@ -57,8 +64,8 @@ public class InfinispanCustomizer implements Customizer {
     @Override
     public void customize() {
 
-        if ( this.fraction.isDefaultFraction() ) {
-            if ( ! this.jgroups.isUnsatisfied() ) {
+        if (this.fraction.isDefaultFraction()) {
+            if (!this.jgroups.isUnsatisfied()) {
                 clusteredCustomization();
             } else {
                 localCustomization();
@@ -69,109 +76,109 @@ public class InfinispanCustomizer implements Customizer {
 
     private void clusteredCustomization() {
         this.fraction.cacheContainer("server",
-                cc -> cc.defaultCache("default")
-                        .alias("singleton")
-                        .alias("cluster")
-                        .jgroupsTransport(t -> t.lockTimeout(60000L))
-                        .replicatedCache("default",
-                                c -> c.mode(Mode.SYNC)
-                                        .transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH))));
+                                     cc -> cc.defaultCache(DEFAULT)
+                                             .alias("singleton")
+                                             .alias("cluster")
+                                             .jgroupsTransport(t -> t.lockTimeout(60000L))
+                                             .replicatedCache(DEFAULT,
+                                                              c -> c.mode(Mode.SYNC)
+                                                                      .transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH))));
         if (!this.undertow.isUnsatisfied()) {
             this.fraction.cacheContainer("web",
-                    cc -> cc.defaultCache("dist")
-                            .jgroupsTransport(t -> t.lockTimeout(60000L))
-                            .distributedCache("dist",
-                                    c -> c.mode(Mode.ASYNC)
-                                            .l1Lifespan(0L)
-                                            .owners(2)
-                                            .lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
-                                            .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
-                                            .fileStore()));
+                                         cc -> cc.defaultCache(DIST)
+                                                 .jgroupsTransport(t -> t.lockTimeout(60000L))
+                                                 .distributedCache(DIST,
+                                                                   c -> c.mode(Mode.ASYNC)
+                                                                           .l1Lifespan(0L)
+                                                                           .owners(2)
+                                                                           .lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                                           .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
+                                                                           .fileStore()));
         }
 
         if (!this.ejb.isUnsatisfied()) {
             this.fraction.cacheContainer("ejb",
-                    cc -> cc.defaultCache("dist")
-                            .alias("sfsb")
-                            .jgroupsTransport(t -> t.lockTimeout(60000L))
-                            .distributedCache("dist",
-                                    c -> c.mode(Mode.ASYNC)
-                                            .l1Lifespan(0L)
-                                            .owners(2)
-                                            .lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
-                                            .transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH))
-                                            .fileStore()));
+                                         cc -> cc.defaultCache(DIST)
+                                                 .alias("sfsb")
+                                                 .jgroupsTransport(t -> t.lockTimeout(60000L))
+                                                 .distributedCache(DIST,
+                                                                   c -> c.mode(Mode.ASYNC)
+                                                                           .l1Lifespan(0L)
+                                                                           .owners(2)
+                                                                           .lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                                           .transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH))
+                                                                           .fileStore()));
 
         }
 
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
-                    cc -> cc.defaultCache("local-query")
-                            .module("org.hibernate.infinispan")
-                            .jgroupsTransport(t -> t.lockTimeout(60000L))
-                            .localCache("local-query",
-                                    c -> c.evictionComponent(ec -> ec.maxEntries(10000L).strategy(EvictionComponent.Strategy.LRU))
-                                            .expirationComponent(ec -> ec.maxIdle(100000L)))
-                            .invalidationCache("entity",
-                                    c -> c.mode(Mode.SYNC)
-                                            .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.NON_XA))
-                                            .evictionComponent(ec -> ec.maxEntries(10000L).strategy(EvictionComponent.Strategy.LRU))
-                                            .expirationComponent(ec -> ec.maxIdle(100000L)))
-                            .replicatedCache("timestamps", c -> c.mode(Mode.ASYNC)));
+                                         cc -> cc.defaultCache(LOCAL_QUERY)
+                                                 .module("org.hibernate.infinispan")
+                                                 .jgroupsTransport(t -> t.lockTimeout(60000L))
+                                                 .localCache(LOCAL_QUERY,
+                                                             c -> c.evictionComponent(ec -> ec.maxEntries(10000L).strategy(EvictionComponent.Strategy.LRU))
+                                                                     .expirationComponent(ec -> ec.maxIdle(100000L)))
+                                                 .invalidationCache("entity",
+                                                                    c -> c.mode(Mode.SYNC)
+                                                                            .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.NON_XA))
+                                                                            .evictionComponent(ec -> ec.maxEntries(10000L).strategy(EvictionComponent.Strategy.LRU))
+                                                                            .expirationComponent(ec -> ec.maxIdle(100000L)))
+                                                 .replicatedCache("timestamps", c -> c.mode(Mode.ASYNC)));
         }
 
     }
 
     private void localCustomization() {
         this.fraction.cacheContainer("server",
-                cc -> cc.defaultCache("default")
-                        .localCache("default", c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH)))
-                        .remoteCommandThreadPool());
+                                     cc -> cc.defaultCache(DEFAULT)
+                                             .localCache(DEFAULT, c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH)))
+                                             .remoteCommandThreadPool());
 
         if (!this.undertow.isUnsatisfied()) {
             this.fraction.cacheContainer("web",
-                    cc -> cc.defaultCache("passivation")
-                            .localCache("passivation",
-                                    c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
-                                            .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
-                                            .fileStore(fs -> fs.passivation(true).purge(false)))
-                            .localCache("persistent",
-                                    c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
-                                            .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
-                                            .fileStore(fs -> fs.passivation(false).purge(false))));
+                                         cc -> cc.defaultCache(PASSIVATION)
+                                                 .localCache(PASSIVATION,
+                                                             c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                                     .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
+                                                                     .fileStore(fs -> fs.passivation(true).purge(false)))
+                                                 .localCache("persistent",
+                                                             c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                                     .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
+                                                                     .fileStore(fs -> fs.passivation(false).purge(false))));
         }
 
         if (!this.ejb.isUnsatisfied()) {
             this.fraction.cacheContainer("ejb",
-                    cc -> cc.alias("sfsb")
-                            .defaultCache("passivation")
-                            .localCache("passivation",
-                                    c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
-                                            .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
-                                            .fileStore(fs -> fs.passivation(true).purge(false)))
-                            .localCache("persistent",
-                                    c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
-                                            .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
-                                            .fileStore(fs -> fs.passivation(false).purge(false))));
+                                         cc -> cc.alias("sfsb")
+                                                 .defaultCache(PASSIVATION)
+                                                 .localCache(PASSIVATION,
+                                                             c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                                     .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
+                                                                     .fileStore(fs -> fs.passivation(true).purge(false)))
+                                                 .localCache("persistent",
+                                                             c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                                                     .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
+                                                                     .fileStore(fs -> fs.passivation(false).purge(false))));
         }
 
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
-                    cc -> cc.defaultCache("local-query")
-                            .module("org.hibernate.infinispan")
-                            .localCache("entity",
-                                    c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
-                                            .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
-                                            .expirationComponent(e -> e.maxIdle(100000L)))
-                            .localCache("immutable-entity",
-                                    c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
-                                            .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
-                                            .expirationComponent(e -> e.maxIdle(100000L)))
-                            .localCache("local-query",
-                                    c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
-                                            .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
-                                            .expirationComponent(e -> e.maxIdle(100000L)))
-                            .localCache("timestamps"));
+                                         cc -> cc.defaultCache(LOCAL_QUERY)
+                                                 .module("org.hibernate.infinispan")
+                                                 .localCache("entity",
+                                                             c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
+                                                                     .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
+                                                                     .expirationComponent(e -> e.maxIdle(100000L)))
+                                                 .localCache("immutable-entity",
+                                                             c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
+                                                                     .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
+                                                                     .expirationComponent(e -> e.maxIdle(100000L)))
+                                                 .localCache("local-query",
+                                                             c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
+                                                                     .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
+                                                                     .expirationComponent(e -> e.maxIdle(100000L)))
+                                                 .localCache("timestamps"));
         }
 
     }

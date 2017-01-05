@@ -61,7 +61,7 @@ class MavenDependencyDeclarationFactory extends DependencyDeclarationFactory {
                     .asResolvedArtifact()
             );
 
-            for(MavenResolvedArtifact dep : bucket) {
+            for (MavenResolvedArtifact dep : bucket) {
 
                 ArtifactSpec child = new ArtifactSpec(
                         dep.getScope().toString(),

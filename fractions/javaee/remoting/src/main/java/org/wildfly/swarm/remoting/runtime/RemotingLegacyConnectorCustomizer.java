@@ -7,14 +7,13 @@ import javax.inject.Singleton;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.container.runtime.config.DefaultSocketBindingGroupProducer;
 import org.wildfly.swarm.remoting.RemotingFraction;
-import org.wildfly.swarm.remoting.RemotingProperties;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
-import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
-/** Configures the legacy remoting socketing binding and connector if required.
+/**
+ * Configures the legacy remoting socketing binding and connector if required.
  *
  * <p>In the event {@link RemotingFraction#requireLegacyConnector(boolean)}</p> has been
  * set to <code>true</code> or if configuration property <code>swarm.remoting.port</code>
@@ -39,7 +38,7 @@ public class RemotingLegacyConnectorCustomizer implements Customizer {
 
     @Override
     public void customize() {
-        if (this.remoting.isRequireLegacyConnector() ) {
+        if (this.remoting.isRequireLegacyConnector()) {
             LOG.info("Remoting installed but Undertow not available. Enabled legacy connector on port 4447.");
             this.remoting.connector("legacy", (connector) -> {
                 connector.socketBinding("legacy-remoting");

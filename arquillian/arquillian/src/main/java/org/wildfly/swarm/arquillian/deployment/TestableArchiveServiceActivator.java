@@ -26,17 +26,17 @@ public class TestableArchiveServiceActivator implements ServiceActivator {
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
 
-        try (BufferedReader reader = new BufferedReader( new InputStreamReader( Thread.currentThread().getContextClassLoader().getResourceAsStream( "META-INF/arquillian-testable" ) ) ) ) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/arquillian-testable")))) {
 
             List<String> lines = reader.lines()
                     .collect(Collectors.toList());
 
-            String archiveName = String.join( "", lines ).trim();
+            String archiveName = String.join("", lines).trim();
 
-            TestableArchiveService testableArchiveService = new TestableArchiveService( archiveName );
+            TestableArchiveService testableArchiveService = new TestableArchiveService(archiveName);
             context.getServiceTarget()
-                    .addService( TestableArchiveService.NAME, testableArchiveService )
-                    .addDependency(ServiceName.of( "wildfly", "swarm", "arquillian", "daemon"), Server.class, testableArchiveService.serverInjector )
+                    .addService(TestableArchiveService.NAME, testableArchiveService)
+                    .addDependency(ServiceName.of("wildfly", "swarm", "arquillian", "daemon"), Server.class, testableArchiveService.serverInjector)
                     .addDependency(Services.deploymentUnitName(archiveName), DeploymentUnit.class, testableArchiveService.deploymentUnitInjector)
                     .addDependency(Services.deploymentUnitName(archiveName, Phase.POST_MODULE))
                     .install();

@@ -61,8 +61,7 @@ import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
  */
 public class BuildTool {
 
-
-    public enum FractionDetectionMode {when_missing, force, never}
+    public enum FractionDetectionMode { when_missing, force, never }
 
     public BuildTool(ArtifactResolvingHelper resolvingHelper) {
         this.archive = ShrinkWrap.create(JavaArchive.class);
@@ -202,7 +201,7 @@ public class BuildTool {
             log.info("Fallback file move: " + file.getAbsolutePath());
             //Fallback strategy - Create the backup and delete target path
             Files.copy(path, backupPath, StandardCopyOption.COPY_ATTRIBUTES);
-            log.info("Copied " + path  + " to " + backupPath);
+            log.info("Copied " + path + " to " + backupPath);
             try {
                 Files.deleteIfExists(path);
             } catch (IOException del) {
@@ -212,16 +211,17 @@ public class BuildTool {
     }
 
     public Archive build() throws Exception {
-        if(null== declaredDependencies)
+        if (null == declaredDependencies) {
             throw new IllegalStateException("Dependency declaration is not provided!");
+        }
 
         analyzeDependencies(false);
         addWildflySwarmBootstrapJar();
         addJarManifest();
         addWildFlySwarmApplicationManifest();
         addAdditionalModules();
-        addProjectAsset((ResolvedDependencies)this.dependencyManager);
-        populateUberJarMavenRepository((ResolvedDependencies)this.dependencyManager);
+        addProjectAsset((ResolvedDependencies) this.dependencyManager);
+        populateUberJarMavenRepository((ResolvedDependencies) this.dependencyManager);
 
         return this.archive;
     }
@@ -257,9 +257,9 @@ public class BuildTool {
     }
 
     private void analyzeDependencies(boolean autodetect) throws Exception {
-
-        if(null== declaredDependencies)
+        if (null == declaredDependencies) {
             throw new IllegalStateException("dependency declaration is not provided");
+        }
 
         this.dependencyManager.analyzeDependencies(autodetect, declaredDependencies);
     }
@@ -341,7 +341,7 @@ public class BuildTool {
 
         if (this.fractionDetectionMode != FractionDetectionMode.never) {
 
-            assert fractionList!=null : "No FractionList provided";
+            assert fractionList != null : "No FractionList provided";
 
             if (this.fractionDetectionMode == FractionDetectionMode.force || artifact == null) {
                 this.log.info("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
@@ -419,7 +419,7 @@ public class BuildTool {
 
     private File createJar(String baseName, Path dir) throws IOException {
         File out = new File(dir.toFile(), baseName + "-swarm.jar");
-        if(!out.getParentFile().exists() && !out.getParentFile().mkdirs()){
+        if (!out.getParentFile().exists() && !out.getParentFile().mkdirs()) {
             this.log.error("Failed to create parent directory for: " + out.getAbsolutePath());
         }
         ZipExporter exporter = this.archive.as(ZipExporter.class);
@@ -432,7 +432,7 @@ public class BuildTool {
             exporter.exportTo(fos);
         }
         if (executable) {
-            if(!out.setExecutable(true)){
+            if (!out.setExecutable(true)) {
                 this.log.error("Failed to set executable flag");
             }
         }
@@ -478,25 +478,26 @@ public class BuildTool {
             boolean unresolved = !dependency.isResolved();
             boolean exploded = ResolvedDependencies.isExplodedBootstrap(dependency);
 
-            if(unresolved || !exploded)
+            if (unresolved || !exploded) {
                 toBeResolved.add(dependency);
-            else if(!unresolved)
+            } else if (!unresolved) {
                 alreadyResolved.add(dependency);
+            }
         }
 
         for (ArtifactSpec dependency : resolvedDependencies.getModuleDependencies()) {
-            if(!dependency.isResolved()) {
+            if (!dependency.isResolved()) {
                 toBeResolved.add(dependency);
             } else {
                 alreadyResolved.add(dependency);
             }
         }
 
-        System.out.println("Resolving "+toBeResolved.size() + " out of " +
-                                   (resolvedDependencies.getModuleDependencies().size()+
+        System.out.println("Resolving " + toBeResolved.size() + " out of " +
+                                   (resolvedDependencies.getModuleDependencies().size() +
                                            resolvedDependencies.getDependencies().size()) + " artifacts");
 
-        if(toBeResolved.size()>0) {
+        if (toBeResolved.size() > 0) {
             Set<ArtifactSpec> newResolved = resolver.resolveAllArtifactsNonTransitively(toBeResolved);
             alreadyResolved.addAll(newResolved);
         }
@@ -511,21 +512,21 @@ public class BuildTool {
 
         toBeResolved.addAll(
                 resolvedDependencies.getDependencies().stream()
-                        .filter(a->a.isResolved()==false)
+                        .filter(a -> a.isResolved() == false)
                         .collect(Collectors.toList())
         );
         toBeResolved.addAll(
                 resolvedDependencies.getModuleDependencies().stream()
-                        .filter(a->a.isResolved()==false)
+                        .filter(a -> a.isResolved() == false)
                         .collect(Collectors.toList())
         );
 
-        System.out.println("Resolving "+toBeResolved.size() + " out of " +
-                                   (resolvedDependencies.getModuleDependencies().size()+
-                                    resolvedDependencies.getDependencies().size()) + " artifacts");
+        System.out.println("Resolving " + toBeResolved.size() + " out of " +
+                                   (resolvedDependencies.getModuleDependencies().size() +
+                                           resolvedDependencies.getDependencies().size()) + " artifacts");
 
-        if(toBeResolved.size()>0) {
-            resolver.resolveAllArtifactsNonTransitively( toBeResolved );
+        if (toBeResolved.size() > 0) {
+            resolver.resolveAllArtifactsNonTransitively(toBeResolved);
         }
     }
 
@@ -539,6 +540,40 @@ public class BuildTool {
 
         archive.add(new FileAsset(artifact.file), artifactPath.toString());
     }
+
+    private final Set<ArtifactSpec> fractions = new HashSet<>();
+
+    private final JavaArchive archive;
+
+    private final Set<String> resourceDirectories = new HashSet<>();
+
+    private String mainClass;
+
+    private boolean bundleDependencies = true;
+
+    private boolean executable;
+
+    private File executableScript;
+
+    private DependencyManager dependencyManager;
+
+    private ProjectAsset projectAsset;
+
+    private Properties properties = new Properties();
+
+    private Set<String> additionalModules = new HashSet<>();
+
+    private FractionDetectionMode fractionDetectionMode = FractionDetectionMode.when_missing;
+
+    private FractionList fractionList = null;
+
+    private SimpleLogger log = STD_LOGGER;
+
+    private boolean hollow;
+
+    private DeclaredDependencies declaredDependencies;
+
+    private final DefaultArtifactResolver resolver;
 
     public static final SimpleLogger STD_LOGGER = new SimpleLogger() {
         @Override
@@ -612,41 +647,5 @@ public class BuildTool {
 
         void error(String msg, Throwable t);
     }
-
-    private final Set<ArtifactSpec> fractions = new HashSet<>();
-
-    private final JavaArchive archive;
-
-    private final Set<String> resourceDirectories = new HashSet<>();
-
-    private String mainClass;
-
-    private boolean bundleDependencies = true;
-
-    private boolean executable;
-
-    private File executableScript;
-
-    private DependencyManager dependencyManager;
-
-    private ProjectAsset projectAsset;
-
-    private Properties properties = new Properties();
-
-    private Set<String> additionalModules = new HashSet<>();
-
-    private FractionDetectionMode fractionDetectionMode = FractionDetectionMode.when_missing;
-
-    private FractionList fractionList = null;
-
-    private SimpleLogger log = STD_LOGGER;
-
-    private boolean hollow;
-
-    private DeclaredDependencies declaredDependencies;
-
-    private final DefaultArtifactResolver resolver;
-
-
 }
 

@@ -14,7 +14,7 @@ public class APIJolokiaAccessPreparer extends AbstractJolokiaAccessPreparer {
 
     @Override
     protected Asset getJolokiaAccessXmlAsset() {
-        return new StringAsset( this.access.toXML() );
+        return new StringAsset(this.access.toXML());
     }
 
     private final JolokiaAccess access;

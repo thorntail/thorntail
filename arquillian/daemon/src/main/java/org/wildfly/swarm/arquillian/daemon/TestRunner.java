@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.arquillian.test.spi.TestResult;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.SetupAction;
@@ -34,7 +33,6 @@ public class TestRunner {
     }
 
     public Serializable executeTest(final String testClassName, final String methodName) {
-
 
         final ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
         try {
@@ -74,11 +72,11 @@ public class TestRunner {
         }
     }
 
-    private final static String CLASS_NAME_ARQ_TEST_RUNNERS = "org.jboss.arquillian.container.test.spi.util.TestRunners";
+    private static final String CLASS_NAME_ARQ_TEST_RUNNERS = "org.jboss.arquillian.container.test.spi.util.TestRunners";
 
-    private final static String METHOD_NAME_GET_TEST_RUNNER = "getTestRunner";
+    private static final String METHOD_NAME_GET_TEST_RUNNER = "getTestRunner";
 
-    private final static String METHOD_NAME_EXECUTE = "execute";
+    private static final String METHOD_NAME_EXECUTE = "execute";
 
     private final DeploymentUnit deploymentUnit;
 }

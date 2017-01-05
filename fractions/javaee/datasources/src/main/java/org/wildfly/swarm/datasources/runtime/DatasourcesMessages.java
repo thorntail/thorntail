@@ -49,19 +49,19 @@ public interface DatasourcesMessages extends BasicLogger {
     void autodetectedJdbcDriver(String driverName);
 
     @LogMessage(level = Logger.Level.ERROR)
-    @Message(id = OFFSET + 4, value = "Detected JDBC driver %s, but an error occurred while loading it" )
+    @Message(id = OFFSET + 4, value = "Detected JDBC driver %s, but an error occurred while loading it")
     void errorLoadingAutodetectedJdbcDriver(String driverName, @Cause Throwable t);
 
     @LogMessage(level = Logger.Level.WARN)
-    @Message(id = OFFSET + 5, value = "Not creating a default datasource due to lack of JDBC driver" )
+    @Message(id = OFFSET + 5, value = "Not creating a default datasource due to lack of JDBC driver")
     void notCreatingDatasourceMissingDriver();
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = OFFSET + 6, value = "Not creating default datasource %s because one is already defined with that name" )
+    @Message(id = OFFSET + 6, value = "Not creating default datasource %s because one is already defined with that name")
     void notCreatingDatasourceAlreadyExists(String dsName);
 
     @LogMessage(level = Logger.Level.WARN)
-    @Message(id = OFFSET + 7, value = "Not creating a default datasource due to ambigous of JDBC drivers: %s" )
+    @Message(id = OFFSET + 7, value = "Not creating a default datasource due to ambigous of JDBC drivers: %s")
     void notCreatingDatasourceAmbiguousDrivers(String driverList);
 
 

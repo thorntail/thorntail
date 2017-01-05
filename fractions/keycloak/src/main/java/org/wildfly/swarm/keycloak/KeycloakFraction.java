@@ -23,7 +23,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 /**
  * @author Bob McWhirter
  */
-@WildFlyExtension(module = "org.keycloak.keycloak-adapter-subsystem" )
+@WildFlyExtension(module = "org.keycloak.keycloak-adapter-subsystem")
 @WildFlySubsystem("keycloak")
 @DeploymentModule(name = "org.keycloak.keycloak-core")
 public class KeycloakFraction implements Fraction<KeycloakFraction> {

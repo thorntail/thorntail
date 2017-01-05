@@ -34,8 +34,8 @@ public class ConfigurationValueAccessPreparer extends AbstractJolokiaAccessPrepa
                 }
             }
 
-            if ( url != null ) {
-                return new UrlAsset( url );
+            if (url != null) {
+                return new UrlAsset(url);
             }
         } catch (MalformedURLException e) {
             // ignore;

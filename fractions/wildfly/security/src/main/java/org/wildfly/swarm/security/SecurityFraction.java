@@ -23,12 +23,10 @@ import org.wildfly.swarm.config.Security;
 import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
 import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;
-import org.wildfly.swarm.config.security.security_domain.ClassicAuthorization;
 import org.wildfly.swarm.config.security.security_domain.JaspiAuthentication;
 import org.wildfly.swarm.config.security.security_domain.authentication.AuthModule;
 import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
 import org.wildfly.swarm.config.security.security_domain.authentication.LoginModuleStack;
-import org.wildfly.swarm.config.security.security_domain.authorization.PolicyModule;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -39,6 +37,8 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @WildFlyExtension(module = "org.jboss.as.security")
 @MarshalDMR
 public class SecurityFraction extends Security<SecurityFraction> implements Fraction<SecurityFraction> {
+
+    private static final String DUMMY = "Dummy";
 
     public static SecurityFraction defaultSecurityFraction() {
         return new SecurityFraction().applyDefaults();
@@ -51,30 +51,30 @@ public class SecurityFraction extends Security<SecurityFraction> implements Frac
 
     public SecurityFraction applyDefaults() {
         securityDomain(new SecurityDomain("other")
-                .cacheType(SecurityDomain.CacheType.DEFAULT)
-                .classicAuthentication(new ClassicAuthentication()
-                        .loginModule(new LoginModule("RealmDirect")
-                                .code("RealmDirect")
-                                .flag(Flag.REQUIRED)
-                                .moduleOptions(new HashMap<Object, Object>() {{
-                                    put("password-stacking", "useFirstPass");
-                                }})
+                               .cacheType(SecurityDomain.CacheType.DEFAULT)
+                               .classicAuthentication(new ClassicAuthentication()
+                                                              .loginModule(new LoginModule("RealmDirect")
+                                                                                   .code("RealmDirect")
+                                                                                   .flag(Flag.REQUIRED)
+                                                                                   .moduleOptions(new HashMap<Object, Object>() {{
+                                                                                       put("password-stacking", "useFirstPass");
+                                                                                   }})
 
-                        )));
+                                                              )));
 
         securityDomain(new SecurityDomain("jaspitest")
-                .cacheType(SecurityDomain.CacheType.DEFAULT)
-                .jaspiAuthentication(new JaspiAuthentication()
-                        .loginModuleStack(new LoginModuleStack("dummy")
-                                .loginModule(new LoginModule("Dummy")
-                                        .code("Dummy")
-                                        .flag(Flag.OPTIONAL)
-                                )
-                        )
-                        .authModule(new AuthModule("Dummy")
-                                .code("Dummy")
-                        )
-                )
+                               .cacheType(SecurityDomain.CacheType.DEFAULT)
+                               .jaspiAuthentication(new JaspiAuthentication()
+                                                            .loginModuleStack(new LoginModuleStack("dummy")
+                                                                                      .loginModule(new LoginModule(DUMMY)
+                                                                                                           .code(DUMMY)
+                                                                                                           .flag(Flag.OPTIONAL)
+                                                                                      )
+                                                            )
+                                                            .authModule(new AuthModule(DUMMY)
+                                                                                .code(DUMMY)
+                                                            )
+                               )
         );
 
         return this;

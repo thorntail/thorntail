@@ -39,7 +39,6 @@ import io.undertow.security.impl.SimpleNonceManager;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PredicateHandler;
-import io.undertow.util.HeaderValues;
 import org.jboss.as.domain.http.server.security.AuthenticationMechanismWrapper;
 import org.jboss.as.domain.http.server.security.RealmIdentityManager;
 import org.jboss.as.domain.management.AuthMechanism;
@@ -48,9 +47,8 @@ import org.jboss.as.domain.management.SecurityRealm;
 /**
  * Wraps the actual HTTP endpoint and add security to it.
  *
- * @see HttpContexts
- *
  * @author Heiko Braun
+ * @see HttpContexts
  * @since 18/02/16
  */
 @Vetoed
@@ -68,7 +66,7 @@ public class SecureHttpContexts implements HttpHandler {
 
         Optional<SecurityRealm> securityRealm = monitor.getSecurityRealm();
 
-        if(securityRealm.isPresent()) {
+        if (securityRealm.isPresent()) {
             delegate = secureHandler(new HttpContexts(next), securityRealm.get());
         } else {
             delegate = new HttpContexts(next);
@@ -97,22 +95,23 @@ public class SecureHttpContexts implements HttpHandler {
 
         Set<AuthMechanism> mechanisms = securityRealm.getSupportedAuthenticationMechanisms();
         List<AuthenticationMechanism> undertowMechanisms = new ArrayList<AuthenticationMechanism>(mechanisms.size());
-                    undertowMechanisms.add(wrap(new CachedAuthenticatedSessionMechanism(), null));
-                    for (AuthMechanism current : mechanisms) {
-                        switch (current) {
-                            case DIGEST:
-                                List<DigestAlgorithm> digestAlgorithms = Collections.singletonList(DigestAlgorithm.MD5);
-                                List<DigestQop> digestQops = Collections.singletonList(DigestQop.AUTH);
-                                undertowMechanisms.add(wrap(new DigestAuthenticationMechanism(digestAlgorithms, digestQops,
-                                        securityRealm.getName(), "Monitor", new SimpleNonceManager()), current));
-                                break;
-                            case PLAIN:
-                                undertowMechanisms.add(wrap(new BasicAuthenticationMechanism(securityRealm.getName()), current));
-                                break;
-                            case LOCAL:
-                                break;
-                        }
-                    }
+        undertowMechanisms.add(wrap(new CachedAuthenticatedSessionMechanism(), null));
+        for (AuthMechanism current : mechanisms) {
+            switch (current) {
+                case DIGEST:
+                    List<DigestAlgorithm> digestAlgorithms = Collections.singletonList(DigestAlgorithm.MD5);
+                    List<DigestQop> digestQops = Collections.singletonList(DigestQop.AUTH);
+                    undertowMechanisms.add(wrap(new DigestAuthenticationMechanism(digestAlgorithms, digestQops,
+                                                                                  securityRealm.getName(), "Monitor", new SimpleNonceManager()), current));
+                    break;
+                case PLAIN:
+                    undertowMechanisms.add(wrap(new BasicAuthenticationMechanism(securityRealm.getName()), current));
+                    break;
+                case LOCAL:
+                    break;
+                default:
+            }
+        }
 
         handler = new AuthenticationMechanismsHandler(handler, undertowMechanisms);
         handler = new SecurityInitialHandler(AuthenticationMode.PRO_ACTIVE, idm, handler);
@@ -124,8 +123,8 @@ public class SecureHttpContexts implements HttpHandler {
                     (
                             Queries.isAggregatorEndpoint(monitor, exchange.getRelativePath()) ||
                                     (Queries.isDirectAccessToHealthEndpoint(monitor, exchange.getRelativePath())
-                                    && !hasTokenAuth(exchange)) ||
-                            HttpContexts.getDefaultContextNames().contains(exchange.getRelativePath())
+                                            && !hasTokenAuth(exchange)) ||
+                                    HttpContexts.getDefaultContextNames().contains(exchange.getRelativePath())
                     );
         }, handler, toWrap);
 

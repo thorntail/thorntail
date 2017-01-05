@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.messaging;
 
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.MessagingActiveMQ;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;

@@ -15,7 +15,6 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.wildfly.swarm.arquillian.daemon.server.Server;
 import org.wildfly.swarm.arquillian.daemon.server.ServerLifecycleException;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
@@ -24,7 +23,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 @Vetoed
 public class DaemonService implements Service<Server> {
 
-    public static final ServiceName SERVICE_NAME = ServiceName.of( "wildfly", "swarm", "arquillian", "daemon" );
+    public static final ServiceName SERVICE_NAME = ServiceName.of("wildfly", "swarm", "arquillian", "daemon");
 
     private static final Logger log = Logger.getLogger(DaemonService.class.getName());
 

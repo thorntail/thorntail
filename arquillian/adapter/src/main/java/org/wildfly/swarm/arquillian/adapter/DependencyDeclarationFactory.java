@@ -14,7 +14,7 @@ abstract class DependencyDeclarationFactory {
     abstract DeclaredDependencies create(ShrinkwrapArtifactResolvingHelper resolvingHelper);
 
     public static DependencyDeclarationFactory newInstance(FileSystemLayout fsLayout) {
-        if(fsLayout instanceof MavenFileSystemLayout) {
+        if (fsLayout instanceof MavenFileSystemLayout) {
             return new MavenDependencyDeclarationFactory();
         } else {
             return new GradleDependencyDeclarationFactory(fsLayout);

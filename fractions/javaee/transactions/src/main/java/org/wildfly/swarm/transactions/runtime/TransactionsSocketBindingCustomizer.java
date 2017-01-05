@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.transactions.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -45,9 +42,9 @@ public class TransactionsSocketBindingCustomizer implements Customizer {
     @Override
     public void customize() {
         this.group.socketBinding(new SocketBinding("txn-recovery-environment")
-                .port(this.fraction.port()));
+                                         .port(this.fraction.port()));
 
         this.group.socketBinding(new SocketBinding("txn-status-manager")
-                .port(this.fraction.statusPort()));
+                                         .port(this.fraction.statusPort()));
     }
 }

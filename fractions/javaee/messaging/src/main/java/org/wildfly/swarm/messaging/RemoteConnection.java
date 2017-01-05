@@ -18,18 +18,6 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 public class RemoteConnection {
 
     /**
-     * Configuration functional interface for container-supplied objects.
-     */
-    public interface Consumer extends java.util.function.Consumer<RemoteConnection> {
-    }
-
-    /**
-     * Supplier functional interface for user-supplied object.
-     */
-    public interface Supplier extends java.util.function.Supplier<RemoteConnection> {
-    }
-
-    /**
      * Construct.
      *
      * @param name The name of the connection. Also used for {@link #jndiName}.
@@ -118,5 +106,15 @@ public class RemoteConnection {
 
     private final Defaultable<String> jndiName = string(() -> "java:/jms/" + name.get());
 
+    /**
+     * Configuration functional interface for container-supplied objects.
+     */
+    public interface Consumer extends java.util.function.Consumer<RemoteConnection> {
+    }
 
+    /**
+     * Supplier functional interface for user-supplied object.
+     */
+    public interface Supplier extends java.util.function.Supplier<RemoteConnection> {
+    }
 }

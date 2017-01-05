@@ -17,8 +17,6 @@ package org.wildfly.swarm.arquillian.adapter;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -95,11 +93,12 @@ public class GradleDependencyAdapter {
             String line = scanner.nextLine();
 
             // top level deps
-            if(line.startsWith(PREFIX1)
+            if (line.startsWith(PREFIX1)
                     || line.startsWith(PREFIX2)) {
 
-                if(stack.size()>0)
+                if (stack.size() > 0) {
                     stack.pop();
+                }
 
                 // parse
                 line = parseLine(line);
@@ -107,14 +106,13 @@ public class GradleDependencyAdapter {
                 ArtifactSpec parent = DeclaredDependencies.createSpec(coord);
                 declaredDependencies.add(parent);
                 stack.push(parent);
-            }
-
-            // transient
-            else if(line.contains(PREFIX)) {
+            } else if (line.contains(PREFIX)) {
+                // transient
                 line = parseLine(line);
 
-                if(line.startsWith(PROJECT)) // Always skip 'project' dependencies.
+                if (line.startsWith(PROJECT)) { // Always skip 'project' dependencies.
                     continue;
+                }
 
                 String coord = parseCoordinate(line);
                 declaredDependencies.add(stack.peek(), DeclaredDependencies.createSpec(coord));
@@ -129,10 +127,10 @@ public class GradleDependencyAdapter {
 
     private String parseCoordinate(String line) {
         String[] coords = line.split(COLON);
-        if(3==coords.length) {
+        if (3 == coords.length) {
             String version = coords[2];
-            if(version.contains(VERSION_UP)) {
-                String s = coords[0]+":"+coords[1]+":"+ version.substring(version.indexOf(VERSION_UP)+VERSION_UP.length(), version.length());
+            if (version.contains(VERSION_UP)) {
+                String s = coords[0] + ":" + coords[1] + ":" + version.substring(version.indexOf(VERSION_UP) + VERSION_UP.length(), version.length());
                 return s;
             } else {
                 return line;
@@ -145,16 +143,19 @@ public class GradleDependencyAdapter {
     private String parseLine(String line) {
         line = line.substring(line.indexOf(PREFIX) + PREFIX.length(), line.length());
 
-        if(line.endsWith(SUFFIX)) {
+        if (line.endsWith(SUFFIX)) {
             line = line.substring(0, line.indexOf(SUFFIX));
         }
         return line;
     }
 
     private static final String PREFIX = "--- ";
+
     private static final String SUFFIX = " (*)";
+
     private static final String VERSION_UP = "-> ";
 
     private Stack<ArtifactSpec> stack = new Stack<>();
+
     private Path rootPath;
 }

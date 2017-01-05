@@ -36,7 +36,7 @@ public class OracleDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "tiger";
 
     public OracleDriverInfo() {
-        super("oracle", ModuleIdentifier.create("com.oracle.jdbc"), "oracle.jdbc.OracleDriver" );
+        super("oracle", ModuleIdentifier.create("com.oracle.jdbc"), "oracle.jdbc.OracleDriver");
     }
 
     @Override

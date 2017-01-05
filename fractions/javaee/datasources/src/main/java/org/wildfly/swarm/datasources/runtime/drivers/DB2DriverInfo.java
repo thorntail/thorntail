@@ -22,7 +22,8 @@ import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
 
-/** Auto-detection for DB2.
+/**
+ * Auto-detection for DB2.
  *
  * @author Bob McWhirter
  */
@@ -30,16 +31,18 @@ import org.wildfly.swarm.datasources.runtime.DriverInfo;
 public class DB2DriverInfo extends DriverInfo {
 
     public static final String DEFAULT_CONNECTION_URL = "jdbc:db2:ibmdb2db";
+
     public static final String DEFAULT_USER_NAME = "admin";
+
     public static final String DEFAULT_PASSWORD = "admin";
 
     public DB2DriverInfo() {
         super("ibmdb2", ModuleIdentifier.create("com.ibm.db2jcc"), "com.ibm.db2.jcc.DB2Driver",
-                "com.ibm.db2.jcc.licenses.DB2J",
-                "com.ibm.db2.jcc.licenses.DB2SQLDS",
-                "com.ibm.db2.jcc.licenses.DB2UW",
-                "com.ibm.db2.jcc.licenses.DB2iSeries",
-                "com.ibm.db2.jcc.licenses.DB2zOS");
+              "com.ibm.db2.jcc.licenses.DB2J",
+              "com.ibm.db2.jcc.licenses.DB2SQLDS",
+              "com.ibm.db2.jcc.licenses.DB2UW",
+              "com.ibm.db2.jcc.licenses.DB2iSeries",
+              "com.ibm.db2.jcc.licenses.DB2zOS");
     }
 
     @Override
@@ -49,9 +52,9 @@ public class DB2DriverInfo extends DriverInfo {
 
     @Override
     protected void configureDefaultDS(DataSource datasource) {
-        datasource.connectionUrl( DEFAULT_CONNECTION_URL );
-        datasource.userName( DEFAULT_USER_NAME );
-        datasource.password( DEFAULT_PASSWORD );
+        datasource.connectionUrl(DEFAULT_CONNECTION_URL);
+        datasource.userName(DEFAULT_USER_NAME);
+        datasource.password(DEFAULT_PASSWORD);
         datasource.minPoolSize(0);
         datasource.maxPoolSize(50);
     }

@@ -3,8 +3,8 @@ package org.wildfly.swarm.mod_cluster;
 /**
  * @author Bob McWhirter
  */
-public class ModclusterProperties {
+public interface ModclusterProperties {
 
-    public static final String MULTICAST_ADDRESS = "swarm.modcluster.multicast.address";
-    public static final String MULTICAST_PORT = "swarm.modcluster.multicast.port";
+    String MULTICAST_ADDRESS = "swarm.modcluster.multicast.address";
+    String MULTICAST_PORT = "swarm.modcluster.multicast.port";
 }

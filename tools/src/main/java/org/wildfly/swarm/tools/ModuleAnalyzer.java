@@ -81,15 +81,15 @@ public class ModuleAnalyzer {
 
         List<ArtifactSpec> dependencies = new ArrayList<>();
 
-        String localRepo = System.getProperty("user.home") + File.separator+".m2"+File.separator+"repository";
+        String localRepo = System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository";
 
         for (ArtifactType<ResourcesType<ModuleDescriptor>> artifact : artifacts) {
             ArtifactSpec dep = ArtifactSpec.fromMscGav(artifact.getName());
 
             File file = Paths.get(localRepo, dep.jarRepoPath()).toFile();
-            if(!file.exists()) {
+            if (!file.exists()) {
                 dep.shouldGather = true;
-            }  else {
+            } else {
                 dep.file = file;
                 dep.shouldGather = false;
             }

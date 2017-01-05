@@ -67,8 +67,8 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
             return false;
         }
 
-        if ( asset instanceof ArchiveAsset) {
-            return hasApplicationPathAnnotation( ((ArchiveAsset) asset).getArchive() );
+        if (asset instanceof ArchiveAsset) {
+            return hasApplicationPathAnnotation(((ArchiveAsset) asset).getArchive());
         }
 
         if (!path.get().endsWith(".class")) {
@@ -159,15 +159,15 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     }
 
     private static boolean isJAXRS(ArchivePath path, Asset asset) {
-        if ( asset == null ) {
+        if (asset == null) {
             return false;
         }
 
-        if ( asset instanceof ArchiveAsset) {
-            return isJAXRS( ((ArchiveAsset) asset).getArchive() );
+        if (asset instanceof ArchiveAsset) {
+            return isJAXRS(((ArchiveAsset) asset).getArchive());
         }
 
-        if ( ! path.get().endsWith( ".class" ) ) {
+        if (!path.get().endsWith(".class")) {
             return false;
         }
         try (InputStream in = asset.openStream()) {

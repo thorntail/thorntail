@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractCamelFraction<T extends AbstractCamelFraction<T>> {
 
-    public final static Logger LOGGER = LoggerFactory.getLogger("org.wildfly.swarm.camel");
+    public static final Logger LOGGER = LoggerFactory.getLogger("org.wildfly.swarm.camel");
 
     private final Map<String, RouteBuilder> routeBuilders = new LinkedHashMap<>();
 
@@ -42,7 +42,7 @@ public abstract class AbstractCamelFraction<T extends AbstractCamelFraction<T>> 
     public T addRouteBuilder(String name, RouteBuilder builder) {
         IllegalArgumentAssertion.assertNotNull(builder, "builder");
         routeBuilders.put(name, builder);
-        return (T)this;
+        return (T) this;
     }
 
     public Map<String, RouteBuilder> getRouteBuilders() {
