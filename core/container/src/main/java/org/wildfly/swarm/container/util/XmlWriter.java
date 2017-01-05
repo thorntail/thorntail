@@ -26,6 +26,8 @@ import javax.enterprise.inject.Vetoed;
 @Vetoed
 public class XmlWriter implements AutoCloseable {
 
+    private static final String GREATER_THAN = ">";
+
     public XmlWriter(Writer out) {
         this.out = out;
     }
@@ -55,7 +57,7 @@ public class XmlWriter implements AutoCloseable {
         public Element element(String name) throws IOException {
             if (!this.hasContent) {
                 this.hasContent = true;
-                out.write(">");
+                out.write(GREATER_THAN);
             }
             return new Element(name);
         }
@@ -63,7 +65,7 @@ public class XmlWriter implements AutoCloseable {
         public Element content(String content) throws IOException {
             if (!this.hasContent) {
                 this.hasContent = true;
-                out.write(">");
+                out.write(GREATER_THAN);
             }
 
             out.write(content);
@@ -72,7 +74,7 @@ public class XmlWriter implements AutoCloseable {
 
         public void end() throws IOException {
             if (hasContent) {
-                out.write("</" + name + ">");
+                out.write("</" + name + GREATER_THAN);
             } else {
                 out.write("/>");
             }

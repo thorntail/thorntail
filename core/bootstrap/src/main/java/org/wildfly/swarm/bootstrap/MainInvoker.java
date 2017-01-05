@@ -19,10 +19,12 @@ import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
  */
 public class MainInvoker {
 
+    private static final String BOOT_MODULE_PROPERTY = "boot.module.loader";
+
     public MainInvoker(Method mainMethod, String... args) {
         this.mainMethod = mainMethod;
         this.args = args;
-        System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+        System.setProperty(BOOT_MODULE_PROPERTY, BootModuleLoader.class.getName());
     }
 
     public MainInvoker(Class<?> mainClass, String... args) throws Exception {
@@ -45,12 +47,12 @@ public class MainInvoker {
 
         Object messages = field.get(null);
 
-        Method ready = messages.getClass().getMethod( "wildflySwarmIsReady" );
-        ready.invoke( messages );
+        Method ready = messages.getClass().getMethod("wildflySwarmIsReady");
+        ready.invoke(messages);
     }
 
     public static void main(String... args) throws Exception {
-        System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+        System.setProperty(BOOT_MODULE_PROPERTY, BootModuleLoader.class.getName());
         List<String> argList = Arrays.asList(args);
 
         if (argList.isEmpty()) {
@@ -79,8 +81,8 @@ public class MainInvoker {
             mainClass = cl.loadClass(mainClassName);
         }
 
-        if ( mainClass == null ) {
-            throw new ClassNotFoundException( mainClassName );
+        if (mainClass == null) {
+            throw new ClassNotFoundException(mainClassName);
         }
         return mainClass;
     }
@@ -88,8 +90,8 @@ public class MainInvoker {
     public static Method getMainMethod(Class<?> mainClass) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         final Method mainMethod = mainClass.getMethod("main", String[].class);
 
-        if ( mainMethod == null ) {
-            throw new NoSuchMethodException("No method main() found" );
+        if (mainMethod == null) {
+            throw new NoSuchMethodException("No method main() found");
         }
 
         final int modifiers = mainMethod.getModifiers();

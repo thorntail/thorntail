@@ -68,7 +68,7 @@ public class FractionManifest {
             setInternal((Boolean) internal);
         }
         Map stability = (Map) data.get("stability");
-        if ( stability != null ) {
+        if (stability != null) {
             setStabilityIndex((Integer) stability.get("index"));
             setStabilityLevel((String) stability.get("level"));
         }
@@ -116,7 +116,7 @@ public class FractionManifest {
 
     public void setDependencies(Collection<String> dependencies) {
         this.dependencies.clear();
-        if ( dependencies != null ) {
+        if (dependencies != null) {
             this.dependencies.addAll(dependencies);
         }
     }

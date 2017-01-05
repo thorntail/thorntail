@@ -19,17 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/** A group of inbound and outbound socket-bindings.
+/**
+ * A group of inbound and outbound socket-bindings.
  *
  * <p>The default socket-binding group is typically named {@code standard-sockets}.</p>
  *
  * <p>All bindings within a group may be universally offset to accommodate shifting
  * an entire server up or down some set number of ports.</p>
  *
+ * @author Bob McWhirter
  * @see SocketBinding
  * @see OutboundSocketBinding
- *
- * @author Bob McWhirter
  */
 public class SocketBindingGroup {
 
@@ -43,10 +43,11 @@ public class SocketBindingGroup {
 
     private List<OutboundSocketBinding> outboundSocketBindings = new ArrayList<>();
 
-    /** Create a new socket-binding group.
+    /**
+     * Create a new socket-binding group.
      *
-     * @param name The name of the group.
-     * @param defaultInterface The name of the interface to bind to.
+     * @param name                 The name of the group.
+     * @param defaultInterface     The name of the interface to bind to.
      * @param portOffsetExpression The port offset expression.
      */
     public SocketBindingGroup(String name, String defaultInterface, String portOffsetExpression) {
@@ -55,7 +56,8 @@ public class SocketBindingGroup {
         this.portOffsetExpression = portOffsetExpression;
     }
 
-    /** Retrieve the name of this group.
+    /**
+     * Retrieve the name of this group.
      *
      * @return The name of this group.
      */
@@ -63,7 +65,8 @@ public class SocketBindingGroup {
         return this.name;
     }
 
-    /** Retrieve the name of the default interface.
+    /**
+     * Retrieve the name of the default interface.
      *
      * @return The name of the default interface.
      */
@@ -71,7 +74,8 @@ public class SocketBindingGroup {
         return this.defaultInterace;
     }
 
-    /** Retrieve the port-offset expression.
+    /**
+     * Retrieve the port-offset expression.
      *
      * @return The port offset expression.
      */
@@ -79,7 +83,8 @@ public class SocketBindingGroup {
         return this.portOffsetExpression;
     }
 
-    /** Add a socket-binding to this group.
+    /**
+     * Add a socket-binding to this group.
      *
      * @param binding The binding to add.
      * @return this group.
@@ -89,16 +94,18 @@ public class SocketBindingGroup {
         return this;
     }
 
-    /** Retrieve a socket-binding by name.
+    /**
+     * Retrieve a socket-binding by name.
      *
      * @param name The socket-binding name.
      * @return The socket-binding if present, otherwise {@code null}.
      */
     public SocketBinding socketBinding(String name) {
-        return this.socketBindings.stream().filter(e->e.name().equals(name)).findFirst().orElse(null);
+        return this.socketBindings.stream().filter(e -> e.name().equals(name)).findFirst().orElse(null);
     }
 
-    /** Retrieve all socket-bindings attached to this group.
+    /**
+     * Retrieve all socket-bindings attached to this group.
      *
      * @return All socket-bindings attached to this group.
      */
@@ -106,7 +113,8 @@ public class SocketBindingGroup {
         return this.socketBindings;
     }
 
-    /** Add an outbound socket-binding to this group.
+    /**
+     * Add an outbound socket-binding to this group.
      *
      * @param binding The binding to add.
      * @return this group.
@@ -116,7 +124,8 @@ public class SocketBindingGroup {
         return this;
     }
 
-    /** Retrieve all outbound socket-bindings attached to this group.
+    /**
+     * Retrieve all outbound socket-bindings attached to this group.
      *
      * @return All outbound socket-bindings attached to this group.
      */

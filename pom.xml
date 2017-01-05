@@ -30,6 +30,7 @@
 
   <properties>
     <version.wildfly.swarm.fraction.plugin>40</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.checkstyle>1</version.wildfly.swarm.checkstyle>
 
     <version.cdi2>2.0.Alpha4</version.cdi2>
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
@@ -97,6 +98,8 @@
     <version.maven-shade-plugin>2.4.1</version.maven-shade-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
     <version.maven.plugin.api>3.2.5</version.maven.plugin.api>
+
+    <version.checkstyle>7.4</version.checkstyle>
 
     <maven.min.version>3.2.1</maven.min.version>
 
@@ -182,6 +185,39 @@
             <phase>process-classes</phase>
             <goals>
               <goal>process</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${version.checkstyle.plugin}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${version.checkstyle}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>checkstyle-config</artifactId>
+            <version>${version.wildfly.swarm.checkstyle}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <configuration>
+              <configLocation>checkstyle/checkstyle.xml</configLocation>
+              <encoding>UTF-8</encoding>
+              <consoleOutput>true</consoleOutput>
+              <!-- Remove below setting when all violations are resolved -->
+              <failOnViolation>false</failOnViolation>
+            </configuration>
+            <goals>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>

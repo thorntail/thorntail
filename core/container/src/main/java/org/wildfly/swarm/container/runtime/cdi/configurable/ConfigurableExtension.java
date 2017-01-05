@@ -66,7 +66,7 @@ public class ConfigurableExtension implements Extension {
         Set<AnnotatedField<? super T>> fields = at.getFields();
 
         for (AnnotatedField<? super T> field : fields) {
-            if ( field.isAnnotationPresent( Configurable.class ) ) {
+            if (field.isAnnotationPresent(Configurable.class)) {
                 return true;
             }
         }

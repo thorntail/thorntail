@@ -48,7 +48,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.vfs.TempFileProvider;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
-import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
@@ -56,7 +55,6 @@ import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
-import org.wildfly.swarm.internal.ArtifactManager;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
@@ -84,7 +82,9 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
 @Singleton
 public class RuntimeDeployer implements Deployer {
 
-    private static Logger LOG = Logger.getLogger( "org.wildfly.swarm.deployer" );
+    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.deployer");
+
+    private static final String ALL_DEPENDENCIES_ADDED_MARKER = DependenciesContainer.ALL_DEPENDENCIES_MARKER + ".added";
 
     @Override
     public void deploy() throws DeploymentException {
@@ -98,11 +98,11 @@ public class RuntimeDeployer implements Deployer {
 
     @Override
     public void deploy(Collection<Path> pathsToDeploy) throws DeploymentException {
-        if ( pathsToDeploy.isEmpty() ) {
-            LOG.warn( SwarmMessages.MESSAGES.noDeploymentsSpecified() );
+        if (pathsToDeploy.isEmpty()) {
+            LOG.warn(SwarmMessages.MESSAGES.noDeploymentsSpecified());
             return;
         }
-        archives( pathsToDeploy )
+        archives(pathsToDeploy)
                 .forEach(e -> {
                     try {
                         deploy(e);
@@ -167,15 +167,15 @@ public class RuntimeDeployer implements Deployer {
 
         // check for "org.wildfly.swarm.allDependencies" flag
         // see DependenciesContainer#addAllDependencies()
-        if(deployment instanceof DependenciesContainer) {
-            DependenciesContainer depContainer = (DependenciesContainer)deployment;
-            if(depContainer.hasMarker("org.wildfly.swarm.allDependencies")){
-                if(!depContainer.hasMarker("org.wildfly.swarm.allDependencies.added")) {
+        if (deployment instanceof DependenciesContainer) {
+            DependenciesContainer depContainer = (DependenciesContainer) deployment;
+            if (depContainer.hasMarker(DependenciesContainer.ALL_DEPENDENCIES_MARKER)) {
+                if (!depContainer.hasMarker(ALL_DEPENDENCIES_ADDED_MARKER)) {
                     try {
 
                         ApplicationEnvironment appEnv = ApplicationEnvironment.get();
 
-                        if(ApplicationEnvironment.Mode.UBERJAR == appEnv.getMode()) {
+                        if (ApplicationEnvironment.Mode.UBERJAR == appEnv.getMode()) {
                             ArtifactLookup artifactLookup = ArtifactLookup.get();
                             for (String gav : appEnv.getDependencies()) {
                                 depContainer.addAsLibraries(artifactLookup.artifact(gav));
@@ -188,7 +188,7 @@ public class RuntimeDeployer implements Deployer {
                         }
 
 
-                        depContainer.addMarker("org.wildfly.swarm.allDependencies.added") ;
+                        depContainer.addMarker(ALL_DEPENDENCIES_ADDED_MARKER);
                     } catch (Throwable t) {
                         throw new RuntimeException("Failed to resolve archive dependencies", t);
                     }

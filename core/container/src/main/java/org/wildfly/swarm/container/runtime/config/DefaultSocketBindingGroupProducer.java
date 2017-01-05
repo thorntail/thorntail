@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.container.runtime.config;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -31,10 +30,12 @@ public class DefaultSocketBindingGroupProducer {
 
     public static final String STANDARD_SOCKETS = "standard-sockets";
 
-    @Produces @Singleton @Named( STANDARD_SOCKETS )
+    @Produces
+    @Singleton
+    @Named(STANDARD_SOCKETS)
     public SocketBindingGroup standardSockets() {
         return new SocketBindingGroup(
-                "standard-sockets",
+                STANDARD_SOCKETS,
                 "public",
                 SwarmProperties.propertyVar(SwarmProperties.PORT_OFFSET, "0"));
     }

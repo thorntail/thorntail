@@ -68,7 +68,7 @@ public class SystemDependencyResolution implements DependencyResolution {
                 boolean excludedByProvidedGAVs = excluded(providedGAVs, element);
                 boolean excludedByTestClasspath = excluded(testClasspathElements, element);
 
-                if (! excludedByProvidedGAVs && ! excludedByTestClasspath) {
+                if (!excludedByProvidedGAVs && !excludedByTestClasspath) {
                     archivesPaths.add(element);
                 }
             }

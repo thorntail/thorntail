@@ -38,15 +38,15 @@ import org.wildfly.swarm.spi.api.JARArchive;
 @ApplicationScoped
 public class DefaultDeploymentCreator {
 
-    private Map<String,DefaultDeploymentFactory> factories = new HashMap<>();
+    private Map<String, DefaultDeploymentFactory> factories = new HashMap<>();
 
     @Inject
     public DefaultDeploymentCreator(@Any Instance<DefaultDeploymentFactory> factories) {
-        this( (Iterable<DefaultDeploymentFactory>) factories );
+        this((Iterable<DefaultDeploymentFactory>) factories);
     }
 
-    public DefaultDeploymentCreator(DefaultDeploymentFactory...factories) {
-        this(Arrays.asList( factories ) );
+    public DefaultDeploymentCreator(DefaultDeploymentFactory... factories) {
+        this(Arrays.asList(factories));
     }
 
     public DefaultDeploymentCreator(Iterable<DefaultDeploymentFactory> factories) {
@@ -73,7 +73,7 @@ public class DefaultDeploymentCreator {
 
     DefaultDeploymentFactory getFactory(String type) {
         DefaultDeploymentFactory factory = this.factories.get(type);
-        if ( factory != null ) {
+        if (factory != null) {
             return factory;
         }
         return new EmptyJARArchiveDeploymentFactory(type);

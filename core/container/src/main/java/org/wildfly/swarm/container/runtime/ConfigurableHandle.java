@@ -1,10 +1,8 @@
 package org.wildfly.swarm.container.runtime;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 import org.wildfly.swarm.spi.api.Defaultable;
-import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
  * @author Bob McWhirter
@@ -29,24 +27,24 @@ public class ConfigurableHandle {
     }
 
     public Class<?> type() throws IllegalAccessException {
-        if ( isDefaultable() ) {
-            return ((Defaultable)this.field.get( this.instance )).type();
+        if (isDefaultable()) {
+            return ((Defaultable) this.field.get(this.instance)).type();
         }
 
         return this.field.getType();
     }
 
     public <T> void set(T value) throws IllegalAccessException {
-        if ( isDefaultable() ) {
-            ((Defaultable)this.field.get( this.instance )).set(value);
+        if (isDefaultable()) {
+            ((Defaultable) this.field.get(this.instance)).set(value);
         } else {
             this.field.set(this.instance, value);
         }
     }
 
     protected <T> T currentValue() throws IllegalAccessException {
-        Object value = this.field.get( this.instance );
-        if ( value instanceof Defaultable ) {
+        Object value = this.field.get(this.instance);
+        if (value instanceof Defaultable) {
             return (T) ((Defaultable) value).get();
         }
         return (T) value;

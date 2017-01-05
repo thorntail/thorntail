@@ -76,7 +76,7 @@ public class FractionProducingExtension implements Extension {
 
         for (Fraction fraction : explicitlyInstalledFractions) {
             try {
-                abd.addBean( new ConfigurableFractionBean<>(fraction, this.configurableManager) );
+                abd.addBean(new ConfigurableFractionBean<>(fraction, this.configurableManager));
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -97,8 +97,8 @@ public class FractionProducingExtension implements Extension {
                 .filter(cls -> !preExistingFractionClasses.contains(cls))
                 .forEach((cls) -> {
                     try {
-                        abd.addBean( new ConfigurableFractionBean<>(cls, this.configurableManager) );
-                    } catch (IllegalAccessException|InstantiationException| NoSuchMethodException | InvocationTargetException e) {
+                        abd.addBean(new ConfigurableFractionBean<>(cls, this.configurableManager));
+                    } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
                         throw new RuntimeException(e);
                     }
                 });

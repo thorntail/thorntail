@@ -23,7 +23,7 @@ import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
  */
 public class MavenResolvers {
 
-    public synchronized static MavenResolver get() {
+    public static synchronized MavenResolver get() {
         return INSTANCE;
     }
 
@@ -37,4 +37,6 @@ public class MavenResolvers {
         }
     }
 
+    private MavenResolvers() {
+    }
 }

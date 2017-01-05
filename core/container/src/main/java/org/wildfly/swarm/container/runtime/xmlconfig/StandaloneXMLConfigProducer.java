@@ -33,13 +33,15 @@ import org.wildfly.swarm.internal.SwarmMessages;
 @Singleton
 public class StandaloneXMLConfigProducer {
 
+    private static final String STANDALONE_XML_FILE = "standalone.xml";
+
     @Produces
     @XMLConfig
     public URL fromSwarmApplicationModule() {
         try {
             Module app = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
             ClassLoader cl = app.getClassLoader();
-            URL result = cl.getResource("standalone.xml");
+            URL result = cl.getResource(STANDALONE_XML_FILE);
             if (result != null) {
                 SwarmMessages.MESSAGES.loadingStandaloneXml("'swarm.application' module", result.toExternalForm());
             }
@@ -54,7 +56,7 @@ public class StandaloneXMLConfigProducer {
     @XMLConfig
     public URL fromClassLoader() {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
-        URL result = cl.getResource("standalone.xml");
+        URL result = cl.getResource(STANDALONE_XML_FILE);
         if (result != null) {
             SwarmMessages.MESSAGES.loadingStandaloneXml("system classloader", result.toExternalForm());
         }

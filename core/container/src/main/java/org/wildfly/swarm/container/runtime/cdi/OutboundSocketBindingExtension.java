@@ -20,13 +20,11 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.weld.literal.AnyLiteral;
@@ -48,24 +46,24 @@ public class OutboundSocketBindingExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
 
-        for (OutboundSocketBindingRequest each : this.bindings ) {
+        for (OutboundSocketBindingRequest each : this.bindings) {
             abd.addBean()
                     .addTypes(Customizer.class)
                     .scope(Singleton.class)
                     .addQualifier(new AnnotationLiteral<Pre>() {
                     })
-                    .produceWith( ()-> (Customizer) () -> {
+                    .produceWith(() -> (Customizer) () -> {
                         Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
 
                         groups.stream()
-                                .map( (Bean e)->{
+                                .map((Bean e) -> {
                                     CreationalContext<SocketBindingGroup> ctx = beanManager.createCreationalContext(e);
                                     return (SocketBindingGroup) beanManager.getReference(e, SocketBindingGroup.class, ctx);
                                 })
-                                .filter( group-> group.name().equals( each.socketBindingGroup() ))
+                                .filter(group -> group.name().equals(each.socketBindingGroup()))
                                 .findFirst()
-                                .ifPresent( (group)->{
-                                    group.outboundSocketBinding( each.outboundSocketBinding() );
+                                .ifPresent((group) -> {
+                                    group.outboundSocketBinding(each.outboundSocketBinding());
                                 });
                     });
         }

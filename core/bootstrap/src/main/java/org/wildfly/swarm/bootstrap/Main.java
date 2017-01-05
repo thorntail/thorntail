@@ -41,7 +41,7 @@ public class Main {
 
     public void run() throws Throwable {
         setupBootModuleLoader();
-        new MainInvoker( ApplicationEnvironment.get().getMainClassName(), this.args ).invoke();
+        new MainInvoker(ApplicationEnvironment.get().getMainClassName(), this.args).invoke();
     }
 
     public void setupBootModuleLoader() {

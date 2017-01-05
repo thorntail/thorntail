@@ -60,27 +60,27 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
         ApplicationEnvironment env = ApplicationEnvironment.get();
 
         env.bootstrapArtifacts()
-                .forEach( (dep)->{
+                .forEach((dep) -> {
                     String[] parts = dep.split(":");
                     ArtifactCoordinates coords = null;
 
-                    if ( parts.length == 4 ) {
-                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[3] );
-                    } else if ( parts.length == 5 ) {
-                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[3], parts[4] );
+                    if (parts.length == 4) {
+                        coords = new ArtifactCoordinates(parts[0], parts[1], parts[3]);
+                    } else if (parts.length == 5) {
+                        coords = new ArtifactCoordinates(parts[0], parts[1], parts[3], parts[4]);
                     }
                     try {
                         File artifact = MavenResolvers.get().resolveJarArtifact(coords);
-                        if ( artifact == null ) {
-                            throw new RuntimeException( "Unable to resolve artifact from coordinates: " + coords );
+                        if (artifact == null) {
+                            throw new RuntimeException("Unable to resolve artifact from coordinates: " + coords);
                         }
                         JarFile jar = new JarFile(artifact);
                         ResourceLoader originaloader = ResourceLoaders.createJarResourceLoader(artifact.getName(), jar);
 
-                        PathFilter filter = getModuleFilter( jar );
+                        PathFilter filter = getModuleFilter(jar);
                         builder.addResourceRoot(
                                 ResourceLoaderSpec.createResourceLoaderSpec(
-                                        ResourceLoaders.createFilteredResourceLoader( filter, originaloader )
+                                        ResourceLoaders.createFilteredResourceLoader(filter, originaloader)
                                 )
                         );
                     } catch (IOException e) {
@@ -112,14 +112,14 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
 
         while (jarEntries.hasMoreElements()) {
             JarEntry jarEntry = jarEntries.nextElement();
-            if ( ! jarEntry.isDirectory() ) {
+            if (!jarEntry.isDirectory()) {
                 String name = jarEntry.getName();
-                if ( name.endsWith( "/module.xml" ) ) {
-                    paths.add( name );
+                if (name.endsWith("/module.xml")) {
+                    paths.add(name);
                 }
             }
         }
-        return PathFilters.in( paths );
+        return PathFilters.in(paths);
     }
 
     private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.bootstrap");

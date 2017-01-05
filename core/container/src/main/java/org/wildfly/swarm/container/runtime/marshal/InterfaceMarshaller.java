@@ -17,7 +17,6 @@ package org.wildfly.swarm.container.runtime.marshal;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -40,6 +39,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 @Singleton
 public class InterfaceMarshaller implements ConfigurationMarshaller {
 
+    private static final String INTERFACE_NAME = "interface";
+
     @Inject
     @Any
     private Instance<Interface> interfaces;
@@ -47,7 +48,7 @@ public class InterfaceMarshaller implements ConfigurationMarshaller {
     public void marshal(List<ModelNode> list) {
 
         for (Interface iface : this.interfaces) {
-            configureInterface( iface, list );
+            configureInterface(iface, list);
         }
     }
 
@@ -58,7 +59,7 @@ public class InterfaceMarshaller implements ConfigurationMarshaller {
         ModelNode node = new ModelNode();
 
         node.get(OP).set(ADD);
-        node.get(OP_ADDR).set("interface", iface.getName());
+        node.get(OP_ADDR).set(INTERFACE_NAME, iface.getName());
         node.get(INET_ADDRESS).set(new ValueExpression(iface.getExpression()));
 
         list.add(node);
@@ -88,7 +89,7 @@ public class InterfaceMarshaller implements ConfigurationMarshaller {
                     String propName = addrProp.getName();
                     String propValue = addrProp.getValue().asString();
 
-                    return (propName.equals("interface") && propValue.equals(iface.getName()));
+                    return (propName.equals(INTERFACE_NAME) && propValue.equals(iface.getName()));
                 });
     }
 

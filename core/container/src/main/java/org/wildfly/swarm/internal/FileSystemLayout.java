@@ -28,7 +28,6 @@ import java.util.UUID;
  */
 public abstract class FileSystemLayout {
 
-
     public abstract String determinePackagingType();
 
     public abstract Path resolveBuildClassesDir();
@@ -53,29 +52,29 @@ public abstract class FileSystemLayout {
 
     /**
      * Derived form 'user.dir'
-     * @return a FileSystemLayout instance
      *
+     * @return a FileSystemLayout instance
      */
-    public final static FileSystemLayout create() {
-
+    public static FileSystemLayout create() {
         String userDir = System.getProperty(USER_DIR);
-        if(null==userDir)
-            throw SwarmMessages.MESSAGES.systemPropertyNotFound("user.dir");
+        if (null == userDir) {
+            throw SwarmMessages.MESSAGES.systemPropertyNotFound(USER_DIR);
+        }
 
         return create(userDir);
     }
 
     /**
      * Derived from explicit path
+     *
      * @param root the fs entry point
      * @return a FileSystemLayout instance
      */
-    public final static FileSystemLayout create(String root) {
+    public static FileSystemLayout create(String root) {
 
-        if(Files.exists(Paths.get(root, POM_XML))) {
+        if (Files.exists(Paths.get(root, POM_XML))) {
             return new MavenFileSystemLayout(root);
-        }
-        else if(Files.exists(Paths.get(root, BUILD_GRADLE))) {
+        } else if (Files.exists(Paths.get(root, BUILD_GRADLE))) {
             return new GradleFileSystemLayout(root);
         }
 

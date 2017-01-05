@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -41,7 +40,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 @Singleton
 public class ExtensionMarshaller implements ConfigurationMarshaller {
 
-    @Inject @Any
+    @Inject
+    @Any
     private Instance<Fraction> fractions;
 
     public void marshal(List<ModelNode> list) {
@@ -53,7 +53,7 @@ public class ExtensionMarshaller implements ConfigurationMarshaller {
         for (Fraction each : this.fractions) {
             WildFlyExtension anno = each.getClass().getAnnotation(WildFlyExtension.class);
 
-            if ( anno != null ) {
+            if (anno != null) {
                 if (anno.module() != null && !anno.module().equals("")) {
                     String module = anno.module();
                     if (!seen.contains(module)) {
@@ -67,7 +67,7 @@ public class ExtensionMarshaller implements ConfigurationMarshaller {
             }
         }
 
-        list.addAll(0, extensions );
+        list.addAll(0, extensions);
     }
 
 }

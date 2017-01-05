@@ -30,6 +30,14 @@ import org.wildfly.swarm.spi.api.ProjectStage;
 @Vetoed
 public class ProjectStageImpl implements ProjectStage {
 
+    private static final String EQUALS = "=";
+
+    private static final String LEFT_BRACKET = "[";
+
+    private static final String RIGHT_BRACKET = "]";
+
+    private static final String NEWLINE = "\n";
+
     private String name;
 
     private Map<String, Object> config = new HashMap<>();
@@ -50,16 +58,17 @@ public class ProjectStageImpl implements ProjectStage {
             StringBuffer buffer = new StringBuffer();
             parse(buffer, null, key, config);
 
-            String[] lines = buffer.toString().split("\n");
+            String[] lines = buffer.toString().split(NEWLINE);
             for (String line : lines) {
-                int pos = line.indexOf('=');
+                int pos = line.indexOf(EQUALS);
                 String left = line.substring(0, pos);
 
                 // args precendence (java -Dfoo=bar)
-                if (null == System.getProperty(left))
+                if (null == System.getProperty(left)) {
                     this.properties.put(left, line.substring(pos + 1, line.length()));
-                else
+                } else {
                     this.properties.put(left, System.getProperty(left));
+                }
             }
         }
         return this;
@@ -75,8 +84,9 @@ public class ProjectStageImpl implements ProjectStage {
     }
 
     private void parse(StringBuffer buffer, String parent, String key, Map<String, Object> config) {
-        if (parent != null && buffer.substring(buffer.length() - 1, buffer.length()).equals("\n"))
+        if (parent != null && buffer.substring(buffer.length() - 1, buffer.length()).equals(NEWLINE)) {
             buffer.append(parent);
+        }
 
         buffer.append(key);
 
@@ -101,18 +111,19 @@ public class ProjectStageImpl implements ProjectStage {
             int i = 0;
             String prefix = buffer.toString();
             for (Object item : list) {
-                if (i == 0)
-                    buffer.append("[").append(i).append("]");
-                else
-                    buffer.append(prefix).append("[").append(i).append("]");
-                buffer.append("=").append(item);
-                buffer.append("\n");
+                if (i == 0) {
+                    buffer.append(LEFT_BRACKET).append(i).append(RIGHT_BRACKET);
+                } else {
+                    buffer.append(prefix).append(LEFT_BRACKET).append(i).append(RIGHT_BRACKET);
+                }
+                buffer.append(EQUALS).append(item);
+                buffer.append(NEWLINE);
                 i++;
             }
         } else {
             // simple values: non-recursive
-            buffer.append("=").append(o);
-            buffer.append("\n");
+            buffer.append(EQUALS).append(o);
+            buffer.append(NEWLINE);
         }
 
     }

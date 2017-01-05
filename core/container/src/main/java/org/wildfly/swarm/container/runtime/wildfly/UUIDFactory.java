@@ -27,11 +27,14 @@ import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 @Vetoed
 public class UUIDFactory {
 
+    private static final String NODE_NAME = "jboss.node.name";
+
+    private UUIDFactory() {
+    }
+
     public static UUID getUUID() {
-
-
         String swarmNodeId = System.getProperty(SwarmInternalProperties.NODE_ID);
-        String jbossNodeName = System.getProperty("jboss.node.name");
+        String jbossNodeName = System.getProperty(NODE_NAME);
 
         String uuidInput = null;
 
@@ -40,7 +43,7 @@ public class UUIDFactory {
         if (swarmNodeId != null) {
             uuidInput = swarmNodeId;
             if (jbossNodeName == null) {
-                System.setProperty("jboss.node.name", swarmNodeId);
+                System.setProperty(NODE_NAME, swarmNodeId);
             }
         }
         if (jbossNodeName != null) {

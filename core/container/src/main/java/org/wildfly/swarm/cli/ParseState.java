@@ -24,25 +24,26 @@ import javax.enterprise.inject.Vetoed;
 class ParseState {
 
     private final String[] args;
+
     private int cur;
 
-    ParseState(String...args) {
+    ParseState(String... args) {
         this.args = args;
         this.cur = 0;
     }
 
     String la() {
-        if ( this.cur >= this.args.length ) {
+        if (this.cur >= this.args.length) {
             return null;
         }
         return this.args[this.cur];
     }
 
     String consume() {
-        if ( la() == null ) {
+        if (la() == null) {
             // TODO (jrp) this may need to be internationalized, but I'm not certain what the error is
-            throw new RuntimeException( "parse error" );
+            throw new RuntimeException("parse error");
         }
-        return this.args[ this.cur++ ];
+        return this.args[this.cur++];
     }
 }

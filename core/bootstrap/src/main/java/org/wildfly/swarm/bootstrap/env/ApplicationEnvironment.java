@@ -24,25 +24,27 @@ import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.yaml.snakeyaml.Yaml;
 
-/** Entry-point to runtime environment.
+/**
+ * Entry-point to runtime environment.
  *
  * <p>This class uses the <code>fraction-manifest.yaml</code> from each fraction,
  * along with the container-wide <code>wildfly-swarm-manifest.yaml</code> if executing
  * in an uberjar mode in order to determine information such as:</p>
  *
  * <ul>
- *     <li>uberjar vs non-uberjar execution mode</li>
- *     <li>removable dependencies</li>
- *     <li>bootstrap swarm artifacts</li>
- *     <li>bootstrap swarm modules</li>
- *     <li>all installed fractions</li>
+ * <li>uberjar vs non-uberjar execution mode</li>
+ * <li>removable dependencies</li>
+ * <li>bootstrap swarm artifacts</li>
+ * <li>bootstrap swarm modules</li>
+ * <li>all installed fractions</li>
  * </ul>
  *
  * @author Bob McWhirter
  */
 public class ApplicationEnvironment {
 
-    /** Fetch the ApplicationEnvironment
+    /**
+     * Fetch the ApplicationEnvironment
      *
      * @return The environment.
      */
@@ -56,11 +58,12 @@ public class ApplicationEnvironment {
         });
     }
 
-    /** Do not construct directly.
+    /**
+     * Do not construct directly.
      */
     private ApplicationEnvironment() {
         try {
-            if (System.getProperty(BootstrapProperties.IS_UBERJAR ) != null) {
+            if (System.getProperty(BootstrapProperties.IS_UBERJAR) != null) {
                 this.mode = Mode.UBERJAR;
                 if (!loadWildFlySwarmApplicationManifestFromClasspath()) {
                     loadWildFlySwarmApplicationManifestFromTCCL();
@@ -78,7 +81,7 @@ public class ApplicationEnvironment {
     private void loadDependencyTree() {
         final String cpInfoProp = System.getProperty("swarm.cp.info");
 
-        if(cpInfoProp!=null) {
+        if (cpInfoProp != null) {
             try {
 
                 DependencyTree<MavenArtifactDescriptor> dependencyTree = new DependencyTree<>();
@@ -88,15 +91,16 @@ public class ApplicationEnvironment {
                 for (String directDep : data.keySet()) {
                     MavenArtifactDescriptor parent = MavenArtifactDescriptor.fromMavenGav(directDep);
                     Collection<String> transientDeps = (Collection<String>) data.get(directDep);
-                    for(String transientDep : transientDeps) {
+                    for (String transientDep : transientDeps) {
                         dependencyTree.add(
                                 parent,
                                 MavenArtifactDescriptor.fromMavenGav(transientDep)
                         );
                     }
 
-                    if(transientDeps.isEmpty())
+                    if (transientDeps.isEmpty()) {
                         dependencyTree.add(parent);
+                    }
                 }
                 this.dependencyTree = Optional.of(dependencyTree);
 
@@ -106,7 +110,8 @@ public class ApplicationEnvironment {
         }
     }
 
-    /** List of bootstrap modules to bootstrap the fractions.
+    /**
+     * List of bootstrap modules to bootstrap the fractions.
      *
      * @return The list of simple module names
      */
@@ -114,7 +119,8 @@ public class ApplicationEnvironment {
         return this.bootstrapModules;
     }
 
-    /** List of bootstrap artifacts to look for fractions.
+    /**
+     * List of bootstrap artifacts to look for fractions.
      *
      * @return The list of Maven GAVs to bootstrap.
      */
@@ -174,7 +180,7 @@ public class ApplicationEnvironment {
                     }
                 });
 
-        this.manifests.sort( new ManifestComparator() );
+        this.manifests.sort(new ManifestComparator());
     }
 
     private void loadFractionManifests(ClassLoader cl) throws IOException {
@@ -197,7 +203,7 @@ public class ApplicationEnvironment {
 
                 Set<MavenArtifactDescriptor> applicationDependencies = new HashSet<>();
 
-                if(dependencyTree.isPresent()) {
+                if (dependencyTree.isPresent()) {
 
                     Set<MavenArtifactDescriptor> topLevelFractions = new HashSet<>();
 
@@ -208,7 +214,7 @@ public class ApplicationEnvironment {
                     );
 
                     for (MavenArtifactDescriptor target : dependencyTree.get().getDirectDeps()) {
-                        if(source.equals(target))  {
+                        if (source.equals(target)) {
                             topLevelFractions.add(target);
                         }
                     }
@@ -216,7 +222,7 @@ public class ApplicationEnvironment {
                     Set<MavenArtifactDescriptor> keep = new HashSet<>(dependencyTree.get().getDirectDeps());
                     keep.removeAll(topLevelFractions);
 
-                    for(MavenArtifactDescriptor dep : keep) {
+                    for (MavenArtifactDescriptor dep : keep) {
                         // the dep itself
                         applicationDependencies.add(dep);
 
@@ -236,9 +242,9 @@ public class ApplicationEnvironment {
         // match existing dependency info (if given)
         // for now we simply keep all explicit deps, but ignore their transient children
         Set<String> keep = new HashSet<>();
-        if(dependencyTree.isPresent()) {
+        if (dependencyTree.isPresent()) {
 
-            for(String toBeRemoved : removeableDependencies) {
+            for (String toBeRemoved : removeableDependencies) {
                 MavenArtifactDescriptor source = MavenArtifactDescriptor.fromMavenGav(toBeRemoved);
                 for (MavenArtifactDescriptor target : dependencyTree.get().getDirectDeps()) {
 
@@ -255,10 +261,11 @@ public class ApplicationEnvironment {
         }
 
 
-        this.manifests.sort( new ManifestComparator() );
+        this.manifests.sort(new ManifestComparator());
     }
 
-    /** List of <i>application-level</i> dependencies.
+    /**
+     * List of <i>application-level</i> dependencies.
      *
      * <p>Only applicable for uberjar executions.</p>
      *
@@ -271,9 +278,10 @@ public class ApplicationEnvironment {
         return Collections.emptyList();
     }
 
-    /** List of <i>removable</i> dependencies, such as the
-     *  bootstrap Swarm jars and anything transitive not directly
-     *  required by the application.
+    /**
+     * List of <i>removable</i> dependencies, such as the
+     * bootstrap Swarm jars and anything transitive not directly
+     * required by the application.
      *
      * @return The list of Maven GAVs that may be removed.
      */
@@ -282,7 +290,6 @@ public class ApplicationEnvironment {
     }
 
     /**
-     *
      * [hb] TODO: these javadocs are wrong and describe a previous implementation of this method
      *
      * Resolve the application's dependencies.
@@ -293,7 +300,6 @@ public class ApplicationEnvironment {
      *
      * @param exclusions Maven GAVs to exclude.
      * @return Set of paths to dependency artifacts.
-     *
      * @throws IOException
      */
     public Set<String> resolveDependencies(List<String> exclusions) throws IOException {
@@ -312,7 +318,8 @@ public class ApplicationEnvironment {
         return null;
     }
 
-    /** Retrieve the user's main-class name, if specified, else the default.
+    /**
+     * Retrieve the user's main-class name, if specified, else the default.
      *
      * @return The user's main-class name, else the default Swarm main.
      */
@@ -324,7 +331,8 @@ public class ApplicationEnvironment {
         return DEFAULT_MAIN_CLASS_NAME;
     }
 
-    /** Determine if this application is defined to be hollow.
+    /**
+     * Determine if this application is defined to be hollow.
      *
      * @return <code>true</code> if hollow, otherwise <code>false</code>.
      */
@@ -360,7 +368,8 @@ public class ApplicationEnvironment {
         return ApplicationEnvironment.class.getClassLoader();
     }
 
-    /** Retrieve a sorted list of installed fraction manifests.
+    /**
+     * Retrieve a sorted list of installed fraction manifests.
      *
      * @return The sorted list of installed fraction manifests.
      */

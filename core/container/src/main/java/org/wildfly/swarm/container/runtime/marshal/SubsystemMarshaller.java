@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -53,7 +52,7 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
 
             MarshalDMR anno = each.getClass().getAnnotation(MarshalDMR.class);
 
-            if ( anno != null ) {
+            if (anno != null) {
                 try {
                     LinkedList<ModelNode> subList = Marshaller.marshal(each);
                     if (!isAlreadyConfigured(subList, list)) {
@@ -65,7 +64,7 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
             } else {
                 WildFlySubsystem subsysAnno = each.getClass().getAnnotation(WildFlySubsystem.class);
 
-                if ( subsysAnno != null ){
+                if (subsysAnno != null) {
 
                     PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, subsysAnno.value()));
 

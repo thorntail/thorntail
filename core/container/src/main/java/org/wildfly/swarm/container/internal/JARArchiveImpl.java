@@ -30,6 +30,8 @@ import org.wildfly.swarm.spi.api.JARArchive;
 @Vetoed
 public class JARArchiveImpl extends ContainerBase<JARArchive> implements JARArchive {
 
+    private static final String ROOT_PATH = "/";
+
     // -------------------------------------------------------------------------------------||
     // Class Members ----------------------------------------------------------------------||
     // -------------------------------------------------------------------------------------||
@@ -103,11 +105,11 @@ public class JARArchiveImpl extends ContainerBase<JARArchive> implements JARArch
     /**
      * Path to the resources inside of the Archive.
      */
-    private static final ArchivePath PATH_RESOURCE = new BasicPath("/");
+    private static final ArchivePath PATH_RESOURCE = new BasicPath(ROOT_PATH);
 
     /**
      * Path to the classes inside of the Archive.
      */
-    private static final ArchivePath PATH_CLASSES = new BasicPath("/");
+    private static final ArchivePath PATH_CLASSES = new BasicPath(ROOT_PATH);
 
 }

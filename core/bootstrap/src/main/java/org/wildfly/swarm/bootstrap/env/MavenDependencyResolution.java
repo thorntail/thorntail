@@ -11,6 +11,7 @@ import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 
 /**
  * [hb] TODO: rename to UberJarDependencies
+ *
  * @author Heiko Braun
  * @since 18/07/16
  */
@@ -23,20 +24,20 @@ public class MavenDependencyResolution implements DependencyResolution {
         ApplicationEnvironment env = ApplicationEnvironment.get();
 
         env.getDependencies()
-                .forEach( dep->{
+                .forEach(dep -> {
                     String[] parts = dep.split(":");
                     ArtifactCoordinates coords = null;
 
-                    if ( parts.length == 4 ) {
-                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[3] );
-                    } else if ( parts.length == 5 ) {
-                        coords = new ArtifactCoordinates( parts[0], parts[1], parts[3], parts[4] );
+                    if (parts.length == 4) {
+                        coords = new ArtifactCoordinates(parts[0], parts[1], parts[3]);
+                    } else if (parts.length == 5) {
+                        coords = new ArtifactCoordinates(parts[0], parts[1], parts[3], parts[4]);
                     }
 
                     try {
-                        final File artifact = MavenResolvers.get().resolveJarArtifact( coords );
-                        if ( artifact == null ) {
-                            System.err.println( "Unable to resolve artifact: " + coords );
+                        final File artifact = MavenResolvers.get().resolveJarArtifact(coords);
+                        if (artifact == null) {
+                            System.err.println("Unable to resolve artifact: " + coords);
                         } else {
                             archivePaths.add(artifact.getAbsolutePath());
                         }

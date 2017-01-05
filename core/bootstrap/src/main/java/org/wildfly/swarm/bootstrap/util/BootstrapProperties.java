@@ -29,6 +29,9 @@ public class BootstrapProperties {
 
     public static final String IS_UBERJAR = "swarm.isuberjar";
 
+    private BootstrapProperties() {
+    }
+
     public static boolean flagIsSet(final String prop) {
         return flagIsSet(prop, false);
     }

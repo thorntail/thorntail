@@ -1,13 +1,5 @@
 package org.wildfly.swarm.bootstrap.modules;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Enumeration;
-
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
@@ -21,6 +13,10 @@ import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
  * @author Bob McWhirter
  */
 public class ContainerModuleFinder extends AbstractSingleModuleFinder {
+
+    private static final String RUNTIME_SLOT = "runtime";
+
+    private static final String WELD_VERSION = "3";
 
     public ContainerModuleFinder() {
         super("swarm.container");
@@ -49,7 +45,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.wildfly.swarm.container", "runtime"), false));
+                        ModuleIdentifier.create("org.wildfly.swarm.container", RUNTIME_SLOT), false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -83,7 +79,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.jboss.weld.api", "3"), false));
+                        ModuleIdentifier.create("org.jboss.weld.api", WELD_VERSION), false));
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
                         PathFilters.acceptAll(),
@@ -93,7 +89,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.jboss.weld.spi", "3"), false));
+                        ModuleIdentifier.create("org.jboss.weld.spi", WELD_VERSION), false));
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
                         PathFilters.acceptAll(),
@@ -103,7 +99,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.jboss.weld.core", "3"), false));
+                        ModuleIdentifier.create("org.jboss.weld.core", WELD_VERSION), false));
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
                         PathFilters.acceptAll(),
@@ -113,7 +109,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.jboss.weld.se", "3"), false));
+                        ModuleIdentifier.create("org.jboss.weld.se", WELD_VERSION), false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -139,7 +135,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                                     ClassFilters.acceptAll(),
                                     ClassFilters.acceptAll(),
                                     null,
-                                    ModuleIdentifier.create(module, "runtime"), false));
+                                    ModuleIdentifier.create(module, RUNTIME_SLOT), false));
                 });
     }
 

@@ -26,7 +26,8 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.wildfly.swarm.container.runtime.xmlconfig.XMLConfig;
 
-/** Produces any explicitly-set XML configuration URL (standalone.xml)
+/**
+ * Produces any explicitly-set XML configuration URL (standalone.xml)
  *
  * @author Bob McWhirter
  */
@@ -39,14 +40,14 @@ public class XMLConfigProducingExtension implements Extension {
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        abd.addBean().addType( URL.class )
+        abd.addBean().addType(URL.class)
                 .scope(Dependent.class)
-                .qualifiers( XMLConfig.Literal.INSTANCE )
+                .qualifiers(XMLConfig.Literal.INSTANCE)
                 .produceWith(this::getXMLConfig);
     }
 
     protected URL getXMLConfig() {
-        if ( this.xmlConfig.isPresent() ) {
+        if (this.xmlConfig.isPresent()) {
             return this.xmlConfig.get();
         }
         return null;

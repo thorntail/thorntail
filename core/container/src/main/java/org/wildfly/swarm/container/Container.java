@@ -22,7 +22,6 @@ import javax.enterprise.inject.Vetoed;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SocketBindingGroup;
 
 /**
  * @author Bob McWhirter

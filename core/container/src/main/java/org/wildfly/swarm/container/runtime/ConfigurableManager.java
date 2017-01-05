@@ -31,10 +31,16 @@ import org.wildfly.swarm.spi.api.annotations.Configurable;
  */
 public class ConfigurableManager implements AutoCloseable {
 
+    private static final String DOT = ".";
+
+    private static final String SUBRESOURCES = "subresources";
+
+    private static final String ACCEPT = "accept";
+
     private static final Set<String> BLACKLISTED_FIELDS = new HashSet<String>() {{
         add("pcs");
         add("key");
-        add("subresources");
+        add(SUBRESOURCES);
     }};
 
     private static final Set<Class<?>> BLACKLISTED_CLASSES = new HashSet<Class<?>>() {{
@@ -97,9 +103,9 @@ public class ConfigurableManager implements AutoCloseable {
 
         if (isMap || isProperties || resolver.hasValue()) {
             Object resolvedValue = resolver.getValue();
-            if ( isMap && ((Map)resolvedValue).isEmpty() ) {
+            if (isMap && ((Map) resolvedValue).isEmpty()) {
                 // ignore
-            } else if ( isProperties && ((Properties)resolvedValue).isEmpty() ) {
+            } else if (isProperties && ((Properties) resolvedValue).isEmpty()) {
                 // also ignore
             } else {
                 configurable.set(configurable.type().cast(resolvedValue));
@@ -121,7 +127,7 @@ public class ConfigurableManager implements AutoCloseable {
             Set<String> subKeys = this.stageConfig.simpleSubkeys(name);
 
             for (String subKey : subKeys) {
-                map.put(subKey, this.stageConfig.resolve(name + '.' + subKey).getValue());
+                map.put(subKey, this.stageConfig.resolve(name + DOT + subKey).getValue());
             }
             return map;
         };
@@ -137,7 +143,7 @@ public class ConfigurableManager implements AutoCloseable {
             Set<String> subKeys = this.stageConfig.simpleSubkeys(name);
 
             for (String subKey : subKeys) {
-                props.setProperty(subKey, this.stageConfig.resolve(name + '.' + subKey).getValue());
+                props.setProperty(subKey, this.stageConfig.resolve(name + DOT + subKey).getValue());
             }
             return props;
         };
@@ -279,11 +285,11 @@ public class ConfigurableManager implements AutoCloseable {
                 return anno.value();
             }
             if (!anno.simpleName().equals("")) {
-                return prefix + "." + anno.simpleName();
+                return prefix + DOT + anno.simpleName();
             }
         }
 
-        return prefix + "." + nameFor(field);
+        return prefix + DOT + nameFor(field);
     }
 
     protected String nameFor(Field field) {
@@ -319,7 +325,7 @@ public class ConfigurableManager implements AutoCloseable {
             }
             field.setAccessible(true);
             Object value = field.get(subresources);
-            String subPrefix = prefix + "." + nameFor(field);
+            String subPrefix = prefix + DOT + nameFor(field);
             if (value != null && value instanceof List) {
                 int index = 0;
                 Set<String> seenKeys = new HashSet<>();
@@ -328,9 +334,9 @@ public class ConfigurableManager implements AutoCloseable {
                     String itemPrefix = null;
                     if (key != null) {
                         seenKeys.add(key);
-                        itemPrefix = subPrefix + "." + key;
+                        itemPrefix = subPrefix + DOT + key;
                     } else {
-                        itemPrefix = subPrefix + "." + index;
+                        itemPrefix = subPrefix + DOT + index;
                     }
                     scan(itemPrefix, each, true);
                     ++index;
@@ -345,7 +351,7 @@ public class ConfigurableManager implements AutoCloseable {
 
                     if (factoryMethod != null) {
                         for (String key : keysWithConfiguration) {
-                            String itemPrefix = subPrefix + "." + key;
+                            String itemPrefix = subPrefix + DOT + key;
                             Object lambda = createLambda(itemPrefix, factoryMethod);
                             if (lambda != null) {
                                 factoryMethod.invoke(instance, key, lambda);
@@ -384,7 +390,7 @@ public class ConfigurableManager implements AutoCloseable {
         try {
             Method acceptMethod = null;
             for (Method method : consumerType.getMethods()) {
-                if (method.getName().equals("accept")) {
+                if (method.getName().equals(ACCEPT)) {
                     acceptMethod = method;
                 }
             }
@@ -399,7 +405,7 @@ public class ConfigurableManager implements AutoCloseable {
 
             MethodHandle mh = LambdaMetafactory.metafactory(
                     lookup,
-                    "accept",
+                    ACCEPT,
                     MethodType.methodType(consumerType, ConfigurableManager.class, String.class),
                     samType,
                     target,
@@ -449,7 +455,7 @@ public class ConfigurableManager implements AutoCloseable {
 
                 boolean acceptMethodFound = false;
                 for (Method paramMethod : method.getParameterTypes()[1].getMethods()) {
-                    if (paramMethod.getName().equals("accept")) {
+                    if (paramMethod.getName().equals(ACCEPT)) {
                         acceptMethodFound = true;
                         break;
                     }
@@ -492,7 +498,7 @@ public class ConfigurableManager implements AutoCloseable {
 
             boolean acceptMethodFound = false;
             for (Method paramMethod : method.getParameterTypes()[0].getMethods()) {
-                if (paramMethod.getName().equals("accept")) {
+                if (paramMethod.getName().equals(ACCEPT)) {
                     acceptMethodFound = true;
                     break;
                 }
@@ -515,7 +521,7 @@ public class ConfigurableManager implements AutoCloseable {
                 continue;
             }
 
-            if (!method.getName().equals("subresources")) {
+            if (!method.getName().equals(SUBRESOURCES)) {
                 continue;
             }
 
