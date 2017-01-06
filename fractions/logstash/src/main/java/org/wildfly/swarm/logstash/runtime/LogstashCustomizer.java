@@ -52,13 +52,16 @@ public class LogstashCustomizer implements Customizer {
                     .module("org.jboss.logmanager.ext")
                     .attributeClass("org.jboss.logmanager.ext.handlers.SocketHandler")
                     .namedFormatter("logstash")
-                    .properties(handlerProps);
+                    .properties(handlerProps)
+                    .level(this.logstash.level());
 
             this.logging
                     .customFormatter("logstash", "org.jboss.logmanager.ext", "org.jboss.logmanager.ext.formatters.LogstashFormatter",
                                      this.logstash.formatterProperties())
                     .customHandler(logstashHandler)
-                    .rootLogger(this.logstash.level(), logstashHandler.getKey());
+                    .subresources()
+                    .rootLogger()
+                    .handler(logstashHandler.getKey());
         }
     }
 }
