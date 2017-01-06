@@ -53,6 +53,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUC
 @Vetoed
 public class MonitorService implements Monitor, Service<MonitorService> {
 
+    private static final String SELECT = "select";
+
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "monitor");
 
     public MonitorService(Optional<String> securityRealm) {
@@ -95,11 +97,11 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         ModelNode op = new ModelNode();
         op.get(ADDRESS).setEmptyList();
         op.get(OP).set("query");
-        op.get("select").add("name");
-        op.get("select").add("server-state");
-        op.get("select").add("suspend-state");
-        op.get("select").add("running-mode");
-        op.get("select").add("uuid");
+        op.get(SELECT).add("name");
+        op.get(SELECT).add("server-state");
+        op.get(SELECT).add("suspend-state");
+        op.get(SELECT).add("running-mode");
+        op.get(SELECT).add("uuid");
 
         try {
             ModelNode response = controllerClient.execute(op);
@@ -122,8 +124,8 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         op.get(ADDRESS).add("core-service", "platform-mbean");
         op.get(ADDRESS).add("type", "memory");
         op.get(OP).set("query");
-        op.get("select").add("heap-memory-usage");
-        op.get("select").add("non-heap-memory-usage");
+        op.get(SELECT).add("heap-memory-usage");
+        op.get(SELECT).add("non-heap-memory-usage");
 
         try {
             ModelNode response = controllerClient.execute(op);
@@ -142,11 +144,11 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         op.get(ADDRESS).add("core-service", "platform-mbean");
         op.get(ADDRESS).add("type", "threading");
         op.get(OP).set("query");
-        op.get("select").add("thread-count");
-        op.get("select").add("peak-thread-count");
-        op.get("select").add("total-started-thread-count");
-        op.get("select").add("current-thread-cpu-time");
-        op.get("select").add("current-thread-user-time");
+        op.get(SELECT).add("thread-count");
+        op.get(SELECT).add("peak-thread-count");
+        op.get(SELECT).add("total-started-thread-count");
+        op.get(SELECT).add("current-thread-cpu-time");
+        op.get(SELECT).add("current-thread-user-time");
 
         try {
             ModelNode response = controllerClient.execute(op);
@@ -181,10 +183,11 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     }
 
     private static ModelNode unwrap(ModelNode response) {
-        if (response.get(OUTCOME).asString().equals(SUCCESS))
+        if (response.get(OUTCOME).asString().equals(SUCCESS)) {
             return response.get(RESULT);
-        else
+        } else {
             return response;
+        }
     }
 
     public Injector<ServerEnvironment> getServerEnvironmentInjector() {

@@ -17,7 +17,7 @@ import org.wildfly.swarm.arquillian.daemon.server.Server;
 @Vetoed
 public class TestableArchiveService implements Service<Void> {
 
-    public static final ServiceName NAME = ServiceName.of( "wildfly", "swarm", "arquillian", "testable-archive" );
+    public static final ServiceName NAME = ServiceName.of("wildfly", "swarm", "arquillian", "testable-archive");
 
     public TestableArchiveService(String archiveName) {
         this.archiveName = archiveName;
@@ -26,7 +26,7 @@ public class TestableArchiveService implements Service<Void> {
 
     @Override
     public void start(StartContext startContext) throws StartException {
-        this.serverInjector.getValue().setDeploymentUnit( this.deploymentUnitInjector.getValue() );
+        this.serverInjector.getValue().setDeploymentUnit(this.deploymentUnitInjector.getValue());
     }
 
     @Override
@@ -40,6 +40,8 @@ public class TestableArchiveService implements Service<Void> {
     }
 
     private String archiveName;
+
     public final InjectedValue<Server> serverInjector = new InjectedValue<>();
+
     public final InjectedValue<DeploymentUnit> deploymentUnitInjector = new InjectedValue<>();
 }

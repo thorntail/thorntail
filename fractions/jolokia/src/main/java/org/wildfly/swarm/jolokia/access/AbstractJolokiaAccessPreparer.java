@@ -22,5 +22,5 @@ abstract class AbstractJolokiaAccessPreparer implements Consumer<Archive> {
         }
     }
 
-    abstract protected Asset getJolokiaAccessXmlAsset();
+    protected abstract Asset getJolokiaAccessXmlAsset();
 }

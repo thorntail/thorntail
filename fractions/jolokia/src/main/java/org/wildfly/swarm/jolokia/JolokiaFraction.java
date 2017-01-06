@@ -16,7 +16,6 @@
 package org.wildfly.swarm.jolokia;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -60,7 +59,7 @@ public class JolokiaFraction implements Fraction<JolokiaFraction> {
     }
 
     public static Consumer<Archive> jolokiaAccessXml(File file) {
-        return new FileJolokiaAccessPreparer( file );
+        return new FileJolokiaAccessPreparer(file);
 
     }
 
@@ -70,12 +69,12 @@ public class JolokiaFraction implements Fraction<JolokiaFraction> {
 
     public static Consumer<Archive> jolokiaAccess(Consumer<JolokiaAccess> config) {
         JolokiaAccess access = new JolokiaAccess();
-        config.accept( access );
-        return new APIJolokiaAccessPreparer( access );
+        config.accept(access);
+        return new APIJolokiaAccessPreparer(access);
     }
 
     public static Consumer<Archive> jolokiaAccess(Supplier<JolokiaAccess> supplier) {
-        return new APIJolokiaAccessPreparer( supplier.get() );
+        return new APIJolokiaAccessPreparer(supplier.get());
     }
 
     private String context;

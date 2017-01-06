@@ -17,7 +17,6 @@ package org.wildfly.swarm.io;
 
 import org.wildfly.swarm.config.IO;
 import org.wildfly.swarm.config.io.BufferPool;
-import org.wildfly.swarm.config.io.Worker;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -25,7 +24,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 /**
  * @author Bob McWhirter
  */
-@WildFlyExtension(module="org.wildfly.extension.io")
+@WildFlyExtension(module = "org.wildfly.extension.io")
 @MarshalDMR
 public class IOFraction extends IO<IOFraction> implements Fraction<IOFraction> {
 

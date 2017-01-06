@@ -31,17 +31,19 @@ public class HealthStatus implements Status {
 
     private static final String DATA = "data";
 
+    private static final String ESCAPED_QUOTE = "\"";
+
     private final String name;
 
     private Optional<Map<String, Object>> message = Optional.empty();
+
     private State state;
 
     HealthStatus(String name) {
         this.name = name;
     }
 
-    public static HealthStatus named(String name)
-    {
+    public static HealthStatus named(String name) {
         return new HealthStatus(name);
     }
 
@@ -52,8 +54,9 @@ public class HealthStatus implements Status {
     }
 
     private void assertNamed() {
-        if(null==this.name)
+        if (null == this.name) {
             throw new IllegalStateException("HealthStatus need to be named");
+        }
     }
 
     public HealthStatus down() {
@@ -62,26 +65,27 @@ public class HealthStatus implements Status {
     }
 
     public HealthStatus withAttribute(String key, String value) {
-        Map<String,Object> payload = getPayloadWrapper();
+        Map<String, Object> payload = getPayloadWrapper();
         payload.put(key, value);
         return this;
     }
 
     public HealthStatus withAttribute(String key, long value) {
-        Map<String,Object> payload = getPayloadWrapper();
+        Map<String, Object> payload = getPayloadWrapper();
         payload.put(key, value);
         return this;
     }
 
     public HealthStatus withAttribute(String key, boolean value) {
-        Map<String,Object> payload = getPayloadWrapper();
+        Map<String, Object> payload = getPayloadWrapper();
         payload.put(key, value);
         return this;
     }
 
-    private Map<String,Object> getPayloadWrapper() {
-        if(!this.message.isPresent())
+    private Map<String, Object> getPayloadWrapper() {
+        if (!this.message.isPresent()) {
             this.message = Optional.of(new HashMap<>());
+        }
         return this.message.get();
     }
 
@@ -97,16 +101,17 @@ public class HealthStatus implements Status {
     public String toJson() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        sb.append("\"").append(ID).append("\":\"").append(name).append("\",");
-        sb.append("\"").append(RESULT).append("\":\"").append(state.name()).append("\",");
-        if(message.isPresent()) {
-            sb.append("\"").append(DATA).append("\": {");
+        sb.append(ESCAPED_QUOTE).append(ID).append("\":\"").append(name).append("\",");
+        sb.append(ESCAPED_QUOTE).append(RESULT).append("\":\"").append(state.name()).append("\",");
+        if (message.isPresent()) {
+            sb.append(ESCAPED_QUOTE).append(DATA).append("\": {");
             Map<String, Object> atts = message.get();
             int i = 0;
-            for(String key : atts.keySet()) {
-                sb.append("\"").append(key).append("\":").append(encode(atts.get(key)));
-                if(i<atts.keySet().size()-1)
+            for (String key : atts.keySet()) {
+                sb.append(ESCAPED_QUOTE).append(key).append("\":").append(encode(atts.get(key)));
+                if (i < atts.keySet().size() - 1) {
                     sb.append(",");
+                }
                 i++;
             }
             sb.append("}");
@@ -118,10 +123,9 @@ public class HealthStatus implements Status {
 
     private String encode(Object o) {
         String res = null;
-        if(o instanceof String) {
-            res = "\""+o.toString()+"\"";
-        }
-        else {
+        if (o instanceof String) {
+            res = ESCAPED_QUOTE + o.toString() + ESCAPED_QUOTE;
+        } else {
             res = o.toString();
         }
 

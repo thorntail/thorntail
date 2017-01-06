@@ -27,7 +27,6 @@ import org.wildfly.swarm.mail.EnhancedSMTPServer;
 import org.wildfly.swarm.mail.MailFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
-import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 

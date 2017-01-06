@@ -43,10 +43,13 @@ final class InVMConnection extends ServerConnection {
     private static Logger LOG = Logger.getLogger(InVMConnection.class);
 
     private final ByteBufferPool bufferPool;
+
     private final XnioWorker worker;
 
     private SSLSessionInfo sslSessionInfo;
+
     private XnioBufferPoolAdaptor poolAdaptor;
+
     private BufferingSinkConduit bufferSink;
 
     protected final List<CloseListener> closeListeners = new LinkedList<>();
@@ -62,7 +65,7 @@ final class InVMConnection extends ServerConnection {
 
     @Override
     public Pool<ByteBuffer> getBufferPool() {
-        if(poolAdaptor == null) {
+        if (poolAdaptor == null) {
             poolAdaptor = new XnioBufferPoolAdaptor(getByteBufferPool());
         }
         return poolAdaptor;

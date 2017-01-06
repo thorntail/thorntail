@@ -45,9 +45,9 @@ public class FractionDescriptor {
      * <p>The {@code gav} string contains colon-delimited Maven artifact coordinates. Supported formats are:</p>
      *
      * <ul>
-     *     <li>{@code artifactId}: the groupId {@code org.wildfly.swarm} is presumed</li>
-     *     <li>{@code artifactId:version}: the groupId {@code org.wildfly.swarm} is presumed</li>
-     *     <li>{@code groupId:artifactId:version}</li>
+     * <li>{@code artifactId}: the groupId {@code org.wildfly.swarm} is presumed</li>
+     * <li>{@code artifactId:version}: the groupId {@code org.wildfly.swarm} is presumed</li>
+     * <li>{@code groupId:artifactId:version}</li>
      * </ul>
      *
      * <p>If the {@code fractionList} doesn't contain such fraction, an exception is thrown.</p>
@@ -194,27 +194,34 @@ public class FractionDescriptor {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
+        }
 
-        if (obj == null)
+        if (obj == null) {
             return false;
+        }
 
-        if (getClass() != obj.getClass())
+        if (getClass() != obj.getClass()) {
             return false;
+        }
 
         FractionDescriptor other = (FractionDescriptor) obj;
         if (artifactId == null) {
-            if (other.artifactId != null)
+            if (other.artifactId != null) {
                 return false;
-        } else if (!artifactId.equals(other.artifactId))
+            }
+        } else if (!artifactId.equals(other.artifactId)) {
             return false;
+        }
 
         if (groupId == null) {
-            if (other.groupId != null)
+            if (other.groupId != null) {
                 return false;
-        } else if (!groupId.equals(other.groupId))
+            }
+        } else if (!groupId.equals(other.groupId)) {
             return false;
+        }
 
         return true;
     }

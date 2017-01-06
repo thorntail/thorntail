@@ -21,12 +21,16 @@ import java.lang.reflect.Modifier;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 
-/** A main class capable of using another nother class, annotated with {@link CreateSwarm} to create a main().
+/**
+ * A main class capable of using another nother class, annotated with {@link CreateSwarm} to create a main().
  *
  * @uathor Ken Finnigan
  */
 public class AnnotationBasedMain {
     public static final String ANNOTATED_CLASS_NAME = "swarm.arquillian.createswarm.class";
+
+    protected AnnotationBasedMain() {
+    }
 
     public static void main(String... args) throws Exception {
         if (System.getProperty("boot.module.loader") == null) {
@@ -40,17 +44,17 @@ public class AnnotationBasedMain {
         Method[] methods = cls.getMethods();
 
         for (Method method : methods) {
-            if (! Modifier.isStatic(method.getModifiers() ) ) {
+            if (!Modifier.isStatic(method.getModifiers())) {
                 continue;
             }
 
             CreateSwarm anno = method.getAnnotation(CreateSwarm.class);
-            if ( anno == null ) {
+            if (anno == null) {
                 continue;
             }
 
             boolean startEagerly = anno.startEagerly();
-            ((Swarm)method.invoke(null)).start().deploy();
+            ((Swarm) method.invoke(null)).start().deploy();
         }
 
     }

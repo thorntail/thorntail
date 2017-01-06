@@ -10,16 +10,7 @@ import java.util.List;
  */
 public class JolokiaAccess {
 
-    public interface Supplier extends java.util.function.Supplier<JolokiaAccess> {
-
-    }
-
-    public interface Consumer extends java.util.function.Consumer<JolokiaAccess> {
-
-    }
-
     public JolokiaAccess() {
-
     }
 
     public JolokiaAccess host(String host) {
@@ -88,8 +79,8 @@ public class JolokiaAccess {
             this.origins.forEach(e -> {
                 builder.append("    <allow-origin>").append(e).append("</allow-origin>\n");
             });
-            if ( this.strictChecking ) {
-                builder.append("    <strict-checking/>\n" );
+            if (this.strictChecking) {
+                builder.append("    <strict-checking/>\n");
             }
             builder.append("  </cors>\n");
         }
@@ -136,4 +127,10 @@ public class JolokiaAccess {
     private boolean strictChecking = false;
 
     private List<Section> sections = new ArrayList<>();
+
+    public interface Supplier extends java.util.function.Supplier<JolokiaAccess> {
+    }
+
+    public interface Consumer extends java.util.function.Consumer<JolokiaAccess> {
+    }
 }

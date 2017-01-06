@@ -31,6 +31,6 @@ public class WebInfLibFilteringArchiveAsset implements ProjectAsset {
 
     @Override
     public InputStream openStream() {
-        return new WebInfLibFilteringArchive( this.asset.getArchive(), this.resolvedDependencies ).as(ZipExporter.class).exportAsInputStream();
+        return new WebInfLibFilteringArchive(this.asset.getArchive(), this.resolvedDependencies).as(ZipExporter.class).exportAsInputStream();
     }
 }

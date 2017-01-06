@@ -26,6 +26,9 @@ import org.objectweb.asm.Opcodes;
  */
 public class ApplicationFactory implements Opcodes {
 
+    protected ApplicationFactory() {
+    }
+
     public static byte[] create(String name, String context) {
 
         ClassWriter cw = new ClassWriter(0);

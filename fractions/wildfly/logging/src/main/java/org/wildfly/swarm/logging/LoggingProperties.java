@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.logging;
 
-public class LoggingProperties {
+public interface LoggingProperties {
     //public
-    public static final String LOGGING = "swarm.logging";
+    String LOGGING = "swarm.logging";
 }

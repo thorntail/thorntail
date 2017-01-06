@@ -3,17 +3,13 @@ package org.wildfly.swarm.undertow.runtime;
 import java.io.File;
 import java.io.IOException;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.spi.api.Defaultable;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
-import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.undertow.UndertowFraction;
 import org.wildfly.swarm.undertow.descriptors.CertInfo;
 
@@ -31,7 +27,7 @@ public class CertInfoProducer {
     @Configurable("swarm.https.certificate.generate")
     Defaultable<Boolean> generateSelfCertificate = bool(false);
 
-    @Configurable( "swarm.https.certificate.generate.host")
+    @Configurable("swarm.https.certificate.generate.host")
     Defaultable<String> selfCertificateHost = string("localhost");
 
     @Produces

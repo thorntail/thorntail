@@ -58,7 +58,9 @@ import org.xnio.channels.StreamSinkChannel;
 class HttpContexts implements HttpHandler {
 
     protected ThreadLocal<CountDownLatch> dispatched = new ThreadLocal<>();
+
     private AttachmentKey<List> RESPONSES = AttachmentKey.create(List.class);
+
     static AttachmentKey<String> TOKEN = AttachmentKey.create(String.class);
 
     public HttpContexts(HttpHandler next) {
@@ -91,7 +93,7 @@ class HttpContexts implements HttpHandler {
 
         //System.out.println(exchange.getRequestPath() +" on "+Thread.currentThread());
 
-        if (dispatched.get()!=null && dispatched.get().getCount()==1) {
+        if (dispatched.get() != null && dispatched.get().getCount() == 1) {
             next.handleRequest(exchange);
             dispatched.set(null);
             return;
@@ -116,7 +118,7 @@ class HttpContexts implements HttpHandler {
 
     private void proxyRequests(HttpServerExchange exchange) {
 
-        if(monitor.getHealthURIs().isEmpty()) {
+        if (monitor.getHealthURIs().isEmpty()) {
             noHealthEndpoints(exchange);
         } else {
 
@@ -125,48 +127,52 @@ class HttpContexts implements HttpHandler {
                 CountDownLatch latch = new CountDownLatch(monitor.getHealthURIs().size());
                 dispatched.set(latch);
 
-                for(HealthMetaData healthCheck : monitor.getHealthURIs()) {
+                for (HealthMetaData healthCheck : monitor.getHealthURIs()) {
                     invokeHealthInVM(exchange, healthCheck, responses, latch);
                 }
 
                 latch.await(10, TimeUnit.SECONDS);
 
-                if(latch.getCount()>0)
+                if (latch.getCount() > 0) {
                     throw new Exception("Probe timed out");
+                }
 
 
                 boolean failed = false;
                 if (!responses.isEmpty()) {
 
-                    if(responses.size()!=monitor.getHealthURIs().size())
+                    if (responses.size() != monitor.getHealthURIs().size()) {
                         throw new RuntimeException("The number of responses does not match!");
+                    }
 
                     StringBuffer sb = new StringBuffer("{");
                     sb.append("\"checks\": [\n");
 
-                    int i=0;
-                    for(InVMResponse resp : responses) {
-                        if(200==resp.getStatus()) {
+                    int i = 0;
+                    for (InVMResponse resp : responses) {
+                        if (200 == resp.getStatus()) {
                             sb.append(resp.getPayload());
-                        } else if(503==resp.getStatus()){
+                        } else if (503 == resp.getStatus()) {
                             sb.append(resp.getPayload());
                             failed = true;
                         } else {
-                            throw new RuntimeException("Unexpected status code: "+resp.getStatus());
+                            throw new RuntimeException("Unexpected status code: " + resp.getStatus());
                         }
-                        if(i<responses.size()-1)
+                        if (i < responses.size() - 1) {
                             sb.append(",\n");
+                        }
                         i++;
                     }
                     sb.append("],\n");
 
-                    String outcome = failed ? "DOWN":"UP"; // we don't have policies yet, so keep it simple
-                    sb.append("\"outcome\": \""+outcome+"\"\n");
+                    String outcome = failed ? "DOWN" : "UP"; // we don't have policies yet, so keep it simple
+                    sb.append("\"outcome\": \"" + outcome + "\"\n");
                     sb.append("}\n");
 
                     // send a response
-                    if(failed)
+                    if (failed) {
                         exchange.setStatusCode(503);
+                    }
                     exchange.getResponseSender().send(sb.toString());
 
                 } else {
@@ -180,8 +186,9 @@ class HttpContexts implements HttpHandler {
             } catch (Throwable t) {
                 LOG.error("Health check failed", t);
 
-                if(!exchange.isResponseStarted())
+                if (!exchange.isResponseStarted()) {
                     exchange.setStatusCode(500);
+                }
                 exchange.endExchange();
             }
 
@@ -210,7 +217,7 @@ class HttpContexts implements HttpHandler {
                 public void closed(ServerConnection connection) {
                     LOG.trace("Mock connection closed");
                     StringBuffer sb = new StringBuffer();
-                    ((InVMConnection)connection).flushTo(sb);
+                    ((InVMConnection) connection).flushTo(sb);
                     LOG.trace("Response payload: " + sb.toString());
                     responses.add(new InVMResponse(mockExchange.getStatusCode(), sb.toString()));
                     mockExchange.removeAttachment(RESPONSES);
@@ -267,7 +274,7 @@ class HttpContexts implements HttpHandler {
 
                 try {
                     result.getRequestChannel().shutdownWrites();
-                    if(!result.getRequestChannel().flush()) {
+                    if (!result.getRequestChannel().flush()) {
                         result.getRequestChannel().getWriteSetter().set(ChannelListeners.<StreamSinkChannel>flushingChannelListener(null, null));
                         result.getRequestChannel().resumeWrites();
                     }
@@ -303,9 +310,8 @@ class HttpContexts implements HttpHandler {
     }
 
     public static List<String> getDefaultContextNames() {
-        List<String> contexts= Arrays.asList(new String[]{NODE,HEAP,HEALTH,THREADS});
-        return contexts;
-    };
+        return Arrays.asList(NODE, HEAP, HEALTH, THREADS);
+    }
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.monitor.health");
 
@@ -317,7 +323,7 @@ class HttpContexts implements HttpHandler {
 
     public static final String HEALTH = "/health";
 
-    final static String EPHEMERAL_TOKEN = UUID.randomUUID().toString();
+    static final String EPHEMERAL_TOKEN = UUID.randomUUID().toString();
 
     private final Monitor monitor;
 
@@ -327,6 +333,7 @@ class HttpContexts implements HttpHandler {
 
     class InVMResponse {
         private int status;
+
         private String payload;
 
         public InVMResponse(int status, String payload) {

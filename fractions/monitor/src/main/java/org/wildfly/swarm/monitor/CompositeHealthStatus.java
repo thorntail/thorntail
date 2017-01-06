@@ -23,6 +23,7 @@ import org.jboss.dmr.ModelNode;
 
 /**
  * TODO: remove
+ *
  * @author Heiko Braun
  * @since 23/03/16
  */
@@ -32,13 +33,13 @@ class CompositeHealthStatus implements Status {
 
     private final List<HealthStatus> states;
 
-    private final static Policy DEFAULT_POLICY = new Policy() {
+    private static final Policy DEFAULT_POLICY = new Policy() {
         @Override
         public State apply(List<HealthStatus> states) {
             boolean isDown = false;
 
             for (HealthStatus check : states) {
-                if(State.DOWN == check.getState()) {
+                if (State.DOWN == check.getState()) {
                     isDown = true;
                     break;
                 }
@@ -51,8 +52,9 @@ class CompositeHealthStatus implements Status {
             ModelNode payload = new ModelNode();
 
             for (HealthStatus state : states) {
-                if(state.getMessage().isPresent())
+                if (state.getMessage().isPresent()) {
                     payload.set(state.getMessage().get());
+                }
             }
             return payload.isDefined() ? Optional.of(payload.toJSONString(false)) : Optional.empty();
         }
@@ -102,14 +104,14 @@ class CompositeHealthStatus implements Status {
         return new CompositeHealthStatus(list);
     }
 
-
-    public interface Policy {
-        State apply(List<HealthStatus> states);
-        Optional<String> message(List<HealthStatus> states);
-    }
-
     @Override
     public String toJson() {
         return null;
+    }
+
+    public interface Policy {
+        State apply(List<HealthStatus> states);
+
+        Optional<String> message(List<HealthStatus> states);
     }
 }

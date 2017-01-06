@@ -38,7 +38,7 @@ public class WebServicesFraction extends Webservices<WebServicesFraction> implem
         return this;
     }
 
-    private final void configureRemoteEndpoint(EndpointConfig<?> endpoint) {
+    private void configureRemoteEndpoint(EndpointConfig<?> endpoint) {
         endpoint.preHandlerChain(RECORDING_HANDLERS, (chain) ->
                 chain.protocolBindings(SOAP_PROTOCOLS)
                         .handler(RECORDING_HANDLER, (handler) ->

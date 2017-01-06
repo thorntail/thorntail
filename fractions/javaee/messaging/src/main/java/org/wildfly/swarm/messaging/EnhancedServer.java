@@ -16,7 +16,6 @@
 package org.wildfly.swarm.messaging;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,6 +35,11 @@ import org.wildfly.swarm.config.messaging.activemq.server.PooledConnectionFactor
  */
 @SuppressWarnings("unused")
 public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.Server<EnhancedServer> {
+
+    private static final String IN_VM = "in-vm";
+
+    private static final String HTTP_CONNECTOR = "http-connector";
+
     public EnhancedServer(String key) {
         super(key);
     }
@@ -43,19 +47,19 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
     public EnhancedServer enableInVm() {
         int serverId = COUNTER.getAndIncrement();
 
-        inVmConnector("in-vm", (c) -> c.serverId(serverId));
+        inVmConnector(IN_VM, (c) -> c.serverId(serverId));
 
-        inVmAcceptor("in-vm", (a) -> a.serverId(serverId));
+        inVmAcceptor(IN_VM, (a) -> a.serverId(serverId));
 
         connectionFactory(new ConnectionFactory("InVmConnectionFactory")
-                .connector("in-vm")
-                .entry("java:/ConnectionFactory"));
+                                  .connector(IN_VM)
+                                  .entry("java:/ConnectionFactory"));
 
         pooledConnectionFactory(new PooledConnectionFactory("activemq-ra")
-                .entry("java:jboss/DefaultJMSConnectionFactory")
-                .entry("java:/JmsXA")
-                .connector("in-vm")
-                .transaction("xa"));
+                                        .entry("java:jboss/DefaultJMSConnectionFactory")
+                                        .entry("java:/JmsXA")
+                                        .connector(IN_VM)
+                                        .transaction("xa"));
         return this;
     }
 
@@ -66,14 +70,14 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         clusterPassword("${jboss.messaging.cluster.password:CHANGE ME!!}");
 
         discoveryGroup(new DiscoveryGroup("activemq-discovery")
-                .jgroupsChannel("activemq-jgroups-cluster"));
+                               .jgroupsChannel("activemq-jgroups-cluster"));
         broadcastGroup(new BroadcastGroup("activemq-broadcast")
-                .jgroupsChannel("activemq-jgroups-cluster")
-                .connectors("http-connector"));
+                               .jgroupsChannel("activemq-jgroups-cluster")
+                               .connectors(HTTP_CONNECTOR));
         clusterConnection(new ClusterConnection("activemq-cluster")
-                .clusterConnectionAddress("jms")
-                .connectorName("http-connector")
-                .discoveryGroup("activemq-discovery"));
+                                  .clusterConnectionAddress("jms")
+                                  .connectorName(HTTP_CONNECTOR)
+                                  .discoveryGroup("activemq-discovery"));
 
         return this;
     }
@@ -151,8 +155,8 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         enableHTTPConnections();
 
         connectionFactory(new ConnectionFactory("RemoteConnectionFactory")
-                .connectors(Collections.singletonList("http-connector"))
-                .entries("java:/RemoteConnectionFactory", "java:jboss/exported/jms/RemoteConnectionFactory"));
+                                  .connectors(Collections.singletonList("http-connector"))
+                                  .entries("java:/RemoteConnectionFactory", "java:jboss/exported/jms/RemoteConnectionFactory"));
         return this;
     }
 
@@ -161,10 +165,10 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
             return this;
         }
         httpAcceptor(new HTTPAcceptor("http-acceptor")
-                .httpListener("default"));
-        httpConnector(new HTTPConnector("http-connector")
-                .socketBinding("http")
-                .endpoint("http-acceptor"));
+                             .httpListener("default"));
+        httpConnector(new HTTPConnector(HTTP_CONNECTOR)
+                              .socketBinding("http")
+                              .endpoint("http-acceptor"));
         return this;
     }
 

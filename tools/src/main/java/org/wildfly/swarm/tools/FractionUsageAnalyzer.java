@@ -75,7 +75,7 @@ public class FractionUsageAnalyzer {
         while (it.hasNext()) {
             FractionDescriptor descriptor = it.next();
             // Is set as a explicitDependency to any other descriptor? If so, remove it
-            if (specs.stream().anyMatch(fd->fd.getDependencies().contains(descriptor))) {
+            if (specs.stream().anyMatch(fd -> fd.getDependencies().contains(descriptor))) {
                 it.remove();
             }
         }
@@ -90,7 +90,7 @@ public class FractionUsageAnalyzer {
     private static String asClassNameMatch(final String n) {
         final int idx = n.lastIndexOf('.');
 
-        if ( idx < 0 ) {
+        if (idx < 0) {
             return n;
         }
 

@@ -96,8 +96,8 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
     }
 
     @Configurable("swarm.management.http.port")
-    private Defaultable<Integer> httpPort = integer( DEFAULT_HTTP_PORT);
+    private Defaultable<Integer> httpPort = integer(DEFAULT_HTTP_PORT);
 
     @Configurable("swarm.management.https.port")
-    private Defaultable<Integer> httpsPort = integer( DEFAULT_HTTPS_PORT);
+    private Defaultable<Integer> httpsPort = integer(DEFAULT_HTTPS_PORT);
 }

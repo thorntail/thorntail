@@ -36,7 +36,7 @@ public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
     }
 
     public EnhancedSMTPServer host(String host) {
-        this.host.set( host );
+        this.host.set(host);
         return this;
     }
 
@@ -45,7 +45,7 @@ public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
     }
 
     public EnhancedSMTPServer port(int port) {
-        this.port.set( port );
+        this.port.set(port);
         return this;
     }
 
@@ -73,7 +73,7 @@ public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
     private Defaultable<String> host = string("localhost");
 
     @Configurable("swarm.mail.smtp.port")
-    private Defaultable<Integer> port = integer( 25 );
+    private Defaultable<Integer> port = integer(25);
 
 
 }

@@ -22,6 +22,9 @@ import org.keycloak.KeycloakSecurityContext;
  */
 public class KeycloakSecurityContextAssociation {
 
+    protected KeycloakSecurityContextAssociation() {
+    }
+
     public static KeycloakSecurityContext get() {
         KeycloakSecurityContext context = SECURITY_CONTEXT.get();
         return context;

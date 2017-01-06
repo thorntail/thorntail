@@ -70,6 +70,7 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
         return this.statusPort.get();
     }
 
-    private Defaultable<Integer> port = integer(DEFAULT_PORT );
-    private Defaultable<Integer> statusPort = integer(DEFAULT_STATUS_PORT );
+    private Defaultable<Integer> port = integer(DEFAULT_PORT);
+
+    private Defaultable<Integer> statusPort = integer(DEFAULT_STATUS_PORT);
 }

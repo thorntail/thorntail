@@ -37,6 +37,8 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @MarshalDMR
 public class JCAFraction extends JCA<JCAFraction> implements Fraction<JCAFraction> {
 
+    private static final String DEFAULT = "default";
+
     public static JCAFraction createDefaultFraction() {
         return new JCAFraction().applyDefaults();
     }
@@ -52,21 +54,21 @@ public class JCAFraction extends JCA<JCAFraction> implements Fraction<JCAFractio
                                   .failOnWarn(true))
                 .beanValidation(new BeanValidation()
                                         .enabled(true))
-                .workmanager(new Workmanager("default")
-                                     .name("default")
-                                     .shortRunningThreads(new ShortRunningThreads("default")
+                .workmanager(new Workmanager(DEFAULT)
+                                     .name(DEFAULT)
+                                     .shortRunningThreads(new ShortRunningThreads(DEFAULT)
                                                                   .coreThreads(50)
                                                                   .queueLength(50)
                                                                   .maxThreads(50)
                                                                   .keepaliveTime(keepAlive))
-                                     .longRunningThreads(new LongRunningThreads("default")
+                                     .longRunningThreads(new LongRunningThreads(DEFAULT)
                                                                  .coreThreads(50)
                                                                  .queueLength(50)
                                                                  .maxThreads(50)
                                                                  .keepaliveTime(keepAlive)))
-                .bootstrapContext(new BootstrapContext("default")
-                                          .workmanager("default")
-                                          .name("default"))
+                .bootstrapContext(new BootstrapContext(DEFAULT)
+                                          .workmanager(DEFAULT)
+                                          .name(DEFAULT))
                 .cachedConnectionManager(new CachedConnectionManager().install(true));
 
         return this;

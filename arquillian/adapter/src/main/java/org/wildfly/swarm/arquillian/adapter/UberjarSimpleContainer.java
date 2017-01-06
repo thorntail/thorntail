@@ -96,19 +96,20 @@ public class UberjarSimpleContainer implements SimpleContainer {
             contextRoot = new ContextRoot("/");
             Node jbossWebNode = archive.as(WebArchive.class).get("WEB-INF/jboss-web.xml");
             if (jbossWebNode != null) {
-                if (jbossWebNode.getAsset() != null)
+                if (jbossWebNode.getAsset() != null) {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(jbossWebNode.getAsset().openStream()))) {
                         String content = String.join("\n", reader.lines().collect(Collectors.toList()));
 
-                        Pattern pattern = Pattern.compile("<context-root>(.+)</context-root>" );
+                        Pattern pattern = Pattern.compile("<context-root>(.+)</context-root>");
                         Matcher matcher = pattern.matcher(content);
                         if (matcher.find()) {
                             contextRoot = new ContextRoot(matcher.group(1));
                         }
                     }
+                }
             }
 
-            this.deploymentContext.getObjectStore().add(ContextRoot.class, contextRoot );
+            this.deploymentContext.getObjectStore().add(ContextRoot.class, contextRoot);
         }
 
 
@@ -133,8 +134,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
             } else {
                 throw new IllegalArgumentException(
                         String.format("Method annotated with %s is %s but it is not static",
-                                CreateSwarm.class.getSimpleName(),
-                                swarmMethod));
+                                      CreateSwarm.class.getSimpleName(),
+                                      swarmMethod));
             }
         }
 
@@ -165,10 +166,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         if (additionalModules != null) {
             tool.additionalModules(Stream.of(additionalModules.split(":"))
-                    .map(File::new)
-                    .filter(File::exists)
-                    .map(File::getAbsolutePath)
-                    .collect(Collectors.toList()));
+                                           .map(File::new)
+                                           .filter(File::exists)
+                                           .map(File::getAbsolutePath)
+                                           .collect(Collectors.toList()));
         }
 
         final SwarmExecutor executor = new SwarmExecutor().withDefaultSystemProperties();
@@ -177,8 +178,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
             executor.withProperty(AnnotationBasedMain.ANNOTATED_CLASS_NAME, this.testClass.getName());
         }
 
-        if ( contextRoot != null ) {
-            executor.withProperty(SwarmProperties.CONTEXT_PATH, contextRoot.context() );
+        if (contextRoot != null) {
+            executor.withProperty(SwarmProperties.CONTEXT_PATH, contextRoot.context());
         }
 
         String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
@@ -322,7 +323,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
     private void registerContainerFactory(Archive<?> archive, Class<?> clazz) {
         archive.as(JavaArchive.class)
                 .addAsServiceProvider("org.wildfly.swarm.ContainerFactory",
-                        clazz.getName())
+                                      clazz.getName())
                 .addClass(clazz);
         archive.as(JARArchive.class).addModule("org.wildfly.swarm.container");
         archive.as(JARArchive.class).addModule("org.wildfly.swarm.configuration");

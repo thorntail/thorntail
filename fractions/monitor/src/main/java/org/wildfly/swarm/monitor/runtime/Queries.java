@@ -26,35 +26,40 @@ import org.wildfly.swarm.monitor.HealthMetaData;
 @Vetoed
 class Queries {
 
+    protected Queries() {
+    }
+
     /*public final static boolean isHealthEndpoint(Monitor monitor, String relativePath) {
         return query(monitor, metaData -> {
             return relativePath.equals(HttpContexts.HEALTH+metaData.getWebContext());
         });
     }*/
 
-    public final static boolean isSecuredHealthEndpoint(Monitor monitor, String relativePath) {
+    public static final boolean isSecuredHealthEndpoint(Monitor monitor, String relativePath) {
         return query(monitor, metaData -> {
-            return relativePath.equals(HttpContexts.HEALTH+metaData.getWebContext()) && metaData.isSecure();
+            return relativePath.equals(HttpContexts.HEALTH + metaData.getWebContext()) && metaData.isSecure();
         });
     }
 
-    public final static boolean isAggregatorEndpoint(Monitor monitor, String relativePath) {
+    public static final boolean isAggregatorEndpoint(Monitor monitor, String relativePath) {
         return query(monitor, metaData -> {
             return relativePath.equals(HttpContexts.HEALTH);
         });
     }
 
-    public final static boolean isDirectAccessToHealthEndpoint(Monitor monitor, String relativePath) {
+    public static final boolean isDirectAccessToHealthEndpoint(Monitor monitor, String relativePath) {
         return query(monitor, metaData -> {
             return relativePath.equals(metaData.getWebContext());
         });
     }
 
-    public final static boolean query(Monitor monitor, Condition condition) {
+    public static final boolean query(Monitor monitor, Condition condition) {
         boolean isCondition = false;
-        for(HealthMetaData metaData : monitor.getHealthURIs()){
+        for (HealthMetaData metaData : monitor.getHealthURIs()) {
             isCondition = condition.eval(metaData);
-            if(isCondition) break;
+            if (isCondition) {
+                break;
+            }
         }
 
         return isCondition;

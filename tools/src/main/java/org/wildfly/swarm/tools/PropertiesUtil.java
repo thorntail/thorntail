@@ -23,6 +23,9 @@ import java.util.Properties;
 
 public class PropertiesUtil {
 
+    private PropertiesUtil() {
+    }
+
     public static Properties loadProperties(final InputStream in) throws IOException {
         final Properties props = new Properties();
         try {

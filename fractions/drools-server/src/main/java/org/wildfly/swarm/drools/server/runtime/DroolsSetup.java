@@ -5,14 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
-import org.wildfly.swarm.config.Security;
 import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
 import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;

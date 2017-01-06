@@ -15,7 +15,8 @@ import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
-/** Picks and/or verifies the remote JMX connector to use.
+/**
+ * Picks and/or verifies the remote JMX connector to use.
  *
  * <p>If a user has not specified <b>any</b> {@link JMXFraction#jmxRemotingConnector(JMXRemotingConnector)},
  * then nothing is done as JMX remains purely available only inside the process.</p>
@@ -24,9 +25,9 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * will pick the "best" connector available, given the following priority:</p>
  *
  * <ul>
- *     <li>Management Interface (typically port 9990) if <code>org.wildfly.swarm:management</code> is present</li>
- *     <li>Remoting over HTTP (typically normal web-port, 8080) if <code>org.wildfly.swarm:undertow</code> is present</li>
- *     <li>Else, the legacy remoting port (typically port 4777)</li>
+ * <li>Management Interface (typically port 9990) if <code>org.wildfly.swarm:management</code> is present</li>
+ * <li>Remoting over HTTP (typically normal web-port, 8080) if <code>org.wildfly.swarm:undertow</code> is present</li>
+ * <li>Else, the legacy remoting port (typically port 4777)</li>
  * </ul>
  *
  * <p>A user who does not explicitly configure a {@link JMXRemotingConnector} can still activate
@@ -63,14 +64,14 @@ public class JMXRemotingConnectorEndpointSelector implements Customizer {
     private RemotingFraction remoting;
 
     @Inject
-    @ConfigurationValue( JMXProperties.REMOTE )
+    @ConfigurationValue(JMXProperties.REMOTE)
     private String remote;
 
     @Override
     public void customize() {
         JMXRemotingConnector remotingConnector = this.jmx.subresources().jmxRemotingConnector();
         if (remotingConnector == null) {
-            if ( this.remote == null ) {
+            if (this.remote == null) {
                 LOG.info("JMX not configured for remote access");
                 return;
             }
@@ -79,9 +80,9 @@ public class JMXRemotingConnectorEndpointSelector implements Customizer {
 
             remotingConnector = this.jmx.subresources().jmxRemotingConnector();
 
-            if ( this.remote.equals( "http" ) ) {
+            if (this.remote.equals("http")) {
                 remotingConnector.useManagementEndpoint(false);
-            } else if ( this.remote.equals( "management" ) ) {
+            } else if (this.remote.equals("management")) {
                 remotingConnector.useManagementEndpoint(true);
             }
         }

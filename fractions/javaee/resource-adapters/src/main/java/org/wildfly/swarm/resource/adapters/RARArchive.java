@@ -43,26 +43,26 @@ public interface RARArchive extends Archive<RARArchive>, ManifestContainer<RARAr
      * @param consumer The configuring consumer of the resource-adapter.
      * @return This archive.
      */
-    RARArchive resourceAdapter(final String key, final ResourceAdapterConsumer consumer);
+    RARArchive resourceAdapter(String key, ResourceAdapterConsumer consumer);
 
     /** Add a fully-configured resource-adapter.
      *
      * @param ra The configured resource-adapter.
      * @return This archive.
      */
-    RARArchive resourceAdapter(final ResourceAdapter ra);
+    RARArchive resourceAdapter(ResourceAdapter ra);
 
     /** Add an IronJacamar file.
      *
      * @param ironjacamarFile The IronJacamar file.
      * @return This archive.
      */
-    RARArchive resourceAdapter(final File ironjacamarFile);
+    RARArchive resourceAdapter(File ironjacamarFile);
 
     /** Add an IronJacamar asset.
      *
      * @param ironjacamarAsset The IronJacamar asset.
      * @return This archive.
      */
-    RARArchive resourceAdapter(final Asset ironjacamarAsset);
+    RARArchive resourceAdapter(Asset ironjacamarAsset);
 }

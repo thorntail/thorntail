@@ -56,12 +56,13 @@ public class RemotingFraction extends Remoting<RemotingFraction> implements Frac
     }
 
     public RemotingFraction port(int port) {
-        this.port.set( port );
+        this.port.set(port);
         return this;
     }
 
     public int port() {
         return this.port.get();
     }
+
     private Defaultable<Integer> port = integer(4447);
 }

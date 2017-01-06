@@ -33,11 +33,11 @@ public class JolokiaKeycloakCustomizer implements Customizer {
 
     @Override
     public void customize() {
-        if ( this.role == null ) {
+        if (this.role == null) {
             return;
         }
 
-        Consumer<Archive> keycloakPreparer = (archive)->{
+        Consumer<Archive> keycloakPreparer = (archive) -> {
             archive.as(Secured.class)
                     .protect()
                     .withRole(this.role);
@@ -45,10 +45,10 @@ public class JolokiaKeycloakCustomizer implements Customizer {
 
         Consumer<Archive> preparer = this.jolokia.jolokiaWarPreparer();
 
-        if ( preparer == null ) {
+        if (preparer == null) {
             preparer = keycloakPreparer;
         } else {
-            preparer = preparer.andThen( keycloakPreparer );
+            preparer = preparer.andThen(keycloakPreparer);
         }
 
         this.jolokia.prepareJolokiaWar(preparer);

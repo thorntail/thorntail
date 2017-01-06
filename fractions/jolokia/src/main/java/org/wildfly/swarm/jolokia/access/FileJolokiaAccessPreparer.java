@@ -16,7 +16,7 @@ public class FileJolokiaAccessPreparer extends AbstractJolokiaAccessPreparer {
 
     @Override
     protected Asset getJolokiaAccessXmlAsset() {
-        if ( this.file.exists() ) {
+        if (this.file.exists()) {
             return new FileAsset(this.file);
         }
         return null;

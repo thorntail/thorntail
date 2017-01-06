@@ -138,7 +138,7 @@ public class DependencyManager implements ResolvedDependencies {
         this.dependencies.addAll(resolvedExplicitDependencies);
 
         // resolve transitives if not pre-computed (i.e. from maven/gradle plugin)
-        if(declaredDependencies.getTransientDependencies().isEmpty()) {
+        if (declaredDependencies.getTransientDependencies().isEmpty()) {
 
             Set<ArtifactSpec> inputSet = declaredDependencies.getExplicitDependencies();
             Set<ArtifactSpec> filtered = inputSet
@@ -160,10 +160,8 @@ public class DependencyManager implements ResolvedDependencies {
             this.dependencies.addAll(
                     resolver.resolveAllArtifactsNonTransitively(remainder)
             );
-        }
-
-        // if transitive deps are pre-computed, resolve them to local files if needed
-        else {
+        } else {
+            // if transitive deps are pre-computed, resolve them to local files if needed
             Set<ArtifactSpec> inputSet = declaredDependencies.getTransientDependencies();
             Set<ArtifactSpec> filtered = inputSet
                     .stream()
@@ -171,7 +169,7 @@ public class DependencyManager implements ResolvedDependencies {
                     .collect(Collectors.toSet());
 
             Set<ArtifactSpec> resolvedTransientDependencies = Collections.EMPTY_SET;
-            if(filtered.size()>0) {
+            if (filtered.size() > 0) {
 
                 resolvedTransientDependencies = resolver.resolveAllArtifactsNonTransitively(filtered);
                 this.dependencies.addAll(resolvedTransientDependencies);
@@ -261,13 +259,13 @@ public class DependencyManager implements ResolvedDependencies {
         }
 
         String path = node.getPath().get();
-        try (final InputStream inputStream = asset.openStream()){
+        try (final InputStream inputStream = asset.openStream()) {
             byte[] checksum = checksum(inputStream);
 
             return this.removableDependencies.stream()
                     .filter(e -> path.endsWith(e.artifactId() + "-" + e.version() + ".jar"))
                     .map(e -> {
-                        try (final FileInputStream in = new FileInputStream(e.file)){
+                        try (final FileInputStream in = new FileInputStream(e.file)) {
                             return checksum(in);
                         } catch (IOException | NoSuchAlgorithmException | DigestException e1) {
                             return null;

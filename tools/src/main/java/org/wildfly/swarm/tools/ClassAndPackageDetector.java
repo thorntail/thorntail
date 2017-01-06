@@ -131,7 +131,7 @@ public class ClassAndPackageDetector {
         }
     }
 
-    final private PackageCollector visitor = new PackageCollector();
+    private final PackageCollector visitor = new PackageCollector();
 
     private BuildTool.SimpleLogger log = BuildTool.NOP_LOGGER;
 
@@ -441,6 +441,7 @@ public class ClassAndPackageDetector {
                 case Type.METHOD:
                     addMethodTypes(type.getDescriptor());
                     break;
+                default:
             }
         }
 

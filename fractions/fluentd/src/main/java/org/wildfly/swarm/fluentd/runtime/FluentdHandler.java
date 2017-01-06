@@ -65,7 +65,7 @@ public class FluentdHandler extends ExtHandler {
     protected void doPublish(ExtLogRecord record) {
 
         synchronized (this) {
-            if(!initialized) {
+            if (!initialized) {
                 try {
                     initialize();
                 } catch (Exception e) {
@@ -75,7 +75,7 @@ public class FluentdHandler extends ExtHandler {
             }
         }
 
-        if(initialized) {
+        if (initialized) {
             Map<String, Object> entries = new HashMap<>();
 
             entries.put(Key.SEQUENCE.getKey(), record.getSequenceNumber());
@@ -119,7 +119,9 @@ public class FluentdHandler extends ExtHandler {
 
     private void safeClose(RawSocketSender c) {
         try {
-            if (c != null) c.close();
+            if (c != null) {
+                c.close();
+            }
         } catch (Exception e) {
             reportError("Error closing resource", e, ErrorManager.CLOSE_FAILURE);
         } catch (Throwable ignored) {

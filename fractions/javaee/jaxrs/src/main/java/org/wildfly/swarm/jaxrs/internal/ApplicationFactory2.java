@@ -29,6 +29,9 @@ import org.objectweb.asm.commons.RemappingClassAdapter;
  */
 public class ApplicationFactory2 implements Opcodes {
 
+    protected ApplicationFactory2() {
+    }
+
     static byte[] create(String name, String path) throws IOException {
         ClassReader reader = new ClassReader(DefaultApplication.class.getClassLoader().getResourceAsStream(DefaultApplication.class.getName().replace('.', '/') + ".class"));
 

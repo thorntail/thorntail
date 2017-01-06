@@ -25,7 +25,7 @@ public class LoggingCustomizer implements Customizer {
     @Override
     public void customize() {
         LevelNode root = InitialLoggerManager.INSTANCE.getRoot();
-        apply( root );
+        apply(root);
     }
 
     private void apply(LevelNode node) {

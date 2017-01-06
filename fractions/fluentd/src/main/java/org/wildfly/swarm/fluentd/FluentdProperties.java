@@ -15,11 +15,11 @@
  */
 package org.wildfly.swarm.fluentd;
 
-public class FluentdProperties {
+public interface FluentdProperties {
     //public
-    public static final String HOSTNAME = "swarm.fluentd.hostname";
+    String HOSTNAME = "swarm.fluentd.hostname";
 
     //public
-    public static final String PORT = "swarm.fluentd.port";
+    String PORT = "swarm.fluentd.port";
 
 }

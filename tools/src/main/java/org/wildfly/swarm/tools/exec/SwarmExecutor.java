@@ -187,7 +187,7 @@ public class SwarmExecutor {
     }
 
     public SwarmExecutor withArguments(List<String> args) {
-        this.arguments.addAll( args );
+        this.arguments.addAll(args);
         return this;
     }
 

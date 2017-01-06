@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.infinispan;
 
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.Infinispan;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
@@ -29,8 +27,8 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @MarshalDMR
 @WildFlyExtension(module = "org.jboss.as.clustering.infinispan")
-@DeploymentModule(name="org.infinispan", export = true)
-@DeploymentModule(name="org.infinispan.commons", export = true)
+@DeploymentModule(name = "org.infinispan", export = true)
+@DeploymentModule(name = "org.infinispan.commons", export = true)
 public class InfinispanFraction extends Infinispan<InfinispanFraction> implements Fraction<InfinispanFraction> {
 
     public InfinispanFraction() {

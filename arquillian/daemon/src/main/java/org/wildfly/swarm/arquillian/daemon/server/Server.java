@@ -157,7 +157,7 @@ public class Server {
 
     }
 
-    public synchronized final void stop() throws ServerLifecycleException, IllegalStateException {
+    public final synchronized void stop() throws ServerLifecycleException, IllegalStateException {
         // Use an anonymous logger because the JUL LogManager will not log after process shutdown has been received
         final Logger log = Logger.getAnonymousLogger();
         log.addHandler(new Handler() {
@@ -328,9 +328,8 @@ public class Server {
                     // Set the response to tell the client OK
                     Server.sendResponse(ctx, WireProtocol.RESPONSE_OK_PREFIX + message)
                             .addListener(future -> Server.this.stopAsync());
-                }
-                // Test
-                else if (message.startsWith(WireProtocol.COMMAND_TEST_PREFIX)) {
+                } else if (message.startsWith(WireProtocol.COMMAND_TEST_PREFIX)) {
+                    // Test
 
                     // Parse out the arguments
                     final StringTokenizer tokenizer = new StringTokenizer(message);
@@ -356,9 +355,8 @@ public class Server {
                             objectOutstream.close();
                         }
                     }
-                }
-                // Unsupported command
-                else {
+                } else {
+                    // Unsupported command
                     throw new UnsupportedOperationException("This server does not support command: " + message);
                 }
 

@@ -33,7 +33,8 @@ import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
-/** Customizer to attempt auto-detection of JDBC drivers and creation of default datasource, if required.
+/**
+ * Customizer to attempt auto-detection of JDBC drivers and creation of default datasource, if required.
  *
  * @author Bob McWhirter
  */
@@ -87,14 +88,14 @@ public class DatasourceAndDriverCustomizer implements Customizer {
 
     private String createDefaultDatasource() {
 
-        if ( this.fraction.subresources().dataSource( this.datasourceName ) != null ) {
-            DatasourcesMessages.MESSAGES.notCreatingDatasourceAlreadyExists( this.datasourceName );
+        if (this.fraction.subresources().dataSource(this.datasourceName) != null) {
+            DatasourcesMessages.MESSAGES.notCreatingDatasourceAlreadyExists(this.datasourceName);
             return this.datasourceName;
         }
 
         Optional<DriverInfo> driverForDefaultDS = Optional.empty();
 
-        if ( this.driverName != null ) {
+        if (this.driverName != null) {
             driverForDefaultDS = StreamSupport.stream(this.allDrivers.spliterator(), false)
                     .filter(e -> e.name().equals(this.driverName))
                     .findFirst();
@@ -103,12 +104,12 @@ public class DatasourceAndDriverCustomizer implements Customizer {
                     .filter(DriverInfo::isInstalled)
                     .collect(Collectors.toList());
 
-            if ( installedDrivers.size() == 1 ) {
-                driverForDefaultDS = Optional.of( installedDrivers.get(0));
-            } else if ( installedDrivers.size() > 1 ) {
-                List<String> driverNames = installedDrivers.stream().map(e->e.name()).collect(Collectors.toList());
+            if (installedDrivers.size() == 1) {
+                driverForDefaultDS = Optional.of(installedDrivers.get(0));
+            } else if (installedDrivers.size() > 1) {
+                List<String> driverNames = installedDrivers.stream().map(e -> e.name()).collect(Collectors.toList());
 
-                DatasourcesMessages.MESSAGES.notCreatingDatasourceAmbiguousDrivers( String.join( ",", driverNames ) );
+                DatasourcesMessages.MESSAGES.notCreatingDatasourceAmbiguousDrivers(String.join(",", driverNames));
                 return null;
             }
         }
@@ -118,17 +119,17 @@ public class DatasourceAndDriverCustomizer implements Customizer {
             return null;
         }
 
-        driverForDefaultDS.get().installDatasource(this.fraction, this.datasourceName, (ds)->{
-            if ( this.datasourceConnectionUrl != null ) {
-                ds.connectionUrl( this.datasourceConnectionUrl );
+        driverForDefaultDS.get().installDatasource(this.fraction, this.datasourceName, (ds) -> {
+            if (this.datasourceConnectionUrl != null) {
+                ds.connectionUrl(this.datasourceConnectionUrl);
             }
 
-            if ( this.datasourceUserName != null ) {
-                ds.userName( this.datasourceUserName );
+            if (this.datasourceUserName != null) {
+                ds.userName(this.datasourceUserName);
             }
 
-            if ( this.datasourcePassword != null ) {
-                ds.password( this.datasourcePassword );
+            if (this.datasourcePassword != null) {
+                ds.password(this.datasourcePassword);
             }
         });
 

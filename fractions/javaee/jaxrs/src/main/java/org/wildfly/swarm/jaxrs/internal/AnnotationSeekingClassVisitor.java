@@ -19,7 +19,6 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
 
 /**
  * @author Bob McWhirter
@@ -40,7 +39,7 @@ public abstract class AnnotationSeekingClassVisitor extends ClassVisitor {
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 
-        if ( matches( desc ) ) {
+        if (matches(desc)) {
             found = true;
         }
 
@@ -52,7 +51,7 @@ public abstract class AnnotationSeekingClassVisitor extends ClassVisitor {
         return new MethodVisitor(Opcodes.ASM5) {
             @Override
             public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-                if ( matches( desc ) ) {
+                if (matches(desc)) {
                     found = true;
                 }
                 return super.visitAnnotation(desc, visible);
