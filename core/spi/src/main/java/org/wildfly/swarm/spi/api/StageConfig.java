@@ -125,6 +125,46 @@ public class StageConfig {
     }
 
     /**
+     * Retrieve the set of keys that are the specified prefix added index.
+     *
+     * <p>If, for example, a prefix of {@code swarm.foo.bar} is provided as the parameter,
+     * and it has list:</p>
+     *
+     * <pre>
+     * swarm.foo.bar
+     *   - x
+     *   - y
+     *   - z
+     * </pre>
+     *
+     * <p>StageConfig has the parameter and its list as "indexed-key" and "value from list".</p>
+     *
+     * <ul>
+     * <li>{@code swarm.foo.bar[0] : x}</li>
+     * <li>{@code swarm.foo.bar[1] : y}</li>
+     * <li>{@code swarm.foo.bar[2] : z}</li>
+     * </ul>
+     *
+     * <p>Then this method would return the set of indexed-keys. {@code [swarm.foo.bar[0], swarm.foo.bar[1], ...]}</p>
+     *
+     * @param prefix The prefix to search for.
+     * @return The set of indexed-keys
+     */
+    public Set<String> indexedKeys(String prefix) {
+        Set<String> allKeys = new HashSet<>();
+        for (Object o : System.getProperties().keySet()) {
+            allKeys.add(o.toString());
+        }
+
+        allKeys.addAll(keys());
+
+        return allKeys
+                .stream()
+                .filter(e -> e.startsWith(prefix) && e.endsWith("]"))
+                .collect(Collectors.toSet());
+    }
+
+    /**
      * Retrieve the name of this stage.
      *
      * @return The name of this stage.

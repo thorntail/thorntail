@@ -44,6 +44,7 @@ public class ConfigurableManager implements AutoCloseable {
     }};
 
     private static final Set<Class<?>> BLACKLISTED_CLASSES = new HashSet<Class<?>>() {{
+        add(List.class);
         add(Map.class);
         add(Properties.class);
     }};
@@ -61,6 +62,7 @@ public class ConfigurableManager implements AutoCloseable {
         add(Float.TYPE);
         add(String.class);
 
+        add(List.class);
         add(Map.class);
         add(Properties.class);
 
@@ -86,11 +88,15 @@ public class ConfigurableManager implements AutoCloseable {
 
         Class<?> resolvedType = configurable.type();
 
+        boolean isList = false;
         boolean isMap = false;
         boolean isProperties = false;
 
         if (resolvedType.isEnum()) {
             resolver = resolver.as((Class<Enum>) resolvedType, converter((Class<Enum>) resolvedType));
+        } else if (List.class.isAssignableFrom(resolvedType)) {
+            isList = true;
+            resolver = listResolver((StageConfig.Resolver<String>) resolver, configurable.name());
         } else if (Map.class.isAssignableFrom(resolvedType)) {
             isMap = true;
             resolver = mapResolver((StageConfig.Resolver<String>) resolver, configurable.name());
@@ -101,9 +107,11 @@ public class ConfigurableManager implements AutoCloseable {
             resolver = resolver.as(configurable.type());
         }
 
-        if (isMap || isProperties || resolver.hasValue()) {
+        if (isList || isMap || isProperties || resolver.hasValue()) {
             Object resolvedValue = resolver.getValue();
-            if (isMap && ((Map) resolvedValue).isEmpty()) {
+            if (isList && ((List) resolvedValue).isEmpty()) {
+                // ignore
+            } else if (isMap && ((Map) resolvedValue).isEmpty()) {
                 // ignore
             } else if (isProperties && ((Properties) resolvedValue).isEmpty()) {
                 // also ignore
@@ -115,6 +123,16 @@ public class ConfigurableManager implements AutoCloseable {
 
     private <ENUMTYPE extends Enum<ENUMTYPE>> StageConfig.Converter<ENUMTYPE> converter(Class<ENUMTYPE> enumType) {
         return (str) -> Enum.valueOf(enumType, str.toUpperCase().replace('-', '_'));
+    }
+
+    private StageConfig.Resolver<List> listResolver(StageConfig.Resolver<String> resolver, String name) {
+        return resolver.withDefault("").as(List.class, listConverter(name));
+    }
+
+    private StageConfig.Converter<List> listConverter(String name) {
+        return (ignored) -> this.stageConfig.indexedKeys(name).stream()
+                .map(k -> this.stageConfig.resolve(k).getValue())
+                .collect(Collectors.toList());
     }
 
     private StageConfig.Resolver<Map> mapResolver(StageConfig.Resolver<String> resolver, String name) {
