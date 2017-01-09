@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.topology.webapp;
 
-public class TopologyProperties {
+public interface TopologyProperties {
     //public
-    public final static String CONTEXT_PATH = "swarm.topology.context.path";
+    String CONTEXT_PATH = "swarm.topology.context.path";
 }

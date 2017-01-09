@@ -32,6 +32,9 @@ import org.wildfly.swarm.camel.core.CamelCoreFraction;
  */
 public class Main {
 
+    protected Main() {
+    }
+
     public static void main(String... args) throws Exception {
         Swarm swarm = new Swarm(args).fraction(new CamelCoreFraction().addRouteBuilder(new RouteBuilder() {
             @Override

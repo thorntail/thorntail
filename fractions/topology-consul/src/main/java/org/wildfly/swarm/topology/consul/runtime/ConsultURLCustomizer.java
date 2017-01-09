@@ -17,7 +17,6 @@ package org.wildfly.swarm.topology.consul.runtime;
 
 import java.net.MalformedURLException;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -46,9 +45,9 @@ public class ConsultURLCustomizer implements Customizer {
     @Override
     public void customize() {
 
-        if ( this.consulUrl != null ) {
+        if (this.consulUrl != null) {
             try {
-                this.fraction.url( this.consulUrl );
+                this.fraction.url(this.consulUrl);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }

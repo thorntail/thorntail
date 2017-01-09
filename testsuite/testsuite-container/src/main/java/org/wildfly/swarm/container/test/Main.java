@@ -22,6 +22,9 @@ import org.wildfly.swarm.Swarm;
  */
 public class Main {
 
+    protected Main() {
+    }
+
     /**
      * Test loading of project-stages.yml in arq test cases
      * See https://issues.jboss.org/browse/SWARM-486

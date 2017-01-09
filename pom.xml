@@ -30,7 +30,7 @@
 
   <properties>
     <version.wildfly.swarm.fraction.plugin>40</version.wildfly.swarm.fraction.plugin>
-    <version.wildfly.swarm.checkstyle>1</version.wildfly.swarm.checkstyle>
+    <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
     <version.cdi2>2.0.Alpha4</version.cdi2>
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
@@ -213,8 +213,6 @@
               <configLocation>checkstyle/checkstyle.xml</configLocation>
               <encoding>UTF-8</encoding>
               <consoleOutput>true</consoleOutput>
-              <!-- Remove below setting when all violations are resolved -->
-              <failOnViolation>false</failOnViolation>
             </configuration>
             <goals>
               <goal>check</goal>

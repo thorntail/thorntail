@@ -44,6 +44,8 @@ import static java.util.Arrays.asList;
 
 public class Main {
 
+    protected Main() {
+    }
 
     private static final OptionParser OPT_PARSER = new OptionParser();
 
@@ -93,9 +95,9 @@ public class Main {
 
     private static final OptionSpec<String> MAIN_OPT =
             OPT_PARSER.accepts("main", "The name of the custom main class")
-            .withRequiredArg()
-            .ofType(String.class)
-            .describedAs("main-class");
+                    .withRequiredArg()
+                    .ofType(String.class)
+                    .describedAs("main-class");
 
     private static final OptionSpec<String> MODULES_OPT =
             OPT_PARSER.accepts("modules", "A list of JBoss Modules module dirs to include")
@@ -155,7 +157,8 @@ public class Main {
                 System.err.println(String.format("Usage: %s <options> artifact-path\n", executableName()));
                 try {
                     OPT_PARSER.printHelpOn(System.err);
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
             }
 
             System.exit(e.status);
@@ -180,7 +183,7 @@ public class Main {
             exit(e.getMessage(), true);
         }
 
-        if  (foundOptions.has(HELP_OPT)) {
+        if (foundOptions.has(HELP_OPT)) {
             exit(null, 0, true);
         }
 
@@ -224,8 +227,8 @@ public class Main {
                 .declaredDependencies(new DeclaredDependencies())
                 .fractionList(FractionList.get())
                 .fractionDetectionMode(foundOptions.has(DISABLE_AUTO_DETECT_OPT) ?
-                                             BuildTool.FractionDetectionMode.never :
-                                             BuildTool.FractionDetectionMode.force)
+                                               BuildTool.FractionDetectionMode.never :
+                                               BuildTool.FractionDetectionMode.force)
                 .bundleDependencies(!foundOptions.has(DISABLE_BUNDLE_DEPS_OPT))
                 .executable(foundOptions.has(EXECUTABLE_OPT))
                 .properties(properties)
@@ -258,6 +261,7 @@ public class Main {
     private static void exit(String message, int code) {
         exit(message, code, false);
     }
+
     private static void exit(String message, int code, boolean printHelp) {
         throw new ExitException(code, printHelp, message);
     }
@@ -311,6 +315,7 @@ public class Main {
 
     static class ExitException extends RuntimeException {
         public int status;
+
         public boolean printHelp;
 
         ExitException(final int status, final boolean printHelp, final String message) {

@@ -20,7 +20,6 @@ import java.net.URL;
 
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
@@ -64,7 +63,7 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
      * @return this fraction.
      */
     public ConsulTopologyFraction url(URL url) {
-        this.url.set( url );
+        this.url.set(url);
         return this;
     }
 
@@ -76,7 +75,7 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
      * @throws MalformedURLException if an error occurs parsing the URL.
      */
     public ConsulTopologyFraction url(String url) throws MalformedURLException {
-        this.url.set( new URL(url) );
+        this.url.set(new URL(url));
         return this;
     }
 

@@ -53,7 +53,7 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
 
     public ServiceName mscServiceNameForServiceProxy(String serviceName) {
         return ServiceName.of("jboss", "undertow", "handler",
-                TopologyWebAppFraction.proxyHandlerName(serviceName));
+                              TopologyWebAppFraction.proxyHandlerName(serviceName));
     }
 
     @Override
@@ -116,11 +116,10 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
         // with SWARM-189 the request controller subsystem does replace
         // all HttpHandler (including ProxyHandler) with GlobalRequestControllerHandler,
         // which then wraps the next handler in the chain
-        if(proxyHandler instanceof GlobalRequestControllerHandler) {
-            ProxyHandler proxy = (ProxyHandler)((GlobalRequestControllerHandler)proxyHandler).getNext(); // next in the chain of handlers
+        if (proxyHandler instanceof GlobalRequestControllerHandler) {
+            ProxyHandler proxy = (ProxyHandler) ((GlobalRequestControllerHandler) proxyHandler).getNext(); // next in the chain of handlers
             proxyClient = (LoadBalancingProxyClient) proxy.getProxyClient();
-        }
-        else {
+        } else {
             proxyClient = (LoadBalancingProxyClient) ((ProxyHandler) proxyHandler).getProxyClient();
         }
 

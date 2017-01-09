@@ -33,17 +33,20 @@ import org.wildfly.swarm.messaging.MessagingFraction;
  */
 public class Main {
 
+    protected Main() {
+    }
+
     static final String QUEUE_NAME = "camel-jms-queue";
 
     static final String QUEUE_JNDI_NAME = "java:/" + QUEUE_NAME;
 
     public static void main(String... args) throws Exception {
-        System.err.println( "RUNNING MAIN!" );
+        System.err.println("RUNNING MAIN!");
         Swarm container = new Swarm().fraction(new CamelCoreFraction());
         container.fraction(MessagingFraction.createDefaultFraction()
-                .defaultServer((s) -> {
-                    s.jmsQueue(new JMSQueue<>(QUEUE_NAME).entry(QUEUE_JNDI_NAME));
-                }));
+                                   .defaultServer((s) -> {
+                                       s.jmsQueue(new JMSQueue<>(QUEUE_NAME).entry(QUEUE_JNDI_NAME));
+                                   }));
 
         container.start().deploy();
     }

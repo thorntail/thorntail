@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("/time")
 public class TimeResource {
-    public final static String INTRO_MESSAGE = "Howdy at ";
+    public static final String INTRO_MESSAGE = "Howdy at ";
 
     public static final String MESSAGE_HELLO = "Hello to ";
 

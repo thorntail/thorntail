@@ -10,13 +10,7 @@ import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.topology.consul.ConsulTopologyFraction;
-import org.wildfly.swarm.topology.consul.runtime.Advertiser;
-import org.wildfly.swarm.topology.consul.runtime.AgentClientService;
-import org.wildfly.swarm.topology.consul.runtime.CatalogClientService;
-import org.wildfly.swarm.topology.consul.runtime.ConsulService;
-import org.wildfly.swarm.topology.consul.runtime.HealthClientService;
 
 /**
  * @author Heiko Braun

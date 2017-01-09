@@ -136,6 +136,7 @@ public class ServiceWatcher implements Service<ServiceWatcher>, IOpenShiftWatchL
             case DISCONNECTED:
 //                Trace.debug("Endpoint disconnected and skipping restart for project {0} and kind {1}", project.getName(), kind);
                 return;
+            default:
         }
 
         if (openShiftWatcher != null) {

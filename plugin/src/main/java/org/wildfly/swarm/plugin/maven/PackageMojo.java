@@ -19,8 +19,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,8 +35,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
-import org.wildfly.swarm.tools.FractionDescriptor;
 import org.wildfly.swarm.tools.DeclaredDependencies;
+import org.wildfly.swarm.tools.FractionDescriptor;
 
 /**
  * @author Bob McWhirter
@@ -71,20 +69,19 @@ public class PackageMojo extends AbstractSwarmMojo {
     protected boolean hollow;
 
     protected File divineFile() {
-        if ( this.project.getArtifact().getFile() != null ) {
+        if (this.project.getArtifact().getFile() != null) {
             return this.project.getArtifact().getFile();
         }
 
         String finalName = this.project.getBuild().getFinalName();
 
-        Path candidate = Paths.get(this.projectBuildDir, finalName + "." + this.project.getPackaging() );
+        Path candidate = Paths.get(this.projectBuildDir, finalName + "." + this.project.getPackaging());
 
         if (Files.exists(candidate)) {
             return candidate.toFile();
         }
         return null;
     }
-
 
 
     @Override
@@ -96,21 +93,21 @@ public class PackageMojo extends AbstractSwarmMojo {
 
         final File primaryArtifactFile = divineFile();
 
-        if ( primaryArtifactFile == null ) {
-            throw new MojoExecutionException( "Cannot package without a primary artifact; please `mvn package` prior to invoking wildfly-swarm:package from the command-line" );
+        if (primaryArtifactFile == null) {
+            throw new MojoExecutionException("Cannot package without a primary artifact; please `mvn package` prior to invoking wildfly-swarm:package from the command-line");
         }
 
         final DeclaredDependencies declaredDependencies = new DeclaredDependencies();
 
         final BuildTool tool = new BuildTool(mavenArtifactResolvingHelper())
                 .projectArtifact(primaryArtifact.getGroupId(),
-                        primaryArtifact.getArtifactId(),
-                        primaryArtifact.getBaseVersion(),
-                        type,
-                        primaryArtifactFile,
-                        finalName.endsWith("." + type) ?
-                                finalName :
-                                String.format("%s.%s", finalName, type))
+                                 primaryArtifact.getArtifactId(),
+                                 primaryArtifact.getBaseVersion(),
+                                 type,
+                                 primaryArtifactFile,
+                                 finalName.endsWith("." + type) ?
+                                         finalName :
+                                         String.format("%s.%s", finalName, type))
                 .fractionList(FractionList.get())
                 .properties(this.properties)
                 .mainClass(this.mainClass)
@@ -148,16 +145,16 @@ public class PackageMojo extends AbstractSwarmMojo {
 
         Map<ArtifactSpec, Set<ArtifactSpec>> buckets = createBuckets(this.project.getArtifacts(), this.project.getDependencies());
 
-        for(ArtifactSpec directDep : buckets.keySet()) {
+        for (ArtifactSpec directDep : buckets.keySet()) {
 
-            if( !(directDep.scope.equals("compile") || directDep.scope.equals("runtime")) )
+            if (!(directDep.scope.equals("compile") || directDep.scope.equals("runtime"))) {
                 continue; // ignore anything but compile and runtime
+            }
 
             Set<ArtifactSpec> transientDeps = buckets.get(directDep);
-            if(transientDeps.isEmpty()) {
+            if (transientDeps.isEmpty()) {
                 declaredDependencies.add(directDep);
-            }
-            else {
+            } else {
                 for (ArtifactSpec transientDep : transientDeps) {
                     declaredDependencies.add(directDep, transientDep);
                 }

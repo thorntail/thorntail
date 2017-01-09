@@ -78,22 +78,22 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
 
         return doResolve(specs, transitive)
-            .stream()
-            .map(artifact -> new ArtifactSpec("default",
-                                artifact.getModuleVersion().getId().getGroup(),
-                                artifact.getModuleVersion().getId().getName(),
-                                artifact.getModuleVersion().getId().getVersion(),
-                                artifact.getExtension(),
-                                artifact.getClassifier(),
-                                artifact.getFile()))
-            .collect(Collectors.toSet());
+                .stream()
+                .map(artifact -> new ArtifactSpec("default",
+                                                  artifact.getModuleVersion().getId().getGroup(),
+                                                  artifact.getModuleVersion().getId().getName(),
+                                                  artifact.getModuleVersion().getId().getVersion(),
+                                                  artifact.getExtension(),
+                                                  artifact.getClassifier(),
+                                                  artifact.getFile()))
+                .collect(Collectors.toSet());
     }
 
     private Collection<ResolvedArtifact> doResolve(final Collection<ArtifactSpec> deps, boolean transitive) {
         final Configuration config = this.project.getConfigurations().detachedConfiguration();
         final DependencySet dependencySet = config.getDependencies();
 
-        if ( transitive ) {
+        if (transitive) {
             // if transitive, then dependency-manage everything,
             // if non-transitive, we want exactly what we've asked for, and don't force
             // to the project's dependencies.
@@ -116,17 +116,17 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         if (transitive) {
             return config
-                .getResolvedConfiguration()
-                .getResolvedArtifacts();
+                    .getResolvedConfiguration()
+                    .getResolvedArtifacts();
         }
 
         return config
-            .getResolvedConfiguration()
-            .getFirstLevelModuleDependencies()
-            .stream()
-            .map(dep -> dep.getModuleArtifacts())
-            .flatMap(artifacts -> artifacts.stream())
-            .collect(Collectors.toList());
+                .getResolvedConfiguration()
+                .getFirstLevelModuleDependencies()
+                .stream()
+                .map(dep -> dep.getModuleArtifacts())
+                .flatMap(artifacts -> artifacts.stream())
+                .collect(Collectors.toList());
     }
 
 }

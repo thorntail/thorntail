@@ -21,8 +21,8 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 /**
  * @author Bob McWhirter
  */
-@DeploymentModule(name="org.wildfly.swarm.topology")
-@DeploymentModule(name="org.wildfly.swarm.topology", slot="deployment")
+@DeploymentModule(name = "org.wildfly.swarm.topology")
+@DeploymentModule(name = "org.wildfly.swarm.topology", slot = "deployment")
 public class TopologyFraction implements Fraction<TopologyFraction> {
 
 }

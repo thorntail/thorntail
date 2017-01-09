@@ -7,13 +7,13 @@ import javax.ws.rs.core.Response;
 /**
  * @author Bob McWhirter
  */
-@Path( "/custom")
+@Path("/custom")
 public class CustomExceptionResource {
 
     @GET
-    @Path( "/throw" )
+    @Path("/throw")
     public Response get() throws CustomException {
-        throw new CustomException( "Custom exception" );
+        throw new CustomException("Custom exception");
     }
 
 }

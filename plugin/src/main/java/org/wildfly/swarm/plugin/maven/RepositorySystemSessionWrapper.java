@@ -193,20 +193,17 @@ final class RepositorySystemSessionWrapper implements RepositorySystemSession {
 
     private boolean excludeSwarm;
 
-    public class SwarmExcludedTraverser implements DependencyTraverser
-    {
+    public class SwarmExcludedTraverser implements DependencyTraverser {
 
-       @Override
-       public boolean traverseDependency(Dependency dependency)
-       {
-          return !SWARM_GROUP_ID.equals(dependency.getArtifact().getGroupId());
-       }
+        @Override
+        public boolean traverseDependency(Dependency dependency) {
+            return !SWARM_GROUP_ID.equals(dependency.getArtifact().getGroupId());
+        }
 
-       @Override
-       public DependencyTraverser deriveChildTraverser(DependencyCollectionContext context)
-       {
-          return this;
-       }
+        @Override
+        public DependencyTraverser deriveChildTraverser(DependencyCollectionContext context) {
+            return this;
+        }
 
         private static final String SWARM_GROUP_ID = "org.wildfly.swarm";
     }

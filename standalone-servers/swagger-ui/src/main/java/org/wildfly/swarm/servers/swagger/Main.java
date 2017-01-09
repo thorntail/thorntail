@@ -23,6 +23,9 @@ import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
  */
 public class Main {
 
+    protected Main() {
+    }
+
     public static void main(String... args) throws Exception {
         Swarm container = new Swarm();
         SwaggerWebAppFraction fraction = new SwaggerWebAppFraction();

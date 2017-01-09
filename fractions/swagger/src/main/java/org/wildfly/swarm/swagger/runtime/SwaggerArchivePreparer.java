@@ -19,7 +19,7 @@ import org.wildfly.swarm.swagger.SwaggerArchive;
 public class SwaggerArchivePreparer implements ArchivePreparer {
     @Override
     public void prepareArchive(Archive<?> archive) {
-        if(archive instanceof JAXRSArchive) {
+        if (archive instanceof JAXRSArchive) {
             try {
                 // Create a JAX-RS deployment archive
                 JAXRSArchive deployment = archive.as(JAXRSArchive.class);
@@ -59,9 +59,8 @@ public class SwaggerArchivePreparer implements ArchivePreparer {
                         System.out.println("[Swagger] Configuring Swagger with package " + packageName);
                         swaggerArchive.setResourcePackages(packageName);
                     }
-                }
-                else {
-                    System.out.println("[SWAGGER] Configuring Swagger with packages "+ Arrays.toString(swaggerArchive.getResourcePackages()));
+                } else {
+                    System.out.println("[SWAGGER] Configuring Swagger with packages " + Arrays.toString(swaggerArchive.getResourcePackages()));
                 }
 
                 // Now add the swagger resources to our deployment

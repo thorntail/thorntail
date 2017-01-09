@@ -16,7 +16,6 @@
 package org.wildfly.swarm.topology.jgroups.runtime;
 
 import org.wildfly.clustering.dispatcher.Command;
-import org.wildfly.swarm.topology.jgroups.runtime.JGroupsTopologyConnector;
 
 /**
  * @author Bob McWhirter

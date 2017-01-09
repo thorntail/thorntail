@@ -14,6 +14,6 @@ public class JsonProcessingExceptionMapper implements ExceptionMapper<JsonProces
 
     @Override
     public Response toResponse(JsonProcessingException e) {
-        return Response.ok( "mapped json: " + e.getMessage() ).build();
+        return Response.ok("mapped json: " + e.getMessage()).build();
     }
 }

@@ -6,6 +6,6 @@ package org.wildfly.swarm.jaxrs;
 public class CustomException extends Exception {
 
     public CustomException(String message) {
-        super( message );
+        super(message);
     }
 }

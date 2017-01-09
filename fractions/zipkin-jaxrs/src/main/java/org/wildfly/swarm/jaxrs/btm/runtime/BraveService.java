@@ -38,7 +38,7 @@ public class BraveService implements BraveLookup, Service<BraveService> {
 
     @Override
     public void stop(StopContext stopContext) {
-        if(this.brave!=null){
+        if (this.brave != null) {
             LOG.info("Shutdown Zipkin BTM services");
             this.brave.serverTracer().setStateNoTracing();
         }

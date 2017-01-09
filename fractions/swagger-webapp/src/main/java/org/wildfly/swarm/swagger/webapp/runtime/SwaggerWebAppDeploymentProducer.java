@@ -22,9 +22,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 import org.wildfly.swarm.swagger.webapp.SwaggerWebAppFraction;
-import org.wildfly.swarm.swagger.webapp.SwaggerWebAppProperties;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
@@ -33,22 +31,23 @@ import org.wildfly.swarm.undertow.WARArchive;
 @Singleton
 public class SwaggerWebAppDeploymentProducer {
 
-    private static final Pattern PATTERN = Pattern.compile( "/META-INF/resources/webjars/swagger-ui/([^\\/]+/)(.*)" );
+    private static final Pattern PATTERN = Pattern.compile("/META-INF/resources/webjars/swagger-ui/([^\\/]+/)(.*)");
 
-    @Inject @Any
+    @Inject
+    @Any
     private SwaggerWebAppFraction fraction;
 
     @Produces
     public Archive swaggerWebApp() throws ModuleLoadException, IOException {
 
         // Load the swagger-ui webjars.
-        Module module = Module.getBootModuleLoader().loadModule( ModuleIdentifier.create( "org.webjars.swagger-ui" ) );
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.webjars.swagger-ui"));
         URL resource = module.getExportedResource("swagger-ui.jar");
         JARArchive webJar = ShrinkWrap.create(JARArchive.class);
-        webJar.as(ZipImporter.class).importFrom( resource.openStream() );
+        webJar.as(ZipImporter.class).importFrom(resource.openStream());
 
 
-        JARArchive relocatedJar = ShrinkWrap.create( JARArchive.class );
+        JARArchive relocatedJar = ShrinkWrap.create(JARArchive.class);
 
         Map<ArchivePath, Node> content = webJar.getContent();
 
@@ -57,7 +56,7 @@ public class SwaggerWebAppDeploymentProducer {
         for (ArchivePath path : content.keySet()) {
             Node node = content.get(path);
             Asset asset = node.getAsset();
-            if ( asset != null ) {
+            if (asset != null) {
                 Matcher matcher = PATTERN.matcher(path.get());
                 if (matcher.matches()) {
                     MatchResult result = matcher.toMatchResult();
