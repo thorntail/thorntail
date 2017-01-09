@@ -4,58 +4,51 @@ package org.wildfly.swarm.jpa.swarm513;
  * @author Heiko Braun
  * @since 15/06/16
  */
+
 import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class TicketDTO implements Serializable
-{
+public class TicketDTO implements Serializable {
 
-   private Long id;
-   private float price;
+    private Long id;
 
-   public TicketDTO()
-   {
-   }
+    private float price;
 
-   public TicketDTO(long id, float price)
-   {
+    public TicketDTO() {
+    }
 
-      this.id = id;
-      this.price = price;
-   }
+    public TicketDTO(long id, float price) {
 
-   public Ticket fromDTO(Ticket entity, EntityManager em)
-   {
-      if (entity == null)
-      {
-         entity = new Ticket();
-      }
-      entity.setPrice(this.price);
-      entity = em.merge(entity);
-      return entity;
-   }
+        this.id = id;
+        this.price = price;
+    }
 
-   public Long getId()
-   {
-      return this.id;
-   }
+    public Ticket fromDTO(Ticket entity, EntityManager em) {
+        if (entity == null) {
+            entity = new Ticket();
+        }
+        entity.setPrice(this.price);
+        entity = em.merge(entity);
+        return entity;
+    }
 
-   public void setId(final Long id)
-   {
-      this.id = id;
-   }
+    public Long getId() {
+        return this.id;
+    }
 
-   public float getPrice()
-   {
-      return this.price;
-   }
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-   public void setPrice(final float price)
-   {
-      this.price = price;
-   }
+    public float getPrice() {
+        return this.price;
+    }
+
+    public void setPrice(final float price) {
+        this.price = price;
+    }
 
 }

@@ -27,47 +27,49 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 public class Ticket implements Serializable {
 
-	/* Declaration of fields */
+    /* Declaration of fields */
 
-	/**
-	 * The synthetic id of the object.
-	 */
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	private Long id;
-
-
-	/**
-	 * The price which was charged for the ticket.
-	 */
-	private float price;
-
-	/** No-arg constructor for persistence */
-	public Ticket() {
-
-	}
-
-	public Ticket(float price) {
-		this.price = price;
-	}
-
-	/* Boilerplate getters and setters */
-
-	public Long getId() {
-		return id;
-	}
+    /**
+     * The synthetic id of the object.
+     */
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
 
 
-	public float getPrice() {
-		return price;
-	}
+    /**
+     * The price which was charged for the ticket.
+     */
+    private float price;
+
+    /**
+     * No-arg constructor for persistence
+     */
+    public Ticket() {
+
+    }
+
+    public Ticket(float price) {
+        this.price = price;
+    }
+
+    /* Boilerplate getters and setters */
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public float getPrice() {
+        return price;
+    }
 
     public void setId(Long id) {
-		this.id = id;
-	}
+        this.id = id;
+    }
 
-	public void setPrice(float price) {
-		this.price = price;
-	}
+    public void setPrice(float price) {
+        this.price = price;
+    }
 
 }

@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
@@ -55,7 +54,6 @@ public class PackageTask extends DefaultTask {
         return this;
     }
 
-
     @TaskAction
     public void packageForSwarm() throws Exception {
         final Project project = getProject();
@@ -80,7 +78,7 @@ public class PackageTask extends DefaultTask {
         GradleArtifactResolvingHelper resolvingHelper = new GradleArtifactResolvingHelper(project);
         this.tool = new BuildTool(resolvingHelper)
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
-                        jarTask.getExtension(), jarTask.getArchivePath())
+                                 jarTask.getExtension(), jarTask.getArchivePath())
                 .mainClass(ext.getMainClassName())
                 .bundleDependencies(ext.getBundleDependencies())
                 .executable(ext.getExecutable())
@@ -91,9 +89,9 @@ public class PackageTask extends DefaultTask {
                 .fractionList(FractionList.get())
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
                 .additionalModules(ext.getModuleDirs().stream()
-                        .filter(f -> f.exists())
-                        .map(File::getAbsolutePath)
-                        .collect(Collectors.toList()))
+                                           .filter(f -> f.exists())
+                                           .map(File::getAbsolutePath)
+                                           .collect(Collectors.toList()))
                 .logger(new BuildTool.SimpleLogger() {
                     @Override
                     public void debug(String msg) {
@@ -141,7 +139,7 @@ public class PackageTask extends DefaultTask {
         Set<ResolvedDependency> directDeps = resolvedConfiguration
                 .getFirstLevelModuleDependencies();
 
-        for(ResolvedDependency directDep : directDeps) {
+        for (ResolvedDependency directDep : directDeps) {
 
             assert directDep.getModuleArtifacts().iterator().hasNext() : "Expected module artifacts";
 

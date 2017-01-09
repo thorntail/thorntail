@@ -12,13 +12,13 @@ import org.wildfly.swarm.spi.api.ArchivePreparer;
  */
 public class WebXMLAdapter implements ArchivePreparer {
 
-    private final static String SERVER_SIDE_FILTERS =
-            ServerRequestInterceptor.class.getName()+","
-                    +ServerResponseInterceptor.class.getName();
+    private static final String SERVER_SIDE_FILTERS =
+            ServerRequestInterceptor.class.getName() + ","
+                    + ServerResponseInterceptor.class.getName();
 
     @Override
     public void prepareArchive(Archive<?> archive) {
-        if(archive instanceof JAXRSArchive) {
+        if (archive instanceof JAXRSArchive) {
             JAXRSArchive jaxrsArchive = archive.as(JAXRSArchive.class);
             jaxrsArchive.findWebXmlAsset().setContextParam(
                     "resteasy.providers", SERVER_SIDE_FILTERS

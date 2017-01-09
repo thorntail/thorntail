@@ -55,14 +55,14 @@ import org.wildfly.swarm.tools.ArtifactSpec;
 public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     public MavenArtifactResolvingHelper(ArtifactResolver resolver,
-            RepositorySystem system,
-            RepositorySystemSession session) {
+                                        RepositorySystem system,
+                                        RepositorySystemSession session) {
         this.resolver = resolver;
         this.system = system;
         this.session = session;
         this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
-                "http://repository.jboss.org/nexus/content/groups/public/",
-                null));
+                                                          "http://repository.jboss.org/nexus/content/groups/public/",
+                                                          null));
     }
 
     public void remoteRepository(ArtifactRepository repo) {
@@ -77,7 +77,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     public ArtifactSpec resolve(ArtifactSpec spec) {
         if (spec.file == null) {
             final DefaultArtifact artifact = new DefaultArtifact(spec.groupId(), spec.artifactId(), spec.classifier(),
-                    spec.type(), spec.version());
+                                                                 spec.type(), spec.version());
 
             final LocalArtifactResult localResult = this.session.getLocalRepositoryManager()
                     .find(this.session, new LocalArtifactRequest(artifact, this.remoteRepositories, null));
@@ -86,9 +86,9 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
             } else {
                 try {
                     final ArtifactResult result = resolver.resolveArtifact(this.session,
-                            new ArtifactRequest(artifact,
-                                    this.remoteRepositories,
-                                    null));
+                                                                           new ArtifactRequest(artifact,
+                                                                                               this.remoteRepositories,
+                                                                                               null));
                     if (result.isResolved()) {
                         spec.file = result.getArtifact().getFile();
                     }
@@ -113,20 +113,20 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
             specs.forEach(spec -> request
                     .addDependency(new Dependency(new DefaultArtifact(spec.groupId(),
-                            spec.artifactId(),
-                            spec.classifier(),
-                            spec.type(),
-                            spec.version()),
-                            "compile")));
+                                                                      spec.artifactId(),
+                                                                      spec.classifier(),
+                                                                      spec.type(),
+                                                                      spec.version()),
+                                                  "compile")));
 
             RepositorySystemSession tempSession
                     = new RepositorySystemSessionWrapper(this.session,
-                            new ConflictResolver(new NewestVersionSelector(),
-                                    new JavaScopeSelector(),
-                                    new SimpleOptionalitySelector(),
-                                    new JavaScopeDeriver()
-                            ), defaultExcludes
-                    );
+                                                         new ConflictResolver(new NewestVersionSelector(),
+                                                                              new JavaScopeSelector(),
+                                                                              new SimpleOptionalitySelector(),
+                                                                              new JavaScopeDeriver()
+                                                         ), defaultExcludes
+            );
             CollectResult result = this.system.collectDependencies(tempSession, request);
             PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
             result.getRoot().accept(gen);
@@ -135,11 +135,11 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
             nodes = new ArrayList<>();
             for (ArtifactSpec spec : specs) {
                 Dependency dependency = new Dependency(new DefaultArtifact(spec.groupId(),
-                        spec.artifactId(),
-                        spec.classifier(),
-                        spec.type(),
-                        spec.version()),
-                        "compile");
+                                                                           spec.artifactId(),
+                                                                           spec.classifier(),
+                                                                           spec.type(),
+                                                                           spec.version()),
+                                                       "compile");
                 DefaultDependencyNode node = new DefaultDependencyNode(dependency);
                 nodes.add(node);
             }
@@ -152,12 +152,12 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 .map(node -> {
                     final Artifact artifact = node.getArtifact();
                     return new ArtifactSpec(node.getDependency().getScope(),
-                            artifact.getGroupId(),
-                            artifact.getArtifactId(),
-                            artifact.getVersion(),
-                            artifact.getExtension(),
-                            artifact.getClassifier(),
-                            null);
+                                            artifact.getGroupId(),
+                                            artifact.getArtifactId(),
+                                            artifact.getVersion(),
+                                            artifact.getExtension(),
+                                            artifact.getClassifier(),
+                                            null);
                 })
                 .map(this::resolve)
                 .filter(Objects::nonNull)
@@ -185,8 +185,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 && auth.getUsername() != null
                 && auth.getPassword() != null) {
             builder.setAuthentication(new AuthenticationBuilder()
-                    .addUsername(auth.getUsername())
-                    .addPassword(auth.getPassword()).build());
+                                              .addUsername(auth.getUsername())
+                                              .addPassword(auth.getPassword()).build());
         }
 
         RemoteRepository repository = builder.build();
@@ -195,16 +195,16 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         if (mirror != null) {
             builder = new RemoteRepository.Builder(mirror);
-          
+
             // the authentication is not automatically copied to the mirror
             if (auth != null
-                && auth.getUsername() != null
-                && auth.getPassword() != null) {
+                    && auth.getUsername() != null
+                    && auth.getPassword() != null) {
                 builder.setAuthentication(new AuthenticationBuilder()
-                        .addUsername(auth.getUsername())
-                        .addPassword(auth.getPassword()).build());
+                                                  .addUsername(auth.getUsername())
+                                                  .addPassword(auth.getPassword()).build());
             }
-        
+
             repository = builder.build();
         }
 
@@ -217,11 +217,11 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         return repository;
     }
 
-    final protected RepositorySystemSession session;
+    protected final RepositorySystemSession session;
 
-    final protected List<RemoteRepository> remoteRepositories = new ArrayList<>();
+    protected final List<RemoteRepository> remoteRepositories = new ArrayList<>();
 
-    final private ArtifactResolver resolver;
+    private final ArtifactResolver resolver;
 
-    final private RepositorySystem system;
+    private final RepositorySystem system;
 }

@@ -138,7 +138,6 @@ public class AnalyzeMojo extends AbstractMojo {
                         for (int i = 1; i < parts.length - 2; ++i) {
                             if (module != null) {
                                 module = module + ".";
-                                ;
                             } else {
                                 module = "";
                             }
@@ -163,7 +162,7 @@ public class AnalyzeMojo extends AbstractMojo {
                 matcher = ARTIFACT.matcher(line);
                 if (matcher.find()) {
                     String gav = matcher.group(1);
-                    String parts[] = gav.split(":");
+                    String[] parts = gav.split(":");
 
                     String groupId = parts[0];
                     String artifactId = parts[1];

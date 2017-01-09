@@ -37,21 +37,17 @@ public class TicketEndpoint {
 
     @GET
     @Produces({"text/xml", "application/json"})
-    public List<TicketDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult)
-    {
+    public List<TicketDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult) {
         TypedQuery<Ticket> findAllQuery = em.createQuery("SELECT DISTINCT t FROM Ticket t ORDER BY t.id", Ticket.class);
-        if (startPosition != null)
-        {
+        if (startPosition != null) {
             findAllQuery.setFirstResult(startPosition);
         }
-        if (maxResult != null)
-        {
+        if (maxResult != null) {
             findAllQuery.setMaxResults(maxResult);
         }
         final List<Ticket> searchResults = findAllQuery.getResultList();
         final List<TicketDTO> results = new ArrayList<TicketDTO>();
-        for (Ticket searchResult : searchResults)
-        {
+        for (Ticket searchResult : searchResults) {
             TicketDTO dto = new TicketDTO(searchResult.getId(), searchResult.getPrice());
             results.add(dto);
         }

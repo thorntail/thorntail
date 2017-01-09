@@ -149,14 +149,14 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     }
 
     protected Map<ArtifactSpec, Set<ArtifactSpec>> createBuckets(Set<Artifact> transientDeps, List<Dependency> directDeps) {
-        Map<ArtifactSpec,Set<ArtifactSpec>> buckets  = new HashMap<>();
-        for(Artifact dep : transientDeps) {
-            if(dep.getDependencyTrail().isEmpty()) {
-                throw new RuntimeException("Empty trail "+ asBucketKey(dep));
-            } else if(dep.getDependencyTrail().size()==2) {
+        Map<ArtifactSpec, Set<ArtifactSpec>> buckets = new HashMap<>();
+        for (Artifact dep : transientDeps) {
+            if (dep.getDependencyTrail().isEmpty()) {
+                throw new RuntimeException("Empty trail " + asBucketKey(dep));
+            } else if (dep.getDependencyTrail().size() == 2) {
                 ArtifactSpec key = asBucketKey(dep);
                 //System.out.println("Appears to be top level: "+ key);
-                if(!buckets.containsKey(key)) {
+                if (!buckets.containsKey(key)) {
                     buckets.put(key, new HashSet<>());
                 }
             } else {
@@ -164,19 +164,18 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
                 String owner = dep.getDependencyTrail().get(1);
                 String ownerScope = null;
                 String[] tokens = owner.split(":");
-                for(Dependency d : directDeps) {
-                    if(d.getGroupId().equals(tokens[0])
-                            && d.getArtifactId().equals(tokens[1]))
-                    {
+                for (Dependency d : directDeps) {
+                    if (d.getGroupId().equals(tokens[0])
+                            && d.getArtifactId().equals(tokens[1])) {
                         ownerScope = d.getScope();
                         break;
                     }
                 }
 
-                assert ownerScope !=null : "Failed to resolve owner scope";
+                assert ownerScope != null : "Failed to resolve owner scope";
 
                 ArtifactSpec parent = DeclaredDependencies.createSpec(owner, ownerScope);
-                if(!buckets.containsKey(parent)) {
+                if (!buckets.containsKey(parent)) {
                     buckets.put(parent, new HashSet<>());
                 }
                 buckets.get(parent).add(asBucketKey(dep));
@@ -188,14 +187,14 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     private static ArtifactSpec asBucketKey(Artifact artifact) {
 
         return new ArtifactSpec(
-                            artifact.getScope(),
-                            artifact.getGroupId(),
-                            artifact.getArtifactId(),
-                            artifact.getBaseVersion(),
-                            artifact.getType(),
-                            artifact.getClassifier(),
-                            artifact.getFile()
-                    );
+                artifact.getScope(),
+                artifact.getGroupId(),
+                artifact.getArtifactId(),
+                artifact.getBaseVersion(),
+                artifact.getType(),
+                artifact.getClassifier(),
+                artifact.getFile()
+        );
     }
 
 }

@@ -45,11 +45,9 @@ public class SwaggerConfig {
                 }
                 put(key, value);
             }
-        }
-        catch (IllegalArgumentException ia) {
-            throw new RuntimeException("Invalid key: "+ ia.getMessage());
-        }
-        catch (IOException e) {
+        } catch (IllegalArgumentException ia) {
+            throw new RuntimeException("Invalid key: " + ia.getMessage());
+        } catch (IOException e) {
             System.err.println("ERROR reading SwaggerConfigurationAsset" + e);
             e.printStackTrace();
         } finally {

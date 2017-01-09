@@ -29,9 +29,9 @@ import zipkin.reporter.urlconnection.URLConnectionSender;
  * @author Heiko Braun
  */
 @DeploymentModules({
-        @DeploymentModule( name = "com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"),
-        @DeploymentModule( name = "io.zipkin.brave"),
-        @DeploymentModule( name = "org.wildfly.swarm.jaxrs.btm")
+        @DeploymentModule(name = "com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"),
+        @DeploymentModule(name = "io.zipkin.brave"),
+        @DeploymentModule(name = "org.wildfly.swarm.jaxrs.btm")
 })
 public class ZipkinFraction implements Fraction<ZipkinFraction> {
 

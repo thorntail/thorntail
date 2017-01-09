@@ -8,9 +8,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "collection")
-@XmlAccessorType (XmlAccessType.FIELD)
-public class Tickets
-{
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Tickets {
     @XmlElement(name = "ticketDTO")
     private List<TicketDTO> tickets = null;
 

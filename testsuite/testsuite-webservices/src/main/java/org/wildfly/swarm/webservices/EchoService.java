@@ -15,5 +15,5 @@ public interface EchoService {
     String SERVICE_NAME = "echoService";
 
     @WebMethod
-    String echo(@WebParam(name = "input") final String input);
+    String echo(@WebParam(name = "input") String input);
 }

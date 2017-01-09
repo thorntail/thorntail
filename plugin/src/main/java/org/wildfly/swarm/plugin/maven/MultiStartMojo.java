@@ -57,6 +57,8 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class MultiStartMojo extends AbstractSwarmMojo {
 
+    private static final String SWARM_PROCESS = "swarm-process";
+
     @Parameter(alias = "processes")
     protected List<XmlPlexusConfiguration> processes;
 
@@ -118,13 +120,13 @@ public class MultiStartMojo extends AbstractSwarmMojo {
         mavenSession.setCurrentProject(project);
         this.pluginManager.executeMojo(mavenSession, mojoExecution);
 
-        List<SwarmProcess> launched = (List<SwarmProcess>) mavenSession.getPluginContext(pluginDescriptor, project).get("swarm-process");
+        List<SwarmProcess> launched = (List<SwarmProcess>) mavenSession.getPluginContext(pluginDescriptor, project).get(SWARM_PROCESS);
 
-        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
+        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get(SWARM_PROCESS);
 
         if (procs == null) {
             procs = new ArrayList<>();
-            getPluginContext().put("swarm-process", procs);
+            getPluginContext().put(SWARM_PROCESS, procs);
         }
 
         procs.addAll(launched);
@@ -134,11 +136,11 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     @SuppressWarnings("unchecked")
     protected void startArtifact(Artifact artifact, XmlPlexusConfiguration process) throws InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException, PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException {
-        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
+        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get(SWARM_PROCESS);
 
         if (procs == null) {
             procs = new ArrayList<>();
-            getPluginContext().put("swarm-process", procs);
+            getPluginContext().put(SWARM_PROCESS, procs);
         }
 
         SwarmExecutor executor = new SwarmExecutor();

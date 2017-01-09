@@ -38,15 +38,15 @@ public class StopMojo extends AbstractMojo {
     @SuppressWarnings("unchecked")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if ( this.execution.getExecutionId().equals( "default-cli" ) ) {
-            getLog().error( "wildfly-swarm:stop is not usable from the CLI" );
+        if (this.execution.getExecutionId().equals("default-cli")) {
+            getLog().error("wildfly-swarm:stop is not usable from the CLI");
             return;
         }
 
         List<SwarmProcess> value = (List<SwarmProcess>) getPluginContext().get("swarm-process");
 
-        if ( value == null ) {
-            getLog().error( "No known processes to stop" );
+        if (value == null) {
+            getLog().error("No known processes to stop");
             return;
         }
 

@@ -53,7 +53,7 @@ public class SwaggerServiceActivator implements ServiceActivator {
         // some type inconsistencies in the API (String vs String[])
         String[] packages = (String[]) config.get(SwaggerConfig.Key.PACKAGES);
 
-        if(packages!=null) {
+        if (packages != null) {
             StringBuffer sb = new StringBuffer();
             for (String s : packages) {
                 sb.append(s).append(',');

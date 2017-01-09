@@ -23,6 +23,9 @@ import org.wildfly.swarm.management.console.ManagementConsoleFraction;
  */
 public class Main {
 
+    protected Main() {
+    }
+
     public static void main(String... args) throws Exception {
         Swarm container = new Swarm();
         container.fraction(new ManagementConsoleFraction());

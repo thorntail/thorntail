@@ -21,17 +21,18 @@ import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
-import static org.wildfly.swarm.spi.api.Defaultable.*;
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
 import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_CLUSTER_HOST;
-import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_JNDI_NAME;
 import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_CLUSTER_PORT;
+import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_JNDI_NAME;
 
 /**
  * @author George Gastaldi
  */
 @DeploymentModule(name = "io.vertx.jca", slot = "api")
-@DeploymentModule(name = "io.vertx.jca", slot = "ra", services = Module.ServiceHandling.IMPORT )
-@DeploymentModule(name = "com.hazelcast" )
+@DeploymentModule(name = "io.vertx.jca", slot = "ra", services = Module.ServiceHandling.IMPORT)
+@DeploymentModule(name = "com.hazelcast")
 @Configurable("swarm.vertx")
 public class VertxFraction implements Fraction<VertxFraction> {
 
@@ -54,7 +55,7 @@ public class VertxFraction implements Fraction<VertxFraction> {
     }
 
     public VertxFraction clusterHost(String clusterHost) {
-        this.clusterHost.set( clusterHost );
+        this.clusterHost.set(clusterHost);
         return this;
     }
 
@@ -80,5 +81,5 @@ public class VertxFraction implements Fraction<VertxFraction> {
     private Defaultable<String> clusterHost = string(DEFAULT_CLUSTER_HOST);
 
     @Configurable("swarm.vertx.cluster.port")
-    private Defaultable<Integer> clusterPort = integer(DEFAULT_CLUSTER_PORT );
+    private Defaultable<Integer> clusterPort = integer(DEFAULT_CLUSTER_PORT);
 }

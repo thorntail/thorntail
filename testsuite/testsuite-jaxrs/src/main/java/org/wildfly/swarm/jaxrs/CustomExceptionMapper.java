@@ -12,6 +12,6 @@ public class CustomExceptionMapper implements ExceptionMapper<CustomException> {
 
     @Override
     public Response toResponse(CustomException e) {
-        return Response.ok( "mapped custom: " + e.getMessage() ).build();
+        return Response.ok("mapped custom: " + e.getMessage()).build();
     }
 }

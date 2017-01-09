@@ -34,7 +34,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
  */
 public class ConsulService implements Service<Consul> {
 
-    private final static Logger LOG = Logger.getLogger( "org.wildfly.swarm.topology.consul" );
+    private static final Logger LOG = Logger.getLogger("org.wildfly.swarm.topology.consul");
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm.topology.consul");
 

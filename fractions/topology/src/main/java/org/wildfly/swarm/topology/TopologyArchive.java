@@ -17,7 +17,6 @@ package org.wildfly.swarm.topology;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.api.Assignable;
 
@@ -31,6 +30,7 @@ public interface TopologyArchive extends Assignable {
     TopologyArchive advertise();
 
     TopologyArchive advertise(String... serviceNames);
+
     TopologyArchive advertise(Collection<String> serviceNames);
 
     List<String> advertisements();

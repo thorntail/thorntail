@@ -23,6 +23,9 @@ import org.wildfly.swarm.datasources.DatasourcesFraction;
  */
 public class Main {
 
+    protected Main() {
+    }
+
     public static void main(String... args) throws Exception {
         Swarm swarm = new Swarm(args);
 

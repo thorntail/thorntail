@@ -56,8 +56,9 @@ public class CountingItemReader implements ItemReader {
     @Override
     public Object readItem() throws Exception {
         final int current = counter.getAndIncrement();
-        if (current < endCount)
+        if (current < endCount) {
             return current;
+        }
         return null;
     }
 

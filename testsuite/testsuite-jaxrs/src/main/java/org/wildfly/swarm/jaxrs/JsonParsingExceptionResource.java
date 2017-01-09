@@ -10,12 +10,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 /**
  * @author Bob McWhirter
  */
-@Path( "/json")
+@Path("/json")
 public class JsonParsingExceptionResource {
 
     @GET
-    @Path( "/throw" )
+    @Path("/throw")
     public Response get() throws JsonParseException {
-        throw new JsonParseException( "that didn't work", new JsonLocation( "synthetic.json", 0, 0, 0)  );
+        throw new JsonParseException("that didn't work", new JsonLocation("synthetic.json", 0, 0, 0));
     }
 }

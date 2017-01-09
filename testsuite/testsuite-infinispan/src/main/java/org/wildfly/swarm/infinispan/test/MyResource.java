@@ -11,27 +11,26 @@ import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
 
 /**
- *
  * @author mwolf
  */
 @Path("/")
 public class MyResource {
 
-	private final String key = "myKey";
+    private final String key = "myKey";
 
-	@GET
-	@Produces("text/plain")
-	public String get() throws Exception {
-		EmbeddedCacheManager cacheContainer
-				= (EmbeddedCacheManager) new InitialContext().lookup("java:jboss/infinispan/container/server");
-		Cache cache = cacheContainer.getCache("server");
-		if (cache.keySet().contains(key)) {
-			return (String) cache.get(key);
-		}
+    @GET
+    @Produces("text/plain")
+    public String get() throws Exception {
+        EmbeddedCacheManager cacheContainer
+                = (EmbeddedCacheManager) new InitialContext().lookup("java:jboss/infinispan/container/server");
+        Cache cache = cacheContainer.getCache("server");
+        if (cache.keySet().contains(key)) {
+            return (String) cache.get(key);
+        }
 
-		String result = UUID.randomUUID().toString();
-		cache.put(key, result);
-		return result;
-	}
+        String result = UUID.randomUUID().toString();
+        cache.put(key, result);
+        return result;
+    }
 
 }

@@ -19,6 +19,10 @@ package org.wildfly.swarm.netflix.ribbon.secured.client;
  * @author Bob McWhirter
  */
 public class SecuredRibbon {
+
+    protected SecuredRibbon() {
+    }
+
     public static <T> T from(final Class<T> classType) {
         return SecuredRibbonResourceFactory.INSTANCE.from(classType);
     }

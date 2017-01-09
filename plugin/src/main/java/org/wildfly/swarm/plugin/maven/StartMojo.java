@@ -60,7 +60,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "stdoutFile", property = "swarm.stdout")
     public File stdoutFile;
 
-    @Parameter(alias = "stderrFile", property = "swarm.stderr" )
+    @Parameter(alias = "stderrFile", property = "swarm.stderr")
     public File stderrFile;
 
     @Parameter(alias = "useUberJar", defaultValue = "${wildfly-swarm.useUberJar}")
@@ -72,7 +72,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "jvmArguments", property = "swarm.jvmArguments")
     public List<String> jvmArguments = new ArrayList<>();
 
-    @Parameter(alias = "arguments" )
+    @Parameter(alias = "arguments")
     public List<String> arguments = new ArrayList<>();
 
     @Parameter(property = "swarm.arguments", defaultValue = "")
@@ -98,16 +98,16 @@ public class StartMojo extends AbstractSwarmMojo {
             throw new MojoExecutionException("Unsupported packaging: " + this.project.getPackaging());
         }
 
-        executor.withJVMArguments( this.jvmArguments );
+        executor.withJVMArguments(this.jvmArguments);
 
-        if ( this.argumentsProp != null ) {
+        if (this.argumentsProp != null) {
             StringTokenizer args = new StringTokenizer(this.argumentsProp);
-            while ( args.hasMoreTokens() ) {
-                this.arguments.add( args.nextToken() );
+            while (args.hasMoreTokens()) {
+                this.arguments.add(args.nextToken());
             }
         }
 
-        executor.withArguments( this.arguments );
+        executor.withArguments(this.arguments);
 
         final SwarmProcess process;
         try {
@@ -124,11 +124,11 @@ public class StartMojo extends AbstractSwarmMojo {
                                                       .collect(Collectors.toList())))
                     .execute();
 
-            Runtime.getRuntime().addShutdownHook( new Thread(()->{
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     // Sleeping for a few millis will give time to shutdown gracefully
                     Thread.sleep(100L);
-                    process.stop( 10, TimeUnit.SECONDS );
+                    process.stop(10, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                 }
             }));
@@ -160,7 +160,7 @@ public class StartMojo extends AbstractSwarmMojo {
                 process.waitFor();
             } catch (InterruptedException e) {
                 try {
-                    process.stop( 10, TimeUnit.SECONDS );
+                    process.stop(10, TimeUnit.SECONDS);
                 } catch (InterruptedException ie) {
                     // Do nothing
                 }
@@ -311,14 +311,14 @@ public class StartMojo extends AbstractSwarmMojo {
             elements.add(each.getFile().toPath());
         }
 
-        if(declaredDependencies.getDirectDeps().size()>0) {
+        if (declaredDependencies.getDirectDeps().size() > 0) {
             try {
 
                 // multi-start doesn't have a projectBuildDir
 
-                File tmp = this.projectBuildDir!=null ?
+                File tmp = this.projectBuildDir != null ?
                         Files.createTempFile(Paths.get(this.projectBuildDir), "swarm-", "-cp.txt").toFile() :
-                        Files.createTempFile("swarm-", "-cp.txt").toFile() ;
+                        Files.createTempFile("swarm-", "-cp.txt").toFile();
 
                 tmp.deleteOnExit();
                 declaredDependencies.writeTo(tmp);
@@ -336,9 +336,10 @@ public class StartMojo extends AbstractSwarmMojo {
             if (fractionDetectMode == BuildTool.FractionDetectionMode.force ||
                     !hasSwarmDeps) {
                 List<Path> fractionDeps = findNeededFractions(artifacts, archiveContent, scanDependencies);
-                for(Path p : fractionDeps) {
-                    if(!elements.contains(p))
+                for (Path p : fractionDeps) {
+                    if (!elements.contains(p)) {
                         elements.add(p);
+                    }
                 }
             }
         } else if (!hasSwarmDeps) {

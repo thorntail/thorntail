@@ -48,11 +48,11 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
         super(archive);
 
         Node regConf = as(JARArchive.class).get(REGISTRATION_CONF);
-        if ( regConf != null && regConf.getAsset() != null ) {
-            try ( BufferedReader reader = new BufferedReader( new InputStreamReader( regConf.getAsset().openStream() ) ) ) {
+        if (regConf != null && regConf.getAsset() != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(regConf.getAsset().openStream()))) {
                 reader.lines()
-                        .forEach( line->{
-                            this.serviceNames.add( line );
+                        .forEach(line -> {
+                            this.serviceNames.add(line);
                         });
             } catch (IOException e) {
                 e.printStackTrace();
@@ -77,13 +77,13 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
 
     @Override
     public TopologyArchive advertise(Collection<String> serviceNames) {
-        this.serviceNames.addAll( serviceNames );
+        this.serviceNames.addAll(serviceNames);
         return advertise();
     }
 
     @Override
     public List<String> advertisements() {
-        return Collections.unmodifiableList( this.serviceNames );
+        return Collections.unmodifiableList(this.serviceNames);
     }
 
     @Override
