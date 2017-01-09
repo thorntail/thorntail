@@ -1,3 +1,18 @@
+/**
+ * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.wildfly.swarm.keycloak.runtime;
 
 import java.io.BufferedReader;
@@ -6,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -17,9 +33,11 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.keycloak.Secured;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 
 @Singleton
 public class SecuredArchivePreparer implements ArchivePreparer {
@@ -41,6 +59,18 @@ public class SecuredArchivePreparer implements ArchivePreparer {
         } else {
             // not adding it.
         }
+
+        if (securityConstraints == null || securityConstraints.isEmpty()) {
+            return;
+        }
+
+        securityConstraints.forEach(scAsString -> {
+            SecurityConstraint sc = SecurityConstraintParser.parse(scAsString);
+            archive.as(Secured.class)
+                    .protect(sc.urlPattern())
+                    .withMethod(sc.methods().toArray(new String[sc.methods().size()]))
+                    .withRole(sc.roles().toArray(new String[sc.roles().size()]));
+        });
     }
 
     private InputStream getKeycloakJson(String path) {
@@ -100,6 +130,9 @@ public class SecuredArchivePreparer implements ArchivePreparer {
     }
 
     @Configurable("swarm.keycloak.json.path")
-    private String keycloakJsonPath;
+    String keycloakJsonPath;
+
+    @Configurable("swarm.keycloak.security.constraints")
+    List<String> securityConstraints;
 
 }
