@@ -191,6 +191,7 @@ public class ApplicationEnvironment {
         this.manifests = new ArrayList<>();
 
         Enumeration<URL> results = cl.getResources(FractionManifest.CLASSPATH_LOCATION);
+        Set<MavenArtifactDescriptor> fractionDependencies = new HashSet<>();
 
         while (results.hasMoreElements()) {
             URL each = results.nextElement();
@@ -201,65 +202,43 @@ public class ApplicationEnvironment {
             }
             if (this.mode == Mode.CLASSPATH) {
 
-                Set<MavenArtifactDescriptor> applicationDependencies = new HashSet<>();
-
                 if (dependencyTree.isPresent()) {
 
-                    Set<MavenArtifactDescriptor> topLevelFractions = new HashSet<>();
-
-                    MavenArtifactDescriptor source = new MavenArtifactDescriptor(
+                    MavenArtifactDescriptor fraction = new MavenArtifactDescriptor(
                             manifest.getGroupId(),
                             manifest.getArtifactId(),
                             manifest.getVersion()
                     );
 
-                    for (MavenArtifactDescriptor target : dependencyTree.get().getDirectDeps()) {
-                        if (source.equals(target)) {
-                            topLevelFractions.add(target);
+                    for (MavenArtifactDescriptor directDep : dependencyTree.get().getDirectDeps()) {
+                        if (fraction.equals(directDep)) {
+                            fractionDependencies.add(directDep);
                         }
                     }
-
-                    Set<MavenArtifactDescriptor> keep = new HashSet<>(dependencyTree.get().getDirectDeps());
-                    keep.removeAll(topLevelFractions);
-
-                    for (MavenArtifactDescriptor dep : keep) {
-                        // the dep itself
-                        applicationDependencies.add(dep);
-
-                        // it's transient dependencies
-                        applicationDependencies.addAll(dependencyTree.get().getTransientDeps(dep));
-                    }
-
 
                 }
 
                 this.removeableDependencies.addAll(manifest.getDependencies());
-                this.removeableDependencies.removeAll(applicationDependencies);
 
             }
         }
 
-        // match existing dependency info (if given)
-        // for now we simply keep all explicit deps, but ignore their transient children
-        Set<String> keep = new HashSet<>();
-        if (dependencyTree.isPresent()) {
+        if(dependencyTree.isPresent()) {
+            Set<MavenArtifactDescriptor> applicationDependencies = new HashSet<>();
+            Set<MavenArtifactDescriptor> keep = new HashSet<>(dependencyTree.get().getDirectDeps());
+            keep.removeAll(fractionDependencies);
 
-            for (String toBeRemoved : removeableDependencies) {
-                MavenArtifactDescriptor source = MavenArtifactDescriptor.fromMavenGav(toBeRemoved);
-                for (MavenArtifactDescriptor target : dependencyTree.get().getDirectDeps()) {
 
-                    if (source.groupId().equals(target.groupId()) &&
-                            source.artifactId().equals(target.artifactId())
-                            ) {
-                        keep.add(toBeRemoved);
-                    }
-                }
+            for (MavenArtifactDescriptor dep : keep) {
+                // the dep itself
+                applicationDependencies.add(dep);
+
+                // it's transient dependencies
+                applicationDependencies.addAll(dependencyTree.get().getTransientDeps(dep));
             }
 
-            removeableDependencies.removeAll(keep);
-
+            this.removeableDependencies.removeAll(applicationDependencies);
         }
-
 
         this.manifests.sort(new ManifestComparator());
     }
