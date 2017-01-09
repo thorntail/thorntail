@@ -5,6 +5,11 @@ swarm:
     console-handlers:
       CONSOLE:
         level: DEBUG
+    loggers:
+      org.wildfly.swarm.security:
+        level: TRACE
+        handlers:
+          - CONSOLE
   security:
     security-domains:
       controle-despesas:
