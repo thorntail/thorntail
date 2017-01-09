@@ -202,13 +202,13 @@ public class ApplicationEnvironment {
             }
             if (this.mode == Mode.CLASSPATH) {
 
-                if (dependencyTree.isPresent()) {
+                MavenArtifactDescriptor fraction = new MavenArtifactDescriptor(
+                        manifest.getGroupId(),
+                        manifest.getArtifactId(),
+                        manifest.getVersion()
+                );
 
-                    MavenArtifactDescriptor fraction = new MavenArtifactDescriptor(
-                            manifest.getGroupId(),
-                            manifest.getArtifactId(),
-                            manifest.getVersion()
-                    );
+                if (dependencyTree.isPresent()) {
 
                     for (MavenArtifactDescriptor directDep : dependencyTree.get().getDirectDeps()) {
                         if (fraction.equals(directDep)) {
@@ -218,12 +218,14 @@ public class ApplicationEnvironment {
 
                 }
 
+                this.removeableDependencies.add(fraction.mavenGav());
                 this.removeableDependencies.addAll(manifest.getDependencies());
 
             }
         }
 
         if (dependencyTree.isPresent()) {
+
             Set<MavenArtifactDescriptor> applicationDependencies = new HashSet<>();
             Set<MavenArtifactDescriptor> keep = new HashSet<>(dependencyTree.get().getDirectDeps());
             keep.removeAll(fractionDependencies);
