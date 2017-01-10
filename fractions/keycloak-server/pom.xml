@@ -26,6 +26,29 @@
     <swarm.fraction.tags>Security</swarm.fraction.tags>
   </properties>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>swagger-ui</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.keycloak</includeGroupIds>
+              <includeArtifactIds>keycloak-themes</includeArtifactIds>
+              <outputDirectory>${project.build.directory}/classes/modules/org/keycloak/keycloak-themes/main/</outputDirectory>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -36,11 +59,13 @@
       <artifactId>spi</artifactId>
       <scope>provided</scope>
     </dependency>
+
+
     <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>staxmapper</artifactId>
-      <scope>provided</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>keycloak-config-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
@@ -49,16 +74,6 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-dmr</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-controller</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -76,6 +91,11 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>datasources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-themes</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
