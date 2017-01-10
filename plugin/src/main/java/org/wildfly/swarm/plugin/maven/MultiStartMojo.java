@@ -188,7 +188,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
                 .stream()
                 .filter(e -> (e.getGroupId().equals(groupId) && e.getArtifactId().equals(artifactId) && ((e.getClassifier() == null && classifier == null) || (e.getClassifier() != null && e.getClassifier().equals(classifier)))))
                 .findFirst()
-                .orElseGet(null);
+                .orElse(null);
     }
 
     protected Xpp3Dom getGlobalConfig() {
