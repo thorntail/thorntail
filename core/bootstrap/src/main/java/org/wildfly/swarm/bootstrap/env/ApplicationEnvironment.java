@@ -223,7 +223,7 @@ public class ApplicationEnvironment {
             }
         }
 
-        if(dependencyTree.isPresent()) {
+        if (dependencyTree.isPresent()) {
             Set<MavenArtifactDescriptor> applicationDependencies = new HashSet<>();
             Set<MavenArtifactDescriptor> keep = new HashSet<>(dependencyTree.get().getDirectDeps());
             keep.removeAll(fractionDependencies);
