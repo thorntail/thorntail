@@ -15,18 +15,9 @@
  */
 package org.wildfly.swarm.security;
 
-import java.util.HashMap;
-
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.Security;
 import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
-import org.wildfly.swarm.config.security.security_domain.ClassicAuthentication;
-import org.wildfly.swarm.config.security.security_domain.JaspiAuthentication;
-import org.wildfly.swarm.config.security.security_domain.authentication.AuthModule;
-import org.wildfly.swarm.config.security.security_domain.authentication.LoginModule;
-import org.wildfly.swarm.config.security.security_domain.authentication.LoginModuleStack;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -44,38 +35,32 @@ public class SecurityFraction extends Security<SecurityFraction> implements Frac
         return new SecurityFraction().applyDefaults();
     }
 
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
-
     public SecurityFraction applyDefaults() {
-        securityDomain(new SecurityDomain("other")
-                               .cacheType(SecurityDomain.CacheType.DEFAULT)
-                               .classicAuthentication(new ClassicAuthentication()
-                                                              .loginModule(new LoginModule("RealmDirect")
-                                                                                   .code("RealmDirect")
-                                                                                   .flag(Flag.REQUIRED)
-                                                                                   .moduleOptions(new HashMap<Object, Object>() {{
-                                                                                       put("password-stacking", "useFirstPass");
-                                                                                   }})
+        securityDomain("other", (domain) -> {
+            domain.cacheType(SecurityDomain.CacheType.DEFAULT);
+            domain.classicAuthentication((auth) -> {
+                auth.loginModule("RealmDirect", (module) -> {
+                    module.code("RealmDirect");
+                    module.flag(Flag.REQUIRED);
+                    module.moduleOption("password-stacking", "useFirstPass");
+                });
+            });
+        });
 
-                                                              )));
-
-        securityDomain(new SecurityDomain("jaspitest")
-                               .cacheType(SecurityDomain.CacheType.DEFAULT)
-                               .jaspiAuthentication(new JaspiAuthentication()
-                                                            .loginModuleStack(new LoginModuleStack("dummy")
-                                                                                      .loginModule(new LoginModule(DUMMY)
-                                                                                                           .code(DUMMY)
-                                                                                                           .flag(Flag.OPTIONAL)
-                                                                                      )
-                                                            )
-                                                            .authModule(new AuthModule(DUMMY)
-                                                                                .code(DUMMY)
-                                                            )
-                               )
-        );
+        securityDomain("jaspitest", (domain) -> {
+            domain.cacheType(SecurityDomain.CacheType.DEFAULT);
+            domain.jaspiAuthentication((auth) -> {
+                auth.loginModuleStack("dummy", (stack) -> {
+                    stack.loginModule(DUMMY, (module) -> {
+                        module.code(DUMMY);
+                        module.flag(Flag.OPTIONAL);
+                    });
+                });
+                auth.authModule(DUMMY, (module) -> {
+                    module.code(DUMMY);
+                });
+            });
+        });
 
         return this;
     }

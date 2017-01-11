@@ -73,6 +73,8 @@ public class ConfigurableManager implements AutoCloseable {
 
     private final List<ConfigurableHandle> configurables = new ArrayList<>();
 
+    private final List<Object> deferred = new ArrayList<>();
+
     private final StageConfig stageConfig;
 
     public ConfigurableManager(StageConfig stageConfig) {
@@ -167,14 +169,26 @@ public class ConfigurableManager implements AutoCloseable {
         };
     }
 
+    public void rescan() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        for (Object each : this.deferred) {
+            scanInternal(each);
+        }
+    }
+
     public void scan(Object instance) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         //scan(instance, instance instanceof Fraction);
+        this.deferred.add(instance);
+        scanInternal(instance);
+    }
+
+    private void scanInternal(Object instance) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         if (instance instanceof Fraction) {
             scanFraction((Fraction) instance);
         } else {
             scan(null, instance, false);
         }
     }
+
 
     protected void scanFraction(Fraction fraction) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         String prefix = nameFor(fraction);
@@ -257,15 +271,22 @@ public class ConfigurableManager implements AutoCloseable {
                 }
                 if (isFraction || field.getAnnotation(Configurable.class) != null) {
                     if (isConfigurableType(field.getType())) {
-                        ConfigurableHandle configurable = new ConfigurableHandle(nameFor(prefix, field), instance, field);
-                        this.configurables.add(configurable);
-                        configure(configurable);
+                        String name = nameFor(prefix, field);
+                        if (!seen(name)) {
+                            ConfigurableHandle configurable = new ConfigurableHandle(name, instance, field);
+                            this.configurables.add(configurable);
+                            configure(configurable);
+                        }
                     }
                 }
             }
         }
 
         scan(prefix, instance, curClass.getSuperclass(), isFraction);
+    }
+
+    private boolean seen(String name) {
+        return this.configurables.stream().anyMatch(e -> e.name().equals(name));
     }
 
     private boolean isConfigurableType(Class<?> type) {
@@ -606,7 +627,7 @@ public class ConfigurableManager implements AutoCloseable {
 
     public void close() {
         this.configurables.clear();
-
+        this.deferred.clear();
     }
 
 }

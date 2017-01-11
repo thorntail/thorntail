@@ -163,6 +163,7 @@ public class RuntimeServer implements Server {
             each.customize();
         }
 
+        this.configurableManager.rescan();
         this.configurableManager.log();
         this.configurableManager.close();
 
