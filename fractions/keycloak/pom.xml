@@ -47,21 +47,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>staxmapper</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-dmr</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-controller</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>undertow</artifactId>
     </dependency>

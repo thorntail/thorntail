@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<module xmlns="urn:jboss:module:1.5" name="org.keycloak.keycloak-themes" slot="main">
+  <resources>
+    <resource-root path="."/>
+  </resources>
+</module>
