@@ -38,6 +38,7 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.monitor.HealthMetaData;
+import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
@@ -91,8 +92,6 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     @Override
     public ModelNode getNodeInfo() {
-        ModelNode payload = new ModelNode();
-
 
         ModelNode op = new ModelNode();
         op.get(ADDRESS).setEmptyList();
@@ -106,8 +105,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         try {
             ModelNode response = controllerClient.execute(op);
             ModelNode unwrapped = unwrap(response);
-            // need a way to figure out *which* version we really mean here...
-            unwrapped.get("wfs-version").set("fixme");
+            unwrapped.get("swarm-version").set(System.getProperty(SwarmInternalProperties.VERSION));
             return unwrapped;
         } catch (IOException e) {
             return new ModelNode().get(FAILURE_DESCRIPTION).set(e.getMessage());
