@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wildfly.swarm.config.logging.CustomFormatter;
 import org.wildfly.swarm.config.logging.CustomHandler;
+import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.logstash.LogstashFraction;
 
@@ -23,7 +24,7 @@ public class LogstashCustomizerTest {
     @Before
     public void setUp() {
         this.customizer = new LogstashCustomizer();
-        this.customizer.logging = new LoggingFraction();
+        this.customizer.logging = new LoggingFraction().rootLogger(Level.INFO, "HANDLER");
         this.customizer.logstash = new LogstashFraction();
     }
 
@@ -37,7 +38,6 @@ public class LogstashCustomizerTest {
 
     @Test
     public void testExplicitlyEnabledWithDefaults() {
-
         this.customizer.logstash.enabled(true);
         this.customizer.customize();
 
@@ -51,6 +51,16 @@ public class LogstashCustomizerTest {
 
         CustomFormatter formatter = this.customizer.logging.subresources().customFormatter("logstash");
         assertThat( formatter ).isNotNull();
+    }
+
+    @Test
+    public void testExplicitlyEnabledWithLevelConfigValue() {
+        this.customizer.logstash.level(Level.DEBUG);
+        this.customizer.logstash.enabled(true);
+        this.customizer.customize();
+
+        assertThat(customizer.logging.subresources().customHandler("logstash-handler").level())
+                .isEqualTo(Level.DEBUG);
     }
 
     @Test
@@ -112,4 +122,27 @@ public class LogstashCustomizerTest {
         CustomFormatter formatter = this.customizer.logging.subresources().customFormatter("logstash");
         assertThat( formatter ).isNotNull();
     }
+
+    @Test
+    public void testAddingLogstashHandlerToExistingRootHandlers() {
+        this.customizer.logging.rootLogger(Level.INFO, "HANDLER1", "HANDLER2");
+
+        this.customizer.logstash.enabled(true);
+        this.customizer.customize();
+
+        assertThat(customizer.logging.subresources().rootLogger().handlers())
+                .contains("HANDLER1", "HANDLER2", "logstash-handler");
+    }
+
+    @Test
+    public void testHonoringExistingRootLoggerLevel() {
+        this.customizer.logging.rootLogger(Level.WARN, "HANDLER");
+
+        this.customizer.logstash.enabled(true);
+        this.customizer.customize();
+
+        assertThat(customizer.logging.subresources().rootLogger().level())
+                .isEqualTo(Level.WARN);
+    }
+
 }
