@@ -116,6 +116,7 @@
     <module>testsuite-logging</module>
     <module>testsuite-logstash</module>
     <module>testsuite-mail</module>
+    <module>testsuite-mail-cdi</module>
     <module>testsuite-management</module>
     <module>testsuite-management-console</module>
     <module>testsuite-maven-plugin</module>
