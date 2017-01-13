@@ -28,7 +28,7 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 @CamelAware
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class OgnlIntegrationTest {
 
     @Test
@@ -39,10 +39,10 @@ public class OgnlIntegrationTest {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
-                .choice()
-                    .when()
+                        .choice()
+                        .when()
                         .ognl("request.body.name == 'Kermit'").transform(simple("Hello ${body.name}"))
-                    .otherwise()
+                        .otherwise()
                         .to("mock:dlq");
             }
         });

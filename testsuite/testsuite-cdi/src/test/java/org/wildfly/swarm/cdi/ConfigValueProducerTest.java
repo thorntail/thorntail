@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(Arquillian.class)
 @Ignore
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class ConfigValueProducerTest {
 
     @Test

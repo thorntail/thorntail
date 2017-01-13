@@ -25,7 +25,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,7 +61,7 @@ import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextC;
 import org.wildfly.swarm.camel.test.cdi.subA.RoutesContextD;
 
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class CDIIntegrationTest {
 
     @Resource(name = "java:jboss/camel/CamelContextRegistry")
@@ -70,12 +70,15 @@ public class CDIIntegrationTest {
     @Inject
     @ContextName("contextA")
     RoutesContextA routesA;
+
     @Inject
     @ContextName("contextB")
     RoutesContextB routesB;
+
     @Inject
     @ContextName("contextC")
     RoutesContextC routesC;
+
     @Inject
     @ContextName("contextD")
     RoutesContextD routesD;

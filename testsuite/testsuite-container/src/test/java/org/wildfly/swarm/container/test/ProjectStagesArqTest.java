@@ -25,7 +25,10 @@ import org.wildfly.swarm.container.test.Main;
  * @author Heiko Braun
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment(main=Main.class)
+@DefaultDeployment(
+        main = Main.class,
+        type = DefaultDeployment.Type.JAR
+)
 public class ProjectStagesArqTest {
 
     @Test

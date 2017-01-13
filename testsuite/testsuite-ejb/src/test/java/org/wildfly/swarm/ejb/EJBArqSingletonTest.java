@@ -28,7 +28,7 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class EJBArqSingletonTest {
     @Test
     public void testHowdy() throws Exception {

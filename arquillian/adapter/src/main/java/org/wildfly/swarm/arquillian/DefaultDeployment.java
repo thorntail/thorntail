@@ -35,7 +35,7 @@ public @interface DefaultDeployment {
         }
     }
 
-    Type type() default Type.JAR;
+    Type type() default Type.WAR;
 
     boolean testable() default true;
 

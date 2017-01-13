@@ -36,7 +36,7 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.camel.test.jpa.subA.Account;
 
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class JPATransactionManagerIntegrationTest {
 
     @Test
@@ -61,7 +61,7 @@ public class JPATransactionManagerIntegrationTest {
         Assert.assertEquals(account, result);
     }
 
-	private CamelContextRegistry getContextRegistry() throws NamingException {
-		return (CamelContextRegistry) new InitialContext().lookup("java:jboss/camel/CamelContextRegistry");
-	}
+    private CamelContextRegistry getContextRegistry() throws NamingException {
+        return (CamelContextRegistry) new InitialContext().lookup("java:jboss/camel/CamelContextRegistry");
+    }
 }

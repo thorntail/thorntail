@@ -24,23 +24,18 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-import org.wildfly.swarm.camel.core.CamelCoreFraction;
-import org.wildfly.swarm.camel.test.ejb.subA.HelloBean;
-import org.wildfly.swarm.spi.api.JARArchive;
+
+import static org.wildfly.swarm.arquillian.DefaultDeployment.Type.JAR;
 
 @CamelAware
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type=JAR)
 public class EjbIntegrationTest {
 
     @Test

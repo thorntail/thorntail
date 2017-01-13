@@ -30,7 +30,7 @@ import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
  * @author George Gastaldi
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class ConfigurationValueProducerTest {
 
     @Inject
@@ -40,7 +40,7 @@ public class ConfigurationValueProducerTest {
     @Test
     public void testServerAddressExists() {
         Assert.assertNotNull(loggerLevel);
-        Assert.assertEquals("DEBUG",loggerLevel.get());
+        Assert.assertEquals("DEBUG", loggerLevel.get());
     }
 
 }

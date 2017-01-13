@@ -36,7 +36,7 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class ArqModulesTest {
 
     @Test
@@ -50,7 +50,7 @@ public class ArqModulesTest {
 
         URL resourceUrl = cl.getResource("subdir/stuff.txt");
 
-        assertNotNull( resourceUrl );
+        assertNotNull(resourceUrl);
 
         String content = null;
 
@@ -72,7 +72,7 @@ public class ArqModulesTest {
 
         URL resourceUrl = cl.getResource("root.txt");
 
-        assertNotNull( resourceUrl );
+        assertNotNull(resourceUrl);
 
         String content = null;
 
@@ -95,7 +95,7 @@ public class ArqModulesTest {
 
         URL resourceUrl = cl.getResource("another_subdir/stuff.txt");
 
-        assertNotNull( resourceUrl );
+        assertNotNull(resourceUrl);
 
         String content = null;
 
