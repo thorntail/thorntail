@@ -69,6 +69,10 @@
     <version.swagger.javassist>3.18.2-GA</version.swagger.javassist>
     <version.swagger.commons.lang>3.2.1</version.swagger.commons.lang>
 
+    <version.hibernate-spatial>5.0.10.Final</version.hibernate-spatial>
+    <version.geolatte>1.0.1</version.geolatte>
+    <version.vividsolutions-jts>1.13</version.vividsolutions-jts>
+
     <version.eclipse.link>2.6.2</version.eclipse.link>
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
@@ -728,6 +732,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jpa-spatial</artifactId>
+        <version>2017.2.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>jpa-eclipselink</artifactId>
         <version>2017.2.0-SNAPSHOT</version>
       </dependency>
@@ -1182,6 +1192,7 @@
     <module>fractions/javaee/jca</module>
     <module>fractions/javaee/jmx</module>
     <module>fractions/javaee/jpa</module>
+    <module>fractions/javaee/jpa-spatial</module>
     <module>fractions/javaee/jpa-eclipselink</module>
     <module>fractions/javaee/jsf</module>
     <module>fractions/javaee/mail</module>
