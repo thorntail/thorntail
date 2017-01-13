@@ -32,7 +32,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type= DefaultDeployment.Type.JAR)
 public class SecurityArquillianTest {
 
     @ArquillianResource

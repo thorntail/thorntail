@@ -32,7 +32,7 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class BatchArquillianTest {
 
     @Test

@@ -29,7 +29,7 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class InfinispanRemoteTest {
 
     @ArquillianResource

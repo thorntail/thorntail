@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
  */
 @Ignore
 @RunWith(Arquillian.class)
-@DefaultDeployment
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class EJBArquillianTest {
 
     @Test

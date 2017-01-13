@@ -29,19 +29,13 @@ import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.ServiceStatus;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.extension.camel.CamelContextRegistry;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-import org.wildfly.swarm.camel.core.CamelCoreFraction;
-import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * Deploys a test which monitors an JMX attribute of a route.
@@ -51,7 +45,10 @@ import org.wildfly.swarm.spi.api.JARArchive;
  */
 @CamelAware
 @RunWith(Arquillian.class)
-@DefaultDeployment(main = Main.class)
+@DefaultDeployment(
+        main = Main.class,
+        type = DefaultDeployment.Type.JAR
+)
 public class JMXIntegrationTest {
 
     @Test

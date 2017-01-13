@@ -42,20 +42,12 @@ import org.apache.camel.PollingConsumer;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-import org.wildfly.swarm.camel.core.CamelCoreFraction;
-import org.wildfly.swarm.config.messaging.activemq.server.JMSQueue;
-import org.wildfly.swarm.messaging.MessagingFraction;
-import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * Test routes that use the jms component in routes.
@@ -65,10 +57,14 @@ import org.wildfly.swarm.spi.api.JARArchive;
  */
 @CamelAware
 @RunWith(Arquillian.class)
-@DefaultDeployment(main = Main.class)
+@DefaultDeployment(
+        main = Main.class,
+        type = DefaultDeployment.Type.JAR
+)
 public class JMSIntegrationTest {
 
     static final String QUEUE_NAME = "camel-jms-queue";
+
     static final String QUEUE_JNDI_NAME = "java:/" + QUEUE_NAME;
 
     @Test
@@ -79,7 +75,7 @@ public class JMSIntegrationTest {
             @Override
             public void configure() throws Exception {
                 from("jms:queue:" + Main.QUEUE_NAME + "?connectionFactory=ConnectionFactory").
-                transform(body().prepend("Hello ")).to("direct:end");
+                        transform(body().prepend("Hello ")).to("direct:end");
             }
         });
 
@@ -113,8 +109,8 @@ public class JMSIntegrationTest {
             @Override
             public void configure() throws Exception {
                 from("direct:start").
-                transform(body().prepend("Hello ")).
-                to("jms:queue:" + Main.QUEUE_NAME + "?connectionFactory=ConnectionFactory");
+                        transform(body().prepend("Hello ")).
+                        to("jms:queue:" + Main.QUEUE_NAME + "?connectionFactory=ConnectionFactory");
             }
         });
 

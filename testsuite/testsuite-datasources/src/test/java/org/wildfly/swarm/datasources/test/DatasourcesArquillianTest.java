@@ -29,7 +29,8 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
  */
 @RunWith(Arquillian.class)
 @DefaultDeployment(
-        main = Main.class
+        main = Main.class,
+        type = DefaultDeployment.Type.JAR
 )
 public class DatasourcesArquillianTest {
 
