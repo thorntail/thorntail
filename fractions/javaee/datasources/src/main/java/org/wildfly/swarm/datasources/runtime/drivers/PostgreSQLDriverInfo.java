@@ -36,7 +36,8 @@ public class PostgreSQLDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "postgres";
 
     public PostgreSQLDriverInfo() {
-        super("postgresql", ModuleIdentifier.create("org.postgresql"), "org.postgresql.Driver");
+        super("postgresql", ModuleIdentifier.create("org.postgresql"), "org.postgresql.Driver",
+                "org.postgis.DriverWrapper");
     }
 
     @Override

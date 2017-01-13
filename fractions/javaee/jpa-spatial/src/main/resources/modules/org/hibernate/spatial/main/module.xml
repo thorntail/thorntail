@@ -1,0 +1,16 @@
+<module xmlns="urn:jboss:module:1.3" name="org.hibernate.spatial">
+  <resources>
+    <artifact name="org.hibernate:hibernate-spatial:${version.hibernate-spatial}"/>
+    <artifact name="org.geolatte:geolatte-geom:${version.geolatte}"/>
+    <artifact name="com.vividsolutions:jts:${version.vividsolutions-jts}"/>
+  </resources>
+
+  <dependencies>
+    <module name="org.hibernate"/>
+    <module name="org.jboss.logging"/>
+    <module name="org.dom4j"/>
+    <module name="org.slf4j"/>
+
+    <module name="org.postgresql" optional="true"/>
+  </dependencies>
+</module>
