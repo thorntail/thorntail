@@ -3,27 +3,28 @@ package org.wildfly.swarm.container.runtime;
 import java.lang.reflect.Field;
 
 import org.wildfly.swarm.spi.api.Defaultable;
+import org.wildfly.swarm.spi.api.config.ConfigKey;
 
 /**
  * @author Bob McWhirter
  */
 public class ConfigurableHandle {
 
-    private final String name;
+    private final ConfigKey key;
 
     private final Object instance;
 
     private final Field field;
 
-    public ConfigurableHandle(String name, Object instance, Field field) {
-        this.name = name;
+    public ConfigurableHandle(ConfigKey key, Object instance, Field field) {
+        this.key = key;
         this.instance = instance;
         this.field = field;
         this.field.setAccessible(true);
     }
 
-    public String name() {
-        return this.name;
+    public ConfigKey key() {
+        return this.key;
     }
 
     public Class<?> type() throws IllegalAccessException {

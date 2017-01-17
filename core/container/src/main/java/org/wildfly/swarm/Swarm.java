@@ -64,7 +64,8 @@ import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
-import org.wildfly.swarm.container.cdi.ProjectStageFactory;
+import org.wildfly.swarm.container.config.ConfigViewFactory;
+import org.wildfly.swarm.container.config.ConfigViewImpl;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.internal.WeldShutdown;
@@ -74,9 +75,7 @@ import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
-import org.wildfly.swarm.spi.api.ProjectStage;
 import org.wildfly.swarm.spi.api.SocketBinding;
-import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
@@ -208,43 +207,6 @@ public class Swarm {
 
         this.commandLine = CommandLine.parse(args);
         this.commandLine.apply(this);
-
-        if (!this.stageConfig.isPresent()) {
-            try {
-                String stageFile = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
-                SwarmMessages.MESSAGES.stageConfigLocation(SwarmProperties.PROJECT_STAGE_FILE + " system property", stageFile);
-
-                URL url = null;
-
-                if (stageFile != null) {
-                    url = new URL(stageFile);
-                } else {
-                    try {
-                        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
-                        url = module.getClassLoader().getResource(PROJECT_STAGES_FILE);
-                        if (url != null) {
-                            SwarmMessages.MESSAGES.stageConfigLocation("'" + APPLICATION_MODULE_NAME + "' module", url.toExternalForm());
-                        }
-                    } catch (ModuleLoadException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (url == null) {
-                    url = ClassLoader.getSystemClassLoader().getResource(PROJECT_STAGES_FILE);
-                    if (url != null) {
-                        SwarmMessages.MESSAGES.stageConfigLocation("ClassLoader", url.toExternalForm());
-                    }
-                }
-
-                if (url != null) {
-                    this.stageConfigUrl = Optional.of(url);
-                    loadStageConfiguration(url);
-                }
-            } catch (MalformedURLException e) {
-                SwarmMessages.MESSAGES.malformedStageConfigUrl(e.getMessage());
-            }
-        }
     }
 
     /**
@@ -277,53 +239,21 @@ public class Swarm {
      *
      * @param url The URL of the XML configuration file.
      * @return This instance.
-     * @see #withStageConfig(URL)
+     * @see #withYamlConfig(URL)
      */
     public Swarm withXmlConfig(URL url) {
         this.xmlConfig = Optional.of(url);
         return this;
     }
 
-    /**
-     * Specify a {@code project-stages.yml} configuration.
-     *
-     * <p>Usage of a YAML configuration is <b>not</b> exclusive with other configuration
-     * methods.</p>
-     *
-     * @param url The URL of the YAML configurable.
-     * @return This instance.
-     * @see #withXmlConfig(URL)
-     */
-    public Swarm withStageConfig(URL url) {
-        this.stageConfigUrl = Optional.of(url);
-
-        if (!this.stageConfig.isPresent()) {
-            loadStageConfiguration(stageConfigUrl.get());
-        } else {
-            SwarmMessages.MESSAGES.stageConfigSuperseded(System.getProperty(SwarmProperties.PROJECT_STAGE_FILE));
-        }
+    public Swarm withYamlConfig(URL url) {
+        this.yamlConfigs.add(url);
         return this;
     }
 
-    /**
-     * Retrieve the currently-active {@code StageConfig}.
-     *
-     * @return The currently-active {@link StageConfig}
-     */
-    public StageConfig stageConfig() {
-        if (!stageConfig.isPresent()) {
-            throw SwarmMessages.MESSAGES.missingStageConfig();
-        }
-        return new StageConfig(stageConfig.get());
-    }
-
-    /**
-     * Determine if a currently-active {@code StageConfig} exists.
-     *
-     * @return {@code true} if there is a currently-active {@code StageConfig}, otherwise {@code false}.
-     */
-    public boolean hasStageConfig() {
-        return stageConfig.isPresent();
+    public Swarm withProfile(String name) {
+        this.profiles.add(name);
+        return this;
     }
 
     /**
@@ -386,6 +316,8 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public Swarm start() throws Exception {
+        initializeConfigView();
+
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
         Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
@@ -397,13 +329,8 @@ public class Swarm {
                 .withSocketBindings(this.socketBindings)
                 .withOutboundSocketBindings(this.outboundSocketBindings)
                 .withUserComponents(this.userComponentClasses)
-                .withXmlConfig(this.xmlConfig);
-
-        if (this.stageConfigUrl.isPresent() && this.stageConfig.isPresent()) {
-            bootstrap
-                    .withStageConfig(this.stageConfig)
-                    .withStageConfigUrl(this.stageConfigUrl.get().toExternalForm());
-        }
+                .withXmlConfig(this.xmlConfig)
+                .withConfigView(this.configView);
 
         this.server = bootstrap.bootstrap();
 
@@ -555,7 +482,7 @@ public class Swarm {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -574,31 +501,94 @@ public class Swarm {
         return false;
     }
 
-    private void loadStageConfiguration(URL url) {
-        List<ProjectStage> projectStages = new ProjectStageFactory().loadStages(url);
-        String stageName = System.getProperty(SwarmProperties.PROJECT_STAGE);
-        if (stageName == null) {
-            // Try with SWARM_PROJECT_STAGE
-            stageName = System.getenv(SwarmProperties.PROJECT_STAGE.replace('.', '_').toUpperCase());
+    private void initializeConfigView() throws IOException {
+        ConfigViewFactory factory = new ConfigViewFactory();
+
+        try {
+            URL projectStagesYaml = locateProjectStagesYaml();
+            if (projectStagesYaml != null) {
+                factory.loadProjectStages(projectStagesYaml);
+            }
+        } catch (ModuleLoadException e) {
+            e.printStackTrace();
         }
-        if (stageName == null) {
-            stageName = "default";
+
+        List<String> activatedNames = new ArrayList<>();
+
+        for (int i = 0; i < yamlConfigs.size(); ++i) {
+            factory.loadProjectConfig("cli-" + i, yamlConfigs.get(i));
+            activatedNames.add("cli-" + i);
         }
-        ProjectStage stage = null;
-        for (ProjectStage projectStage : projectStages) {
-            if (projectStage.getName().equals(stageName)) {
-                stage = projectStage;
-                break;
+
+        for (String profile : this.profiles) {
+            try {
+                URL url = locateProfileYaml(profile);
+                if (url != null) {
+                    factory.loadProjectConfig(profile, url);
+                    activatedNames.add(profile);
+                }
+            } catch (MalformedURLException | ModuleLoadException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        if (null == stage) {
-            throw SwarmMessages.MESSAGES.stageNotFound(stageName);
+        this.configView = factory.build();
+        this.configView.activate(activatedNames);
+    }
+
+    private URL locateProjectStagesYaml() throws MalformedURLException, ModuleLoadException {
+        System.err.println("locate project-stages.yml");
+        URL url = locateProjectStagesYamlInFilesystem();
+        System.err.println("from fs:" + url);
+        if (url == null) {
+            url = locateProjectStagesYamlInClasspath();
+            System.err.println("from classpath:" + url);
+        }
+        return url;
+    }
+
+    private URL locateProjectStagesYamlInFilesystem() throws MalformedURLException {
+        Path path = Paths.get(PROJECT_STAGES_FILE);
+        if (Files.exists(path)) {
+            return path.toUri().toURL();
         }
 
-        SwarmMessages.MESSAGES.usingProjectStage(stageName);
+        return null;
+    }
 
-        this.stageConfig = Optional.of(stage);
+    private URL locateProjectStagesYamlInClasspath() throws ModuleLoadException {
+        Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
+        URL url = appModule.getClassLoader().getResource(PROJECT_STAGES_FILE);
+        if (url == null) {
+            url = ClassLoader.getSystemClassLoader().getResource(PROJECT_STAGES_FILE);
+        }
+        return url;
+    }
+
+    private URL locateProfileYaml(String profile) throws MalformedURLException, ModuleLoadException {
+        URL url = locateProfileYamlInFilesystem(profile);
+        if (url == null) {
+            url = locateProfileYamlInClasspath(profile);
+        }
+
+        return url;
+    }
+
+    private URL locateProfileYamlInFilesystem(String profile) throws MalformedURLException {
+        Path path = Paths.get("project-" + profile + ".yml");
+        if (Files.exists(path)) {
+            return path.toUri().toURL();
+        }
+        return null;
+    }
+
+    private URL locateProfileYamlInClasspath(String profile) throws ModuleLoadException {
+        Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
+        URL url = appModule.getClassLoader().getResource("project-" + profile + ".yml");
+        if (url == null) {
+            url = ClassLoader.getSystemClassLoader().getResource("project-" + profile + ".yml");
+        }
+        return url;
     }
 
     /**
@@ -700,11 +690,13 @@ public class Swarm {
 
     private List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
 
-    private Optional<ProjectStage> stageConfig = Optional.empty();
+    private ConfigViewImpl configView;
 
     private Optional<URL> xmlConfig = Optional.empty();
 
-    private Optional<URL> stageConfigUrl = Optional.empty();
+    private List<URL> yamlConfigs = new ArrayList<>();
+
+    private List<String> profiles = new ArrayList<>();
 
     private boolean debugBootstrap;
 }

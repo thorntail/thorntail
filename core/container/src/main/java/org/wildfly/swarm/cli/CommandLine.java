@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import javax.enterprise.inject.Vetoed;
 
@@ -34,7 +35,6 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
@@ -106,33 +106,24 @@ public class CommandLine {
             .hasValue(CONFIG_ELEMENT)
             .valueMayBeSeparate(true)
             .withDescription("URL of the server configuration (e.g. standalone.xml)")
-            .withDefault(() -> {
-                return resolveResource("standalone.xml");
-            })
+            .withDefault(() -> resolveResource("standalone.xml"))
             .then((cmd, opt, value) -> cmd.put(opt, Option.toURL(value)));
 
 
-    /**
-     * Default option for parsing -s and --stage-config
-     */
-    public static final Option<URL> STAGE_CONFIG = new Option<URL>()
-            .withShort('s')
-            .withLong("stage-config")
-            .hasValue(CONFIG_ELEMENT)
+    public static final Option<URL> CONFIG = new Option<URL>()
+            .withShort('C')
+            .withLong("config")
+            .hasValue("<config>")
             .valueMayBeSeparate(true)
-            .withDescription("URL to the stage configuration (e.g. config.yaml")
-            .withDefault(() -> {
-                return resolveResource("project-stages.yml");
-            })
+            .withDescription("URL to configuration YAML to use")
             .then((cmd, opt, value) -> cmd.put(opt, Option.toURL(value)));
 
-
-    public static final Option<String> ACTIVE_STAGE = new Option<String>()
-            .withShort('S')
-            .withLong("stage")
-            .hasValue("<active-stage>")
+    public static final Option<String> PROFILES = new Option<String>()
+            .withShort('P')
+            .withLong("profiles")
+            .hasValue("<profiles>")
             .valueMayBeSeparate(true)
-            .withDescription("When using a stage-config, set the active stage")
+            .withDescription("Profiles to activate")
             .then(CommandLine::put);
 
     /**
@@ -155,8 +146,7 @@ public class CommandLine {
                 PROPERTY,
                 PROPERTIES_URL,
                 SERVER_CONFIG,
-                STAGE_CONFIG,
-                ACTIVE_STAGE,
+                CONFIG,
                 BIND
         );
     }
@@ -202,19 +192,6 @@ public class CommandLine {
         this.options.displayHelp(out);
     }
 
-    public void displayHelp(PrintStream out, StageConfig stageConfig) {
-        displayHelp(out);
-        if (stageConfig != null) {
-            out.println();
-            out.println("Stage configuration options:");
-            out.println();
-            for (String key : stageConfig.keys()) {
-                out.println("  " + key);
-            }
-            out.println();
-        }
-    }
-
     /**
      * Display the version.
      *
@@ -253,10 +230,6 @@ public class CommandLine {
         if (get(BIND) != null) {
             System.setProperty(SwarmProperties.BIND_ADDRESS, get(BIND));
         }
-
-        if (get(ACTIVE_STAGE) != null) {
-            System.setProperty(SwarmProperties.PROJECT_STAGE, get(ACTIVE_STAGE));
-        }
     }
 
     /**
@@ -271,8 +244,15 @@ public class CommandLine {
         if (get(SERVER_CONFIG) != null) {
             swarm.withXmlConfig(get(SERVER_CONFIG));
         }
-        if (get(STAGE_CONFIG) != null) {
-            swarm.withStageConfig(get(STAGE_CONFIG));
+        if (get(CONFIG) != null) {
+            swarm.withYamlConfig(get(CONFIG));
+        }
+        if (get(PROFILES) != null) {
+            StringTokenizer tokens = new StringTokenizer(get(PROFILES), ",");
+            while (tokens.hasMoreTokens()) {
+                swarm.withProfile(tokens.nextToken());
+            }
+
         }
     }
 
@@ -289,7 +269,7 @@ public class CommandLine {
         if (get(HELP)) {
             displayVersion(System.err);
             System.err.println();
-            displayHelp(System.err, swarm.hasStageConfig() ? swarm.stageConfig() : null);
+            displayHelp(System.err);
             System.exit(0);
         }
 

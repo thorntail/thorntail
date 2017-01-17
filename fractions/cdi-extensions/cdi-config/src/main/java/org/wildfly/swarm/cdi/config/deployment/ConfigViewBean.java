@@ -29,23 +29,23 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.wildfly.swarm.spi.api.StageConfig;
+import org.wildfly.swarm.spi.api.config.ConfigView;
 
 /**
  * @author Ken Finnigan
  */
 @Vetoed
-public class StageConfigBean implements Bean<StageConfig> {
+public class ConfigViewBean implements Bean<ConfigView> {
 
-    private StageConfig stageConfig;
+    private ConfigView configView;
 
-    public StageConfigBean(StageConfig stageConfig) {
-        this.stageConfig = stageConfig;
+    public ConfigViewBean(ConfigView configView) {
+        this.configView = configView;
     }
 
     @Override
     public Class<?> getBeanClass() {
-        return this.stageConfig.getClass();
+        return ConfigView.class;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class StageConfigBean implements Bean<StageConfig> {
     @Override
     public Set<Type> getTypes() {
         Set<Type> types = new HashSet<>();
-        types.add(StageConfig.class);
+        types.add(ConfigView.class);
         types.add(Object.class);
         return types;
     }
@@ -79,7 +79,7 @@ public class StageConfigBean implements Bean<StageConfig> {
 
     @Override
     public String getName() {
-        return this.stageConfig.getName();
+        return null;
     }
 
     @Override
@@ -93,12 +93,12 @@ public class StageConfigBean implements Bean<StageConfig> {
     }
 
     @Override
-    public StageConfig create(CreationalContext<StageConfig> creationalContext) {
-        return this.stageConfig;
+    public ConfigView create(CreationalContext<ConfigView> creationalContext) {
+        return this.configView;
     }
 
     @Override
-    public void destroy(StageConfig stageConfig, CreationalContext<StageConfig> creationalContext) {
+    public void destroy(ConfigView stageConfig, CreationalContext<ConfigView> creationalContext) {
 
     }
 }

@@ -15,15 +15,16 @@
  */
 package org.wildfly.swarm.container.runtime.marshal;
 
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.internal.SwarmMessages;
-import org.wildfly.swarm.spi.api.ProjectStage;
+import org.wildfly.swarm.spi.api.config.ConfigView;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
@@ -34,20 +35,27 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
  * @author Bob McWhirter
  */
 @Singleton
-public class ProjectStagePropertyMarshaller implements ConfigurationMarshaller {
+public class ConfigViewPropertyMarshaller implements ConfigurationMarshaller {
 
     @Inject
-    private ProjectStage stage;
+    private ConfigView configView;
 
     public void marshal(List<ModelNode> list) {
-        Map<String, String> properties = this.stage.getProperties();
-        for (String key : properties.keySet()) {
-            SwarmMessages.MESSAGES.marshalProjectStageProperty(key);
-            ModelNode modelNode = new ModelNode();
-            modelNode.get(OP).set(ADD);
-            modelNode.get(ADDRESS).set("system-property", key);
-            modelNode.get(VALUE).set(properties.get(key));
-            list.add(modelNode);
+        Properties properties = this.configView.asProperties();
+        Enumeration<?> names = properties.propertyNames();
+        while (names.hasMoreElements()) {
+            String key = (String) names.nextElement();
+            if (!key.startsWith("jboss") && !key.startsWith("java")) {
+                String value = properties.getProperty(key);
+                if (value != null) {
+                    SwarmMessages.MESSAGES.marshalProjectStageProperty(key);
+                    ModelNode modelNode = new ModelNode();
+                    modelNode.get(OP).set(ADD);
+                    modelNode.get(ADDRESS).set("system-property", key);
+                    modelNode.get(VALUE).set(properties.getProperty(key));
+                    list.add(modelNode);
+                }
+            }
         }
     }
 }

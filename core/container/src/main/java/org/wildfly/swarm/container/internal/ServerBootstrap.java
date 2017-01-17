@@ -24,7 +24,7 @@ import java.util.Set;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.ProjectStage;
+import org.wildfly.swarm.spi.api.config.ConfigView;
 
 /**
  * @author Bob McWhirter
@@ -34,10 +34,6 @@ public interface ServerBootstrap {
     String WELD_INSTANCE_ID = "internal";
 
     ServerBootstrap withArguments(String[] args);
-
-    ServerBootstrap withStageConfig(Optional<ProjectStage> stageConfig);
-
-    ServerBootstrap withStageConfigUrl(String stageConfigUrl);
 
     ServerBootstrap withXmlConfig(Optional<URL> url);
 
@@ -50,6 +46,8 @@ public interface ServerBootstrap {
     ServerBootstrap withSocketBindings(List<SocketBindingRequest> bindings);
 
     ServerBootstrap withOutboundSocketBindings(List<OutboundSocketBindingRequest> bindings);
+
+    ServerBootstrap withConfigView(ConfigView configView);
 
     Server bootstrap() throws Exception;
 }
