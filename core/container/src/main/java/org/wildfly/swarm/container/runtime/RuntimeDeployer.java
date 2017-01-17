@@ -40,9 +40,12 @@ import org.jboss.jandex.Indexer;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Filters;
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.vfs.TempFileProvider;
@@ -78,6 +81,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
 /**
  * @author Bob McWhirter
  * @author Heiko Braun
+ * @author Ken Finnigan
  */
 @Singleton
 public class RuntimeDeployer implements Deployer {
@@ -178,15 +182,24 @@ public class RuntimeDeployer implements Deployer {
                         if (ApplicationEnvironment.Mode.UBERJAR == appEnv.getMode()) {
                             ArtifactLookup artifactLookup = ArtifactLookup.get();
                             for (String gav : appEnv.getDependencies()) {
-                                depContainer.addAsLibraries(artifactLookup.artifact(gav));
+                                depContainer.addAsLibrary(artifactLookup.artifact(gav));
                             }
                         } else {
                             Set<String> paths = appEnv.resolveDependencies(Collections.EMPTY_LIST);
                             for (String path : paths) {
-                                depContainer.addAsLibraries(new File(path));
+                                if (path.endsWith(".jar")) {
+                                    depContainer.addAsLibrary(new File(path));
+                                } else {
+                                    depContainer
+                                            .merge(ShrinkWrap.create(GenericArchive.class)
+                                                           .as(ExplodedImporter.class)
+                                                           .importDirectory(path)
+                                                           .as(GenericArchive.class),
+                                                   "/WEB-INF/classes",
+                                                   Filters.includeAll());
+                                }
                             }
                         }
-
 
                         depContainer.addMarker(ALL_DEPENDENCIES_ADDED_MARKER);
                     } catch (Throwable t) {
