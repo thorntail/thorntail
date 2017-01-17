@@ -76,6 +76,11 @@ public class NestedJarResourceLoader {
                 }
             }
         } else if (urlString.startsWith("file:")) {
+            if (loaderName.endsWith(".jar") || loaderName.endsWith(".war")) {
+                return ResourceLoaders.createJarResourceLoader(
+                        loaderName,
+                        new JarFile(new File(new File(urlString.substring(5, urlString.length())), loaderPath)));
+            }
             return ResourceLoaders.createFileResourceLoader(
                     loaderPath,
                     new File(urlString.substring(5, urlString.length()))
