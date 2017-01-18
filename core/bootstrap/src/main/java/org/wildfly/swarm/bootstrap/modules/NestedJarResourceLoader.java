@@ -79,11 +79,11 @@ public class NestedJarResourceLoader {
             if (loaderName.endsWith(".jar") || loaderName.endsWith(".war")) {
                 return ResourceLoaders.createJarResourceLoader(
                         loaderName,
-                        new JarFile(new File(new File(urlString.substring(5, urlString.length())), loaderPath)));
+                        new JarFile(new File(urlString.substring(5), loaderPath)));
             }
             return ResourceLoaders.createFileResourceLoader(
                     loaderPath,
-                    new File(urlString.substring(5, urlString.length()))
+                    new File(urlString.substring(5))
             );
         }
 
