@@ -18,8 +18,8 @@ package org.wildfly.swarm.cdi;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.config.Resolver;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 
@@ -36,12 +36,12 @@ public class ConfigAwareBean {
 
     private String logLevel;
 
-    private StageConfig.Resolver<String> portOffsetResolver;
+    private Resolver<String> portOffsetResolver;
 
 
     @Inject
     ConfigAwareBean(@ConfigurationValue("logger.level") String logLevel,
-            @ConfigurationValue(SwarmProperties.PORT_OFFSET) StageConfig.Resolver<String> resolver) {
+            @ConfigurationValue(SwarmProperties.PORT_OFFSET) Resolver<String> resolver) {
         this.logLevel = logLevel;
         this.portOffsetResolver = resolver;
     }
@@ -62,7 +62,7 @@ public class ConfigAwareBean {
         return logLevel;
     }
 
-    StageConfig.Resolver<String> getPortOffsetResolver() {
+    Resolver<String> getPortOffsetResolver() {
         return portOffsetResolver;
     }
 

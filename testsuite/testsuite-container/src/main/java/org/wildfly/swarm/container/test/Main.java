@@ -31,7 +31,7 @@ public class Main {
      */
     public static void main(String...args) throws Exception {
         Swarm swarm = new Swarm(args)
-                .component(ProjectStageInjectable.class);
+                .component(ConfigViewInjectable.class);
 
         swarm.start().deploy();
     }

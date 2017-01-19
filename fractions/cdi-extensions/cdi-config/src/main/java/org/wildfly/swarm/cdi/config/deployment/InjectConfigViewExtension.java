@@ -23,22 +23,22 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
 import org.wildfly.swarm.container.runtime.cdi.ConfigurationValueProducer;
-import org.wildfly.swarm.spi.api.StageConfig;
+import org.wildfly.swarm.spi.api.config.ConfigView;
 
 /**
  * @author Ken Finnigan
  */
 @Vetoed
-public class InjectStageConfigExtension implements Extension {
+public class InjectConfigViewExtension implements Extension {
 
-    private static StageConfig stageConfig;
+    private static ConfigView configView;
 
-    public void addStageConfig(@Observes BeforeBeanDiscovery bbd, BeanManager beanManager) {
+    public void addConfigView(@Observes BeforeBeanDiscovery bbd, BeanManager beanManager) {
         bbd.addAnnotatedType(beanManager.createAnnotatedType(ConfigurationValueProducer.class));
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        abd.addBean(new StageConfigBean(stageConfig));
+        abd.addBean(new ConfigViewBean(configView));
     }
 
 }

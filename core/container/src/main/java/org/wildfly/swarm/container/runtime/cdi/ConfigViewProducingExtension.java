@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.container.runtime.cdi;
 
-import java.util.Optional;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -24,43 +22,32 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.literal.DefaultLiteral;
-import org.wildfly.swarm.container.cdi.ProjectStageImpl;
-import org.wildfly.swarm.spi.api.ProjectStage;
-import org.wildfly.swarm.spi.api.StageConfig;
+import org.wildfly.swarm.spi.api.config.ConfigView;
 
 /**
- * Produces an explicitly set project-stage.
+ * Produces an explicitly set {@link ConfigView}
  *
  * @author Bob McWhirter
  */
-public class ProjectStageProducingExtension implements Extension {
+public class ConfigViewProducingExtension implements Extension {
 
-    private final ProjectStage projectStage;
+    private final ConfigView configView;
 
-    private final StageConfig stageConfig;
-
-    public ProjectStageProducingExtension(Optional<ProjectStage> projectStage) {
-        this.projectStage = projectStage.orElse(new ProjectStageImpl("default"));
-        this.stageConfig = new StageConfig(this.projectStage);
+    public ConfigViewProducingExtension(ConfigView configView) {
+        this.configView = configView;
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        abd.addBean().addType(ProjectStage.class)
+        abd.addBean().addType(ConfigView.class)
                 .scope(Dependent.class)
                 .qualifiers(DefaultLiteral.INSTANCE)
-                .producing(this.projectStage);
-
-        abd.addBean().addType(StageConfig.class)
-                .scope(Dependent.class)
-                .qualifiers(DefaultLiteral.INSTANCE)
-                .producing(this.stageConfig);
+                .produceWith(() -> {
+                    return this.configView;
+                });
     }
 
-    public ProjectStage getProjectStage() {
-        return this.projectStage;
+    public ConfigView getConfigView() {
+        return this.configView;
     }
 
-    public StageConfig getStageConfig() {
-        return this.stageConfig;
-    }
 }

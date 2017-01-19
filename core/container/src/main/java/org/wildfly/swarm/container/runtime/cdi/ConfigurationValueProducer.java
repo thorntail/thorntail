@@ -26,8 +26,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.wildfly.swarm.spi.api.StageConfig;
-import org.wildfly.swarm.spi.api.StageConfig.Resolver;
+import org.wildfly.swarm.spi.api.config.ConfigView;
+import org.wildfly.swarm.spi.api.config.Resolver;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 /**
@@ -36,9 +36,8 @@ import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 @Singleton
 public class ConfigurationValueProducer {
 
-
     @Inject
-    private StageConfig stageConfig;
+    private ConfigView configView;
 
     @Produces
     @ConfigurationValue("")
@@ -126,10 +125,10 @@ public class ConfigurationValueProducer {
 
     private Resolver<String> resolver(InjectionPoint injectionPoint) {
         String name = getName(injectionPoint);
-        if (name == null || name.isEmpty() || stageConfig == null) {
+        if (name == null || name.isEmpty() || this.configView == null) {
             return null;
         }
-        return stageConfig.resolve(getName(injectionPoint));
+        return this.configView.resolve(getName(injectionPoint));
     }
 
     private String getName(InjectionPoint injectionPoint) {

@@ -32,7 +32,7 @@ public class DMRMarshaller implements ConfigurationMarshaller  {
     private XMLMarshaller xmlMarshaller;
 
     @Inject
-    private ProjectStagePropertyMarshaller projectStagePropertyMarshaller;
+    private ConfigViewPropertyMarshaller configViewPropertyMarshaller;
 
     @Inject
     private ExtensionMarshaller extensionMarshaller;
@@ -49,7 +49,7 @@ public class DMRMarshaller implements ConfigurationMarshaller  {
     public void marshal(List<ModelNode> list) {
         this.xmlMarshaller.marshal(list);
         this.extensionMarshaller.marshal(list);
-        this.projectStagePropertyMarshaller.marshal(list);
+        this.configViewPropertyMarshaller.marshal(list);
         this.subsystemMarshaller.marshal(list);
         this.interfaceMarshaller.marshal(list);
         this.socketBindingGroupMarshaller.marshal(list);

@@ -61,7 +61,6 @@ import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapConfiguration;
 import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapPersister;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.UserSpaceExtensionFactory;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
@@ -100,9 +99,6 @@ public class RuntimeServer implements Server {
 
     @Inject
     private Instance<RuntimeDeployer> deployer;
-
-    @Inject
-    private StageConfig stageConfig;
 
     @Inject
     @Any

@@ -31,9 +31,9 @@ import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
+import org.wildfly.swarm.container.runtime.cdi.ConfigViewProducingExtension;
 import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
 import org.wildfly.swarm.container.runtime.cdi.OutboundSocketBindingExtension;
-import org.wildfly.swarm.container.runtime.cdi.ProjectStageProducingExtension;
 import org.wildfly.swarm.container.runtime.cdi.SocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.XMLConfigProducingExtension;
 import org.wildfly.swarm.container.runtime.cdi.configurable.ConfigurableExtension;
@@ -42,7 +42,7 @@ import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.ProjectStage;
+import org.wildfly.swarm.spi.api.config.ConfigView;
 
 /**
  * @author Bob McWhirter
@@ -58,20 +58,14 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     }
 
     @Override
-    public ServerBootstrap withStageConfig(Optional<ProjectStage> stageConfig) {
-        this.stageConfig = stageConfig;
-        return this;
-    }
-
-    @Override
-    public ServerBootstrap withStageConfigUrl(String stageConfigUrl) {
-        this.stageConfigUrl = stageConfigUrl;
-        return this;
-    }
-
-    @Override
     public ServerBootstrap withXmlConfig(Optional<URL> url) {
         this.xmlConfigURL = url;
+        return this;
+    }
+
+    @Override
+    public ServerBootstrap withConfigView(ConfigView configView) {
+        this.configView = configView;
         return this;
     }
 
@@ -117,9 +111,9 @@ public class ServerBootstrapImpl implements ServerBootstrap {
             Weld weld = new Weld(WELD_INSTANCE_ID);
             weld.setClassLoader(module.getClassLoader());
 
-            ProjectStageProducingExtension projectStageProducingExtension = new ProjectStageProducingExtension(this.stageConfig);
+            ConfigViewProducingExtension projectStageProducingExtension = new ConfigViewProducingExtension(this.configView);
 
-            ConfigurableManager configurableManager = new ConfigurableManager(projectStageProducingExtension.getStageConfig());
+            ConfigurableManager configurableManager = new ConfigurableManager(this.configView);
 
             // Add Extension that adds User custom bits into configurator
             weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions, configurableManager));
@@ -168,8 +162,6 @@ public class ServerBootstrapImpl implements ServerBootstrap {
 
     private Set<Class<?>> userComponents;
 
-    private Optional<ProjectStage> stageConfig = Optional.empty();
-
     private Optional<URL> xmlConfigURL = Optional.empty();
 
     private boolean bootstrapDebug;
@@ -178,5 +170,5 @@ public class ServerBootstrapImpl implements ServerBootstrap {
 
     private List<OutboundSocketBindingRequest> outboundSocketBindings;
 
-    private String stageConfigUrl;
+    private ConfigView configView;
 }

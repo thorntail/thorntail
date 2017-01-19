@@ -51,12 +51,6 @@ public class Container extends Swarm {
 
     @Override
     @Deprecated
-    public Container withStageConfig(URL url) {
-        return (Container) super.withStageConfig(url);
-    }
-
-    @Override
-    @Deprecated
     public Container withXmlConfig(URL url) {
         return (Container) super.withXmlConfig(url);
     }

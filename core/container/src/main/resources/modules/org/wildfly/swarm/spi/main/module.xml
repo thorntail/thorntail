@@ -12,6 +12,7 @@
       <paths>
         <path name="org/wildfly/swarm/spi/api"/>
         <path name="org/wildfly/swarm/spi/api/annotations"/>
+        <path name="org/wildfly/swarm/spi/api/config"/>
         <path name="org/wildfly/swarm/spi/api/internal"/>
       </paths>
     </system>
