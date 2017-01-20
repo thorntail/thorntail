@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import javax.enterprise.inject.Vetoed;
 
@@ -110,21 +109,35 @@ public class CommandLine {
             .then((cmd, opt, value) -> cmd.put(opt, Option.toURL(value)));
 
 
-    public static final Option<URL> CONFIG = new Option<URL>()
-            .withShort('C')
+    public static final Option<List<URL>> CONFIG = new Option<List<URL>>()
+            .withShort('s')
             .withLong("config")
             .hasValue("<config>")
             .valueMayBeSeparate(true)
             .withDescription("URL to configuration YAML to use")
-            .then((cmd, opt, value) -> cmd.put(opt, Option.toURL(value)));
+            .then((cmd, opt, value) -> {
+                List<URL> configs = cmd.get(opt);
+                if (configs == null) {
+                    configs = new ArrayList<>();
+                    cmd.put(opt, configs);
+                }
+                configs.add(Option.toURL(value));
+            });
 
-    public static final Option<String> PROFILES = new Option<String>()
-            .withShort('P')
-            .withLong("profiles")
-            .hasValue("<profiles>")
+    public static final Option<List<String>> PROFILES = new Option<List<String>>()
+            .withShort('S')
+            .withLong("profile")
+            .hasValue("<profile>")
             .valueMayBeSeparate(true)
-            .withDescription("Profiles to activate")
-            .then(CommandLine::put);
+            .withDescription("Selected profiles")
+            .then((cmd, opt, value) -> {
+                List<String> profiles = cmd.get(opt);
+                if (profiles == null) {
+                    profiles = new ArrayList<>();
+                    cmd.put(opt, profiles);
+                }
+                profiles.add(value);
+            });
 
     /**
      * Default option for parsing -b
@@ -147,6 +160,7 @@ public class CommandLine {
                 PROPERTIES_URL,
                 SERVER_CONFIG,
                 CONFIG,
+                PROFILES,
                 BIND
         );
     }
@@ -245,14 +259,16 @@ public class CommandLine {
             swarm.withXmlConfig(get(SERVER_CONFIG));
         }
         if (get(CONFIG) != null) {
-            swarm.withYamlConfig(get(CONFIG));
+            List<URL> configs = get(CONFIG);
+            for (URL config : configs) {
+                swarm.withConfig(config);
+            }
         }
         if (get(PROFILES) != null) {
-            StringTokenizer tokens = new StringTokenizer(get(PROFILES), ",");
-            while (tokens.hasMoreTokens()) {
-                swarm.withProfile(tokens.nextToken());
+            List<String> profiles = get(PROFILES);
+            for (String profile : profiles) {
+                swarm.withProfile(profile);
             }
-
         }
     }
 

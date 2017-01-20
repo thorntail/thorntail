@@ -1,5 +1,6 @@
 package org.wildfly.swarm.container.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +64,15 @@ public class ConfigViewImpl implements ConfigView {
      * @param name   The name to register.
      * @param config THe node to register.
      */
-    public void register(String name, ConfigNode config) {
-        this.registry.put(name, config);
+    public synchronized void register(String name, ConfigNode config) {
+
+        List<ConfigNode> nodes = this.registry.get(name);
+        if (nodes == null) {
+            nodes = new ArrayList<>();
+            this.registry.put(name, nodes);
+        }
+
+        nodes.add(config);
     }
 
     /**
@@ -98,9 +106,11 @@ public class ConfigViewImpl implements ConfigView {
         this.strategy = new ConfigResolutionStrategy(this.properties);
 
         for (String name : names) {
-            ConfigNode each = this.registry.get(name);
-            if (each != null) {
-                this.strategy.add(each);
+            List<ConfigNode> nodes = this.registry.get(name);
+            if (nodes != null) {
+                nodes.forEach(node -> {
+                    this.strategy.add(node);
+                });
             }
         }
 
@@ -143,7 +153,7 @@ public class ConfigViewImpl implements ConfigView {
 
     private ConfigNode defaultConfig;
 
-    private Map<String, ConfigNode> registry = new HashMap<>();
+    private Map<String, List<ConfigNode>> registry = new HashMap<>();
 
     private ConfigResolutionStrategy strategy;
 
