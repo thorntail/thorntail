@@ -49,7 +49,7 @@
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
 
-    <version.org.arquillian>1.1.10.Final</version.org.arquillian>
+    <version.org.arquillian>1.1.12.Final</version.org.arquillian>
     <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
     <version.org.jboss.arquillian.drone>2.0.1.Final</version.org.jboss.arquillian.drone>
     <version.org.arquillian.graphene>2.1.0.Final</version.org.arquillian.graphene>
