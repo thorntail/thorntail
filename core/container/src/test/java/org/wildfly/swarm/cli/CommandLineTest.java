@@ -15,10 +15,14 @@
  */
 package org.wildfly.swarm.cli;
 
+import java.io.File;
+
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.wildfly.swarm.cli.CommandLine.HELP;
+import static org.wildfly.swarm.cli.CommandLine.PROFILES;
+import static org.wildfly.swarm.cli.CommandLine.PROPERTIES_URL;
 import static org.wildfly.swarm.cli.CommandLine.PROPERTY;
 import static org.wildfly.swarm.cli.CommandLine.VERSION;
 
@@ -88,6 +92,26 @@ public class CommandLineTest {
         assertThat(cmd.get(PROPERTY)).hasSize(2);
         assertThat(cmd.get(PROPERTY).get("foo")).isEqualTo("true");
         assertThat(cmd.get(PROPERTY).get("bar")).isEqualTo("cheese");
+    }
+
+    @Test
+    public void testLongArgWithEqual() throws Exception {
+        String fileName = "my.properties";
+        String expectedPath = "file:" + System.getProperty("user.dir") + File.separator + fileName;
+
+        CommandLine cmd = CommandLine.parse("--properties=" + fileName);
+
+        assertThat(cmd.get(PROPERTIES_URL).toString()).isEqualTo(expectedPath);
+    }
+
+    @Test
+    public void testLongArgWithoutEqual() throws Exception {
+        String fileName = "my.properties";
+        String expectedPath = "file:" + System.getProperty("user.dir") + File.separator + fileName;
+
+        CommandLine cmd = CommandLine.parse("--properties", fileName);
+
+        assertThat(cmd.get(PROPERTIES_URL).toString()).isEqualTo(expectedPath);
     }
 
     @Test
