@@ -18,7 +18,6 @@ package org.wildfly.swarm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -122,7 +121,7 @@ public class Swarm {
 
     private static final String BOOT_MODULE_PROPERTY = "boot.module.loader";
 
-    private static final String APPLICATION_MODULE_NAME = "swarm.application";
+    public static final String APPLICATION_MODULE_NAME = "swarm.application";
 
     private static final String CONTAINER_MODULE_NAME = "swarm.container";
 
@@ -239,15 +238,15 @@ public class Swarm {
      *
      * @param url The URL of the XML configuration file.
      * @return This instance.
-     * @see #withYamlConfig(URL)
+     * @see #withConfig(URL)
      */
     public Swarm withXmlConfig(URL url) {
         this.xmlConfig = Optional.of(url);
         return this;
     }
 
-    public Swarm withYamlConfig(URL url) {
-        this.yamlConfigs.add(url);
+    public Swarm withConfig(URL url) {
+        this.configs.add(url);
         return this;
     }
 
@@ -501,94 +500,29 @@ public class Swarm {
         return false;
     }
 
-    private void initializeConfigView() throws IOException {
-        ConfigViewFactory factory = new ConfigViewFactory();
+    private void initializeConfigView() throws IOException, ModuleLoadException {
 
-        try {
-            URL projectStagesYaml = locateProjectStagesYaml();
-            if (projectStagesYaml != null) {
-                factory.loadProjectStages(projectStagesYaml);
-            }
-        } catch (ModuleLoadException e) {
-            e.printStackTrace();
-        }
+        ConfigViewFactory factory = ConfigViewFactory.defaultFactory();
 
         List<String> activatedNames = new ArrayList<>();
 
-        for (int i = 0; i < yamlConfigs.size(); ++i) {
-            factory.loadProjectConfig("cli-" + i, yamlConfigs.get(i));
-            activatedNames.add("cli-" + i);
+        for (int i = 0; i < this.configs.size(); ++i) {
+            URL each = this.configs.get(i);
+            String syntheticProfile = "cli-" + i;
+            factory.load(syntheticProfile, each);
+            activatedNames.add(syntheticProfile);
         }
 
+        // deprecated project-stages.yml
+        factory.load("stages");
+
         for (String profile : this.profiles) {
-            try {
-                URL url = locateProfileYaml(profile);
-                if (url != null) {
-                    factory.loadProjectConfig(profile, url);
-                    activatedNames.add(profile);
-                }
-            } catch (MalformedURLException | ModuleLoadException e) {
-                throw new RuntimeException(e);
-            }
+            factory.load(profile);
+            activatedNames.add(profile);
         }
 
         this.configView = factory.build();
         this.configView.activate(activatedNames);
-    }
-
-    private URL locateProjectStagesYaml() throws MalformedURLException, ModuleLoadException {
-        System.err.println("locate project-stages.yml");
-        URL url = locateProjectStagesYamlInFilesystem();
-        System.err.println("from fs:" + url);
-        if (url == null) {
-            url = locateProjectStagesYamlInClasspath();
-            System.err.println("from classpath:" + url);
-        }
-        return url;
-    }
-
-    private URL locateProjectStagesYamlInFilesystem() throws MalformedURLException {
-        Path path = Paths.get(PROJECT_STAGES_FILE);
-        if (Files.exists(path)) {
-            return path.toUri().toURL();
-        }
-
-        return null;
-    }
-
-    private URL locateProjectStagesYamlInClasspath() throws ModuleLoadException {
-        Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
-        URL url = appModule.getClassLoader().getResource(PROJECT_STAGES_FILE);
-        if (url == null) {
-            url = ClassLoader.getSystemClassLoader().getResource(PROJECT_STAGES_FILE);
-        }
-        return url;
-    }
-
-    private URL locateProfileYaml(String profile) throws MalformedURLException, ModuleLoadException {
-        URL url = locateProfileYamlInFilesystem(profile);
-        if (url == null) {
-            url = locateProfileYamlInClasspath(profile);
-        }
-
-        return url;
-    }
-
-    private URL locateProfileYamlInFilesystem(String profile) throws MalformedURLException {
-        Path path = Paths.get("project-" + profile + ".yml");
-        if (Files.exists(path)) {
-            return path.toUri().toURL();
-        }
-        return null;
-    }
-
-    private URL locateProfileYamlInClasspath(String profile) throws ModuleLoadException {
-        Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
-        URL url = appModule.getClassLoader().getResource("project-" + profile + ".yml");
-        if (url == null) {
-            url = ClassLoader.getSystemClassLoader().getResource("project-" + profile + ".yml");
-        }
-        return url;
     }
 
     /**
@@ -694,7 +628,7 @@ public class Swarm {
 
     private Optional<URL> xmlConfig = Optional.empty();
 
-    private List<URL> yamlConfigs = new ArrayList<>();
+    private List<URL> configs = new ArrayList<>();
 
     private List<String> profiles = new ArrayList<>();
 
