@@ -27,11 +27,9 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>hystrix</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>undertow</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>

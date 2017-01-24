@@ -1,6 +1,5 @@
 package org.wildfly.swarm.container.runtime.cdi.configurable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -33,7 +32,7 @@ public class ConfigurableInjectionTarget<T> implements InjectionTarget<T> {
         this.delegate.postConstruct(instance);
         try {
             this.configurableManager.scan(instance);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

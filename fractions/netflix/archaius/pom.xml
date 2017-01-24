@@ -46,10 +46,27 @@
       <artifactId>netflix-guava</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Provided APIs -->
     <dependency>
       <groupId>com.netflix.archaius</groupId>
       <artifactId>archaius-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.enterprise.inject.Vetoed;
 
@@ -147,6 +148,10 @@ public class ConfigViewImpl implements ConfigView {
 
     public Resolver<String> resolve(ConfigKey key) {
         return new Builder<>(this, key).as(String.class);
+    }
+
+    public Stream<ConfigKey> allKeysRecursively() {
+        return this.strategy.allKeysRecursively();
     }
 
     private Properties properties;

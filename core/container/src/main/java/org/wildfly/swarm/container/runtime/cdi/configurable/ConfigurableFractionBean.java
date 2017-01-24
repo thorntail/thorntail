@@ -1,7 +1,6 @@
 package org.wildfly.swarm.container.runtime.cdi.configurable;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,12 +23,12 @@ public class ConfigurableFractionBean<T extends Fraction> implements Bean<T> {
 
     private final T instance;
 
-    public ConfigurableFractionBean(T instance, ConfigurableManager configurableManager) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public ConfigurableFractionBean(T instance, ConfigurableManager configurableManager) throws Exception {
         this.instance = instance;
         configurableManager.scan(this.instance);
     }
 
-    public ConfigurableFractionBean(Class<T> cls, ConfigurableManager configurableManager) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+    public ConfigurableFractionBean(Class<T> cls, ConfigurableManager configurableManager) throws Exception {
         this.instance = cls.newInstance();
         this.instance.applyDefaults();
         configurableManager.scan(this.instance);
