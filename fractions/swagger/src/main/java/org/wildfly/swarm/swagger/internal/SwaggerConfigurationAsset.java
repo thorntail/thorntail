@@ -105,6 +105,10 @@ public class SwaggerConfigurationAsset implements Asset {
         return this;
     }
 
+    public String getContextRoot() {
+        return (String) configuration.get(SwaggerConfig.Key.ROOT);
+    }
+
     public void setPrettyPrint(boolean prettyPrint) {
         configuration.put(SwaggerConfig.Key.PRETTY_PRINT, prettyPrint);
     }

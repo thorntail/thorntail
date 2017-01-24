@@ -112,6 +112,11 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
     }
 
     @Override
+    public boolean hasContextRoot() {
+        return getConfigurationAsset().getContextRoot() != null;
+    }
+
+    @Override
     public SwaggerArchive setPrettyPrint(boolean prettyPrint) {
         getConfigurationAsset().setPrettyPrint(prettyPrint);
         return this;

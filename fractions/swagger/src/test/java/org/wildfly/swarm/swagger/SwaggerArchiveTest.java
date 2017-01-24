@@ -74,5 +74,6 @@ public class SwaggerArchiveTest {
         assertThat(config.get(SwaggerConfig.Key.VERSION)).isEqualTo("1.0");
         assertThat(config.get(SwaggerConfig.Key.TERMS_OF_SERVICE_URL)).isEqualTo("http://myapplication.com/tos.txt");
         assertThat(Arrays.toString((String[])config.get(SwaggerConfig.Key.PACKAGES))).isEqualTo("[com.tester.resource, com.tester.other.resource]");
+        assertThat(config.get(SwaggerConfig.Key.ROOT)).isEqualTo("/tacos");
     }
 }
