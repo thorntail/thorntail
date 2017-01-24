@@ -28,8 +28,11 @@ public class SwaggerArchivePreparer implements ArchivePreparer {
                 // Make the deployment a swagger archive
                 SwaggerArchive swaggerArchive = deployment.as(SwaggerArchive.class);
 
-                // Get the context root from the deployment and tell swagger about it
-                swaggerArchive.setContextRoot(deployment.getContextRoot());
+                // If the context root has not been configured
+                // get the context root from the deployment and tell swagger about it
+                if (!swaggerArchive.hasContextRoot()) {
+                    swaggerArchive.setContextRoot(deployment.getContextRoot());
+                }
 
                 // If the archive has not been configured with packages for swagger to scan
                 // try to be smart about it, and find the topmost package that's not in the

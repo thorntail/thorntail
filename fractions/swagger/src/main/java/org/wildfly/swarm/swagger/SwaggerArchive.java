@@ -107,6 +107,13 @@ public interface SwaggerArchive extends Assignable {
     SwaggerArchive setContextRoot(String root);
 
     /**
+     * Determine if the archive has a context root configured
+     *
+     * @return true if the context root has been configured
+     */
+    boolean hasContextRoot();
+
+    /**
      * Sets whether the swagger.json will be pretty printed.
      *
      * @param prettyPrint if true swagger.json will be pretty printed
