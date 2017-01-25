@@ -42,6 +42,9 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
@@ -50,7 +53,6 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.base.asset.ZipFileEntryAsset;
 import org.jboss.shrinkwrap.impl.base.io.IOUtil;
 import org.wildfly.swarm.bootstrap.Main;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
@@ -182,7 +184,9 @@ public class BuildTool {
         move(file, backupPath, this.log);
 
         Archive original = ShrinkWrap.create(JavaArchive.class);
-        original.as(ZipImporter.class).importFrom(backupPath.toFile());
+        try (InputStream inputStream = Files.newInputStream(backupPath)) {
+            original.as(ZipImporter.class).importFrom(inputStream);
+        }
 
         WebInfLibFilteringArchive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
         repackaged.as(ZipExporter.class).exportTo(file, true);
@@ -236,6 +240,7 @@ public class BuildTool {
                 JarEntry each = entries.nextElement();
                 if (each.getName().startsWith("org/jboss/modules/ModuleLoader")) {
                     jbossModulesFound = true;
+                    break;
                 }
             }
         }
@@ -243,18 +248,19 @@ public class BuildTool {
     }
 
     private void expandArtifact(File artifactFile) throws IOException {
-        JarFile jarFile = new JarFile(artifactFile);
-        Enumeration<JarEntry> entries = jarFile.entries();
-
-        while (entries.hasMoreElements()) {
-            JarEntry each = entries.nextElement();
-            if (each.getName().startsWith("META-INF")) {
-                continue;
+        try {
+            ZipFile zipFile = new ZipFile(artifactFile);
+            for (FileHeader each : (List<FileHeader>) zipFile.getFileHeaders()) {
+                if (each.getFileName().startsWith("META-INF")) {
+                    continue;
+                }
+                if (each.isDirectory()) {
+                    continue;
+                }
+                this.archive.add(new ZipFileHeaderAsset(zipFile, each), each.getFileName());
             }
-            if (each.isDirectory()) {
-                continue;
-            }
-            this.archive.add(new ZipFileEntryAsset(jarFile, each), each.getName());
+        } catch (ZipException e) {
+            throw new IOException(e);
         }
     }
 
