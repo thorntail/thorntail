@@ -15,17 +15,18 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * @author Heiko Braun
+ * @author Ken Finnigan
  * @since 24/10/2016
  */
 public interface ArtifactResolver {
 
     ArtifactSpec resolveArtifact(ArtifactSpec spec) throws Exception;
 
-    Set<ArtifactSpec> resolveAllArtifactsTransitively(Set<ArtifactSpec> specs, boolean excludes) throws Exception;
+    Collection<ArtifactSpec> resolveAllArtifactsTransitively(Collection<ArtifactSpec> specs, boolean excludes) throws Exception;
 
-    Set<ArtifactSpec> resolveAllArtifactsNonTransitively(Set<ArtifactSpec> specs) throws Exception;
+    Collection<ArtifactSpec> resolveAllArtifactsNonTransitively(Collection<ArtifactSpec> specs) throws Exception;
 }

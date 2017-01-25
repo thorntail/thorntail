@@ -16,6 +16,8 @@
 package org.wildfly.swarm.plugin.maven;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -102,9 +104,9 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
+    public Set<ArtifactSpec> resolveAll(Collection<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         if (specs.isEmpty()) {
-            return specs;
+            return Collections.EMPTY_SET;
         }
         List<DependencyNode> nodes = null;
         if (transitive) {

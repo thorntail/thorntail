@@ -27,10 +27,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TimeZone;
@@ -471,7 +473,7 @@ public class BuildTool {
     private void populateUberJarMavenRepository(Archive archive, ResolvedDependencies resolvedDependencies) throws Exception {
 
         Set<ArtifactSpec> alreadyResolved = new HashSet<>();
-        Set<ArtifactSpec> toBeResolved = new HashSet<>();
+        List<ArtifactSpec> toBeResolved = new ArrayList<>();
 
         for (ArtifactSpec dependency : resolvedDependencies.getDependencies()) {
 
@@ -498,7 +500,7 @@ public class BuildTool {
                                            resolvedDependencies.getDependencies().size()) + " artifacts");
 
         if (toBeResolved.size() > 0) {
-            Set<ArtifactSpec> newResolved = resolver.resolveAllArtifactsNonTransitively(toBeResolved);
+            Collection<ArtifactSpec> newResolved = resolver.resolveAllArtifactsNonTransitively(toBeResolved);
             alreadyResolved.addAll(newResolved);
         }
 
@@ -508,7 +510,7 @@ public class BuildTool {
     }
 
     private void populateUserMavenRepository(ResolvedDependencies resolvedDependencies) throws Exception {
-        Set<ArtifactSpec> toBeResolved = new HashSet<>();
+        List<ArtifactSpec> toBeResolved = new ArrayList<>();
 
         toBeResolved.addAll(
                 resolvedDependencies.getDependencies().stream()

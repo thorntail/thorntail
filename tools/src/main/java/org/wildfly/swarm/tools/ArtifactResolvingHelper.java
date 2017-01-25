@@ -15,10 +15,12 @@
  */
 package org.wildfly.swarm.tools;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
  * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 public interface ArtifactResolvingHelper {
     /**
@@ -30,9 +32,9 @@ public interface ArtifactResolvingHelper {
      */
     ArtifactSpec resolve(ArtifactSpec spec) throws Exception;
 
-    default Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs) throws Exception {
+    default Set<ArtifactSpec> resolveAll(Collection<ArtifactSpec> specs) throws Exception {
         return resolveAll(specs, true, false);
     }
 
-    Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception;
+    Set<ArtifactSpec> resolveAll(Collection<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception;
 }
