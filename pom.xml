@@ -29,7 +29,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>40</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>41</version.wildfly.swarm.fraction.plugin>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
     <version.cdi2>2.0.Alpha4</version.cdi2>
@@ -1164,7 +1164,6 @@
   <modules>
     <!-- misc -->
     <module>tools</module>
-    <module>arquillian</module>
 
     <!-- base -->
     <module>core/bootstrap</module>
@@ -1245,12 +1244,14 @@
     <module>fractions/cdi-extensions/cdi-config</module>
     <module>fractions/cdi-extensions/cdi-jaxrsapi</module>
 
-    <module>testsuite</module>
-
     <module>fraction-list</module>
     <module>plugin</module>
-    <module>swarmtool</module>
     <module>boms</module>
+
+    <module>arquillian</module>
+    <module>swarmtool</module>
+
+    <module>testsuite</module>
 
     <module>standalone-servers</module>
   </modules>
