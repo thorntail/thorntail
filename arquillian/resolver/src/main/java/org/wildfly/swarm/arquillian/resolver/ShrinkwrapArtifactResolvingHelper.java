@@ -19,6 +19,8 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -30,7 +32,12 @@ import org.eclipse.aether.repository.RepositoryPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.PackagingType;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinates;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
@@ -134,22 +141,25 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(final Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) {
+    public Set<ArtifactSpec> resolveAll(final Collection<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) {
         if (specs.isEmpty()) {
-            return specs;
+            return Collections.EMPTY_SET;
         }
 
         MavenResolutionStrategy transitivityStrategy = (transitive ? TransitiveStrategy.INSTANCE : NonTransitiveStrategy.INSTANCE);
 
         resetListeners();
         final MavenResolvedArtifact[] artifacts =
-                withResolver(r -> r.resolve(specs.stream().map(ArtifactSpec::mavenGav).collect(Collectors.toList()))
-                        .using(transitivityStrategy)
-                        .as(MavenResolvedArtifact.class));
+                withResolver(r -> {
+                    specs.forEach(spec -> r.addDependency(createMavenDependency(spec)));
+                    return r.resolve()
+                            .using(transitivityStrategy)
+                            .as(MavenResolvedArtifact.class);
+                });
 
         return Arrays.stream(artifacts).map(artifact -> {
             final MavenCoordinate coord = artifact.getCoordinate();
-            return new ArtifactSpec("compile",
+            return new ArtifactSpec(artifact.getScope().toString(),
                                     coord.getGroupId(),
                                     coord.getArtifactId(),
                                     coord.getVersion(),
@@ -157,6 +167,16 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
                                     coord.getClassifier(),
                                     artifact.asFile());
         }).collect(Collectors.toSet());
+    }
+
+    public MavenDependency createMavenDependency(final ArtifactSpec spec) {
+        final MavenCoordinate newCoordinate = MavenCoordinates.createCoordinate(
+                spec.groupId(),
+                spec.artifactId(),
+                spec.version(),
+                PackagingType.of(spec.type()),
+                spec.classifier());
+        return MavenDependencies.createDependency(newCoordinate, ScopeType.fromScopeType(spec.scope), false);
     }
 
     public ShrinkwrapArtifactResolvingHelper repositoryListener(final RepositoryListener l) {

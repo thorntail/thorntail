@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,21 +31,12 @@ import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
  * These maye be unresolved, which means you cannot assume they are available in any local repository.
  *
  * @author Heiko Braun
+ * @author Ken Finnigan
  * @since 24/10/2016
  */
 public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
 
-    @Deprecated
-    public void addExplicitDependency(ArtifactSpec artifactSpec) {
-        throw new IllegalArgumentException("To be removed");
-    }
-
-    @Deprecated
-    public void addTransientDependency(ArtifactSpec artifactSpec) {
-        throw new IllegalArgumentException("To be removed");
-    }
-
-    public Set<ArtifactSpec> getExplicitDependencies() {
+    public Collection<ArtifactSpec> getExplicitDependencies() {
         return getDirectDeps();
     }
 
@@ -58,7 +50,7 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
         return allTransient;
     }
 
-    public Set<ArtifactSpec> getTransientDependencies(ArtifactSpec artifact) {
+    public Collection<ArtifactSpec> getTransientDependencies(ArtifactSpec artifact) {
         return getTransientDeps(artifact);
     }
 
@@ -111,6 +103,16 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
         } catch (IOException e) {
             throw new RuntimeException("Failed to write dependency tree", e);
         }
+    }
+
+    @Override
+    protected int comparator(ArtifactSpec first, ArtifactSpec second) {
+        if (first.scope.equals("compile") || first.scope.equals("provided")) {
+            return -1;
+        } else if (second.scope.equals("compile") || second.scope.equals("provided")) {
+            return 1;
+        }
+        return 0;
     }
 
     private HashSet<ArtifactSpec> allTransient;

@@ -15,10 +15,11 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * @author Heiko Braun
+ * @author Ken Finnigan
  * @since 24/10/2016
  */
 public class DefaultArtifactResolver implements ArtifactResolver {
@@ -41,11 +42,11 @@ public class DefaultArtifactResolver implements ArtifactResolver {
         return spec;
     }
 
-    public Set<ArtifactSpec> resolveAllArtifactsTransitively(Set<ArtifactSpec> specs, boolean defaultExcludes) throws Exception {
+    public Collection<ArtifactSpec> resolveAllArtifactsTransitively(Collection<ArtifactSpec> specs, boolean defaultExcludes) throws Exception {
         return this.resolver.resolveAll(specs, true, defaultExcludes);
     }
 
-    public Set<ArtifactSpec> resolveAllArtifactsNonTransitively(Set<ArtifactSpec> specs) throws Exception {
+    public Collection<ArtifactSpec> resolveAllArtifactsNonTransitively(Collection<ArtifactSpec> specs) throws Exception {
         return this.resolver.resolveAll(specs, false, false);
     }
 

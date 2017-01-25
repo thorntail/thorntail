@@ -1,11 +1,14 @@
 package org.wildfly.swarm.tools;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -21,36 +24,37 @@ public class MockArtifactResolver implements ArtifactResolver, ArtifactResolving
     private Map<ArtifactSpec, Entry> entries = new HashMap<>();
 
     private Map<ArtifactSpec, Archive> artifacts = new HashMap<>();
+
     private Map<ArtifactSpec, File> resolvedArtifacts = new HashMap<>();
 
 
     public void add(ArtifactSpec spec) {
         Archive archive = ShrinkWrap.create(JavaArchive.class);
-        archive.add(EmptyAsset.INSTANCE, "nothing" );
+        archive.add(EmptyAsset.INSTANCE, "nothing");
 
-        Entry entry = new Entry( spec );
+        Entry entry = new Entry(spec);
 
         this.entries.put(spec, entry);
-        this.artifacts.put( spec, archive );
+        this.artifacts.put(spec, archive);
     }
 
     public void add(ArtifactSpec spec, Consumer<Entry> config) {
         Archive archive = ShrinkWrap.create(JavaArchive.class);
-        archive.add(EmptyAsset.INSTANCE, "nothing" );
+        archive.add(EmptyAsset.INSTANCE, "nothing");
 
-        Entry entry = new Entry( spec );
-        config.accept( entry );
+        Entry entry = new Entry(spec);
+        config.accept(entry);
 
         this.entries.put(spec, entry);
-        this.artifacts.put( spec, archive );
+        this.artifacts.put(spec, archive);
     }
 
     public void add(ArtifactSpec spec, Archive archive, Consumer<Entry> config) {
-        Entry entry = new Entry( spec );
-        config.accept( entry );
+        Entry entry = new Entry(spec);
+        config.accept(entry);
 
         this.entries.put(spec, entry);
-        this.artifacts.put( spec, archive );
+        this.artifacts.put(spec, archive);
     }
 
     @Override
@@ -59,12 +63,12 @@ public class MockArtifactResolver implements ArtifactResolver, ArtifactResolving
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAllArtifactsTransitively(Set<ArtifactSpec> specs, boolean excludes) throws Exception {
+    public Collection<ArtifactSpec> resolveAllArtifactsTransitively(Collection<ArtifactSpec> specs, boolean excludes) throws Exception {
         return resolveAll(specs, true, excludes);
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAllArtifactsNonTransitively(Set<ArtifactSpec> specs) throws Exception {
+    public Collection<ArtifactSpec> resolveAllArtifactsNonTransitively(Collection<ArtifactSpec> specs) throws Exception {
         return resolveAll(specs, false, false);
     }
 
@@ -88,12 +92,12 @@ public class MockArtifactResolver implements ArtifactResolver, ArtifactResolving
     }
 
     @Override
-    public Set<ArtifactSpec> resolveAll(Set<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
+    public Set<ArtifactSpec> resolveAll(Collection<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         Set<ArtifactSpec> resolved = new HashSet<>();
         for (ArtifactSpec spec : specs) {
             resolved.add(resolve(spec));
-            if ( transitive ) {
-                resolved.addAll(resolveAll(this.entries.get(spec).getDependencies()));
+            if (transitive) {
+                resolved.addAll(resolveAll(this.entries.get(spec).getDependencies().stream().collect(Collectors.toList())));
             }
         }
         return resolved;
@@ -101,6 +105,7 @@ public class MockArtifactResolver implements ArtifactResolver, ArtifactResolving
 
     public static class Entry {
         private final ArtifactSpec root;
+
         private final Set<ArtifactSpec> dependencies = new HashSet<>();
 
         public Entry(ArtifactSpec root) {
@@ -108,7 +113,7 @@ public class MockArtifactResolver implements ArtifactResolver, ArtifactResolving
         }
 
         public void addDependency(ArtifactSpec dep) {
-            this.dependencies.add( dep );
+            this.dependencies.add(dep);
         }
 
         public Set<ArtifactSpec> getDependencies() {

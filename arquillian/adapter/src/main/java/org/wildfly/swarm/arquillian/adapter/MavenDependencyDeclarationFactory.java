@@ -55,11 +55,15 @@ class MavenDependencyDeclarationFactory extends DependencyDeclarationFactory {
                     directDep.getCoordinate().getClassifier(),
                     directDep.asFile()
             );
-            MavenResolvedArtifact[] bucket = resolvingHelper.withResolver(r -> pom
-                    .resolve(parent.mavenGav())
-                    .withTransitivity()
-                    .asResolvedArtifact()
-            );
+            MavenResolvedArtifact[] bucket =
+                    resolvingHelper.withResolver(r -> {
+                                                     r.addDependency(resolvingHelper.createMavenDependency(parent));
+                                                     return pom
+                                                             .resolve()
+                                                             .withTransitivity()
+                                                             .asResolvedArtifact();
+                                                 }
+                    );
 
             for (MavenResolvedArtifact dep : bucket) {
 

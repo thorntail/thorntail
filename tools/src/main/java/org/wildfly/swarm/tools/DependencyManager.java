@@ -23,9 +23,12 @@ import java.nio.file.Path;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -62,16 +65,21 @@ public class DependencyManager implements ResolvedDependencies {
 
     @Override
     public ArtifactSpec findWildFlySwarmBootstrapJar() {
-        return findArtifact(WILDFLY_SWARM_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, JAR, null);
+        return findArtifact(WILDFLY_SWARM_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, JAR, null, false);
     }
 
     @Override
     public ArtifactSpec findJBossModulesJar() {
-        return findArtifact(JBOSS_MODULES_GROUP_ID, JBOSS_MODULES_ARTIFACT_ID, null, JAR, null);
+        return findArtifact(JBOSS_MODULES_GROUP_ID, JBOSS_MODULES_ARTIFACT_ID, null, JAR, null, false);
     }
 
     @Override
     public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier) {
+        return findArtifact(groupId, artifactId, version, packaging, classifier, true);
+    }
+
+    @Override
+    public ArtifactSpec findArtifact(String groupId, String artifactId, String version, String packaging, String classifier, boolean includeTestScope) {
         for (ArtifactSpec each : this.dependencies) {
             if (groupId != null && !groupId.equals(each.groupId())) {
                 continue;
@@ -90,6 +98,10 @@ public class DependencyManager implements ResolvedDependencies {
             }
 
             if (classifier != null && !classifier.equals(each.classifier())) {
+                continue;
+            }
+
+            if (!includeTestScope && each.scope.equals("test")) {
                 continue;
             }
 
@@ -131,7 +143,7 @@ public class DependencyManager implements ResolvedDependencies {
         // resolve the explicit deps to local files
         // expand to transitive if these are not pre-solved
         boolean resolveExplicitsTransitively = !declaredDependencies.isPresolved() || autodetect;
-        Set<ArtifactSpec> resolvedExplicitDependencies = resolveExplicitsTransitively ?
+        Collection<ArtifactSpec> resolvedExplicitDependencies = resolveExplicitsTransitively ?
                 resolver.resolveAllArtifactsTransitively(declaredDependencies.getExplicitDependencies(), false) :
                 resolver.resolveAllArtifactsNonTransitively(declaredDependencies.getExplicitDependencies());
 
@@ -140,21 +152,21 @@ public class DependencyManager implements ResolvedDependencies {
         // resolve transitives if not pre-computed (i.e. from maven/gradle plugin)
         if (declaredDependencies.getTransientDependencies().isEmpty()) {
 
-            Set<ArtifactSpec> inputSet = declaredDependencies.getExplicitDependencies();
-            Set<ArtifactSpec> filtered = inputSet
+            Collection<ArtifactSpec> inputSet = declaredDependencies.getExplicitDependencies();
+            Collection<ArtifactSpec> filtered = inputSet
                     .stream()
                     .filter(dep -> dep.type().equals(JAR)) // filter out composite types, like ear, war, etc
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
 
-            Set<ArtifactSpec> resolvedTransientDependencies = resolver.resolveAllArtifactsTransitively(
+            Collection<ArtifactSpec> resolvedTransientDependencies = resolver.resolveAllArtifactsTransitively(
                     filtered, false
             );
 
             this.dependencies.addAll(resolvedTransientDependencies);
 
             // add the remaining transitive ones that have not been filtered
-            Set<ArtifactSpec> remainder = new HashSet<>();
-            inputSet.stream().forEach(remainder::add);
+            Collection<ArtifactSpec> remainder = new ArrayList<>();
+            inputSet.forEach(remainder::add);
             remainder.removeAll(resolvedTransientDependencies);
 
             this.dependencies.addAll(
@@ -162,13 +174,13 @@ public class DependencyManager implements ResolvedDependencies {
             );
         } else {
             // if transitive deps are pre-computed, resolve them to local files if needed
-            Set<ArtifactSpec> inputSet = declaredDependencies.getTransientDependencies();
-            Set<ArtifactSpec> filtered = inputSet
+            Collection<ArtifactSpec> inputSet = declaredDependencies.getTransientDependencies();
+            Collection<ArtifactSpec> filtered = inputSet
                     .stream()
                     .filter(dep -> dep.type().equals(JAR))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
 
-            Set<ArtifactSpec> resolvedTransientDependencies = Collections.EMPTY_SET;
+            Collection<ArtifactSpec> resolvedTransientDependencies = Collections.EMPTY_SET;
             if (filtered.size() > 0) {
 
                 resolvedTransientDependencies = resolver.resolveAllArtifactsNonTransitively(filtered);
@@ -176,8 +188,8 @@ public class DependencyManager implements ResolvedDependencies {
             }
 
             // add the remaining transitive ones that have not been filtered
-            Set<ArtifactSpec> remainder = new HashSet<>();
-            inputSet.stream().forEach(remainder::add);
+            Collection<ArtifactSpec> remainder = new ArrayList<>();
+            inputSet.forEach(remainder::add);
             remainder.removeAll(resolvedTransientDependencies);
 
             this.dependencies.addAll(
@@ -205,17 +217,17 @@ public class DependencyManager implements ResolvedDependencies {
      */
     private void analyzeRemovableDependencies(DeclaredDependencies declaredDependencies) throws Exception {
 
-        Set<ArtifactSpec> bootstrapDeps = this.dependencies.stream()
+        Collection<ArtifactSpec> bootstrapDeps = this.dependencies.stream()
                 .filter(e -> isFractionJar(e.file))
                 .collect(Collectors.toSet());
 
-        Set<ArtifactSpec> nonBootstrapDeps = new HashSet<>();
+        List<ArtifactSpec> nonBootstrapDeps = new ArrayList<>();
         nonBootstrapDeps.addAll(declaredDependencies.getExplicitDependencies());
         nonBootstrapDeps.removeAll(bootstrapDeps);
 
         // re-resolve the application's dependencies minus any of our swarm dependencies
         // [hb] TODO this can be improved to use the previous results if the data-structure allows to reason about the parent of transitive deps
-        Set<ArtifactSpec> nonBootstrapTransitive = resolver.resolveAllArtifactsTransitively(nonBootstrapDeps, true);
+        Collection<ArtifactSpec> nonBootstrapTransitive = resolver.resolveAllArtifactsTransitively(nonBootstrapDeps, true);
 
         // do not remove .war or .rar or anything else weird-o like.
         Set<ArtifactSpec> justJars = this.dependencies
