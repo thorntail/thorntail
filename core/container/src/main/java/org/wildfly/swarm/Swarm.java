@@ -521,6 +521,9 @@ public class Swarm {
             activatedNames.add(profile);
         }
 
+        factory.load("defaults");
+        activatedNames.add("defaults");
+
         this.configView = factory.build();
         this.configView.activate(activatedNames);
     }

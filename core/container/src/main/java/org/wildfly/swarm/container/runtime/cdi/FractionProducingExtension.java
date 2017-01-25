@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.container.runtime.cdi;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,7 +76,7 @@ public class FractionProducingExtension implements Extension {
         for (Fraction fraction : explicitlyInstalledFractions) {
             try {
                 abd.addBean(new ConfigurableFractionBean<>(fraction, this.configurableManager));
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
 
@@ -98,7 +97,7 @@ public class FractionProducingExtension implements Extension {
                 .forEach((cls) -> {
                     try {
                         abd.addBean(new ConfigurableFractionBean<>(cls, this.configurableManager));
-                    } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 });

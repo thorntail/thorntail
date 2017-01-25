@@ -1,57 +1,16 @@
 package org.wildfly.swarm.container.runtime;
 
-import java.lang.reflect.Field;
-
-import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.config.ConfigKey;
 
 /**
  * @author Bob McWhirter
  */
-public class ConfigurableHandle {
+public interface ConfigurableHandle {
+    ConfigKey key();
 
-    private final ConfigKey key;
+    Class<?> type() throws Exception;
 
-    private final Object instance;
+    <T> void set(T value) throws Exception;
 
-    private final Field field;
-
-    public ConfigurableHandle(ConfigKey key, Object instance, Field field) {
-        this.key = key;
-        this.instance = instance;
-        this.field = field;
-        this.field.setAccessible(true);
-    }
-
-    public ConfigKey key() {
-        return this.key;
-    }
-
-    public Class<?> type() throws IllegalAccessException {
-        if (isDefaultable()) {
-            return ((Defaultable) this.field.get(this.instance)).type();
-        }
-
-        return this.field.getType();
-    }
-
-    public <T> void set(T value) throws IllegalAccessException {
-        if (isDefaultable()) {
-            ((Defaultable) this.field.get(this.instance)).set(value);
-        } else {
-            this.field.set(this.instance, value);
-        }
-    }
-
-    protected <T> T currentValue() throws IllegalAccessException {
-        Object value = this.field.get(this.instance);
-        if (value instanceof Defaultable) {
-            return (T) ((Defaultable) value).get();
-        }
-        return (T) value;
-    }
-
-    protected boolean isDefaultable() {
-        return Defaultable.class.isAssignableFrom(this.field.getType());
-    }
+    <T> T currentValue() throws Exception;
 }

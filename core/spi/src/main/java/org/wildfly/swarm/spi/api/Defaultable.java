@@ -30,6 +30,14 @@ public class Defaultable<T> implements Supplier<T> {
         return new Defaultable<>(Integer.class, defaultValueSupplier);
     }
 
+    public static Defaultable<Long> longInteger(long defaultValue) {
+        return longInteger(() -> defaultValue);
+    }
+
+    public static Defaultable<Long> longInteger(Supplier<Long> defaultValueSupplier) {
+        return new Defaultable<>(Long.class, defaultValueSupplier);
+    }
+
     public static Defaultable<Boolean> bool(boolean defaultValue) {
         return bool(() -> defaultValue);
     }

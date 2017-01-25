@@ -5,7 +5,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -34,8 +33,6 @@ import org.wildfly.swarm.spi.api.config.SimpleKey;
  * @author Bob McWhirter
  */
 public class ConfigurableManager implements AutoCloseable {
-
-    private static final String DOT = ".";
 
     private static final String SUBRESOURCES = "subresources";
 
@@ -85,11 +82,15 @@ public class ConfigurableManager implements AutoCloseable {
         this.configView = configView;
     }
 
+    public ConfigView configView() {
+        return this.configView;
+    }
+
     public List<ConfigurableHandle> configurables() {
         return this.configurables;
     }
 
-    protected <T> void configure(ConfigurableHandle configurable) throws IllegalAccessException {
+    protected <T> void configure(ConfigurableHandle configurable) throws Exception {
         Resolver<?> resolver = this.configView.resolve(configurable.key());
 
         Class<?> resolvedType = configurable.type();
@@ -177,19 +178,18 @@ public class ConfigurableManager implements AutoCloseable {
         };
     }
 
-    public void rescan() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public void rescan() throws Exception {
         for (Object each : this.deferred) {
             scanInternal(each);
         }
     }
 
-    public void scan(Object instance) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        //scan(instance, instance instanceof Fraction);
+    public void scan(Object instance) throws Exception {
         this.deferred.add(instance);
         scanInternal(instance);
     }
 
-    private void scanInternal(Object instance) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void scanInternal(Object instance) throws Exception {
         if (instance instanceof Fraction) {
             scanFraction((Fraction) instance);
         } else {
@@ -198,12 +198,12 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
 
-    protected void scanFraction(Fraction fraction) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    protected void scanFraction(Fraction fraction) throws Exception {
         ConfigKey prefix = nameFor(fraction);
         scan(prefix, fraction, true);
     }
 
-    protected SimpleKey getKey(Object object) throws InvocationTargetException, IllegalAccessException {
+    protected SimpleKey getKey(Object object) throws Exception {
         if (object instanceof Keyed) {
             return new SimpleKey(((Keyed) object).getKey());
         }
@@ -244,7 +244,7 @@ public class ConfigurableManager implements AutoCloseable {
         return null;
     }
 
-    protected ConfigKey nameFor(Fraction fraction) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    protected ConfigKey nameFor(Fraction fraction) throws Exception {
         Configurable anno = fraction.getClass().getAnnotation(Configurable.class);
         if (anno != null) {
             return ConfigKey.parse(anno.value());
@@ -259,14 +259,14 @@ public class ConfigurableManager implements AutoCloseable {
         return ConfigKey.of("swarm").append(key);
     }
 
-    protected void scan(ConfigKey prefix, Object instance, boolean isFraction) throws IllegalAccessException, InvocationTargetException {
+    protected void scan(ConfigKey prefix, Object instance, boolean isFraction) throws Exception {
         scan(prefix, instance, instance.getClass(), isFraction);
         if (isFraction) {
             scanSubresources(prefix, instance);
         }
     }
 
-    protected void scan(ConfigKey prefix, Object instance, Class<?> curClass, boolean isFraction) throws IllegalAccessException {
+    protected void scan(ConfigKey prefix, Object instance, Class<?> curClass, boolean isFraction) throws Exception {
         if (curClass == null || curClass == Object.class || isBlacklisted(curClass)) {
             return;
         }
@@ -281,7 +281,7 @@ public class ConfigurableManager implements AutoCloseable {
                     if (isConfigurableType(field.getType())) {
                         ConfigKey name = nameFor(prefix, field);
                         if (!seen(name)) {
-                            ConfigurableHandle configurable = new ConfigurableHandle(name, instance, field);
+                            ConfigurableHandle configurable = new ObjectBackedConfigurableHandle(name, instance, field);
                             this.configurables.add(configurable);
                             configure(configurable);
                         }
@@ -332,7 +332,7 @@ public class ConfigurableManager implements AutoCloseable {
                 return ConfigKey.parse(anno.value());
             }
             if (!anno.simpleName().equals("")) {
-                return prefix.append(anno.simpleName());
+                return prefix.append(ConfigKey.parse(anno.simpleName()));
             }
         }
 
@@ -355,7 +355,7 @@ public class ConfigurableManager implements AutoCloseable {
         return ConfigKey.of(str.toString());
     }
 
-    protected void scanSubresources(ConfigKey prefix, Object instance) throws InvocationTargetException, IllegalAccessException {
+    protected void scanSubresources(ConfigKey prefix, Object instance) throws Exception {
         Method method = getSubresourcesMethod(instance);
 
         if (method == null) {
@@ -465,7 +465,7 @@ public class ConfigurableManager implements AutoCloseable {
         }
     }
 
-    public void subresourceAdded(ConfigKey itemPrefix, Object object) throws InvocationTargetException, IllegalAccessException {
+    public void subresourceAdded(ConfigKey itemPrefix, Object object) throws Exception {
         scan(itemPrefix, object, true);
     }
 
@@ -626,7 +626,7 @@ public class ConfigurableManager implements AutoCloseable {
                     first = false;
                 }
 
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

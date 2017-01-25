@@ -14,6 +14,9 @@ public class SimpleKey implements ConfigKey {
     }
 
     public String name() {
+        if (this == ConfigKey.EMPTY) {
+            return "";
+        }
         return this.name;
     }
 

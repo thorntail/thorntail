@@ -1,0 +1,11 @@
+swarm:
+  hystrix:
+    command:
+      default:
+        circuitBreaker:
+          enabled: false
+          errorThresholdPercentage: 77
+      goober:
+        circuitBreaker:
+          enabled: true
+          errorThresholdPercentage: 44
