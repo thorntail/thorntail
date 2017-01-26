@@ -16,6 +16,7 @@
 package org.wildfly.swarm.undertow;
 
 import org.wildfly.swarm.config.Undertow;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.config.undertow.BufferCache;
 import org.wildfly.swarm.config.undertow.HandlerConfiguration;
 import org.wildfly.swarm.config.undertow.Server;
@@ -236,42 +237,50 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     @Configurable("swarm.http.port")
+    @AttributeDocumentation("Set the port for the default HTTP listener")
     private Defaultable<Integer> httpPort = integer(DEFAULT_HTTP_PORT);
 
     @Configurable("swarm.https.port")
+    @AttributeDocumentation("Set the port for the default HTTPS listener")
     private Defaultable<Integer> httpsPort = integer(DEFAULT_HTTPS_PORT);
 
     @Configurable("swarm.ajp.port")
+    @AttributeDocumentation("Set the port for the default AJP listener")
     private Defaultable<Integer> ajpPort = integer(DEFAULT_AJP_PORT);
 
     /**
      * Path to the keystore.
      */
     @Configurable("swarm.http.keystore.path")
+    @AttributeDocumentation("Path to the server keystore")
     private String keystorePath;
 
     /**
      * Password for the keystore.
      */
     @Configurable("swarm.http.keystore.password")
+    @AttributeDocumentation("Password to the server keystore")
     private String keystorePassword;
 
     /**
      * Password for the key.
      */
     @Configurable("swarm.http.key.password")
+    @AttributeDocumentation("Password to the server certificate")
     private String keyPassword;
 
     /**
      * Server certificate alias.
      */
     @Configurable("swarm.http.certificate.alias")
+    @AttributeDocumentation("Alias to the server certificate")
     private String alias;
 
     /**
      * Whether or not enabling AJP
      */
     @Configurable("swarm.ajp.enable")
+    @AttributeDocumentation("Determine if AJP should be enabled")
     private Defaultable<Boolean> enableAJP = ifAnyExplicitlySet(this.ajpPort);
 
 }
