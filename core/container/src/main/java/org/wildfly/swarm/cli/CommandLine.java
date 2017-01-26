@@ -23,14 +23,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import javax.enterprise.inject.Vetoed;
 
 import org.jboss.modules.Module;
+import org.jboss.modules.ModuleClassLoader;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.Swarm;
@@ -55,6 +58,12 @@ public class CommandLine {
             .withDescription("Display this help")
             .withDefault(() -> false)
             .then((cmd, opt, value) -> cmd.put(opt, true));
+
+    public static final Option<String> CONFIG_HELP = new Option<String>()
+            .withLong("config-help")
+            .hasValue("<fraction>")
+            .withDescription("Display configuration help by fraction, or 'all' for all")
+            .then((cmd, opt, value) -> cmd.put(opt, value));
 
     /**
      * Default option for parsing -v and --version
@@ -155,6 +164,7 @@ public class CommandLine {
     public static Options defaultOptions() {
         return new Options(
                 HELP,
+                CONFIG_HELP,
                 VERSION,
                 PROPERTY,
                 PROPERTIES_URL,
@@ -206,13 +216,72 @@ public class CommandLine {
         this.options.displayHelp(out);
     }
 
+    public void displayConfigHelp(PrintStream out, String fraction) throws IOException, ModuleLoadException {
+        ModuleClassLoader cl = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application")).getClassLoader();
+        Enumeration<URL> docs = cl.getResources("META-INF/configuration-meta.properties");
+
+        Properties props = new Properties();
+
+        while (docs.hasMoreElements()) {
+            URL each = docs.nextElement();
+            Properties fractionDocs = new Properties();
+            fractionDocs.load(each.openStream());
+            if (fraction.equals("all") || fraction.equals(fractionDocs.getProperty("fraction"))) {
+                fractionDocs.remove("fraction");
+                props.putAll(fractionDocs);
+            }
+        }
+
+        props.stringPropertyNames().stream()
+                .sorted()
+                .forEach(key -> {
+                    out.println("# " + key);
+                    out.println();
+                    out.println(formatDocs("    ", props.getProperty(key)));
+                    out.println();
+                });
+    }
+
+    private String formatDocs(String indent, String docs) {
+
+        StringTokenizer tokens = new StringTokenizer(docs);
+        StringBuilder formatted = new StringBuilder();
+
+        int lineLength = indent.length();
+        boolean freshLine = true;
+
+        formatted.append(indent);
+
+        while (tokens.hasMoreElements()) {
+            String next = tokens.nextToken();
+
+            if ((lineLength + 1 + next.length()) > 80) {
+                formatted.append("\n");
+                formatted.append(indent);
+                lineLength = indent.length();
+                freshLine = true;
+            }
+
+            if (freshLine) {
+                freshLine = false;
+            } else {
+                formatted.append(" ");
+            }
+
+            lineLength += next.length();
+            formatted.append(next);
+        }
+
+        return formatted.toString();
+    }
+
     /**
      * Display the version.
      *
      * @param out The output stream to display help upon.
      */
     public void displayVersion(PrintStream out) {
-        out.println("WildFly Swarm version UNKNOWN");
+        out.println("WildFly Swarm version " + Swarm.VERSION);
     }
 
     /**
@@ -278,7 +347,7 @@ public class CommandLine {
      * @param swarm The Swarm instance to apply configuration to.
      * @throws IOException If an error occurs resolving any URL.
      */
-    public void apply(Swarm swarm) throws IOException {
+    public void apply(Swarm swarm) throws IOException, ModuleLoadException {
         applyProperties();
         applyConfigurations(swarm);
 
@@ -286,6 +355,11 @@ public class CommandLine {
             displayVersion(System.err);
             System.err.println();
             displayHelp(System.err);
+            System.exit(0);
+        }
+
+        if (get(CONFIG_HELP) != null) {
+            displayConfigHelp(System.err, get(CONFIG_HELP));
             System.exit(0);
         }
 

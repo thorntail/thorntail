@@ -29,7 +29,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>41</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>43</version.wildfly.swarm.fraction.plugin>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
     <version.cdi2>2.0.Alpha4</version.cdi2>
@@ -38,9 +38,9 @@
     <version.jboss.management-console>2.8.25.Final</version.jboss.management-console>
 
     <version.maven.aether>3.2.5</version.maven.aether>
-    <version.wildfly.config-api>1.0.1.Final</version.wildfly.config-api>
+    <version.wildfly.config-api>1.0.2.Final</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.0.0.Final</version.keycloak.config-api>
+    <version.keycloak.config-api>1.0.1.Final</version.keycloak.config-api>
     <version.keycloak>2.5.0.Final</version.keycloak>
 
     <version.wildfly>10.1.0.Final</version.wildfly>

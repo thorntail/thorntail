@@ -11,6 +11,6 @@ public class KeycloakServer {
     }
 
     public static void main(String... args) throws Exception {
-        (new Swarm()).start();
+        (new Swarm(args)).start();
     }
 }
