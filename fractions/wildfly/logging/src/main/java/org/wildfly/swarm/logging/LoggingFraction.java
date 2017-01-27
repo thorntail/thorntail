@@ -15,12 +15,18 @@
  */
 package org.wildfly.swarm.logging;
 
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.log.JDKModuleLogger;
+import org.jboss.modules.log.ModuleLogger;
+import org.jboss.modules.log.NoopModuleLogger;
+import org.jboss.modules.log.StreamModuleLogger;
 import org.wildfly.swarm.config.Logging;
 import org.wildfly.swarm.config.logging.AsyncHandler;
 import org.wildfly.swarm.config.logging.ConsoleHandler;
@@ -312,6 +318,53 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
      */
     public List<SyslogHandler> syslogHandlers() {
         return subresources().syslogHandlers();
+    }
+
+    // -------- JBossModules Logger bridging ------
+
+    /**
+     * Set the JBossModule logging facade implementation. This is actually changes the current runtime
+     * logging facade used by the JBossModule layer.
+     *
+     * Use this version to install a custom implementation of a ModuleLogger.
+     *
+     * @see #modulesJDKLogger()
+     * @see #modulesStreamLogger(OutputStream)
+     * @see #modulesNoopLogger()
+     *
+     * @param logger - the logging interface implementation to use.
+     * @return this fraction
+     */
+    public LoggingFraction modulesLogger(ModuleLogger logger) {
+        Module.setModuleLogger(logger);
+        return this;
+    }
+
+    /**
+     * Create and install a org.jboss.modules.log.JDKModuleLogger bridge that uses a standard JUL with a
+     * category name of org.jboss.modules.
+     *
+     * @return this fraction
+     */
+    public LoggingFraction modulesJDKLogger() {
+        return modulesLogger(new JDKModuleLogger());
+    }
+
+    /**
+     * Create and install a the org.jboss.modules.log.StreamModuleLogger bridge wrapping the given out stream.
+     * @param out - the OutputStream logging should be sent to.
+     * @return this fraction
+     */
+    public LoggingFraction modulesStreamLogger(OutputStream out) {
+        return modulesLogger(new StreamModuleLogger(out));
+    }
+
+    /**
+     * Installs the org.jboss.modules.log.NoopModuleLogger, which disables logging output
+     * @return this fraction
+     */
+    LoggingFraction modulesNoopLogger() {
+        return modulesLogger(new NoopModuleLogger());
     }
 
     // TODO: Add methods for PeriodicRotatingFileHandler, PeriodicSizeRotatingFileHandler, SizeRotatingFileHandler
