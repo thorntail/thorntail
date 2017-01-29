@@ -236,6 +236,15 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return this.ajpPort.get();
     }
 
+    public String contextPath() {
+        return this.contextPath.get();
+    }
+
+    public UndertowFraction contextPath(String contextPath) {
+        this.contextPath.set(contextPath);
+        return this;
+    }
+
     @Configurable("swarm.http.port")
     @AttributeDocumentation("Set the port for the default HTTP listener")
     private Defaultable<Integer> httpPort = integer(DEFAULT_HTTP_PORT);
@@ -282,5 +291,12 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     @Configurable("swarm.ajp.enable")
     @AttributeDocumentation("Determine if AJP should be enabled")
     private Defaultable<Boolean> enableAJP = ifAnyExplicitlySet(this.ajpPort);
+
+    /**
+     * Context path
+     */
+    @Configurable("swarm.context.path")
+    @AttributeDocumentation("Set the context path")
+    private Defaultable<String> contextPath = Defaultable.string("/");
 
 }

@@ -21,8 +21,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.logging.Logger;
@@ -33,10 +33,10 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.keycloak.KeycloakFraction;
 import org.wildfly.swarm.keycloak.Secured;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 
 @Singleton
@@ -44,11 +44,14 @@ public class SecuredArchivePreparer implements ArchivePreparer {
 
     private static final Logger LOG = Logger.getLogger(SecuredArchivePreparer.class);
 
+    @Inject
+    KeycloakFraction keycloakFraction;
+
     @Override
     public void prepareArchive(Archive<?> archive) {
         InputStream keycloakJson = null;
-        if (keycloakJsonPath != null) {
-            keycloakJson = getKeycloakJson(keycloakJsonPath);
+        if (keycloakFraction.keycloakJsonPath() != null) {
+            keycloakJson = getKeycloakJson(keycloakFraction.keycloakJsonPath());
         }
         if (keycloakJson == null) {
             keycloakJson = getKeycloakJson();
@@ -60,11 +63,11 @@ public class SecuredArchivePreparer implements ArchivePreparer {
             // not adding it.
         }
 
-        if (securityConstraints == null || securityConstraints.isEmpty()) {
+        if (keycloakFraction.securityConstraints() == null || keycloakFraction.securityConstraints().isEmpty()) {
             return;
         }
 
-        securityConstraints.forEach(scAsString -> {
+        keycloakFraction.securityConstraints().forEach(scAsString -> {
             SecurityConstraint sc = SecurityConstraintParser.parse(scAsString);
             archive.as(Secured.class)
                     .protect(sc.urlPattern())
@@ -128,11 +131,5 @@ public class SecuredArchivePreparer implements ArchivePreparer {
         }
         return new ByteArrayAsset(str.toString().getBytes());
     }
-
-    @Configurable("swarm.keycloak.json.path")
-    String keycloakJsonPath;
-
-    @Configurable("swarm.keycloak.security.constraints")
-    List<String> securityConstraints;
 
 }

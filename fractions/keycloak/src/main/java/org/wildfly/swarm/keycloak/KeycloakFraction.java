@@ -15,7 +15,11 @@
  */
 package org.wildfly.swarm.keycloak;
 
+import java.util.List;
+
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
@@ -27,5 +31,31 @@ import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 @WildFlySubsystem("keycloak")
 @DeploymentModule(name = "org.keycloak.keycloak-core")
 public class KeycloakFraction implements Fraction<KeycloakFraction> {
+
+    @Configurable("swarm.keycloak.json.path")
+    @AttributeDocumentation("Set the external keycloak.json path. If this property specified, keycloak.json on classpath will be ignored")
+    String keycloakJsonPath;
+
+    @Configurable("swarm.keycloak.security.constraints")
+    @AttributeDocumentation("Set the Security Constraints to protect resources")
+    List<String> securityConstraints;
+
+    public String keycloakJsonPath() {
+        return keycloakJsonPath;
+    }
+
+    public KeycloakFraction keycloakJsonPath(String keycloakJsonPath) {
+        this.keycloakJsonPath = keycloakJsonPath;
+        return this;
+    }
+
+    public List<String> securityConstraints() {
+        return securityConstraints;
+    }
+
+    public KeycloakFraction securityConstraints(List<String> securityConstraints) {
+        this.securityConstraints = securityConstraints;
+        return this;
+    }
 
 }

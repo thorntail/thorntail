@@ -15,10 +15,11 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
+import javax.inject.Inject;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
-import org.wildfly.swarm.spi.api.Defaultable;
-import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.undertow.UndertowFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
@@ -26,15 +27,15 @@ import org.wildfly.swarm.undertow.WARArchive;
  */
 public class ContextPathArchivePreparer implements ArchivePreparer {
 
-    @Configurable("swarm.context.path")
-    Defaultable<String> contextPath = Defaultable.string("/");
+    @Inject
+    UndertowFraction undertowFraction;
 
     @Override
     public void prepareArchive(Archive<?> archive) {
         WARArchive warArchive = archive.as(WARArchive.class);
 
         if (warArchive.getContextRoot() == null) {
-            warArchive.setContextRoot(contextPath.get());
+            warArchive.setContextRoot(undertowFraction.contextPath());
         }
     }
 }

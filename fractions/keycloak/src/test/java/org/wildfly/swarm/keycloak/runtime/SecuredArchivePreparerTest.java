@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
+import org.wildfly.swarm.keycloak.KeycloakFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
@@ -34,6 +35,7 @@ public class SecuredArchivePreparerTest {
     @Before
     public void setUp() {
         preparer = new SecuredArchivePreparer();
+        preparer.keycloakFraction = new KeycloakFraction();
         archive = ShrinkWrap.create(WARArchive.class);
     }
 
@@ -46,7 +48,7 @@ public class SecuredArchivePreparerTest {
 
     @Test
     public void set_1_security_constraint() throws Exception {
-        preparer.securityConstraints = Collections.singletonList("{url-pattern=/aaa}");
+        preparer.keycloakFraction.securityConstraints(Collections.singletonList("{url-pattern=/aaa}"));
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -65,7 +67,7 @@ public class SecuredArchivePreparerTest {
 
     @Test
     public void set_2_security_constraints() throws Exception {
-        preparer.securityConstraints = Arrays.asList("{url-pattern=/aaa}", "{url-pattern=/bbb");
+        preparer.keycloakFraction.securityConstraints(Arrays.asList("{url-pattern=/aaa}", "{url-pattern=/bbb"));
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -80,7 +82,7 @@ public class SecuredArchivePreparerTest {
 
     @Test
     public void set_1_method() throws Exception {
-        preparer.securityConstraints = Collections.singletonList("{methods=[GET]}");
+        preparer.keycloakFraction.securityConstraints(Collections.singletonList("{methods=[GET]}"));
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -99,7 +101,7 @@ public class SecuredArchivePreparerTest {
 
     @Test
     public void set_2_methods() throws Exception {
-        preparer.securityConstraints = Collections.singletonList("{methods=[GET, POST]}");
+        preparer.keycloakFraction.securityConstraints(Collections.singletonList("{methods=[GET, POST]}"));
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
