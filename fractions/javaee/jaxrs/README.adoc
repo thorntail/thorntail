@@ -1,0 +1,5 @@
+# JAX-RS
+
+The JAX-RS fraction provides support for JAX-RS (JSR-311), providing
+the framework for building RESTful webservices.
+

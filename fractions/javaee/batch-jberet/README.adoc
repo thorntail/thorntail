@@ -1,0 +1,8 @@
+# Batch (JBeret)
+
+The Batch fraction provides support for scheduled job execution,
+through JSR-352.
+
+For additional information about JBeret please see the
+https://jberet.gitbooks.io/jberet-user-guide/content/[JBeret User's Guide].
+
