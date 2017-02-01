@@ -1,0 +1,3 @@
+# CDI
+
+The CDI fraction provides support for CDI (JSR-299).

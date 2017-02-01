@@ -1,0 +1,5 @@
+# Datasources Fraction
+
+The Datasources fraction provides support for container-managed
+database connections.
+
