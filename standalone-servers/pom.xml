@@ -48,10 +48,9 @@
   </build>
 
   <modules>
-    <module>keycloak</module>
-    <module>management-console</module>
-    <module>microprofile</module>
-    <module>swagger-ui</module>
+    <!-- DO NOT ADD MODULES HERE. THIS ACTS AS A PARENT POM ONLY.
+         ANY MODULES SHOULD BE ADDED, AS APPROPRIATE, TO THE ROOT
+         pom.xml OF THIS PROJECT. -->
   </modules>
 
   <profiles>

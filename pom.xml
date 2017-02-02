@@ -1166,7 +1166,13 @@
     <!-- other -->
     <module>jaxrs-client-api</module>
 
-    <!-- fractions -->
+    <module>fraction-list</module>
+    <module>plugin</module>
+    <module>boms</module>
+
+    <module>arquillian</module>
+    <module>swarmtool</module>
+
     <module>fractions/javaee/batch-jberet</module>
     <module>fractions/javaee/bean-validation</module>
     <module>fractions/javaee/cdi</module>
@@ -1196,8 +1202,6 @@
     <module>fractions/javaee/undertow</module>
     <module>fractions/javaee/webservices</module>
 
-    <module>fractions/camel</module>
-
     <module>fractions/wildfly/hibernate-search</module>
     <module>fractions/wildfly/hibernate-validator</module>
     <module>fractions/wildfly/infinispan</module>
@@ -1211,24 +1215,14 @@
     <module>fractions/wildfly/mod_cluster</module>
     <module>fractions/wildfly/request-controller</module>
     <module>fractions/wildfly/security</module>
-
-    <module>fractions/drools-server</module>
+    
     <module>fractions/fluentd</module>
-    <module>fractions/flyway</module>
-    <module>fractions/javafx</module>
     <module>fractions/jolokia</module>
     <module>fractions/keycloak</module>
-    <module>fractions/keycloak-server</module>
-    <module>fractions/logstash</module>
     <module>fractions/microprofile</module>
     <module>fractions/monitor</module>
     <module>fractions/netflix</module>
-    <module>fractions/spring</module>
-    <module>fractions/swagger</module>
-    <module>fractions/swagger-webapp</module>
     <module>fractions/topology</module>
-    <module>fractions/topology-consul</module>
-    <module>fractions/topology-jgroups</module>
     <module>fractions/topology-openshift</module>
     <module>fractions/topology-webapp</module>
     <module>fractions/vertx</module>
@@ -1237,19 +1231,116 @@
     <module>fractions/cdi-extensions/cdi-config</module>
     <module>fractions/cdi-extensions/cdi-jaxrsapi</module>
 
-    <module>fraction-list</module>
-    <module>plugin</module>
-    <module>boms</module>
+    <module>standalone-servers/microprofile</module>
 
-    <module>arquillian</module>
-    <module>swarmtool</module>
+    <module>testsuite/testsuite-batch-jberet</module>
+    <module>testsuite/testsuite-buildtool</module>
+    <module>testsuite/testsuite-cdi</module>
+    <module>testsuite/testsuite-cdi-jaxrsapi</module>
+    <module>testsuite/testsuite-connector</module>
+    <module>testsuite/testsuite-container</module>
+    <module>testsuite/testsuite-datasources</module>
+    <module>testsuite/testsuite-datasources-config</module>
+    <module>testsuite/testsuite-ee</module>
+    <module>testsuite/testsuite-ejb</module>
+    <module>testsuite/testsuite-ejb-remote</module>
+    <module>testsuite/testsuite-hystrix</module>
+    <module>testsuite/testsuite-infinispan</module>
+    <module>testsuite/testsuite-io</module>
+    <module>testsuite/testsuite-jaxrs</module>
+    <module>testsuite/testsuite-jca</module>
+    <module>testsuite/testsuite-jdr</module>
+    <module>testsuite/testsuite-jgroups</module>
+    <module>testsuite/testsuite-jmx</module>
+    <module>testsuite/testsuite-jmx-remote-remoting</module>
+    <module>testsuite/testsuite-jmx-remote-management</module>
+    <module>testsuite/testsuite-jmx-remote-undertow</module>
+    <module>testsuite/testsuite-jolokia</module>
+    <module>testsuite/testsuite-jolokia-keycloak</module>
+    <module>testsuite/testsuite-jpa</module>
+    <module>testsuite/testsuite-jpa-mysql</module>
+    <module>testsuite/testsuite-jpa-postgresql</module>
+    <module>testsuite/testsuite-jsf</module>
+    <module>testsuite/testsuite-keycloak</module>
+    <module>testsuite/testsuite-local-dependencies</module>
+    <module>testsuite/testsuite-logging</module>
+    <module>testsuite/testsuite-mail</module>
+    <module>testsuite/testsuite-mail-cdi</module>
+    <module>testsuite/testsuite-management</module>
+    <module>testsuite/testsuite-management-console</module>
+    <module>testsuite/testsuite-maven-plugin</module>
+    <module>testsuite/testsuite-messaging</module>
+    <module>testsuite/testsuite-messaging-remote</module>
+    <module>testsuite/testsuite-mod_cluster</module>
+    <module>testsuite/testsuite-modules</module>
+    <module>testsuite/testsuite-monitor</module>
+    <module>testsuite/testsuite-msc</module>
+    <module>testsuite/testsuite-naming</module>
+    <module>testsuite/testsuite-remoting</module>
+    <module>testsuite/testsuite-request-controller</module>
+    <module>testsuite/testsuite-resource-adapters</module>
+    <module>testsuite/testsuite-ribbon</module>
+    <module>testsuite/testsuite-ribbon-secured</module>
+    <module>testsuite/testsuite-security</module>
+    <module>testsuite/testsuite-topology</module>
+    <module>testsuite/testsuite-topology-api</module>
+    <module>testsuite/testsuite-topology-openshift</module>
+    <module>testsuite/testsuite-transactions</module>
+    <module>testsuite/testsuite-undertow</module>
+    <module>testsuite/testsuite-undertow-context</module>
+    <module>testsuite/testsuite-vertx</module>
+    <module>testsuite/testsuite-webservices</module>
+    <module>testsuite/testsuite-zipkin-jaxrs</module>
 
-    <module>testsuite</module>
-
-    <module>standalone-servers</module>
   </modules>
 
   <profiles>
+    <profile>
+      <id>unsupported</id>
+      <activation>
+        <property>
+          <name>!swarm.product.build</name>
+        </property>
+      </activation>
+      <modules>
+        <module>fractions/keycloak-server</module>
+        <module>fractions/camel</module>
+        <module>fractions/drools-server</module>
+        <module>fractions/flyway</module>
+        <module>fractions/javafx</module>
+        <module>fractions/logstash</module>
+        <module>fractions/spring</module>
+        <module>fractions/swagger</module>
+        <module>fractions/swagger-webapp</module>
+        <module>fractions/topology-consul</module>
+        <module>fractions/topology-jgroups</module>
+
+        <module>standalone-servers/keycloak</module>
+        <module>standalone-servers/management-console</module>
+        <module>standalone-servers/swagger-ui</module>
+
+        <module>testsuite/testsuite-camel-cdi</module>
+        <module>testsuite/testsuite-camel-core</module>
+        <module>testsuite/testsuite-camel-cxf</module>
+        <module>testsuite/testsuite-camel-ejb</module>
+        <module>testsuite/testsuite-camel-jms</module>
+        <module>testsuite/testsuite-camel-jmx</module>
+        <module>testsuite/testsuite-camel-jpa</module>
+        <module>testsuite/testsuite-camel-other</module>
+        <module>testsuite/testsuite-drools-server</module>
+        <module>testsuite/testsuite-flyway</module>
+        <module>testsuite/testsuite-javafx</module>
+        <module>testsuite/testsuite-keycloak-server</module>
+        <module>testsuite/testsuite-logstash</module>
+        <module>testsuite/testsuite-spring</module>
+        <module>testsuite/testsuite-swagger</module>
+        <module>testsuite/testsuite-swagger-webapp</module>
+        <module>testsuite/testsuite-topology-consul</module>
+        <module>testsuite/testsuite-topology-jgroups</module>
+        <module>testsuite/testsuite-topology-webapp</module>
+      </modules>
+    </profile>
+
     <profile>
       <id>swarm.debug</id>
       <activation>
