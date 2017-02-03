@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -38,23 +39,17 @@ public class NestedJarResourceLoader {
     private NestedJarResourceLoader() {
     }
 
-    public static ResourceLoader loaderFor(URL base, String rootPath, String loaderPath, String loaderName) throws IOException {
-
+    public static synchronized Path explodedJar(URL base) throws IOException {
         String urlString = base.toExternalForm();
         if (urlString.startsWith("jar:file:")) {
             int endLoc = urlString.indexOf(".jar!");
             if (endLoc > 0) {
                 String jarPath = urlString.substring(9, endLoc + 4);
-
                 File exp = exploded.get(jarPath);
-
                 if (exp == null) {
                     exp = TempFileManager.INSTANCE.newTempDirectory("module-jar", ".jar_d");
-
                     JarFile jarFile = new JarFile(jarPath);
-
                     Enumeration<JarEntry> entries = jarFile.entries();
-
                     while (entries.hasMoreElements()) {
                         JarEntry each = entries.nextElement();
 
@@ -64,15 +59,34 @@ public class NestedJarResourceLoader {
                             Files.copy(jarFile.getInputStream(each), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         }
                     }
+                    exploded.put(jarPath, exp);
                 }
 
-                String relativeRoot = urlString.substring(endLoc + 5);
-                File resourceRoot = new File(new File(exp, relativeRoot), loaderPath);
-                if (!resourceRoot.isDirectory() && (resourceRoot.getName().endsWith(".jar") || resourceRoot.getName().endsWith(".war"))) {
-                    JarFile jar = new JarFile(resourceRoot);
+                String remainder = urlString.substring(endLoc + ".jar!".length());
+                if (remainder.startsWith("/") || remainder.startsWith("\\")) {
+                    remainder = remainder.substring(1);
+                }
+
+                return exp.toPath().resolve(remainder);
+            }
+        }
+
+        return null;
+    }
+
+    public static ResourceLoader loaderFor(URL base, String rootPath, String loaderPath, String loaderName) throws IOException {
+        Path exp = explodedJar(base);
+
+        String urlString = base.toExternalForm();
+        if (exp != null) {
+            int endLoc = urlString.indexOf(".jar!");
+            if (endLoc > 0) {
+                Path resourceRoot = exp.resolve(loaderPath);
+                if (!Files.isDirectory(resourceRoot) && (resourceRoot.getFileName().toString().endsWith(".jar") || resourceRoot.getFileName().toString().endsWith(".war"))) {
+                    JarFile jar = new JarFile(resourceRoot.toFile());
                     return ResourceLoaders.createJarResourceLoader(loaderName, jar);
                 } else {
-                    return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot);
+                    return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot.toFile());
                 }
             }
         } else if (urlString.startsWith("file:")) {
