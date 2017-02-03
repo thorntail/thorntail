@@ -58,6 +58,10 @@ import org.wildfly.swarm.bootstrap.Main;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.fractions.FractionList;
+import org.wildfly.swarm.fractions.FractionUsageAnalyzer;
+import org.wildfly.swarm.spi.meta.SimpleLogger;
 
 /**
  * @author Bob McWhirter
@@ -134,12 +138,6 @@ public class BuildTool {
 
     public BuildTool resourceDirectory(String dir) {
         this.resourceDirectories.add(dir);
-        return this;
-    }
-
-    public BuildTool fractionList(FractionList v) {
-        this.fractionList = v;
-
         return this;
     }
 
@@ -279,24 +277,19 @@ public class BuildTool {
         this.archive.add(new WebInfLibFilteringArchiveAsset(this.projectAsset, this.dependencyManager));
     }
 
-    private boolean detectFractions(ResolvedDependencies resolvedDependencies) throws Exception {
+    private boolean detectFractions() throws Exception {
         final File tmpFile = File.createTempFile("buildtool", this.projectAsset.getName().replace("/", "_"));
         tmpFile.deleteOnExit();
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
-        final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer(this.fractionList)
+        final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer()
                 .logger(log)
                 .source(tmpFile);
 
-        resolvedDependencies.getDependencies().stream()
-                .filter(d -> !"provided".equals(d.scope) && !"test".equals(d.scope))
-                .filter(d -> this.fractionList.getFractionDescriptor(d.groupId(), d.artifactId()) == null)
-                .forEach(d -> analyzer.source(d.file));
-
-        final Set<FractionDescriptor> detectedFractions = analyzer.detectNeededFractions();
+        final Collection<FractionDescriptor> detectedFractions = analyzer.detectNeededFractions();
 
         //don't overwrite fractions added by the user
         detectedFractions.removeAll(this.fractions.stream()
-                                            .map(x -> FractionDescriptor.fromArtifactSpec(x))
+                                            .map(ArtifactSpec::toFractionDescriptor)
                                             .collect(Collectors.toSet()));
 
         this.log.info(String.format("Detected %sfractions: %s",
@@ -307,7 +300,7 @@ public class BuildTool {
                                                         .sorted()
                                                         .collect(Collectors.toList()))));
         detectedFractions.stream()
-                .map(FractionDescriptor::toArtifactSpec)
+                .map(ArtifactSpec::fromFractionDescriptor)
                 .forEach(this::fraction);
 
         return !detectedFractions.isEmpty();
@@ -324,10 +317,10 @@ public class BuildTool {
     private void addFractions(ResolvedDependencies resolvedDependencies) throws Exception {
         final Set<ArtifactSpec> allFractions = new HashSet<>(this.fractions);
         this.fractions.stream()
-                .flatMap(s -> this.fractionList.getFractionDescriptor(s.groupId(), s.artifactId())
+                .flatMap(s -> FractionList.get().getFractionDescriptor(s.groupId(), s.artifactId())
                         .getDependencies()
                         .stream()
-                        .map(FractionDescriptor::toArtifactSpec))
+                        .map(ArtifactSpec::fromFractionDescriptor))
                 .filter(d -> resolvedDependencies.findArtifact(d.groupId(), d.artifactId(), null, null, null) == null)
                 .forEach(allFractions::add);
 
@@ -349,12 +342,10 @@ public class BuildTool {
 
         if (this.fractionDetectionMode != FractionDetectionMode.never) {
 
-            assert fractionList != null : "No FractionList provided";
-
             if (this.fractionDetectionMode == FractionDetectionMode.force || artifact == null) {
                 this.log.info("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
 
-                if (detectFractions(resolvedDependencies)) {
+                if (detectFractions()) {
                     addFractions(resolvedDependencies);
                 }
             }
@@ -573,8 +564,6 @@ public class BuildTool {
 
     private FractionDetectionMode fractionDetectionMode = FractionDetectionMode.when_missing;
 
-    private FractionList fractionList = null;
-
     private SimpleLogger log = STD_LOGGER;
 
     private boolean hollow;
@@ -584,10 +573,6 @@ public class BuildTool {
     private final DefaultArtifactResolver resolver;
 
     public static final SimpleLogger STD_LOGGER = new SimpleLogger() {
-        @Override
-        public void debug(String msg) {
-        }
-
         @Override
         public void info(String msg) {
             System.out.println(msg);
@@ -627,33 +612,5 @@ public class BuildTool {
             t.printStackTrace();
         }
     };
-
-    public static final SimpleLogger NOP_LOGGER = new SimpleLogger() {
-        @Override
-        public void debug(String msg) {
-        }
-
-        @Override
-        public void info(String msg) {
-        }
-
-        @Override
-        public void error(String msg) {
-        }
-
-        @Override
-        public void error(String msg, Throwable t) {
-        }
-    };
-
-    public interface SimpleLogger {
-        void debug(String msg);
-
-        void info(String msg);
-
-        void error(String msg);
-
-        void error(String msg, Throwable t);
-    }
 }
 

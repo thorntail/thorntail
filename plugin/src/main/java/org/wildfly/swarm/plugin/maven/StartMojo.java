@@ -37,14 +37,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.fractionlist.FractionList;
+import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.fractions.FractionList;
+import org.wildfly.swarm.fractions.FractionUsageAnalyzer;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DeclaredDependencies;
 import org.wildfly.swarm.tools.DependencyManager;
-import org.wildfly.swarm.tools.FractionDescriptor;
-import org.wildfly.swarm.tools.FractionUsageAnalyzer;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
@@ -272,7 +272,7 @@ public class StartMojo extends AbstractSwarmMojo {
                              .map(this::artifactToArtifactSpec)
                              .collect(Collectors.toList()));
         specs.addAll(allFractions.stream()
-                             .map(FractionDescriptor::toArtifactSpec)
+                             .map(ArtifactSpec::fromFractionDescriptor)
                              .collect(Collectors.toList()));
         try {
             return mavenArtifactResolvingHelper().resolveAll(specs).stream()

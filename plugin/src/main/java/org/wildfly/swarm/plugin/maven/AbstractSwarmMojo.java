@@ -38,10 +38,10 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactResolver;
+import org.wildfly.swarm.fractions.PropertiesUtil;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DeclaredDependencies;
-import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
  * @author Bob McWhirter
