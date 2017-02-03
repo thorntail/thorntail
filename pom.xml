@@ -29,7 +29,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>45</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>48</version.wildfly.swarm.fraction.plugin>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
     <version.cdi2>2.0.Alpha4</version.cdi2>
@@ -442,6 +442,16 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>tools</artifactId>
+        <version>2017.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>meta-spi</artifactId>
+        <version>2017.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>fraction-metadata</artifactId>
         <version>2017.3.0-SNAPSHOT</version>
       </dependency>
 
@@ -1116,13 +1126,6 @@
         <type>war</type>
         <version>${version.jolokia}</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>fraction-list</artifactId>
-        <version>2017.3.0-SNAPSHOT</version>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -1155,7 +1158,6 @@
   </pluginRepositories>
 
   <modules>
-    <!-- misc -->
     <module>tools</module>
 
     <!-- base -->
@@ -1166,7 +1168,8 @@
     <!-- other -->
     <module>jaxrs-client-api</module>
 
-    <module>fraction-list</module>
+    <module>meta/meta-spi</module>
+    <module>meta/fraction-metadata</module>
     <module>plugin</module>
     <module>boms</module>
 
@@ -1291,7 +1294,6 @@
     <module>testsuite/testsuite-vertx</module>
     <module>testsuite/testsuite-webservices</module>
     <module>testsuite/testsuite-zipkin-jaxrs</module>
-
   </modules>
 
   <profiles>
