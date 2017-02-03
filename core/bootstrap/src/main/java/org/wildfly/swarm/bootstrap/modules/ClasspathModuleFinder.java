@@ -18,6 +18,7 @@ package org.wildfly.swarm.bootstrap.modules;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleIdentifier;
@@ -76,12 +77,14 @@ public class ClasspathModuleFinder implements ModuleFinder {
 
             InputStream in = url.openStream();
 
+            Path explodedJar = NestedJarResourceLoader.explodedJar(base);
+
             ModuleSpec moduleSpec = null;
             try {
                 moduleSpec = ModuleXmlParser.parseModuleXml(
                         (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
                         MavenResolvers.get(),
-                        "/",
+                        (explodedJar == null ? "/" : explodedJar.toAbsolutePath().toString()),
                         in,
                         path.toString(),
                         delegateLoader,
