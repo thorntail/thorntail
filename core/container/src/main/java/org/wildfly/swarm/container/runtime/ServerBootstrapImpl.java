@@ -41,6 +41,7 @@ import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
+import org.wildfly.swarm.spi.api.ClassLoading;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 
@@ -102,39 +103,40 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     @Override
     public Server bootstrap() throws Exception {
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
-        Thread.currentThread().setContextClassLoader(module.getClassLoader());
+        return ClassLoading.withTCCL(new ExtensionPreventionClassLoaderWrapper(module.getClassLoader()), () -> {
+            //Thread.currentThread().setContextClassLoader(new ExtensionPreventionClassLoaderWrapper(module.getClassLoader()));
 
-        logFractions();
+            logFractions();
 
-        return LogSilencer.silently("org.jboss.weld").execute(() -> {
+            return LogSilencer.silently("org.jboss.weld").execute(() -> {
+                Weld weld = new Weld(WELD_INSTANCE_ID);
+                weld.setClassLoader(module.getClassLoader());
 
-            Weld weld = new Weld(WELD_INSTANCE_ID);
-            weld.setClassLoader(module.getClassLoader());
+                ConfigViewProducingExtension projectStageProducingExtension = new ConfigViewProducingExtension(this.configView);
 
-            ConfigViewProducingExtension projectStageProducingExtension = new ConfigViewProducingExtension(this.configView);
+                ConfigurableManager configurableManager = new ConfigurableManager(this.configView);
 
-            ConfigurableManager configurableManager = new ConfigurableManager(this.configView);
+                // Add Extension that adds User custom bits into configurator
+                weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions, configurableManager));
+                weld.addExtension(new ConfigurableExtension(configurableManager));
+                weld.addExtension(new CommandLineArgsExtension(args));
+                weld.addExtension(projectStageProducingExtension);
+                weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
+                weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
+                weld.addExtension(new SocketBindingExtension(this.socketBindings));
 
-            // Add Extension that adds User custom bits into configurator
-            weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions, configurableManager));
-            weld.addExtension(new ConfigurableExtension(configurableManager));
-            weld.addExtension(new CommandLineArgsExtension(args));
-            weld.addExtension(projectStageProducingExtension);
-            weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
-            weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
-            weld.addExtension(new SocketBindingExtension(this.socketBindings));
+                for (Class<?> each : this.userComponents) {
+                    weld.addBeanClass(each);
+                }
 
-            for (Class<?> each : this.userComponents) {
-                weld.addBeanClass(each);
-            }
+                weld.property("org.jboss.weld.se.shutdownHook", false);
+                WeldContainer weldContainer = weld.initialize();
 
-            weld.property("org.jboss.weld.se.shutdownHook", false);
-            WeldContainer weldContainer = weld.initialize();
+                RuntimeServer server = weldContainer.select(RuntimeServer.class).get();
 
-            RuntimeServer server = weldContainer.select(RuntimeServer.class).get();
-
-            server.start(true);
-            return server;
+                server.start(true);
+                return server;
+            });
         });
     }
 
