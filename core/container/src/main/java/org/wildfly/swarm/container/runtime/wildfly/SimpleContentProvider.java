@@ -18,7 +18,7 @@ package org.wildfly.swarm.container.runtime.wildfly;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.as.selfcontained.ContentProvider;
 import org.jboss.vfs.VirtualFile;
@@ -26,7 +26,7 @@ import org.jboss.vfs.VirtualFile;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class SimpleContentProvider implements ContentProvider {
 
     public SimpleContentProvider() {

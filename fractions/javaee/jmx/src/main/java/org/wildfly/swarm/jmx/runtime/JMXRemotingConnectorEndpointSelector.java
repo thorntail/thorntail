@@ -1,8 +1,8 @@
 package org.wildfly.swarm.jmx.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.config.ManagementCoreService;
@@ -46,7 +46,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * @author Bob McWhirter
  */
 @Pre
-@Singleton
+@ApplicationScoped
 public class JMXRemotingConnectorEndpointSelector implements Customizer {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.jmx");

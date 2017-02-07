@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.keycloak.server.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -27,7 +27,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Bob McWhirter
  */
 @Post
-@Singleton
+@ApplicationScoped
 public class KeycloakDatasourceCustomizer implements Customizer {
 
     @Inject

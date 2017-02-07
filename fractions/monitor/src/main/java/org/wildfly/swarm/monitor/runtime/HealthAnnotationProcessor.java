@@ -18,7 +18,7 @@ package org.wildfly.swarm.monitor.runtime;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
@@ -34,7 +34,7 @@ import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 /**
  * @author Ken Finnigan
  */
-@Singleton
+@ApplicationScoped
 public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
     public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.monitor.Health");

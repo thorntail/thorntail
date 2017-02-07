@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.Vetoed;
-
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.Services;
@@ -20,7 +18,6 @@ import org.wildfly.swarm.arquillian.daemon.server.Server;
 /**
  * @author Bob McWhirter
  */
-@Vetoed
 public class TestableArchiveServiceActivator implements ServiceActivator {
 
     @Override

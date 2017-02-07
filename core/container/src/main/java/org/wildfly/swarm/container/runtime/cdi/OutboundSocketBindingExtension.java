@@ -28,6 +28,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Singleton;
 
 import org.jboss.weld.literal.AnyLiteral;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
@@ -44,28 +45,29 @@ public class OutboundSocketBindingExtension implements Extension {
         this.bindings = bindings;
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
+        try (AutoCloseable handle = Performance.time("OutboundSocketBindingExtension.afterBeanDiscovery")) {
+            for (OutboundSocketBindingRequest each : this.bindings) {
+                abd.addBean()
+                        .addTypes(Customizer.class)
+                        .scope(Singleton.class)
+                        .addQualifier(new AnnotationLiteral<Pre>() {
+                        })
+                        .produceWith(() -> (Customizer) () -> {
+                            Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
 
-        for (OutboundSocketBindingRequest each : this.bindings) {
-            abd.addBean()
-                    .addTypes(Customizer.class)
-                    .scope(Singleton.class)
-                    .addQualifier(new AnnotationLiteral<Pre>() {
-                    })
-                    .produceWith(() -> (Customizer) () -> {
-                        Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
-
-                        groups.stream()
-                                .map((Bean e) -> {
-                                    CreationalContext<SocketBindingGroup> ctx = beanManager.createCreationalContext(e);
-                                    return (SocketBindingGroup) beanManager.getReference(e, SocketBindingGroup.class, ctx);
-                                })
-                                .filter(group -> group.name().equals(each.socketBindingGroup()))
-                                .findFirst()
-                                .ifPresent((group) -> {
-                                    group.outboundSocketBinding(each.outboundSocketBinding());
-                                });
-                    });
+                            groups.stream()
+                                    .map((Bean e) -> {
+                                        CreationalContext<SocketBindingGroup> ctx = beanManager.createCreationalContext(e);
+                                        return (SocketBindingGroup) beanManager.getReference(e, SocketBindingGroup.class, ctx);
+                                    })
+                                    .filter(group -> group.name().equals(each.socketBindingGroup()))
+                                    .findFirst()
+                                    .ifPresent((group) -> {
+                                        group.outboundSocketBinding(each.outboundSocketBinding());
+                                    });
+                        });
+            }
         }
 
     }

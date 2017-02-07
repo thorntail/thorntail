@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.datasources.runtime.drivers;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.config.datasources.DataSource;
@@ -27,7 +27,7 @@ import org.wildfly.swarm.datasources.runtime.DriverInfo;
  *
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class EnterpriseDBDriverInfo extends DriverInfo {
     public static final String DEFAULT_CONNECTION_URL = "jdbc:edb://localhost:5444/test";
 

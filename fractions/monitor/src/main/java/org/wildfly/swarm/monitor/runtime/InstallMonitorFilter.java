@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -30,7 +30,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
 /**
  * @author Ken Finnigan
  */
-@Singleton
+@ApplicationScoped
 public class InstallMonitorFilter implements ArchivePreparer {
 
     //private static String HEALTH_RESPONSE_FILTER_CLASS_NAME = "org.wildfly.swarm.monitor.runtime.HealthResponseFilter";

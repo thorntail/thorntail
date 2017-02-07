@@ -17,10 +17,10 @@ package org.wildfly.swarm.management.console.runtime;
 
 import java.net.URL;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
@@ -36,7 +36,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class ManagementConsoleDeploymentProducer {
 
     @Inject

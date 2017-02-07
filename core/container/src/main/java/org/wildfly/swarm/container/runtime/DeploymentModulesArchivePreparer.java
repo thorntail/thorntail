@@ -15,10 +15,10 @@
  */
 package org.wildfly.swarm.container.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.internal.SwarmMessages;
@@ -32,7 +32,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class DeploymentModulesArchivePreparer implements ArchivePreparer {
 
     @Inject

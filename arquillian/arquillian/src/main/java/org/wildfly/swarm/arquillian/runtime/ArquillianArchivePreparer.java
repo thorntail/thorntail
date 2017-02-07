@@ -1,5 +1,7 @@
 package org.wildfly.swarm.arquillian.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
@@ -9,6 +11,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
 /**
  * @author Bob McWhirter
  */
+@ApplicationScoped
 public class ArquillianArchivePreparer implements ArchivePreparer {
 
     @Override

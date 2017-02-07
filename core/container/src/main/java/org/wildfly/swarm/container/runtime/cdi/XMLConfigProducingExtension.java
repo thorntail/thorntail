@@ -18,12 +18,13 @@ package org.wildfly.swarm.container.runtime.cdi;
 import java.net.URL;
 import java.util.Optional;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.inject.Singleton;
 
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.container.runtime.xmlconfig.XMLConfig;
 
 /**
@@ -39,11 +40,13 @@ public class XMLConfigProducingExtension implements Extension {
         this.xmlConfig = xmlConfig;
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        abd.addBean().addType(URL.class)
-                .scope(Dependent.class)
-                .qualifiers(XMLConfig.Literal.INSTANCE)
-                .produceWith(this::getXMLConfig);
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
+        try (AutoCloseable handle = Performance.time("XMLConfigProducingExtension.afterBeanDiscovery")) {
+            abd.addBean().addType(URL.class)
+                    .scope(Singleton.class)
+                    .qualifiers(XMLConfig.Literal.INSTANCE)
+                    .produceWith(this::getXMLConfig);
+        }
     }
 
     protected URL getXMLConfig() {

@@ -15,13 +15,13 @@
  */
 package org.wildfly.swarm.arquillian.runtime;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceRegistryException;
 
-@Singleton
+@ApplicationScoped
 public class DaemonServiceActivator implements ServiceActivator {
 
     @Override

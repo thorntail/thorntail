@@ -17,8 +17,8 @@ package org.wildfly.swarm.container.runtime.xmlconfig;
 
 import java.net.URL;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
@@ -30,7 +30,7 @@ import org.wildfly.swarm.internal.SwarmMessages;
  *
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class StandaloneXMLConfigProducer {
 
     private static final String STANDALONE_XML_FILE = "standalone.xml";

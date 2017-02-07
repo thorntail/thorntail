@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Bob McWhirter
  */
 @Post
+@ApplicationScoped
 public class ArchaiusCustomizer implements Customizer {
 
     @Inject

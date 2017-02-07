@@ -18,6 +18,7 @@ package org.wildfly.swarm.container.runtime.cdi.configurable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -26,8 +27,8 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.inject.Singleton;
 
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.container.runtime.ConfigurableManager;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
@@ -52,9 +53,11 @@ public class ConfigurableExtension implements Extension {
         this.configurableManager = configurableManager;
     }
 
-    void processInjectionTarget(@Observes ProcessInjectionTarget pit, BeanManager beanManager) throws InstantiationException, IllegalAccessException {
-        if (isApplicable(pit.getAnnotatedType())) {
-            pit.setInjectionTarget(new ConfigurableInjectionTarget<>(pit.getInjectionTarget(), this.configurableManager));
+    void processInjectionTarget(@Observes ProcessInjectionTarget pit, BeanManager beanManager) throws Exception {
+        try (AutoCloseable handle = Performance.accumulate("ConfigurationExtension.processInjectionTarget")) {
+            if (isApplicable(pit.getAnnotatedType())) {
+                pit.setInjectionTarget(new ConfigurableInjectionTarget<>(pit.getInjectionTarget(), this.configurableManager));
+            }
         }
     }
 
@@ -84,12 +87,14 @@ public class ConfigurableExtension implements Extension {
         return false;
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
-        abd.addBean()
-                .types(ConfigurableManager.class)
-                .scope(Singleton.class)
-                .qualifiers(Default.Literal.INSTANCE)
-                .producing(this.configurableManager);
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) throws Exception {
+        try (AutoCloseable handle = Performance.time("ConfigurationExtension.afterBeanDiscovery")) {
+            abd.addBean()
+                    .types(ConfigurableManager.class)
+                    .scope(ApplicationScoped.class)
+                    .qualifiers(Default.Literal.INSTANCE)
+                    .producing(this.configurableManager);
+        }
     }
 
 }

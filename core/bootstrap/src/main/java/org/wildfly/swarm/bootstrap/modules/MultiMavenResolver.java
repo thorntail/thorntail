@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.jboss.modules.maven.MavenResolver;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 
 /**
  * @author Bob McWhirter
@@ -40,14 +41,18 @@ public class MultiMavenResolver implements MavenResolver {
     @Override
     public File resolveArtifact(ArtifactCoordinates coordinates, String packaging) throws IOException {
 
-        for (MavenResolver resolver : this.resolvers) {
-            File result = resolver.resolveArtifact(coordinates, packaging);
-            if (result != null) {
-                return result;
+        try (AutoCloseable handle = Performance.accumulate("artifact-resolver")) {
+            for (MavenResolver resolver : this.resolvers) {
+                File result = resolver.resolveArtifact(coordinates, packaging);
+                if (result != null) {
+                    return result;
+                }
             }
-        }
 
-        return null;
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<MavenResolver> resolvers = new ArrayList<>();

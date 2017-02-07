@@ -17,10 +17,10 @@ package org.wildfly.swarm.container.runtime.marshal;
 
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
@@ -36,7 +36,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class InterfaceMarshaller implements ConfigurationMarshaller {
 
     private static final String INTERFACE_NAME = "interface";

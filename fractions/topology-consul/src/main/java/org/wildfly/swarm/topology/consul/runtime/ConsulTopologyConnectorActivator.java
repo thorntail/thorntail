@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.topology.consul.runtime;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
@@ -31,10 +31,9 @@ import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
  * @author John Hovell
  * @author Bob McWhirter
  * @author Heiko Braun
- *
  * @see AgentActivator
  */
-@Singleton
+@ApplicationScoped
 public class ConsulTopologyConnectorActivator implements ServiceActivator {
 
     public ConsulTopologyConnectorActivator() {

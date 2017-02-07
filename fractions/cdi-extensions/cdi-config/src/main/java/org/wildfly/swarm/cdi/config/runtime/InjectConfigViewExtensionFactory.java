@@ -2,6 +2,7 @@ package org.wildfly.swarm.cdi.config.runtime;
 
 import java.lang.reflect.Field;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.modules.Module;
@@ -12,6 +13,7 @@ import org.wildfly.swarm.spi.api.config.ConfigView;
 /**
  * @author Bob McWhirter
  */
+@ApplicationScoped
 public class InjectConfigViewExtensionFactory implements UserSpaceExtensionFactory {
 
     @Inject

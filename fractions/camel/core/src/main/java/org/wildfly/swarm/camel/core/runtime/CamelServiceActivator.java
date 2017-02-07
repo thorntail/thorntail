@@ -1,16 +1,14 @@
 package org.wildfly.swarm.camel.core.runtime;
 
-import static org.wildfly.swarm.camel.core.AbstractCamelFraction.LOGGER;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -33,10 +31,12 @@ import org.wildfly.extension.camel.CamelConstants;
 import org.wildfly.extension.camel.handler.ModuleClassLoaderAssociationHandler;
 import org.wildfly.swarm.camel.core.CamelCoreFraction;
 
+import static org.wildfly.swarm.camel.core.AbstractCamelFraction.LOGGER;
+
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class CamelServiceActivator implements ServiceActivator {
 
     @Inject
@@ -53,6 +53,7 @@ public class CamelServiceActivator implements ServiceActivator {
         static final ServiceName SERVICE_NAME = ServiceName.JBOSS.append("wildfly", "swarm", "camel", "bootstrap");
 
         List<CamelContext> systemContexts = new ArrayList<>();
+
         CamelCoreFraction fraction;
 
         static ServiceController<Void> addService(ServiceTarget serviceTarget, CamelCoreFraction fraction) {

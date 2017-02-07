@@ -15,18 +15,18 @@
  */
 package org.wildfly.swarm.container.runtime.marshal;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.PathElement;
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.config.runtime.invocation.Marshaller;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -40,7 +40,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUB
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class SubsystemMarshaller implements ConfigurationMarshaller {
 
     @Inject
@@ -54,9 +54,11 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
 
             if (anno != null) {
                 try {
-                    LinkedList<ModelNode> subList = Marshaller.marshal(each);
-                    if (!isAlreadyConfigured(subList, list)) {
-                        list.addAll(subList);
+                    try (AutoCloseable handle = Performance.time("marshall " + each.getClass().getSimpleName())) {
+                        LinkedList<ModelNode> subList = Marshaller.marshal(each);
+                        if (!isAlreadyConfigured(subList, list)) {
+                            list.addAll(subList);
+                        }
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -65,16 +67,12 @@ public class SubsystemMarshaller implements ConfigurationMarshaller {
                 WildFlySubsystem subsysAnno = each.getClass().getAnnotation(WildFlySubsystem.class);
 
                 if (subsysAnno != null) {
-
                     PathAddress address = PathAddress.pathAddress(PathElement.pathElement(SUBSYSTEM, subsysAnno.value()));
-
-                    ModelNode node = new ModelNode();
-                    node.get(OP_ADDR).set(address.toModelNode());
-                    node.get(OP).set(ADD);
-                    List<ModelNode> subList = Collections.singletonList(node);
-
-                    if (!isAlreadyConfigured(subList, list)) {
-                        list.addAll(subList);
+                    if (!isAlreadyConfigured(address.toModelNode(), list)) {
+                        ModelNode node = new ModelNode();
+                        node.get(OP_ADDR).set(address.toModelNode());
+                        node.get(OP).set(ADD);
+                        list.add(node);
                     }
                 }
             }

@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.container.runtime.cdi;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,9 +30,17 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.Index;
+import org.jboss.jandex.IndexReader;
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
 import org.jboss.weld.literal.AnyLiteral;
+import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.container.runtime.ConfigurableManager;
 import org.wildfly.swarm.container.runtime.cdi.configurable.ConfigurableFractionBean;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -39,8 +49,6 @@ import org.wildfly.swarm.spi.api.Fraction;
  * @author Ken Finnigan
  */
 public class FractionProducingExtension implements Extension {
-
-    private final Set<Class<? extends Fraction>> fractionClasses = new HashSet<>();
 
     private final List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
 
@@ -51,55 +59,78 @@ public class FractionProducingExtension implements Extension {
         this.configurableManager = configurableManager;
     }
 
-    <T> void processAnnotatedType(@Observes ProcessAnnotatedType<? extends Fraction> pat) {
-        Class<?> cls = pat.getAnnotatedType().getJavaClass();
-
-        if (Fraction.class.isAssignableFrom(cls)) {
-            pat.veto();
-            if (cls == Fraction.class) {
-                return;
-            }
-
-            this.fractionClasses.add((Class<? extends Fraction>) cls);
-        }
-    }
-
     /**
      * Once all beans have been discovered by Weld, for each custom fraction that we have,
      * add the Bean instance to Weld as a replacement for the @DefaultFraction instance we vetoed.
      *
      * @param abd AfterBeanDiscovery
      */
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        Set<Type> preExistingFractionClasses = new HashSet<>();
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
+        try (AutoCloseable handle = Performance.time("FractionProducingExtension.afterBeanDiscovery")) {
+            Set<Type> preExistingFractionClasses = new HashSet<>();
 
-        for (Fraction fraction : explicitlyInstalledFractions) {
-            try {
-                abd.addBean(new ConfigurableFractionBean<>(fraction, this.configurableManager));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            preExistingFractionClasses.add(fraction.getClass());
-        }
-
-        Set<Bean<?>> availableFractionBeans = beanManager.getBeans(Fraction.class, AnyLiteral.INSTANCE);
-
-        preExistingFractionClasses.addAll(
-                availableFractionBeans.stream()
-                        .flatMap(e -> e.getTypes().stream())
-                        .collect(Collectors.toSet())
-
-        );
-
-        fractionClasses.stream()
-                .filter(cls -> !preExistingFractionClasses.contains(cls))
-                .forEach((cls) -> {
+            try (AutoCloseable pre = Performance.time("FractionProducingExtension.afterBeanDiscovery - pre-existing")) {
+                for (Fraction fraction : explicitlyInstalledFractions) {
                     try {
-                        abd.addBean(new ConfigurableFractionBean<>(cls, this.configurableManager));
+                        abd.addBean(new ConfigurableFractionBean<>(fraction, this.configurableManager));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                });
+
+                    preExistingFractionClasses.add(fraction.getClass());
+                }
+
+                Set<Bean<?>> availableFractionBeans = beanManager.getBeans(Fraction.class, AnyLiteral.INSTANCE);
+
+                preExistingFractionClasses.addAll(
+                        availableFractionBeans.stream()
+                                .flatMap(e -> e.getTypes().stream())
+                                .collect(Collectors.toSet())
+
+                );
+            }
+
+            Set<Class<? extends Fraction>> fractionClasses = uninstalledFractionClasses(preExistingFractionClasses);
+
+            try (AutoCloseable defaultHandle = Performance.time("FractionProducingExtension.afterBeanDiscovery - default")) {
+                fractionClasses.stream()
+                        .forEach((cls) -> {
+                            try {
+                                abd.addBean(new ConfigurableFractionBean<>(cls, this.configurableManager));
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+            }
+        }
+    }
+
+    private Set<Class<? extends Fraction>> uninstalledFractionClasses(Set<Type> installedClasses) throws ModuleLoadException, IOException, ClassNotFoundException {
+
+        Set<String> installedClassNames = installedClasses.stream().map(e -> e.getTypeName()).collect(Collectors.toSet());
+
+        List<String> moduleNames = ApplicationEnvironment.get().bootstrapModules();
+
+        ClassLoader cl = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container")).getClassLoader();
+
+        Set<Class<? extends Fraction>> fractionClasses = new HashSet<>();
+
+        for (String moduleName : moduleNames) {
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(moduleName));
+
+            InputStream indexStream = module.getClassLoader().getResourceAsStream("META-INF/jandex.idx");
+            if (indexStream != null) {
+                IndexReader reader = new IndexReader(indexStream);
+                Index index = reader.read();
+                Set<ClassInfo> impls = index.getAllKnownImplementors(DotName.createSimple(Fraction.class.getName()));
+                for (ClassInfo impl : impls) {
+                    if (!installedClassNames.contains(impl.name().toString())) {
+                        Class<? extends Fraction> fractionClass = (Class<? extends Fraction>) cl.loadClass(impl.name().toString());
+                        fractionClasses.add(fractionClass);
+                    }
+                }
+            }
+        }
+        return fractionClasses;
     }
 }

@@ -104,7 +104,6 @@ public class StandaloneXMLParser {
             WrappedXMLStreamReader wrappedReader = new WrappedXMLStreamReader(reader, this.recognizedNames, xmlMapper);
             xmlMapper.parseDocument(operationList, wrappedReader);
         } catch (XMLStreamException t) {
-            System.err.println("------");
             t.printStackTrace();
         } finally {
             try {

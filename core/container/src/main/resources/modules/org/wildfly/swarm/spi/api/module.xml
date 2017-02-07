@@ -30,5 +30,6 @@
     <module name="org.wildfly.swarm.container"/>
     <module name="org.jboss.shrinkwrap"/>
     <module name="org.jboss.shrinkwrap.descriptors"/>
+    <module name="org.jboss.jandex"/>
   </dependencies>
 </module>

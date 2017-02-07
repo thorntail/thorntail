@@ -21,12 +21,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.dmr.ModelNode;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 
 /**
  * @author Bob McWhirter
  */
 @ApplicationScoped
-public class DMRMarshaller implements ConfigurationMarshaller  {
+public class DMRMarshaller implements ConfigurationMarshaller {
 
     @Inject
     private XMLMarshaller xmlMarshaller;
@@ -47,11 +48,27 @@ public class DMRMarshaller implements ConfigurationMarshaller  {
     private SocketBindingGroupMarshaller socketBindingGroupMarshaller;
 
     public void marshal(List<ModelNode> list) {
-        this.xmlMarshaller.marshal(list);
-        this.extensionMarshaller.marshal(list);
-        this.configViewPropertyMarshaller.marshal(list);
-        this.subsystemMarshaller.marshal(list);
-        this.interfaceMarshaller.marshal(list);
-        this.socketBindingGroupMarshaller.marshal(list);
+        try {
+            try (AutoCloseable handle = Performance.time("marshal XML")) {
+                this.xmlMarshaller.marshal(list);
+            }
+            try (AutoCloseable handle = Performance.time("marshal extensions")) {
+                this.extensionMarshaller.marshal(list);
+            }
+            try (AutoCloseable handle = Performance.time("marshal config-view properties")) {
+                this.configViewPropertyMarshaller.marshal(list);
+            }
+            try (AutoCloseable handle = Performance.time("marshal subsystems")) {
+                this.subsystemMarshaller.marshal(list);
+            }
+            try (AutoCloseable handle = Performance.time("marshal interfaces")) {
+                this.interfaceMarshaller.marshal(list);
+            }
+            try (AutoCloseable handle = Performance.time("marshal socket-bindings")) {
+                this.socketBindingGroupMarshaller.marshal(list);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -20,11 +20,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.config.ConfigView;
 import org.wildfly.swarm.spi.api.config.Resolver;
@@ -33,7 +33,7 @@ import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 /**
  * @author Martin Kouba
  */
-@Singleton
+@ApplicationScoped
 public class ConfigurationValueProducer {
 
     @Inject
@@ -128,7 +128,7 @@ public class ConfigurationValueProducer {
         if (name == null || name.isEmpty() || this.configView == null) {
             return null;
         }
-        return this.configView.resolve(getName(injectionPoint));
+        return this.configView.resolve(name);
     }
 
     private String getName(InjectionPoint injectionPoint) {

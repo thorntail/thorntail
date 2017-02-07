@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.yaml.snakeyaml.Yaml;
@@ -54,7 +55,11 @@ public class ApplicationEnvironment {
                 return env;
             }
 
-            return new ApplicationEnvironment();
+            try (AutoCloseable handle = Performance.time("Load application environment")) {
+                return new ApplicationEnvironment();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

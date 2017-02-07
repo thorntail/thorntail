@@ -17,10 +17,10 @@ package org.wildfly.swarm.topology.webapp.runtime;
 
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -34,7 +34,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class TopologyWebAppDeploymentProducer {
 
     @Inject
@@ -44,7 +44,8 @@ public class TopologyWebAppDeploymentProducer {
     @ConfigurationValue("swarm.topology.context.path")
     private String contextPath;
 
-    @Produces @Dependent()
+    @Produces
+    @Dependent()
     Archive deployment() {
 
         String context = TopologyWebAppFraction.DEFAULT_CONTEXT;

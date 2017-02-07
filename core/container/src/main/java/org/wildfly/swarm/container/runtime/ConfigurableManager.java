@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jboss.logging.Logger;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.config.runtime.Keyed;
 import org.wildfly.swarm.config.runtime.SubresourceInfo;
 import org.wildfly.swarm.internal.SwarmMessages;
@@ -91,39 +92,41 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     protected <T> void configure(ConfigurableHandle configurable) throws Exception {
-        Resolver<?> resolver = this.configView.resolve(configurable.key());
+        try (AutoCloseable handle = Performance.accumulate("ConfigurableManager#configure")) {
+            Resolver<?> resolver = this.configView.resolve(configurable.key());
 
-        Class<?> resolvedType = configurable.type();
+            Class<?> resolvedType = configurable.type();
 
-        boolean isList = false;
-        boolean isMap = false;
-        boolean isProperties = false;
+            boolean isList = false;
+            boolean isMap = false;
+            boolean isProperties = false;
 
-        if (resolvedType.isEnum()) {
-            resolver = resolver.as((Class<Enum>) resolvedType, converter((Class<Enum>) resolvedType));
-        } else if (List.class.isAssignableFrom(resolvedType)) {
-            isList = true;
-            resolver = listResolver((Resolver<String>) resolver, configurable.key());
-        } else if (Map.class.isAssignableFrom(resolvedType)) {
-            isMap = true;
-            resolver = mapResolver((Resolver<String>) resolver, configurable.key());
-        } else if (Properties.class.isAssignableFrom(resolvedType)) {
-            isProperties = true;
-            resolver = propertiesResolver((Resolver<String>) resolver, configurable.key());
-        } else {
-            resolver = resolver.as(configurable.type());
-        }
-
-        if (isList || isMap || isProperties || resolver.hasValue()) {
-            Object resolvedValue = resolver.getValue();
-            if (isList && ((List) resolvedValue).isEmpty()) {
-                // ignore
-            } else if (isMap && ((Map) resolvedValue).isEmpty()) {
-                // ignore
-            } else if (isProperties && ((Properties) resolvedValue).isEmpty()) {
-                // also ignore
+            if (resolvedType.isEnum()) {
+                resolver = resolver.as((Class<Enum>) resolvedType, converter((Class<Enum>) resolvedType));
+            } else if (List.class.isAssignableFrom(resolvedType)) {
+                isList = true;
+                resolver = listResolver((Resolver<String>) resolver, configurable.key());
+            } else if (Map.class.isAssignableFrom(resolvedType)) {
+                isMap = true;
+                resolver = mapResolver((Resolver<String>) resolver, configurable.key());
+            } else if (Properties.class.isAssignableFrom(resolvedType)) {
+                isProperties = true;
+                resolver = propertiesResolver((Resolver<String>) resolver, configurable.key());
             } else {
-                configurable.set(configurable.type().cast(resolvedValue));
+                resolver = resolver.as(resolvedType);
+            }
+
+            if (isList || isMap || isProperties || resolver.hasValue()) {
+                Object resolvedValue = resolver.getValue();
+                if (isList && ((List) resolvedValue).isEmpty()) {
+                    // ignore
+                } else if (isMap && ((Map) resolvedValue).isEmpty()) {
+                    // ignore
+                } else if (isProperties && ((Properties) resolvedValue).isEmpty()) {
+                    // also ignore
+                } else {
+                    configurable.set(resolvedType.cast(resolvedValue));
+                }
             }
         }
     }
@@ -185,8 +188,10 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     public void scan(Object instance) throws Exception {
-        this.deferred.add(instance);
-        scanInternal(instance);
+        try (AutoCloseable handle = Performance.accumulate("ConfigurableManager#scan")) {
+            this.deferred.add(instance);
+            scanInternal(instance);
+        }
     }
 
     private void scanInternal(Object instance) throws Exception {
