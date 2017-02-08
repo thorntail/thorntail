@@ -108,7 +108,7 @@ public class MavenPluginTest {
 */
                     new TestingProject(Packaging.JAR_WITH_MAIN, Dependencies.JAVA_EE_APIS, Autodetection.FORCE,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
-                                       AdditionalDependency.USING_JAVA_EE, AdditionalFraction.ALREADY_PRESENT)
+                                       AdditionalDependency.NONE, AdditionalFraction.ALREADY_PRESENT)
             );
         }
 
