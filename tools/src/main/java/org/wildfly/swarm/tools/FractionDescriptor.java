@@ -24,6 +24,20 @@ import java.util.Set;
  */
 public class FractionDescriptor {
 
+    /**
+     * Frameworks that proxy this class need a public constructor to perform adequately.
+     */
+    public FractionDescriptor() {
+        this.groupId = null;
+        this.artifactId = null;
+        this.version = null;
+        this.name = null;
+        this.description = null;
+        this.tags = null;
+        this.internal = false;
+        this.stability = null;
+    }
+
     public FractionDescriptor(String groupId, String artifactId, String version, String name, String description, String tags, boolean internal, FractionStability stability) {
         this.groupId = groupId;
         this.artifactId = artifactId;
