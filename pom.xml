@@ -1158,6 +1158,8 @@
   </pluginRepositories>
 
   <modules>
+    <module>tools</module>
+
     <!-- base -->
     <module>core/bootstrap</module>
     <module>core/spi</module>
