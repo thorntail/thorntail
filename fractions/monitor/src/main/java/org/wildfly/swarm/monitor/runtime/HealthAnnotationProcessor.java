@@ -99,7 +99,7 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
                         if (methodInfo.hasAnnotation(PATH)) {
 
                             // the method level @Path
-                            sb.append(methodInfo.annotation(PATH).value().asString());
+                            safeAppend(sb, methodInfo.annotation(PATH).value().asString());
 
                             // the method level @Health
                             AnnotationInstance healthAnnotation = methodInfo.annotation(HEALTH);
