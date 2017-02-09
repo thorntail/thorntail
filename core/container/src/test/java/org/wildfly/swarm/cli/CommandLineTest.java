@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.wildfly.swarm.cli.CommandLine.HELP;
-import static org.wildfly.swarm.cli.CommandLine.PROFILES;
 import static org.wildfly.swarm.cli.CommandLine.PROPERTIES_URL;
 import static org.wildfly.swarm.cli.CommandLine.PROPERTY;
 import static org.wildfly.swarm.cli.CommandLine.VERSION;
@@ -97,7 +96,7 @@ public class CommandLineTest {
     @Test
     public void testLongArgWithEqual() throws Exception {
         String fileName = "my.properties";
-        String expectedPath = "file:" + System.getProperty("user.dir") + File.separator + fileName;
+        String expectedPath = new File(System.getProperty("user.dir"), fileName).toURL().toString();
 
         CommandLine cmd = CommandLine.parse("--properties=" + fileName);
 
@@ -107,7 +106,7 @@ public class CommandLineTest {
     @Test
     public void testLongArgWithoutEqual() throws Exception {
         String fileName = "my.properties";
-        String expectedPath = "file:" + System.getProperty("user.dir") + File.separator + fileName;
+        String expectedPath = new File(System.getProperty("user.dir"), fileName).toURL().toString();
 
         CommandLine cmd = CommandLine.parse("--properties", fileName);
 
