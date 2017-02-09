@@ -16,6 +16,7 @@
 package org.wildfly.swarm.undertow.runtime;
 
 import org.junit.Test;
+import org.wildfly.swarm.undertow.UndertowFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 
@@ -32,7 +33,9 @@ public class ContextPathArchivePreparerTest {
 
         assertThat(archive.getContextRoot()).isNull();
 
-        new ContextPathArchivePreparer().prepareArchive(archive);
+        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();
+        preparer.undertowFraction = new UndertowFraction();
+        preparer.prepareArchive(archive);
 
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("/");
@@ -61,7 +64,7 @@ public class ContextPathArchivePreparerTest {
         assertThat(archive.getContextRoot()).isNull();
 
         ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();
-        preparer.contextPath.set("/another-root");
+        preparer.undertowFraction = new UndertowFraction().contextPath("/another-root");
         preparer.prepareArchive(archive);
 
         assertThat(archive.getContextRoot()).isNotNull();
