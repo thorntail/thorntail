@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,10 +20,8 @@ import com.eclipsesource.json.JsonValue;
 public class FractionListParser {
     private final Map<String, FractionDescriptor> descriptors = new TreeMap<>();
 
-    private final Map<String, String> packageSpecs = new HashMap<>();
-
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public FractionListParser(InputStream fractionListJson, InputStream packageSpecStream) throws IOException {
+    public FractionListParser(InputStream fractionListJson) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(fractionListJson)) {
             Json.parse(reader).asArray().forEach(entry -> {
                 JsonObject fraction = entry.asObject();

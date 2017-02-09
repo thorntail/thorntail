@@ -34,10 +34,8 @@ public class FractionList {
     }
 
     private FractionList() {
-        try (InputStream fractionJsonStream = getClass().getClassLoader().getResourceAsStream("fraction-list.json");
-             InputStream packageSpecStream = getClass().getClassLoader()
-                     .getResourceAsStream("org/wildfly/swarm/fractionlist/fraction-packages.properties")) {
-            this.fractionListParser = new FractionListParser(fractionJsonStream, packageSpecStream);
+        try (InputStream fractionJsonStream = getClass().getClassLoader().getResourceAsStream("fraction-list.json")) {
+            this.fractionListParser = new FractionListParser(fractionJsonStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
