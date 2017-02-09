@@ -16,6 +16,7 @@
 package org.wildfly.swarm.cli;
 
 import java.io.File;
+import java.net.URL;
 
 import org.junit.Test;
 
