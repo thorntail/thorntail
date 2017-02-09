@@ -297,7 +297,7 @@ public class Option<T> {
         } else if (this.longArg != null && cur.startsWith(DOUBLE_HYPHEN + this.longArg)) {
             matchedArg = DOUBLE_HYPHEN + this.longArg;
             if (hasValue() && cur.length() >= this.longArg.length() + 3) {
-                if (cur.charAt(this.longArg.length() + 3) == '=') {
+                if (cur.charAt(this.longArg.length() + 2) == '=') {
                     value = cur.substring(this.longArg.length() + 3);
                 } else {
                     value = cur.substring(this.longArg.length() + 2);
