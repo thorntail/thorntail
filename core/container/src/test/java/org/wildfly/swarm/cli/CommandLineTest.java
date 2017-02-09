@@ -98,7 +98,7 @@ public class CommandLineTest {
     @Test
     public void testLongArgWithEqual() throws Exception {
         String fileName = "my.properties";
-        String expectedPath = new URL(System.getProperty("user.dir") + File.separator + fileName).toString;
+        String expectedPath = new URL(System.getProperty("user.dir") + File.separator + fileName).toString();
 
         CommandLine cmd = CommandLine.parse("--properties=" + fileName);
 
@@ -108,7 +108,7 @@ public class CommandLineTest {
     @Test
     public void testLongArgWithoutEqual() throws Exception {
         String fileName = "my.properties";
-        String expectedPath = new URL(System.getProperty("user.dir") + File.separator + fileName).toString;
+        String expectedPath = new URL(System.getProperty("user.dir") + File.separator + fileName).toString();
 
         CommandLine cmd = CommandLine.parse("--properties", fileName);
 
