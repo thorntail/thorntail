@@ -250,4 +250,28 @@ public final class TestingProject {
                 + ", technologies: " + includedTechnologies + ", additional dependency: " + additionalDependency
                 + ", additional fraction: " + additionalFraction;
     }
+
+    // ---
+
+    public String serialize() {
+        String technologies = includedTechnologies.stream()
+                .map(IncludedTechnology::toString)
+                .collect(Collectors.joining(","));
+        return packaging + ":" + dependencies + ":" + autodetection + ":" + technologies + ":" + additionalDependency
+                + ":" + additionalFraction;
+    }
+
+    public static TestingProject deserialize(String string) {
+        String[] parts = string.split(":");
+        Packaging packaging = Packaging.valueOf(parts[0]);
+        Dependencies dependencies = Dependencies.valueOf(parts[1]);
+        Autodetection autodetection = Autodetection.valueOf(parts[2]);
+        IncludedTechnology[] includedTechnologies = Arrays.stream(parts[3].split(","))
+                .map(IncludedTechnology::valueOf)
+                .toArray(IncludedTechnology[]::new);
+        AdditionalDependency additionalDependency = AdditionalDependency.valueOf(parts[4]);
+        AdditionalFraction additionalFraction = AdditionalFraction.valueOf(parts[5]);
+        return new TestingProject(packaging, dependencies, autodetection, includedTechnologies, additionalDependency,
+                                  additionalFraction);
+    }
 }
