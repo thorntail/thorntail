@@ -51,7 +51,6 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.adapter.resources.ContextRoot;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.fractionlist.FractionList;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JARArchive;
@@ -154,7 +153,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         BuildTool tool = new BuildTool(resolvingHelper)
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
-                .fractionList(FractionList.get())
                 .bundleDependencies(false);
 
         String additionalModules = System.getProperty(SwarmInternalProperties.BUILD_MODULES);

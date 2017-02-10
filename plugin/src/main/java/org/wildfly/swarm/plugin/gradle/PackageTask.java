@@ -33,11 +33,11 @@ import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
-import org.wildfly.swarm.fractionlist.FractionList;
+import org.wildfly.swarm.fractions.PropertiesUtil;
+import org.wildfly.swarm.spi.meta.SimpleLogger;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DeclaredDependencies;
-import org.wildfly.swarm.tools.PropertiesUtil;
 
 /**
  * @author Bob McWhirter
@@ -86,13 +86,12 @@ public class PackageTask extends DefaultTask {
                 .properties(ext.getProperties())
                 .properties(fromFile)
                 .properties(PropertiesUtil.filteredSystemProperties(ext.getProperties(), false))
-                .fractionList(FractionList.get())
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
                 .additionalModules(ext.getModuleDirs().stream()
                                            .filter(f -> f.exists())
                                            .map(File::getAbsolutePath)
                                            .collect(Collectors.toList()))
-                .logger(new BuildTool.SimpleLogger() {
+                .logger(new SimpleLogger() {
                     @Override
                     public void debug(String msg) {
                         getLogger().debug(msg);

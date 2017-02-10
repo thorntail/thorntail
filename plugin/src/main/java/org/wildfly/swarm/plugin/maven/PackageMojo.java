@@ -32,11 +32,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.wildfly.swarm.fractionlist.FractionList;
+import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.fractions.FractionList;
+import org.wildfly.swarm.spi.meta.SimpleLogger;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DeclaredDependencies;
-import org.wildfly.swarm.tools.FractionDescriptor;
 
 /**
  * @author Bob McWhirter
@@ -108,7 +109,6 @@ public class PackageMojo extends AbstractSwarmMojo {
                                  finalName.endsWith("." + type) ?
                                          finalName :
                                          String.format("%s.%s", finalName, type))
-                .fractionList(FractionList.get())
                 .properties(this.properties)
                 .mainClass(this.mainClass)
                 .bundleDependencies(this.bundleDependencies)
@@ -116,7 +116,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .executableScript(executableScript)
                 .fractionDetectionMode(fractionDetectMode)
                 .hollow(hollow)
-                .logger(new BuildTool.SimpleLogger() {
+                .logger(new SimpleLogger() {
                     @Override
                     public void debug(String msg) {
                         getLog().debug(msg);
@@ -140,7 +140,7 @@ public class PackageMojo extends AbstractSwarmMojo {
 
         this.additionalFractions.stream()
                 .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))
-                .map(FractionDescriptor::toArtifactSpec)
+                .map(ArtifactSpec::fromFractionDescriptor)
                 .forEach(tool::fraction);
 
         Map<ArtifactSpec, Set<ArtifactSpec>> buckets = createBuckets(this.project.getArtifacts(), this.project.getDependencies());
