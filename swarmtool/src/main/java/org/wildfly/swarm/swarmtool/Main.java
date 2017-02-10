@@ -33,12 +33,13 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenChecksumPolicy;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
-import org.wildfly.swarm.fractionlist.FractionList;
+import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.fractions.FractionList;
+import org.wildfly.swarm.fractions.PropertiesUtil;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
+import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DeclaredDependencies;
-import org.wildfly.swarm.tools.FractionDescriptor;
-import org.wildfly.swarm.tools.PropertiesUtil;
 
 import static java.util.Arrays.asList;
 
@@ -225,7 +226,6 @@ public class Main {
         final BuildTool tool = new BuildTool(getResolvingHelper(foundOptions.valuesOf(REPOS_OPT)))
                 .projectArtifact("", baseName, "", type, source)
                 .declaredDependencies(new DeclaredDependencies())
-                .fractionList(FractionList.get())
                 .fractionDetectionMode(foundOptions.has(DISABLE_AUTO_DETECT_OPT) ?
                                                BuildTool.FractionDetectionMode.never :
                                                BuildTool.FractionDetectionMode.force)
@@ -310,7 +310,7 @@ public class Main {
                     }
                 })
                 .filter(f -> f != null)
-                .forEach(f -> tool.fraction(f.toArtifactSpec()));
+                .forEach(f -> tool.fraction(ArtifactSpec.fromFractionDescriptor(f)));
     }
 
     static class ExitException extends RuntimeException {

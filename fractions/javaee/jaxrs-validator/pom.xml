@@ -49,6 +49,12 @@
       <artifactId>resteasy-validator-provider-11</artifactId>
     </dependency>
 
+    <!-- Meta SPI -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>meta-spi</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>

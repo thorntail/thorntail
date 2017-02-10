@@ -18,6 +18,7 @@ package org.wildfly.swarm.tools;
 import java.io.File;
 
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
+import org.wildfly.swarm.fractions.FractionDescriptor;
 
 /**
  * @author Bob McWhirter
@@ -51,6 +52,14 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
         } else {
             throw new RuntimeException("Invalid gav: " + gav);
         }
+    }
+
+    public FractionDescriptor toFractionDescriptor() {
+        return new FractionDescriptor(groupId(), artifactId(), version());
+    }
+
+    public static ArtifactSpec fromFractionDescriptor(FractionDescriptor descriptor) {
+        return fromMscGav(descriptor.toString());
     }
 
     public String jarName() {

@@ -60,6 +60,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Meta SPI -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>meta-spi</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>
