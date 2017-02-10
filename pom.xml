@@ -1319,14 +1319,14 @@
         <module>standalone-servers/management-console</module>
         <module>standalone-servers/swagger-ui</module>
 
-        <module>testsuite/testsuite-camel-cdi</module>
-        <module>testsuite/testsuite-camel-core</module>
-        <module>testsuite/testsuite-camel-cxf</module>
-        <module>testsuite/testsuite-camel-ejb</module>
-        <module>testsuite/testsuite-camel-jms</module>
-        <module>testsuite/testsuite-camel-jmx</module>
-        <module>testsuite/testsuite-camel-jpa</module>
-        <module>testsuite/testsuite-camel-other</module>
+        <module>testsuite/testsuite-camel/cdi</module>
+        <module>testsuite/testsuite-camel/core</module>
+        <module>testsuite/testsuite-camel/cxf</module>
+        <module>testsuite/testsuite-camel/ejb</module>
+        <module>testsuite/testsuite-camel/jms</module>
+        <module>testsuite/testsuite-camel/jmx</module>
+        <module>testsuite/testsuite-camel/jpa</module>
+        <module>testsuite/testsuite-camel/other</module>
         <module>testsuite/testsuite-drools-server</module>
         <module>testsuite/testsuite-flyway</module>
         <module>testsuite/testsuite-javafx</module>
