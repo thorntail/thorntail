@@ -65,6 +65,12 @@
                 <artifactId>wildfly-camel-subsystem-core</artifactId>
                 <version>${version.wildfly.camel}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wildfly.camel</groupId>
+                <artifactId>wildfly-camel-feature-pack</artifactId>
+                <version>${version.wildfly.camel}</version>
+                <type>zip</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

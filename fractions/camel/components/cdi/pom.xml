@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Camel Web :: API
+  WildFly Swarm Camel
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -18,8 +18,6 @@
   limitations under the License.
   #L%
   -->
-
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -29,29 +27,19 @@
     <version>2017.5.0-SNAPSHOT</version>
   </parent>
 
-  <name>Camel CDI</name>
-  <description>
-    Provides auto-configuration for Apache Camel using CDI as dependency injection framework based on convention-over-configuration.
-    It auto-detects Camel routes available in the application and provides beans for common Camel primitives like Endpoint, ProducerTemplate or TypeConverter.
-    It implements standard Camel bean integration so that Camel annotations like @Consume, @Produce and @PropertyInject can be used seamlessly in CDI beans.
-  </description>
-
-
+  <name>Camel Component :: Cdi</name>
   <artifactId>camel-cdi</artifactId>
 
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>Camel,Integration,EIP,CDI</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration</swarm.fraction.tags>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>camel-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-cdi</artifactId>
+      <version>2.18.2</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -61,12 +49,15 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>camel-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>cdi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.camel</groupId>
       <artifactId>wildfly-camel-feature-pack</artifactId>
-      <version>${version.wildfly.camel}</version>
       <scope>provided</scope>
       <type>zip</type>
       <exclusions>
@@ -79,12 +70,6 @@
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.wildfly.swarm</groupId>

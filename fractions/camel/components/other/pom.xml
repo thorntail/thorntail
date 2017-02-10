@@ -29,7 +29,7 @@
     <version>2017.5.0-SNAPSHOT</version>
   </parent>
 
-  <name>Camel Other</name>
+  <name>Camel Component :: Other</name>
   <description>
     This fraction contains additional Camel components and data formats which are not yet packaged as individual fraction. The list of the modules is available here : https://github.com/wildfly-swarm/wildfly-swarm/blob/master/camel/components/other/module.conf
   </description>
@@ -429,16 +429,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-ognl</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
       <artifactId>camel-olingo2</artifactId>
       <exclusions>
         <exclusion>
@@ -590,16 +580,6 @@
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-stream</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-swagger-java</artifactId>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
