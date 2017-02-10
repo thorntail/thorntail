@@ -29,14 +29,14 @@
     <version>2017.3.0-SNAPSHOT</version>
   </parent>
 
-  <name>Test Suite: Camel Other</name>
+  <name>Test Suite: Camel Ognl</name>
 
-  <artifactId>testsuite-camel-other</artifactId>
+  <artifactId>testsuite-camel-ognl</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>camel-other</artifactId>
+      <artifactId>camel-ognl</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
