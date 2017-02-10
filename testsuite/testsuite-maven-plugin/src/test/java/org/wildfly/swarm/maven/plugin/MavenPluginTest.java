@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,12 +57,14 @@ import static org.junit.Assume.assumeTrue;
  * So these tests "codify" the existing behavior, because it is something users tend to rely on even if that
  * was never the intent.</p>
  *
- * <p>The tests can be run in one of two ways:</p>
+ * <p>The tests can be run in one of three ways:</p>
  *
  * <ul>
  *     <li>default -- only a small number of hand-selected tests will run, to finish quickly</li>
  *     <li>full matrix -- runs the entire testing matrix, which takes a <b>lot</b> of time;
  *         this mode is enabled by setting system property {@code swarm.test.full}</li>
+ *     <li>single combination -- runs a single test defined by a system property {@code swarm.test.maven.plugin.single};
+ *         the directory with the testing project will be preserved for manual inspection</li>
  * </ul>
  *
  * <p>Currently, there's a couple of known issues, so some of the tests are commented out.
@@ -69,9 +72,17 @@ import static org.junit.Assume.assumeTrue;
  */
 @RunWith(Parameterized.class)
 public class MavenPluginTest {
+    private static final String RUN_FULL_MATRIX_KEY = "swarm.test.full";
+    private static final String SINGLE_TESTING_PROJECT_KEY = "swarm.test.maven.plugin.single";
+
     @Parameters(name = "{0}")
     public static Iterable<?> parameters() {
-        boolean runFullMatrix = System.getProperty("swarm.test.full") != null;
+        String singleTestingProject = System.getProperty(SINGLE_TESTING_PROJECT_KEY);
+        if (singleTestingProject != null) {
+            return Collections.singleton(TestingProject.deserialize(singleTestingProject));
+        }
+
+        boolean runFullMatrix = System.getProperty(RUN_FULL_MATRIX_KEY) != null;
 
         if (!runFullMatrix) {
             return Arrays.asList(
@@ -159,7 +170,18 @@ public class MavenPluginTest {
     public TestingProject testingProject;
 
     @Rule
-    public TemporaryFolder tmp = new TemporaryFolder();
+    public TemporaryFolder tmp = new TemporaryFolder() {
+        @Override
+        protected void after() {
+            if (System.getProperty(SINGLE_TESTING_PROJECT_KEY) != null) {
+                // the test is run manually for a single combination
+                // don't delete the testing project directory, it's likely to be inspected manually
+                return;
+            }
+
+            super.after();
+        }
+    };
 
     private Verifier verifier;
 
@@ -180,7 +202,24 @@ public class MavenPluginTest {
     }
 
     @Test
-    public void buildUberjarAndRunTests() throws IOException, VerificationException, InterruptedException {
+    public void buildUberjarAndRunTests() {
+        try {
+            doBuildUberjarAndRunTests();
+        } catch (Exception e) {
+            String additionalMessage;
+            if (System.getProperty(SINGLE_TESTING_PROJECT_KEY) == null) {
+                additionalMessage = "Test failed for project [" + testingProject + "], use -D" + SINGLE_TESTING_PROJECT_KEY
+                        + "=" + testingProject.serialize() + " to run the test with this single combination again";
+            } else {
+                additionalMessage = "Test failed for project [" + testingProject + "], the testing project is kept in "
+                        + verifier.getBasedir() + " for manual inspection";
+            }
+
+            throw new AssertionError(additionalMessage + "\n\n" + e.getMessage(), e);
+        }
+    }
+
+    public void doBuildUberjarAndRunTests() throws IOException, VerificationException, InterruptedException {
         String goal = "package";
         if (testingProject.canRunTests()) {
             goal = "verify";
