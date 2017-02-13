@@ -7,10 +7,10 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
@@ -28,7 +28,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class SwaggerWebAppDeploymentProducer {
 
     private static final Pattern PATTERN = Pattern.compile("/META-INF/resources/webjars/swagger-ui/([^\\/]+/)(.*)");

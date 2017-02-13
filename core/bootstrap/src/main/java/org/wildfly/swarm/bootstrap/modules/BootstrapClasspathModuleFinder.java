@@ -25,6 +25,7 @@ import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.xml.ModuleXmlParser;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 
 /**
  * Used only for loading dependencies of org.wildfly.bootstrap:main from its own jar.
@@ -41,45 +42,50 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
 
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        final String path = "modules/" + identifier.getName().replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + identifier.getSlot() + "/module.xml";
 
-        ClassLoader cl = BootstrapClasspathModuleFinder.class.getClassLoader();
-        URL url = cl.getResource(path);
+        try (AutoCloseable handle = Performance.accumulate("module: BootstrapClassPath")) {
+            final String path = "modules/" + identifier.getName().replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + identifier.getSlot() + "/module.xml";
 
-        if (url == null) {
-            return null;
-        }
+            ClassLoader cl = BootstrapClasspathModuleFinder.class.getClassLoader();
+            URL url = cl.getResource(path);
 
-        ModuleSpec moduleSpec = null;
-        InputStream in = null;
-        try {
-            final URL base = new URL(url, "./");
-            in = url.openStream();
-            moduleSpec = ModuleXmlParser.parseModuleXml(
-                    (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
-                    MavenResolvers.get(),
-                    "/",
-                    in,
-                    path.toString(),
-                    delegateLoader,
-                    identifier);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ModuleLoadException(e);
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw t;
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException e) {
-                throw new ModuleLoadException(e);
+            if (url == null) {
+                return null;
             }
+
+            ModuleSpec moduleSpec = null;
+            InputStream in = null;
+            try {
+                final URL base = new URL(url, "./");
+                in = url.openStream();
+                moduleSpec = ModuleXmlParser.parseModuleXml(
+                        (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
+                        MavenResolvers.get(),
+                        "/",
+                        in,
+                        path.toString(),
+                        delegateLoader,
+                        identifier);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ModuleLoadException(e);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                throw t;
+            } finally {
+                try {
+                    if (in != null) {
+                        in.close();
+                    }
+                } catch (IOException e) {
+                    throw new ModuleLoadException(e);
+                }
+            }
+            return moduleSpec;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return moduleSpec;
 
     }
 }

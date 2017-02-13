@@ -1,5 +1,6 @@
 package org.wildfly.swarm.messaging.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -22,6 +23,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
  * @author Bob McWhirter
  */
 @Pre
+@ApplicationScoped
 public class RemoteConnectionInstallingCustomizer implements Customizer {
 
     @Configurable("swarm.messaging.remote.name")

@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
@@ -39,7 +39,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 
-@Singleton
+@ApplicationScoped
 public class SecuredArchivePreparer implements ArchivePreparer {
 
     private static final Logger LOG = Logger.getLogger(SecuredArchivePreparer.class);

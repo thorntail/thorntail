@@ -2,8 +2,8 @@ package org.wildfly.swarm.jolokia.runtime;
 
 import java.util.function.Consumer;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.jolokia.JolokiaFraction;
@@ -18,7 +18,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * @author Bob McWhirter
  */
 @Pre
-@Singleton
+@ApplicationScoped
 public class JolokiaKeycloakCustomizer implements Customizer {
 
     @Inject

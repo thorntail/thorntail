@@ -17,10 +17,10 @@ package org.wildfly.swarm.jolokia.runtime;
 
 import java.util.function.Consumer;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.jolokia.JolokiaFraction;
@@ -33,7 +33,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class JolokiaWarDeploymentProducer {
 
     public static final String DEPLOYMENT_GAV = "org.jolokia:jolokia-war:war:*";

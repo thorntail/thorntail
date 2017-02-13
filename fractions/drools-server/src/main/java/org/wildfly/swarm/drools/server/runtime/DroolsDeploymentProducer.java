@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -16,7 +16,7 @@ import org.wildfly.swarm.jaxrs.JAXRSArchive;
 /**
  * @author Ken Finnigan
  */
-@Singleton
+@ApplicationScoped
 public class DroolsDeploymentProducer {
 
     private static String configFolder = System.getProperty("org.drools.server.swarm.web.conf");
@@ -29,11 +29,11 @@ public class DroolsDeploymentProducer {
                 File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-drools-web-config", ".d");
                 System.setProperty("org.drools.server.swarm.conf", dir.getAbsolutePath());
                 Files.copy(getClass().getClassLoader().getResourceAsStream("config/web/web.xml"),
-                           dir.toPath().resolve("web.xml"),
-                           StandardCopyOption.REPLACE_EXISTING);
+                        dir.toPath().resolve("web.xml"),
+                        StandardCopyOption.REPLACE_EXISTING);
                 Files.copy(getClass().getClassLoader().getResourceAsStream("config/web/jboss-web.xml"),
-                           dir.toPath().resolve("jboss-web.xml"),
-                           StandardCopyOption.REPLACE_EXISTING);
+                        dir.toPath().resolve("jboss-web.xml"),
+                        StandardCopyOption.REPLACE_EXISTING);
                 configFolder = dir.toPath().toString();
             } catch (IOException e) {
                 e.printStackTrace();

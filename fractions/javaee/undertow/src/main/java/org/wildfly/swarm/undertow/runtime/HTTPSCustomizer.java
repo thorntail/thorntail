@@ -15,10 +15,10 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.undertow.Server;
@@ -32,7 +32,7 @@ import org.wildfly.swarm.undertow.descriptors.CertInfo;
  * @author Bob McWhirter
  */
 @Pre
-@Singleton
+@ApplicationScoped
 public class HTTPSCustomizer implements Customizer {
 
     @Inject

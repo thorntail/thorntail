@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.Security;
 import org.wildfly.swarm.config.security.Flag;
@@ -28,7 +28,7 @@ import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
 @Post
-@Singleton
+@ApplicationScoped
 public class WebSecurityCustomizer implements Customizer {
 
     @Inject
@@ -44,9 +44,9 @@ public class WebSecurityCustomizer implements Customizer {
                 webPolicy = new SecurityDomain("jboss-web-policy")
                         .cacheType(SecurityDomain.CacheType.DEFAULT)
                         .classicAuthorization(new ClassicAuthorization()
-                                                      .policyModule(new PolicyModule("Delegating")
-                                                                            .code("Delegating")
-                                                                            .flag(Flag.REQUIRED)));
+                                .policyModule(new PolicyModule("Delegating")
+                                        .code("Delegating")
+                                        .flag(Flag.REQUIRED)));
                 security.securityDomain(webPolicy);
             }
         }

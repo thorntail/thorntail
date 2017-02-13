@@ -18,10 +18,10 @@ package org.wildfly.swarm.topology.webapp.runtime;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import io.undertow.server.HttpHandler;
 import org.jboss.msc.service.ServiceActivator;
@@ -32,7 +32,7 @@ import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;
 
-@Singleton
+@ApplicationScoped
 public class TopologyWebAppActivator implements ServiceActivator {
 
     @Inject
@@ -53,7 +53,7 @@ public class TopologyWebAppActivator implements ServiceActivator {
                 .addDependency(TopologyManagerActivator.CONNECTOR_SERVICE_NAME);
         for (String serviceName : serviceNames) {
             serviceBuilder.addDependency(proxyService.mscServiceNameForServiceProxy(serviceName),
-                                         HttpHandler.class, proxyService.getHandlerInjectorFor(serviceName));
+                    HttpHandler.class, proxyService.getHandlerInjectorFor(serviceName));
         }
         serviceBuilder.install();
     }

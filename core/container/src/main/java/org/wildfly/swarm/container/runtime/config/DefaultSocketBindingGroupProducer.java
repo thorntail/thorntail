@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.container.runtime.config;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -25,7 +26,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class DefaultSocketBindingGroupProducer {
 
     public static final String STANDARD_SOCKETS = "standard-sockets";

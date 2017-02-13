@@ -1,8 +1,8 @@
 package org.wildfly.swarm.topology.consul.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
@@ -16,7 +16,7 @@ import org.wildfly.swarm.topology.consul.ConsulTopologyFraction;
  * @author Heiko Braun
  * @since 18/05/16
  */
-@Singleton
+@ApplicationScoped
 public class AgentActivator implements ServiceActivator {
 
 

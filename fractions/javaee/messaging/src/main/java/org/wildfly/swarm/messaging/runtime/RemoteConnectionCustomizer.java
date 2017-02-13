@@ -2,6 +2,7 @@ package org.wildfly.swarm.messaging.runtime;
 
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.config.messaging.activemq.Server;
@@ -16,6 +17,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Bob McWhirter
  */
 @Post
+@ApplicationScoped
 public class RemoteConnectionCustomizer implements Customizer {
 
     @Inject

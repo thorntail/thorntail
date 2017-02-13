@@ -17,6 +17,8 @@ package org.wildfly.swarm.flyway.runtime;
 
 import org.wildfly.swarm.flyway.deployment.FlywayMigrationServletContextListener;
 import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,6 +33,7 @@ import org.wildfly.swarm.undertow.descriptors.WebXmlContainer;
  *
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
+@ApplicationScoped
 public class FlywayMigrationArchivePreparer implements ArchivePreparer {
 
     @Inject

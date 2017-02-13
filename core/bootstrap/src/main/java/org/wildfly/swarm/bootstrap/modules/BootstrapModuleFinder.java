@@ -36,6 +36,7 @@ import org.jboss.modules.filter.PathFilters;
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 
 /**
  * Module-finder used only for loading the first set of jars when run in an fat-jar scenario.
@@ -53,55 +54,61 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
 
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Loading module");
-        }
+        try (AutoCloseable handle = Performance.accumulate("module: Bootstrap")) {
 
-        ApplicationEnvironment env = ApplicationEnvironment.get();
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Loading module");
+            }
 
-        env.bootstrapArtifacts()
-                .forEach((dep) -> {
-                    String[] parts = dep.split(":");
-                    ArtifactCoordinates coords = null;
+            ApplicationEnvironment env = ApplicationEnvironment.get();
 
-                    if (parts.length == 4) {
-                        coords = new ArtifactCoordinates(parts[0], parts[1], parts[3]);
-                    } else if (parts.length == 5) {
-                        coords = new ArtifactCoordinates(parts[0], parts[1], parts[3], parts[4]);
-                    }
-                    try {
-                        File artifact = MavenResolvers.get().resolveJarArtifact(coords);
-                        if (artifact == null) {
-                            throw new RuntimeException("Unable to resolve artifact from coordinates: " + coords);
+            env.bootstrapArtifacts()
+                    .forEach((dep) -> {
+                        String[] parts = dep.split(":");
+                        ArtifactCoordinates coords = null;
+
+                        if (parts.length == 4) {
+                            coords = new ArtifactCoordinates(parts[0], parts[1], parts[3]);
+                        } else if (parts.length == 5) {
+                            coords = new ArtifactCoordinates(parts[0], parts[1], parts[3], parts[4]);
                         }
-                        JarFile jar = new JarFile(artifact);
-                        ResourceLoader originaloader = ResourceLoaders.createJarResourceLoader(artifact.getName(), jar);
+                        try {
+                            File artifact = MavenResolvers.get().resolveJarArtifact(coords);
+                            if (artifact == null) {
+                                throw new RuntimeException("Unable to resolve artifact from coordinates: " + coords);
+                            }
+                            JarFile jar = new JarFile(artifact);
+                            ResourceLoader originaloader = ResourceLoaders.createJarResourceLoader(artifact.getName(), jar);
 
-                        PathFilter filter = getModuleFilter(jar);
-                        builder.addResourceRoot(
-                                ResourceLoaderSpec.createResourceLoaderSpec(
-                                        ResourceLoaders.createFilteredResourceLoader(filter, originaloader)
-                                )
-                        );
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                            PathFilter filter = getModuleFilter(jar);
+                            builder.addResourceRoot(
+                                    ResourceLoaderSpec.createResourceLoaderSpec(
+                                            ResourceLoaders.createFilteredResourceLoader(filter, originaloader)
+                                    )
+                            );
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-                });
+                    });
 
-        builder.addDependency(DependencySpec.createLocalDependencySpec());
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.yaml.snakeyaml")));
+            builder.addDependency(DependencySpec.createLocalDependencySpec());
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
+            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.yaml.snakeyaml")));
 
-        HashSet<String> paths = new HashSet<String>();
-        paths.add("org/wildfly/swarm/bootstrap/logging");
-        paths.add("org/wildfly/swarm/bootstrap/util");
-        paths.add("org/wildfly/swarm/bootstrap/modules");
-        paths.add("org/wildfly/swarm/bootstrap/env");
-        builder.addDependency(DependencySpec.createSystemDependencySpec(paths, true));
+            HashSet<String> paths = new HashSet<>();
+            paths.add("org/wildfly/swarm/bootstrap/env");
+            paths.add("org/wildfly/swarm/bootstrap/logging");
+            paths.add("org/wildfly/swarm/bootstrap/modules");
+            paths.add("org/wildfly/swarm/bootstrap/performance");
+            paths.add("org/wildfly/swarm/bootstrap/util");
+            builder.addDependency(DependencySpec.createSystemDependencySpec(paths, true));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

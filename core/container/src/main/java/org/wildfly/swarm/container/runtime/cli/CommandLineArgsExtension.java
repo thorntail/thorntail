@@ -25,6 +25,8 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.util.TypeLiteral;
 
+import org.wildfly.swarm.bootstrap.performance.Performance;
+
 /**
  * @author Bob McWhirter
  */
@@ -39,15 +41,17 @@ public class CommandLineArgsExtension implements Extension {
         this.argsList = Collections.unmodifiableList(new ArrayList<>(Arrays.asList(this.args)));
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
-        abd.addBean()
-                .addType(String[].class)
-                .addQualifier(CommandLineArgs.Literal.INSTANCE)
-                .producing(this.args);
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) throws Exception {
+        try (AutoCloseable handle = Performance.time("CommandLineArgsExtension.afterBeanDiscovery")) {
+            abd.addBean()
+                    .addType(String[].class)
+                    .addQualifier(CommandLineArgs.Literal.INSTANCE)
+                    .producing(this.args);
 
-        abd.addBean()
-                .addType(new TypeLiteral<List<String>>() {
-                })
-                .producing(this.argsList);
+            abd.addBean()
+                    .addType(new TypeLiteral<List<String>>() {
+                    })
+                    .producing(this.argsList);
+        }
     }
 }

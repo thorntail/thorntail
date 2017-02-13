@@ -15,18 +15,19 @@
  */
 package org.wildfly.swarm.container.runtime.cdi;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class ArtifactLookupProducer {
 
-    @Produces @Singleton
+    @Produces
+    @ApplicationScoped
     public ArtifactLookup lookup() {
         return ArtifactLookup.get();
     }

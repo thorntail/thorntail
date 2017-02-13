@@ -3,6 +3,7 @@ package org.wildfly.swarm.undertow.runtime;
 import java.io.File;
 import java.io.IOException;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,6 +20,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 /**
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
+@ApplicationScoped
 public class CertInfoProducer {
 
     @Inject

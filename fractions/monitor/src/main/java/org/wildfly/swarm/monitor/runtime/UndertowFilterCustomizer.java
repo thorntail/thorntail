@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
@@ -27,7 +27,7 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  * @author Ken Finnigan
  */
 @Post
-@Singleton
+@ApplicationScoped
 public class UndertowFilterCustomizer implements Customizer {
     @Inject
     Instance<UndertowFraction> undertowFractionInstance;

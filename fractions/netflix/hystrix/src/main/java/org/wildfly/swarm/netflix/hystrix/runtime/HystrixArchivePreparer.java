@@ -1,7 +1,7 @@
 package org.wildfly.swarm.netflix.hystrix.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.netflix.hystrix.HystrixFraction;
@@ -11,7 +11,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 /**
  * @author Ken Finnigan
  */
-@Singleton
+@ApplicationScoped
 public class HystrixArchivePreparer implements ArchivePreparer {
     @Inject
     HystrixFraction fraction;

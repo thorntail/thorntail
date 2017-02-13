@@ -33,7 +33,12 @@ public interface ConfigurationMarshaller {
         }
 
         ModelNode head = subList.get(0);
+        ModelNode addr = head.get(OP_ADDR);
 
-        return list.stream().anyMatch(e -> e.get(OP_ADDR).equals(head.get(OP_ADDR)));
+        return isAlreadyConfigured(addr, list);
+    }
+
+    default boolean isAlreadyConfigured(ModelNode addr, List<ModelNode> list) {
+        return list.stream().anyMatch(e -> e.get(OP_ADDR).equals(addr));
     }
 }

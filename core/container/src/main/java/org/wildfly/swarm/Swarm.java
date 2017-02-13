@@ -60,6 +60,7 @@ import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BackingLoggerManager;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
@@ -315,25 +316,27 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public Swarm start() throws Exception {
-        initializeConfigView();
+        try (AutoCloseable handle = Performance.time("Swarm.start()")) {
+            initializeConfigView();
 
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
-        Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
+            Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
-        ServerBootstrap bootstrap = (ServerBootstrap) bootstrapClass.newInstance();
-        bootstrap
-                .withArguments(this.args)
-                .withBootstrapDebug(this.debugBootstrap)
-                .withExplicitlyInstalledFractions(this.explicitlyInstalledFractions)
-                .withSocketBindings(this.socketBindings)
-                .withOutboundSocketBindings(this.outboundSocketBindings)
-                .withUserComponents(this.userComponentClasses)
-                .withXmlConfig(this.xmlConfig)
-                .withConfigView(this.configView);
+            ServerBootstrap bootstrap = (ServerBootstrap) bootstrapClass.newInstance();
+            bootstrap
+                    .withArguments(this.args)
+                    .withBootstrapDebug(this.debugBootstrap)
+                    .withExplicitlyInstalledFractions(this.explicitlyInstalledFractions)
+                    .withSocketBindings(this.socketBindings)
+                    .withOutboundSocketBindings(this.outboundSocketBindings)
+                    .withUserComponents(this.userComponentClasses)
+                    .withXmlConfig(this.xmlConfig)
+                    .withConfigView(this.configView);
 
-        this.server = bootstrap.bootstrap();
+            this.server = bootstrap.bootstrap();
 
-        return this;
+            return this;
+        }
     }
 
     /**
@@ -502,30 +505,34 @@ public class Swarm {
 
     private void initializeConfigView() throws IOException, ModuleLoadException {
 
-        ConfigViewFactory factory = ConfigViewFactory.defaultFactory();
+        try (AutoCloseable handle = Performance.time("Loading YAML")) {
+            ConfigViewFactory factory = ConfigViewFactory.defaultFactory();
 
-        List<String> activatedNames = new ArrayList<>();
+            List<String> activatedNames = new ArrayList<>();
 
-        for (int i = 0; i < this.configs.size(); ++i) {
-            URL each = this.configs.get(i);
-            String syntheticProfile = "cli-" + i;
-            factory.load(syntheticProfile, each);
-            activatedNames.add(syntheticProfile);
+            for (int i = 0; i < this.configs.size(); ++i) {
+                URL each = this.configs.get(i);
+                String syntheticProfile = "cli-" + i;
+                factory.load(syntheticProfile, each);
+                activatedNames.add(syntheticProfile);
+            }
+
+            // deprecated project-stages.yml
+            factory.load("stages");
+
+            for (String profile : this.profiles) {
+                factory.load(profile);
+                activatedNames.add(profile);
+            }
+
+            factory.load("defaults");
+            activatedNames.add("defaults");
+
+            this.configView = factory.build();
+            this.configView.activate(activatedNames);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        // deprecated project-stages.yml
-        factory.load("stages");
-
-        for (String profile : this.profiles) {
-            factory.load(profile);
-            activatedNames.add(profile);
-        }
-
-        factory.load("defaults");
-        activatedNames.add("defaults");
-
-        this.configView = factory.build();
-        this.configView.activate(activatedNames);
     }
 
     /**

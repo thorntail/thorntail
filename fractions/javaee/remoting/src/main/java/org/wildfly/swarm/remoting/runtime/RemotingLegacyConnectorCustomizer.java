@@ -1,8 +1,8 @@
 package org.wildfly.swarm.remoting.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.container.runtime.config.DefaultSocketBindingGroupProducer;
@@ -24,7 +24,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Bob McWhirter
  */
 @Post
-@Singleton
+@ApplicationScoped
 public class RemotingLegacyConnectorCustomizer implements Customizer {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.remoting");

@@ -29,6 +29,7 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.env.FractionManifest;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.ConfigViewProducingExtension;
@@ -102,42 +103,56 @@ public class ServerBootstrapImpl implements ServerBootstrap {
 
     @Override
     public Server bootstrap() throws Exception {
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
-        return ClassLoading.withTCCL(new ExtensionPreventionClassLoaderWrapper(module.getClassLoader()), () -> {
-            //Thread.currentThread().setContextClassLoader(new ExtensionPreventionClassLoaderWrapper(module.getClassLoader()));
+        try (AutoCloseable bootstrap = Performance.time("Bootstrap")) {
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+            return ClassLoading.withTCCL(new ExtensionPreventionClassLoaderWrapper(module.getClassLoader()), () -> {
+                //Thread.currentThread().setContextClassLoader(new ExtensionPreventionClassLoaderWrapper(module.getClassLoader()));
 
-            logFractions();
-
-            return LogSilencer.silently("org.jboss.weld").execute(() -> {
-                Weld weld = new Weld(WELD_INSTANCE_ID);
-                weld.setClassLoader(module.getClassLoader());
-
-                ConfigViewProducingExtension projectStageProducingExtension = new ConfigViewProducingExtension(this.configView);
-
-                ConfigurableManager configurableManager = new ConfigurableManager(this.configView);
-
-                // Add Extension that adds User custom bits into configurator
-                weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions, configurableManager));
-                weld.addExtension(new ConfigurableExtension(configurableManager));
-                weld.addExtension(new CommandLineArgsExtension(args));
-                weld.addExtension(projectStageProducingExtension);
-                weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
-                weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
-                weld.addExtension(new SocketBindingExtension(this.socketBindings));
-
-                for (Class<?> each : this.userComponents) {
-                    weld.addBeanClass(each);
+                try (AutoCloseable logFractionHandle = Performance.time("Log fractions")) {
+                    logFractions();
                 }
 
-                weld.property("org.jboss.weld.se.shutdownHook", false);
-                WeldContainer weldContainer = weld.initialize();
+                return LogSilencer.silently("org.jboss.weld").execute(() -> {
+                    Weld weld = new Weld(WELD_INSTANCE_ID);
+                    weld.setClassLoader(module.getClassLoader());
 
-                RuntimeServer server = weldContainer.select(RuntimeServer.class).get();
+                    ConfigViewProducingExtension projectStageProducingExtension = new ConfigViewProducingExtension(this.configView);
 
-                server.start(true);
-                return server;
+                    ConfigurableManager configurableManager = new ConfigurableManager(this.configView);
+
+                    // Add Extension that adds User custom bits into configurator
+                    weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions, configurableManager));
+                    weld.addExtension(new ConfigurableExtension(configurableManager));
+                    weld.addExtension(new CommandLineArgsExtension(args));
+                    weld.addExtension(projectStageProducingExtension);
+                    weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
+                    weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
+                    weld.addExtension(new SocketBindingExtension(this.socketBindings));
+
+                    for (Class<?> each : this.userComponents) {
+                        weld.addBeanClass(each);
+                    }
+
+                    weld.property("org.jboss.weld.se.shutdownHook", false);
+                    WeldContainer weldContainer = null;
+                    RuntimeServer server = null;
+                    try (AutoCloseable weldRelated = Performance.time("Weld-related")) {
+                        try (AutoCloseable weldInitHandle = Performance.time("Weld initialize")) {
+                            weldContainer = weld.initialize();
+                        }
+                        try (AutoCloseable serverSelectHandle = Performance.time("Server construction")) {
+                            server = weldContainer.select(RuntimeServer.class).get();
+                        }
+                    }
+                    try (AutoCloseable weldInitHandle = Performance.time("Server start")) {
+                        server.start(true);
+                    }
+                    return server;
+                });
             });
-        });
+        } finally {
+            SwarmMessages.MESSAGES.bootPerformance(Performance.dump());
+        }
     }
 
     protected void logFractions() throws IOException {

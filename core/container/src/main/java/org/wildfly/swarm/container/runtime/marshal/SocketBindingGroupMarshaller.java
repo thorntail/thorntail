@@ -18,10 +18,10 @@ package org.wildfly.swarm.container.runtime.marshal;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.dmr.ModelNode;
@@ -43,7 +43,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.POR
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class SocketBindingGroupMarshaller implements ConfigurationMarshaller {
 
     @Inject

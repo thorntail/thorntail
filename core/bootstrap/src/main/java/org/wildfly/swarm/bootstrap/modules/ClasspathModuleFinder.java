@@ -28,6 +28,7 @@ import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.xml.ModuleXmlParser;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 
 /**
  * @author Bob McWhirter
@@ -42,66 +43,69 @@ public class ClasspathModuleFinder implements ModuleFinder {
 
     @Override
     public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        final String path = "modules/" + identifier.getName().replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + identifier.getSlot() + "/module.xml";
-
-
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("attempt:" + identifier);
-        }
-
-        try {
-            ClassLoader cl = ApplicationEnvironment.get().getBootstrapClassLoader();
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("classloader: " + cl);
-                LOG.trace("path: " + path);
-            }
-
-            URL url = cl.getResource(path);
-
-            if (url == null && cl != ClasspathModuleFinder.class.getClassLoader()) {
-                url = ClasspathModuleFinder.class.getClassLoader().getResource(path);
-            }
-
-            if (url == null) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("not found: " + identifier);
-                }
-                return null;
-            }
-
-            final URL base = new URL(url, "./");
+        try (AutoCloseable handle = Performance.accumulate("module: Classpath")) {
+            final String path = "modules/" + identifier.getName().replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + identifier.getSlot() + "/module.xml";
 
             if (LOG.isTraceEnabled()) {
-                LOG.trace("base of " + identifier + ": " + base);
+                LOG.trace("attempt:" + identifier);
             }
 
-            InputStream in = url.openStream();
-
-            Path explodedJar = NestedJarResourceLoader.explodedJar(base);
-
-            ModuleSpec moduleSpec = null;
             try {
-                moduleSpec = ModuleXmlParser.parseModuleXml(
-                        (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
-                        MavenResolvers.get(),
-                        (explodedJar == null ? "/" : explodedJar.toAbsolutePath().toString()),
-                        in,
-                        path.toString(),
-                        delegateLoader,
-                        identifier);
+                ClassLoader cl = ApplicationEnvironment.get().getBootstrapClassLoader();
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("classloader: " + cl);
+                    LOG.trace("path: " + path);
+                }
 
-            } catch (IOException e) {
-                throw new ModuleLoadException(e);
-            } finally {
+                URL url = cl.getResource(path);
+
+                if (url == null && cl != ClasspathModuleFinder.class.getClassLoader()) {
+                    url = ClasspathModuleFinder.class.getClassLoader().getResource(path);
+                }
+
+                if (url == null) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("not found: " + identifier);
+                    }
+                    return null;
+                }
+
+                final URL base = new URL(url, "./");
+
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("base of " + identifier + ": " + base);
+                }
+
+                InputStream in = url.openStream();
+
+                Path explodedJar = NestedJarResourceLoader.explodedJar(base);
+
+                ModuleSpec moduleSpec = null;
                 try {
-                    in.close();
+                    moduleSpec = ModuleXmlParser.parseModuleXml(
+                            (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
+                            MavenResolvers.get(),
+                            (explodedJar == null ? "/" : explodedJar.toAbsolutePath().toString()),
+                            in,
+                            path.toString(),
+                            delegateLoader,
+                            identifier);
+
                 } catch (IOException e) {
                     throw new ModuleLoadException(e);
+                } finally {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        throw new ModuleLoadException(e);
+                    }
                 }
+                return moduleSpec;
+            } catch (IOException e) {
+                throw new ModuleLoadException(e);
             }
-            return moduleSpec;
-        } catch (IOException e) {
-            throw new ModuleLoadException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
     }

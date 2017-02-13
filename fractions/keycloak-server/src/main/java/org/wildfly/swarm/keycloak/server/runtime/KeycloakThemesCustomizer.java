@@ -18,8 +18,8 @@ package org.wildfly.swarm.keycloak.server.runtime;
 import java.io.File;
 import java.net.URL;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
@@ -36,7 +36,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Bob McWhirter
  */
 @Post
-@Singleton
+@ApplicationScoped
 public class KeycloakThemesCustomizer implements Customizer {
 
     @Inject
