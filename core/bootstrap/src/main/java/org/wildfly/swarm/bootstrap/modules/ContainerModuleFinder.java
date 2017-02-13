@@ -17,131 +17,94 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
 
     private static final String RUNTIME_SLOT = "runtime";
 
-    private static final String WELD_VERSION = "3";
-
     public ContainerModuleFinder() {
         super("swarm.container");
     }
 
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
-        try (AutoCloseable handle = Performance.accumulate("module: Container")) {
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("org.wildfly.swarm.spi"), false));
 
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("org.wildfly.swarm.spi"), false));
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("org.wildfly.swarm.container", RUNTIME_SLOT), false));
 
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("org.wildfly.swarm.container", RUNTIME_SLOT), false));
-
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("org.wildfly.swarm.bootstrap"), false));
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("org.wildfly.swarm.bootstrap"), false));
 
 
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("org.jboss.jandex"), false));
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("org.jboss.jandex"), false));
 
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("org.jboss.weld.api", WELD_VERSION), false));
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("org.jboss.weld.spi", WELD_VERSION), false));
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("org.jboss.weld.core", WELD_VERSION), false));
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("org.jboss.weld.se", WELD_VERSION), false));
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("org.jboss.weld.se"), false));
 
-            builder.addDependency(
-                    DependencySpec.createModuleDependencySpec(
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            PathFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            ClassFilters.acceptAll(),
-                            null,
-                            ModuleIdentifier.create("javax.enterprise.api"), false));
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("javax.enterprise.api"), false));
 
-            ApplicationEnvironment environment = ApplicationEnvironment.get();
+        ApplicationEnvironment environment = ApplicationEnvironment.get();
 
-            environment.bootstrapModules()
-                    .forEach((module) -> {
-                        builder.addDependency(
-                                DependencySpec.createModuleDependencySpec(
-                                        PathFilters.acceptAll(),
-                                        PathFilters.acceptAll(),
-                                        PathFilters.acceptAll(),
-                                        PathFilters.acceptAll(),
-                                        ClassFilters.acceptAll(),
-                                        ClassFilters.acceptAll(),
-                                        null,
-                                        ModuleIdentifier.create(module, RUNTIME_SLOT), false));
-                    });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        environment.bootstrapModules()
+                .forEach((module) -> {
+                    builder.addDependency(
+                            DependencySpec.createModuleDependencySpec(
+                                    PathFilters.acceptAll(),
+                                    PathFilters.acceptAll(),
+                                    PathFilters.acceptAll(),
+                                    PathFilters.acceptAll(),
+                                    ClassFilters.acceptAll(),
+                                    ClassFilters.acceptAll(),
+                                    null,
+                                    ModuleIdentifier.create(module, RUNTIME_SLOT), false));
+                });
     }
 
 }

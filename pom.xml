@@ -32,7 +32,6 @@
     <version.wildfly.swarm.fraction.plugin>49</version.wildfly.swarm.fraction.plugin>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
-    <version.cdi2>2.0.Alpha4</version.cdi2>
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
     <version.jboss.management-console>2.8.25.Final</version.jboss.management-console>
