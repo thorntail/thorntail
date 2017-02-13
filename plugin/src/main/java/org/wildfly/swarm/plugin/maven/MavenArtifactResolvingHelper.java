@@ -193,21 +193,14 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
         RemoteRepository repository = builder.build();
 
-        RemoteRepository mirror = session.getMirrorSelector().getMirror(repository);
+        final RemoteRepository mirror = session.getMirrorSelector().getMirror(repository);
 
         if (mirror != null) {
-            builder = new RemoteRepository.Builder(mirror);
-
-            // the authentication is not automatically copied to the mirror
-            if (auth != null
-                    && auth.getUsername() != null
-                    && auth.getPassword() != null) {
-                builder.setAuthentication(new AuthenticationBuilder()
-                                                  .addUsername(auth.getUsername())
-                                                  .addPassword(auth.getPassword()).build());
-            }
-
-            repository = builder.build();
+            final org.eclipse.aether.repository.Authentication mirrorAuth = session.getAuthenticationSelector()
+                    .getAuthentication(mirror);
+            repository = mirrorAuth != null
+                    ? new RemoteRepository.Builder(mirror).setAuthentication(mirrorAuth).build()
+                    : mirror;
         }
 
         Proxy proxy = session.getProxySelector().getProxy(repository);
