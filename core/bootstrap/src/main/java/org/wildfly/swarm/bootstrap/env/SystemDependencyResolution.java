@@ -60,7 +60,7 @@ public class SystemDependencyResolution implements DependencyResolution {
                     env.getRemovableDependencies()
                             .stream()
                             .map(e -> e.split(":"))
-                            .map(e -> e[0] + File.separatorChar + e[1])
+                            .map(e -> e[0] + File.separatorChar + e[1] + File.separatorChar)
                             .map(m -> (useGradleRepo ? m : m.replace('.', File.separatorChar)))
                             .collect(Collectors.toList())
             );
@@ -92,6 +92,6 @@ public class SystemDependencyResolution implements DependencyResolution {
 
     final List<String> testClasspath;
 
-    final boolean useGradleRepo;
+    private final boolean useGradleRepo;
 
 }

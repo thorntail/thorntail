@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 public class GradleResolver implements MavenResolver {
 
-    private String gradleCachePath;
+    private final String gradleCachePath;
 
     public GradleResolver(String gradleCachePath) {
         this.gradleCachePath = gradleCachePath;
@@ -51,7 +51,7 @@ public class GradleResolver implements MavenResolver {
         return null;
     }
 
-    private String toGradleArtifactFileName(ArtifactCoordinates artifactCoordinates, String packaging) {
+    String toGradleArtifactFileName(ArtifactCoordinates artifactCoordinates, String packaging) {
         StringBuilder sbFileFilter = new StringBuilder();
         sbFileFilter
                 .append(artifactCoordinates.getArtifactId())
