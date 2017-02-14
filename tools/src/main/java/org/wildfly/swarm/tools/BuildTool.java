@@ -229,13 +229,17 @@ public class BuildTool {
         addWildFlySwarmApplicationManifest();
         createAppDependencyModule((ResolvedDependencies)this.dependencyManager);
         addAdditionalModules();
-        addProjectAsset((ResolvedDependencies) this.dependencyManager);
+        addProjectAsset();
         populateUberJarMavenRepository((ResolvedDependencies) this.dependencyManager);
 
         return this.archive;
     }
 
     private void createAppDependencyModule(ResolvedDependencies resolvedDependencies) {
+
+        if (!bundleDependencies) {
+            return;
+        }
 
         // synthetic app dependency module
         Set<ArtifactSpec> applicationDependencies = new HashSet<>(declaredDependencies.getExplicitDependencies());
@@ -331,11 +335,11 @@ public class BuildTool {
         this.dependencyManager.analyzeDependencies(autodetect, declaredDependencies);
     }
 
-    private void addProjectAsset(ResolvedDependencies resolvedDependencies) {
+    private void addProjectAsset() {
         if (this.hollow) {
             return;
         }
-        this.archive.add(new WebInfLibFilteringArchiveAsset(this.projectAsset, this.dependencyManager));
+        this.archive.add(this.projectAsset);
     }
 
     private boolean detectFractions() throws Exception {

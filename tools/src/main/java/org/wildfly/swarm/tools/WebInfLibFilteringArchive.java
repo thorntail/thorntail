@@ -32,6 +32,8 @@ public class WebInfLibFilteringArchive extends GenericArchiveImpl
             getArchive().delete(each);
         }
 
+        new RuntimeException("here").printStackTrace();
+
         System.out.println("--");
         included.forEach(dep -> System.out.println(dep));
         System.out.println("--");
