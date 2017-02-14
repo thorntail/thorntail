@@ -487,7 +487,7 @@ public class BuildTool {
 
         // removable deps define the ones that should not be in WEB-INF/lib
         // the ones excluded from M2_REPO is the inverse delta, aka all that belong to WEB-INF/lib
-        // NOTE: Care needs to be taken of those deps that belong to modules declaratiion. They are the exception to the rule
+        // NOTE: Care needs to be taken of those deps that belong to modules declaration. They are the exception to the rule
         Set<ArtifactSpec> excludeFromM2Repo = new HashSet<>(toBeResolved);
         excludeFromM2Repo.addAll(alreadyResolved);
         excludeFromM2Repo.removeAll(dependencyManager.getRemovableDependencies());
