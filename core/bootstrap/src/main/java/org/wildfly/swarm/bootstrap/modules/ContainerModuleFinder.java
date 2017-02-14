@@ -8,7 +8,6 @@ import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.filter.ClassFilters;
 import org.jboss.modules.filter.PathFilters;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
-import org.wildfly.swarm.bootstrap.performance.Performance;
 
 /**
  * @author Bob McWhirter

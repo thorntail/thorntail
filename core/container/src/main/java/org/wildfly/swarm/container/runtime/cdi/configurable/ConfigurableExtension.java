@@ -37,10 +37,6 @@ import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.cdi.CommonBean;
 import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 
-<<<<<<<HEAD
-        =======
-        >>>>>>>d0ccd792526be3e51b442264e978e59c330bf9de
-
 /**
  * @author Ken Finnigan
  */
