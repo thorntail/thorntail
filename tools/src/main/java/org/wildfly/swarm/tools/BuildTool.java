@@ -238,7 +238,12 @@ public class BuildTool {
     private void createAppDependencyModule(ResolvedDependencies resolvedDependencies) {
 
         // synthetic app dependency module
-        Set<ArtifactSpec> applicationDependencies = new HashSet<>(declaredDependencies.getExplicitDependencies());
+        Set<ArtifactSpec> scopeCompile = declaredDependencies.getExplicitDependencies()
+                .stream()
+                .filter(dep -> ("compile".equals(dep.scope) || "runtime".equals(dep.scope)))
+                .collect(Collectors.toSet());
+
+        Set<ArtifactSpec> applicationDependencies = new HashSet<>(scopeCompile);
         applicationDependencies.removeAll(resolvedDependencies.getRemovableDependencies());
 
         Set<ArtifactSpec> transientDeps = new HashSet<>();
