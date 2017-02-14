@@ -23,6 +23,9 @@ public class SystemDependencyResolution implements DependencyResolution {
         final String userDirProp = System.getProperty("user.dir");
         final String testClasspatProp = System.getProperty("swarm.test.dependencies");
 
+        //Dedect gradle cache
+        this.useGradleRepo = classpathProp.contains(File.separator + ".gradle");
+
         this.classpath = Arrays.asList(classpathProp.split(File.pathSeparator));
         this.testClasspath = testClasspatProp != null ? Arrays.asList(testClasspatProp.split(File.pathSeparator)) : Collections.EMPTY_LIST;
 
@@ -57,8 +60,8 @@ public class SystemDependencyResolution implements DependencyResolution {
                     env.getRemovableDependencies()
                             .stream()
                             .map(e -> e.split(":"))
-                            .map(e -> e[0] + File.separatorChar + e[1])
-                            .map(m -> m.replace('.', File.separatorChar))
+                            .map(e -> e[0] + File.separatorChar + e[1] + File.separatorChar)
+                            .map(m -> (useGradleRepo ? m : m.replace('.', File.separatorChar)))
                             .collect(Collectors.toList())
             );
 
@@ -88,5 +91,7 @@ public class SystemDependencyResolution implements DependencyResolution {
     final String pwd;
 
     final List<String> testClasspath;
+
+    private final boolean useGradleRepo;
 
 }
