@@ -18,22 +18,24 @@ package org.wildfly.swarm.container.runtime.cdi.configurable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import javax.inject.Singleton;
 
+import org.jboss.weld.literal.DefaultLiteral;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.container.runtime.ConfigurableManager;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 
 /**
  * @author Ken Finnigan
@@ -89,11 +91,14 @@ public class ConfigurableExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) throws Exception {
         try (AutoCloseable handle = Performance.time("ConfigurationExtension.afterBeanDiscovery")) {
-            abd.addBean()
-                    .types(ConfigurableManager.class)
-                    .scope(ApplicationScoped.class)
-                    .qualifiers(Default.Literal.INSTANCE)
-                    .producing(this.configurableManager);
+            CommonBean<ConfigurableManager> configurableManagerBean = CommonBeanBuilder.newBuilder()
+                    .beanClass(ConfigurableExtension.class)
+                    .scope(Singleton.class)
+                    .addQualifier(DefaultLiteral.INSTANCE)
+                    .createSupplier(() -> configurableManager)
+                    .addType(ConfigurableManager.class)
+                    .addType(Object.class).build();
+            abd.addBean(configurableManagerBean);
         }
     }
 
