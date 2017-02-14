@@ -236,13 +236,16 @@ public class BuildTool {
     }
 
     private void createAppDependencyModule(ResolvedDependencies resolvedDependencies) {
+
         // synthetic app dependency module
-        // removable deps define the ones that should not be in WEB-INF/lib
-        // the ones excluded from M2_REPO is the inverse delta, aka all that belong to WEB-INF/lib
-        // NOTE: Care needs to be taken of those deps that belong to modules declaration. They are the exception to the rule
-        Set<ArtifactSpec> applicationDependencies = new HashSet<>(resolvedDependencies.getDependencies());
+        Set<ArtifactSpec> applicationDependencies = new HashSet<>(declaredDependencies.getExplicitDependencies());
         applicationDependencies.removeAll(resolvedDependencies.getRemovableDependencies());
-        applicationDependencies.removeAll(resolvedDependencies.getModuleDependencies());
+
+        Set<ArtifactSpec> transientDeps = new HashSet<>();
+        for (ArtifactSpec explicitDep : applicationDependencies) {
+            transientDeps.addAll(declaredDependencies.getTransientDependencies(explicitDep));
+        }
+        applicationDependencies.addAll(transientDeps);
 
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
@@ -255,6 +258,8 @@ public class BuildTool {
 
         sb.append("  </resources>\n");
         sb.append("</module>");
+
+        System.out.println(sb.toString());
 
         // TODO: Location of the tmp dir should be within project build directory
         Path tmpDir = Paths.get(new File(System.getProperty("java.io.tmpdir")).toURI()).resolve("swarm_modules");
