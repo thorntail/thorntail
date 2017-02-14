@@ -250,13 +250,13 @@ public class BuildTool {
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
         sb.append("<module xmlns=\"urn:jboss:module:1.3\" name=\"").append(APP_DEPENDENCY_MODULE).append("\">\n");
-        sb.append("<resources>\n");
+        sb.append("\t<resources>\n");
 
         for (ArtifactSpec dep : applicationDependencies) {
-            sb.append("<artifact name=\"").append(dep.mscGav()).append("\"/>\n");
+            sb.append("\t\t<artifact name=\"").append(dep.mscGav()).append("\"/>\n");
         }
 
-        sb.append("  </resources>\n");
+        sb.append("\t</resources>\n");
         sb.append("</module>");
 
         System.out.println(sb.toString());
