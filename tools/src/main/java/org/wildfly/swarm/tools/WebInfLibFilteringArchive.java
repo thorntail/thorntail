@@ -25,22 +25,33 @@ public class WebInfLibFilteringArchive extends GenericArchiveImpl
 
     protected void filter(ResolvedDependencies resolvedDependencies) {
         Set<ArchivePath> remove = new HashSet<>();
-        filter(remove, getArchive().get(ArchivePaths.root()), resolvedDependencies);
+        Set<ArchivePath> included = new HashSet<>();
+        filter(remove, included, getArchive().get(ArchivePaths.root()), resolvedDependencies);
 
         for (ArchivePath each : remove) {
             getArchive().delete(each);
         }
+
+        System.out.println("--");
+        included.forEach(dep -> System.out.println(dep));
+        System.out.println("--");
     }
 
-    protected void filter(Set<ArchivePath> remove, Node node, ResolvedDependencies resolvedDependencies) {
+    protected void filter(Set<ArchivePath> remove, Set<ArchivePath> included, Node node, ResolvedDependencies resolvedDependencies) {
         String path = node.getPath().get();
+
         if (path.startsWith("/WEB-INF/lib") && path.endsWith(".jar")) {
+
+            if (!resolvedDependencies.isRemovable(node)) {
+                included.add(node.getPath());
+            }
+
             // all libs will be purged and instead resolved from BuildTool.APP_DEPENDENCY_MODULE
             remove.add(node.getPath());
         }
 
         for (Node each : node.getChildren()) {
-            filter(remove, each, resolvedDependencies);
+            filter(remove, included, each, resolvedDependencies);
         }
     }
 }
