@@ -237,10 +237,6 @@ public class BuildTool {
 
     private void createAppDependencyModule(ResolvedDependencies resolvedDependencies) {
 
-        if (!bundleDependencies) {
-            return;
-        }
-
         // synthetic app dependency module
         Set<ArtifactSpec> applicationDependencies = new HashSet<>(declaredDependencies.getExplicitDependencies());
         applicationDependencies.removeAll(resolvedDependencies.getRemovableDependencies());
