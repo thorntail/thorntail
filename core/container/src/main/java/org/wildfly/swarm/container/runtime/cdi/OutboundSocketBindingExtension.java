@@ -17,6 +17,7 @@ package org.wildfly.swarm.container.runtime.cdi;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -32,6 +33,8 @@ import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
 /**
@@ -48,12 +51,11 @@ public class OutboundSocketBindingExtension implements Extension {
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
         try (AutoCloseable handle = Performance.time("OutboundSocketBindingExtension.afterBeanDiscovery")) {
             for (OutboundSocketBindingRequest each : this.bindings) {
-                abd.addBean()
-                        .addTypes(Customizer.class)
-                        .scope(Singleton.class)
-                        .addQualifier(new AnnotationLiteral<Pre>() {
-                        })
-                        .produceWith(() -> (Customizer) () -> {
+
+                Supplier<Customizer> customizerSupplier = () -> {
+                    return new Customizer() {
+                        @Override
+                        public void customize() {
                             Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
 
                             groups.stream()
@@ -66,9 +68,20 @@ public class OutboundSocketBindingExtension implements Extension {
                                     .ifPresent((group) -> {
                                         group.outboundSocketBinding(each.outboundSocketBinding());
                                     });
-                        });
+                        }
+                    };
+                };
+                CommonBean<Customizer> customizerBean = CommonBeanBuilder.newBuilder()
+                        .beanClass(OutboundSocketBindingExtension.class)
+                        .scope(Singleton.class)
+                        .addQualifier(new AnnotationLiteral<Pre>() {
+                        })
+                        .addQualifier(AnyLiteral.INSTANCE)
+                        .createSupplier(customizerSupplier)
+                        .addType(Customizer.class)
+                        .addType(Object.class).build();
+                abd.addBean(customizerBean);
             }
         }
-
     }
 }

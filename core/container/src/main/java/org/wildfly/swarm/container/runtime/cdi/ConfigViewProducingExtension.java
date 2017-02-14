@@ -23,6 +23,8 @@ import javax.inject.Singleton;
 
 import org.jboss.weld.literal.DefaultLiteral;
 import org.wildfly.swarm.bootstrap.performance.Performance;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 
 /**
@@ -40,12 +42,14 @@ public class ConfigViewProducingExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
         try (AutoCloseable handle = Performance.time("ConfigViewProducingExtension.afterBeanDiscovery")) {
-            abd.addBean().addType(ConfigView.class)
+            CommonBean<ConfigView> configViewBean = CommonBeanBuilder.newBuilder()
+                    .beanClass(ConfigViewProducingExtension.class)
                     .scope(Singleton.class)
-                    .qualifiers(DefaultLiteral.INSTANCE)
-                    .produceWith(() -> {
-                        return this.configView;
-                    });
+                    .addQualifier(DefaultLiteral.INSTANCE)
+                    .createSupplier(() -> configView)
+                    .addType(ConfigView.class)
+                    .addType(Object.class).build();
+            abd.addBean(configViewBean);
         }
     }
 
