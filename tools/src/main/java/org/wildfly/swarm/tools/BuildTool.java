@@ -331,7 +331,6 @@ public class BuildTool {
                                       .collect(Collectors.toList())));
 
         allFractions.forEach(f -> this.declaredDependencies.add(f));
-
         analyzeDependencies(true);
     }
 
@@ -485,14 +484,6 @@ public class BuildTool {
             }
         }
 
-        // removable deps define the ones that should not be in WEB-INF/lib
-        // the ones excluded from M2_REPO is the inverse delta, aka all that belong to WEB-INF/lib
-        // NOTE: Care needs to be taken of those deps that belong to modules declaratiion. They are the exception to the rule
-        Set<ArtifactSpec> excludeFromM2Repo = new HashSet<>(toBeResolved);
-        excludeFromM2Repo.addAll(alreadyResolved);
-        excludeFromM2Repo.removeAll(dependencyManager.getRemovableDependencies());
-        excludeFromM2Repo.removeAll(dependencyManager.getModuleDependencies());
-
         for (ArtifactSpec dependency : resolvedDependencies.getModuleDependencies()) {
             if (!dependency.isResolved()) {
                 toBeResolved.add(dependency);
@@ -509,9 +500,6 @@ public class BuildTool {
             Collection<ArtifactSpec> newResolved = resolver.resolveAllArtifactsNonTransitively(toBeResolved);
             alreadyResolved.addAll(newResolved);
         }
-
-        // remove the ones that belong to WEB-INF/lib
-        alreadyResolved.removeAll(excludeFromM2Repo);
 
         for (ArtifactSpec dependency : alreadyResolved) {
             addArtifactToArchiveMavenRepository(archive, dependency);
