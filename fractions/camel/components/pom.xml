@@ -36,17 +36,103 @@
 
     <modules>
         <module>activemq</module>
+        <module>atom</module>
+        <module>avro</module>
+        <module>barcode</module>
+        <module>base64</module>
+        <module>bean-validator</module>
+        <module>beanio</module>
+        <module>bindy</module>
+        <module>braintree</module>
+        <module>cassandraql</module>
+        <module>castor</module>
         <module>cdi</module>
+        <module>context</module>
+        <module>crypto</module>
+        <module>csv</module>
         <module>cxf</module>
+        <module>dns</module>
+        <module>dozer</module>
         <module>ejb</module>
+        <module>elasticsearch</module>
+        <module>elsql</module>
+        <module>exec</module>
+        <module>flatpack</module>
+        <module>freemarker</module>
+        <module>ftp</module>
+        <module>git</module>
+        <module>groovy</module>
+        <module>gson</module>
+        <module>hl7</module>
+        <module>http4</module>
+        <module>hystrix</module>
+        <module>infinispan</module>
+        <module>irc</module>
+        <module>jackson</module>
+        <module>jacksonxml</module>
+        <module>jasypt</module>
         <module>jaxb</module>
+        <module>jbpm</module>
+        <module>jcache</module>
+        <module>jdbc</module>
+        <module>jgroups</module>
         <module>jms</module>
         <module>jmx</module>
         <module>jpa</module>
+        <module>jsch</module>
+        <module>jsonpath</module>
+        <module>kafka</module>
+        <module>ldap</module>
+        <module>linkedin</module>
+        <module>lucene</module>
         <module>mail</module>
+        <module>metrics</module>
+        <module>mina2</module>
+        <module>mllp</module>
+        <module>mongodb</module>
+        <module>mqtt</module>
+        <module>mvel</module>
+        <module>mybatis</module>
+        <module>nats</module>
+        <module>netty4</module>
         <module>ognl</module>
+        <module>olingo2</module>
+        <module>optaplanner</module>
+        <module>paho</module>
+        <module>pdf</module>
+        <module>protobuf</module>
+        <module>quartz2</module>
+        <module>rss</module>
+        <module>salesforce</module>
+        <module>sap-netweaver</module>
+        <module>saxon</module>
+        <module>schematron</module>
+        <module>script</module>
+        <module>servicenow</module>
+        <module>servlet</module>
+        <module>sjms</module>
+        <module>smpp</module>
+        <module>snakeyaml</module>
+        <module>soap</module>
+        <module>spring-security</module>
+        <module>sql</module>
+        <module>ssh</module>
+        <module>stax</module>
+        <module>stream</module>
         <module>swagger</module>
+        <module>syslog</module>
+        <module>tagsoup</module>
+        <module>tarfile</module>
+        <module>twitter</module>
         <module>undertow</module>
-        <module>other</module>
+        <module>velocity</module>
+        <module>vertx</module>
+        <module>weather</module>
+        <module>xmlbeans</module>
+        <module>xmlsecurity</module>
+        <module>xstream</module>
+        <module>zipfile</module>
+        <module>zipkin</module>
+        <module>zookeeper</module>
     </modules>
 </project>
