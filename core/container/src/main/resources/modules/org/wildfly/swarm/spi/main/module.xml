@@ -14,6 +14,7 @@
         <path name="org/wildfly/swarm/spi/api/annotations"/>
         <path name="org/wildfly/swarm/spi/api/config"/>
         <path name="org/wildfly/swarm/spi/api/internal"/>
+        <path name="org/jboss/jandex"/>
       </paths>
     </system>
     <module name="org.wildfly.swarm.spi" slot="api" services="export" export="true"/>
