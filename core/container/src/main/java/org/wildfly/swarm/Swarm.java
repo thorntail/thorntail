@@ -18,9 +18,11 @@ package org.wildfly.swarm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -77,6 +79,7 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.config.ConfigView;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
 /**
@@ -503,12 +506,46 @@ public class Swarm {
         return false;
     }
 
-    private void initializeConfigView() throws IOException, ModuleLoadException {
+    protected void initializeConfigView() throws IOException, ModuleLoadException {
+        initializeConfigView(null);
+    }
 
+    protected void initializeConfigView(Properties properties) throws IOException, ModuleLoadException {
         try (AutoCloseable handle = Performance.time("Loading YAML")) {
-            ConfigViewFactory factory = ConfigViewFactory.defaultFactory();
+            ConfigViewFactory factory = ConfigViewFactory.defaultFactory(properties);
+
+            if (System.getProperty(SwarmProperties.PROJECT_STAGE_FILE) != null) {
+                String file = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
+                boolean loaded = false;
+                try {
+                    Path path = Paths.get(file);
+                    if (Files.exists(path)) {
+                        factory.load("stages", path.toUri().toURL());
+                        loaded = true;
+                    }
+                } catch (InvalidPathException e) {
+                    // ignore
+                }
+                if (!loaded) {
+                    // try it as a URL
+                    try {
+                        URL url = new URL(file);
+                        factory.load("stages", url);
+                    } catch (MalformedURLException e) {
+                        // oh well
+                    }
+                }
+            }
 
             List<String> activatedNames = new ArrayList<>();
+
+            if (System.getProperty(SwarmProperties.PROJECT_STAGE) != null) {
+                String prop = System.getProperty(SwarmProperties.PROJECT_STAGE);
+                String[] activated = prop.split(",");
+                for (String each : activated) {
+                    activatedNames.add(each);
+                }
+            }
 
             for (int i = 0; i < this.configs.size(); ++i) {
                 URL each = this.configs.get(i);
@@ -620,6 +657,10 @@ public class Swarm {
         } catch (Exception e) {
             SwarmMessages.MESSAGES.moduleMBeanServerNotInstalled(e);
         }
+    }
+
+    protected ConfigView configView() {
+        return this.configView;
     }
 
     private String[] args;

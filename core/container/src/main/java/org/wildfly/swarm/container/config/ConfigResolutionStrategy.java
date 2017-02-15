@@ -82,6 +82,12 @@ class ConfigResolutionStrategy {
         });
     }
 
+    private void deactivate(ConfigKey key) {
+        optionalValueOf(key).ifPresent((v) -> {
+            this.properties.clearProperty(key.name());
+        });
+    }
+
     /**
      * Retrieve the configuration value for a key.
      *

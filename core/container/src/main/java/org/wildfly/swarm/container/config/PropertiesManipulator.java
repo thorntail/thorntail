@@ -19,6 +19,8 @@ interface PropertiesManipulator {
 
     void setProperty(String name, String value);
 
+    void clearProperty(String name);
+
     Properties getProperties();
 
     class SystemPropertiesManipulator implements PropertiesManipulator {
@@ -37,6 +39,11 @@ interface PropertiesManipulator {
         @Override
         public void setProperty(String name, String value) {
             System.setProperty(name, value);
+        }
+
+        @Override
+        public void clearProperty(String name) {
+            System.clearProperty(name);
         }
 
         @Override
@@ -59,6 +66,11 @@ interface PropertiesManipulator {
         @Override
         public void setProperty(String name, String value) {
             this.properties.setProperty(name, value);
+        }
+
+        @Override
+        public void clearProperty(String name) {
+            this.properties.remove(name);
         }
 
         @Override
