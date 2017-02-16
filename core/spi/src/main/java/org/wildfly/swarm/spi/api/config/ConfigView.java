@@ -4,10 +4,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.wildfly.swarm.spi.api.StageConfig;
+
 /**
  * @author Bob McWhirter
  */
-public interface ConfigView {
+public interface ConfigView extends StageConfig {
 
     Object valueOf(ConfigKey key);
 

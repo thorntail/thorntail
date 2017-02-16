@@ -78,6 +78,7 @@ import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.SocketBinding;
+import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
@@ -659,7 +660,22 @@ public class Swarm {
         }
     }
 
-    protected ConfigView configView() {
+    /** Retrieve the configuration view.
+     *
+     * @return The configuration view.
+     */
+    public ConfigView configView() {
+        return this.configView;
+    }
+
+    /** Retrieve the configuration view in a deprecated manner.
+     *
+     * @see #configView()
+     *
+     * @return The {@code ConfigView} through a deprecated interface.
+     */
+    @Deprecated
+    public StageConfig stageConfig() {
         return this.configView;
     }
 
