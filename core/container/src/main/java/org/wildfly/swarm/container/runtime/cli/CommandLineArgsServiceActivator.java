@@ -17,8 +17,8 @@ package org.wildfly.swarm.container.runtime.cli;
 
 import java.util.Arrays;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
@@ -31,7 +31,7 @@ import org.wildfly.swarm.internal.SwarmMessages;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class CommandLineArgsServiceActivator implements ServiceActivator {
 
     @Inject

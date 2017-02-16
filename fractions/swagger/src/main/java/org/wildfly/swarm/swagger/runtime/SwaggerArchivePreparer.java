@@ -3,7 +3,7 @@ package org.wildfly.swarm.swagger.runtime;
 import java.util.Arrays;
 import java.util.Map;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -15,7 +15,7 @@ import org.wildfly.swarm.swagger.SwaggerArchive;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class SwaggerArchivePreparer implements ArchivePreparer {
     @Override
     public void prepareArchive(Archive<?> archive) {

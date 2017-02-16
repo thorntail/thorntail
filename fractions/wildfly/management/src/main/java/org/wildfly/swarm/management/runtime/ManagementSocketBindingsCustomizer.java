@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.management.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -29,7 +29,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * @author Bob McWhirter
  */
 @Pre
-@Singleton
+@ApplicationScoped
 public class ManagementSocketBindingsCustomizer implements Customizer {
 
     @Inject

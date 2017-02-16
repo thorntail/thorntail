@@ -1,5 +1,7 @@
 package org.wildfly.swarm.jaxrs.btm.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.jaxrs.btm.zipkin.ServerRequestInterceptor;
@@ -10,6 +12,7 @@ import org.wildfly.swarm.spi.api.ArchivePreparer;
  * @author Heiko Braun
  * @since 17/10/16
  */
+@ApplicationScoped
 public class WebXMLAdapter implements ArchivePreparer {
 
     private static final String SERVER_SIDE_FILTERS =

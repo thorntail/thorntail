@@ -17,6 +17,7 @@ package org.wildfly.swarm.bootstrap;
 
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
@@ -30,6 +31,7 @@ public class Main {
 
     public static void main(String... args) throws Throwable {
         try {
+            Performance.start();
             //TODO Move property key to -spi
             System.setProperty(BootstrapProperties.IS_UBERJAR, Boolean.TRUE.toString());
             new Main(args).run();

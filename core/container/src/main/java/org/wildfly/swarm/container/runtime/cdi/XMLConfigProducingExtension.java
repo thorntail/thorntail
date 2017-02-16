@@ -24,7 +24,10 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.container.runtime.xmlconfig.XMLConfig;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 
 /**
  * Produces any explicitly-set XML configuration URL (standalone.xml)
@@ -39,11 +42,17 @@ public class XMLConfigProducingExtension implements Extension {
         this.xmlConfig = xmlConfig;
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        abd.addBean().addType(URL.class)
-                .scope(Dependent.class)
-                .qualifiers(XMLConfig.Literal.INSTANCE)
-                .produceWith(this::getXMLConfig);
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
+        try (AutoCloseable handle = Performance.time("XMLConfigProducingExtension.afterBeanDiscovery")) {
+            CommonBean<URL> urlBean = CommonBeanBuilder.newBuilder()
+                    .beanClass(XMLConfigProducingExtension.class)
+                    .scope(Dependent.class)
+                    .addQualifier(XMLConfig.Literal.INSTANCE)
+                    .createSupplier(this::getXMLConfig)
+                    .addType(URL.class)
+                    .addType(Object.class).build();
+            abd.addBean(urlBean);
+        }
     }
 
     protected URL getXMLConfig() {

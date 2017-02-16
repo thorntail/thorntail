@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.jgroups.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.container.runtime.config.DefaultSocketBindingGroupProducer;
 import org.wildfly.swarm.jgroups.JGroupsFraction;
@@ -30,7 +30,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * @author Bob McWhirter
  */
 @Pre
-@Singleton
+@ApplicationScoped
 public class JGroupsSocketBindingCustomizer implements Customizer {
 
     @Inject

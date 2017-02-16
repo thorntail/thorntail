@@ -20,10 +20,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.util.TypeLiteral;
+
+import org.jboss.weld.literal.DefaultLiteral;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 
 /**
  * @author Bob McWhirter
@@ -40,14 +44,21 @@ public class CommandLineArgsExtension implements Extension {
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
-        abd.addBean()
-                .addType(String[].class)
+        CommonBean<String[]> stringBean = CommonBeanBuilder.newBuilder()
+                .beanClass(CommandLineArgsExtension.class)
+                .scope(Dependent.class)
+                .createSupplier(() -> args)
                 .addQualifier(CommandLineArgs.Literal.INSTANCE)
-                .producing(this.args);
-
-        abd.addBean()
-                .addType(new TypeLiteral<List<String>>() {
-                })
-                .producing(this.argsList);
+                .addType(String[].class)
+                .addType(Object.class).build();
+        abd.addBean(stringBean);
+        CommonBean<List<String>> listBean = CommonBeanBuilder.newBuilder()
+                .beanClass(CommandLineArgsExtension.class)
+                .scope(Dependent.class)
+                .createSupplier(() -> argsList)
+                .addQualifier(DefaultLiteral.INSTANCE)
+                .addType(List.class)
+                .addType(Object.class).build();
+        abd.addBean(listBean);
     }
 }

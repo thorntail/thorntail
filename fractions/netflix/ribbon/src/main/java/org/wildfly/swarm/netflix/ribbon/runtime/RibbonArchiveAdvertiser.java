@@ -1,6 +1,6 @@
 package org.wildfly.swarm.netflix.ribbon.runtime;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.netflix.ribbon.RibbonArchive;
@@ -9,7 +9,7 @@ import org.wildfly.swarm.spi.api.ArchivePreparer;
 /**
  * @author Ken Finnigan
  */
-@Singleton
+@ApplicationScoped
 public class RibbonArchiveAdvertiser implements ArchivePreparer {
     @Override
     public void prepareArchive(Archive<?> archive) {

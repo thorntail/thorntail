@@ -20,9 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.runtime.xmlconfig.StandaloneXMLParser;
@@ -34,7 +34,7 @@ import org.wildfly.swarm.internal.SwarmMessages;
  *
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class XMLMarshaller implements ConfigurationMarshaller {
 
     @Inject

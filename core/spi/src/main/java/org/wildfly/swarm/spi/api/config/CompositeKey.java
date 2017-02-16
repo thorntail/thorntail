@@ -16,14 +16,15 @@ public class CompositeKey implements ConfigKey {
     }
 
     public CompositeKey(SimpleKey... parts) {
-        this.parts.addAll(Arrays.asList(parts));
+        this.parts = Arrays.asList(parts);
     }
 
     public CompositeKey(String... parts) {
-        this.parts.addAll(Arrays.asList(parts).stream().map(SimpleKey::new).collect(Collectors.toList()));
+        this.parts = Arrays.asList(parts).stream().map(SimpleKey::new).collect(Collectors.toList());
     }
 
     public CompositeKey(CompositeKey parent, ConfigKey child) {
+        this.parts = new ArrayList<>();
         this.parts.addAll(parent.parts);
         if (child == ConfigKey.EMPTY) {
             // skip
@@ -39,7 +40,7 @@ public class CompositeKey implements ConfigKey {
     }
 
     CompositeKey(List<SimpleKey> parts) {
-        this.parts.addAll(parts);
+        this.parts = parts;
     }
 
     @Override
@@ -106,6 +107,5 @@ public class CompositeKey implements ConfigKey {
         return name();
     }
 
-    private final List<SimpleKey> parts = new ArrayList<>();
-
+    private List<SimpleKey> parts;
 }

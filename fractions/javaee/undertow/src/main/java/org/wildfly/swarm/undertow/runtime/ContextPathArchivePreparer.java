@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Defaultable;
@@ -24,6 +26,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 /**
  * @author Ken Finnigan
  */
+@ApplicationScoped
 public class ContextPathArchivePreparer implements ArchivePreparer {
 
     @Configurable("swarm.context.path")

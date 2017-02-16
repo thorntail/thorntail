@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
@@ -31,7 +32,7 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class TempFileProviderProducer {
 
     private static final String TEMP_DIR_NAME = "wildfly-swarm";
@@ -55,6 +56,7 @@ public class TempFileProviderProducer {
     }
 
     @Produces
+    @Singleton
     TempFileProvider tempFileProvider() {
         return this.tempFileProvider;
     }

@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.datasources.runtime.drivers;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.config.datasources.DataSource;
@@ -27,7 +27,7 @@ import org.wildfly.swarm.datasources.runtime.DriverInfo;
  *
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class DB2DriverInfo extends DriverInfo {
 
     public static final String DEFAULT_CONNECTION_URL = "jdbc:db2:ibmdb2db";
@@ -38,11 +38,11 @@ public class DB2DriverInfo extends DriverInfo {
 
     public DB2DriverInfo() {
         super("ibmdb2", ModuleIdentifier.create("com.ibm.db2jcc"), "com.ibm.db2.jcc.DB2Driver",
-              "com.ibm.db2.jcc.licenses.DB2J",
-              "com.ibm.db2.jcc.licenses.DB2SQLDS",
-              "com.ibm.db2.jcc.licenses.DB2UW",
-              "com.ibm.db2.jcc.licenses.DB2iSeries",
-              "com.ibm.db2.jcc.licenses.DB2zOS");
+                "com.ibm.db2.jcc.licenses.DB2J",
+                "com.ibm.db2.jcc.licenses.DB2SQLDS",
+                "com.ibm.db2.jcc.licenses.DB2UW",
+                "com.ibm.db2.jcc.licenses.DB2iSeries",
+                "com.ibm.db2.jcc.licenses.DB2zOS");
     }
 
     @Override

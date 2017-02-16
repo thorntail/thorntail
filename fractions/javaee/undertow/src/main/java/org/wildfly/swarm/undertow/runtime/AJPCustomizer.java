@@ -15,9 +15,9 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
@@ -29,7 +29,7 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  * @author Bob McWhirter
  */
 @Pre
-@Singleton
+@ApplicationScoped
 public class AJPCustomizer implements Customizer {
 
     @Inject

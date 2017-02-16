@@ -16,15 +16,12 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
 
     private static final String RUNTIME_SLOT = "runtime";
 
-    private static final String WELD_VERSION = "3";
-
     public ContainerModuleFinder() {
         super("swarm.container");
     }
 
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
-
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
                         PathFilters.acceptAll(),
@@ -79,37 +76,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.jboss.weld.api", WELD_VERSION), false));
-        builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        ModuleIdentifier.create("org.jboss.weld.spi", WELD_VERSION), false));
-        builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        ModuleIdentifier.create("org.jboss.weld.core", WELD_VERSION), false));
-        builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        ModuleIdentifier.create("org.jboss.weld.se", WELD_VERSION), false));
+                        ModuleIdentifier.create("org.jboss.weld.se"), false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(

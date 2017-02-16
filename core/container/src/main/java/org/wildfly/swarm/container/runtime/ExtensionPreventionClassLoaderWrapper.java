@@ -12,10 +12,8 @@ public class ExtensionPreventionClassLoaderWrapper extends ClassLoader {
 
     private static final String EXTENSION = "META-INF/services/javax.enterprise.inject.spi.Extension";
 
-    private final ClassLoader delegate;
-
     public ExtensionPreventionClassLoaderWrapper(ClassLoader delegate) {
-        this.delegate = delegate;
+        super(delegate);
     }
 
     @Override
@@ -25,7 +23,7 @@ public class ExtensionPreventionClassLoaderWrapper extends ClassLoader {
             return Collections.emptyEnumeration();
         }
 
-        return this.delegate.getResources(name);
+        return super.getResources(name);
     }
 
 }

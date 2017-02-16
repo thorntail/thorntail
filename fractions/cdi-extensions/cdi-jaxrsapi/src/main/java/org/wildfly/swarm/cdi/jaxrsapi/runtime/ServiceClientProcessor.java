@@ -17,7 +17,7 @@ package org.wildfly.swarm.cdi.jaxrsapi.runtime;
 
 import java.util.List;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
@@ -39,7 +39,7 @@ import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
 /**
  * @author Ken Finnigan
  */
-@Singleton
+@ApplicationScoped
 public class ServiceClientProcessor implements ArchiveMetadataProcessor {
     @Override
     public void processArchive(Archive<?> archive, Index index) {
@@ -59,10 +59,10 @@ public class ServiceClientProcessor implements ArchiveMetadataProcessor {
             AnnotationVisitor av0;
 
             cw.visit(V1_8, ACC_PUBLIC + ACC_SUPER,
-                     implName.replace('.', '/'),
-                     null,
-                     "java/lang/Object",
-                     new String[]{classInfo.name().toString().replace('.', '/')}
+                    implName.replace('.', '/'),
+                    null,
+                    "java/lang/Object",
+                    new String[]{classInfo.name().toString().replace('.', '/')}
             );
 
             int lastDot = implName.lastIndexOf('.');
@@ -90,11 +90,11 @@ public class ServiceClientProcessor implements ArchiveMetadataProcessor {
                 Label l2 = new Label();
                 mv.visitLabel(l2);
                 mv.visitLocalVariable("this",
-                                      buildTypeDef(implName),
-                                      null,
-                                      l0,
-                                      l2,
-                                      0);
+                        buildTypeDef(implName),
+                        null,
+                        l0,
+                        l2,
+                        0);
                 mv.visitMaxs(1, 1);
                 mv.visitEnd();
             }

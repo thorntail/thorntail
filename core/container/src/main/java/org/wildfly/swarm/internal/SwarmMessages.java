@@ -177,6 +177,11 @@ public interface SwarmMessages extends BasicLogger {
             "Are the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for JDK/JRE 8 installed?")
     void http2NotSupported();
 
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 39, value = "Boot performance:\n%s")
+    void bootPerformance(String metrics);
+
+
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
 

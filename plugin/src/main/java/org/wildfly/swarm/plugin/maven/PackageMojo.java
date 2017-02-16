@@ -87,6 +87,10 @@ public class PackageMojo extends AbstractSwarmMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (this.project.getPackaging().equals("pom")) {
+            getLog().info("Not processing project with pom packaging");
+            return;
+        }
         initProperties(false);
         final Artifact primaryArtifact = this.project.getArtifact();
         final String finalName = this.project.getBuild().getFinalName();
@@ -102,13 +106,13 @@ public class PackageMojo extends AbstractSwarmMojo {
 
         final BuildTool tool = new BuildTool(mavenArtifactResolvingHelper())
                 .projectArtifact(primaryArtifact.getGroupId(),
-                                 primaryArtifact.getArtifactId(),
-                                 primaryArtifact.getBaseVersion(),
-                                 type,
-                                 primaryArtifactFile,
-                                 finalName.endsWith("." + type) ?
-                                         finalName :
-                                         String.format("%s.%s", finalName, type))
+                        primaryArtifact.getArtifactId(),
+                        primaryArtifact.getBaseVersion(),
+                        type,
+                        primaryArtifactFile,
+                        finalName.endsWith("." + type) ?
+                                finalName :
+                                String.format("%s.%s", finalName, type))
                 .properties(this.properties)
                 .mainClass(this.mainClass)
                 .bundleDependencies(this.bundleDependencies)

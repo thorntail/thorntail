@@ -17,6 +17,7 @@ package org.wildfly.swarm.container.runtime.cdi;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -28,9 +29,12 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Singleton;
 
 import org.jboss.weld.literal.AnyLiteral;
+import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
 /**
@@ -44,29 +48,40 @@ public class OutboundSocketBindingExtension implements Extension {
         this.bindings = bindings;
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
+        try (AutoCloseable handle = Performance.time("OutboundSocketBindingExtension.afterBeanDiscovery")) {
+            for (OutboundSocketBindingRequest each : this.bindings) {
 
-        for (OutboundSocketBindingRequest each : this.bindings) {
-            abd.addBean()
-                    .addTypes(Customizer.class)
-                    .scope(Singleton.class)
-                    .addQualifier(new AnnotationLiteral<Pre>() {
-                    })
-                    .produceWith(() -> (Customizer) () -> {
-                        Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
+                Supplier<Customizer> customizerSupplier = () -> {
+                    return new Customizer() {
+                        @Override
+                        public void customize() {
+                            Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
 
-                        groups.stream()
-                                .map((Bean e) -> {
-                                    CreationalContext<SocketBindingGroup> ctx = beanManager.createCreationalContext(e);
-                                    return (SocketBindingGroup) beanManager.getReference(e, SocketBindingGroup.class, ctx);
-                                })
-                                .filter(group -> group.name().equals(each.socketBindingGroup()))
-                                .findFirst()
-                                .ifPresent((group) -> {
-                                    group.outboundSocketBinding(each.outboundSocketBinding());
-                                });
-                    });
+                            groups.stream()
+                                    .map((Bean e) -> {
+                                        CreationalContext<SocketBindingGroup> ctx = beanManager.createCreationalContext(e);
+                                        return (SocketBindingGroup) beanManager.getReference(e, SocketBindingGroup.class, ctx);
+                                    })
+                                    .filter(group -> group.name().equals(each.socketBindingGroup()))
+                                    .findFirst()
+                                    .ifPresent((group) -> {
+                                        group.outboundSocketBinding(each.outboundSocketBinding());
+                                    });
+                        }
+                    };
+                };
+                CommonBean<Customizer> customizerBean = CommonBeanBuilder.newBuilder()
+                        .beanClass(OutboundSocketBindingExtension.class)
+                        .scope(Singleton.class)
+                        .addQualifier(new AnnotationLiteral<Pre>() {
+                        })
+                        .addQualifier(AnyLiteral.INSTANCE)
+                        .createSupplier(customizerSupplier)
+                        .addType(Customizer.class)
+                        .addType(Object.class).build();
+                abd.addBean(customizerBean);
+            }
         }
-
     }
 }

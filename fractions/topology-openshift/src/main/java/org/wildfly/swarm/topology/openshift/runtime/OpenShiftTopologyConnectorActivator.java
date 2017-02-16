@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.topology.openshift.runtime;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
@@ -24,7 +24,7 @@ import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
 import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 
-@Singleton
+@ApplicationScoped
 public class OpenShiftTopologyConnectorActivator implements ServiceActivator {
 
     @Override

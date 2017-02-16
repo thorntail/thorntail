@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.topology.jgroups.runtime;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
@@ -29,7 +29,7 @@ import org.wildfly.swarm.topology.runtime.TopologyManagerActivator;
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class JGroupsTopologyConnectorActivator implements ServiceActivator {
 
     @Override

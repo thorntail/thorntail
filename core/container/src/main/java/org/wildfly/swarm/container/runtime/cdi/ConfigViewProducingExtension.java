@@ -15,13 +15,16 @@
  */
 package org.wildfly.swarm.container.runtime.cdi;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.inject.Singleton;
 
 import org.jboss.weld.literal.DefaultLiteral;
+import org.wildfly.swarm.bootstrap.performance.Performance;
+import org.wildfly.swarm.spi.api.cdi.CommonBean;
+import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 
 /**
@@ -37,13 +40,17 @@ public class ConfigViewProducingExtension implements Extension {
         this.configView = configView;
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
-        abd.addBean().addType(ConfigView.class)
-                .scope(Dependent.class)
-                .qualifiers(DefaultLiteral.INSTANCE)
-                .produceWith(() -> {
-                    return this.configView;
-                });
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
+        try (AutoCloseable handle = Performance.time("ConfigViewProducingExtension.afterBeanDiscovery")) {
+            CommonBean<ConfigView> configViewBean = CommonBeanBuilder.newBuilder()
+                    .beanClass(ConfigViewProducingExtension.class)
+                    .scope(Singleton.class)
+                    .addQualifier(DefaultLiteral.INSTANCE)
+                    .createSupplier(() -> configView)
+                    .addType(ConfigView.class)
+                    .addType(Object.class).build();
+            abd.addBean(configViewBean);
+        }
     }
 
     public ConfigView getConfigView() {

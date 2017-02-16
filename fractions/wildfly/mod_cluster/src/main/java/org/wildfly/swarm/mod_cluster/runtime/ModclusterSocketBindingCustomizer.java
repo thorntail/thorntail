@@ -1,8 +1,8 @@
 package org.wildfly.swarm.mod_cluster.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.container.runtime.config.DefaultSocketBindingGroupProducer;
 import org.wildfly.swarm.mod_cluster.ModclusterFraction;
@@ -14,8 +14,8 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
 /**
  * @author Bob McWhirter
  */
-@Singleton
 @Pre
+@ApplicationScoped
 public class ModclusterSocketBindingCustomizer implements Customizer {
 
     @Inject

@@ -1,5 +1,6 @@
 package org.wildfly.swarm.jaxrs.btm.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ import org.wildfly.swarm.jaxrs.btm.ZipkinFraction;
 /**
  * @author Heiko Braun
  */
+@ApplicationScoped
 public class BraveServiceActivator implements ServiceActivator {
 
     @Inject

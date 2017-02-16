@@ -15,8 +15,8 @@
  */
 package org.wildfly.swarm.ejb.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
@@ -28,7 +28,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Ken Finnigan
  */
 @Post
-@Singleton
+@ApplicationScoped
 public class EJBSecurityCustomizer implements Customizer {
 
     @Inject

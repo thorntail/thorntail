@@ -19,8 +19,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.internal.SwarmMessages;
@@ -34,7 +34,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VAL
 /**
  * @author Bob McWhirter
  */
-@Singleton
+@ApplicationScoped
 public class ConfigViewPropertyMarshaller implements ConfigurationMarshaller {
 
     @Inject
