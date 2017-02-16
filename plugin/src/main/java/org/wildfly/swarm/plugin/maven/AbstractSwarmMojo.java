@@ -132,7 +132,8 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         MavenArtifactResolvingHelper resolvingHelper =
                 new MavenArtifactResolvingHelper(this.resolver,
                                                  this.repositorySystem,
-                                                 this.repositorySystemSession);
+                                                 this.repositorySystemSession,
+                                                 this.project.getDependencyManagement());
         this.remoteRepositories.forEach(resolvingHelper::remoteRepository);
 
         return resolvingHelper;

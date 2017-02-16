@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.Authentication;
+import org.apache.maven.model.DependencyManagement;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -58,10 +59,12 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     public MavenArtifactResolvingHelper(ArtifactResolver resolver,
                                         RepositorySystem system,
-                                        RepositorySystemSession session) {
+                                        RepositorySystemSession session,
+                                        DependencyManagement dependencyManagement) {
         this.resolver = resolver;
         this.system = system;
         this.session = session;
+        this.dependencyManagement = dependencyManagement;
         this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
                                                           "http://repository.jboss.org/nexus/content/groups/public/",
                                                           null));
@@ -110,8 +113,27 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
         List<DependencyNode> nodes = null;
         if (transitive) {
+
             final CollectRequest request = new CollectRequest();
             request.setRepositories(this.remoteRepositories);
+
+            // SWARM-1031
+            if (this.dependencyManagement != null) {
+                List<Dependency> managedDependencies = this.dependencyManagement.getDependencies()
+                        .stream()
+                        .map(mavenDep -> {
+                            DefaultArtifact artifact = new DefaultArtifact(
+                                    mavenDep.getGroupId(),
+                                    mavenDep.getArtifactId(),
+                                    mavenDep.getType(),
+                                    mavenDep.getVersion()
+                            );
+                            return new Dependency(artifact, mavenDep.getScope());
+                        })
+                        .collect(Collectors.toList());
+
+                request.setManagedDependencies(managedDependencies);
+            }
 
             specs.forEach(spec -> request
                     .addDependency(new Dependency(new DefaultArtifact(spec.groupId(),
@@ -213,6 +235,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     protected final RepositorySystemSession session;
+
+    private final DependencyManagement dependencyManagement;
 
     protected final List<RemoteRepository> remoteRepositories = new ArrayList<>();
 
