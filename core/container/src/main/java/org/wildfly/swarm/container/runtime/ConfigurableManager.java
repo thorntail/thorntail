@@ -24,6 +24,7 @@ import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.api.annotations.ConfigurableAlias;
 import org.wildfly.swarm.spi.api.config.ConfigKey;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 import org.wildfly.swarm.spi.api.config.Converter;
@@ -290,6 +291,16 @@ public class ConfigurableManager implements AutoCloseable {
                             this.configurables.add(configurable);
                             configure(configurable);
                         }
+
+                        // Process @ConfigurableAlias
+                        if (field.getAnnotation(ConfigurableAlias.class) != null) {
+                            name = nameForAlias(prefix, field);
+                            if (!seen(name)) {
+                                ConfigurableHandle configurable = new ObjectBackedConfigurableHandle(name, instance, field);
+                                this.configurables.add(configurable);
+                                configure(configurable);
+                            }
+                        }
                     }
                 }
             }
@@ -338,6 +349,18 @@ public class ConfigurableManager implements AutoCloseable {
             }
             if (!anno.simpleName().equals("")) {
                 return prefix.append(ConfigKey.parse(anno.simpleName()));
+            }
+        }
+
+        return prefix.append(nameFor(field));
+    }
+
+    protected ConfigKey nameForAlias(ConfigKey prefix, Field field) {
+        ConfigurableAlias annoAlias = field.getAnnotation(ConfigurableAlias.class);
+
+        if (annoAlias != null) {
+            if (!annoAlias.value().equals("")) {
+                return ConfigKey.parse(annoAlias.value());
             }
         }
 

@@ -298,7 +298,7 @@ public class RuntimeDeployer implements Deployer {
                 throw SwarmMessages.MESSAGES.deploymentFailed(e, deployment);
             }
         } catch (Exception e) {
-            throw new DeploymentException(e);
+            throw new DeploymentException(deployment, e);
         }
     }
 

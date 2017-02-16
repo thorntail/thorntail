@@ -27,6 +27,7 @@ import org.wildfly.swarm.config.undertow.servlet_container.WebsocketsSetting;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.api.annotations.ConfigurableAlias;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -251,29 +252,33 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     /**
      * Path to the keystore.
      */
-    @Configurable("swarm.http.keystore.path")
+    @Configurable("swarm.https.keystore.path")
+    @ConfigurableAlias("swarm.http.keystore.path")
     @AttributeDocumentation("Path to the server keystore")
     private String keystorePath;
 
     /**
      * Password for the keystore.
      */
-    @Configurable("swarm.http.keystore.password")
+    @Configurable("swarm.https.keystore.password")
+    @ConfigurableAlias("swarm.http.keystore.password")
     @AttributeDocumentation("Password to the server keystore")
     private String keystorePassword;
 
     /**
      * Password for the key.
      */
-    @Configurable("swarm.http.key.password")
+    @Configurable("swarm.https.key.password")
+    @ConfigurableAlias("swarm.http.key.password")
     @AttributeDocumentation("Password to the server certificate")
     private String keyPassword;
 
     /**
-     * Server certificate alias.
+     * Alias of Server certificate key entry in the keystore.
      */
-    @Configurable("swarm.http.certificate.alias")
-    @AttributeDocumentation("Alias to the server certificate")
+    @Configurable("swarm.https.key.alias")
+    @ConfigurableAlias("swarm.http.certificate.alias")
+    @AttributeDocumentation("Alias to the server certificate key entry in the keystore")
     private String alias;
 
     /**
