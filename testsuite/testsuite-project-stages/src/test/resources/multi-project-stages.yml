@@ -1,0 +1,9 @@
+foo:
+  bar:
+    baz: cheddar
+---
+project:
+  stage: production
+foo:
+  bar:
+   baz: brie

@@ -41,19 +41,24 @@ public class ConfigViewFactory {
     private final ConfigViewImpl configView;
 
     public static ConfigViewFactory defaultFactory() throws ModuleLoadException {
+        return defaultFactory(null);
+    }
+
+    public static ConfigViewFactory defaultFactory(Properties properties) throws ModuleLoadException {
         return new ConfigViewFactory(
+                properties,
                 new FilesystemConfigLocator(),
                 ClassLoaderConfigLocator.system(),
                 ClassLoaderConfigLocator.forApplication()
         );
     }
 
-    public ConfigViewFactory() {
-        this.configView = new ConfigViewImpl();
+    private ConfigViewFactory(Properties properties) {
+        this.configView = new ConfigViewImpl().withProperties(properties);
     }
 
-    public ConfigViewFactory(ConfigLocator... locators) {
-        this();
+    private ConfigViewFactory(Properties properties, ConfigLocator... locators) {
+        this(properties);
         for (ConfigLocator locator : locators) {
             addLocator(locator);
         }
