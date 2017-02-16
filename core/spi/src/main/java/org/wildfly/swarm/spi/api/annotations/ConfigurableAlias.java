@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
+ * Copyright 2017 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,15 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 /**
- * A group of configuration properties.
+ * Allows an {@link Configurable} to be have alternative aliases that will also correctly resolve.
  *
- * <p>The root class of any configuration group <b>must</b> contain this annotation.
- * Any inner classes must be static, but are not required to use this annotation,
- * but they may.</p>
+ * Mostly intended as a way to indicate a deprecated key name that will be removed.
  *
- * <p>When calculating configuration item names, the presence of this annotation
- * will override the naming heuristics usually used.</p>
- *
- * @author Bob McWhirter
+ * @author Ken Finnigan
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
-public @interface Configurable {
+public @interface ConfigurableAlias {
     @Nonbinding String value() default "";
-
-    @Nonbinding String simpleName() default "";
 }
