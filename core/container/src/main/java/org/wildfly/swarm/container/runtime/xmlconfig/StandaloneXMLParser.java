@@ -43,6 +43,7 @@ import org.jboss.staxmapper.XMLMapper;
 
 /**
  * @author Heiko Braun
+ * @author Ken Finnigan
  * @since 27/11/15
  */
 @Vetoed
@@ -72,11 +73,10 @@ public class StandaloneXMLParser {
         }, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
         xmlMapper = XMLMapper.Factory.create();
-        xmlMapper.registerRootElement(new QName(Namespace.CURRENT.getUriString(), SERVER), parserDelegate);
 
-        QName serverElementName = new QName("urn:jboss:domain:4.0", SERVER);
-        this.recognizedNames.add(serverElementName);
-        xmlMapper.registerRootElement(serverElementName, parserDelegate);
+        addDelegate(new QName(Namespace.CURRENT.getUriString(), SERVER), parserDelegate);
+        addDelegate(new QName("urn:jboss:domain:4.1", SERVER), parserDelegate);
+        addDelegate(new QName("urn:jboss:domain:4.0", SERVER), parserDelegate);
     }
 
     /**
