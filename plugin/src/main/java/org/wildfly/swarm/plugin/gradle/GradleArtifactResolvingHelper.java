@@ -50,7 +50,7 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
         this.projects = project.getRootProject().getAllprojects().stream().collect(Collectors.toMap(p -> p.getGroup() + ":" + p.getName() + ":" + p.getVersion(), p -> p));
         this.project.getRepositories().maven(repo -> {
             repo.setName("jboss-public");
-            repo.setUrl("http://repository.jboss.org/nexus/content/groups/public/");
+            repo.setUrl("https://repository.jboss.org/nexus/content/groups/public/");
         });
     }
 
