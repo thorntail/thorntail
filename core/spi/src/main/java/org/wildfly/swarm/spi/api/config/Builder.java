@@ -2,6 +2,8 @@ package org.wildfly.swarm.spi.api.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 /**
  */
@@ -33,16 +35,28 @@ public class Builder<T> implements Resolver<T> {
     public T getValue() {
 
         Object originalValue = this.view.valueOf(this.key);
-        String valueStr = (originalValue != null ? originalValue.toString() : null);
 
-        try {
-            T value = convert(valueStr);
-            if (null == value) {
-                throw new RuntimeException("Stage config '" + key + "' is missing");
+        if (originalValue instanceof ConfigTree) {
+            if (List.class.isAssignableFrom(this.targetType)) {
+                return (T) ((ConfigTree) originalValue).asList();
+            } else if (Map.class.isAssignableFrom(this.targetType)) {
+                return (T) ((ConfigTree) originalValue).asMap();
+            } else {
+                return null;
             }
-            return value;
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
+        } else {
+
+            String valueStr = (originalValue != null ? originalValue.toString() : null);
+
+            try {
+                T value = convert(valueStr);
+                if (null == value) {
+                    throw new RuntimeException("Stage config '" + key + "' is missing");
+                }
+                return value;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
         }
     }
 

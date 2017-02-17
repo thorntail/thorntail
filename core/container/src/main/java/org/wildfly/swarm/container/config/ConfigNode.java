@@ -1,11 +1,14 @@
 package org.wildfly.swarm.container.config;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.wildfly.swarm.spi.api.config.ConfigKey;
+import org.wildfly.swarm.spi.api.config.ConfigTree;
 import org.wildfly.swarm.spi.api.config.SimpleKey;
 
 /**
@@ -13,7 +16,7 @@ import org.wildfly.swarm.spi.api.config.SimpleKey;
  *
  * @author Bob McWhirter
  */
-public class ConfigNode {
+public class ConfigNode implements ConfigTree {
 
     public ConfigNode() {
     }
@@ -186,6 +189,9 @@ public class ConfigNode {
         SimpleKey head = key.head();
 
         if (head == ConfigKey.EMPTY) {
+            if (this.value == null && this.children != null) {
+                return this;
+            }
             return this.value;
         }
 
@@ -197,6 +203,40 @@ public class ConfigNode {
         }
 
         return null;
+    }
+
+    protected boolean isListLike() {
+        return this.children.keySet().stream()
+                .allMatch(e -> e.toString().matches("^[0-9]*$"));
+    }
+
+    public Object asObject() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        if (isListLike()) {
+            return asList();
+        }
+
+        return asMap();
+    }
+
+    public List asList() {
+        return this.children.values().stream()
+                .map(e -> e.asObject())
+                .collect(Collectors.toList());
+    }
+
+    public Map asMap() {
+        Map map = new HashMap();
+
+        this.children.entrySet()
+                .forEach(entry -> {
+                    map.put(entry.getKey().toString(), entry.getValue().asObject());
+                });
+
+        return map;
     }
 
     public String toString() {

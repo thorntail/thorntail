@@ -57,7 +57,7 @@ public class ConfigViewFactory {
         this.configView = new ConfigViewImpl().withProperties(properties);
     }
 
-    private ConfigViewFactory(Properties properties, ConfigLocator... locators) {
+    public ConfigViewFactory(Properties properties, ConfigLocator... locators) {
         this(properties);
         for (ConfigLocator locator : locators) {
             addLocator(locator);
