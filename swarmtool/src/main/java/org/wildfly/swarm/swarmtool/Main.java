@@ -270,7 +270,7 @@ public class Main {
         final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
                 .withMavenCentralRepo(true)
                 .withRemoteRepo(MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
-                                                                               "http://repository.jboss.org/nexus/content/groups/public/",
+                                                                               "https://repository.jboss.org/nexus/content/groups/public/",
                                                                                "default")
                                         .setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE)
                                         .setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER));

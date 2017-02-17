@@ -67,7 +67,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
 
             MavenRemoteRepository jbossPublic =
                     MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
-                                                                   "http://repository.jboss.org/nexus/content/groups/public/",
+                                                                   "https://repository.jboss.org/nexus/content/groups/public/",
                                                                    "default");
             jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
             jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
