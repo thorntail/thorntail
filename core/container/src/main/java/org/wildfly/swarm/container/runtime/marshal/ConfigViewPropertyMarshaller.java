@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.internal.SwarmMessages;
+import org.wildfly.swarm.internal.SwarmConfigMessages;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -48,7 +48,7 @@ public class ConfigViewPropertyMarshaller implements ConfigurationMarshaller {
             if (!key.startsWith("jboss") && !key.startsWith("java")) {
                 String value = properties.getProperty(key);
                 if (value != null) {
-                    SwarmMessages.MESSAGES.marshalProjectStageProperty(key);
+                    SwarmConfigMessages.MESSAGES.marshalProjectStageProperty(key);
                     ModelNode modelNode = new ModelNode();
                     modelNode.get(OP).set(ADD);
                     modelNode.get(ADDRESS).set("system-property", key);

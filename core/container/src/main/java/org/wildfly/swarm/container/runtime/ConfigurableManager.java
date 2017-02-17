@@ -20,7 +20,7 @@ import org.jboss.logging.Logger;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.config.runtime.Keyed;
 import org.wildfly.swarm.config.runtime.SubresourceInfo;
-import org.wildfly.swarm.internal.SwarmMessages;
+import org.wildfly.swarm.internal.SwarmConfigMessages;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -658,7 +658,7 @@ public class ConfigurableManager implements AutoCloseable {
                 e.printStackTrace();
             }
         }
-        SwarmMessages.MESSAGES.configuration(str.toString());
+        SwarmConfigMessages.MESSAGES.configuration(str.toString());
     }
 
     public void close() {

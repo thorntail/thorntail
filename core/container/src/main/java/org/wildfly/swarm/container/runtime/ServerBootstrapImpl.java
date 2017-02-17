@@ -42,6 +42,7 @@ import org.wildfly.swarm.container.runtime.cli.CommandLineArgsExtension;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
+import org.wildfly.swarm.internal.SwarmMetricsMessages;
 import org.wildfly.swarm.spi.api.ClassLoading;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.config.ConfigView;
@@ -151,7 +152,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                 });
             });
         } finally {
-            SwarmMessages.MESSAGES.bootPerformance(Performance.dump());
+            SwarmMetricsMessages.MESSAGES.bootPerformance(Performance.dump());
         }
     }
 
