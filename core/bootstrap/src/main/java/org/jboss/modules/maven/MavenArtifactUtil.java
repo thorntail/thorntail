@@ -18,15 +18,6 @@
 
 package org.jboss.modules.maven;
 
-import org.jboss.modules.Module;
-import org.jboss.modules.ResourceLoader;
-import org.jboss.modules.ResourceLoaders;
-import org.xml.sax.InputSource;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +33,16 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.jar.JarFile;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.jboss.modules.Module;
+import org.jboss.modules.ResourceLoader;
+import org.jboss.modules.ResourceLoaders;
+import org.xml.sax.InputSource;
 
 /**
  * Helper class to resolve a maven artifact.
