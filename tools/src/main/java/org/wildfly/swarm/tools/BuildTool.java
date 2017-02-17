@@ -277,7 +277,7 @@ public class BuildTool {
         this.archive.add(new WebInfLibFilteringArchiveAsset(this.projectAsset, this.dependencyManager));
     }
 
-    private boolean detectFractions() throws Exception {
+    private void detectFractions() throws Exception {
         final File tmpFile = File.createTempFile("buildtool", this.projectAsset.getName().replace("/", "_"));
         tmpFile.deleteOnExit();
         this.projectAsset.getArchive().as(ZipExporter.class).exportTo(tmpFile, true);
@@ -302,8 +302,6 @@ public class BuildTool {
         detectedFractions.stream()
                 .map(ArtifactSpec::fromFractionDescriptor)
                 .forEach(this::fraction);
-
-        return !detectedFractions.isEmpty();
     }
 
     static String strippedSwarmGav(MavenArtifactDescriptor desc) {
@@ -344,16 +342,13 @@ public class BuildTool {
 
             if (this.fractionDetectionMode == FractionDetectionMode.force || artifact == null) {
                 this.log.info("Scanning for needed WildFly Swarm fractions with mode: " + this.fractionDetectionMode);
+                detectFractions();
+            }
+        }
 
-                if (detectFractions()) {
-                    addFractions(resolvedDependencies);
-                }
-            }
-        } else {
-            // Ensure user added fractions have dependencies resolved when FractionDetectionMode.never
-            if (!this.fractions.isEmpty()) {
-                addFractions(resolvedDependencies);
-            }
+        // Ensure user added fractions have dependencies resolved
+        if (!this.fractions.isEmpty()) {
+            addFractions(resolvedDependencies);
         }
 
         artifact = this.dependencyManager.findWildFlySwarmBootstrapJar();
