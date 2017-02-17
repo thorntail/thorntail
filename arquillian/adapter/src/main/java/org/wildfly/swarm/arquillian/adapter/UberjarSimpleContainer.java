@@ -54,9 +54,9 @@ import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
-import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
 import org.wildfly.swarm.tools.DeclaredDependencies;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
@@ -203,7 +203,16 @@ public class UberjarSimpleContainer implements SimpleContainer {
         if (archive instanceof DependenciesContainer) {
             DependenciesContainer depContainer = (DependenciesContainer) archive;
             if (depContainer.hasMarker("org.wildfly.swarm.allDependencies")) {
-                munge(depContainer, declaredDependencies);
+                if (depContainer instanceof JBossDeploymentStructureContainer) {
+                    ((JBossDeploymentStructureContainer) depContainer).addModule(BuildTool.APP_DEPENDENCY_MODULE);
+                    try {
+                        depContainer.addMarker("org.wildfly.swarm.allDependencies.added");
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    throw new RuntimeException("Cannot allDependencies() to archive type " + archive.getClass());
+                }
             }
         }
 
@@ -288,20 +297,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
         }
         if (this.process.getError() != null) {
             throw new DeploymentException("Error starting process", this.process.getError());
-        }
-    }
-
-    private void munge(DependenciesContainer depContainer, DeclaredDependencies declaredDependencies) {
-
-        for (ArtifactSpec artifact : declaredDependencies.getExplicitDependencies()) { // [hb] TODO: this should actually be transient deps
-            assert artifact.file != null : "artifact.file cannot be null at this point: " + artifact;
-            depContainer.addAsLibraries(artifact.file);
-        }
-
-        try {
-            depContainer.addMarker("org.wildfly.swarm.allDependencies.added");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 

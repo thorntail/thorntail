@@ -259,7 +259,8 @@ public class DependencyManager implements ResolvedDependencies {
 
     }
 
-    Set<ArtifactSpec> getRemovableDependencies() {
+    @Override
+    public Set<ArtifactSpec> getRemovableDependencies() {
         return this.removableDependencies;
     }
 

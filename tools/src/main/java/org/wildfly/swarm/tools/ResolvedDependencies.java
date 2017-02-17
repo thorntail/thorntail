@@ -91,6 +91,8 @@ public interface ResolvedDependencies {
         return analyzers.stream();
     }
 
+    Set<ArtifactSpec> getRemovableDependencies();
+
     boolean isRemovable(Node node);
 
     Set<ArtifactSpec> getModuleDependencies();

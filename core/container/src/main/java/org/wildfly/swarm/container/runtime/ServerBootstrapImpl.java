@@ -151,7 +151,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                 });
             });
         } finally {
-            SwarmMessages.MESSAGES.bootPerformance(Performance.dump());
+            //SwarmMessages.MESSAGES.bootPerformance(Performance.dump());
         }
     }
 

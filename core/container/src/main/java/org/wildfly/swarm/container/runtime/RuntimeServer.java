@@ -165,7 +165,7 @@ public class RuntimeServer implements Server {
 
         try (AutoCloseable handle = Performance.time("configurable-manager rescan")) {
             this.configurableManager.rescan();
-            this.configurableManager.log();
+            //this.configurableManager.log();
             this.configurableManager.close();
         }
 
