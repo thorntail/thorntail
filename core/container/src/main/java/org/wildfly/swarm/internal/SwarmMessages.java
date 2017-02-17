@@ -19,7 +19,6 @@
 
 package org.wildfly.swarm.internal;
 
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,14 +42,8 @@ public interface SwarmMessages extends BasicLogger {
 
     SwarmMessages MESSAGES = Logger.getMessageLogger(SwarmMessages.class, "org.wildfly.swarm");
 
-    @Message(id = 1, value = "Stage config is not present.")
-    RuntimeException missingStageConfig();
-
     @Message(id = 2, value = "Cannot invoke %s on a container that has not been started.")
     IllegalStateException containerNotStarted(String method);
-
-    @Message(id = 3, value = "Project stage '%s' cannot be found.")
-    RuntimeException stageNotFound(String stageName);
 
     @Message(id = 4, value = "%s requires an argument.")
     RuntimeException argumentRequired(String arg);
@@ -69,12 +62,6 @@ public interface SwarmMessages extends BasicLogger {
 
     @Message(id = 9, value = "JavaArchive spec does not support Libraries")
     UnsupportedOperationException librariesNotSupported();
-
-    @Message(id = 10, value = "Failed to load stage configuration from URL : %s")
-    RuntimeException failedLoadingStageConfig(@Cause Throwable cause, URL url);
-
-    @Message(id = 11, value = "Missing stage 'default' in project-stages.yml")
-    RuntimeException missingDefaultStage();
 
     @Message(id = 12, value = "Fraction \"%s\" was configured using @WildFlyExtension with a module='',"
             + " but has multiple extension classes.  Please use classname='' to specify exactly one, or noClass=true to ignore all. %s")
@@ -101,25 +88,9 @@ public interface SwarmMessages extends BasicLogger {
     @Message(id = 19, value = "No deployments specified on the command-line")
     String noDeploymentsSpecified();
 
-    @LogMessage(level = Logger.Level.DEBUG)
-    @Message(id = 20, value = "Stage Config found in %s at location: %s")
-    void stageConfigLocation(String configType, String configLocation);
-
-    @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 21, value = "Failed to parse project stage URL reference, ignoring: %s")
-    void malformedStageConfigUrl(String error);
-
-    @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 22, value = "Project stage superseded by external configuration %s")
-    void stageConfigSuperseded(String location);
-
     @LogMessage(level = Logger.Level.ERROR)
     @Message(id = 23, value = "Unable to setup Shrinkwrap Domain")
     void shrinkwrapDomainSetupFailed(@Cause Throwable cause);
-
-    @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 24, value = "Using project stage: %s")
-    void usingProjectStage(String stageName);
 
     @LogMessage(level = Logger.Level.DEBUG)
     @Message(id = 25, value = "Add deployment module: %s")
@@ -141,18 +112,6 @@ public interface SwarmMessages extends BasicLogger {
     @Message(id = 29, value = "Install MSC service for command line args: %s")
     void argsInstalled(List<String> args);
 
-    @LogMessage(level = Logger.Level.DEBUG)
-    @Message(id = 30, value = "Marshalling Project Stage property %s")
-    void marshalProjectStageProperty(String key);
-
-    @LogMessage(level = Logger.Level.DEBUG)
-    @Message(id = 31, value = "Marshalling XML from %s as: \n %s")
-    void marshalXml(String location, String xml);
-
-    @LogMessage(level = Logger.Level.DEBUG)
-    @Message(id = 32, value = "Load standalone.xml via %s from %s")
-    void loadingStandaloneXml(String loader, String location);
-
     @Message(id = 33, value = "HTTP/S is configured correctly, but org.wildfly.swarm:management is not available")
     RuntimeException httpsRequiresManagementFraction();
 
@@ -168,18 +127,10 @@ public interface SwarmMessages extends BasicLogger {
     @Message(id = 36, value = "Error installing user-space CDI extension: %s")
     void errorInstallingUserSpaceExtension(String factoryClassName);
 
-    @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 37, value = "Configuration:\n%s")
-    void configuration(String configuration);
-
     @LogMessage(level = Logger.Level.WARN)
     @Message(id = 38, value = "HTTP/2 is not supported in this environment. " +
             "Are the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for JDK/JRE 8 installed?")
     void http2NotSupported();
-
-    @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 39, value = "Boot performance:\n%s")
-    void bootPerformance(String metrics);
 
 
     // ------------------------------------------------------------------------
