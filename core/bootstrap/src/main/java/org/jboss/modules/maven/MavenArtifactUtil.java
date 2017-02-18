@@ -211,7 +211,7 @@ public final class MavenArtifactUtil {
         }
     }
 
-    static void downloadFile(String artifact, String src, File dest) throws IOException {
+    public static void downloadFile(String artifact, String src, File dest) throws IOException {
         if (dest.exists()){
             return;
         }
@@ -226,7 +226,7 @@ public final class MavenArtifactUtil {
         }
     }
 
-    static String downloadTimestampVersion(String artifact, String metadataSrc) throws IOException, XPathExpressionException {
+    public static String downloadTimestampVersion(String artifact, String metadataSrc) throws IOException, XPathExpressionException {
         final URL url = new URL(metadataSrc);
         final URLConnection connection = url.openConnection();
         boolean message = Boolean.getBoolean("maven.download.message");
