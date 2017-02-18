@@ -136,7 +136,7 @@ public class GradleResolverTest {
 
         Path artifactDir = Files.createDirectories(gradleCachePath.resolve(group).resolve(artifact).resolve(version).resolve("hash1"));
         File artifactFile = Files.createFile(artifactDir.resolve(artifact + "-" + version + "-" + classifier + "." + packaging)).toFile();
-        Thread.sleep(1);
+        Thread.sleep(2000); //Timestemp resolution of some filesystems are 2 seconds
         Path artifactDirLatest = Files.createDirectories(gradleCachePath.resolve(group).resolve(artifact).resolve(version).resolve("hash2"));
         File artifactFileLatest = Files.createFile(artifactDirLatest.resolve(artifact + "-" + version + "-" + classifier + "." + packaging)).toFile();
 
