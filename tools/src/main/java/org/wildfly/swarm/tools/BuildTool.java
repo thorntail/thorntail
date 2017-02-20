@@ -411,8 +411,12 @@ public class BuildTool {
 
     }
 
+    public static File getOutputFile(String baseName, Path directory) {
+        return new File(directory.toFile(), baseName + "-swarm.jar");
+    }
+
     private File createJar(String baseName, Path dir) throws IOException {
-        File out = new File(dir.toFile(), baseName + "-swarm.jar");
+        File out = getOutputFile(baseName, dir);
         if (!out.getParentFile().exists() && !out.getParentFile().mkdirs()) {
             this.log.error("Failed to create parent directory for: " + out.getAbsolutePath());
         }

@@ -17,6 +17,7 @@ package org.wildfly.swarm.plugin.gradle;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,6 +32,11 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
 import org.wildfly.swarm.fractions.PropertiesUtil;
@@ -57,40 +63,25 @@ public class PackageTask extends DefaultTask {
     @TaskAction
     public void packageForSwarm() throws Exception {
         final Project project = getProject();
-        final SwarmExtension ext = (SwarmExtension) project.getExtensions().getByName("swarm");
-
-        if (ext.getMainClassName() == null) {
-            if (project.getConvention().getPlugins().containsKey("application")) {
-                ApplicationPluginConvention app = (ApplicationPluginConvention) project.getConvention().getPlugins().get("application");
-                ext.setMainClassName(app.getMainClassName());
-            }
-        }
-
-        final Properties fromFile = new Properties();
-        if (ext.getPropertiesFile() != null) {
-            try {
-                fromFile.putAll(PropertiesUtil.loadProperties(ext.getPropertiesFile()));
-            } catch (IOException e) {
-                getLogger().error("Failed to load properties from " + ext.getPropertiesFile(), e);
-            }
-        }
 
         GradleArtifactResolvingHelper resolvingHelper = new GradleArtifactResolvingHelper(project);
+        Properties propertiesFromExtension = getPropertiesFromExtension();
+
         this.tool = new BuildTool(resolvingHelper)
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
-                                 jarTask.getExtension(), jarTask.getArchivePath())
-                .mainClass(ext.getMainClassName())
-                .bundleDependencies(ext.getBundleDependencies())
-                .executable(ext.getExecutable())
-                .executableScript(ext.getExecutableScript())
-                .properties(ext.getProperties())
-                .properties(fromFile)
-                .properties(PropertiesUtil.filteredSystemProperties(ext.getProperties(), false))
+                    getPackaging(), getProjectArtifactFile())
+                .mainClass(getMainClassName())
+                .bundleDependencies(getBundleDependencies())
+                .executable(getExecutable())
+                .executableScript(getExecutableScript())
+                .properties(propertiesFromExtension)
+                .properties(getPropertiesFromFile())
+                .properties(PropertiesUtil.filteredSystemProperties(propertiesFromExtension, false))
                 .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
-                .additionalModules(ext.getModuleDirs().stream()
-                                           .filter(f -> f.exists())
-                                           .map(File::getAbsolutePath)
-                                           .collect(Collectors.toList()))
+                .additionalModules(getModuleDirs().stream()
+                        .filter(File::exists)
+                        .map(File::getAbsolutePath)
+                        .collect(Collectors.toList()))
                 .logger(new SimpleLogger() {
                     @Override
                     public void debug(String msg) {
@@ -157,12 +148,102 @@ public class PackageTask extends DefaultTask {
 
         tool.declaredDependencies(declaredDependencies);
 
-        final Boolean bundleDependencies = ext.getBundleDependencies();
+        final Boolean bundleDependencies = getBundleDependencies();
         if (bundleDependencies != null) {
             this.tool.bundleDependencies(bundleDependencies);
         }
 
-        this.tool.build(project.getName(), project.getBuildDir().toPath().resolve("libs"));
+        this.tool.build(getBaseName(), getOutputDirectory());
+    }
+
+    @Input
+    private String getPackaging() {
+        return jarTask.getExtension();
+    }
+
+    @InputFile
+    private File getProjectArtifactFile() {
+        return jarTask.getArchivePath();
+    }
+
+    @Input
+    @Optional
+    private String getMainClassName() {
+        Project project = getProject();
+        SwarmExtension swarmExtension = getSwarmExtension();
+        String mainClassName = swarmExtension.getMainClassName();
+
+        if (mainClassName == null && project.getConvention().getPlugins().containsKey("application")) {
+            ApplicationPluginConvention app = (ApplicationPluginConvention) project.getConvention().getPlugins().get("application");
+            mainClassName = app.getMainClassName();
+        }
+
+        return mainClassName;
+    }
+
+    private SwarmExtension getSwarmExtension() {
+        return getProject().getExtensions().getByType(SwarmExtension.class);
+    }
+
+    @Input
+    @Optional
+    private Boolean getBundleDependencies() {
+        return getSwarmExtension().getBundleDependencies();
+    }
+
+    @Input
+    private boolean getExecutable() {
+        return getSwarmExtension().getExecutable();
+    }
+
+    @Optional
+    @InputFile
+    private File getExecutableScript() {
+        return getSwarmExtension().getExecutableScript();
+    }
+
+    @Input
+    private Properties getPropertiesFromExtension() {
+        return getSwarmExtension().getProperties();
+    }
+
+    @Input
+    private Properties getPropertiesFromFile() {
+        final Properties properties = new Properties();
+        File propertiesFile = getPropertiesFile();
+
+        if (propertiesFile != null) {
+            try {
+                properties.putAll(PropertiesUtil.loadProperties(propertiesFile));
+            } catch (IOException e) {
+                getLogger().error("Failed to load properties from " + propertiesFile, e);
+            }
+        }
+        return properties;
+    }
+
+    @Optional
+    @InputFile
+    private File getPropertiesFile() {
+        return getSwarmExtension().getPropertiesFile();
+    }
+
+    @InputFiles
+    private List<File> getModuleDirs() {
+        return getSwarmExtension().getModuleDirs();
+    }
+
+    @OutputFile
+    private File getOutputFile() {
+        return BuildTool.getOutputFile(getBaseName(), getOutputDirectory());
+    }
+
+    private String getBaseName() {
+        return getProject().getName();
+    }
+
+    private Path getOutputDirectory() {
+        return getProject().getBuildDir().toPath().resolve("libs");
     }
 
     /*private void addDependency(DeclaredDependencies declaredDependencies, final List<ArtifactSpec> explicitDependencies, final ResolvedArtifact gradleArtifact) {

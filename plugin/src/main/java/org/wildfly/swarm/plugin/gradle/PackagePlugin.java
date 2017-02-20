@@ -31,10 +31,11 @@ import org.gradle.api.tasks.bundling.Jar;
 public class PackagePlugin implements Plugin<Project> {
 
     public static final String WILDFLY_SWARM_PACKAGE_TASK_NAME = "wildfly-swarm-package";
+    public static final String SWARM_EXTENSION = "swarm";
 
     @Override
     public void apply(Project project) {
-        project.getExtensions().create("swarm", SwarmExtension.class, project);
+        project.getExtensions().create(SWARM_EXTENSION, SwarmExtension.class, project);
         project.afterEvaluate(__ -> {
             final TaskContainer tasks = project.getTasks();
             final PackageTask packageTask = tasks.create(WILDFLY_SWARM_PACKAGE_TASK_NAME, PackageTask.class);
