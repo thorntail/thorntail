@@ -103,6 +103,7 @@ public class ConfigViewFactory {
         props.load(url.openStream());
         ConfigNode configNode = PropertiesConfigNodeFactory.load(props);
         this.configView.register(profileName, configNode);
+        this.configView.withProfile(profileName);
     }
 
     protected void loadYaml(String profileName, URL url) throws IOException {
@@ -114,7 +115,12 @@ public class ConfigViewFactory {
         loadYamlProjectConfig(profileName, url);
     }
 
-    public ConfigViewImpl build() {
+    public ConfigViewImpl get() {
+        return this.configView;
+    }
+
+    public ConfigViewImpl get(boolean activate) {
+        this.configView.activate();
         return this.configView;
     }
 
@@ -154,6 +160,7 @@ public class ConfigViewFactory {
 
         ConfigNode node = MapConfigNodeFactory.load(doc);
         this.configView.register(name, node);
+        this.configView.withProfile(name);
     }
 
     private List<ConfigLocator> locators = new ArrayList<>();

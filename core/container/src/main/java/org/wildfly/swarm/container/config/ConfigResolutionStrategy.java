@@ -49,6 +49,11 @@ class ConfigResolutionStrategy {
         this.properties = properties;
     }
 
+    void withProperties(Properties properties) {
+        this.nodes.add(PropertiesConfigNodeFactory.load(properties));
+        this.properties = PropertiesManipulator.forProperties(properties);
+    }
+
     /**
      * Add a {@code ConfigNode} to the search list.
      *
@@ -58,17 +63,27 @@ class ConfigResolutionStrategy {
         this.nodes.add(node);
     }
 
+    void defaults(ConfigNode defaults) {
+        this.defaults = defaults;
+    }
+
     /**
      * Activate the strategy.
      */
     void activate() {
-        this.nodes
-                .stream()
-                .flatMap(e -> e.allKeysRecursively())
+        nodes().flatMap(e -> e.allKeysRecursively())
                 .distinct()
                 .forEach(key -> {
                     activate(key);
                 });
+    }
+
+    Stream<ConfigNode> nodes() {
+        if (this.defaults == null) {
+            return this.nodes.stream();
+        }
+
+        return Stream.concat(this.nodes.stream(), Stream.of(this.defaults));
     }
 
     /**
@@ -99,21 +114,18 @@ class ConfigResolutionStrategy {
     }
 
     Optional<Object> optionalValueOf(ConfigKey key) {
-        return this.nodes.stream()
+        return nodes()
                 .map(e -> e.valueOf(key))
                 .filter(Objects::nonNull)
                 .findFirst();
     }
 
     Stream<ConfigKey> allKeysRecursively() {
-        return this.nodes
-                .stream()
-                .flatMap(e -> e.allKeysRecursively());
+        return nodes().flatMap(e -> e.allKeysRecursively());
     }
 
     Set<SimpleKey> simpleSubkeysOf(ConfigKey prefix) {
-        return this.nodes
-                .stream()
+        return nodes()
                 .map(e -> e.descendant(prefix))
                 .filter(Objects::nonNull)
                 .flatMap(e -> e.childrenKeys().stream())
@@ -121,8 +133,7 @@ class ConfigResolutionStrategy {
     }
 
     boolean hasKeyOrSubkeys(ConfigKey prefix) {
-        return this.nodes
-                .stream()
+        return nodes()
                 .map(e -> e.descendant(prefix))
                 .anyMatch(Objects::nonNull);
     }
@@ -131,8 +142,11 @@ class ConfigResolutionStrategy {
         return this.properties.getProperties();
     }
 
-    private final PropertiesManipulator properties;
+    private PropertiesManipulator properties;
 
     private List<ConfigNode> nodes = new ArrayList<>();
+
+    private ConfigNode defaults;
+
 
 }
