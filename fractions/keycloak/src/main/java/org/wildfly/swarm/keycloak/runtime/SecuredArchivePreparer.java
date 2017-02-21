@@ -21,7 +21,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -64,12 +66,16 @@ public class SecuredArchivePreparer implements ArchivePreparer {
             return;
         }
 
-        securityConstraints.forEach(scAsString -> {
-            SecurityConstraint sc = SecurityConstraintParser.parse(scAsString);
-            archive.as(Secured.class)
-                    .protect(sc.urlPattern())
-                    .withMethod(sc.methods().toArray(new String[sc.methods().size()]))
-                    .withRole(sc.roles().toArray(new String[sc.roles().size()]));
+        Secured secured = archive.as(Secured.class);
+        securityConstraints.forEach(sc -> {
+            SecurityConstraint securityConstraint = secured
+                    .protect((String) sc.getOrDefault("url-pattern", "/*"));
+
+            ((List<String>) sc.getOrDefault("methods", Collections.emptyList()))
+                    .forEach(securityConstraint::withMethod);
+
+            ((List<String>) sc.getOrDefault("roles", Collections.emptyList()))
+                    .forEach(securityConstraint::withRole);
         });
     }
 
@@ -133,6 +139,6 @@ public class SecuredArchivePreparer implements ArchivePreparer {
     String keycloakJsonPath;
 
     @Configurable("swarm.keycloak.security.constraints")
-    List<String> securityConstraints;
+    List<Map<String, Object>> securityConstraints;
 
 }

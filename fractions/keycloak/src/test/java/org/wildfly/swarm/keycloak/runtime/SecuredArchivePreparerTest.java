@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -46,7 +48,10 @@ public class SecuredArchivePreparerTest {
 
     @Test
     public void set_1_security_constraint() throws Exception {
-        preparer.securityConstraints = Collections.singletonList("{url-pattern=/aaa}");
+        Map<String, Object> securityConstraint = new HashMap<>();
+        securityConstraint.put("url-pattern", "/aaa");
+
+        preparer.securityConstraints = Collections.singletonList(securityConstraint);
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -65,7 +70,12 @@ public class SecuredArchivePreparerTest {
 
     @Test
     public void set_2_security_constraints() throws Exception {
-        preparer.securityConstraints = Arrays.asList("{url-pattern=/aaa}", "{url-pattern=/bbb");
+        Map<String, Object> securityConstraint1 = new HashMap<>();
+        securityConstraint1.put("url-pattern", "/aaa");
+        Map<String, Object> securityConstraint2 = new HashMap<>();
+        securityConstraint2.put("url-pattern", "/bbb");
+
+        preparer.securityConstraints = Arrays.asList(securityConstraint1, securityConstraint2);
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -80,7 +90,10 @@ public class SecuredArchivePreparerTest {
 
     @Test
     public void set_1_method() throws Exception {
-        preparer.securityConstraints = Collections.singletonList("{methods=[GET]}");
+        Map<String, Object> securityConstraint = new HashMap<>();
+        securityConstraint.put("methods", Arrays.asList("GET"));
+
+        preparer.securityConstraints = Collections.singletonList(securityConstraint);
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -99,7 +112,10 @@ public class SecuredArchivePreparerTest {
 
     @Test
     public void set_2_methods() throws Exception {
-        preparer.securityConstraints = Collections.singletonList("{methods=[GET, POST]}");
+        Map<String, Object> securityConstraint = new HashMap<>();
+        securityConstraint.put("methods", Arrays.asList("GET", "POST"));
+
+        preparer.securityConstraints = Collections.singletonList(securityConstraint);
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
