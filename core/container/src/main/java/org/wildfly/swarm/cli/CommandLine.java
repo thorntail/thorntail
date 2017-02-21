@@ -323,7 +323,7 @@ public class CommandLine {
      * @param swarm Swarm instance to configure.
      * @throws MalformedURLException If a URL is attempted to be read and fails.
      */
-    public void applyConfigurations(Swarm swarm) throws MalformedURLException {
+    public void applyConfigurations(Swarm swarm) throws IOException {
         if (get(SERVER_CONFIG) != null) {
             swarm.withXmlConfig(get(SERVER_CONFIG));
         }
