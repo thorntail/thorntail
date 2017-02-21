@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.messaging;
+package org.wildfly.swarm.messaging.test;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
+import javax.jms.Topic;
 import javax.naming.InitialContext;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -36,19 +32,8 @@ import static org.junit.Assert.assertNotNull;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class MessagingArquillianTest {
-
-    @Deployment
-    public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
-        return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(MessagingFraction.createDefaultFraction());
-    }
 
     @ArquillianResource
     InitialContext context;
@@ -58,5 +43,18 @@ public class MessagingArquillianTest {
         ConnectionFactory factory = (ConnectionFactory) context.lookup("java:jboss/DefaultJMSConnectionFactory");
         assertNotNull(factory);
     }
+
+    @Test
+    public void testQueue() throws Exception {
+        Queue queue = (Queue) context.lookup("java:/jms/queue/my-queue");
+        assertNotNull(queue);
+    }
+
+    @Test
+    public void testTopic() throws Exception {
+        Topic topic = (Topic) context.lookup("java:/jms/topic/my-topic");
+        assertNotNull(topic);
+    }
+
 
 }
