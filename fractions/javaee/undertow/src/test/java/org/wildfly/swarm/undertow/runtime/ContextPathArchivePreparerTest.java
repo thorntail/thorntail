@@ -15,11 +15,20 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
+import static org.fest.assertions.Assertions.assertThat;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Properties;
+
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.impl.base.io.IOUtil;
 import org.junit.Test;
+import org.wildfly.swarm.container.config.ConfigNode;
+import org.wildfly.swarm.container.config.ConfigViewImpl;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
-
-import static org.fest.assertions.Assertions.assertThat;
+import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 
 /**
  * @author Ken Finnigan
@@ -66,5 +75,40 @@ public class ContextPathArchivePreparerTest {
 
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("/another-root");
+    }
+    
+    @Test
+    public void testExternalMount() throws Exception {
+        WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
+
+        assertThat(archive.getContextRoot()).isNull();
+
+        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();
+        ConfigNode defaultConfig = new ConfigNode() {{
+            child("swarm", new ConfigNode() {{
+                child("context",  new ConfigNode() {{            
+                    child("mount", new ConfigNode() {{
+                        child("m0", "/external1");
+                        child("m1", "/external2");
+                    }});
+                }});
+            }});
+        }};
+        
+        ConfigViewImpl configView = new ConfigViewImpl().withDefaults(defaultConfig).withProperties(new Properties());
+        configView.activate();
+        preparer.configView = configView;
+        
+        preparer.prepareArchive(archive);
+
+        Node externalMount = archive.get(WARArchive.EXTERNAL_MOUNT_PATH);
+        assertThat(externalMount).isNotNull();
+        assertThat(externalMount.getAsset()).isInstanceOf(UndertowExternalMountsAsset.class);
+        UndertowExternalMountsAsset externalMountAsset = (UndertowExternalMountsAsset) externalMount.getAsset();
+        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(externalMountAsset.openStream())); ){
+            assertThat(reader.readLine()).isEqualTo("/external1");
+            assertThat(reader.readLine()).isEqualTo("/external2");
+        }        
+        
     }
 }
