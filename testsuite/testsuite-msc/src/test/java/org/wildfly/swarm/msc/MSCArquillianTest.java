@@ -15,40 +15,33 @@
  */
 package org.wildfly.swarm.msc;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
+import javax.naming.NamingException;
+
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.msc.service.ServiceController;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class MSCArquillianTest {
 
-    @Deployment(testable = false)
-    public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
-        return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newSwarm() throws Exception {
-        return new Swarm().fraction(new MSCFraction());
-    }
+    @ArquillianResource
+    ServiceRegistry registry;
 
     @Test
-    @RunAsClient
-    public void testNothing() {
-
+    public void testNothing() throws NamingException {
+        ServiceController<?> service = registry.getService(ServiceName.of("swarm", "test", "cheese"));
+        assertNotNull(service);
     }
 
 }
