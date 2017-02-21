@@ -31,6 +31,7 @@ import org.wildfly.swarm.spi.api.annotations.ConfigurableAlias;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.ifAnyExplicitlySet;
 import static org.wildfly.swarm.spi.api.Defaultable.integer;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_AJP_PORT;
@@ -184,6 +185,11 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return this;
     }
 
+    public UndertowFraction onlyHTTPS() {
+        this.onlyHTTPS.set(true);
+        return this;
+    }
+
     public String keystorePassword() {
         return this.keystorePassword;
     }
@@ -200,11 +206,15 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return this.alias;
     }
 
+    public boolean isOnlyHTTPS() {
+        return this.onlyHTTPS.get();
+    }
+
     public boolean isEnableAJP() {
         return this.enableAJP.get();
     }
 
-    private UndertowFraction removeHttpListenersFromDefaultServer() {
+    public UndertowFraction removeHttpListenersFromDefaultServer() {
         this.subresources().server("default-server")
                 .subresources().httpListeners().clear();
         return this;
@@ -280,6 +290,13 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     @ConfigurableAlias("swarm.http.certificate.alias")
     @AttributeDocumentation("Alias to the server certificate key entry in the keystore")
     private String alias;
+
+    /**
+     * Whether or not disable HTTP interface
+     */
+    @Configurable("swarm.https.only")
+    @AttributeDocumentation("Only enable the HTTPS  Listener")
+    private Defaultable<Boolean> onlyHTTPS = bool(false);
 
     /**
      * Whether or not enabling AJP

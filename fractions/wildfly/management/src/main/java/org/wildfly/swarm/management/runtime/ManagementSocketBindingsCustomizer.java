@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterface;
 import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.SocketBinding;
@@ -44,5 +45,9 @@ public class ManagementSocketBindingsCustomizer implements Customizer {
                 .port(fraction.httpPort()));
         this.group.socketBinding(new SocketBinding("management-https")
                 .port(fraction.httpsPort()));
+
+        if (fraction.isHttpDisable()) {
+            fraction.httpInterfaceManagementInterface((HTTPInterfaceManagementInterface<?>)null);
+        }
     }
 }
