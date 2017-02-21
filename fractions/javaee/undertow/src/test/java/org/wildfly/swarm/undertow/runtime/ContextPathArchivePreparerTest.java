@@ -19,12 +19,13 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 
 import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.impl.base.io.IOUtil;
 import org.junit.Test;
-import org.wildfly.swarm.container.config.ConfigNode;
+import org.wildfly.swarm.container.config.ConfigViewFactory;
 import org.wildfly.swarm.container.config.ConfigViewImpl;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
@@ -82,22 +83,17 @@ public class ContextPathArchivePreparerTest {
         WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
 
         assertThat(archive.getContextRoot()).isNull();
-
-        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();
-        ConfigNode defaultConfig = new ConfigNode() {{
-            child("swarm", new ConfigNode() {{
-                child("context",  new ConfigNode() {{            
-                    child("mount", new ConfigNode() {{
-                        child("m0", "/external1");
-                        child("m1", "/external2");
-                    }});
-                }});
-            }});
-        }};
         
-        ConfigViewImpl configView = new ConfigViewImpl().withDefaults(defaultConfig).withProperties(new Properties());
-        configView.activate();
-        preparer.configView = configView;
+        URL url = getClass().getClassLoader().getResource("mounts.yml");
+        ConfigViewFactory factory = new ConfigViewFactory(new Properties());
+        factory.load("test", url);
+        ConfigViewImpl view = factory.build();
+        view.activate("test");
+
+        List<String> mounts = view.resolve("swarm.context.mounts").as(List.class).getValue();
+
+        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();     
+        preparer.mounts = mounts;
         
         preparer.prepareArchive(archive);
 

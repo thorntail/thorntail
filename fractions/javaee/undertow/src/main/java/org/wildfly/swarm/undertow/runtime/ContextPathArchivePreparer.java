@@ -17,18 +17,14 @@ package org.wildfly.swarm.undertow.runtime;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
-import org.wildfly.swarm.spi.api.config.ConfigKey;
-import org.wildfly.swarm.spi.api.config.ConfigView;
-import org.wildfly.swarm.spi.api.config.SimpleKey;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 
@@ -38,14 +34,11 @@ import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 @ApplicationScoped
 public class ContextPathArchivePreparer implements ArchivePreparer {
 
-    @SuppressWarnings("unused")
-    private static final Logger log = Logger.getLogger(ContextPathArchivePreparer.class.getName());
-
     @Configurable("swarm.context.path")
     Defaultable<String> contextPath = Defaultable.string("/");
 
-    @Inject
-    ConfigView configView;
+    @Configurable("swarm.context.mounts")
+    List<String> mounts;
 
     @Override
     public void prepareArchive(Archive<?> archive) {
@@ -56,15 +49,12 @@ public class ContextPathArchivePreparer implements ArchivePreparer {
         }
 
         UndertowExternalMountsAsset ut = null;
-        ConfigKey parentKey = ConfigKey.parse("swarm.context.mount");
-        if (configView != null && configView.hasKeyOrSubkeys(parentKey)) {
-            for (SimpleKey mount : configView.simpleSubkeys(parentKey)) {
-                String mountPath = configView.resolve(parentKey.append(mount)).getValue();
+        if (mounts != null) {
+            for (String mountPath : mounts) {
                 Path staticPath = Paths.get(mountPath);
                 if (!staticPath.isAbsolute()) {
                     staticPath = Paths.get(System.getProperty("user.dir"), staticPath.toString()).normalize();
                 }
-                log.info("External mounting directory " + staticPath);
                 if (ut == null) {
                     ut = new UndertowExternalMountsAsset();
                 }
