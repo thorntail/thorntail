@@ -53,6 +53,10 @@ public class HTTPSCustomizer implements Customizer {
                     throw SwarmMessages.MESSAGES.httpsRequiresManagementFraction();
                 }
 
+                if (undertow.isOnlyHTTPS()) {
+                    undertow.removeHttpListenersFromDefaultServer();
+                }
+
                 for (Server server : undertow.subresources().servers()) {
                     if (server.subresources().httpsListeners().isEmpty()) {
                         server.httpsListener("default-https", (listener) -> {

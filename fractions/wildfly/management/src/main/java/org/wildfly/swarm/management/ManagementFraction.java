@@ -26,6 +26,7 @@ import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 
 import static org.wildfly.swarm.management.ManagementProperties.DEFAULT_HTTPS_PORT;
 import static org.wildfly.swarm.management.ManagementProperties.DEFAULT_HTTP_PORT;
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.integer;
 
 /**
@@ -95,9 +96,21 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
         return this.httpsPort.get();
     }
 
+    public ManagementFraction httpDisable(boolean httpDisable) {
+        this.httpDisable.set(httpDisable);
+        return this;
+    }
+
+    public boolean isHttpDisable() {
+        return this.httpDisable.get();
+    }
+
     @Configurable("swarm.management.http.port")
     private Defaultable<Integer> httpPort = integer(DEFAULT_HTTP_PORT);
 
     @Configurable("swarm.management.https.port")
     private Defaultable<Integer> httpsPort = integer(DEFAULT_HTTPS_PORT);
+
+    @Configurable("swarm.management.http.disable")
+    private Defaultable<Boolean> httpDisable = bool(false);
 }
