@@ -36,8 +36,4 @@ public class InMemoryAuthorization {
 
     private final PlugInAuthorization plugin;
 
-    @FunctionalInterface
-    public interface Consumer {
-        void accept(InMemoryAuthorization authz);
-    }
 }

@@ -33,6 +33,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.integer;
  * @author Bob McWhirter
  */
 @MarshalDMR
+@Configurable("swarm.management")
 public class ManagementFraction extends ManagementCoreService<ManagementFraction> implements Fraction<ManagementFraction> {
 
     public ManagementFraction() {
@@ -70,7 +71,7 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
         });
     }
 
-    public ManagementFraction securityRealm(String childKey, EnhancedSecurityRealm.Consumer consumer) {
+    public ManagementFraction securityRealm(String childKey, EnhancedSecurityRealmConsumer consumer) {
         return securityRealm(() -> {
             EnhancedSecurityRealm realm = new EnhancedSecurityRealm(childKey);
             consumer.accept(realm);

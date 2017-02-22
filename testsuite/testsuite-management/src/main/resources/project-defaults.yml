@@ -1,0 +1,19 @@
+
+swarm:
+  management:
+    http-interface-management-interface:
+      security-realm: ManagementRealm
+    security-realms:
+      ManagementRealm:
+        plug-in-authentication:
+          name: swarm-in-memory
+          properties:
+            bob.hash:
+              value: 9b511b00aa7f2265621e38d2cf665f2f
+        plug-in-authorization:
+          name: swarm-in-memory
+          properties:
+            bob.roles:
+              value: admin
+
+

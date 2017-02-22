@@ -90,9 +90,4 @@ public class InMemoryAuthentication {
 
     private final PlugInAuthentication plugin;
 
-    @FunctionalInterface
-    public interface Consumer {
-        void accept(InMemoryAuthentication authn);
-    }
-
 }

@@ -20,5 +20,6 @@ import org.wildfly.swarm.config.mail.MailSessionConsumer;
 /**
  * @author Bob McWhirter
  */
+@FunctionalInterface
 public interface EnhancedMailSessionConsumer extends MailSessionConsumer<EnhancedMailSession> {
 }
