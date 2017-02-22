@@ -21,8 +21,8 @@ public class ConfigViewYamlTest {
         ConfigViewFactory factory = new ConfigViewFactory(new Properties());
         factory.load("test", url);
 
-        ConfigViewImpl view = factory.build();
-        view.activate("test");
+        ConfigViewImpl view = factory.get();
+        view.withProfile("test");
 
         List<Map<?, ?>> constraints = view.resolve("swarm.keycloak.security.constraints").as(List.class).getValue();
 

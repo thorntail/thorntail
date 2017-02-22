@@ -33,7 +33,7 @@ public class ConfigViewImpl implements ConfigView {
      * Construct a new view.
      */
     public ConfigViewImpl() {
-
+        this.strategy = new ConfigResolutionStrategy();
     }
 
     /**
@@ -43,7 +43,10 @@ public class ConfigViewImpl implements ConfigView {
      * @return This view.
      */
     public ConfigViewImpl withProperties(Properties properties) {
-        this.properties = properties;
+        if (properties != null) {
+            this.properties = properties;
+            this.strategy.withProperties(properties);
+        }
         return this;
 
     }
@@ -55,7 +58,7 @@ public class ConfigViewImpl implements ConfigView {
      * @return This view.
      */
     public ConfigViewImpl withDefaults(ConfigNode defaultConfig) {
-        this.defaultConfig = defaultConfig;
+        this.strategy.defaults(defaultConfig);
         return this;
     }
 
@@ -103,9 +106,7 @@ public class ConfigViewImpl implements ConfigView {
      *
      * @param names The names to activate.
      */
-    public void activate(String... names) {
-        this.strategy = new ConfigResolutionStrategy(this.properties);
-
+    public void withProfile(String... names) {
         for (String name : names) {
             List<ConfigNode> nodes = this.registry.get(name);
             if (nodes != null) {
@@ -115,17 +116,15 @@ public class ConfigViewImpl implements ConfigView {
             }
         }
 
-        if (this.defaultConfig != null) {
-            this.strategy.add(this.defaultConfig);
-        }
+    }
 
+    public void withProfile(List<String> names) {
+        withProfile(names.toArray(new String[]{}));
+    }
+
+    public void activate() {
         this.strategy.activate();
     }
-
-    public void activate(List<String> names) {
-        activate(names.toArray(new String[]{}));
-    }
-
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
@@ -155,8 +154,6 @@ public class ConfigViewImpl implements ConfigView {
     }
 
     private Properties properties;
-
-    private ConfigNode defaultConfig;
 
     private Map<String, List<ConfigNode>> registry = new HashMap<>();
 
