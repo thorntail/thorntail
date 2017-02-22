@@ -102,8 +102,8 @@ public class ContextPathArchivePreparerTest {
         assertThat(externalMount.getAsset()).isInstanceOf(UndertowExternalMountsAsset.class);
         UndertowExternalMountsAsset externalMountAsset = (UndertowExternalMountsAsset) externalMount.getAsset();
         try ( BufferedReader reader = new BufferedReader(new InputStreamReader(externalMountAsset.openStream())); ){
-            assertThat(reader.readLine()).isEqualTo("/external1");
-            assertThat(reader.readLine()).isEqualTo("/external2");
+            assertThat(reader.readLine()).endsWith("external1");
+            assertThat(reader.readLine()).endsWith("external2");
         }        
         
     }
