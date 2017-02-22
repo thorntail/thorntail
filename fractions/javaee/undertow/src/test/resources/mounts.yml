@@ -1,0 +1,5 @@
+swarm:
+  context:
+    mounts:
+      - /external1
+      - /external2
