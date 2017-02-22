@@ -15,10 +15,12 @@
  */
 package org.wildfly.swarm.tools;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -68,6 +70,8 @@ import org.wildfly.swarm.spi.meta.SimpleLogger;
  * @author Heiko Braun
  */
 public class BuildTool {
+
+    public static final String APP_DEPENDENCY_MODULE = "org.wildfly.swarm.app.dependencies";
 
     public enum FractionDetectionMode { when_missing, force, never }
 
@@ -223,11 +227,68 @@ public class BuildTool {
         addWildflySwarmBootstrapJar();
         addJarManifest();
         addWildFlySwarmApplicationManifest();
+        createAppDependencyModule((ResolvedDependencies)this.dependencyManager);
         addAdditionalModules();
         addProjectAsset((ResolvedDependencies) this.dependencyManager);
         populateUberJarMavenRepository((ResolvedDependencies) this.dependencyManager);
 
         return this.archive;
+    }
+
+    private void createAppDependencyModule(ResolvedDependencies resolvedDependencies) {
+
+        // synthetic app dependency module
+        Set<ArtifactSpec> applicationDependencies = new HashSet<>(declaredDependencies.getExplicitDependencies());
+        applicationDependencies.removeAll(resolvedDependencies.getRemovableDependencies());
+
+        Set<ArtifactSpec> transientDeps = new HashSet<>();
+        for (ArtifactSpec explicitDep : applicationDependencies) {
+            transientDeps.addAll(declaredDependencies.getTransientDependencies(explicitDep));
+        }
+        applicationDependencies.addAll(transientDeps);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+        sb.append("<module xmlns=\"urn:jboss:module:1.3\" name=\"").append(APP_DEPENDENCY_MODULE).append("\">\n");
+        sb.append("<resources>\n");
+
+        for (ArtifactSpec dep : applicationDependencies) {
+            sb.append("<artifact name=\"").append(dep.mscGav()).append("\"/>\n");
+        }
+
+        sb.append("  </resources>\n");
+        sb.append("</module>");
+
+        System.out.println(sb.toString());
+
+        // TODO: Location of the tmp dir should be within project build directory
+        Path tmpDir = Paths.get(new File(System.getProperty("java.io.tmpdir")).toURI()).resolve("swarm_modules");
+        File moduleDir = tmpDir.toFile();
+        moduleDir.deleteOnExit();
+
+        for (String subpath : APP_DEPENDENCY_MODULE.split("\\.")) {
+            tmpDir = tmpDir.resolve(subpath);
+        }
+        tmpDir = tmpDir.resolve("main");
+
+        File targetDir = tmpDir.toFile();
+        targetDir.mkdirs();
+
+        File moduleXml = new File(targetDir, "module.xml");
+        moduleXml.deleteOnExit();
+
+        log.info("Synthetic app dependency module: " + moduleXml.getAbsolutePath());
+
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(moduleXml));
+            out.write(sb.toString());
+            out.flush();
+            out.close();
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to generate module.xml", e);
+        }
+
+        this.additionalModule(moduleDir.getAbsolutePath());
     }
 
     private boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
@@ -448,7 +509,6 @@ public class BuildTool {
             final File moduleDir = new File(additionalModule);
             this.archive.addAsResource(moduleDir, "modules");
             find(moduleDir, dependencyManager);
-
         }
     }
 
