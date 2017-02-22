@@ -19,5 +19,5 @@ package org.wildfly.swarm.management.console;
  * @author Bob McWhirter
  */
 public interface ManagementConsoleProperties {
-    String CONTEXT = "swarm.management.console.context";
+    String DEFAULT_CONTEXT = "/console";
 }

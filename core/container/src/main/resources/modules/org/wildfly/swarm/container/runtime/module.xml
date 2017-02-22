@@ -34,6 +34,7 @@
   </resources>
 
   <dependencies>
+    <module name="swarm.container" export="true" optional="true"/>
     <module name="org.wildfly.swarm.container" export="true"/>
     <module name="org.wildfly.swarm.bootstrap" optional="true"/>
     <module name="org.wildfly.swarm.configuration" export="true"/>
