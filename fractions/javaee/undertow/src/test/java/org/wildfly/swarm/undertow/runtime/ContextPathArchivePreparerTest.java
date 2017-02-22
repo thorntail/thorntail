@@ -87,8 +87,8 @@ public class ContextPathArchivePreparerTest {
         URL url = getClass().getClassLoader().getResource("mounts.yml");
         ConfigViewFactory factory = new ConfigViewFactory(new Properties());
         factory.load("test", url);
-        ConfigViewImpl view = factory.build();
-        view.activate("test");
+        ConfigViewImpl view = factory.get();
+        view.withProfile("test");
 
         List<String> mounts = view.resolve("swarm.context.mounts").as(List.class).getValue();
 
