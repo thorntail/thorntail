@@ -13,35 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi;
+package org.wildfly.swarm.cdi.test;
 
-import javax.enterprise.inject.spi.CDI;
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-
-import static org.junit.Assert.assertNotNull;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 /**
- * @author Bob McWhirter
+ * @author George Gastaldi
  */
 @RunWith(Arquillian.class)
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
-public class CDIArquillianTest {
+public class ConfigurationValueProducerTest {
 
     @Inject
-    private Cheddar cheddar;
+    @ConfigurationValue("logger.level")
+    private Optional<String> loggerLevel;
 
     @Test
-    public void testInjection() {
-        assertNotNull(cheddar);
+    public void testServerAddressExists() {
+        Assert.assertNotNull(loggerLevel);
+        Assert.assertEquals("DEBUG", loggerLevel.get());
     }
 
-    @Test
-    public void testCDIContainerPresence() throws Exception {
-        assertNotNull(CDI.current());
-    }
 }
