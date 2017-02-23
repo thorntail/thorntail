@@ -46,7 +46,7 @@ public class ManagementConsoleDeploymentProducer {
 
     @Produces
     public Archive managementConsoleWar() throws Exception {
-        // Load the swagger-ui webjars.
+        // Load the management-ui webjars.
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.jboss.as.console"));
         URL resource = module.getExportedResource("jboss-as-console-resources.jar");
         WARArchive war = ShrinkWrap.create(WARArchive.class, "management-console-ui.war");
