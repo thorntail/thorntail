@@ -17,7 +17,7 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>topology-jgroups</artifactId>
 
-  <name>JGroups</name>
+  <name>JGroups Topology</name>
   <description>Utilizes JGroups as a Service Registry that is discoverable</description>
 
   <packaging>jar</packaging>
