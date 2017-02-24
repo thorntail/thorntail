@@ -31,7 +31,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>swagger-ui</id>
+            <id>management-ui</id>
             <phase>prepare-package</phase>
             <goals>
               <goal>copy-dependencies</goal>
@@ -67,6 +67,7 @@
       <artifactId>jboss-as-console</artifactId>
       <classifier>resources</classifier>
       <version>${version.jboss.management-console}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>

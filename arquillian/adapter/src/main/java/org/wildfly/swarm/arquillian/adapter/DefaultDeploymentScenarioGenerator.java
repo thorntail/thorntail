@@ -31,6 +31,9 @@ import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
 import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 
 /**
  * @author Bob McWhirter
@@ -126,6 +129,18 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
             System.err.println(" --> " + each);
         }
         */
+
+        DeploymentModules deploymentModules = testClass.getAnnotation(DeploymentModules.class);
+        if (deploymentModules != null) {
+            for (DeploymentModule each : deploymentModules.value()) {
+                archive.as(JARArchive.class).addModule(each.name(), each.slot());
+            }
+        }
+
+        DeploymentModule deploymentModule = testClass.getAnnotation(DeploymentModule.class);
+        if (deploymentModule != null) {
+            archive.as(JARArchive.class).addModule(deploymentModule.name(), deploymentModule.slot());
+        }
 
         DeploymentDescription description = new DeploymentDescription(testClass.getName(), archive);
 

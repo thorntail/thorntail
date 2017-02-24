@@ -488,6 +488,7 @@ public class ConfigurableManager implements AutoCloseable {
                     .getTarget();
 
             return mh.invoke(this, itemPrefix);
+
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }

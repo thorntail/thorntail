@@ -19,9 +19,7 @@ public class ProjectStagesTest {
         try {
             URL projectStages = getClass().getClassLoader().getResource("simple-project-stages.yml");
             System.setProperty(SwarmProperties.PROJECT_STAGE_FILE, projectStages.toExternalForm());
-            Swarm swarm = new Swarm();
-            swarm.initializeConfigView(new Properties());
-
+            Swarm swarm = new Swarm(new Properties());
             ConfigView view = swarm.configView();
 
             assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("cheddar");
@@ -35,8 +33,7 @@ public class ProjectStagesTest {
         try {
             URL projectStages = getClass().getClassLoader().getResource("multi-project-stages.yml");
             System.setProperty(SwarmProperties.PROJECT_STAGE_FILE, projectStages.toExternalForm());
-            Swarm swarm = new Swarm();
-            swarm.initializeConfigView(new Properties());
+            Swarm swarm = new Swarm(new Properties());
 
             ConfigView view = swarm.configView();
 
@@ -52,8 +49,7 @@ public class ProjectStagesTest {
             URL projectStages = getClass().getClassLoader().getResource("multi-project-stages.yml");
             System.setProperty(SwarmProperties.PROJECT_STAGE_FILE, projectStages.toExternalForm());
             System.setProperty(SwarmProperties.PROJECT_STAGE, "production");
-            Swarm swarm = new Swarm();
-            swarm.initializeConfigView(new Properties());
+            Swarm swarm = new Swarm(new Properties());
 
             ConfigView view = swarm.configView();
 
@@ -63,4 +59,22 @@ public class ProjectStagesTest {
             System.clearProperty(SwarmProperties.PROJECT_STAGE);
         }
     }
+
+    @Test
+    public void testSwarmAPIToLoadConfig() throws Exception {
+        Swarm swarm = new Swarm( new Properties());
+        swarm.withProfile("foo");
+        ConfigView view = swarm.configView();
+        assertThat(view.resolve("myname").getValue()).isEqualTo("foo");
+        swarm.withProfile("bar");
+        assertThat(view.resolve("myname").getValue()).isEqualTo("foo");
+    }
+
+    @Test
+    public void testCLIToLoadConfig() throws Exception {
+        Swarm swarm = new Swarm(new Properties(), "-Sfoo");
+        ConfigView view = swarm.configView();
+        assertThat(view.resolve("myname").getValue()).isEqualTo("foo");
+    }
+
 }

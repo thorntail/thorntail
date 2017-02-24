@@ -20,15 +20,14 @@ public class StageConfigTest {
         try {
             URL projectStages = getClass().getClassLoader().getResource("simple-project-stages.yml");
             System.setProperty(SwarmProperties.PROJECT_STAGE_FILE, projectStages.toExternalForm());
-            Swarm swarm = new Swarm();
-            swarm.initializeConfigView(new Properties());
+            Swarm swarm = new Swarm(false, new Properties());
 
             ConfigView view = swarm.configView();
             assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("cheddar");
 
             StageConfig stageConfig = swarm.stageConfig();
             assertThat(stageConfig.resolve("foo.bar.baz").getValue()).isEqualTo("cheddar");
-            
+
         } finally {
             System.clearProperty(SwarmProperties.PROJECT_STAGE_FILE);
         }

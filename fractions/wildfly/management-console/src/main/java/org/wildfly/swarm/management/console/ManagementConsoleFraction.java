@@ -15,8 +15,12 @@
  */
 package org.wildfly.swarm.management.console;
 
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+
+import static org.wildfly.swarm.management.console.ManagementConsoleProperties.DEFAULT_CONTEXT;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 /**
  * Created by ggastald on 02/06/16.
@@ -29,15 +33,13 @@ public class ManagementConsoleFraction implements Fraction<ManagementConsoleFrac
     }
 
     public ManagementConsoleFraction contextRoot(String context) {
-        this.context = context;
+        this.context.set(context);
         return this;
     }
 
     public String contextRoot() {
-        return context;
+        return context.get();
     }
 
-    private static final String DEFAULT_CONTEXT = "/console";
-
-    private String context = DEFAULT_CONTEXT;
+    private Defaultable<String> context = string(DEFAULT_CONTEXT);
 }

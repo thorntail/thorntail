@@ -128,8 +128,12 @@ public interface SwarmMessages extends BasicLogger {
     void errorInstallingUserSpaceExtension(String factoryClassName);
 
     @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 38, value = "HTTP/2 is not supported in this environment. " +
-            "Are the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for JDK/JRE 8 installed?")
+    @Message(id = 38, value =
+            "In order to use HTTP/2 in WildFly Swarm, you must have the OpenSSL provider with ALPN capability from " +
+                    "JBoss Core Services installed and configured. This is due to the fact that HTTP/2 requires " +
+                    "a TLS stack that supports ALPN, which is not provided by the default installation of Java 8. " +
+                    "HTTP/2 will only work with browsers that also support the HTTP/2 standard. " +
+                    "OpenSSL usage with WildFly Swarm on HP-UX is NOT supported.")
     void http2NotSupported();
 
 

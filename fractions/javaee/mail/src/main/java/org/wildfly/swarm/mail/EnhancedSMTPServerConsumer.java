@@ -20,5 +20,6 @@ import org.wildfly.swarm.config.mail.mail_session.SMTPServerConsumer;
 /**
  * @author Bob McWhirter
  */
+@FunctionalInterface
 public interface EnhancedSMTPServerConsumer extends SMTPServerConsumer<EnhancedSMTPServer> {
 }

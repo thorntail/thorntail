@@ -190,13 +190,14 @@ public class RuntimeDeployer implements Deployer {
                             } else {
                                 Set<String> paths = appEnv.resolveDependencies(Collections.EMPTY_LIST);
                                 for (String path : paths) {
+                                    final File pathFile = new File(path);
                                     if (path.endsWith(".jar")) {
-                                        depContainer.addAsLibrary(new File(path));
-                                    } else {
+                                        depContainer.addAsLibrary(pathFile);
+                                    } else if (pathFile.isDirectory()) {
                                         depContainer
                                                 .merge(ShrinkWrap.create(GenericArchive.class)
                                                                 .as(ExplodedImporter.class)
-                                                                .importDirectory(path)
+                                                                .importDirectory(pathFile)
                                                                 .as(GenericArchive.class),
                                                         "/WEB-INF/classes",
                                                         Filters.includeAll());

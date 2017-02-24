@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.util.jar.JarFile;
 import java.util.logging.LogManager;
 import java.util.stream.Collectors;
@@ -67,7 +68,6 @@ import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.config.ConfigViewFactory;
-import org.wildfly.swarm.container.config.ConfigViewImpl;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.internal.WeldShutdown;
@@ -175,6 +175,14 @@ public class Swarm {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Swarm(boolean debugBootstrap, String... args) throws Exception {
+        this(debugBootstrap, null, args);
+    }
+
+    public Swarm(Properties properties, String... args) throws Exception {
+        this(false, properties, args);
+    }
+
+    public Swarm(boolean debugBootstrap, Properties properties, String... args) throws Exception {
         if (System.getProperty(BOOT_MODULE_PROPERTY) == null) {
             System.setProperty(BOOT_MODULE_PROPERTY, BootModuleLoader.class.getName());
         }
@@ -209,8 +217,11 @@ public class Swarm {
         installModuleMBeanServer();
         createShrinkWrapDomain();
 
+        this.configView = ConfigViewFactory.defaultFactory(properties);
         this.commandLine = CommandLine.parse(args);
         this.commandLine.apply(this);
+
+        initializeConfigView();
     }
 
     /**
@@ -250,13 +261,15 @@ public class Swarm {
         return this;
     }
 
-    public Swarm withConfig(URL url) {
-        this.configs.add(url);
+    public Swarm withConfig(URL url) throws IOException {
+        String uuid = UUID.randomUUID().toString();
+        this.configView.load(uuid, url);
         return this;
     }
 
     public Swarm withProfile(String name) {
-        this.profiles.add(name);
+        this.configView.load(name);
+        this.configView.get().withProfile(name);
         return this;
     }
 
@@ -321,7 +334,6 @@ public class Swarm {
      */
     public Swarm start() throws Exception {
         try (AutoCloseable handle = Performance.time("Swarm.start()")) {
-            initializeConfigView();
 
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
             Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
@@ -335,7 +347,7 @@ public class Swarm {
                     .withOutboundSocketBindings(this.outboundSocketBindings)
                     .withUserComponents(this.userComponentClasses)
                     .withXmlConfig(this.xmlConfig)
-                    .withConfigView(this.configView);
+                    .withConfigView(this.configView.get(true));
 
             this.server = bootstrap.bootstrap();
 
@@ -507,21 +519,15 @@ public class Swarm {
         return false;
     }
 
-    protected void initializeConfigView() throws IOException, ModuleLoadException {
-        initializeConfigView(null);
-    }
-
-    protected void initializeConfigView(Properties properties) throws IOException, ModuleLoadException {
+    private void initializeConfigView() throws IOException, ModuleLoadException {
         try (AutoCloseable handle = Performance.time("Loading YAML")) {
-            ConfigViewFactory factory = ConfigViewFactory.defaultFactory(properties);
-
             if (System.getProperty(SwarmProperties.PROJECT_STAGE_FILE) != null) {
                 String file = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
                 boolean loaded = false;
                 try {
                     Path path = Paths.get(file);
                     if (Files.exists(path)) {
-                        factory.load("stages", path.toUri().toURL());
+                        this.configView.load("stages", path.toUri().toURL());
                         loaded = true;
                     }
                 } catch (InvalidPathException e) {
@@ -531,43 +537,26 @@ public class Swarm {
                     // try it as a URL
                     try {
                         URL url = new URL(file);
-                        factory.load("stages", url);
+                        this.configView.load("stages", url);
                     } catch (MalformedURLException e) {
                         // oh well
                     }
                 }
             }
 
-            List<String> activatedNames = new ArrayList<>();
+            //List<String> activatedNames = new ArrayList<>();
 
             if (System.getProperty(SwarmProperties.PROJECT_STAGE) != null) {
                 String prop = System.getProperty(SwarmProperties.PROJECT_STAGE);
                 String[] activated = prop.split(",");
                 for (String each : activated) {
-                    activatedNames.add(each);
+                    this.configView.get().withProfile(each);
                 }
             }
 
-            for (int i = 0; i < this.configs.size(); ++i) {
-                URL each = this.configs.get(i);
-                String syntheticProfile = "cli-" + i;
-                factory.load(syntheticProfile, each);
-                activatedNames.add(syntheticProfile);
-            }
-
             // deprecated project-stages.yml
-            factory.load("stages");
-
-            for (String profile : this.profiles) {
-                factory.load(profile);
-                activatedNames.add(profile);
-            }
-
-            factory.load("defaults");
-            activatedNames.add("defaults");
-
-            this.configView = factory.build();
-            this.configView.activate(activatedNames);
+            this.configView.load("stages");
+            this.configView.load("defaults");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -660,23 +649,24 @@ public class Swarm {
         }
     }
 
-    /** Retrieve the configuration view.
+    /**
+     * Retrieve the configuration view.
      *
      * @return The configuration view.
      */
     public ConfigView configView() {
-        return this.configView;
+        return this.configView.get();
     }
 
-    /** Retrieve the configuration view in a deprecated manner.
-     *
-     * @see #configView()
+    /**
+     * Retrieve the configuration view in a deprecated manner.
      *
      * @return The {@code ConfigView} through a deprecated interface.
+     * @see #configView()
      */
     @Deprecated
     public StageConfig stageConfig() {
-        return this.configView;
+        return this.configView.get();
     }
 
     private String[] args;
@@ -691,7 +681,7 @@ public class Swarm {
 
     private List<Fraction> explicitlyInstalledFractions = new ArrayList<>();
 
-    private ConfigViewImpl configView;
+    private ConfigViewFactory configView;
 
     private Optional<URL> xmlConfig = Optional.empty();
 

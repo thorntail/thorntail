@@ -122,7 +122,8 @@ public class ConfigViewTest {
         view.register("staging", staging);
         view.register("production", production);
 
-        view.activate("staging");
+        view.withProfile("staging");
+        view.activate();
 
         assertThat(view.valueOf(ConfigKey.parse("cheese"))).isEqualTo("velveeta");
         assertThat(view.valueOf(ConfigKey.parse("company.founded"))).isEqualTo("2017");
@@ -174,7 +175,8 @@ public class ConfigViewTest {
         view.register("cloud", cloud);
         view.register("production", production);
 
-        view.activate("cloud", "production");
+        view.withProfile("cloud", "production");
+        view.activate();
 
         assertThat(view.valueOf(ConfigKey.parse("cheese"))).isEqualTo("velveeta");
         assertThat(view.valueOf(ConfigKey.parse("company.founded"))).isEqualTo("2017");

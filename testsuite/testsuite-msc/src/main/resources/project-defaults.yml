@@ -1,0 +1,5 @@
+
+swarm:
+  msc:
+    service-activators:
+      org.wildfly.swarm.msc.test.MyServiceActivator
