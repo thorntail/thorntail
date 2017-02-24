@@ -18,6 +18,7 @@ package org.wildfly.swarm.fluentd.runtime;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -34,6 +35,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * @author Heiko Braun
  */
 @Post
+@ApplicationScoped
 public class FluentdCustomizer implements Customizer {
 
     @Inject
