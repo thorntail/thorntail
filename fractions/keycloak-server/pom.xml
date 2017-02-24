@@ -63,7 +63,7 @@
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>keycloak-config-api</artifactId>
+      <artifactId>keycloak-server-config-api</artifactId>
     </dependency>
 
     <dependency>

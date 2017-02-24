@@ -39,7 +39,7 @@
     <version.maven.aether>3.2.5</version.maven.aether>
     <version.wildfly.config-api>1.0.2.Final</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.0.1.Final</version.keycloak.config-api>
+    <version.keycloak.config-api>1.0.2.Final</version.keycloak.config-api>
     <version.keycloak>2.5.4.Final</version.keycloak>
 
     <version.wildfly>10.1.0.Final</version.wildfly>
@@ -84,10 +84,6 @@
     <version.com.squareup.okio>1.8.0</version.com.squareup.okio>
 
     <version.vertx>3.3.3</version.vertx>
-
-<!--
-    <version.keycloak-secretstore>1.0.4.Final</version.keycloak-secretstore>
--->
 
     <version.org.kie>6.4.0.Final</version.org.kie>
 
@@ -376,7 +372,12 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>keycloak-config-api</artifactId>
+        <artifactId>keycloak-server-config-api</artifactId>
+        <version>${version.keycloak.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak-client-config-api</artifactId>
         <version>${version.keycloak.config-api}</version>
       </dependency>
 
@@ -799,12 +800,6 @@
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-undertow-adapter</artifactId>
         <version>${version.keycloak}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak.secretstore</groupId>
-        <artifactId>secret-store</artifactId>
-        <version>${version.keycloak-secretstore}</version>
-        <type>war</type>
       </dependency>
 
       <dependency>
