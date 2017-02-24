@@ -48,16 +48,4 @@
     </plugins>
   </build>
 
-  <modules>
-    <module>bom-deprecated</module>
-    <module>bom-experimental</module>
-    <module>bom-unstable</module>
-    <module>bom-stable</module>
-    <module>bom-frozen</module>
-    <module>bom-locked</module>
-
-    <module>bom-all</module>
-    <module>bom</module>
-  </modules>
-
 </project>

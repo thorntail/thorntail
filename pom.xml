@@ -1175,6 +1175,7 @@
     <module>meta/fraction-metadata</module>
     <module>plugin</module>
     <module>boms</module>
+    <module>boms/bom</module>
 
     <module>arquillian</module>
 
@@ -1279,6 +1280,14 @@
         <module>jaxrs-client-api</module>
 
         <module>swarmtool</module>
+        <module>boms/bom-deprecated</module>
+        <module>boms/bom-experimental</module>
+        <module>boms/bom-unstable</module>
+        <module>boms/bom-stable</module>
+        <module>boms/bom-frozen</module>
+        <module>boms/bom-locked</module>
+
+        <module>boms/bom-all</module>
 
         <module>fractions/javaee/batch-jberet</module>
         <module>fractions/javaee/ejb-remote</module>
