@@ -24,7 +24,7 @@
         <plugin>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-plugin</artifactId>
-          <version>2017.3.0-SNAPSHOT</version>
+          <version>${project.version}</version>
           <executions>
             <execution>
               <id>package</id>
@@ -73,7 +73,7 @@
             <plugin>
               <groupId>org.wildfly.swarm</groupId>
               <artifactId>wildfly-swarm-plugin</artifactId>
-              <version>2017.3.0-SNAPSHOT</version>
+              <version>${project.version}</version>
               <executions>
                 <execution>
                   <id>start</id>
