@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -86,32 +87,36 @@ public class ApplicationEnvironment {
     private void loadDependencyTree() {
         final String cpInfoProp = System.getProperty("swarm.cp.info");
 
-        if (cpInfoProp != null) {
-            try {
+        if (cpInfoProp == null) {
+            return;
+        }
 
-                DependencyTree<MavenArtifactDescriptor> dependencyTree = new DependencyTree<>();
+        final DependencyTree<MavenArtifactDescriptor> dependencyTree = new DependencyTree<>();
+        final Yaml yaml = new Yaml();
 
-                Yaml yaml = new Yaml();
-                Map<String, Object> data = (Map) yaml.load(new FileInputStream(cpInfoProp));
-                for (String directDep : data.keySet()) {
-                    MavenArtifactDescriptor parent = MavenArtifactDescriptor.fromMavenGav(directDep);
-                    Collection<String> transientDeps = (Collection<String>) data.get(directDep);
-                    for (String transientDep : transientDeps) {
+        try (final FileInputStream fileStream = new FileInputStream(cpInfoProp)) {
+            @SuppressWarnings("unchecked")
+            final Map<String, Collection<String>> data = yaml.loadAs(fileStream, Map.class);
+
+            for (final Entry<String, Collection<String>> entry : data.entrySet()) {
+                final MavenArtifactDescriptor parent = MavenArtifactDescriptor.fromMavenGav(entry.getKey());
+                final Collection<String> transientDeps = entry.getValue();
+                if (transientDeps != null && !transientDeps.isEmpty()) {
+                    for (final String transientDep : transientDeps) {
                         dependencyTree.add(
                                 parent,
                                 MavenArtifactDescriptor.fromMavenGav(transientDep)
                         );
                     }
-
-                    if (transientDeps.isEmpty()) {
-                        dependencyTree.add(parent);
-                    }
+                } else {
+                    dependencyTree.add(parent);
                 }
-                this.dependencyTree = Optional.of(dependencyTree);
-
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to load cp info", e);
             }
+
+            this.dependencyTree = Optional.of(dependencyTree);
+
+        } catch (final IOException e) {
+            throw new RuntimeException("Failed to load cp info", e);
         }
     }
 
