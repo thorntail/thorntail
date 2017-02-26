@@ -139,6 +139,7 @@
             <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
             <swarm.bind.address>127.0.0.1</swarm.bind.address>
             <project.version>${project.version}</project.version>
+            <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -173,6 +174,7 @@
               <testSourceDirectory>src/it/java</testSourceDirectory>
               <systemPropertyVariables>
                 <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+                <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
               </systemPropertyVariables>
             </configuration>
           </execution>
