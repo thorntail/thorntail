@@ -258,7 +258,7 @@ public class Main {
 
         addSwarmFractions(tool, foundOptions.valuesOf(FRACTIONS_OPT));
 
-        System.err.println(String.format("Building %s/%s-%s.jar", outDir, jarName, suffix));
+        System.err.println(String.format("Building %s/%s%s.jar", outDir, jarName, suffix));
         return tool.build(jarName, Paths.get(outDir));
     }
 

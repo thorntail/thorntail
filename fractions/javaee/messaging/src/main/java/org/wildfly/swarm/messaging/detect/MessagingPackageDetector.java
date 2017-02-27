@@ -23,7 +23,7 @@ import org.wildfly.swarm.spi.meta.PackageFractionDetector;
 public class MessagingPackageDetector extends PackageFractionDetector {
 
     public MessagingPackageDetector() {
-        super();
+        anyPackageOf("javax.jms");
     }
 
     @Override
