@@ -1362,6 +1362,7 @@
         <module>testsuite/testsuite-resource-adapters</module>
         <module>testsuite/testsuite-spring</module>
         <module>testsuite/testsuite-swagger</module>
+        <module>testsuite/testsuite-swagger-customized</module>
         <module>testsuite/testsuite-swagger-webapp</module>
         <module>testsuite/testsuite-topology-consul</module>
         <module>testsuite/testsuite-topology-jgroups</module>

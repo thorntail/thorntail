@@ -134,13 +134,13 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
 
     private void loadOrCreateConfigurationAsset() {
         Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
-
         if (node != null) {
             Asset asset = node.getAsset();
             if (asset instanceof SwaggerConfigurationAsset) {
                 this.configurationAsset = (SwaggerConfigurationAsset) asset;
             } else {
                 this.configurationAsset = new SwaggerConfigurationAsset(asset.openStream());
+                getArchive().add(this.configurationAsset, SWAGGER_CONFIGURATION_PATH);
             }
         } else {
             this.configurationAsset = new SwaggerConfigurationAsset();

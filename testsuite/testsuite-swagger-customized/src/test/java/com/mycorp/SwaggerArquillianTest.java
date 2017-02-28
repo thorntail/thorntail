@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.swagger;
+package com.mycorp;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.mycorp.Resource;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.jaxrs.JAXRSArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -38,27 +32,15 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Lance Ball
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class SwaggerArquillianTest {
-
-    @Deployment(testable = false)
-    public static Archive createDeployment() throws Exception {
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
-        deployment.addResource(Resource.class);
-        deployment.addAllDependencies();
-        return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new SwaggerFraction());
-    }
-
 
     @RunAsClient
     @Test
     public void testEndpoints() throws Exception {
         String content = getUrlContents("http://127.0.0.1:8080/swagger.json");
-        assertThat( content ).contains("\"tags\":[{\"name\":\"theapp\"}]");
+        assertThat(content).contains("\"tags\":[{\"name\":\"theapp\"}]");
+        assertThat(content).contains("\"title\":\" My Custom App\"");
     }
 
     private static String getUrlContents(String theUrl) {
