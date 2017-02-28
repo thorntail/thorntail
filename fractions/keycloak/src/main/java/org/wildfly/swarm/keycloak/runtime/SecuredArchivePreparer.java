@@ -21,9 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -35,11 +32,9 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.keycloak.Secured;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
-import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 
 @ApplicationScoped
 public class SecuredArchivePreparer implements ArchivePreparer {
@@ -62,21 +57,6 @@ public class SecuredArchivePreparer implements ArchivePreparer {
             // not adding it.
         }
 
-        if (securityConstraints == null || securityConstraints.isEmpty()) {
-            return;
-        }
-
-        Secured secured = archive.as(Secured.class);
-        securityConstraints.forEach(sc -> {
-            SecurityConstraint securityConstraint = secured
-                    .protect((String) sc.getOrDefault("url-pattern", "/*"));
-
-            ((List<String>) sc.getOrDefault("methods", Collections.emptyList()))
-                    .forEach(securityConstraint::withMethod);
-
-            ((List<String>) sc.getOrDefault("roles", Collections.emptyList()))
-                    .forEach(securityConstraint::withRole);
-        });
     }
 
     private InputStream getKeycloakJson(String path) {
@@ -137,8 +117,5 @@ public class SecuredArchivePreparer implements ArchivePreparer {
 
     @Configurable("swarm.keycloak.json.path")
     String keycloakJsonPath;
-
-    @Configurable("swarm.keycloak.security.constraints")
-    List<Map<String, Object>> securityConstraints;
 
 }
