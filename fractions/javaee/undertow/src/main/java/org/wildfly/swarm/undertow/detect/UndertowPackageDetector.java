@@ -23,7 +23,7 @@ import org.wildfly.swarm.spi.meta.PackageFractionDetector;
 public class UndertowPackageDetector extends PackageFractionDetector {
 
     public UndertowPackageDetector() {
-        anyPackageOf("javax.servlet", "javax.websocket", "io.undertow");
+        anyPackageOf("javax.servlet", "javax.websocket", "io.undertow", "com.vaadin");
     }
 
     @Override
