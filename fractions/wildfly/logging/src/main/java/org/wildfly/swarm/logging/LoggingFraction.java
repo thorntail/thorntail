@@ -91,7 +91,7 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
     }
 
     protected boolean isSimpleLoggerName(String name) {
-        if (!name.startsWith(LoggingProperties.LOGGING)) {
+        if (!name.startsWith(LoggingProperties.LOGGING + ".")) {
             return false;
         }
 
