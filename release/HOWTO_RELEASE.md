@@ -65,6 +65,9 @@
 * Push changes to doc so GitBooks can build the tagged version
 
         git push origin master --tags
+        
+* Wait for the gitbooks build to finish:
+   https://www.gitbook.com/@wildfly-swarm
 
 * Then prepare for the next development version:
 
@@ -105,7 +108,8 @@ including Keycloak, WildFly and WildFly Swarm itself.
         git push origin master --tags
 
 * Wait for the tagged build to completely build and publish
-on GitBooks.
+on GitBooks:
+   https://www.gitbook.com/@wildfly-swarm
 
 * Once we have a linkable build, re-edit the `book.json` to the next `-SNAPSHOT` version of
 WildFly Swarm, commit and push again.
