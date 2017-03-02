@@ -23,11 +23,9 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.asset.Asset;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.JBossWebAsset;
 import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
@@ -45,12 +43,8 @@ public class HttpSecurityPreparer implements ArchivePreparer {
     @Override
     public void prepareArchive(Archive<?> archive) {
 
-        if (httpConfig == null || httpConfig.isEmpty()) {
+        if (httpConfig == null || httpConfig.isEmpty() || !httpConfig.containsKey("login-config")) {
             return;
-        }
-
-        if (!httpConfig.containsKey("login-config")) {
-            throw new RuntimeException("Syntax error: HTTP security constraints requires a login-config declaration");
         }
 
         // unsupported auth method
@@ -69,11 +63,11 @@ public class HttpSecurityPreparer implements ArchivePreparer {
             return;
         }
 
-        WebXmlAsset webXml = findWebXml(archive);
-        JBossWebAsset jbossWeb = findJBossWeb(archive);
+        WARArchive war = archive.as(WARArchive.class);
+        WebXmlAsset webXml = war.findWebXmlAsset();
+        JBossWebAsset jbossWeb = war.findJbossWebAsset();
 
         // Setup web.xml
-        webXml.setContextParam("resteasy.scan", "true");
         webXml.setLoginConfig(authMethod, "ignored");
 
         // security domain
@@ -105,42 +99,6 @@ public class HttpSecurityPreparer implements ArchivePreparer {
             ((List<String>) sc.getOrDefault("roles", Collections.emptyList()))
                     .forEach(securityConstraint::withRole);
         }
-    }
-
-    private WebXmlAsset findWebXml(Archive<?> archive) {
-        WebXmlAsset webXml;
-        Node node = archive.as(JARArchive.class).get("WEB-INF/web.xml");
-        if (node == null) {
-            webXml = new WebXmlAsset();
-            archive.as(JARArchive.class).add(webXml);
-        } else {
-            Asset asset = node.getAsset();
-            if (!(asset instanceof WebXmlAsset)) {
-                webXml = new WebXmlAsset(asset.openStream());
-                archive.as(JARArchive.class).add(webXml);
-            } else {
-                webXml = (WebXmlAsset) asset;
-            }
-        }
-        return webXml;
-    }
-
-    private JBossWebAsset findJBossWeb(Archive<?> archive) {
-        JBossWebAsset jbossWeb;
-        Node node = archive.as(JARArchive.class).get("WEB-INF/jboss-web.xml");
-        if (node == null) {
-            jbossWeb = new JBossWebAsset();
-            archive.as(JARArchive.class).add(jbossWeb, "WEB-INF/jboss-web.xml");
-        } else {
-            Asset asset = node.getAsset();
-            if (!(asset instanceof WebXmlAsset)) {
-                jbossWeb = new JBossWebAsset(asset.openStream());
-                archive.as(JARArchive.class).add(jbossWeb, "WEB-INF/jboss-web.xml");
-            } else {
-                jbossWeb = (JBossWebAsset) asset;
-            }
-        }
-        return jbossWeb;
     }
 
     @Configurable("swarm.http")
