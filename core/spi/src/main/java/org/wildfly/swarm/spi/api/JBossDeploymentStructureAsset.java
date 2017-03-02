@@ -43,14 +43,14 @@ public class JBossDeploymentStructureAsset implements Asset {
     public JBossDeploymentStructureAsset() {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
-                         () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
+                        () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
     }
 
     public JBossDeploymentStructureAsset(InputStream fromStream) {
         this.descriptor =
                 withTCCL(Descriptors.class.getClassLoader(),
-                         () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
-                                 .fromStream(fromStream));
+                        () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
+                                .fromStream(fromStream));
 
         // Import dependencies and exclusions into internal structure
         DeploymentType<JBossDeploymentStructureDescriptor> deployment = this.descriptor.getAllDeployment().get(0);
