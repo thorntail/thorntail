@@ -1346,6 +1346,7 @@
         <module>testsuite/testsuite-camel-jpa</module>
         <module>testsuite/testsuite-camel-other</module>
         <module>testsuite/testsuite-cdi-jaxrsapi</module>
+        <module>testsuite/testsuite-classloader</module>
         <module>testsuite/testsuite-drools-server</module>
         <module>testsuite/testsuite-ejb-remote</module>
         <module>testsuite/testsuite-flyway</module>
