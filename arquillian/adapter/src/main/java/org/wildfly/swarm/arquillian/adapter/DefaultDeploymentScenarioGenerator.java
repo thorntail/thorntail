@@ -109,8 +109,8 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
                             Files.walkFileTree(e, new SimpleFileVisitor<Path>() {
                                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                                     if (!file.toString().endsWith(".class")) {
-                                        Path location = e.relativize(file);
-                                        archive.add(new FileAsset(file.toFile()), javaSlashize(location));
+                                        String location = javaSlashize(handleExceptionalCases(archive, e.relativize(file)));
+                                        archive.add(new FileAsset(file.toFile()), location);
                                     }
                                     return super.visitFile(file, attrs);
                                 }
@@ -154,6 +154,24 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
         return Collections.singletonList(description);
     }
 
+    protected Path handleExceptionalCases(Archive archive, Path input) {
+        if (archive.getName().endsWith(".war")) {
+            String fileName = input.getFileName().toString();
+            if (META_INF_SPECIAL_CASES.contains(fileName)) {
+                return input;
+            }
+            if (fileName.startsWith("project-") && fileName.endsWith(".yml")) {
+                return input;
+            }
+            if (input.getName(0).toString().equals("WEB-INF")) {
+                return input;
+            }
+            return Paths.get("WEB-INF", "classes").resolve(input);
+        }
+
+        return input;
+    }
+
     protected String getPlatformPath(String path) {
         if (!isWindows()) {
             return path;
@@ -181,4 +199,9 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
         return String.join("/", parts);
 
     }
+
+    private static Set<String> META_INF_SPECIAL_CASES = new HashSet<String>() {{
+        add("jboss-deployment-structure.xml");
+        add("swarm.swagger.conf");
+    }};
 }
