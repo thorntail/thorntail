@@ -77,12 +77,16 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
         for (String name : allProps.stringPropertyNames()) {
             if (isSimpleLoggerName(name)) {
                 String logger = name.substring((LoggingProperties.LOGGING + ".").length());
-                Level loggerLevel = Level.valueOf(allProps.getProperty(name).trim().toUpperCase());
-                logger(logger, (l) -> {
-                    l.level(loggerLevel);
-                    l.category(logger);
-                    l.handler(CONSOLE);
-                });
+                try {
+                    Level loggerLevel = Level.valueOf(allProps.getProperty(name).trim().toUpperCase());
+                    logger(logger, (l) -> {
+                        l.level(loggerLevel);
+                        l.category(logger);
+                        l.handler(CONSOLE);
+                    });
+                } catch (IllegalArgumentException e) {
+                    // apparently wasn't a logging category+level, ignore.
+                }
             }
         }
 
