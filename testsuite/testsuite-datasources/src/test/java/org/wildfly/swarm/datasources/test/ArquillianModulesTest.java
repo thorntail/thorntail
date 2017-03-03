@@ -50,7 +50,7 @@ public class ArquillianModulesTest {
     @Test
     public void testDatasource() {
         String response = getUrlContents("http://localhost:8080/");
-        assertThat(response).contains("Howdy using connection: org.jboss.jca.adapters.jdbc.jdk7.WrappedConnectionJDK7");
+        assertThat(response).matches("^(Howdy using connection: org.jboss.jca.adapters.jdbc.jdk)(7|8)(.WrappedConnectionJDK)(7|8)\\@[a-zA-Z\\d]+\n$");
     }
 
     private static String getUrlContents(String theUrl) {
