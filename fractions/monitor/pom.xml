@@ -55,6 +55,11 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>health-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>management</artifactId>
     </dependency>
     <dependency>
@@ -126,6 +131,9 @@
         </exclusion>
       </exclusions>
     </dependency>
+
   </dependencies>
+
+
 
 </project>

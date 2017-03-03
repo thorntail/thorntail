@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor;
+package org.wildfly.swarm.health;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * @author Heiko Braun
- * @since 23/03/16
+ * Indicates that a JAX-RS method should be used check liveliness
  */
-public interface HealthCheck {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Health {
 
-    HealthStatus perform();
 }

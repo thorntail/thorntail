@@ -17,6 +17,7 @@ package org.wildfly.swarm.monitor;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.wildfly.swarm.health.HealthStatus;
 import org.wildfly.swarm.monitor.runtime.HealthAnnotationProcessor;
 
 /**

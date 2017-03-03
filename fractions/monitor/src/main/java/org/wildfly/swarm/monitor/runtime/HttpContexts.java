@@ -173,6 +173,8 @@ class HttpContexts implements HttpHandler {
                     if (failed) {
                         exchange.setStatusCode(503);
                     }
+
+                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
                     exchange.getResponseSender().send(sb.toString());
 
                 } else {
