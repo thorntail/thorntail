@@ -38,7 +38,7 @@ public class HttpSecurityPreparerTest {
     @Before
     public void setUp() {
         preparer = new HttpSecurityPreparer();
-        archive = ShrinkWrap.create(WARArchive.class);
+        archive = ShrinkWrap.create(WARArchive.class, "app.war");
     }
 
     @Test
@@ -55,7 +55,7 @@ public class HttpSecurityPreparerTest {
         Yaml yaml = new Yaml();
         Map<String, Object> httpConfig = (Map<String, Object>) yaml.load(in);
 
-        preparer.httpConfig = (Map)((Map)httpConfig.get("swarm")).get("http");
+        preparer.deploymentConfigs = (Map)((Map)httpConfig.get("swarm")).get("deployment");
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -74,12 +74,14 @@ public class HttpSecurityPreparerTest {
 
     @Test
     public void unsupported_auth_method() throws Exception {
-        Map<String, Object> httpConfig = new HashMap<>();
+        Map<String, Object> deploymentConfig = createConfigStub();
+        Map<String, Object> webConfig = findWebConfig(deploymentConfig);
+
         Map<String, Object> loginConfig = new HashMap<>();
         loginConfig.put("auth-method", "foobar");
-        httpConfig.put("login-config", loginConfig);
+        webConfig.put("login-config", loginConfig);
 
-        preparer.httpConfig = httpConfig;
+        preparer.deploymentConfigs = deploymentConfig;
         preparer.prepareArchive(archive);
 
         assertThat(archive.get(WebXmlAsset.NAME)).isNull();
@@ -87,14 +89,15 @@ public class HttpSecurityPreparerTest {
 
     @Test
     public void set_1_security_constraint() throws Exception {
-        Map<String, Object> httpConfig = createConfigStub();
+        Map<String, Object> deploymentConfig = createConfigStub();
+        Map<String, Object> webConfig = findWebConfig(deploymentConfig);
 
         Map<String, Object> securityConstraint = new HashMap<>();
         securityConstraint.put("url-pattern", "/aaa");
 
-        httpConfig.put("security-constraints", Collections.singletonList(securityConstraint));
+        webConfig.put("security-constraints", Collections.singletonList(securityConstraint));
 
-        preparer.httpConfig = httpConfig;
+        preparer.deploymentConfigs = deploymentConfig;
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -111,18 +114,37 @@ public class HttpSecurityPreparerTest {
         }
     }
 
+    private Map<String, Object> findWebConfig(Map<String, Object> deploymentConfig) {
+        String[] path = new String[] {archive.getName(), "web"};
+        Map<String, Object> curr = deploymentConfig;
+
+        for (int i=0; i<path.length; i++) {
+            curr = (Map<String, Object>)curr.get(path[i]);
+        }
+
+        return curr;
+    }
+
     private Map<String, Object> createConfigStub() {
-        HashMap<String, Object> httpConfig = new HashMap<>();
+        HashMap<String, Object> deploymentConfig = new HashMap<>();
+        HashMap<String, Object> archiveConfig = new HashMap<>();
+        HashMap<String, Object> webConfig = new HashMap<>();
+
         Map<String, Object> loginConfig = new HashMap<>();
-        loginConfig.put("auth-method", "KEYCLOAK");
-        httpConfig.put("login-config", loginConfig);
-        return httpConfig;
+        loginConfig.put("auth-method", "BASIC");
+
+        archiveConfig.put("web", webConfig);
+        webConfig.put("login-config", loginConfig);
+        deploymentConfig.put(archive.getName(), archiveConfig);
+
+        return deploymentConfig;
     }
 
     @Test
     public void set_2_security_constraints() throws Exception {
 
-        Map<String, Object> httpConfig = createConfigStub();
+        Map<String, Object> deploymentConfig = createConfigStub();
+        Map<String, Object> webConfig = findWebConfig(deploymentConfig);
 
         Map<String, Object> securityConstraint1 = new HashMap<>();
         securityConstraint1.put("url-pattern", "/aaa");
@@ -130,8 +152,8 @@ public class HttpSecurityPreparerTest {
         securityConstraint2.put("url-pattern", "/bbb");
 
 
-        httpConfig.put("security-constraints", Arrays.asList(securityConstraint1, securityConstraint2));
-        preparer.httpConfig = httpConfig;
+        webConfig.put("security-constraints", Arrays.asList(securityConstraint1, securityConstraint2));
+        preparer.deploymentConfigs = deploymentConfig;
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -146,14 +168,15 @@ public class HttpSecurityPreparerTest {
 
     @Test
     public void set_1_method() throws Exception {
-        Map<String, Object> httpConfig = createConfigStub();
+        Map<String, Object> deploymentConfig = createConfigStub();
+        Map<String, Object> webConfig = findWebConfig(deploymentConfig);
 
         Map<String, Object> securityConstraint = new HashMap<>();
         securityConstraint.put("methods", Arrays.asList("GET"));
 
 
-        httpConfig.put("security-constraints", Collections.singletonList(securityConstraint));
-        preparer.httpConfig = httpConfig;
+        webConfig.put("security-constraints", Collections.singletonList(securityConstraint));
+        preparer.deploymentConfigs = deploymentConfig;
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {
@@ -173,14 +196,15 @@ public class HttpSecurityPreparerTest {
     @Test
     public void set_2_methods() throws Exception {
 
-        Map<String, Object> httpConfig = createConfigStub();
+        Map<String, Object> deploymentConfig = createConfigStub();
+        Map<String, Object> webConfig = findWebConfig(deploymentConfig);
 
         Map<String, Object> securityConstraint = new HashMap<>();
         securityConstraint.put("methods", Arrays.asList("GET", "POST"));
 
 
-        httpConfig.put("security-constraints", Collections.singletonList(securityConstraint));
-        preparer.httpConfig = httpConfig;
+        webConfig.put("security-constraints", Collections.singletonList(securityConstraint));
+        preparer.deploymentConfigs = deploymentConfig;
         preparer.prepareArchive(archive);
 
         try (InputStream assetStream = archive.get(WebXmlAsset.NAME).getAsset().openStream()) {

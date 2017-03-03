@@ -18,6 +18,7 @@ package org.wildfly.swarm.undertow.runtime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -43,12 +44,28 @@ public class HttpSecurityPreparer implements ArchivePreparer {
     @Override
     public void prepareArchive(Archive<?> archive) {
 
-        if (httpConfig == null || httpConfig.isEmpty() || !httpConfig.containsKey("login-config")) {
+        if (deploymentConfigs == null || deploymentConfigs.isEmpty()) {
             return;
         }
 
+        // find a matching archive declaration
+        Optional<String> match = deploymentConfigs.keySet()
+                .stream()
+                .filter(c -> archive.getName().equals(c))
+                .findFirst();
+        if (!match.isPresent()) {
+            return; // no matching archive
+        }
+
+        Map<String, Object> matchingConfig = (Map<String, Object>) deploymentConfigs.get(match.get());
+        if (!matchingConfig.containsKey("web")) {
+            return; // missing web configuration
+        }
+
+        Map<String, Object> deploymentConfig = (Map<String, Object>) matchingConfig.get("web");
+
         // unsupported auth method
-        Map<String, Object> loginConfig = (Map<String, Object>)httpConfig.get("login-config");
+        Map<String, Object> loginConfig = (Map<String, Object>) deploymentConfig.get("login-config");
         String authMethod = (String)loginConfig.getOrDefault("auth-method", "NONE");
         boolean isSupported = false;
         for (String supported : SUPPORTED_AUTH_METHODS) {
@@ -87,7 +104,7 @@ public class HttpSecurityPreparer implements ArchivePreparer {
 
         // security constraints
         List<Map<String, Object>> securityConstraints =
-                (List<Map<String, Object>>) httpConfig.getOrDefault("security-constraints", Collections.EMPTY_LIST);
+                (List<Map<String, Object>>) deploymentConfig.getOrDefault("security-constraints", Collections.EMPTY_LIST);
 
         for (Map<String, Object> sc : securityConstraints) {
             SecurityConstraint securityConstraint = webXml
@@ -101,7 +118,7 @@ public class HttpSecurityPreparer implements ArchivePreparer {
         }
     }
 
-    @Configurable("swarm.http")
-    Map<String, Object> httpConfig;
+    @Configurable("swarm.deployment")
+    Map<String, Object> deploymentConfigs;
 
 }
