@@ -108,7 +108,7 @@ public class HttpSecurityPreparer implements ArchivePreparer {
 
         for (Map<String, Object> sc : securityConstraints) {
             SecurityConstraint securityConstraint = webXml
-                    .protect((String) sc.getOrDefault("url-pattern", ""));
+                    .protect((String) sc.getOrDefault("url-pattern", "/*"));
 
             ((List<String>) sc.getOrDefault("methods", Collections.emptyList()))
                     .forEach(securityConstraint::withMethod);
