@@ -84,6 +84,10 @@ public class MapConfigNodeFactory {
             child = new ConfigNode("" + value);
         } else if (value instanceof Boolean) {
             child = new ConfigNode("" + value);
+        } else if (value instanceof Float) {
+            child = new ConfigNode("" + value);
+        } else if (value instanceof Double) {
+            child = new ConfigNode("" + value);
         }
 
         return child;
