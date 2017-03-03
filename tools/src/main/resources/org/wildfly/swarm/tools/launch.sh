@@ -30,14 +30,14 @@ configfile="$(basename "${jarfile%.*}.conf")"
 [[ -r "${CONF_FOLDER}/${configfile}" ]] && source "${CONF_FOLDER}/${configfile}"
 
 # Initialize PID/LOG locations if they weren't provided by the config file
-[[ -z "$PID_FOLDER" ]] && PID_FOLDER="{{pidFolder:/var/run}}"
-[[ -z "$LOG_FOLDER" ]] && LOG_FOLDER="{{logFolder:/var/log}}"
+[[ -z "$PID_FOLDER" ]] && PID_FOLDER="${pidFolder:-/var/run}"
+[[ -z "$LOG_FOLDER" ]] && LOG_FOLDER="${logFolder:-/var/log}"
 ! [[ -x "$PID_FOLDER" ]] && PID_FOLDER="/tmp"
 ! [[ -x "$LOG_FOLDER" ]] && LOG_FOLDER="/tmp"
 
 # Set up defaults
-[[ -z "$MODE" ]] && MODE="{{mode:auto}}" # modes are "auto", "service" or "run"
-[[ -z "$USE_START_STOP_DAEMON" ]] && USE_START_STOP_DAEMON="{{useStartStopDaemon:true}}"
+[[ -z "$MODE" ]] && MODE="${mode:-auto}" # modes are "auto", "service" or "run"
+[[ -z "$USE_START_STOP_DAEMON" ]] && USE_START_STOP_DAEMON="${useStartStopDaemon:-true}"
 
 # Create an identity for log/pid files
 if [[ -z "$identity" ]]; then
@@ -113,6 +113,10 @@ fi
 # Build actual command to execute
 command="$javaexe -Dsun.misc.URLClassPath.disableJarChecking=true $JAVA_OPTS -jar $jarfile $RUN_ARGS $*"
 
+
+#check if start-stop-daemon has support for --no-close (to support older systems)
+noClose=$(if [[ $(start-stop-daemon --help | grep \\-\\-no-close; echo $?) == 0 ]]; then echo --no-close; fi)
+
 # Action functions
 start() {
   if [[ -f "$pid_file" ]]; then
@@ -137,7 +141,7 @@ do_start() {
         --chuid "$run_user" \
         --name "$identity" \
         --make-pidfile --pidfile "$pid_file" \
-        --background --no-close \
+        --background $noClose \
         --startas "$javaexe" \
         --chdir "$working_dir" \
         -- "${arguments[@]}" \
