@@ -68,6 +68,7 @@ public class ProjectStagesTest {
         assertThat(view.resolve("myname").getValue()).isEqualTo("foo");
         swarm.withProfile("bar");
         assertThat(view.resolve("myname").getValue()).isEqualTo("foo");
+        assertThat(view.resolve("mydottednumber").as(Double.class).getValue()).isEqualTo(2.82);
     }
 
     @Test
