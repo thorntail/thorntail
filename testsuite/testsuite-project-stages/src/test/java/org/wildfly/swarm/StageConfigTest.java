@@ -20,7 +20,7 @@ public class StageConfigTest {
         try {
             URL projectStages = getClass().getClassLoader().getResource("simple-project-stages.yml");
             System.setProperty(SwarmProperties.PROJECT_STAGE_FILE, projectStages.toExternalForm());
-            Swarm swarm = new Swarm(false, new Properties());
+            Swarm swarm = new Swarm(new Properties());
 
             ConfigView view = swarm.configView();
             assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("cheddar");

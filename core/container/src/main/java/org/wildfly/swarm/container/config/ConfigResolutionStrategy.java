@@ -2,6 +2,7 @@ package org.wildfly.swarm.container.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -52,6 +53,10 @@ class ConfigResolutionStrategy {
     void withProperties(Properties properties) {
         this.nodes.add(PropertiesConfigNodeFactory.load(properties));
         this.properties = PropertiesManipulator.forProperties(properties);
+    }
+
+    void withEnvironment(Map<String, String> environment) {
+        this.nodes.add(EnvironmentConfigNodeFactory.load(environment));
     }
 
     /**
