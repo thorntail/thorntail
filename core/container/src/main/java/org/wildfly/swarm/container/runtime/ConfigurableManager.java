@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -133,7 +134,14 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     private <ENUMTYPE extends Enum<ENUMTYPE>> Converter<ENUMTYPE> converter(Class<ENUMTYPE> enumType) {
-        return (str) -> Enum.valueOf(enumType, str.toUpperCase().replace('-', '_'));
+        return (str) -> {
+            try {
+                return Enum.valueOf(enumType, str.toUpperCase().replace('-', '_'));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid value '" + str + "'; should be one of: "
+                        + String.join(",", Arrays.stream(enumType.getEnumConstants()).map((constant) -> constant.toString()).collect(Collectors.toList())));
+            }
+        };
     }
 
     private Resolver<List> listResolver(Resolver<String> resolver, ConfigKey key) {
@@ -488,6 +496,7 @@ public class ConfigurableManager implements AutoCloseable {
                     .getTarget();
 
             return mh.invoke(this, itemPrefix);
+
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }

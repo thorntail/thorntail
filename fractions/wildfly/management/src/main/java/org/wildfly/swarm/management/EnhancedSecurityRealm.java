@@ -16,7 +16,6 @@
 package org.wildfly.swarm.management;
 
 import org.wildfly.swarm.config.management.SecurityRealm;
-import org.wildfly.swarm.config.management.SecurityRealmConsumer;
 
 /**
  * @author Bob McWhirter
@@ -30,7 +29,7 @@ public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> 
         plugIn("org.wildfly.swarm.management:runtime");
     }
 
-    public EnhancedSecurityRealm inMemoryAuthentication(InMemoryAuthentication.Consumer consumer) {
+    public EnhancedSecurityRealm inMemoryAuthentication(InMemoryAuthenticationConsumer consumer) {
         return plugInAuthentication((plugin) -> {
             plugin.name(IN_MEMORY_PLUGIN_NAME);
             InMemoryAuthentication authn = new InMemoryAuthentication(getKey(), plugin);
@@ -43,16 +42,12 @@ public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> 
         });
     }
 
-    public EnhancedSecurityRealm inMemoryAuthorization(InMemoryAuthorization.Consumer consumer) {
+    public EnhancedSecurityRealm inMemoryAuthorization(InMemoryAuthorizationConsumer consumer) {
         return plugInAuthorization((plugin) -> {
             plugin.name(IN_MEMORY_PLUGIN_NAME);
             InMemoryAuthorization authz = new InMemoryAuthorization(plugin);
             consumer.accept(authz);
         });
-    }
-
-    public static interface Consumer extends SecurityRealmConsumer<EnhancedSecurityRealm> {
-
     }
 
 }

@@ -20,15 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** JBoss Modules module descriptor.
+/**
+ * JBoss Modules module descriptor.
  *
  * <p>If a module is added to an archive, this descriptor is returned in order
  * to allow specific customization regarding exports, services, etc.</p>
  *
+ * @author Ken Finnigan
  * @see JBossDeploymentStructureContainer#addModule(String)
  * @see JBossDeploymentStructureContainer#addModule(String, String)
- *
- * @author Ken Finnigan
  */
 public class Module {
 
@@ -38,10 +38,14 @@ public class Module {
 
     Module(String name, String slot) {
         this.name = name;
+        if (slot == null) {
+            slot = "main";
+        }
         this.slot = slot;
     }
 
-    /** The name of the module.
+    /**
+     * The name of the module.
      *
      * @return The name of the module.
      */
@@ -54,7 +58,8 @@ public class Module {
         return this;
     }
 
-    /** The slot of the module.
+    /**
+     * The slot of the module.
      *
      * @return The slot of the module.
      */
@@ -67,7 +72,8 @@ public class Module {
         return this;
     }
 
-    /** Determine if this module should be exported.
+    /**
+     * Determine if this module should be exported.
      *
      * @return {@code null} if undefined, otherwise {@code true} if the module is to be exported, otherwise {@code false}.
      */
@@ -75,7 +81,8 @@ public class Module {
         return this.export;
     }
 
-    /** Set the flag to determine if this module should be exported.
+    /**
+     * Set the flag to determine if this module should be exported.
      *
      * @param export The flag.
      * @return this module descriptor.
@@ -85,7 +92,8 @@ public class Module {
         return this;
     }
 
-    /** Retrieve the services flag.
+    /**
+     * Retrieve the services flag.
      *
      * @return The services flag.
      */
@@ -93,7 +101,8 @@ public class Module {
         return this.services;
     }
 
-    /** Set the services flag.
+    /**
+     * Set the services flag.
      *
      * @param services The services flag.
      * @return this module descriptor.
@@ -103,7 +112,8 @@ public class Module {
         return this;
     }
 
-    /** Determine if this module is considered optional.
+    /**
+     * Determine if this module is considered optional.
      *
      * @return {@code null} if undefined, otherwise {@code true} if the module is optional, otherwise {@code false}.
      */
@@ -111,7 +121,8 @@ public class Module {
         return this.optional;
     }
 
-    /** Set the optional flag.
+    /**
+     * Set the optional flag.
      *
      * @param optional The optional flag.
      * @return this module.
@@ -121,7 +132,8 @@ public class Module {
         return this;
     }
 
-    /** Retrieve the meta-inf disposition.
+    /**
+     * Retrieve the meta-inf disposition.
      *
      * @return The meta-inf disposition.
      */
@@ -129,7 +141,8 @@ public class Module {
         return this.metaInf;
     }
 
-    /** Set the meta-inf disposition.
+    /**
+     * Set the meta-inf disposition.
      *
      * @param metaInf The meta-inf disposition.
      * @return this module.
@@ -139,7 +152,8 @@ public class Module {
         return this;
     }
 
-    /** Retrieve the list of paths imported from this module.
+    /**
+     * Retrieve the list of paths imported from this module.
      *
      * @return The list of paths imported from this module.
      */
@@ -147,7 +161,8 @@ public class Module {
         return this.imports.get(INCLUDE);
     }
 
-    /** Retreive the list of paths excluded from importation from this module.
+    /**
+     * Retreive the list of paths excluded from importation from this module.
      *
      * @return The list of paths excluded from importation from this module.
      */
@@ -155,7 +170,8 @@ public class Module {
         return this.imports.get(EXCLUDE);
     }
 
-    /** Add a path to import from this module.
+    /**
+     * Add a path to import from this module.
      *
      * @param path The path to add.
      * @return this module descriptor.
@@ -166,7 +182,8 @@ public class Module {
         return this;
     }
 
-    /** Add a path to exclude from importing from this module.
+    /**
+     * Add a path to exclude from importing from this module.
      *
      * @param path The excluded path to add.
      * @return this module descriptor.
@@ -177,7 +194,8 @@ public class Module {
         return this;
     }
 
-    /** Retrieve this list of paths exported from this module.
+    /**
+     * Retrieve this list of paths exported from this module.
      *
      * @return The list of paths exported from this module.
      */
@@ -185,7 +203,8 @@ public class Module {
         return this.exports.get(INCLUDE);
     }
 
-    /** Retrieve the list of paths excluded from exportation from this module.
+    /**
+     * Retrieve the list of paths excluded from exportation from this module.
      *
      * @return The list of paths excluded from exportation from this module.
      */
@@ -193,7 +212,8 @@ public class Module {
         return this.exports.get(EXCLUDE);
     }
 
-    /** Add a path to export from this module.
+    /**
+     * Add a path to export from this module.
      *
      * @param path The path to add.
      * @return this module descriptor.
@@ -204,7 +224,8 @@ public class Module {
         return this;
     }
 
-    /** Add a path to exclude from exporting from this module.
+    /**
+     * Add a path to exclude from exporting from this module.
      *
      * @param path The excluded path to add.
      * @return this module descriptor.

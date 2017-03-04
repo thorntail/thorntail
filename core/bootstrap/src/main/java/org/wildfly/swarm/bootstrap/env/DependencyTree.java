@@ -23,14 +23,11 @@ public class DependencyTree<T> {
      * @param parent
      */
     public void add(T parent, T child) {
-        if (!depTree.keySet().contains(parent)) {
-            depTree.put(parent, new HashSet<>());
-        }
+        final Set<T> children = depTree.computeIfAbsent(parent, p -> new HashSet<>());
         if (!child.equals(parent)) {
-            depTree.get(parent).add(child);
+            children.add(child);
         }
     }
-
 
     /**
      * Direct dep without any transient dependencies
@@ -38,9 +35,7 @@ public class DependencyTree<T> {
      * @param parent
      */
     public void add(T parent) {
-        if (!depTree.keySet().contains(parent)) {
-            depTree.put(parent, new HashSet<>());
-        }
+        depTree.computeIfAbsent(parent, p -> new HashSet<>());
     }
 
     public Collection<T> getDirectDeps() {

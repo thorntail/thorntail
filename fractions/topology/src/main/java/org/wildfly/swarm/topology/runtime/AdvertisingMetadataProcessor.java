@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
@@ -16,6 +18,7 @@ import org.wildfly.swarm.topology.TopologyArchive;
 /**
  * @author Bob McWhirter
  */
+@ApplicationScoped
 public class AdvertisingMetadataProcessor implements ArchiveMetadataProcessor {
 
     @Override

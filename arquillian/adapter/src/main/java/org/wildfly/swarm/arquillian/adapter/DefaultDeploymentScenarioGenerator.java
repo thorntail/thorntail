@@ -31,6 +31,9 @@ import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
 import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 
 /**
  * @author Bob McWhirter
@@ -106,8 +109,8 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
                             Files.walkFileTree(e, new SimpleFileVisitor<Path>() {
                                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                                     if (!file.toString().endsWith(".class")) {
-                                        Path location = e.relativize(file);
-                                        archive.add(new FileAsset(file.toFile()), javaSlashize(location));
+                                        String location = javaSlashize(handleExceptionalCases(archive, e.relativize(file)));
+                                        archive.add(new FileAsset(file.toFile()), location);
                                     }
                                     return super.visitFile(file, attrs);
                                 }
@@ -127,6 +130,18 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
         }
         */
 
+        DeploymentModules deploymentModules = testClass.getAnnotation(DeploymentModules.class);
+        if (deploymentModules != null) {
+            for (DeploymentModule each : deploymentModules.value()) {
+                archive.as(JARArchive.class).addModule(each.name(), each.slot());
+            }
+        }
+
+        DeploymentModule deploymentModule = testClass.getAnnotation(DeploymentModule.class);
+        if (deploymentModule != null) {
+            archive.as(JARArchive.class).addModule(deploymentModule.name(), deploymentModule.slot());
+        }
+
         DeploymentDescription description = new DeploymentDescription(testClass.getName(), archive);
 
         Class<?> mainClass = anno.main();
@@ -137,6 +152,24 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
         description.shouldBeTestable(anno.testable());
 
         return Collections.singletonList(description);
+    }
+
+    protected Path handleExceptionalCases(Archive archive, Path input) {
+        if (archive.getName().endsWith(".war")) {
+            String fileName = input.getFileName().toString();
+            if (META_INF_SPECIAL_CASES.contains(fileName)) {
+                return input;
+            }
+            if (fileName.startsWith("project-") && fileName.endsWith(".yml")) {
+                return input;
+            }
+            if (input.getName(0).toString().equals("WEB-INF")) {
+                return input;
+            }
+            return Paths.get("WEB-INF", "classes").resolve(input);
+        }
+
+        return input;
     }
 
     protected String getPlatformPath(String path) {
@@ -166,4 +199,9 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
         return String.join("/", parts);
 
     }
+
+    private static Set<String> META_INF_SPECIAL_CASES = new HashSet<String>() {{
+        add("jboss-deployment-structure.xml");
+        add("swarm.swagger.conf");
+    }};
 }

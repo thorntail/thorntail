@@ -66,6 +66,6 @@ public class CertInfo {
 
 
     public boolean isValid() {
-        return ((keystorePath != null && keystorePassword != null && keystoreAlias != null) || generateSelfSignedCertificateHost != null);
+        return ((keystorePath != null && keystorePassword != null) || generateSelfSignedCertificateHost != null);
     }
 }

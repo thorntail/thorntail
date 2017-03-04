@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -33,11 +32,9 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-import org.wildfly.swarm.keycloak.Secured;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
-import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 
 @ApplicationScoped
 public class SecuredArchivePreparer implements ArchivePreparer {
@@ -60,17 +57,6 @@ public class SecuredArchivePreparer implements ArchivePreparer {
             // not adding it.
         }
 
-        if (securityConstraints == null || securityConstraints.isEmpty()) {
-            return;
-        }
-
-        securityConstraints.forEach(scAsString -> {
-            SecurityConstraint sc = SecurityConstraintParser.parse(scAsString);
-            archive.as(Secured.class)
-                    .protect(sc.urlPattern())
-                    .withMethod(sc.methods().toArray(new String[sc.methods().size()]))
-                    .withRole(sc.roles().toArray(new String[sc.roles().size()]));
-        });
     }
 
     private InputStream getKeycloakJson(String path) {
@@ -131,8 +117,5 @@ public class SecuredArchivePreparer implements ArchivePreparer {
 
     @Configurable("swarm.keycloak.json.path")
     String keycloakJsonPath;
-
-    @Configurable("swarm.keycloak.security.constraints")
-    List<String> securityConstraints;
 
 }

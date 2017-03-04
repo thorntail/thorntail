@@ -3,3 +3,43 @@
 The Datasources fraction provides support for container-managed
 database connections.
 
+## Autodetectable drivers
+
+If a user application includes the appropriate vendor JDBC
+library in their normal dependencies, they will be detected
+and installed by WildFly Swarm without any additional effort.
+
+The list of detectable drivers and their `driver-name` which
+may be used when defining a datasource is as follows:
+
+[cols="2*", options="header"] 
+|===
+|Database
+|`driver-name`
+
+|MySQL
+|`mysql`
+
+|PostgreSQL
+|`postgresql`
+
+|H2
+|`h2`
+
+|EnterpriseDB
+|`edb`
+
+|IBM DB2
+|`ibmdb2`
+
+|Oracle DB
+|`oracle`
+
+|Microsoft SQLServer
+|`sqlserver`
+
+|Sybase
+|`sybase`
+|===
+
+

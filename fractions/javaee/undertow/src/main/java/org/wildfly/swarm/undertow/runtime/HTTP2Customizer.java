@@ -18,6 +18,7 @@ package org.wildfly.swarm.undertow.runtime;
 
 import java.security.NoSuchAlgorithmException;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -34,6 +35,7 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
 @Post
+@ApplicationScoped
 public class HTTP2Customizer implements Customizer {
 
     @Inject

@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.transactions;
 
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.Transactions;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -35,11 +33,6 @@ import static org.wildfly.swarm.transactions.TransactionsProperties.DEFAULT_STAT
 @MarshalDMR
 @DeploymentModule(name = "org.jboss.jts")
 public class TransactionsFraction extends Transactions<TransactionsFraction> implements Fraction<TransactionsFraction> {
-
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
 
     public static TransactionsFraction createDefaultFraction() {
         return new TransactionsFraction().applyDefaults();

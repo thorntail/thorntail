@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
-    <version>2017.3.0-SNAPSHOT</version>
+    <version>2017.4.0-SNAPSHOT</version>
     <relativePath>../../</relativePath>
   </parent>
 
@@ -63,7 +63,7 @@
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>keycloak-config-api</artifactId>
+      <artifactId>keycloak-server-config-api</artifactId>
     </dependency>
 
     <dependency>

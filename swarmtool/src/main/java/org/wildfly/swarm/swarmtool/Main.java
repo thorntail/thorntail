@@ -80,6 +80,13 @@ public class Main {
                     .withValuesSeparatedBy(',')
                     .describedAs("undertow,jaxrs,...");
 
+    private static final OptionSpec<String> DEPENDENCIES_OPT =
+            OPT_PARSER.acceptsAll(asList("d", "dependencies"), "Maven coordinates (groupId:artifactId:version) of dependencies to include")
+                    .withRequiredArg()
+                    .ofType(String.class)
+                    .withValuesSeparatedBy(",")
+                    .describedAs("gav1,gav2,...");
+
     private static final OptionSpec<String> REPOS_OPT =
             OPT_PARSER.accepts("repos", "additional maven repos to resolve against")
                     .withRequiredArg()
@@ -217,6 +224,11 @@ public class Main {
                     properties.put(parts[0], parts[1]);
                 });
 
+        final DeclaredDependencies dependencies = new DeclaredDependencies();
+        foundOptions.valuesOf(DEPENDENCIES_OPT).stream()
+                .map(DeclaredDependencies::createSpec)
+                .forEach(dependencies::add);
+
         final String[] parts = source.getName().split("\\.(?=[^\\.]+$)");
         final String baseName = parts[0];
         final String type = parts[1] == null ? "jar" : parts[1];
@@ -225,7 +237,7 @@ public class Main {
         final String suffix = foundOptions.has(HOLLOW_OPT) ? "-hollow-swarm" : "-swarm";
         final BuildTool tool = new BuildTool(getResolvingHelper(foundOptions.valuesOf(REPOS_OPT)))
                 .projectArtifact("", baseName, "", type, source)
-                .declaredDependencies(new DeclaredDependencies())
+                .declaredDependencies(dependencies)
                 .fractionDetectionMode(foundOptions.has(DISABLE_AUTO_DETECT_OPT) ?
                                                BuildTool.FractionDetectionMode.never :
                                                BuildTool.FractionDetectionMode.force)
@@ -246,7 +258,7 @@ public class Main {
 
         addSwarmFractions(tool, foundOptions.valuesOf(FRACTIONS_OPT));
 
-        System.err.println(String.format("Building %s/%s-%s.jar", outDir, jarName, suffix));
+        System.err.println(String.format("Building %s/%s%s.jar", outDir, jarName, suffix));
         return tool.build(jarName, Paths.get(outDir));
     }
 

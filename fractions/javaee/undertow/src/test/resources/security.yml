@@ -1,0 +1,10 @@
+swarm:
+  deployment:
+    app.war:
+      web:
+        login-config:
+          auth-method: BASIC
+        security-constraints:
+          - url-pattern: /protected
+            methods: [GET, POST]
+            roles: [admin]

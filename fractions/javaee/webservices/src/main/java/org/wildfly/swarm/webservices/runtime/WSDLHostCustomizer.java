@@ -1,5 +1,6 @@
 package org.wildfly.swarm.webservices.runtime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.container.Interface;
@@ -11,6 +12,7 @@ import org.wildfly.swarm.webservices.WebServicesFraction;
  * @author Bob McWhirter
  */
 @Post
+@ApplicationScoped
 public class WSDLHostCustomizer implements Customizer {
 
     @Inject
