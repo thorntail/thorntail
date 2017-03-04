@@ -56,8 +56,14 @@ public class CertInfoProducer {
                 Path dataDir = Paths.get(System.getProperty(JBOSS_DATA_DIR));
                 Path certDestination = dataDir.resolve(keystorePath);
                 try {
-                    Module appModule = Module.getCallerModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
-                    URL jks = appModule.getClassLoader().getResource(keystorePath);
+                    URL jks = ClassLoader.getSystemClassLoader().getResource(keystorePath);
+                    if (jks == null) {
+                        Module appModule = Module.getCallerModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                        jks = appModule.getClassLoader().getResource(keystorePath);
+                    }
+                    if (jks == null) {
+                        throw new RuntimeException(String.format("Unable to locate embedded keystore %s in classpath", keystorePath));
+                    }
                     Files.copy(jks.openStream(), certDestination);
                     keystorePath = certDestination.toString();
                 } catch (Exception ie) {
