@@ -58,7 +58,7 @@ public class ConfigViewFactory {
         this.configView = new ConfigViewImpl().withProperties(properties).withEnvironment(System.getenv());
     }
 
-    public ConfigViewFactory(Properties properties, Map<String,String> environment) {
+    public ConfigViewFactory(Properties properties, Map<String, String> environment) {
         this.configView = new ConfigViewImpl().withProperties(properties).withEnvironment(environment);
     }
 
@@ -125,6 +125,9 @@ public class ConfigViewFactory {
     }
 
     public ConfigViewImpl get(boolean activate) {
+        for (String profile : this.profiles) {
+            this.configView.withProfile(profile);
+        }
         this.configView.activate();
         return this.configView;
     }
@@ -168,7 +171,13 @@ public class ConfigViewFactory {
         this.configView.withProfile(name);
     }
 
+    public void withProfile(String name) {
+        this.configView.withProfile(name);
+    }
+
     private List<ConfigLocator> locators = new ArrayList<>();
+
+    private List<String> profiles = new ArrayList<>();
 
     private static final String PROJECT_PREFIX = "project";
 

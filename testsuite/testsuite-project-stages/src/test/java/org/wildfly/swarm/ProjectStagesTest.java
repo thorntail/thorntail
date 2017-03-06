@@ -63,8 +63,18 @@ public class ProjectStagesTest {
     }
 
     @Test
+    public void testCLIBasedSelectedStage() throws Exception {
+        Swarm swarm = new Swarm(new Properties(),
+                "-S", "production");
+
+        ConfigView view = swarm.configView();
+
+        assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("brie");
+    }
+
+    @Test
     public void testSwarmAPIToLoadConfig() throws Exception {
-        Swarm swarm = new Swarm( new Properties());
+        Swarm swarm = new Swarm(new Properties());
         swarm.withProfile("foo");
         ConfigView view = swarm.configView();
         assertThat(view.resolve("myname").getValue()).isEqualTo("foo");
@@ -82,9 +92,9 @@ public class ProjectStagesTest {
 
     @Test
     public void testEnvironmentVars() throws Exception {
-        Map<String,String> environment = new HashMap<>();
+        Map<String, String> environment = new HashMap<>();
         environment.put("myname", "from_env");
-        Swarm swarm = new Swarm( new Properties(), environment );
+        Swarm swarm = new Swarm(new Properties(), environment);
 
         ConfigView view = swarm.configView();
         assertThat(view.resolve("myname").getValue()).isEqualTo("from_env");
@@ -92,13 +102,13 @@ public class ProjectStagesTest {
 
     @Test
     public void testPropertiesPreferredToEnvironmentVars() throws Exception {
-        Map<String,String> environment = new HashMap<>();
+        Map<String, String> environment = new HashMap<>();
         Properties properties = new Properties();
 
         environment.put("myname", "from_env");
         properties.setProperty("myname", "from_props");
 
-        Swarm swarm = new Swarm( properties, environment );
+        Swarm swarm = new Swarm(properties, environment);
 
         ConfigView view = swarm.configView();
         assertThat(view.resolve("myname").getValue()).isEqualTo("from_props");
