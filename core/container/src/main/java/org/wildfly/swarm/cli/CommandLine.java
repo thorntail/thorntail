@@ -37,6 +37,7 @@ import org.jboss.modules.ModuleClassLoader;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
@@ -281,7 +282,7 @@ public class CommandLine {
      * @param out The output stream to display help upon.
      */
     public void displayVersion(PrintStream out) {
-        out.println("WildFly Swarm version " + Swarm.VERSION);
+        out.println("WildFly Swarm version " + SwarmInfo.VERSION);
     }
 
     /**
