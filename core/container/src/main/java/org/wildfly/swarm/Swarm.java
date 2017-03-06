@@ -82,7 +82,6 @@ import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.StageConfig;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.config.ConfigView;
-import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
 /**
  * Default {@code main(...)} if an application does not provide one.
@@ -122,8 +121,6 @@ import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
  */
 @Vetoed
 public class Swarm {
-
-    public static final String VERSION = Swarm.class.getPackage().getImplementationVersion();
 
     private static final String BOOT_MODULE_PROPERTY = "boot.module.loader";
 
@@ -198,8 +195,6 @@ public class Swarm {
         if (debugBootstrap) {
             Module.setModuleLogger(new StreamModuleLogger(System.err));
         }
-
-        System.setProperty(SwarmInternalProperties.VERSION, (VERSION == null ? "unknown" : VERSION));
 
         setArgs(args);
         this.debugBootstrap = debugBootstrap;

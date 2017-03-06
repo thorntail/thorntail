@@ -38,8 +38,8 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.monitor.HealthMetaData;
-import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
@@ -108,7 +108,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         try {
             ModelNode response = controllerClient.execute(op);
             ModelNode unwrapped = unwrap(response);
-            unwrapped.get("swarm-version").set(System.getProperty(SwarmInternalProperties.VERSION));
+            unwrapped.get("swarm-version").set(SwarmInfo.VERSION);
             return unwrapped;
         } catch (IOException e) {
             return new ModelNode().get(FAILURE_DESCRIPTION).set(e.getMessage());

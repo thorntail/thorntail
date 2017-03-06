@@ -22,8 +22,6 @@ package org.wildfly.swarm.spi.api.internal;
  */
 public interface SwarmInternalProperties {
 
-    String VERSION = "swarm.version";
-
     String BUILD_MODULES = "swarm.build.modules";
 
     String BUILD_REPOS = "swarm.build.repos";
