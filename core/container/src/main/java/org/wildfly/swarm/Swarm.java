@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -175,14 +176,22 @@ public class Swarm {
      * @throws Exception If an error occurs performing classloading and initialization magic.
      */
     public Swarm(boolean debugBootstrap, String... args) throws Exception {
-        this(debugBootstrap, null, args);
+        this(debugBootstrap, null, null, args);
     }
 
     public Swarm(Properties properties, String... args) throws Exception {
-        this(false, properties, args);
+        this(false, properties, null, args);
     }
 
-    public Swarm(boolean debugBootstrap, Properties properties, String... args) throws Exception {
+    public Swarm(boolean debug, Properties properties, String... args) throws Exception {
+        this(debug, properties, null, args);
+    }
+
+    public Swarm(Properties properties, Map<String, String> environment, String... args) throws Exception {
+        this(false, properties, environment, args);
+    }
+
+    public Swarm(boolean debugBootstrap, Properties properties, Map<String, String> environment, String... args) throws Exception {
         if (System.getProperty(BOOT_MODULE_PROPERTY) == null) {
             System.setProperty(BOOT_MODULE_PROPERTY, BootModuleLoader.class.getName());
         }
@@ -217,7 +226,7 @@ public class Swarm {
         installModuleMBeanServer();
         createShrinkWrapDomain();
 
-        this.configView = ConfigViewFactory.defaultFactory(properties);
+        this.configView = ConfigViewFactory.defaultFactory(properties, environment);
         this.commandLine = CommandLine.parse(args);
         this.commandLine.apply(this);
 

@@ -1,6 +1,8 @@
 package org.wildfly.swarm;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -76,6 +78,30 @@ public class ProjectStagesTest {
         Swarm swarm = new Swarm(new Properties(), "-Sfoo");
         ConfigView view = swarm.configView();
         assertThat(view.resolve("myname").getValue()).isEqualTo("foo");
+    }
+
+    @Test
+    public void testEnvironmentVars() throws Exception {
+        Map<String,String> environment = new HashMap<>();
+        environment.put("myname", "from_env");
+        Swarm swarm = new Swarm( new Properties(), environment );
+
+        ConfigView view = swarm.configView();
+        assertThat(view.resolve("myname").getValue()).isEqualTo("from_env");
+    }
+
+    @Test
+    public void testPropertiesPreferredToEnvironmentVars() throws Exception {
+        Map<String,String> environment = new HashMap<>();
+        Properties properties = new Properties();
+
+        environment.put("myname", "from_env");
+        properties.setProperty("myname", "from_props");
+
+        Swarm swarm = new Swarm( properties, environment );
+
+        ConfigView view = swarm.configView();
+        assertThat(view.resolve("myname").getValue()).isEqualTo("from_props");
     }
 
 }
