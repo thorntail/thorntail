@@ -69,7 +69,7 @@ public class MonitorPayloadTest extends SimpleHttp {
         response = getUrlContents("http://localhost:8080/rest/v1/failed/first", false);
         Assert.assertEquals("Expected 503", 503, response.getStatus());
 
-        // direct / sucess
+        // direct / success
         response = getUrlContents("http://localhost:8080/rest/v1/failed/second", false);
         Assert.assertEquals("Expected 200", 200, response.getStatus());
 

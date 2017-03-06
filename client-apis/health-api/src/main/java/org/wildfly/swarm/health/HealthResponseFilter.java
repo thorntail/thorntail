@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health;
 
 import java.io.IOException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
-
-import org.wildfly.swarm.monitor.Status;
 
 @Provider
 public class HealthResponseFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext resp) throws IOException {
+
         if (resp.hasEntity() && (resp.getEntity() instanceof Status)) {
             Status status = (Status) resp.getEntity();
             int code = (Status.State.UP == status.getState()) ? 200 : 503;
             resp.setStatus(code);
             resp.setEntity(status.toJson());
+            resp.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);
         }
     }
 

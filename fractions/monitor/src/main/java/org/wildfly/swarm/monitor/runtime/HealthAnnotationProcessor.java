@@ -37,7 +37,7 @@ import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 @ApplicationScoped
 public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
-    public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.monitor.Health");
+    public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.health.Health");
 
     public static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
 

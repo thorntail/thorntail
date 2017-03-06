@@ -30,6 +30,7 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.as.server.ServerEnvironment;
 import org.jboss.dmr.ModelNode;
+import org.jboss.logging.Logger;
 import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceName;
@@ -54,6 +55,8 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUC
 @Vetoed
 public class MonitorService implements Monitor, Service<MonitorService> {
 
+    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.monitor.health");
+
     private static final String SELECT = "select";
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "monitor");
@@ -74,7 +77,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         controllerClient = modelControllerValue.getValue().createClient(executorService);
 
         if (!securityRealm.isPresent()) {
-            System.out.println("WARN: You are running the monitoring endpoints without any security realm configuration!");
+            LOG.warn("You are running the monitoring endpoints without any security realm configuration!");
         }
     }
 
@@ -158,7 +161,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     @Override
     public void registerHealth(HealthMetaData metaData) {
-        System.out.println("Adding /health endpoint delegate: " + metaData.getWebContext());
+        LOG.info("Adding /health endpoint delegate: " + metaData.getWebContext());
         this.endpoints.add(metaData);
     }
 

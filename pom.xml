@@ -1188,6 +1188,8 @@
 
     <module>arquillian</module>
 
+    <module>client-apis/health-api</module>
+
     <module>fractions/javaee/bean-validation</module>
     <module>fractions/javaee/cdi</module>
     <module>fractions/javaee/connector</module>

@@ -60,6 +60,10 @@ public class SimpleHttp {
             HttpResponse response = client.execute(new HttpGet(theUrl));
             code = response.getStatusLine().getStatusCode();
 
+            if (null == response.getEntity()) {
+                throw new RuntimeException("No response content present");
+            }
+
             BufferedReader bufferedReader = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent())
             );
