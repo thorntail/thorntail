@@ -9,7 +9,7 @@ public interface SwarmInfo {
 
     final String GROUP_ID = "${project.groupId}";
 
-    default boolean isProduct() {
+    static boolean isProduct() {
         return VERSION.contains("-redhat-");
     }
 }
