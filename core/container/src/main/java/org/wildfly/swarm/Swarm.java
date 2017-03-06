@@ -229,8 +229,9 @@ public class Swarm {
         this.configView = ConfigViewFactory.defaultFactory(properties, environment);
         this.commandLine = CommandLine.parse(args);
         this.commandLine.apply(this);
-
         initializeConfigView();
+
+        this.isConstructing = false;
     }
 
     /**
@@ -271,14 +272,21 @@ public class Swarm {
     }
 
     public Swarm withConfig(URL url) throws IOException {
-        String uuid = UUID.randomUUID().toString();
-        this.configView.load(uuid, url);
+        if (!isConstructing) {
+            String uuid = UUID.randomUUID().toString();
+            this.configView.load(uuid, url);
+            this.configView.withProfile(uuid);
+        }
+        this.configs.add(url);
         return this;
     }
 
     public Swarm withProfile(String name) {
-        this.configView.load(name);
-        this.configView.get().withProfile(name);
+        if (!isConstructing) {
+            this.configView.load(name);
+            this.configView.withProfile(name);
+        }
+        this.profiles.add(name);
         return this;
     }
 
@@ -559,13 +567,25 @@ public class Swarm {
                 String prop = System.getProperty(SwarmProperties.PROJECT_STAGE);
                 String[] activated = prop.split(",");
                 for (String each : activated) {
-                    this.configView.get().withProfile(each);
+                    this.configView.withProfile(each);
                 }
+            }
+
+            int counter = 0;
+            for (URL config : this.configs) {
+                String syntheticName = "cli-" + (++counter);
+                this.configView.load(syntheticName, config);
+                this.configView.withProfile(syntheticName);
             }
 
             // deprecated project-stages.yml
             this.configView.load("stages");
             this.configView.load("defaults");
+
+            for (String profile : this.profiles) {
+                this.configView.load(profile);
+                this.configView.withProfile(profile);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -699,4 +719,7 @@ public class Swarm {
     private List<String> profiles = new ArrayList<>();
 
     private boolean debugBootstrap;
+
+    private boolean isConstructing = true;
+
 }

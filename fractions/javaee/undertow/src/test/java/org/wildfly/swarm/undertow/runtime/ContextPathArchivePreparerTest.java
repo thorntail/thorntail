@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -30,6 +28,8 @@ import org.wildfly.swarm.container.config.ConfigViewImpl;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.internal.DefaultWarDeploymentFactory;
 import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Ken Finnigan
@@ -77,34 +77,34 @@ public class ContextPathArchivePreparerTest {
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("/another-root");
     }
-    
+
     @Test
     public void testExternalMount() throws Exception {
         WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();
 
         assertThat(archive.getContextRoot()).isNull();
-        
+
         URL url = getClass().getClassLoader().getResource("mounts.yml");
         ConfigViewFactory factory = new ConfigViewFactory(new Properties());
         factory.load("test", url);
-        ConfigViewImpl view = factory.get();
-        view.withProfile("test");
+        factory.withProfile("test");
+        ConfigViewImpl view = factory.get(true);
 
         List<String> mounts = view.resolve("swarm.context.mounts").as(List.class).getValue();
 
-        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();     
+        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();
         preparer.mounts = mounts;
-        
+
         preparer.prepareArchive(archive);
 
         Node externalMount = archive.get(WARArchive.EXTERNAL_MOUNT_PATH);
         assertThat(externalMount).isNotNull();
         assertThat(externalMount.getAsset()).isInstanceOf(UndertowExternalMountsAsset.class);
         UndertowExternalMountsAsset externalMountAsset = (UndertowExternalMountsAsset) externalMount.getAsset();
-        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(externalMountAsset.openStream())); ){
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(externalMountAsset.openStream()));) {
             assertThat(reader.readLine()).endsWith("external1");
             assertThat(reader.readLine()).endsWith("external2");
-        }        
-        
+        }
+
     }
 }

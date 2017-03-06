@@ -107,15 +107,7 @@ public class ConfigViewImpl implements ConfigView {
         return this.strategy.valueOf(key);
     }
 
-    /**
-     * Activate this view with the given node names.
-     *
-     * <p>This method should be called only after defaults, properties
-     * and all relevant nodes have been registered.</p>
-     *
-     * @param names The names to activate.
-     */
-    public void withProfile(String... names) {
+    void withProfile(String... names) {
         for (String name : names) {
             List<ConfigNode> nodes = this.registry.get(name);
             if (nodes != null) {
@@ -127,7 +119,7 @@ public class ConfigViewImpl implements ConfigView {
 
     }
 
-    public void withProfile(List<String> names) {
+    void withProfile(List<String> names) {
         withProfile(names.toArray(new String[]{}));
     }
 
