@@ -58,3 +58,4 @@ log
 *.log
 embedded-cassandra.log*
 diagrams
+build.metadata
