@@ -114,4 +114,18 @@ public class ProjectStagesTest {
         assertThat(view.resolve("myname").getValue()).isEqualTo("from_props");
     }
 
+    @Test
+    public void testPropertiesOnCLIPreferredToEnvironmentVars() throws Exception {
+        Map<String, String> environment = new HashMap<>();
+        Properties properties = new Properties();
+
+        environment.put("myname", "from_env");
+        properties.setProperty("myname", "from_props");
+
+        Swarm swarm = new Swarm(properties, environment, "-Dmyname=tacos");
+
+        ConfigView view = swarm.configView();
+        assertThat(view.resolve("myname").getValue()).isEqualTo("tacos");
+    }
+
 }

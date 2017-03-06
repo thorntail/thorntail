@@ -50,6 +50,11 @@ public class ConfigViewImpl implements ConfigView {
         return this;
     }
 
+    public ConfigViewImpl withProperty(String name, String value) {
+        this.strategy.withProperty(name, value);
+        return this;
+    }
+
     public ConfigViewImpl withEnvironment(Map<String, String> environment) {
         if (environment != null) {
             this.strategy.withEnvironment(environment);
