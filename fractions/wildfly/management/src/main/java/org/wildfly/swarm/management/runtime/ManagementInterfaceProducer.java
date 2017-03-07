@@ -13,11 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.management;
+package org.wildfly.swarm.management.runtime;
 
-public interface ManagementProperties {
-    int DEFAULT_HTTP_PORT = 9990;
-    int DEFAULT_HTTPS_PORT = 9993;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
-    String MANAGEMENT_BIND_ADDRESS = "swarm.management.bind.address";
+import org.wildfly.swarm.container.Interface;
+import org.wildfly.swarm.management.ManagementProperties;
+import org.wildfly.swarm.spi.api.SwarmProperties;
+
+/**
+ * @author Bob McWhirter
+ */
+@ApplicationScoped
+public class ManagementInterfaceProducer {
+
+    @Produces
+    public Interface publicInterace() {
+        return new Interface("management", SwarmProperties.propertyVar(ManagementProperties.MANAGEMENT_BIND_ADDRESS, "127.0.0.1"));
+    }
 }
