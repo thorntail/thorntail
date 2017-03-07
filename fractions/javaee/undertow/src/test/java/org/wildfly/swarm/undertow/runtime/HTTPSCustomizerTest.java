@@ -1,17 +1,13 @@
 package org.wildfly.swarm.undertow.runtime;
 
-import java.lang.annotation.Annotation;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.enterprise.inject.Instance;
-import javax.enterprise.util.TypeLiteral;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.junit.Test;
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.SecurityRealm;
+import org.wildfly.swarm.config.management.security_realm.SslServerIdentity;
 import org.wildfly.swarm.config.undertow.Server;
-import org.wildfly.swarm.config.undertow.server.HTTPListener;
 import org.wildfly.swarm.undertow.UndertowFraction;
 import org.wildfly.swarm.undertow.descriptors.CertInfo;
 
@@ -42,7 +38,7 @@ public class HTTPSCustomizerTest {
     }
 
     @Test
-    public void testWithManagementFraction() {
+    public void testWithManagementFraction() throws Exception {
         HTTPSCustomizer customizer = new HTTPSCustomizer();
         customizer.undertow = new UndertowFraction();
         customizer.undertow.applyDefaults();
@@ -65,6 +61,16 @@ public class HTTPSCustomizerTest {
         assertThat( realm ).isNotNull();
 
         assertThat( realm.subresources().sslServerIdentity().keystoreRelativeTo() ).isEqualTo( "./my/path" );
-        assertThat( realm.subresources().sslServerIdentity().generateSelfSignedCertificateHost() ).isEqualTo( "myhost.com" );
+        assertSelfSignedCertificate(realm.subresources().sslServerIdentity(), "myhost.com");
+    }
+
+    private void assertSelfSignedCertificate(SslServerIdentity identity, String expectedResult) throws InvocationTargetException, IllegalAccessException {
+        try {
+            Method genMethod = identity.getClass().getMethod("generateSelfSignedCertificateHost");
+
+            assertThat( genMethod.invoke(identity) ).isEqualTo( expectedResult );
+        } catch (NoSuchMethodException e) {
+            // Do Nothing. Just means the method doesn't exist on the Config API.
+        }
     }
 }

@@ -1,6 +1,8 @@
 package org.wildfly.swarm.undertow.runtime;
 
+import category.CommunityOnly;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.wildfly.swarm.undertow.UndertowFraction;
 import org.wildfly.swarm.undertow.descriptors.CertInfo;
 
@@ -24,6 +26,7 @@ public class CertInfoProducerTest {
     }
 
     @Test
+    @Category(CommunityOnly.class)
     public void testGenerateWithDefaults() {
         CertInfoProducer producer = new CertInfoProducer();
         producer.undertow = new UndertowFraction();
@@ -37,6 +40,7 @@ public class CertInfoProducerTest {
     }
 
     @Test
+    @Category(CommunityOnly.class)
     public void testGenerateWithExplicitHost() {
         CertInfoProducer producer = new CertInfoProducer();
         producer.undertow = new UndertowFraction();

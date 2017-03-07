@@ -17,7 +17,9 @@ import javax.inject.Singleton;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
+import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
+import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.undertow.UndertowFraction;
@@ -47,6 +49,9 @@ public class CertInfoProducer {
     @Singleton
     public CertInfo produceCertInfo() {
         if (generateSelfCertificate.get()) {
+            if (SwarmInfo.isProduct()) {
+                throw SwarmMessages.MESSAGES.generateSelfSignedCertificateNotSupported();
+            }
             checkDataDir();
             return new CertInfo(selfCertificateHost.get(), JBOSS_DATA_DIR);
         } else {

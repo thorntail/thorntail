@@ -15,12 +15,16 @@
  */
 package org.wildfly.swarm.undertow.runtime;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.config.ManagementCoreService;
+import org.wildfly.swarm.config.management.security_realm.SslServerIdentity;
 import org.wildfly.swarm.config.undertow.Server;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -73,10 +77,23 @@ public class HTTPSCustomizer implements Customizer {
                                 .keystorePassword(certInfo.keystorePassword())
                                 .keyPassword(certInfo.keyPassword())
                                 .alias(certInfo.keystoreAlias())
-                                .generateSelfSignedCertificateHost(certInfo.generateSelfSignedCertificateHost());
+                                .alias(certInfo.keystoreAlias());
+
+                        handleSelfSignedCertificateHost(identity);
                     });
                 });
             }
+        }
+    }
+
+    private void handleSelfSignedCertificateHost(SslServerIdentity identity) {
+        try {
+            Method genMethod = identity.getClass().getMethod("generateSelfSignedCertificateHost", String.class);
+            genMethod.invoke(identity, certInfo.generateSelfSignedCertificateHost());
+        } catch (NoSuchMethodException e) {
+            // Do Nothing. Just means the method doesn't exist on the Config API.
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            SwarmMessages.MESSAGES.failToInvokeGenerateSelfSignedCertificateHost(e);
         }
     }
 }
