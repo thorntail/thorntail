@@ -1291,7 +1291,7 @@
         </property>
       </activation>
       <modules>
-        <module>jaxrs-client-api</module>
+        <module>client-apis/jaxrs-client-api</module>
 
         <module>swarmtool</module>
         <module>boms/bom-deprecated</module>
