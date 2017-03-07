@@ -175,6 +175,10 @@ public class ConfigViewFactory {
         this.configView.withProfile(name);
     }
 
+    public void withProperty(String name, String value) {
+        this.configView.withProperty(name, value);
+    }
+
     private List<ConfigLocator> locators = new ArrayList<>();
 
     private List<String> profiles = new ArrayList<>();
@@ -184,4 +188,5 @@ public class ConfigViewFactory {
     private static final String STAGE = "stage";
 
     private static final String DEFAULT = "default";
+
 }

@@ -285,6 +285,11 @@ public class Swarm {
         return this;
     }
 
+    public Swarm withProperty(String name, String value) {
+        this.configView.withProperty(name, value);
+        return this;
+    }
+
     /**
      * Add a fraction to the container.
      *

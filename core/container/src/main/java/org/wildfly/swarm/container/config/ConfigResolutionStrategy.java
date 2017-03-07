@@ -46,12 +46,14 @@ class ConfigResolutionStrategy {
     }
 
     private ConfigResolutionStrategy(PropertiesManipulator properties) {
-        this.nodes.add(PropertiesConfigNodeFactory.load(properties.getProperties()));
+        this.propertiesNode = PropertiesConfigNodeFactory.load(properties.getProperties());
+        this.nodes.add(this.propertiesNode);
         this.properties = properties;
     }
 
     void withProperties(Properties properties) {
-        this.nodes.add(PropertiesConfigNodeFactory.load(properties));
+        this.propertiesNode = PropertiesConfigNodeFactory.load(properties);
+        this.nodes.add(this.propertiesNode);
         this.properties = PropertiesManipulator.forProperties(properties);
     }
 
@@ -70,6 +72,10 @@ class ConfigResolutionStrategy {
 
     void defaults(ConfigNode defaults) {
         this.defaults = defaults;
+    }
+
+    void withProperty(String name, String value) {
+        this.propertiesNode.recursiveChild(name, value);
     }
 
     /**
@@ -153,5 +159,6 @@ class ConfigResolutionStrategy {
 
     private ConfigNode defaults;
 
+    private ConfigNode propertiesNode;
 
 }

@@ -293,7 +293,7 @@ public class CommandLine {
      *
      * @throws IOException If a URL is attempted to be read and fails.
      */
-    public void applyProperties() throws IOException {
+    public void applyProperties(Swarm swarm) throws IOException {
         URL propsUrl = get(PROPERTIES_URL);
 
         if (propsUrl != null) {
@@ -301,18 +301,18 @@ public class CommandLine {
             urlProps.load(propsUrl.openStream());
 
             for (String name : urlProps.stringPropertyNames()) {
-                System.setProperty(name, urlProps.getProperty(name));
+                swarm.withProperty(name, urlProps.getProperty(name));
             }
         }
 
         Properties props = get(PROPERTY);
 
         for (String name : props.stringPropertyNames()) {
-            System.setProperty(name, props.getProperty(name));
+            swarm.withProperty(name, props.getProperty(name));
         }
 
         if (get(BIND) != null) {
-            System.setProperty(SwarmProperties.BIND_ADDRESS, get(BIND));
+            swarm.withProperty(SwarmProperties.BIND_ADDRESS, get(BIND));
         }
     }
 
@@ -349,7 +349,7 @@ public class CommandLine {
      * @throws IOException If an error occurs resolving any URL.
      */
     public void apply(Swarm swarm) throws IOException, ModuleLoadException {
-        applyProperties();
+        applyProperties(swarm);
         applyConfigurations(swarm);
 
         if (get(HELP)) {
