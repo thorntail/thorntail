@@ -116,6 +116,7 @@
     <!-- Surefire args -->
     <surefire.jpda.args />
     <surefire.system.args>-da ${surefire.jpda.args}</surefire.system.args>
+    <testCategory.excluded>category.CommunityOnly</testCategory.excluded>
 
     <!-- Checkstyle configuration -->
     <linkXRef>false</linkXRef>
@@ -135,6 +136,7 @@
           <reuseForks>false</reuseForks>
           <runOrder>alphabetical</runOrder>
           <failIfNoTests>false</failIfNoTests>
+          <excludedGroups>${testCategory.excluded}</excludedGroups>
           <systemPropertyVariables>
             <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
             <swarm.bind.address>127.0.0.1</swarm.bind.address>
@@ -142,6 +144,13 @@
             <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
           </systemPropertyVariables>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>build-resources</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -282,6 +291,11 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>build-resources</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -454,6 +468,11 @@
       </dependency>
 
       <!-- Project Artifacts -->
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>build-resources</artifactId>
+        <version>2017.4.0-SNAPSHOT</version>
+      </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>tools</artifactId>
@@ -1173,6 +1192,8 @@
   </pluginRepositories>
 
   <modules>
+    <module>build-resources</module>
+
     <module>tools</module>
 
     <!-- base -->
@@ -1290,6 +1311,9 @@
           <name>!swarm.product.build</name>
         </property>
       </activation>
+      <properties>
+        <testCategory.excluded>category.ProductOnly</testCategory.excluded>
+      </properties>
       <modules>
         <module>jaxrs-client-api</module>
 
