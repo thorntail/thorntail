@@ -136,6 +136,13 @@ public interface SwarmMessages extends BasicLogger {
                     "OpenSSL usage with WildFly Swarm on HP-UX is NOT supported.")
     void http2NotSupported();
 
+    @Message(id = 40, value = "This version of WildFly Swarm does not support generating self signed certificates.")
+    RuntimeException generateSelfSignedCertificateNotSupported();
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 41, value = "Error invoking SslServerIdentity.generateSelfSignedCertificateHost(String) in HTTPSCustomizer.")
+    void failToInvokeGenerateSelfSignedCertificateHost(@Cause Throwable cause);
+
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
