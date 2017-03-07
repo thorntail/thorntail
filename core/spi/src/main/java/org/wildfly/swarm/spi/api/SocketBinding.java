@@ -30,6 +30,8 @@ public class SocketBinding {
 
     private String name;
 
+    private String iface;
+
     private String portExpression;
 
     private String multicastAddress;
@@ -50,6 +52,24 @@ public class SocketBinding {
      */
     public String name() {
         return this.name;
+    }
+
+    /** Set the interface for this binding.
+     *
+     * @param iface The name of the interface.
+     * @return This binding.
+     */
+    public SocketBinding iface(String iface) {
+        this.iface = iface;
+        return this;
+    }
+
+    /** Retrieve the interface for this binding.
+     *
+     * @return The name of the interface.
+     */
+    public String iface() {
+        return this.iface;
     }
 
     /** Set the port.

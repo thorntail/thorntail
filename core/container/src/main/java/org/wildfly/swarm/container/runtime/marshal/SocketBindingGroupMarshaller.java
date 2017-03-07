@@ -33,6 +33,7 @@ import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEFAULT_INTERFACE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HOST;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INTERFACE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MULTICAST_ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MULTICAST_PORT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
@@ -98,6 +99,9 @@ public class SocketBindingGroupMarshaller implements ConfigurationMarshaller {
         node.get(OP_ADDR).set(address.append("socket-binding", binding.name()).toModelNode());
         node.get(OP).set(ADD);
         node.get(PORT).set(new ValueExpression(binding.portExpression()));
+        if (binding.iface() != null) {
+            node.get(INTERFACE).set(binding.iface());
+        }
         if (binding.multicastAddress() != null) {
             node.get(MULTICAST_ADDRESS).set(binding.multicastAddress());
         }
