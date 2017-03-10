@@ -6,7 +6,5 @@ package org.wildfly.swarm.spi.meta;
  */
 public abstract class FileDetector implements FractionDetector<String> {
     @Override
-    public void detect(String fileName) {
-
-    }
+    public abstract void detect(String fileName);
 }
