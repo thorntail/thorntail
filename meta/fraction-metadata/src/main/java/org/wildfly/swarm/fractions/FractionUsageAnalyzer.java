@@ -32,6 +32,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.wildfly.swarm.fractions.scanner.ClassAndPackageScanner;
+import org.wildfly.swarm.fractions.scanner.FilePresenceScanner;
 import org.wildfly.swarm.fractions.scanner.JarScanner;
 import org.wildfly.swarm.fractions.scanner.Scanner;
 import org.wildfly.swarm.fractions.scanner.WarScanner;
@@ -154,10 +155,10 @@ public class FractionUsageAnalyzer {
     }
 
     private void fireScanner(String suffix, Consumer<Scanner<?>> scannerConsumer) {
-        scanners.stream()
+        List<Scanner<?>> scanners = this.scanners.stream()
                 .filter(s -> s.extension().equals(suffix))
-                .findFirst()
-                .ifPresent(scannerConsumer);
+                .collect(Collectors.toList());
+        scanners.forEach(scannerConsumer);
     }
 
     private String suffix(String name) {
@@ -176,6 +177,7 @@ public class FractionUsageAnalyzer {
         scanners.add(new JarScanner());
         scanners.add(new ClassAndPackageScanner());
         scanners.add(new WebXmlDescriptorScanner());
+        scanners.add(new FilePresenceScanner());
 
         ClassAndPackageScanner.classesPackagesAlreadyDetected.clear();
 
