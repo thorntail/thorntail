@@ -578,14 +578,15 @@ public class Swarm {
                 this.configView.withProfile(syntheticName);
             }
 
-            // deprecated project-stages.yml
             this.configView.load("stages");
-            this.configView.load("defaults");
 
             for (String profile : this.profiles) {
                 this.configView.load(profile);
                 this.configView.withProfile(profile);
             }
+
+            this.configView.load("defaults");
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

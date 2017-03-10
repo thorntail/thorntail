@@ -74,6 +74,7 @@ public class ConfigViewFactory {
     }
 
     public ConfigViewFactory load(String profileName) {
+        this.profiles.add(profileName);
         this.locators
                 .stream()
                 .flatMap(locator -> {
@@ -128,6 +129,7 @@ public class ConfigViewFactory {
         for (String profile : this.profiles) {
             this.configView.withProfile(profile);
         }
+
         this.configView.activate();
         return this.configView;
     }

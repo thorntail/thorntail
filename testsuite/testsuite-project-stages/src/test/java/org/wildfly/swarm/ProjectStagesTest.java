@@ -68,7 +68,6 @@ public class ProjectStagesTest {
                 "-S", "production");
 
         ConfigView view = swarm.configView();
-
         assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("brie");
     }
 
