@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.management.console.runtime;
 
-import java.net.URL;
+import java.util.Iterator;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
@@ -24,9 +24,10 @@ import javax.inject.Inject;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.Resource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.asset.UrlAsset;
 import org.wildfly.swarm.management.console.ManagementConsoleFraction;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.undertow.WARArchive;
@@ -47,12 +48,14 @@ public class ManagementConsoleDeploymentProducer {
     @Produces
     public Archive managementConsoleWar() throws Exception {
         // Load the management-ui webjars.
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.jboss.as.console"));
-        URL resource = module.getExportedResource("jboss-as-console-resources.jar");
         WARArchive war = ShrinkWrap.create(WARArchive.class, "management-console-ui.war");
-        war.as(ZipImporter.class).importFrom(resource.openStream());
-        war.setContextRoot(fraction.contextRoot());
-
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.jboss.as.console"));
+        Iterator<Resource> resources = module.globResources("*");
+        while (resources.hasNext()) {
+            Resource each = resources.next();
+            war.add(new UrlAsset(each.getURL()), each.getName());
+        }
+        war.setContextRoot(this.fraction.contextRoot());
         return war;
     }
 
