@@ -2,22 +2,28 @@ package org.wildfly.swarm.arquillian.adapter;
 
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.internal.FileSystemLayout;
-import org.wildfly.swarm.internal.MavenFileSystemLayout;
 import org.wildfly.swarm.tools.DeclaredDependencies;
+
+import java.util.ServiceLoader;
 
 /**
  * @author Heiko Braun
  * @since 26/10/2016
  */
-abstract class DependencyDeclarationFactory {
+public interface DependencyDeclarationFactory {
 
-    abstract DeclaredDependencies create(ShrinkwrapArtifactResolvingHelper resolvingHelper);
+    DeclaredDependencies create(ShrinkwrapArtifactResolvingHelper resolvingHelper);
 
-    public static DependencyDeclarationFactory newInstance(FileSystemLayout fsLayout) {
-        if (fsLayout instanceof MavenFileSystemLayout) {
-            return new MavenDependencyDeclarationFactory();
-        } else {
-            return new GradleDependencyDeclarationFactory(fsLayout);
+    boolean acceptsFsLayout(FileSystemLayout fsLayout);
+
+    static DependencyDeclarationFactory newInstance(FileSystemLayout fsLayout) {
+        ServiceLoader<DependencyDeclarationFactory> factoryIterable = ServiceLoader.load(DependencyDeclarationFactory.class);
+        for (DependencyDeclarationFactory factory : factoryIterable) {
+            if (factory.acceptsFsLayout(fsLayout)) {
+                return factory;
+            }
         }
+
+        throw new IllegalArgumentException("Unsupported FileSystemLayout: " + fsLayout);
     }
 }

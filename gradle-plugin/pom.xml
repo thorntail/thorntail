@@ -14,12 +14,12 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>wildfly-swarm-plugin</artifactId>
+  <artifactId>wildfly-swarm-gradle-plugin</artifactId>
 
-  <name>Plugin for Maven</name>
-  <description>Plugin for Maven</description>
+  <name>Plugin for Gradle</name>
+  <description>Plugin for Gradle</description>
 
-  <packaging>maven-plugin</packaging>
+  <packaging>jar</packaging>
   <build>
     <plugins>
       <plugin>
@@ -29,16 +29,6 @@
           <forkCount>0</forkCount>
           <forkMode>never</forkMode>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-descriptor</id>
-            <phase>process-classes</phase>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -57,18 +47,23 @@
       <artifactId>spi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
+      <groupId>org.gradle</groupId>
+      <artifactId>gradle-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-annotations</artifactId>
+      <groupId>org.gradle</groupId>
+      <artifactId>gradle-base-services</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
+      <groupId>org.gradle</groupId>
+      <artifactId>gradle-plugins</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -82,5 +77,20 @@
       <version>1.0.0.v20140518</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>spring-releases</id>
+      <url>http://repo.spring.io/libs-release-remote/</url>
+    </repository>
+    <repository>
+      <id>public-jboss</id>
+      <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+    </repository>
+    <repository>
+      <id>spring-plugin-releases</id>
+      <url>http://repo.spring.io/plugins-release/</url>
+    </repository>
+  </repositories>
 
 </project>

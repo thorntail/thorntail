@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.arquillian.adapter;
-
-import java.util.HashSet;
+package org.wildfly.swarm.arquillian.adapter.gradle;
 
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.internal.FileSystemLayout;
+import org.wildfly.swarm.internal.GradleFileSystemLayout;
+import org.wildfly.swarm.arquillian.adapter.DependencyDeclarationFactory;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DeclaredDependencies;
+
+import java.util.HashSet;
 
 /**
  * @author Heiko Braun
  * @since 26/10/2016
  */
-public class GradleDependencyDeclarationFactory extends DependencyDeclarationFactory {
+public class GradleDependencyDeclarationFactory implements DependencyDeclarationFactory {
 
     public GradleDependencyDeclarationFactory(FileSystemLayout fsLayout) {
         this.fsLayout = fsLayout;
@@ -43,6 +45,11 @@ public class GradleDependencyDeclarationFactory extends DependencyDeclarationFac
         resolvingHelper.resolveAll(new HashSet<ArtifactSpec>(declaredDependencies.getTransientDependencies()), false, false);
 
         return declaredDependencies;
+    }
+
+    @Override
+    public boolean acceptsFsLayout(FileSystemLayout fsLayout) {
+        return fsLayout instanceof GradleFileSystemLayout;
     }
 
     private final FileSystemLayout fsLayout;

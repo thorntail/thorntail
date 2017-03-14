@@ -1316,6 +1316,7 @@
         <module>client-apis/jaxrs-client-api</module>
 
         <module>swarmtool</module>
+        <module>gradle-plugin</module>
         <module>boms/bom-deprecated</module>
         <module>boms/bom-experimental</module>
         <module>boms/bom-unstable</module>
