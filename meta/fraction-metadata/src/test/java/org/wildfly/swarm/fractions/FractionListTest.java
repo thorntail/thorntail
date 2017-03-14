@@ -32,6 +32,31 @@ import static org.fest.assertions.Assertions.assertThat;
 public class FractionListTest {
 
     @Test
+    public void testAllHaveLogging() {
+        FractionList list = FractionList.get();
+        Collection<FractionDescriptor> descriptors = list.getFractionDescriptors();
+
+        for (FractionDescriptor each : descriptors) {
+            if ( each.getArtifactId().equals( "container" ) ) {
+                // because container cannot have a dependency on logging.
+                continue;
+            }
+            assertThat(hasLogging(each))
+                    .as(each.gav() + " has logging")
+                    .isTrue();
+        }
+    }
+
+    private boolean hasLogging(FractionDescriptor desc) {
+        if ( desc.getGroupId().equals( "org.wildfly.swarm" ) && desc.getArtifactId().equals( "logging" ) ) {
+            return true;
+        }
+
+        return desc.getDependencies().stream()
+                .anyMatch(this::hasLogging);
+    }
+
+    @Test
     public void testList() throws IOException {
         FractionList list = FractionList.get();
 
@@ -43,7 +68,7 @@ public class FractionListTest {
 
         Assertions.assertThat(ee.getGroupId()).isEqualTo("org.wildfly.swarm");
         Assertions.assertThat(ee.getArtifactId()).isEqualTo("ee");
-        Assertions.assertThat(ee.getDependencies()).hasSize(2);
+        Assertions.assertThat(ee.getDependencies()).hasSize(3);
 
         Assertions.assertThat(ee.getDependencies().stream().filter(e -> e.getArtifactId().equals("container")).collect(Collectors.toList())).isNotEmpty();
         Assertions.assertThat(ee.getDependencies().stream().filter(e -> e.getArtifactId().equals("naming")).collect(Collectors.toList())).isNotEmpty();
