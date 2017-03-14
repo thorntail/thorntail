@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.undertow.internal;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.Archive;
@@ -40,7 +41,7 @@ public class WARArchiveImpl extends WebContainerBase<WARArchive> implements WARA
      *
      * @param delegate The storage backing.
      */
-    public WARArchiveImpl(Archive<?> delegate) {
+    public WARArchiveImpl(Archive<?> delegate) throws IOException {
         super(WARArchive.class, delegate);
         addFaviconExceptionHandler();
     }

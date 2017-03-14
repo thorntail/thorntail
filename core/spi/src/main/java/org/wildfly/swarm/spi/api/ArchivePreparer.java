@@ -17,16 +17,16 @@ package org.wildfly.swarm.spi.api;
 
 import org.jboss.shrinkwrap.api.Archive;
 
-/** General deployment processor.
+/**
+ * General deployment processor.
  *
  * <p>Typically used internally by fractions, a {@code ArchivePreparer} may
  * inspect and modify the deployment. Each preparer is given an opportunity
  * to prepare every deployment.</p>
  *
- * @apiNote Used by {@code Fraction} authors.
- *
  * @author Bob McWhirter
+ * @apiNote Used by {@code Fraction} authors.
  */
 public interface ArchivePreparer {
-    void prepareArchive(Archive<?> archive);
+    void prepareArchive(Archive<?> archive) throws Exception;
 }

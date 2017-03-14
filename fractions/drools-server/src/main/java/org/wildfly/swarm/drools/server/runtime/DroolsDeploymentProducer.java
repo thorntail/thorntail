@@ -1,7 +1,6 @@
 package org.wildfly.swarm.drools.server.runtime;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -24,22 +23,19 @@ public class DroolsDeploymentProducer {
     @Produces
     public Archive droolsWar() throws Exception {
         if (System.getProperty("org.drools.server.swarm.web.conf") == null) {
-            try {
-                //Path dir = Files.createTempDirectory("swarm-keycloak-config");
-                File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-drools-web-config", ".d");
-                System.setProperty("org.drools.server.swarm.conf", dir.getAbsolutePath());
-                Files.copy(getClass().getClassLoader().getResourceAsStream("config/web/web.xml"),
-                        dir.toPath().resolve("web.xml"),
-                        StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(getClass().getClassLoader().getResourceAsStream("config/web/jboss-web.xml"),
-                        dir.toPath().resolve("jboss-web.xml"),
-                        StandardCopyOption.REPLACE_EXISTING);
-                configFolder = dir.toPath().toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //Path dir = Files.createTempDirectory("swarm-keycloak-config");
+            File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-drools-web-config", ".d");
+            System.setProperty("org.drools.server.swarm.conf", dir.getAbsolutePath());
+            Files.copy(getClass().getClassLoader().getResourceAsStream("config/web/web.xml"),
+                    dir.toPath().resolve("web.xml"),
+                    StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(getClass().getClassLoader().getResourceAsStream("config/web/jboss-web.xml"),
+                    dir.toPath().resolve("jboss-web.xml"),
+                    StandardCopyOption.REPLACE_EXISTING);
+            configFolder = dir.toPath().toString();
         }
-        System.out.println("\tConfiguration folder is " + configFolder);
+
+        DroolsMessages.MESSAGES.configurationDirectory(configFolder);
 
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "drools-server.war");
         deployment.addAllDependencies();

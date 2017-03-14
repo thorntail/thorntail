@@ -49,7 +49,7 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
      *
      * @param delegate The storage backing.
      */
-    public JAXRSArchiveImpl(Archive<?> delegate) {
+    public JAXRSArchiveImpl(Archive<?> delegate) throws IOException {
         super(JAXRSArchive.class, delegate);
 
         addGeneratedApplication();
@@ -99,19 +99,15 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         return false;
     }
 
-    protected void addGeneratedApplication() {
+    protected void addGeneratedApplication() throws IOException {
         if (!hasApplicationPathAnnotation(getArchive())) {
             String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
             String path = "WEB-INF/classes/" + name.replace('.', '/') + ".class";
 
             byte[] generatedApp;
-            try {
-                generatedApp = ApplicationFactory2.create(name, "/");
-                add(new ByteArrayAsset(generatedApp), path);
-                addHandlers(new ApplicationHandler(this, path));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            generatedApp = ApplicationFactory2.create(name, "/");
+            add(new ByteArrayAsset(generatedApp), path);
+            addHandlers(new ApplicationHandler(this, path));
         }
     }
 

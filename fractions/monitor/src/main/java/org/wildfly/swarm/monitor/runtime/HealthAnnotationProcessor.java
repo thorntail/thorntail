@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.naming.NamingException;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
@@ -44,7 +45,7 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
     public static final DotName APP_PATH = DotName.createSimple("javax.ws.rs.ApplicationPath");
 
     @Override
-    public void processArchive(Archive<?> archive, Index index) {
+    public void processArchive(Archive<?> archive, Index index) throws NamingException {
 
         // first pass: jboss-web context root
         Optional<String> jbossWebContext = Optional.empty();
@@ -109,12 +110,8 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
                             throw new RuntimeException("@Health requires an explicit @Path annotation");
                         }
 
-                        try {
-                            HealthMetaData metaData = new HealthMetaData(sb.toString(), isSecure);
-                            Monitor.lookup().registerHealth(metaData);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        HealthMetaData metaData = new HealthMetaData(sb.toString(), isSecure);
+                        Monitor.lookup().registerHealth(metaData);
                     }
                 }
 

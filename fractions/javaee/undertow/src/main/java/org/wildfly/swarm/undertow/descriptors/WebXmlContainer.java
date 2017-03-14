@@ -27,15 +27,17 @@ import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureContainer;
 import org.wildfly.swarm.undertow.internal.FaviconServletExtension;
 
-/** Archive mix-in supporting manipulation of {@code web.xml}.
+/**
+ * Archive mix-in supporting manipulation of {@code web.xml}.
  *
  * @author Ken Finnigan
  */
 public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, ServiceProviderContainer<T>, JBossDeploymentStructureContainer<T> {
 
-    /** Add a context parameter.
+    /**
+     * Add a context parameter.
      *
-     * @param name The name of the context parameter.
+     * @param name   The name of the context parameter.
      * @param values The values for the context parameter.
      * @return This archive.
      */
@@ -46,7 +48,8 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         return (T) this;
     }
 
-    /** Retrieve the context parameter value.
+    /**
+     * Retrieve the context parameter value.
      *
      * @param name The name of the context parameter.
      * @return Thie value of the context parameter.
@@ -55,31 +58,24 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         return findWebXmlAsset().getContextParam(name);
     }
 
-    /** Add the default WildFly Swarm {@code favicon.ico} handler.
+    /**
+     * Add the default WildFly Swarm {@code favicon.ico} handler.
      *
      * @return This archive.
      */
     @SuppressWarnings("unchecked")
-    default T addFaviconExceptionHandler() {
+    default T addFaviconExceptionHandler() throws IOException {
         // Add FaviconServletExtension
         String path = "WEB-INF/classes/" + FaviconServletExtension.EXTENSION_NAME.replace('.', '/') + ".class";
         byte[] generatedExtension;
-        try {
-            generatedExtension = FaviconFactory.createFaviconServletExtension(FaviconServletExtension.EXTENSION_NAME);
-            add(new ByteArrayAsset(generatedExtension), path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        generatedExtension = FaviconFactory.createFaviconServletExtension(FaviconServletExtension.EXTENSION_NAME);
+        add(new ByteArrayAsset(generatedExtension), path);
 
         // Add FaviconErrorHandler
         path = "WEB-INF/classes/" + FaviconServletExtension.HANDLER_NAME.replace('.', '/') + ".class";
         byte[] generatedHandler;
-        try {
-            generatedHandler = FaviconFactory.createFaviconErrorHandler(FaviconServletExtension.HANDLER_NAME);
-            add(new ByteArrayAsset(generatedHandler), path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        generatedHandler = FaviconFactory.createFaviconErrorHandler(FaviconServletExtension.HANDLER_NAME);
+        add(new ByteArrayAsset(generatedHandler), path);
 
         // Add services entry for FaviconServletExtension
         this.addAsServiceProvider(ServletExtension.class.getName(), FaviconServletExtension.EXTENSION_NAME);
@@ -90,9 +86,10 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         return (T) this;
     }
 
-    /** Add a servlet.
+    /**
+     * Add a servlet.
      *
-     * @param servletName The name of the servlet.
+     * @param servletName  The name of the servlet.
      * @param servletClass The class of the servlet.
      * @return This archive.
      */
@@ -100,7 +97,8 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         return findWebXmlAsset().addServlet(servletName, servletClass);
     }
 
-    /** Retrieve a servlet by class.
+    /**
+     * Retrieve a servlet by class.
      *
      * @param servletClass The servlet class.
      * @return The servlet descriptor.
@@ -109,7 +107,8 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         return findWebXmlAsset().getServlet(servletClass);
     }
 
-    /** Locate or create a {@code web.xml} asset.
+    /**
+     * Locate or create a {@code web.xml} asset.
      *
      * @return The existing or new {@code web.xml}.
      */

@@ -24,17 +24,35 @@ import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
+import org.wildfly.swarm.container.DeploymentException;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSMETRICS", length = 4)
-public interface SwarmMetricsMessages extends BasicLogger {
+@MessageLogger(projectCode = "WFSDEPLOY", length = 4)
+public interface DeployerMessages extends BasicLogger {
 
-    SwarmMetricsMessages MESSAGES = Logger.getMessageLogger(SwarmMetricsMessages.class, "org.wildfly.swarm.metrics");
+    DeployerMessages MESSAGES = Logger.getMessageLogger(DeployerMessages.class, "org.wildfly.swarm.deployer");
 
-    @LogMessage(level = Logger.Level.TRACE)
-    @Message(id = 1, value = "Boot performance:\n%s")
-    void bootPerformance(String metrics);
+    @Message(id = 1, value = "Unable to create default deployment.")
+    DeploymentException unableToCreateDefaultDeployment();
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 2, value = "No deployments specified")
+    void noDeploymentsSpecified();
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 3, value = "Deploying %s")
+    void deploying(String deploymentName);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 4, value = "Deployment content: %s")
+    void deploymentContent(String path);
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 5, value = "Exporting deployment to %s")
+    void exportingDeployment(String exportLocation);
+
+
 
 }

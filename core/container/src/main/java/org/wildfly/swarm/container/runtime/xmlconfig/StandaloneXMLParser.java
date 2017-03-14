@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.container.runtime.xmlconfig;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -93,26 +92,12 @@ public class StandaloneXMLParser {
     }
 
     public List<ModelNode> parse(URL xml) throws Exception {
-
         final List<ModelNode> operationList = new ArrayList<>();
 
-        InputStream input = null;
-        try {
-            input = xml.openStream();
-
+        try (InputStream input = xml.openStream()) {
             final XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(input);
             WrappedXMLStreamReader wrappedReader = new WrappedXMLStreamReader(reader, this.recognizedNames, xmlMapper);
             xmlMapper.parseDocument(operationList, wrappedReader);
-        } catch (XMLStreamException t) {
-            t.printStackTrace();
-        } finally {
-            try {
-                if (input != null) {
-                    input.close();
-                }
-            } catch (IOException e) {
-                // ignore
-            }
         }
 
         return operationList;

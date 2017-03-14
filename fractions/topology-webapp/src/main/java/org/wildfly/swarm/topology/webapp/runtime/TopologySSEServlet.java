@@ -60,8 +60,7 @@ public class TopologySSEServlet extends HttpServlet {
         try {
             this.topology = Topology.lookup();
         } catch (NamingException e) {
-            e.printStackTrace();
-            throw new ServletException();
+            throw new ServletException(e);
         }
 
         this.keepAliveExecutor = Executors.newScheduledThreadPool(2);

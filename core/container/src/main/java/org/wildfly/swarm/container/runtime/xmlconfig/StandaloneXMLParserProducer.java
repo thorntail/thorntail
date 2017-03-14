@@ -37,9 +37,9 @@ import org.jboss.as.controller.parsing.ProfileParsingCompletionHandler;
 import org.jboss.dmr.ModelNode;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
 import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.bootstrap.performance.Performance;
+import org.wildfly.swarm.internal.SwarmConfigMessages;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -58,8 +58,10 @@ public class StandaloneXMLParserProducer {
     private StandaloneXMLParser parser = new StandaloneXMLParser();
 
     @PostConstruct
-    public void setupFactories() {
-        this.fractions.forEach(this::setupFactory);
+    public void setupFactories() throws Exception {
+        for (Fraction fraction : this.fractions) {
+            setupFactory(fraction);
+        }
     }
 
     @Produces
@@ -68,7 +70,7 @@ public class StandaloneXMLParserProducer {
         return this.parser;
     }
 
-    private void setupFactory(Fraction fraction) {
+    private void setupFactory(Fraction fraction) throws Exception {
         try (AutoCloseable handle = Performance.time("Setting up XML parser: " + fraction.getClass().getSimpleName())) {
             WildFlyExtension anno = fraction.getClass().getAnnotation(WildFlyExtension.class);
 
@@ -84,43 +86,37 @@ public class StandaloneXMLParserProducer {
                 extensionClassName = null;
             }
 
-            try {
-                Module extensionModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(extensionModuleName));
+            Module extensionModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(extensionModuleName));
 
-                if (noClass) {
-                    // ignore it all
-                } else if (extensionClassName != null) {
-                    Class<?> extCls = extensionModule.getClassLoader().loadClass(extensionClassName);
-                    try {
-                        Extension ext = (Extension) extCls.newInstance();
-                        add(ext);
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    ServiceLoader<Extension> extensionLoader = extensionModule.loadService(Extension.class);
-
-                    Iterator<Extension> extensionIter = extensionLoader.iterator();
-                    List<Extension> extensions = new ArrayList<>();
-
-                    if (extensionIter.hasNext()) {
-                        Extension ext = extensionIter.next();
-                        extensions.add(ext);
-                    }
-
-                    if (extensions.size() > 1) {
-                        throw SwarmMessages.MESSAGES.fractionHasMultipleExtensions(fraction.getClass().getName(), extensions.stream().map(Objects::toString).collect(Collectors.toList()));
-                    }
-
-                    if (!extensions.isEmpty()) {
-                        add(extensions.get(0));
-                    }
+            if (noClass) {
+                // ignore it all
+            } else if (extensionClassName != null) {
+                Class<?> extCls = extensionModule.getClassLoader().loadClass(extensionClassName);
+                try {
+                    Extension ext = (Extension) extCls.newInstance();
+                    add(ext);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    SwarmConfigMessages.MESSAGES.errorCreatingExtension(extensionClassName, extensionModuleName, e);
                 }
-            } catch (ModuleLoadException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
+            } else {
+                ServiceLoader<Extension> extensionLoader = extensionModule.loadService(Extension.class);
+
+                Iterator<Extension> extensionIter = extensionLoader.iterator();
+                List<Extension> extensions = new ArrayList<>();
+
+                if (extensionIter.hasNext()) {
+                    Extension ext = extensionIter.next();
+                    extensions.add(ext);
+                }
+
+                if (extensions.size() > 1) {
+                    throw SwarmMessages.MESSAGES.fractionHasMultipleExtensions(fraction.getClass().getName(), extensions.stream().map(Objects::toString).collect(Collectors.toList()));
+                }
+
+                if (!extensions.isEmpty()) {
+                    add(extensions.get(0));
+                }
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 

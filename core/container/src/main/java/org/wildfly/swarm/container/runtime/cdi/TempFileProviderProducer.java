@@ -28,6 +28,7 @@ import javax.inject.Singleton;
 
 import org.jboss.vfs.TempFileProvider;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
+import org.wildfly.swarm.internal.SwarmMessages;
 
 /**
  * @author Bob McWhirter
@@ -50,8 +51,7 @@ public class TempFileProviderProducer {
             this.tempFileProvider = TempFileProvider.create(TEMP_DIR_NAME, tempFileExecutor, true);
 
         } catch (IOException e) {
-            //TODO This should be properly logged
-            e.printStackTrace();
+            SwarmMessages.MESSAGES.errorSettingUpTempFileProvider(e);
         }
     }
 
@@ -67,7 +67,7 @@ public class TempFileProviderProducer {
             try {
                 this.tempFileProvider.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                SwarmMessages.MESSAGES.errorCleaningUpTempFileProvider(e);
             }
         }
     }

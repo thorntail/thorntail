@@ -87,9 +87,8 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
                                     )
                             );
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
-
                     });
 
             builder.addDependency(DependencySpec.createLocalDependencySpec());

@@ -15,17 +15,20 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
-import org.jboss.modules.maven.MavenResolver;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
+
+import org.jboss.modules.maven.MavenResolver;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 
 /**
  * @author Bob McWhirter
  */
 public class MavenResolvers {
+
+    private static BootstrapLogger LOGGER = BootstrapLogger.logger("org.wildfly.swarm.bootstrap");
 
     public static synchronized MavenResolver get() {
         return INSTANCE;
@@ -42,10 +45,10 @@ public class MavenResolvers {
                     .findFirst();
             if (gradleClassPathFile.isPresent()) {
                 String gradleCachePath = gradleClassPathFile.get().substring(0, gradleClassPathFile.get().indexOf("files-2.1") + 9);
-                System.err.println("Dependencies not bundled, will resolve from gradle cache: " + gradleCachePath);
+                LOGGER.info("Dependencies not bundled; resolving from Gradle cache.");
                 INSTANCE.addResolver(new GradleResolver(gradleCachePath));
             } else {
-                System.err.println("Dependencies not bundled, will resolve from local M2REPO");
+                LOGGER.info("Dependencies not bundled; resolving from M2REPO.");
                 INSTANCE.addResolver(MavenResolver.createDefaultResolver());
             }
         }

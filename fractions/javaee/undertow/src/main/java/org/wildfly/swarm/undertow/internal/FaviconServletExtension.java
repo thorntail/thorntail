@@ -15,7 +15,8 @@
  */
 package org.wildfly.swarm.undertow.internal;
 
-import javax.enterprise.inject.Vetoed;
+import java.lang.reflect.InvocationTargetException;
+
 import javax.servlet.ServletContext;
 
 import io.undertow.Handlers;
@@ -26,7 +27,6 @@ import io.undertow.servlet.api.DeploymentInfo;
 /**
  * @author Ken Finnigan
  */
-@Vetoed
 public class FaviconServletExtension implements ServletExtension {
     public static final String HANDLER_NAME = "org.wildfly.swarm.generated.FaviconErrorHandler";
 
@@ -37,10 +37,10 @@ public class FaviconServletExtension implements ServletExtension {
         deploymentInfo.addInnerHandlerChainWrapper(handler -> {
             try {
                 return Handlers.path((HttpHandler) Class.forName(HANDLER_NAME).getConstructor(HttpHandler.class).newInstance(handler));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return handler;
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                servletContext.log("Error loading favicon handler", e);
             }
+            return handler;
         });
     }
 }

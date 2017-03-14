@@ -30,6 +30,7 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.swarm.topology.TopologyMessages;
 import org.wildfly.swarm.topology.runtime.Registration;
 
 /**
@@ -112,9 +113,8 @@ public class Advertiser implements Service<Advertiser>, Runnable {
                     .forEach(e -> {
                         try {
                             client.pass(serviceId(e));
-                        } catch (NotRegisteredException e1) {
-                            // ignore?
-                            e1.printStackTrace();
+                        } catch (NotRegisteredException ex) {
+                            TopologyMessages.MESSAGES.notRegistered(e.toString(), ex);
                         }
                     });
             try {

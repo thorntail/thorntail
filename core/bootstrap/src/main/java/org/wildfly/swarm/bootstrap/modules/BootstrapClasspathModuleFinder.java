@@ -68,10 +68,8 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
                         identifier);
 
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new ModuleLoadException(e);
             } catch (Throwable t) {
-                t.printStackTrace();
                 throw t;
             } finally {
                 try {

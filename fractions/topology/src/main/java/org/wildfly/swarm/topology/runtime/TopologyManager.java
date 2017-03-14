@@ -30,6 +30,7 @@ import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.topology.AdvertisementHandle;
 import org.wildfly.swarm.topology.Topology;
 import org.wildfly.swarm.topology.TopologyListener;
+import org.wildfly.swarm.topology.TopologyMessages;
 import org.wildfly.swarm.topology.deployment.RegistrationAdvertiser;
 
 /**
@@ -139,7 +140,7 @@ public class TopologyManager implements Topology {
                 try {
                     e.onChange(this);
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    TopologyMessages.MESSAGES.errorFiringEvent(e.getClass().getName(), t);
                     removeListener(e);
                 }
             });

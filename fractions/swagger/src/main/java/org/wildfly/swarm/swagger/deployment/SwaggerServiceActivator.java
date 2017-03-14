@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.swagger.deployment;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import io.swagger.jaxrs.config.BeanConfig;
@@ -23,6 +24,7 @@ import org.jboss.msc.service.ServiceActivatorContext;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.wildfly.swarm.swagger.SwaggerArchive;
 import org.wildfly.swarm.swagger.SwaggerConfig;
+import org.wildfly.swarm.swagger.SwaggerMessages;
 
 /**
  * @author Lance Ball
@@ -36,41 +38,44 @@ public class SwaggerServiceActivator implements ServiceActivator {
 
 
         if (in == null) {
-
             // No config available. Print a warning and return
-            System.err.println("WARN: No swagger configuration found. Swagger not activated.");
+            SwaggerMessages.MESSAGES.noConfigurationFound();
             return;
         }
 
-        SwaggerConfig config = new SwaggerConfig(in);
+        try {
+            SwaggerConfig config = new SwaggerConfig(in);
 
-        BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setHost((String) config.get(SwaggerConfig.Key.HOST));
-        beanConfig.setLicense((String) config.get(SwaggerConfig.Key.LICENSE));
-        beanConfig.setLicenseUrl((String) config.get(SwaggerConfig.Key.LICENSE_URL));
-        beanConfig.setTermsOfServiceUrl((String) config.get(SwaggerConfig.Key.TERMS_OF_SERVICE_URL));
+            BeanConfig beanConfig = new BeanConfig();
+            beanConfig.setHost((String) config.get(SwaggerConfig.Key.HOST));
+            beanConfig.setLicense((String) config.get(SwaggerConfig.Key.LICENSE));
+            beanConfig.setLicenseUrl((String) config.get(SwaggerConfig.Key.LICENSE_URL));
+            beanConfig.setTermsOfServiceUrl((String) config.get(SwaggerConfig.Key.TERMS_OF_SERVICE_URL));
 
-        // some type inconsistencies in the API (String vs String[])
-        String[] packages = (String[]) config.get(SwaggerConfig.Key.PACKAGES);
+            // some type inconsistencies in the API (String vs String[])
+            String[] packages = (String[]) config.get(SwaggerConfig.Key.PACKAGES);
 
-        if (packages != null) {
-            StringBuffer sb = new StringBuffer();
-            for (String s : packages) {
-                sb.append(s).append(',');
+            if (packages != null) {
+                StringBuffer sb = new StringBuffer();
+                for (String s : packages) {
+                    sb.append(s).append(',');
+                }
+
+                beanConfig.setResourcePackage(sb.toString());
             }
 
-            beanConfig.setResourcePackage(sb.toString());
+            beanConfig.setVersion((String) config.get(SwaggerConfig.Key.VERSION));
+            beanConfig.setBasePath((String) config.get(SwaggerConfig.Key.ROOT));
+            beanConfig.setContact((String) config.get(SwaggerConfig.Key.CONTACT));
+            beanConfig.setDescription((String) config.get(SwaggerConfig.Key.DESCRIPTION));
+            beanConfig.setTitle((String) config.get(SwaggerConfig.Key.TITLE));
+            beanConfig.setPrettyPrint((String) config.get(SwaggerConfig.Key.PRETTY_PRINT));
+            beanConfig.setSchemes((String[]) config.get(SwaggerConfig.Key.SCHEMES));
+
+            beanConfig.setScan(true);
+        } catch (IOException e) {
+            throw new ServiceRegistryException(e);
         }
-
-        beanConfig.setVersion((String) config.get(SwaggerConfig.Key.VERSION));
-        beanConfig.setBasePath((String) config.get(SwaggerConfig.Key.ROOT));
-        beanConfig.setContact((String) config.get(SwaggerConfig.Key.CONTACT));
-        beanConfig.setDescription((String) config.get(SwaggerConfig.Key.DESCRIPTION));
-        beanConfig.setTitle((String) config.get(SwaggerConfig.Key.TITLE));
-        beanConfig.setPrettyPrint((String) config.get(SwaggerConfig.Key.PRETTY_PRINT));
-        beanConfig.setSchemes((String[]) config.get(SwaggerConfig.Key.SCHEMES));
-
-        beanConfig.setScan(true);
 
     }
 }

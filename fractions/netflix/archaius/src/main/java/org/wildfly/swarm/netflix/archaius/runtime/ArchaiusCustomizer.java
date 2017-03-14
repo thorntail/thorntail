@@ -56,7 +56,7 @@ public class ArchaiusCustomizer implements Customizer {
                         }
                         seen.add(e.key());
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        throw new RuntimeException(ex);
                     }
                 });
 

@@ -17,24 +17,18 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.internal;
+package org.wildfly.swarm.keycloak.server.runtime;
 
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
-import org.jboss.logging.annotations.LogMessage;
-import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSMETRICS", length = 4)
-public interface SwarmMetricsMessages extends BasicLogger {
+@MessageLogger(projectCode = "WFSKCSRV", length = 4)
+public interface KeycloakServerMessages extends BasicLogger {
 
-    SwarmMetricsMessages MESSAGES = Logger.getMessageLogger(SwarmMetricsMessages.class, "org.wildfly.swarm.metrics");
-
-    @LogMessage(level = Logger.Level.TRACE)
-    @Message(id = 1, value = "Boot performance:\n%s")
-    void bootPerformance(String metrics);
+    KeycloakServerMessages MESSAGES = Logger.getMessageLogger(KeycloakServerMessages.class, "org.wildfly.swarm.keycloak.server");
 
 }

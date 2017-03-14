@@ -664,7 +664,7 @@ public class ConfigurableManager implements AutoCloseable {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                SwarmConfigMessages.MESSAGES.errorResolvingConfigurableValue(each.key().name(), e);
             }
         }
         SwarmConfigMessages.MESSAGES.configuration(str.toString());

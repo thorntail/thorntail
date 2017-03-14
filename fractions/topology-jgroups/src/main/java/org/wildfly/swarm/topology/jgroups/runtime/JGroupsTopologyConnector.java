@@ -32,8 +32,9 @@ import org.wildfly.clustering.dispatcher.CommandDispatcherFactory;
 import org.wildfly.clustering.group.Group;
 import org.wildfly.clustering.group.Node;
 import org.wildfly.swarm.topology.TopologyConnector;
-import org.wildfly.swarm.topology.runtime.TopologyManager;
+import org.wildfly.swarm.topology.TopologyMessages;
 import org.wildfly.swarm.topology.runtime.Registration;
+import org.wildfly.swarm.topology.runtime.TopologyManager;
 
 /**
  * @author Bob McWhirter
@@ -56,7 +57,11 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         this.commandDispatcherFactoryInjector.getValue().getGroup().addListener(this);
         this.dispatcher = this.commandDispatcherFactoryInjector.getValue().createCommandDispatcher("netflix.runtime.manager", this);
         this.node = this.commandDispatcherFactoryInjector.getValue().getGroup().getLocalNode();
-        requestAdvertisements();
+        try {
+            requestAdvertisements();
+        } catch (Exception e) {
+            throw new StartException(e);
+        }
     }
 
     @Override
@@ -71,7 +76,11 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
 
     @Override
     public void membershipChanged(List<Node> previousMembers, List<Node> members, boolean merged) {
-        advertiseAll();
+        try {
+            advertiseAll();
+        } catch (Exception e) {
+            TopologyMessages.MESSAGES.errorStartingAdvertisement(e);
+        }
         List<Node> removed = new ArrayList<>();
         removed.addAll(previousMembers);
         removed.removeAll(members);
@@ -80,49 +89,37 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
         });
     }
 
-    public synchronized void advertise(String name, SocketBinding binding, String... tags) {
+    public synchronized void advertise(String name, SocketBinding binding, String... tags) throws Exception {
         Registration registration = new Registration(sourceKey(this.node), name, binding.getAddress().getHostAddress(), binding.getAbsolutePort(), tags);
 
         this.registrations.put(name + ":" + binding.getName(), registration);
         advertise(registration);
     }
 
-    public synchronized void advertise(Registration registration) {
+    public synchronized void advertise(Registration registration) throws Exception {
         this.topologyManagerInjector.getValue().register(registration);
         doAdvertise(registration);
     }
 
-    public synchronized void unadvertise(String appName, SocketBinding binding) {
+    public synchronized void unadvertise(String appName, SocketBinding binding) throws Exception {
         Registration registration = this.registrations.remove(appName + ":" + binding.getName());
         if (registration != null) {
-            try {
-                this.dispatcher.submitOnCluster(new UnadvertiseCommand(registration));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            this.dispatcher.submitOnCluster(new UnadvertiseCommand(registration));
         }
     }
 
-    protected void requestAdvertisements() {
-        try {
-            this.dispatcher.submitOnCluster(new RequestAdvertisementsCommand(), this.node);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    protected void requestAdvertisements() throws Exception {
+        this.dispatcher.submitOnCluster(new RequestAdvertisementsCommand(), this.node);
     }
 
-    protected synchronized void advertiseAll() {
+    protected synchronized void advertiseAll() throws Exception {
         for (Registration each : this.topologyManagerInjector.getValue().registrationsForSourceKey(sourceKey(this.node))) {
             doAdvertise(each);
         }
     }
 
-    protected void doAdvertise(Registration registration) {
-        try {
-            this.dispatcher.submitOnCluster(new AdvertiseCommand(registration));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    protected void doAdvertise(Registration registration) throws Exception {
+        this.dispatcher.submitOnCluster(new AdvertiseCommand(registration));
     }
 
     void register(Registration registration) {

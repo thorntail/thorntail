@@ -31,7 +31,7 @@ import org.wildfly.swarm.topology.consul.ConsulTopologyFraction;
  */
 @Pre
 @ApplicationScoped
-public class ConsultURLCustomizer implements Customizer {
+public class ConsulURLCustomizer implements Customizer {
 
     @Inject
     @Any
@@ -43,14 +43,10 @@ public class ConsultURLCustomizer implements Customizer {
 
 
     @Override
-    public void customize() {
+    public void customize() throws MalformedURLException {
 
         if (this.consulUrl != null) {
-            try {
-                this.fraction.url(this.consulUrl);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            this.fraction.url(this.consulUrl);
         }
 
     }
