@@ -1,7 +1,6 @@
 package org.wildfly.swarm.drools.server.runtime;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -33,22 +32,18 @@ public class DroolsSetup implements Customizer {
     Instance<SecurityFraction> security;
 
     @Override
-    public void customize() {
+    public void customize() throws Exception {
         if (System.getProperty("org.drools.server.swarm.security.conf") == null) {
-            try {
-                //Path dir = Files.createTempDirectory("swarm-keycloak-config");
-                File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-drools-security-config", ".d");
-                System.setProperty("org.drools.server.swarm.conf", dir.getAbsolutePath());
-                Files.copy(getClass().getClassLoader().getResourceAsStream("config/security/application-users.properties"),
-                        dir.toPath().resolve("application-users.properties"),
-                        StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(getClass().getClassLoader().getResourceAsStream("config/security/application-roles.properties"),
-                        dir.toPath().resolve("application-roles.properties"),
-                        StandardCopyOption.REPLACE_EXISTING);
-                configFolder = dir.toPath().toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //Path dir = Files.createTempDirectory("swarm-keycloak-config");
+            File dir = TempFileManager.INSTANCE.newTempDirectory("swarm-drools-security-config", ".d");
+            System.setProperty("org.drools.server.swarm.conf", dir.getAbsolutePath());
+            Files.copy(getClass().getClassLoader().getResourceAsStream("config/security/application-users.properties"),
+                    dir.toPath().resolve("application-users.properties"),
+                    StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(getClass().getClassLoader().getResourceAsStream("config/security/application-roles.properties"),
+                    dir.toPath().resolve("application-roles.properties"),
+                    StandardCopyOption.REPLACE_EXISTING);
+            configFolder = dir.toPath().toString();
         }
 
 

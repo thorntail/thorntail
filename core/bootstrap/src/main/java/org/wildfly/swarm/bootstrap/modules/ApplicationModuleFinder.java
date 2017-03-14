@@ -173,10 +173,8 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                                 )
                         );
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
-
-
                 });
     }
 

@@ -16,6 +16,7 @@
 package org.wildfly.swarm.keycloak.server.runtime;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
@@ -43,38 +45,28 @@ public class KeycloakThemesCustomizer implements Customizer {
     KeycloakServerFraction keycloakServer;
 
     @Override
-    public void customize() {
+    public void customize() throws ModuleLoadException, IOException {
 
         if (!this.keycloakServer.subresources().themes().isEmpty()) {
             return;
         }
 
+        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.keycloak.keycloak-themes"));
+        URL resource = module.getExportedResource("keycloak-themes.jar");
 
-        try {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.keycloak.keycloak-themes"));
-            URL resource = module.getExportedResource("keycloak-themes.jar");
+        JARArchive themesArtifact = ShrinkWrap.create(JARArchive.class);
+        themesArtifact.as(ZipImporter.class).importFrom(resource.openStream());
 
-            System.err.println("themes.jar: " + resource);
-            JARArchive themesArtifact = ShrinkWrap.create(JARArchive.class);
-            themesArtifact.as(ZipImporter.class).importFrom(resource.openStream());
+        File root = TempFileManager.INSTANCE.newTempDirectory("keycloak-themes", ".d");
+        File exportedDir = themesArtifact.as(ExplodedExporter.class).exportExplodedInto(root);
+        File themeDir = new File(exportedDir, "theme");
 
-            File root = TempFileManager.INSTANCE.newTempDirectory("keycloak-themes", ".d");
-            File exportedDir = themesArtifact.as(ExplodedExporter.class).exportExplodedInto(root);
-            File themeDir = new File(exportedDir, "theme");
-
-            System.err.println("exported to " + exportedDir.getAbsolutePath());
-
-            this.keycloakServer.theme("defaults", (theme) -> {
-                theme.dir(themeDir.getAbsolutePath());
-                theme.staticmaxage(2592000L);
-                theme.cachethemes(true);
-                theme.cachetemplates(true);
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        this.keycloakServer.theme("defaults", (theme) -> {
+            theme.dir(themeDir.getAbsolutePath());
+            theme.staticmaxage(2592000L);
+            theme.cachethemes(true);
+            theme.cachetemplates(true);
+        });
 
     }
 }

@@ -28,5 +28,5 @@ import org.jboss.shrinkwrap.api.Archive;
  * @author Ken Finnigan
  */
 public interface ArchiveMetadataProcessor {
-    void processArchive(Archive<?> archive, Index index);
+    void processArchive(Archive<?> archive, Index index) throws Exception;
 }

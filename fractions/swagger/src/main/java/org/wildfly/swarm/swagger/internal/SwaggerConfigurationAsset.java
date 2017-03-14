@@ -16,6 +16,7 @@
 package org.wildfly.swarm.swagger.internal;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class SwaggerConfigurationAsset implements Asset {
         configuration = new SwaggerConfig();
     }
 
-    public SwaggerConfigurationAsset(InputStream is) {
+    public SwaggerConfigurationAsset(InputStream is) throws IOException {
         configuration = new SwaggerConfig(is);
     }
 

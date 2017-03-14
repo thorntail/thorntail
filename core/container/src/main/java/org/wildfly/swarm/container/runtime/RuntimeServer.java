@@ -48,7 +48,6 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.container.internal.Deployer;
@@ -111,10 +110,10 @@ public class RuntimeServer implements Server {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (container != null) {
                 try {
-                    LOG.info("Shutdown requested ...");
+                    SwarmMessages.MESSAGES.shutdownRequested();
                     stop();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         }));
@@ -134,7 +133,6 @@ public class RuntimeServer implements Server {
         File configurationFile;
         try {
             configurationFile = TempFileManager.INSTANCE.newTempFile("swarm-config-", ".xml");
-            LOG.debug("Temporarily storing configuration at: " + configurationFile.getAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -249,7 +247,7 @@ public class RuntimeServer implements Server {
             ExecutorService executor = (ExecutorService) field.get(this.container);
             executor.awaitTermination(10, TimeUnit.SECONDS);
         } catch (NoSuchFieldException | IllegalAccessException | InterruptedException e) {
-            e.printStackTrace();
+            SwarmMessages.MESSAGES.errorWaitingForContainerShutdown(e);
         }
     }
 
@@ -261,6 +259,4 @@ public class RuntimeServer implements Server {
     private SelfContainedContainer container;
 
     private ModelControllerClient client;
-
-    private BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.runtime.server");
 }

@@ -22,7 +22,7 @@ import org.jboss.as.network.SocketBinding;
  */
 public interface TopologyConnector {
 
-    void advertise(String name, SocketBinding binding, String... tags);
+    void advertise(String name, SocketBinding binding, String... tags) throws Exception;
 
-    void unadvertise(String name, SocketBinding binding);
+    void unadvertise(String name, SocketBinding binding) throws Exception;
 }

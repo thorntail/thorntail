@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.internal;
+package org.wildfly.swarm.drools.server.runtime;
 
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
@@ -28,13 +28,13 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSMETRICS", length = 4)
-public interface SwarmMetricsMessages extends BasicLogger {
+@MessageLogger(projectCode = "WFSDROOLS", length = 4)
+public interface DroolsMessages extends BasicLogger {
 
-    SwarmMetricsMessages MESSAGES = Logger.getMessageLogger(SwarmMetricsMessages.class, "org.wildfly.swarm.metrics");
+    DroolsMessages MESSAGES = Logger.getMessageLogger(DroolsMessages.class, "org.wildfly.swarm.drools");
 
-    @LogMessage(level = Logger.Level.TRACE)
-    @Message(id = 1, value = "Boot performance:\n%s")
-    void bootPerformance(String metrics);
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 1, value = "Configuration directory: %s")
+    void configurationDirectory(String dir);
 
 }

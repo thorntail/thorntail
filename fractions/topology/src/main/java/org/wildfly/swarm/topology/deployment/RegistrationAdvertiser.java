@@ -28,6 +28,7 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.topology.TopologyConnector;
+import org.wildfly.swarm.topology.TopologyMessages;
 
 /**
  * @author Bob McWhirter
@@ -63,12 +64,20 @@ public class RegistrationAdvertiser implements Service<Void> {
 
     @Override
     public void start(StartContext startContext) throws StartException {
-        this.topologyConnectorInjector.getValue().advertise(this.name, this.socketBindingInjector.getValue(), this.tags);
+        try {
+            this.topologyConnectorInjector.getValue().advertise(this.name, this.socketBindingInjector.getValue(), this.tags);
+        } catch (Exception e) {
+            throw new StartException(e);
+        }
     }
 
     @Override
     public void stop(StopContext stopContext) {
-        this.topologyConnectorInjector.getValue().unadvertise(this.name, this.socketBindingInjector.getValue());
+        try {
+            this.topologyConnectorInjector.getValue().unadvertise(this.name, this.socketBindingInjector.getValue());
+        } catch (Exception e) {
+            TopologyMessages.MESSAGES.errorStoppingAdvertisement(e);
+        }
     }
 
     @Override

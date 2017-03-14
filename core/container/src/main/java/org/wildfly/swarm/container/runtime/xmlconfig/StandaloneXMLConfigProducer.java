@@ -47,7 +47,7 @@ public class StandaloneXMLConfigProducer {
             }
             return result;
         } catch (ModuleLoadException e) {
-            e.printStackTrace();
+            SwarmConfigMessages.MESSAGES.errorLoadingModule(e);
         }
         return null;
     }

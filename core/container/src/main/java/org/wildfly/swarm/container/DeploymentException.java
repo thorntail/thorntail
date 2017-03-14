@@ -27,7 +27,7 @@ import org.jboss.shrinkwrap.api.Archive;
  * @author Bob McWhirter
  */
 @Vetoed
-public class DeploymentException extends Exception {
+public class DeploymentException extends RuntimeException {
 
     public DeploymentException(String message) {
         this.archive = null;

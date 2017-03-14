@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.netflix.ribbon.internal;
 
+import java.io.IOException;
+
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
 import org.wildfly.swarm.netflix.ribbon.RibbonArchive;
 import org.wildfly.swarm.topology.internal.TopologyArchiveImpl;
@@ -29,7 +31,7 @@ public class RibbonArchiveImpl extends TopologyArchiveImpl implements RibbonArch
      *
      * @param archive
      */
-    public RibbonArchiveImpl(ArchiveBase<?> archive) {
+    public RibbonArchiveImpl(ArchiveBase<?> archive) throws IOException {
         super(archive);
     }
 

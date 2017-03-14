@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.swagger;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -48,7 +49,7 @@ public class SwaggerArchiveTest {
     }
 
     @Test
-    public void testSwaggerConfiguration() {
+    public void testSwaggerConfiguration() throws IOException {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.jar");
 
         archive.as(SwaggerArchive.class)

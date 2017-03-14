@@ -44,7 +44,6 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
 
     @Override
     public Fraction applyDefaults() {
-        System.err.println("Applying defaults");
         webContext(DEFAULT_WEB_CONTEXT);
         masterRealmName(DEFAULT_REALM_NAME);
         scheduledTaskInterval(900L);

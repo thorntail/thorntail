@@ -42,7 +42,7 @@ public class SecuredArchivePreparer implements ArchivePreparer {
     private static final Logger LOG = Logger.getLogger(SecuredArchivePreparer.class);
 
     @Override
-    public void prepareArchive(Archive<?> archive) {
+    public void prepareArchive(Archive<?> archive) throws IOException {
         InputStream keycloakJson = null;
         if (keycloakJsonPath != null) {
             keycloakJson = getKeycloakJson(keycloakJsonPath);
@@ -92,14 +92,13 @@ public class SecuredArchivePreparer implements ArchivePreparer {
                     }
                 } catch (IOException e) {
                     // ignore
-                    // e.printStackTrace();
                 }
             }
         }
         return keycloakJson;
     }
 
-    private Asset createAsset(InputStream in) {
+    private Asset createAsset(InputStream in) throws IOException {
         StringBuilder str = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 
@@ -108,9 +107,6 @@ public class SecuredArchivePreparer implements ArchivePreparer {
             while ((line = reader.readLine()) != null) {
                 str.append(line).append("\n");
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return new ByteArrayAsset(str.toString().getBytes());
     }

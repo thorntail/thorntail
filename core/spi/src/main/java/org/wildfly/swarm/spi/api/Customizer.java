@@ -37,5 +37,5 @@ public interface Customizer {
 
     /** Perform customization.
      */
-    void customize();
+    void customize() throws Exception;
 }

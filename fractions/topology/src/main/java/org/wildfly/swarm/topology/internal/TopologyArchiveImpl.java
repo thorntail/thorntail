@@ -44,7 +44,7 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
      *
      * @param archive
      */
-    public TopologyArchiveImpl(ArchiveBase<?> archive) {
+    public TopologyArchiveImpl(ArchiveBase<?> archive) throws IOException {
         super(archive);
 
         Node regConf = as(JARArchive.class).get(REGISTRATION_CONF);
@@ -54,8 +54,6 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
                         .forEach(line -> {
                             this.serviceNames.add(line);
                         });
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

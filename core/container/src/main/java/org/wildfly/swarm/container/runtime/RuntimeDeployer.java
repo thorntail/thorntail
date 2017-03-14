@@ -37,7 +37,6 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
-import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filters;
@@ -59,6 +58,7 @@ import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
+import org.wildfly.swarm.internal.DeployerMessages;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
@@ -87,7 +87,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RUN
 @ApplicationScoped
 public class RuntimeDeployer implements Deployer {
 
-    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.deployer");
+    //private static Logger LOG = Logger.getLogger("org.wildfly.swarm.deployer");
 
     private static final String ALL_DEPENDENCIES_ADDED_MARKER = DependenciesContainer.ALL_DEPENDENCIES_MARKER + ".added";
 
@@ -95,7 +95,7 @@ public class RuntimeDeployer implements Deployer {
     public void deploy() throws DeploymentException {
         Archive<?> deployment = createDefaultDeployment();
         if (deployment == null) {
-            throw SwarmMessages.MESSAGES.cannotCreateDefaultDeployment();
+            throw DeployerMessages.MESSAGES.unableToCreateDefaultDeployment();
         } else {
             deploy(deployment);
         }
@@ -104,17 +104,12 @@ public class RuntimeDeployer implements Deployer {
     @Override
     public void deploy(Collection<Path> pathsToDeploy) throws DeploymentException {
         if (pathsToDeploy.isEmpty()) {
-            LOG.warn(SwarmMessages.MESSAGES.noDeploymentsSpecified());
+            DeployerMessages.MESSAGES.noDeploymentsSpecified();
             return;
         }
         archives(pathsToDeploy)
                 .forEach(e -> {
-                    try {
-                        deploy(e);
-                    } catch (DeploymentException e1) {
-                        // TODO fix error-handling
-                        e1.printStackTrace();
-                    }
+                    deploy(e);
                 });
     }
 
@@ -178,37 +173,32 @@ public class RuntimeDeployer implements Deployer {
                 DependenciesContainer depContainer = (DependenciesContainer) deployment;
                 if (depContainer.hasMarker(DependenciesContainer.ALL_DEPENDENCIES_MARKER)) {
                     if (!depContainer.hasMarker(ALL_DEPENDENCIES_ADDED_MARKER)) {
-                        try {
+                        ApplicationEnvironment appEnv = ApplicationEnvironment.get();
 
-                            ApplicationEnvironment appEnv = ApplicationEnvironment.get();
-
-                            if (ApplicationEnvironment.Mode.UBERJAR == appEnv.getMode()) {
-                                ArtifactLookup artifactLookup = ArtifactLookup.get();
-                                for (String gav : appEnv.getDependencies()) {
-                                    depContainer.addAsLibrary(artifactLookup.artifact(gav));
-                                }
-                            } else {
-                                Set<String> paths = appEnv.resolveDependencies(Collections.EMPTY_LIST);
-                                for (String path : paths) {
-                                    final File pathFile = new File(path);
-                                    if (path.endsWith(".jar")) {
-                                        depContainer.addAsLibrary(pathFile);
-                                    } else if (pathFile.isDirectory()) {
-                                        depContainer
-                                                .merge(ShrinkWrap.create(GenericArchive.class)
-                                                                .as(ExplodedImporter.class)
-                                                                .importDirectory(pathFile)
-                                                                .as(GenericArchive.class),
-                                                        "/WEB-INF/classes",
-                                                        Filters.includeAll());
-                                    }
+                        if (ApplicationEnvironment.Mode.UBERJAR == appEnv.getMode()) {
+                            ArtifactLookup artifactLookup = ArtifactLookup.get();
+                            for (String gav : appEnv.getDependencies()) {
+                                depContainer.addAsLibrary(artifactLookup.artifact(gav));
+                            }
+                        } else {
+                            Set<String> paths = appEnv.resolveDependencies(Collections.EMPTY_LIST);
+                            for (String path : paths) {
+                                final File pathFile = new File(path);
+                                if (path.endsWith(".jar")) {
+                                    depContainer.addAsLibrary(pathFile);
+                                } else if (pathFile.isDirectory()) {
+                                    depContainer
+                                            .merge(ShrinkWrap.create(GenericArchive.class)
+                                                            .as(ExplodedImporter.class)
+                                                            .importDirectory(pathFile)
+                                                            .as(GenericArchive.class),
+                                                    "/WEB-INF/classes",
+                                                    Filters.includeAll());
                                 }
                             }
-
-                            depContainer.addMarker(ALL_DEPENDENCIES_ADDED_MARKER);
-                        } catch (Throwable t) {
-                            throw new RuntimeException("Failed to resolve archive dependencies", t);
                         }
+
+                        depContainer.addMarker(ALL_DEPENDENCIES_ADDED_MARKER);
                     }
                 }
             }
@@ -240,16 +230,17 @@ public class RuntimeDeployer implements Deployer {
                 preparer.prepareArchive(deployment);
             }
 
-            if (this.debug) {
+            if (DeployerMessages.MESSAGES.isDebugEnabled()) {
+                DeployerMessages.MESSAGES.deploying(deployment.getName());
                 Map<ArchivePath, Node> ctx = deployment.getContent();
                 for (Map.Entry<ArchivePath, Node> each : ctx.entrySet()) {
-                    System.err.println(each.getKey() + " // " + each.getValue());
+                    DeployerMessages.MESSAGES.deploymentContent(each.getKey().toString());
                 }
             }
 
             if (BootstrapProperties.flagIsSet(SwarmProperties.EXPORT_DEPLOYMENT)) {
                 final File out = new File(deployment.getName());
-                System.err.println("Exporting deployment to " + out.getAbsolutePath());
+                DeployerMessages.MESSAGES.exportingDeployment(out.getAbsolutePath());
                 deployment.as(ZipExporter.class).exportTo(out, true);
             }
 

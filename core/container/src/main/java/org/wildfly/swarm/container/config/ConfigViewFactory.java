@@ -81,16 +81,15 @@ public class ConfigViewFactory {
                     try {
                         return locator.locate(profileName);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
-                    return null;
                 })
                 .filter(Objects::nonNull)
                 .forEach(url -> {
                     try {
                         load(profileName, url);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                 });
         return this;

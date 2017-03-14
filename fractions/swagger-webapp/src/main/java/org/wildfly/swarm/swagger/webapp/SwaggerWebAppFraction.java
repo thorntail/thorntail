@@ -75,13 +75,13 @@ public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
             try {
                 this.webContent = ArtifactLookup.get().artifact(content);
             } catch (Exception e) {
-                //e.printStackTrace();
+                SwaggerWebAppMessages.MESSAGES.unableToLocateWebContent(content);
             }
         } else if (maybeFile.isDirectory()) {
             try {
                 this.webContent = loadFromDirectory(maybeFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                SwaggerWebAppMessages.MESSAGES.unableToLocateWebContent(maybeFile.toString());
             }
         } else {
             this.webContent = ShrinkWrap.createFromZipFile(JARArchive.class, maybeFile);

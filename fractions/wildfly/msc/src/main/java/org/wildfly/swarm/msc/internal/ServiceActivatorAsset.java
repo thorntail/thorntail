@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.wildfly.swarm.msc.MSCMessages;
 
 /**
  * @author Bob McWhirter
@@ -36,24 +37,14 @@ public class ServiceActivatorAsset implements Asset {
     }
 
     public ServiceActivatorAsset(InputStream inputStream) {
-        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-
-        try {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line = null;
             while ((line = in.readLine()) != null) {
                 addServiceActivator(line);
             }
         } catch (IOException e) {
-            System.err.println("ERROR reading ServiceActivatorAsset" + e);
-            e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            MSCMessages.MESSAGES.errorReadingServiceActivatorAsset(e);
         }
-
     }
 
     public void addServiceActivator(String className) {

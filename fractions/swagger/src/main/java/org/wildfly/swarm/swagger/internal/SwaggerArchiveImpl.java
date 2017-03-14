@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.swagger.internal;
 
+import java.io.IOException;
+
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
@@ -30,7 +32,7 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
 
     public static final String SERVICE_ACTIVATOR_CLASS_NAME = "org.wildfly.swarm.swagger.deployment.SwaggerServiceActivator";
 
-    public SwaggerArchiveImpl(ArchiveBase<?> archive) {
+    public SwaggerArchiveImpl(ArchiveBase<?> archive) throws IOException {
         super(archive);
 
         if (!as(ServiceActivatorArchive.class).containsServiceActivator(SERVICE_ACTIVATOR_CLASS_NAME)) {
@@ -132,7 +134,7 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
         return getConfigurationAsset().getResourcePackages();
     }
 
-    private void loadOrCreateConfigurationAsset() {
+    private void loadOrCreateConfigurationAsset() throws IOException {
         Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
         if (node != null) {
             Asset asset = node.getAsset();

@@ -36,6 +36,7 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.swarm.topology.consul.ConsulTopologyMessages;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
 
 /**
@@ -77,11 +78,11 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
     public void stop(StopContext stopContext) {
         this.thread.interrupt();
 
-        this.watchers.values().forEach(e -> {
+        this.watchers.entrySet().forEach(e -> {
             try {
-                e.stop();
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                e.getValue().stop();
+            } catch (Exception ex) {
+                ConsulTopologyMessages.MESSAGES.errorStoppingCatalogWatcher(e.getKey(), ex);
             }
         });
     }
@@ -149,7 +150,7 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
             healthCache.awaitInitialized(1, TimeUnit.SECONDS);
             this.watchers.put(serviceName, healthCache);
         } catch (Exception e) {
-            e.printStackTrace();
+            ConsulTopologyMessages.MESSAGES.errorSettingUpCatalogWatcher(serviceName, e);
         }
     }
 

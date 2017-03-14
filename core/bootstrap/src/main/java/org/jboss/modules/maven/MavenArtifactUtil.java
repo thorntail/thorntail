@@ -42,6 +42,7 @@ import javax.xml.xpath.XPathFactory;
 import org.jboss.modules.Module;
 import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaders;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.xml.sax.InputSource;
 
 /**
@@ -53,15 +54,19 @@ import org.xml.sax.InputSource;
  */
 public final class MavenArtifactUtil {
 
+    private static BootstrapLogger LOGGER = BootstrapLogger.logger("org.wildfly.swarm.bootstrap");
+
     static final Object artifactLock = new Object();
+
     private static final XPath xpath = XPathFactory.newInstance().newXPath();
+
     private static XPathExpression snapshotVersionXpath;
 
     static {
         try {
             snapshotVersionXpath = xpath.compile("metadata/versioning/snapshotVersions/snapshotVersion[1]/value");
         } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -90,7 +95,7 @@ public final class MavenArtifactUtil {
      * {@code "false"}.
      *
      * @param coordinates the non-{@code null} Maven coordinates object
-     * @param packaging a non-{@code null} string with the exact packaging type desired (e.g. {@code pom}, {@code jar}, etc.)
+     * @param packaging   a non-{@code null} string with the exact packaging type desired (e.g. {@code pom}, {@code jar}, etc.)
      * @return the absolute path to the artifact, or {@code null} if none exists
      * @throws IOException if acquiring the artifact path failed for some reason
      */
@@ -141,7 +146,7 @@ public final class MavenArtifactUtil {
                             if (pomFile.exists()) { //download successful
                                 return pomFile;
                             }
-                        } catch (IOException|XPathExpressionException e) {
+                        } catch (IOException | XPathExpressionException e) {
                             Module.getModuleLogger().trace(e, "Could not download '%s' from '%s' repository", artifactRelativePath, remoteRepository);
                             // try next one
                         }
@@ -168,7 +173,7 @@ public final class MavenArtifactUtil {
                         String remotePomPath = remoteRepository + artifactRelativeHttpPath + ".pom";
                         String remoteArtifactPath = remoteRepository + artifactRelativeHttpPath + classifier + "." + packaging;
                         downloadFile(coordinates + ":pom", remotePomPath, pomFile);
-                        if (! pomFile.exists()) {
+                        if (!pomFile.exists()) {
                             // no POM; skip it
                             continue;
                         }
@@ -190,7 +195,7 @@ public final class MavenArtifactUtil {
                             String remotePomPath = remoteRepository + timestampedArtifactRelativePath + ".pom";
                             String remoteArtifactPath = remoteRepository + timestampedArtifactRelativePath + classifier + "." + packaging;
                             downloadFile(coordinates + ":pom", remotePomPath, pomFile);
-                            if (! pomFile.exists()) {
+                            if (!pomFile.exists()) {
                                 // no POM; skip it
                                 continue;
                             }
@@ -198,7 +203,7 @@ public final class MavenArtifactUtil {
                             if (artifactFile.exists()) { //download successful
                                 return artifactFile;
                             }
-                        } catch (IOException|XPathExpressionException e) {
+                        } catch (IOException | XPathExpressionException e) {
                             Module.getModuleLogger().trace(e, "Could not download '%s' from '%s' repository", artifactRelativePath, remoteRepository);
                             // try next one
                         }
@@ -212,16 +217,18 @@ public final class MavenArtifactUtil {
     }
 
     public static void downloadFile(String artifact, String src, File dest) throws IOException {
-        if (dest.exists()){
+        if (dest.exists()) {
             return;
         }
         final URL url = new URL(src);
         final URLConnection connection = url.openConnection();
         boolean message = Boolean.getBoolean("maven.download.message");
 
-        try (InputStream bis = connection.getInputStream()){
+        try (InputStream bis = connection.getInputStream()) {
             dest.getParentFile().mkdirs();
-            if (message) { System.out.println("Downloading " + artifact); }
+            if (message) {
+                LOGGER.trace("Downloading " + artifact);
+            }
             Files.copy(bis, dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
@@ -232,7 +239,9 @@ public final class MavenArtifactUtil {
         boolean message = Boolean.getBoolean("maven.download.message");
 
         try (InputStream is = connection.getInputStream()) {
-            if (message) { System.out.println("Downloading maven-metadata.xml for " + artifact); }
+            if (message) {
+                LOGGER.trace("Downloading maven-metadata.xml for " + artifact);
+            }
             return snapshotVersionXpath.evaluate(new InputSource(is));
         }
     }
@@ -252,7 +261,7 @@ public final class MavenArtifactUtil {
      * A utility method to create a Maven artifact resource loader for the given artifact name.
      *
      * @param mavenResolver the Maven resolver to use (must not be {@code null})
-     * @param name the artifact name
+     * @param name          the artifact name
      * @return the resource loader
      * @throws IOException if the artifact could not be resolved
      */

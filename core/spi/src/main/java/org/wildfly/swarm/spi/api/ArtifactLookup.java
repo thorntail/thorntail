@@ -38,12 +38,8 @@ public interface ArtifactLookup {
 
             try {
                 return (ArtifactLookup) Class.forName("org.wildfly.swarm.internal.ArtifactManager").newInstance();
-            } catch (InstantiationException e1) {
-                e1.printStackTrace();
-            } catch (IllegalAccessException e1) {
-                e1.printStackTrace();
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e1) {
+                // TODO handle error
             }
             return null;
         });

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.internal;
+package org.wildfly.swarm.swagger.webapp;
 
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
@@ -28,13 +28,13 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSMETRICS", length = 4)
-public interface SwarmMetricsMessages extends BasicLogger {
+@MessageLogger(projectCode = "WFSSWGRUI", length = 4)
+public interface SwaggerWebAppMessages extends BasicLogger {
 
-    SwarmMetricsMessages MESSAGES = Logger.getMessageLogger(SwarmMetricsMessages.class, "org.wildfly.swarm.metrics");
+    SwaggerWebAppMessages MESSAGES = Logger.getMessageLogger(SwaggerWebAppMessages.class, "org.wildfly.swarm.swagger.webapp");
 
-    @LogMessage(level = Logger.Level.TRACE)
-    @Message(id = 1, value = "Boot performance:\n%s")
-    void bootPerformance(String metrics);
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 1, value = "Unable to load Swagger UI web content from %s.")
+    void unableToLocateWebContent(String descriptor);
 
 }

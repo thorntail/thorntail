@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.modules.maven.ArtifactCoordinates;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 
 /**
@@ -16,6 +17,7 @@ import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
  * @since 18/07/16
  */
 public class MavenDependencyResolution implements DependencyResolution {
+    private static BootstrapLogger LOGGER = BootstrapLogger.logger("org.wildfly.swarm.bootstrap");
 
     @Override
     public Set<String> resolve(List<String> exclusions) throws IOException {
@@ -37,14 +39,13 @@ public class MavenDependencyResolution implements DependencyResolution {
                     try {
                         final File artifact = MavenResolvers.get().resolveJarArtifact(coords);
                         if (artifact == null) {
-                            System.err.println("Unable to resolve artifact: " + coords);
+                            LOGGER.error("Unable to resolve artifact: " + coords);
                         } else {
                             archivePaths.add(artifact.getAbsolutePath());
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        LOGGER.error("Error resolving artifact " + coords, e);
                     }
-
                 });
 
         return archivePaths;
