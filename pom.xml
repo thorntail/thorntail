@@ -40,6 +40,7 @@
     <version.wildfly.config-api>1.0.2.Final</version.wildfly.config-api>
 
     <version.keycloak.config-api>1.0.2.Final</version.keycloak.config-api>
+    <version.teiid.config-api>1.0.0.Final-SNAPSHOT</version.teiid.config-api>
     <version.keycloak>2.5.4.Final</version.keycloak>
 
     <version.wildfly>10.1.0.Final</version.wildfly>
@@ -86,6 +87,8 @@
     <version.vertx>3.3.3</version.vertx>
 
     <version.org.kie>6.4.0.Final</version.org.kie>
+
+    <version.teiid.feature-pack>9.2.0.Final</version.teiid.feature-pack>
 
     <version.flyway>4.0.3</version.flyway>
 
@@ -402,6 +405,11 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak-client-config-api</artifactId>
         <version>${version.keycloak.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>teiid-config-api</artifactId>
+        <version>${version.teiid.config-api}</version>
       </dependency>
 
 
@@ -1160,6 +1168,61 @@
         <type>war</type>
         <version>${version.jolokia}</version>
       </dependency>
+
+      <!-- Teiid integration feature-pack-->
+      <dependency>
+        <groupId>org.jboss.teiid</groupId>
+        <artifactId>teiid-wildfly-integration-feature-pack</artifactId>
+        <version>${version.teiid.feature-pack}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.teiid</groupId>
+        <artifactId>rest-service-feature-pack</artifactId>
+        <version>${version.teiid.feature-pack}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.teiid.connectors</groupId>
+        <artifactId>feature-pack-swagger</artifactId>
+        <version>${version.teiid.feature-pack}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.teiid</groupId>
+        <artifactId>teiid-client-feature-pack</artifactId>
+        <version>${version.teiid.feature-pack}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!--Teiid integration end-->
     </dependencies>
   </dependencyManagement>
 
@@ -1252,6 +1315,8 @@
     <module>fractions/topology-webapp</module>
 
     <module>fractions/cdi-extensions/cdi-config</module>
+
+    <module>fractions/teiid</module>
 
     <module>standalone-servers</module>
     <module>standalone-servers/microprofile</module>
