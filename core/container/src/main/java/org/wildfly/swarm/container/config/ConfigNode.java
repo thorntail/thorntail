@@ -229,7 +229,7 @@ public class ConfigNode implements ConfigTree {
     }
 
     public Map asMap() {
-        Map map = new HashMap();
+        Map<String,Object> map = new HashMap<>();
 
         this.children.entrySet()
                 .forEach(entry -> {

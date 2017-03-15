@@ -48,32 +48,26 @@ public class SocketBindingExtension implements Extension {
         this.bindings = bindings;
     }
 
+    @SuppressWarnings("unused")
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
         try (AutoCloseable handle = Performance.time("SocketBindingExtension.afterBeanDiscovery")) {
 
             for (SocketBindingRequest each : this.bindings) {
 
-                Supplier<Customizer> supplier = () -> {
-                    return new Customizer() {
-                        @Override
-                        public void customize() {
-                            Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
+                Supplier<Customizer> supplier = () -> (Customizer) () -> {
+                    Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
 
-                            groups.stream()
-                                    .map((Bean e) -> {
-                                        CreationalContext<SocketBindingGroup> ctx = beanManager.createCreationalContext(e);
-                                        return (SocketBindingGroup) beanManager.getReference(e, SocketBindingGroup.class, ctx);
-                                    })
-                                    .filter(group -> group.name().equals(each.socketBindingGroup()))
-                                    .findFirst()
-                                    .ifPresent((group) -> {
-                                        group.socketBinding(each.socketBinding());
-                                    });
-                        }
-                    };
+                    groups.stream()
+                            .map((Bean<?> e) -> {
+                                CreationalContext<?> ctx = beanManager.createCreationalContext(e);
+                                return (SocketBindingGroup) beanManager.getReference(e, SocketBindingGroup.class, ctx);
+                            })
+                            .filter(group -> group.name().equals(each.socketBindingGroup()))
+                            .findFirst()
+                            .ifPresent((group) -> group.socketBinding(each.socketBinding()));
                 };
 
-                CommonBean<Customizer> customizerBean = CommonBeanBuilder.newBuilder()
+                CommonBean<Customizer> customizerBean = CommonBeanBuilder.newBuilder(Customizer.class)
                         .beanClass(SocketBindingExtension.class)
                         .scope(Singleton.class)
                         .addQualifier(new AnnotationLiteral<Pre>() {

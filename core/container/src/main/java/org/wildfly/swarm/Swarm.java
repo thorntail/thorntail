@@ -694,6 +694,7 @@ public class Swarm {
      * @return The {@code ConfigView} through a deprecated interface.
      * @see #configView()
      */
+    @SuppressWarnings("deprecation")
     @Deprecated
     public StageConfig stageConfig() {
         return this.configView.get();

@@ -44,7 +44,7 @@ public class XMLConfigProducingExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
         try (AutoCloseable handle = Performance.time("XMLConfigProducingExtension.afterBeanDiscovery")) {
-            CommonBean<URL> urlBean = CommonBeanBuilder.newBuilder()
+            CommonBean<URL> urlBean = CommonBeanBuilder.newBuilder(URL.class)
                     .beanClass(XMLConfigProducingExtension.class)
                     .scope(Dependent.class)
                     .addQualifier(XMLConfig.Literal.INSTANCE)
@@ -55,7 +55,7 @@ public class XMLConfigProducingExtension implements Extension {
         }
     }
 
-    protected URL getXMLConfig() {
+    private URL getXMLConfig() {
         if (this.xmlConfig.isPresent()) {
             return this.xmlConfig.get();
         }

@@ -37,31 +37,31 @@ public class CommonBeanBuilder<T> {
         this.types = new HashSet<>();
     }
 
-    public static CommonBeanBuilder newBuilder() {
-        return new CommonBeanBuilder();
+    public static <B> CommonBeanBuilder<B> newBuilder(Class<B> beanClass) {
+        return new CommonBeanBuilder<B>();
     }
 
-    public CommonBeanBuilder beanClass(Class<?> beanClass) {
+    public CommonBeanBuilder<T> beanClass(Class<?> beanClass) {
         this.beanClass = beanClass;
         return this;
     }
 
-    public CommonBeanBuilder scope(Class<? extends Annotation> scope) {
+    public CommonBeanBuilder<T> scope(Class<? extends Annotation> scope) {
         this.scope = scope;
         return this;
     }
 
-    public CommonBeanBuilder addQualifier(Annotation qualifier) {
+    public CommonBeanBuilder<T> addQualifier(Annotation qualifier) {
         qualifiers.add(qualifier);
         return this;
     }
 
-    public CommonBeanBuilder createSupplier(Supplier<T> createSupplier) {
+    public CommonBeanBuilder<T> createSupplier(Supplier<T> createSupplier) {
         this.createSupplier = createSupplier;
         return this;
     }
 
-    public CommonBeanBuilder addType(Type type) {
+    public CommonBeanBuilder<T> addType(Type type) {
         types.add(type);
         return this;
     }

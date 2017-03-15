@@ -74,7 +74,7 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
     @Override
     public Set<ArtifactSpec> resolveAll(final Collection<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         if (specs.isEmpty()) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
 
         return doResolve(specs, transitive)

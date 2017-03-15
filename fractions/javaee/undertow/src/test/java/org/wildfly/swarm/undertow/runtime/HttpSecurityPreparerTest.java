@@ -47,6 +47,7 @@ public class HttpSecurityPreparerTest {
         assertThat(archive.get(WebXmlAsset.NAME)).isNull();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void yaml_parsing() throws Exception {
 
@@ -114,6 +115,7 @@ public class HttpSecurityPreparerTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> findWebConfig(Map<String, Object> deploymentConfig) {
         String[] path = new String[] {archive.getName(), "web"};
         Map<String, Object> curr = deploymentConfig;

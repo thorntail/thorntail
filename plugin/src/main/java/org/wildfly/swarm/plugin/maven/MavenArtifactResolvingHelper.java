@@ -109,9 +109,9 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     @Override
     public Set<ArtifactSpec> resolveAll(Collection<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         if (specs.isEmpty()) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
-        List<DependencyNode> nodes = null;
+        List<DependencyNode> nodes;
         if (transitive) {
 
             final CollectRequest request = new CollectRequest();
@@ -203,7 +203,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
     }
 
-    protected RemoteRepository buildRemoteRepository(final String id, final String url, final Authentication auth) {
+    private RemoteRepository buildRemoteRepository(final String id, final String url, final Authentication auth) {
         RemoteRepository.Builder builder = new RemoteRepository.Builder(id, "default", url);
         if (auth != null
                 && auth.getUsername() != null

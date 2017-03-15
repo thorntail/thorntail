@@ -78,6 +78,7 @@ public class ContextPathArchivePreparerTest {
         assertThat(archive.getContextRoot()).isEqualTo("/another-root");
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testExternalMount() throws Exception {
         WARArchive archive = DefaultWarDeploymentFactory.archiveFromCurrentApp();

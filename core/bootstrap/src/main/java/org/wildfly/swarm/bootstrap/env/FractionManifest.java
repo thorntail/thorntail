@@ -53,6 +53,7 @@ public class FractionManifest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void read(InputStream in) throws IOException {
         Yaml yaml = new Yaml();
         Map data = (Map) yaml.load(in);

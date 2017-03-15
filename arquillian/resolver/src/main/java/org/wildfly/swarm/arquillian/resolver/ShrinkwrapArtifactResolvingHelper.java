@@ -143,7 +143,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
     @Override
     public Set<ArtifactSpec> resolveAll(final Collection<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) {
         if (specs.isEmpty()) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
 
         MavenResolutionStrategy transitivityStrategy = (transitive ? TransitiveStrategy.INSTANCE : NonTransitiveStrategy.INSTANCE);

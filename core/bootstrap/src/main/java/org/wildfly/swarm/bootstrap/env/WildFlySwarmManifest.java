@@ -60,6 +60,7 @@ public class WildFlySwarmManifest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void read(InputStream in) throws IOException {
         Yaml yaml = new Yaml();
         Map data = (Map) yaml.load(in);
@@ -98,7 +99,7 @@ public class WildFlySwarmManifest {
 
     @Override
     public String toString() {
-        Map data = new LinkedHashMap() {{
+        Map<String,Object> data = new LinkedHashMap<String,Object>() {{
             if (asset != null) {
                 put(ASSET, asset);
             }
@@ -119,7 +120,7 @@ public class WildFlySwarmManifest {
         return yaml.dump(data);
     }
 
-    protected void setupProperties() {
+    private void setupProperties() {
         // enumerate all properties, not just those with string
         // values, because Gradle (and others) can set non-string
         // values for things like swarm.http.port (integer)
@@ -185,6 +186,7 @@ public class WildFlySwarmManifest {
         this.bundleDependencies = bundleDependencies;
     }
 
+    @SuppressWarnings("unused")
     public boolean isBundleDependencies() {
         if (this.bundleDependencies == null) {
             return true;

@@ -13,6 +13,7 @@ import org.jboss.as.controller.ProcessType;
 import org.jboss.as.controller.RunningMode;
 import org.jboss.as.controller.RunningModeControl;
 import org.jboss.as.controller.extension.ExtensionRegistry;
+import org.jboss.as.controller.extension.RuntimeHostControllerInfoAccessor;
 import org.jboss.as.controller.parsing.Namespace;
 import org.jboss.as.controller.persistence.ConfigurationPersistenceException;
 import org.jboss.as.controller.persistence.ConfigurationPersister;
@@ -98,7 +99,13 @@ public class BootstrapPersister implements ExtensibleConfigurationPersister {
     private XmlConfigurationPersister createDelegate(File configFile) {
 
         QName rootElement = new QName(Namespace.CURRENT.getUriString(), "server");
-        ExtensionRegistry extensionRegistry = new ExtensionRegistry(ProcessType.SELF_CONTAINED, new RunningModeControl(RunningMode.NORMAL));
+        ExtensionRegistry extensionRegistry = new ExtensionRegistry(
+                ProcessType.SELF_CONTAINED,
+                new RunningModeControl(RunningMode.NORMAL),
+                null,
+                null,
+                RuntimeHostControllerInfoAccessor.SERVER
+        );
         StandaloneXml parser = new StandaloneXml(Module.getBootModuleLoader(), Executors.newSingleThreadExecutor(), extensionRegistry);
 
         XmlConfigurationPersister persister = new XmlConfigurationPersister(

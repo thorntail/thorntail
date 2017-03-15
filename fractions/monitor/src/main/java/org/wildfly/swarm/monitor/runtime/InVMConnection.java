@@ -63,6 +63,7 @@ final class InVMConnection extends ServerConnection {
         bufferSink.flushTo(sb);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Pool<ByteBuffer> getBufferPool() {
         if (poolAdaptor == null) {
@@ -190,18 +191,12 @@ final class InVMConnection extends ServerConnection {
                         new PooledAdaptor(bufferPool.allocate())
                 )
         );
-        sinkChannel.setCloseListener(new ChannelListener<ConduitStreamSinkChannel>() {
-            @Override
-            public void handleEvent(ConduitStreamSinkChannel conduitStreamSinkChannel) {
+        sinkChannel.setCloseListener(conduitStreamSinkChannel -> {
+            for (CloseListener l : closeListeners) {
                 try {
-                    for (CloseListener l : closeListeners) {
-                        try {
-                            l.closed(InVMConnection.this);
-                        } catch (Throwable e) {
-                            UndertowLogger.REQUEST_LOGGER.exceptionInvokingCloseListener(l, e);
-                        }
-                    }
-                } finally {
+                    l.closed(InVMConnection.this);
+                } catch (Throwable e) {
+                    UndertowLogger.REQUEST_LOGGER.exceptionInvokingCloseListener(l, e);
                 }
             }
         });

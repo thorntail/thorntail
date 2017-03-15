@@ -40,6 +40,7 @@ public class VertxAdapterCustomizer implements Customizer {
     @Inject
     Instance<VertxFraction> vertxFractionInstance;
 
+    @SuppressWarnings("unchecked")
     @Override
     public void customize() {
         if (!resourceAdapterFractionInstance.isUnsatisfied() && !vertxFractionInstance.isUnsatisfied()) {

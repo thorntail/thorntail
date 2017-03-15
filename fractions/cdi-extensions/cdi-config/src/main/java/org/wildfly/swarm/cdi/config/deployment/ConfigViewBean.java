@@ -50,7 +50,7 @@ public class ConfigViewBean implements Bean<ConfigView> {
 
     @Override
     public Set<InjectionPoint> getInjectionPoints() {
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ConfigViewBean implements Bean<ConfigView> {
 
     @Override
     public Set<Class<? extends Annotation>> getStereotypes() {
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     @Override

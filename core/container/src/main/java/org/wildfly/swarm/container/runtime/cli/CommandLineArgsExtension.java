@@ -44,7 +44,7 @@ public class CommandLineArgsExtension implements Extension {
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
-        CommonBean<String[]> stringBean = CommonBeanBuilder.newBuilder()
+        CommonBean<String[]> stringBean = CommonBeanBuilder.newBuilder(String[].class)
                 .beanClass(CommandLineArgsExtension.class)
                 .scope(Dependent.class)
                 .createSupplier(() -> args)
@@ -52,7 +52,7 @@ public class CommandLineArgsExtension implements Extension {
                 .addType(String[].class)
                 .addType(Object.class).build();
         abd.addBean(stringBean);
-        CommonBean<List<String>> listBean = CommonBeanBuilder.newBuilder()
+        CommonBean<List> listBean = CommonBeanBuilder.newBuilder(List.class)
                 .beanClass(CommandLineArgsExtension.class)
                 .scope(Dependent.class)
                 .createSupplier(() -> argsList)

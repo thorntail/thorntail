@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  */
 public class GradleResolver implements MavenResolver {
     private final String gradleCachePath;
-    private final List<String> remoteRepositories = new LinkedList();
+    private final List<String> remoteRepositories = new LinkedList<>();
 
     public GradleResolver(String gradleCachePath) {
         this.gradleCachePath = gradleCachePath;

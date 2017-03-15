@@ -137,6 +137,7 @@ public class ConfigViewFactory {
         loadProjectStages(url.openStream());
     }
 
+    @SuppressWarnings("unchecked")
     private void loadProjectStages(InputStream inputStream) {
         Yaml yaml = new Yaml();
         Iterable<Object> docs = yaml.loadAll(inputStream);
@@ -163,6 +164,7 @@ public class ConfigViewFactory {
         loadYamlProjectConfig(name, url.openStream());
     }
 
+    @SuppressWarnings("unchecked")
     private void loadYamlProjectConfig(String name, InputStream inputStream) {
         Yaml yaml = new Yaml();
         Map<String, ?> doc = (Map<String, ?>) yaml.load(inputStream);

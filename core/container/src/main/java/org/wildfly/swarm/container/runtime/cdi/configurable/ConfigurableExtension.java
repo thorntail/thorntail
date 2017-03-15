@@ -55,15 +55,16 @@ public class ConfigurableExtension implements Extension {
         this.configurableManager = configurableManager;
     }
 
-    void processInjectionTarget(@Observes ProcessInjectionTarget pit, BeanManager beanManager) throws Exception {
+    @SuppressWarnings("unused")
+    <T> void processInjectionTarget(@Observes ProcessInjectionTarget<T> pit, BeanManager beanManager) throws Exception {
         try (AutoCloseable handle = Performance.accumulate("ConfigurationExtension.processInjectionTarget")) {
             if (isApplicable(pit.getAnnotatedType())) {
-                pit.setInjectionTarget(new ConfigurableInjectionTarget<>(pit.getInjectionTarget(), this.configurableManager));
+                pit.setInjectionTarget(new ConfigurableInjectionTarget<T>(pit.getInjectionTarget(), this.configurableManager));
             }
         }
     }
 
-    static <T> boolean isApplicable(AnnotatedType<T> at) {
+    private static <T> boolean isApplicable(AnnotatedType<T> at) {
         if (isApplicable(at.getJavaClass())) {
             return true;
         }
@@ -79,7 +80,7 @@ public class ConfigurableExtension implements Extension {
         return false;
     }
 
-    static boolean isApplicable(Class<?> cls) {
+    private static boolean isApplicable(Class<?> cls) {
         for (Class<?> each : APPLICABLE_CLASSES) {
             if (each.isAssignableFrom(cls)) {
                 return true;
@@ -89,10 +90,11 @@ public class ConfigurableExtension implements Extension {
         return false;
     }
 
+    @SuppressWarnings({"unused"})
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) throws Exception {
         try (AutoCloseable handle = Performance.time("ConfigurationExtension.afterBeanDiscovery")) {
-            CommonBean<ConfigurableManager> configurableManagerBean = CommonBeanBuilder.newBuilder()
-                    .beanClass(ConfigurableExtension.class)
+            CommonBean<ConfigurableManager> configurableManagerBean = CommonBeanBuilder.newBuilder(ConfigurableManager.class)
+                    .beanClass(ConfigurableManager.class)
                     .scope(Singleton.class)
                     .addQualifier(DefaultLiteral.INSTANCE)
                     .createSupplier(() -> configurableManager)

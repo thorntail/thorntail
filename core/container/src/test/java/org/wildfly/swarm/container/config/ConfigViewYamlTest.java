@@ -14,6 +14,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class ConfigViewYamlTest {
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testYamlWithLiteralLists() throws Exception {
         URL url = getClass().getClassLoader().getResource("project-lists.yml");
