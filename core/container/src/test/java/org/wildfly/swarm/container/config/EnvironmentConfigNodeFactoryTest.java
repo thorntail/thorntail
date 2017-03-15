@@ -17,14 +17,16 @@ public class EnvironmentConfigNodeFactoryTest {
     public void testLoadSimple() {
 
         Map<String, String> env = new HashMap<String, String>() {{
-            put("name", "bob");
-            put("cheese", "cheddar");
+            put("swarm.name", "bob");
+            put("swarm.cheese", "cheddar");
+            put("not.swarm.taco", "crunchy");
         }};
 
         ConfigNode node = EnvironmentConfigNodeFactory.load(env);
 
-        assertThat(node.valueOf(ConfigKey.parse("name"))).isEqualTo("bob");
-        assertThat(node.valueOf(ConfigKey.parse("cheese"))).isEqualTo("cheddar");
+        assertThat(node.valueOf(ConfigKey.parse("swarm.name"))).isEqualTo("bob");
+        assertThat(node.valueOf(ConfigKey.parse("swarm.cheese"))).isEqualTo("cheddar");
+        assertThat(node.valueOf(ConfigKey.parse("not.swarm.taco"))).isNull();
     }
 
     @Test

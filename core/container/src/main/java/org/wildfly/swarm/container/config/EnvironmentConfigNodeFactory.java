@@ -53,9 +53,11 @@ public class EnvironmentConfigNodeFactory {
         Set<String> names = input.keySet();
 
         for (String name : names) {
-            String value = input.get(name);
-            ConfigKey key = ConfigKey.parse(name);
-            config.recursiveChild(key, value);
+            if (name.startsWith("swarm.")) {
+                String value = input.get(name);
+                ConfigKey key = ConfigKey.parse(name);
+                config.recursiveChild(key, value);
+            }
         }
     }
 
