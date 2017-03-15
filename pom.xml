@@ -40,7 +40,7 @@
     <version.wildfly.config-api>1.0.2.Final</version.wildfly.config-api>
 
     <version.keycloak.config-api>1.0.2.Final</version.keycloak.config-api>
-    <version.teiid.config-api>1.0.2.Final-SNAPSHOT</version.teiid.config-api>
+    <version.teiid.config-api>1.0.2</version.teiid.config-api>
     <version.keycloak>2.5.4.Final</version.keycloak>
 
     <version.wildfly>10.1.0.Final</version.wildfly>
