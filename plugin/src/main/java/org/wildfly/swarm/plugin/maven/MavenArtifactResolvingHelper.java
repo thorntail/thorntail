@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.artifact.repository.Authentication;
 import org.apache.maven.model.DependencyManagement;
 import org.eclipse.aether.RepositorySystem;
@@ -40,6 +41,7 @@ import org.eclipse.aether.repository.LocalArtifactRequest;
 import org.eclipse.aether.repository.LocalArtifactResult;
 import org.eclipse.aether.repository.Proxy;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -57,6 +59,8 @@ import org.wildfly.swarm.tools.ArtifactSpec;
  */
 public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
+    public static final ArtifactRepositoryPolicy DEFAULT_ARTIFACT_REPOSITORY_POLICY = new ArtifactRepositoryPolicy();
+
     public MavenArtifactResolvingHelper(ArtifactResolver resolver,
                                         RepositorySystem system,
                                         RepositorySystemSession session,
@@ -67,15 +71,21 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         this.dependencyManagement = dependencyManagement;
         this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
                                                           "https://repository.jboss.org/nexus/content/groups/public/",
-                                                          null));
+                                                          null,
+                                                          DEFAULT_ARTIFACT_REPOSITORY_POLICY,
+                                                          DEFAULT_ARTIFACT_REPOSITORY_POLICY));
     }
 
     public void remoteRepository(ArtifactRepository repo) {
-        remoteRepository(buildRemoteRepository(repo.getId(), repo.getUrl(), repo.getAuthentication()));
+        remoteRepository(buildRemoteRepository(repo.getId(), repo.getUrl(), repo.getAuthentication(), repo.getReleases(), repo.getSnapshots()));
     }
 
     public void remoteRepository(RemoteRepository repo) {
         this.remoteRepositories.add(repo);
+    }
+
+    public List<RemoteRepository> getRemoteRepositories() {
+        return this.remoteRepositories;
     }
 
     @Override
@@ -203,7 +213,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         }
     }
 
-    private RemoteRepository buildRemoteRepository(final String id, final String url, final Authentication auth) {
+    private RemoteRepository buildRemoteRepository(final String id, final String url, final Authentication auth,
+                                                   final ArtifactRepositoryPolicy releasesPolicy, final ArtifactRepositoryPolicy snapshotsPolicy) {
         RemoteRepository.Builder builder = new RemoteRepository.Builder(id, "default", url);
         if (auth != null
                 && auth.getUsername() != null
@@ -212,6 +223,9 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                                               .addUsername(auth.getUsername())
                                               .addPassword(auth.getPassword()).build());
         }
+
+        builder.setSnapshotPolicy(new RepositoryPolicy(snapshotsPolicy.isEnabled(), snapshotsPolicy.getUpdatePolicy(), snapshotsPolicy.getChecksumPolicy()));
+        builder.setReleasePolicy(new RepositoryPolicy(releasesPolicy.isEnabled(), releasesPolicy.getUpdatePolicy(), releasesPolicy.getChecksumPolicy()));
 
         RemoteRepository repository = builder.build();
 
