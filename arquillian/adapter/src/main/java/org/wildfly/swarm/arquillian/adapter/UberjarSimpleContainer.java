@@ -195,7 +195,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         // project dependencies
         FileSystemLayout fsLayout = FileSystemLayout.create();
         DeclaredDependencies declaredDependencies =
-                DependencyDeclarationFactory.newInstance(fsLayout).create(resolvingHelper);
+                DependencyDeclarationFactory.newInstance(fsLayout).create(fsLayout, resolvingHelper);
         tool.declaredDependencies(declaredDependencies);
 
         // check for "org.wildfly.swarm.allDependencies" flag

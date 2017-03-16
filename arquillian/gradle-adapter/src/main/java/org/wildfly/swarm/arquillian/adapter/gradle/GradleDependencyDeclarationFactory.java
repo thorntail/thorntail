@@ -15,11 +15,10 @@
  */
 package org.wildfly.swarm.arquillian.adapter.gradle;
 
+import org.wildfly.swarm.arquillian.adapter.DependencyDeclarationFactory;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.GradleFileSystemLayout;
-import org.wildfly.swarm.arquillian.adapter.DependencyDeclarationFactory;
-import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DeclaredDependencies;
 
 import java.util.HashSet;
@@ -30,19 +29,15 @@ import java.util.HashSet;
  */
 public class GradleDependencyDeclarationFactory implements DependencyDeclarationFactory {
 
-    public GradleDependencyDeclarationFactory(FileSystemLayout fsLayout) {
-        this.fsLayout = fsLayout;
-    }
-
     @Override
-    public DeclaredDependencies create(ShrinkwrapArtifactResolvingHelper resolvingHelper) {
+    public DeclaredDependencies create(FileSystemLayout fsLayout, ShrinkwrapArtifactResolvingHelper resolvingHelper) {
 
         GradleDependencyAdapter gradleAdapter = new GradleDependencyAdapter(fsLayout.getRootPath());
 
         DeclaredDependencies declaredDependencies = gradleAdapter.parseDependencies(GradleDependencyAdapter.Configuration.TEST_RUNTIME);
 
         // resolve to local files
-        resolvingHelper.resolveAll(new HashSet<ArtifactSpec>(declaredDependencies.getTransientDependencies()), false, false);
+        resolvingHelper.resolveAll(new HashSet<>(declaredDependencies.getTransientDependencies()), false, false);
 
         return declaredDependencies;
     }
@@ -51,6 +46,4 @@ public class GradleDependencyDeclarationFactory implements DependencyDeclaration
     public boolean acceptsFsLayout(FileSystemLayout fsLayout) {
         return fsLayout instanceof GradleFileSystemLayout;
     }
-
-    private final FileSystemLayout fsLayout;
 }

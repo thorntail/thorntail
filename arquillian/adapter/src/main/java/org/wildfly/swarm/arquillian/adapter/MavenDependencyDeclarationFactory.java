@@ -31,7 +31,7 @@ public class MavenDependencyDeclarationFactory implements DependencyDeclarationF
 
 
     @Override
-    public DeclaredDependencies create(ShrinkwrapArtifactResolvingHelper resolvingHelper) {
+    public DeclaredDependencies create(FileSystemLayout ignored, ShrinkwrapArtifactResolvingHelper resolvingHelper) {
         final DeclaredDependencies declaredDependencies = new DeclaredDependencies();
 
         final PomEquippedResolveStage pom = MavenProfileLoader.loadPom(resolvingHelper.getResolver());

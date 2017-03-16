@@ -12,7 +12,7 @@ import java.util.ServiceLoader;
  */
 public interface DependencyDeclarationFactory {
 
-    DeclaredDependencies create(ShrinkwrapArtifactResolvingHelper resolvingHelper);
+    DeclaredDependencies create(FileSystemLayout fsLayout, ShrinkwrapArtifactResolvingHelper resolvingHelper);
 
     boolean acceptsFsLayout(FileSystemLayout fsLayout);
 
