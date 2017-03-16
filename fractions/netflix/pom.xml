@@ -26,8 +26,8 @@
     <version.netflix.commons>0.1.1</version.netflix.commons>
     <version.archaius>0.6.6</version.archaius>
     <version.ribbon>2.1.0</version.ribbon>
-    <version.hystrix>1.4.3</version.hystrix>
-    <version.rxjava>1.0.9</version.rxjava>
+    <version.hystrix>1.4.21</version.hystrix>
+    <version.rxjava>1.2.5</version.rxjava>
     <version.rxnetty>0.4.9</version.rxnetty>
     <version.netty>4.0.26.Final</version.netty>
     <version.guava>14.0.1</version.guava>
