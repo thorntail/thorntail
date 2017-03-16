@@ -93,6 +93,7 @@ public class ConfigurableManager implements AutoCloseable {
         return this.configurables;
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> void configure(ConfigurableHandle configurable) throws Exception {
         try (AutoCloseable handle = Performance.accumulate("ConfigurableManager#configure")) {
             Resolver<?> resolver = this.configView.resolve(configurable.key());
@@ -164,7 +165,7 @@ public class ConfigurableManager implements AutoCloseable {
 
     private Converter<Map> mapConverter(ConfigKey key) {
         return (ignored) -> {
-            Map map = new HashMap();
+            Map<String,Object> map = new HashMap<>();
             Set<SimpleKey> subKeys = this.configView.simpleSubkeys(key);
 
             for (SimpleKey subKey : subKeys) {

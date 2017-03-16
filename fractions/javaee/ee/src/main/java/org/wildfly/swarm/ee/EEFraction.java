@@ -61,6 +61,7 @@ public class EEFraction extends EE<EEFraction> implements Fraction<EEFraction> {
         return applyDefaults(null);
     }
 
+    @SuppressWarnings("unchecked")
     public EEFraction applyDefaults(DefaultBindingsServiceConsumer config) {
         specDescriptorPropertyReplacement(false)
                 .contextService(new ContextService(DEFAULT_KEY)

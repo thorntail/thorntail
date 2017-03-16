@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 @Path("/json")
 public class JsonParsingExceptionResource {
 
+    @SuppressWarnings("deprecation")
     @GET
     @Path("/throw")
     public Response get() throws JsonParseException {

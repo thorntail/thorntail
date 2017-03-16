@@ -154,7 +154,7 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
     public EnhancedServer enableRemote() {
         enableHTTPConnections();
 
-        connectionFactory(new ConnectionFactory("RemoteConnectionFactory")
+        connectionFactory(new ConnectionFactory<>("RemoteConnectionFactory")
                                   .connectors(Collections.singletonList("http-connector"))
                                   .entries("java:/RemoteConnectionFactory", "java:jboss/exported/jms/RemoteConnectionFactory"));
         return this;

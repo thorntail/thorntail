@@ -170,7 +170,7 @@ public class RuntimeDeployer implements Deployer {
             // check for "org.wildfly.swarm.allDependencies" flag
             // see DependenciesContainer#addAllDependencies()
             if (deployment instanceof DependenciesContainer) {
-                DependenciesContainer depContainer = (DependenciesContainer) deployment;
+                DependenciesContainer<?> depContainer = (DependenciesContainer) deployment;
                 if (depContainer.hasMarker(DependenciesContainer.ALL_DEPENDENCIES_MARKER)) {
                     if (!depContainer.hasMarker(ALL_DEPENDENCIES_ADDED_MARKER)) {
                         ApplicationEnvironment appEnv = ApplicationEnvironment.get();
@@ -181,7 +181,7 @@ public class RuntimeDeployer implements Deployer {
                                 depContainer.addAsLibrary(artifactLookup.artifact(gav));
                             }
                         } else {
-                            Set<String> paths = appEnv.resolveDependencies(Collections.EMPTY_LIST);
+                            Set<String> paths = appEnv.resolveDependencies(Collections.emptyList());
                             for (String path : paths) {
                                 final File pathFile = new File(path);
                                 if (path.endsWith(".jar")) {
@@ -294,12 +294,13 @@ public class RuntimeDeployer implements Deployer {
         }
     }
 
+    @SuppressWarnings("unused")
     @PreDestroy
     void stop() {
         for (Closeable each : this.mountPoints) {
             try {
                 each.close();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         }
 
@@ -309,25 +310,32 @@ public class RuntimeDeployer implements Deployer {
 
     private String defaultDeploymentType;
 
+    @SuppressWarnings("unused")
     @Inject
     private ModelControllerClient client;
 
+    @SuppressWarnings("unused")
     @Inject
     private SimpleContentProvider contentProvider;
 
+    @SuppressWarnings("unused")
     @Inject
     private TempFileProvider tempFileProvider;
 
+    @SuppressWarnings("unused")
     @Inject
     private DefaultDeploymentCreator defaultDeploymentCreator;
 
     private final List<Closeable> mountPoints = new ArrayList<>();
 
+    @SuppressWarnings("unused")
     private boolean debug = false;
 
+    @SuppressWarnings("unused")
     @Inject
     private Instance<ArchivePreparer> archivePreparers;
 
+    @SuppressWarnings("unused")
     @Inject
     private Instance<ArchiveMetadataProcessor> archiveMetadataProcessors;
 }

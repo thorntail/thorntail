@@ -17,14 +17,14 @@ public class MapConfigNodeFactoryTest {
     @Test
     public void testLoad() {
 
-        Map input = new HashMap() {{
-            put("swarm", new HashMap() {{
+        Map<String,Object> input = new HashMap<String,Object>() {{
+            put("swarm", new HashMap<String,Object>() {{
                 put("port", 8080);
                 put("enabled", true);
-                put("things", new ArrayList() {{
+                put("things", new ArrayList<Object>() {{
                     add("one");
                     add("two");
-                    add(new HashMap() {{
+                    add(new HashMap<String,Object>() {{
                         put("name", "three");
                         put("cheese", "cheddar");
                         put("item", 3);

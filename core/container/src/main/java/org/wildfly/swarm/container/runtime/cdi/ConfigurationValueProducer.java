@@ -89,6 +89,7 @@ public class ConfigurationValueProducer {
         return resolve(injectionPoint, Double.class);
     }
 
+    @SuppressWarnings("unchecked")
     @ConfigurationValue("")
     @Dependent
     @Produces
@@ -106,6 +107,7 @@ public class ConfigurationValueProducer {
         return Optional.ofNullable(resolve(injectionPoint, valueType));
     }
 
+    @SuppressWarnings("unchecked")
     private <T> Class<T> unwrapType(Type type) {
         if (type instanceof ParameterizedType) {
             type = ((ParameterizedType) type).getRawType();

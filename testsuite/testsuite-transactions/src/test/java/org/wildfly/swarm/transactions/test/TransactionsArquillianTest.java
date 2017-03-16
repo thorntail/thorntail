@@ -39,6 +39,7 @@ public class TransactionsArquillianTest {
     @ArquillianResource
     ServiceRegistry registry;
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testPorts() throws Exception {
         ServiceController<SocketBinding> statusManagerService = (ServiceController<SocketBinding>) registry.getService(ServiceName.parse("org.wildfly.network.socket-binding.txn-status-manager"));

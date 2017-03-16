@@ -180,7 +180,7 @@ public class DependencyManager implements ResolvedDependencies {
                     .filter(dep -> dep.type().equals(JAR))
                     .collect(Collectors.toList());
 
-            Collection<ArtifactSpec> resolvedTransientDependencies = Collections.EMPTY_SET;
+            Collection<ArtifactSpec> resolvedTransientDependencies = Collections.emptySet();
             if (filtered.size() > 0) {
 
                 resolvedTransientDependencies = resolver.resolveAllArtifactsNonTransitively(filtered);

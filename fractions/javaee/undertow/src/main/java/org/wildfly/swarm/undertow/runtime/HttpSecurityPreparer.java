@@ -41,6 +41,7 @@ public class HttpSecurityPreparer implements ArchivePreparer {
 
     private final String[] SUPPORTED_AUTH_METHODS = new String[] {"BASIC", "DIGEST", "FORM", "KEYCLOAK"};
 
+    @SuppressWarnings("unchecked")
     @Override
     public void prepareArchive(Archive<?> archive) {
 

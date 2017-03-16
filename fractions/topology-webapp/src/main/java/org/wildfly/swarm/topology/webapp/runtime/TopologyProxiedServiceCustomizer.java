@@ -41,9 +41,11 @@ import static org.wildfly.swarm.topology.webapp.TopologyWebAppFraction.proxyHand
 @ApplicationScoped
 public class TopologyProxiedServiceCustomizer implements Customizer {
 
+    @SuppressWarnings("unused")
     @Inject @Any
     private UndertowFraction undertow;
 
+    @SuppressWarnings("unused")
     @Inject @Any
     private TopologyWebAppFraction fraction;
 
@@ -52,7 +54,7 @@ public class TopologyProxiedServiceCustomizer implements Customizer {
         if (!mappings.isEmpty()) {
             HandlerConfiguration handlerConfig = undertow.subresources().handlerConfiguration();
             for (String serviceName : mappings.keySet()) {
-                ReverseProxy proxy = new ReverseProxy(proxyHandlerName(serviceName)).hosts(Collections.emptyList());
+                ReverseProxy<?> proxy = new ReverseProxy<>(proxyHandlerName(serviceName)).hosts(Collections.emptyList());
                 handlerConfig.reverseProxy(proxy);
 
                 String contextPath = mappings.get(serviceName);

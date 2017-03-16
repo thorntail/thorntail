@@ -40,9 +40,10 @@ public class ConfigViewProducingExtension implements Extension {
         this.configView = configView;
     }
 
+    @SuppressWarnings("unused")
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
         try (AutoCloseable handle = Performance.time("ConfigViewProducingExtension.afterBeanDiscovery")) {
-            CommonBean<ConfigView> configViewBean = CommonBeanBuilder.newBuilder()
+            CommonBean<ConfigView> configViewBean = CommonBeanBuilder.newBuilder(ConfigView.class)
                     .beanClass(ConfigViewProducingExtension.class)
                     .scope(Singleton.class)
                     .addQualifier(DefaultLiteral.INSTANCE)

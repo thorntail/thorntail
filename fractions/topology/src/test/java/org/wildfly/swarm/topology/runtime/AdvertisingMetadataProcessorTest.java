@@ -66,7 +66,7 @@ public class AdvertisingMetadataProcessorTest {
         assertThat(advertisements).contains("gouda");
     }
 
-    Index createIndex(Archive archive) throws IOException {
+    Index createIndex(Archive<?> archive) throws IOException {
         Indexer indexer = new Indexer();
 
         Map<ArchivePath, Node> c = archive.getContent();

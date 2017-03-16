@@ -65,12 +65,13 @@ public class FractionProducingExtension implements Extension {
      *
      * @param abd AfterBeanDiscovery
      */
+    @SuppressWarnings("unused")
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
         try (AutoCloseable handle = Performance.time("FractionProducingExtension.afterBeanDiscovery")) {
             Set<Type> preExistingFractionClasses = new HashSet<>();
 
             try (AutoCloseable pre = Performance.time("FractionProducingExtension.afterBeanDiscovery - pre-existing")) {
-                for (Fraction fraction : explicitlyInstalledFractions) {
+                for (Fraction<?> fraction : explicitlyInstalledFractions) {
                     try {
                         abd.addBean(new ConfigurableFractionBean<>(fraction, this.configurableManager));
                     } catch (Exception e) {
@@ -93,21 +94,21 @@ public class FractionProducingExtension implements Extension {
             Set<Class<? extends Fraction>> fractionClasses = uninstalledFractionClasses(preExistingFractionClasses);
 
             try (AutoCloseable defaultHandle = Performance.time("FractionProducingExtension.afterBeanDiscovery - default")) {
-                fractionClasses.stream()
-                        .forEach((cls) -> {
-                            try {
-                                abd.addBean(new ConfigurableFractionBean<>(cls, this.configurableManager));
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
+                fractionClasses.forEach((cls) -> {
+                    try {
+                        abd.addBean(new ConfigurableFractionBean<>(cls, this.configurableManager));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             }
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Set<Class<? extends Fraction>> uninstalledFractionClasses(Set<Type> installedClasses) throws ModuleLoadException, IOException, ClassNotFoundException {
 
-        Set<String> installedClassNames = installedClasses.stream().map(e -> e.getTypeName()).collect(Collectors.toSet());
+        Set<String> installedClassNames = installedClasses.stream().map(Type::getTypeName).collect(Collectors.toSet());
 
         List<String> moduleNames = ApplicationEnvironment.get().bootstrapModules();
 

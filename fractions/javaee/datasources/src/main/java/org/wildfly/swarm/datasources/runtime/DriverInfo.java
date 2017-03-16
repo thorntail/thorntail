@@ -223,6 +223,7 @@ public abstract class DriverInfo {
         return "[DriverInfo: detectable=" + this.detectableClassName + "]";
     }
 
+    @SuppressWarnings("unchecked")
     public void installDatasource(DatasourcesFraction fraction, String dsName, DataSourceConsumer config) {
         fraction.dataSource(dsName, (ds) -> {
             ds.driverName(this.name);

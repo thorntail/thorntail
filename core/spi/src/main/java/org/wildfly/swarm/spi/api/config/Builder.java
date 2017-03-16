@@ -14,11 +14,13 @@ public class Builder<T> implements Resolver<T> {
         this.key = key;
     }
 
+    @SuppressWarnings("unchecked")
     public <N> Resolver<N> as(Class<N> clazz) {
         targetType = clazz;
         return (Resolver<N>) this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <N> Resolver<N> as(Class<N> clazz, Converter<N> converter) {
         targetType = clazz;
@@ -31,6 +33,7 @@ public class Builder<T> implements Resolver<T> {
         return key;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T getValue() {
 
@@ -71,6 +74,7 @@ public class Builder<T> implements Resolver<T> {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     private T convert(String value) throws MalformedURLException {
 
         if (value == null) {

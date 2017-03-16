@@ -62,7 +62,7 @@ public class StandaloneXMLParser {
 
             @Override
             public Set<ProfileParsingCompletionHandler> getProfileParsingCompletionHandlers() {
-                return Collections.EMPTY_SET;
+                return Collections.emptySet();
             }
 
             @Override

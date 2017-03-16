@@ -224,8 +224,8 @@ public class BuildTool {
         addJarManifest();
         addWildFlySwarmApplicationManifest();
         addAdditionalModules();
-        addProjectAsset((ResolvedDependencies) this.dependencyManager);
-        populateUberJarMavenRepository((ResolvedDependencies) this.dependencyManager);
+        addProjectAsset(this.dependencyManager);
+        populateUberJarMavenRepository(this.dependencyManager);
 
         return this.archive;
     }
@@ -245,6 +245,7 @@ public class BuildTool {
         return jbossModulesFound;
     }
 
+    @SuppressWarnings("unchecked")
     private void expandArtifact(File artifactFile) throws IOException {
         try {
             ZipFile zipFile = new ZipFile(artifactFile);
@@ -270,6 +271,7 @@ public class BuildTool {
         this.dependencyManager.analyzeDependencies(autodetect, declaredDependencies);
     }
 
+    @SuppressWarnings("UnusedParameters")
     private void addProjectAsset(ResolvedDependencies resolvedDependencies) {
         if (this.hollow) {
             return;
@@ -304,7 +306,7 @@ public class BuildTool {
                 .forEach(this::fraction);
     }
 
-    static String strippedSwarmGav(MavenArtifactDescriptor desc) {
+    private static String strippedSwarmGav(MavenArtifactDescriptor desc) {
         if (desc.groupId().equals(DependencyManager.WILDFLY_SWARM_GROUP_ID)) {
             return String.format("%s:%s", desc.artifactId(), desc.version());
         }
@@ -334,7 +336,7 @@ public class BuildTool {
 
     private void addWildflySwarmBootstrapJar() throws Exception {
 
-        ResolvedDependencies resolvedDependencies = (ResolvedDependencies) this.dependencyManager;
+        ResolvedDependencies resolvedDependencies = this.dependencyManager;
 
         ArtifactSpec artifact = resolvedDependencies.findWildFlySwarmBootstrapJar();
 
@@ -478,7 +480,7 @@ public class BuildTool {
 
             if (unresolved || !exploded) {
                 toBeResolved.add(dependency);
-            } else if (!unresolved) {
+            } else {
                 alreadyResolved.add(dependency);
             }
         }
@@ -510,12 +512,12 @@ public class BuildTool {
 
         toBeResolved.addAll(
                 resolvedDependencies.getDependencies().stream()
-                        .filter(a -> a.isResolved() == false)
+                        .filter(a -> !a.isResolved())
                         .collect(Collectors.toList())
         );
         toBeResolved.addAll(
                 resolvedDependencies.getModuleDependencies().stream()
-                        .filter(a -> a.isResolved() == false)
+                        .filter(a -> !a.isResolved())
                         .collect(Collectors.toList())
         );
 
@@ -571,7 +573,7 @@ public class BuildTool {
 
     private final DefaultArtifactResolver resolver;
 
-    public static final SimpleLogger STD_LOGGER = new SimpleLogger() {
+    private static final SimpleLogger STD_LOGGER = new SimpleLogger() {
         @Override
         public void info(String msg) {
             System.out.println(msg);

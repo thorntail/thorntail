@@ -13,6 +13,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Bob McWhirter
  */
+@SuppressWarnings("deprecation")
 public class StageConfigTest {
 
     @Test

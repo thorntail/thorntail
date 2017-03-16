@@ -37,20 +37,22 @@ public class ObjectBackedConfigurableHandle implements ConfigurableHandle {
         return this.field.getType();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> void set(T value) throws IllegalAccessException {
         if (isDefaultable()) {
-            ((Defaultable) this.field.get(this.instance)).set(value);
+            ((Defaultable<T>) this.field.get(this.instance)).set(value);
         } else {
             this.field.set(this.instance, value);
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T currentValue() throws IllegalAccessException {
         Object value = this.field.get(this.instance);
         if (value instanceof Defaultable) {
-            return (T) ((Defaultable) value).get();
+            return ((Defaultable<T>) value).get();
         }
         return (T) value;
     }

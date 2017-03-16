@@ -9,6 +9,7 @@ import org.wildfly.swarm.spi.api.StageConfig;
 /**
  * @author Bob McWhirter
  */
+@SuppressWarnings("deprecation")
 public interface ConfigView extends StageConfig {
 
     Object valueOf(ConfigKey key);

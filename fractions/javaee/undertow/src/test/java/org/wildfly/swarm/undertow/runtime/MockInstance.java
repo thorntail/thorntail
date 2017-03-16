@@ -1,8 +1,10 @@
 package org.wildfly.swarm.undertow.runtime;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
@@ -55,7 +57,7 @@ public class MockInstance<T> implements Instance<T> {
             return Collections.singleton(this.instance).iterator();
         }
 
-        return (Iterator<T>) Collections.emptyList().iterator();
+        return new ArrayList<T>().iterator();
     }
 
     @Override
