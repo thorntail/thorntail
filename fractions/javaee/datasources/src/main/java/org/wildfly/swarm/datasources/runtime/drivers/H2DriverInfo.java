@@ -42,7 +42,7 @@ public class H2DriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.xaDatasourceClass("org.h2.jdbcx.JdbcDataSource");
+        driver.driverXaDatasourceClassName("org.h2.jdbcx.JdbcDataSource");
     }
 
     @Override

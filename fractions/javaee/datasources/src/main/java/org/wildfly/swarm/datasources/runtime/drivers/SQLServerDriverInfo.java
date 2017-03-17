@@ -41,7 +41,7 @@ public class SQLServerDriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.xaDatasourceClass("com.microsoft.sqlserver.jdbc.SQLServerXADataSource");
+        driver.driverXaDatasourceClassName("com.microsoft.sqlserver.jdbc.SQLServerXADataSource");
     }
 
     @Override

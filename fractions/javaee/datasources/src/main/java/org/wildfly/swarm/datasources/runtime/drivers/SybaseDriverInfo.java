@@ -41,7 +41,7 @@ public class SybaseDriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.xaDatasourceClass("com.sybase.jdbc4.jdbc.SybXADataSource");
+        driver.driverXaDatasourceClassName("com.sybase.jdbc4.jdbc.SybXADataSource");
     }
 
     @Override
