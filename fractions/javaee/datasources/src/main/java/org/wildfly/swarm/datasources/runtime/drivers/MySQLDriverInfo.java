@@ -42,7 +42,7 @@ public class MySQLDriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.xaDatasourceClass("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+        driver.driverXaDatasourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
     }
 
     @Override

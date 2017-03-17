@@ -42,7 +42,7 @@ public class PostgreSQLDriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.xaDatasourceClass("org.postgresql.xa.PGXADataSource");
+        driver.driverXaDatasourceClassName("org.postgresql.xa.PGXADataSource");
     }
 
     @Override

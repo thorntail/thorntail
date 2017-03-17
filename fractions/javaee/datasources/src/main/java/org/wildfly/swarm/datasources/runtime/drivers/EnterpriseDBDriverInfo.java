@@ -41,7 +41,7 @@ public class EnterpriseDBDriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.xaDatasourceClass("com.edb.xa.PGXADataSource");
+        driver.driverXaDatasourceClassName("com.edb.xa.PGXADataSource");
     }
 
     @Override

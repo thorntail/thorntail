@@ -41,7 +41,7 @@ public class OracleDriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.xaDatasourceClass("oracle.jdbc.xa.client.OracleXADataSource");
+        driver.driverXaDatasourceClassName("oracle.jdbc.xa.client.OracleXADataSource");
     }
 
     @Override
