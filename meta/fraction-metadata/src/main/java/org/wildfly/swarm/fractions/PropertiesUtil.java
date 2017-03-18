@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -40,8 +42,34 @@ public class PropertiesUtil {
         return props;
     }
 
-    public static Properties loadProperties(final String file) throws IOException {
-        return loadProperties(new File(file));
+    /**
+     * Loads properties from the file identified by the given {@code fileString},
+     * which can be a regular file (path), a classpath resource or a URL.
+     *
+     * @param fileString identifies the file
+     * @return the properties
+     * @throws IOException on errors reading the file/URL
+     */
+    public static Properties loadProperties(final String fileString) throws IOException {
+        final File file = new File(fileString);
+        // first try: regular file
+        if (file.exists()) {
+            return loadProperties(file);
+        }
+        // second try: classpath resource
+        final InputStream resourceStream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(fileString);
+        if (resourceStream != null) {
+            return loadProperties(resourceStream);
+        }
+        // third/last try: URL
+        try {
+            final URL url = new URL(fileString);
+            return loadProperties(url.openStream());
+        } catch (final MalformedURLException e) {
+            // there is no guarantee that fileString is a URL at all
+        }
+        throw new IllegalArgumentException("Unable to find " + fileString);
     }
 
     public static Properties loadProperties(final File file) throws IOException {
