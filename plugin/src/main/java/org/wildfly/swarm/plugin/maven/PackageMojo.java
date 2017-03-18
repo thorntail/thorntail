@@ -69,6 +69,12 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Parameter(alias = "hollow", defaultValue = "false", property = "swarm.hollow")
     protected boolean hollow;
 
+    /**
+     * Flag to skip packaging entirely.
+     */
+    @Parameter(alias = "skip", defaultValue = "false", property = "swarm.package.skip")
+    protected boolean skip;
+
     protected File divineFile() {
         if (this.project.getArtifact().getFile() != null) {
             return this.project.getArtifact().getFile();
@@ -87,6 +93,10 @@ public class PackageMojo extends AbstractSwarmMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (this.skip) {
+            getLog().info("Skipping packaging");
+            return;
+        }
         if (this.project.getPackaging().equals("pom")) {
             getLog().info("Not processing project with pom packaging");
             return;
