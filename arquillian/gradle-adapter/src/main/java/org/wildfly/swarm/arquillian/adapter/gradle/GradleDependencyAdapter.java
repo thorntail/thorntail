@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.arquillian.adapter;
+package org.wildfly.swarm.arquillian.adapter.gradle;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
