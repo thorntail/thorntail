@@ -1270,11 +1270,15 @@
 
     <module>meta/meta-spi</module>
     <module>meta/fraction-metadata</module>
-    <module>plugin</module>
+    <module>plugins/maven</module>
     <module>boms</module>
     <module>boms/bom</module>
 
-    <module>arquillian</module>
+    <module>arquillian/daemon</module>
+    <module>arquillian/resolver</module>
+    <module>arquillian/adapter</module>
+    <module>arquillian/arquillian</module>
+    <module>arquillian/test</module>
 
     <module>client-apis/health-api</module>
 
@@ -1388,7 +1392,8 @@
         <module>client-apis/jaxrs-client-api</module>
 
         <module>swarmtool</module>
-        <module>gradle-plugin</module>
+        <module>plugins/gradle</module>
+
         <module>boms/bom-deprecated</module>
         <module>boms/bom-experimental</module>
         <module>boms/bom-unstable</module>
@@ -1397,6 +1402,8 @@
         <module>boms/bom-locked</module>
 
         <module>boms/bom-all</module>
+
+        <module>arquillian/gradle-adapter</module>
 
         <module>fractions/javaee/batch-jberet</module>
         <module>fractions/javaee/ejb-remote</module>
