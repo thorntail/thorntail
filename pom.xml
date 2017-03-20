@@ -481,6 +481,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>cli</artifactId>
+        <version>2017.4.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>tools</artifactId>
         <version>2017.4.0-SNAPSHOT</version>
       </dependency>
@@ -1392,6 +1397,8 @@
         <module>client-apis/jaxrs-client-api</module>
 
         <module>swarmtool</module>
+        <module>cli</module>
+
         <module>plugins/gradle</module>
 
         <module>boms/bom-deprecated</module>
@@ -1431,6 +1438,7 @@
         <module>fractions/vertx</module>
         <module>fractions/zipkin-jaxrs</module>
 
+        <module>fractions/wildfly/cli</module>
         <module>fractions/wildfly/jdr</module>
         <module>fractions/wildfly/management-console</module>
         <module>fractions/wildfly/mod_cluster</module>
