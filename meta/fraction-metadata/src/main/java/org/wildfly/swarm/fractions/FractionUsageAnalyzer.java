@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -76,23 +77,27 @@ public class FractionUsageAnalyzer {
             return Collections.emptySet();
         }
 
-        Collection<FractionDescriptor> detectedFractions;
+        Set<FractionDescriptor> detectedFractions;
 
         loadDetectorsAndScanners();
 
         sources.forEach(this::scanFile);
 
-        Collection<String> detectedFractionNames =
+        Set<String> detectedFractionNames =
                 detectors.stream()
                         .filter(FractionDetector::wasDetected)
                         .map(FractionDetector::artifactId)
                         .distinct()
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toSet());
+
+        if (sources.stream().anyMatch(e -> e.getName().endsWith(".war"))) {
+            detectedFractionNames.add("undertow");
+        }
 
         detectedFractions = this.fractionList.getFractionDescriptors()
                 .stream()
                 .filter(fd -> detectedFractionNames.contains(fd.getArtifactId()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         // Remove fractions that have an explicitDependency on each other
         Iterator<FractionDescriptor> it = detectedFractions.iterator();
@@ -103,6 +108,7 @@ public class FractionUsageAnalyzer {
                 it.remove();
             }
         }
+
 
         // Add container only if no fractions are detected, as they have a transitive explicitDependency to container
         if (detectedFractions.isEmpty()) {
