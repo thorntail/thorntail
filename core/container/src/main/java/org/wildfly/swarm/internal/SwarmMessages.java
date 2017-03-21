@@ -153,6 +153,9 @@ public interface SwarmMessages extends BasicLogger {
     @Message(id = 30, value = "Error cleaning up temporary file provider.")
     void errorCleaningUpTempFileProvider(@Cause Throwable cause);
 
+    @LogMessage(level = Logger.Level.TRACE)
+    @Message(id = 31, value = "Registered archive-preparer: %s")
+    void registeredArchivePreparer(String preparer);
 
 
     // ------------------------------------------------------------------------
