@@ -54,7 +54,8 @@ import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.marshal.DMRMarshaller;
-import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
+import org.wildfly.swarm.container.runtime.wildfly.ContentRepositoryServiceActivator;
+import org.wildfly.swarm.container.runtime.wildfly.SwarmContentRepository;
 import org.wildfly.swarm.container.runtime.wildfly.UUIDFactory;
 import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapConfiguration;
 import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapPersister;
@@ -99,7 +100,7 @@ public class RuntimeServer implements Server {
     private DefaultDeploymentCreator defaultDeploymentCreator;
 
     @Inject
-    private SimpleContentProvider contentProvider;
+    private SwarmContentRepository contentRepository;
 
     @Inject
     private Instance<RuntimeDeployer> deployer;
@@ -192,10 +193,13 @@ public class RuntimeServer implements Server {
 
         this.serviceActivators.forEach(activators::add);
 
+        activators.add(new ContentRepositoryServiceActivator(this.contentRepository));
+
         try (AutoCloseable wildflyStart = Performance.time("WildFly start")) {
             ServiceContainer serviceContainer = null;
             try (AutoCloseable startWildflyItself = Performance.time("Starting WildFly itself")) {
-                serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
+                //serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
+                serviceContainer = this.container.start(bootstrapOperations, null, activators);
             }
             try (AutoCloseable checkFailedServices = Performance.time("Checking for failed services")) {
                 for (ServiceName serviceName : serviceContainer.getServiceNames()) {
