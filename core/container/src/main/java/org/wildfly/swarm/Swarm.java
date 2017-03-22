@@ -607,7 +607,12 @@ public class Swarm {
         }
 
         Swarm swarm = new Swarm(args);
-        swarm.start().deploy();
+        try {
+            swarm.start().deploy();
+        } catch (Throwable t) {
+            swarm.stop();
+            throw t;
+        }
     }
 
     private static ArtifactLookup artifactLookup() {
