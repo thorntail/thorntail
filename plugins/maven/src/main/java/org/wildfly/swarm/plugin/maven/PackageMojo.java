@@ -75,6 +75,9 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Parameter(alias = "skip", defaultValue = "false", property = "swarm.package.skip")
     protected boolean skip;
 
+    @Parameter(alias = "uberjarResources")
+    protected String uberjarResources;
+
     protected File divineFile() {
         if (this.project.getArtifact().getFile() != null) {
             return this.project.getArtifact().getFile();
@@ -180,6 +183,13 @@ public class PackageMojo extends AbstractSwarmMojo {
         this.project.getResources()
                 .forEach(r -> tool.resourceDirectory(r.getDirectory()));
 
+        Path uberjarResourcesDir = null;
+        if (this.uberjarResources == null) {
+            uberjarResourcesDir = Paths.get(this.project.getBasedir().toString()).resolve("src").resolve("main").resolve("uberjar");
+        } else {
+            uberjarResourcesDir = Paths.get(this.uberjarResources);
+        }
+        tool.uberjarResourcesDirectory(uberjarResourcesDir);
 
         this.additionalModules.stream()
                 .map(m -> new File(this.project.getBuild().getOutputDirectory(), m))
