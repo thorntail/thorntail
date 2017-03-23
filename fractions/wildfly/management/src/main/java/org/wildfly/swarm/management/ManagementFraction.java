@@ -49,8 +49,31 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
         applyDefaults();
     }
 
+    public static final String JSON_FORMATTER = "json-formatter";
+
+    public static final String AUDIT_LOG_FILE = "audit-log.log";
+
+    public static final String FILE_HANDLER = "file";
+
     public ManagementFraction applyDefaults() {
         httpInterfaceManagementInterface();
+
+        auditAccess((access) -> {
+            access.jsonFormatter(JSON_FORMATTER, (formatter) -> {
+            });
+            access.fileHandler(FILE_HANDLER, (handler) -> {
+                handler.formatter(JSON_FORMATTER);
+                handler.path(AUDIT_LOG_FILE);
+                handler.relativeTo("user.dir");
+            });
+            access.auditLogLogger((logger) -> {
+                logger.logBoot(true);
+                logger.logReadOnly(true);
+                logger.enabled(false);
+                logger.handler(FILE_HANDLER);
+            });
+        });
+
         return this;
     }
 
@@ -104,6 +127,11 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
 
     public boolean isHttpDisable() {
         return this.httpDisable.get();
+    }
+
+    public ManagementFraction enableDefaultAuditAccess() {
+        subresources().auditAccess().subresources().auditLogLogger().enabled(true);
+        return this;
     }
 
     @Configurable("swarm.management.http.port")
