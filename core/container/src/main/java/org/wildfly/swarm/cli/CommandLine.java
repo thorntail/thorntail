@@ -50,6 +50,10 @@ public class CommandLine {
 
     private static final String CONFIG_ELEMENT = "<config>";
 
+    private static final String FRACTION = "fraction";
+
+    private static final String ALL = "all";
+
     /**
      * Default option for parsing -h and --help
      */
@@ -64,6 +68,12 @@ public class CommandLine {
             .withLong("config-help")
             .hasValue("<fraction>")
             .withDescription("Display configuration help by fraction, or 'all' for all")
+            .then((cmd, opt, value) -> cmd.put(opt, value));
+
+    public static final Option<String> YAML_HELP = new Option<String>()
+            .withLong("yaml-help")
+            .hasValue("<fraction>")
+            .withDescription("Display example YAML configuration by fraction, or 'all' for all")
             .then((cmd, opt, value) -> cmd.put(opt, value));
 
     /**
@@ -166,6 +176,7 @@ public class CommandLine {
         return new Options(
                 HELP,
                 CONFIG_HELP,
+                YAML_HELP,
                 VERSION,
                 PROPERTY,
                 PROPERTIES_URL,
@@ -227,8 +238,8 @@ public class CommandLine {
             URL each = docs.nextElement();
             Properties fractionDocs = new Properties();
             fractionDocs.load(each.openStream());
-            if (fraction.equals("all") || fraction.equals(fractionDocs.getProperty("fraction"))) {
-                fractionDocs.remove("fraction");
+            if (fraction.equals(ALL) || fraction.equals(fractionDocs.getProperty(FRACTION))) {
+                fractionDocs.remove(FRACTION);
                 props.putAll(fractionDocs);
             }
         }
@@ -241,6 +252,25 @@ public class CommandLine {
                     out.println(formatDocs("    ", props.getProperty(key)));
                     out.println();
                 });
+    }
+
+    public void dumpYaml(PrintStream out, String fraction) throws IOException, ModuleLoadException {
+        ModuleClassLoader cl = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application")).getClassLoader();
+        Enumeration<URL> docs = cl.getResources("META-INF/configuration-meta.properties");
+
+        Properties props = new Properties();
+
+        while (docs.hasMoreElements()) {
+            URL each = docs.nextElement();
+            Properties fractionDocs = new Properties();
+            fractionDocs.load(each.openStream());
+            if (fraction.equals(ALL) || fraction.equals(fractionDocs.getProperty(FRACTION))) {
+                fractionDocs.remove(FRACTION);
+                props.putAll(fractionDocs);
+            }
+        }
+
+        YamlDumper.dump(out, props);
     }
 
     private String formatDocs(String indent, String docs) {
@@ -361,6 +391,11 @@ public class CommandLine {
 
         if (get(CONFIG_HELP) != null) {
             displayConfigHelp(System.err, get(CONFIG_HELP));
+            System.exit(0);
+        }
+
+        if (get(YAML_HELP) != null) {
+            dumpYaml(System.err, get(YAML_HELP));
             System.exit(0);
         }
 
