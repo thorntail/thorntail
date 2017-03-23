@@ -2,6 +2,7 @@ package org.wildfly.swarm.webservices.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -16,6 +17,7 @@ import org.wildfly.swarm.webservices.WebServicesFraction;
 public class WSDLHostCustomizer implements Customizer {
 
     @Inject
+    @Named(Interface.PUBLIC)
     Interface iface;
 
     @Inject

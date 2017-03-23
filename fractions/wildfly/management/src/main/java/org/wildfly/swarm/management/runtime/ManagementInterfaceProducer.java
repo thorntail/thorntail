@@ -17,6 +17,7 @@ package org.wildfly.swarm.management.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.management.ManagementProperties;
@@ -29,6 +30,7 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
 public class ManagementInterfaceProducer {
 
     @Produces
+    @Named(Interface.MANAGEMENT)
     public Interface publicInterace() {
         return new Interface("management", SwarmProperties.propertyVar(ManagementProperties.MANAGEMENT_BIND_ADDRESS, "127.0.0.1"));
     }
