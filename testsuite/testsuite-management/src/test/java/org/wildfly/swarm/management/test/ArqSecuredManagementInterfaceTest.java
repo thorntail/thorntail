@@ -39,33 +39,6 @@ import static org.fest.assertions.Assertions.assertThat;
 @DefaultDeployment
 public class ArqSecuredManagementInterfaceTest {
 
-    /*
-    @Deployment(testable = false)
-    public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class, "myapp.jar");
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
-        return deployment;
-    }
-
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .fraction(
-                        ManagementFraction.createDefaultFraction()
-                                .httpInterfaceManagementInterface((iface) -> {
-                                    iface.securityRealm("ManagementRealm");
-                                })
-                                .securityRealm("ManagementRealm", (realm) -> {
-                                    realm.inMemoryAuthentication((authn) -> {
-                                        authn.add("bob", "tacos!", true);
-                                    });
-                                    realm.inMemoryAuthorization((authz) -> {
-                                        authz.add("bob", "admin");
-                                    });
-                                })
-                );
-    }
-    */
-
     @Test
     @RunAsClient
     public void testClient() throws Exception {
