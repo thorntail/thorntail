@@ -151,6 +151,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-deployment-repository</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-naming</artifactId>
       <scope>provided</scope>

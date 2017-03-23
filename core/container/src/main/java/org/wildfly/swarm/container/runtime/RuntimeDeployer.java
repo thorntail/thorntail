@@ -15,15 +15,11 @@
  */
 package org.wildfly.swarm.container.runtime;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -48,8 +44,6 @@ import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.vfs.TempFileProvider;
-import org.jboss.vfs.VFS;
-import org.jboss.vfs.VirtualFile;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.performance.Performance;
@@ -57,7 +51,7 @@ import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
-import org.wildfly.swarm.container.runtime.wildfly.SimpleContentProvider;
+import org.wildfly.swarm.container.runtime.wildfly.SwarmContentRepository;
 import org.wildfly.swarm.internal.DeployerMessages;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.SwarmMessages;
@@ -244,16 +238,7 @@ public class RuntimeDeployer implements Deployer {
                 deployment.as(ZipExporter.class).exportTo(out, true);
             }
 
-            VirtualFile mountPoint = VFS.getRootVirtualFile().getChild(deployment.getName());
-
-            try (InputStream in = deployment.as(ZipExporter.class).exportAsInputStream()) {
-                Closeable closeable = VFS.mountZipExpanded(in, deployment.getName(), mountPoint, tempFileProvider);
-                this.mountPoints.add(closeable);
-            } catch (IOException e) {
-                throw SwarmMessages.MESSAGES.failToMountDeployment(e, deployment);
-            }
-
-            byte[] hash = this.contentProvider.addContent(mountPoint);
+            byte[] hash = this.contentRepository.addContent(deployment.as(ZipExporter.class).exportAsInputStream());
 
             final ModelNode deploymentAdd = new ModelNode();
 
@@ -262,6 +247,8 @@ public class RuntimeDeployer implements Deployer {
             deploymentAdd.get(RUNTIME_NAME).set(deployment.getName());
             deploymentAdd.get(ENABLED).set(true);
             deploymentAdd.get(PERSISTENT).set(true);
+            ModelNode content = deploymentAdd.get(CONTENT).add();
+            content.get(HASH).set(hash);
 
             int deploymentTimeout = Integer.getInteger(SwarmProperties.DEPLOYMENT_TIMEOUT, 300);
 
@@ -269,8 +256,6 @@ public class RuntimeDeployer implements Deployer {
             opHeaders.get(BLOCKING_TIMEOUT).set(deploymentTimeout);
             deploymentAdd.get(OPERATION_HEADERS).set(opHeaders);
 
-            ModelNode content = deploymentAdd.get(CONTENT).add();
-            content.get(HASH).set(hash);
 
             BootstrapLogger.logger("org.wildfly.swarm.runtime.deployer")
                     .info("deploying " + deployment.getName());
@@ -297,13 +282,6 @@ public class RuntimeDeployer implements Deployer {
     @SuppressWarnings("unused")
     @PreDestroy
     void stop() {
-        for (Closeable each : this.mountPoints) {
-            try {
-                each.close();
-            } catch (IOException ignored) {
-            }
-        }
-
     }
 
     private static final String CLASS_SUFFIX = ".class";
@@ -316,7 +294,7 @@ public class RuntimeDeployer implements Deployer {
 
     @SuppressWarnings("unused")
     @Inject
-    private SimpleContentProvider contentProvider;
+    private SwarmContentRepository contentRepository;
 
     @SuppressWarnings("unused")
     @Inject
@@ -325,8 +303,6 @@ public class RuntimeDeployer implements Deployer {
     @SuppressWarnings("unused")
     @Inject
     private DefaultDeploymentCreator defaultDeploymentCreator;
-
-    private final List<Closeable> mountPoints = new ArrayList<>();
 
     @SuppressWarnings("unused")
     private boolean debug = false;
