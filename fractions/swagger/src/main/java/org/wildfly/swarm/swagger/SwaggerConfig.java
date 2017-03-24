@@ -40,7 +40,14 @@ public class SwaggerConfig {
                 // SCHEMES is meant to be a String[]
                 // everything else is a String
                 if (key == Key.SCHEMES || key == Key.PACKAGES) {
-                    value = ((String) value).split(",");
+                    String[] parts = ((String) value).split(",");
+                    for (int i = 0; i < parts.length; ++i) {
+                        parts[i] = parts[i].trim();
+                    }
+                    value = parts;
+                } else {
+                    value = value.toString().trim();
+
                 }
                 put(key, value);
             }
