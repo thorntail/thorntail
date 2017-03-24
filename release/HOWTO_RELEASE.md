@@ -148,4 +148,8 @@ run the local fetch-notes.js with node.js, passing the version
 
 # Blog it all
 
+# Update Che image
+
+* Submit PR for https://github.com/eclipse/che-dockerfiles/tree/master/recipes/centos_wildfly_swarm/Dockerfile to update to latest version
+
 
