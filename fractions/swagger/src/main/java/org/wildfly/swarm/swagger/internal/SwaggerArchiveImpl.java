@@ -135,18 +135,28 @@ public class SwaggerArchiveImpl extends AssignableBase<ArchiveBase<?>> implement
     }
 
     private void loadOrCreateConfigurationAsset() throws IOException {
+
         Node node = getArchive().get(SWAGGER_CONFIGURATION_PATH);
+
+        if (node == null && getArchive().getName().endsWith(".war")) {
+            node = getArchive().get("WEB-INF/classes/" + SWAGGER_CONFIGURATION_PATH);
+        }
+
         if (node != null) {
             Asset asset = node.getAsset();
             if (asset instanceof SwaggerConfigurationAsset) {
                 this.configurationAsset = (SwaggerConfigurationAsset) asset;
             } else {
                 this.configurationAsset = new SwaggerConfigurationAsset(asset.openStream());
-                getArchive().add(this.configurationAsset, SWAGGER_CONFIGURATION_PATH);
+                getArchive().add(this.configurationAsset, node.getPath());
             }
         } else {
             this.configurationAsset = new SwaggerConfigurationAsset();
-            getArchive().add(this.configurationAsset, SWAGGER_CONFIGURATION_PATH);
+            if (getArchive().getName().endsWith(".war")) {
+                getArchive().add(this.configurationAsset, "WEB-INF/classes/" + SWAGGER_CONFIGURATION_PATH);
+            } else {
+                getArchive().add(this.configurationAsset, SWAGGER_CONFIGURATION_PATH);
+            }
         }
     }
 

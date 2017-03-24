@@ -36,6 +36,10 @@ public class SwaggerServiceActivator implements ServiceActivator {
 
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(SwaggerArchive.SWAGGER_CONFIGURATION_PATH);
 
+        if (in == null) {
+            // try again, we must go deeper.
+            in = Thread.currentThread().getContextClassLoader().getResourceAsStream("WEB-INF/classes/" + SwaggerArchive.SWAGGER_CONFIGURATION_PATH);
+        }
 
         if (in == null) {
             // No config available. Print a warning and return

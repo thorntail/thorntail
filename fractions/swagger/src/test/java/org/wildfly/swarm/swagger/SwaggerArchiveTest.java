@@ -20,6 +20,8 @@ import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.spi.api.JARArchive;
@@ -74,7 +76,30 @@ public class SwaggerArchiveTest {
         SwaggerConfig config = new SwaggerConfig(asset.openStream());
         assertThat(config.get(SwaggerConfig.Key.VERSION)).isEqualTo("1.0");
         assertThat(config.get(SwaggerConfig.Key.TERMS_OF_SERVICE_URL)).isEqualTo("http://myapplication.com/tos.txt");
-        assertThat(Arrays.toString((String[])config.get(SwaggerConfig.Key.PACKAGES))).isEqualTo("[com.tester.resource, com.tester.other.resource]");
+        assertThat(Arrays.toString((String[]) config.get(SwaggerConfig.Key.PACKAGES))).isEqualTo("[com.tester.resource, com.tester.other.resource]");
         assertThat(config.get(SwaggerConfig.Key.ROOT)).isEqualTo("/tacos");
+    }
+
+    @Test
+    public void testLocateSwaggerConfInJar() throws Exception {
+        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "myapp.war");
+        archive.add(basicSwaggerConf(), "META-INF/swarm.swagger.conf");
+
+        String[] packages = archive.as(SwaggerArchive.class).getResourcePackages();
+        assertThat(packages).contains("com.foo.mystuff");
+    }
+
+    @Test
+    public void testLocateSwaggerConfInWar() throws Exception {
+        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "myapp.war");
+        archive.add(basicSwaggerConf(), "WEB-INF/classes/META-INF/swarm.swagger.conf");
+
+        String[] packages = archive.as(SwaggerArchive.class).getResourcePackages();
+        assertThat(packages).contains("com.foo.mystuff");
+    }
+
+    Asset basicSwaggerConf() {
+        String conf = "packages: com.foo.mystuff";
+        return new ByteArrayAsset(conf.getBytes());
     }
 }

@@ -40,7 +40,7 @@ public class SwaggerArquillianTest {
     public void testEndpoints() throws Exception {
         String content = getUrlContents("http://127.0.0.1:8080/swagger.json");
         assertThat(content).contains("\"tags\":[{\"name\":\"theapp\"}]");
-        assertThat(content).contains("\"title\":\" My Custom App\"");
+        assertThat(content).contains("\"title\":\"My Custom App\"");
     }
 
     private static String getUrlContents(String theUrl) {
