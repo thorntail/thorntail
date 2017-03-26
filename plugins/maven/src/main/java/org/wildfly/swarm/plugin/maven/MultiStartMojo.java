@@ -162,10 +162,16 @@ public class MultiStartMojo extends AbstractSwarmMojo {
         for (PlexusConfiguration each : env.getChildren()) {
             executor.withEnvironment(each.getName(), each.getValue());
         }
+        int startTimeoutSeconds;
+        try {
+            startTimeoutSeconds = Integer.valueOf(props.getChild("start.timeout.seconds").getValue("30"));
+        } catch (NumberFormatException nfe) {
+            throw new IllegalArgumentException("Wrong format of the start timeout for " + artifact + "!. Integer expected.", nfe);
+        }
 
         try {
             SwarmProcess launched = executor.execute();
-            launched.awaitReadiness(30, TimeUnit.SECONDS);
+            launched.awaitReadiness(startTimeoutSeconds, TimeUnit.SECONDS);
             procs.add(launched);
         } catch (IOException | InterruptedException e) {
             throw new MojoFailureException("Unable to execute: " + artifact, e);

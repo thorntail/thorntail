@@ -132,8 +132,14 @@ public class StartMojo extends AbstractSwarmMojo {
                 } catch (InterruptedException e) {
                 }
             }));
+            int startTimeoutSeconds;
+            try {
+                startTimeoutSeconds = Integer.valueOf(this.properties.getProperty("start.timeout.seconds", "120"));
+            } catch (NumberFormatException nfe) {
+                throw new IllegalArgumentException("Wrong format of the start timeout!. Integer expected.", nfe);
+            }
 
-            process.awaitReadiness(2, TimeUnit.MINUTES);
+            process.awaitReadiness(startTimeoutSeconds, TimeUnit.SECONDS);
 
             if (!process.isAlive()) {
                 throw new MojoFailureException("Process failed to start");
