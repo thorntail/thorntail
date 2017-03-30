@@ -48,7 +48,7 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
         masterRealmName(DEFAULT_REALM_NAME);
         scheduledTaskInterval(900L);
 
-        spi("eventStore", (eventStore) -> {
+        spi("eventsStore", (eventStore) -> {
             eventStore.defaultProvider("jpa");
             eventStore.provider("jpa", (provider) -> {
                 provider.enabled(true);
