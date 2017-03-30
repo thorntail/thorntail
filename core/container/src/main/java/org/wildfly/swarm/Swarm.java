@@ -609,9 +609,30 @@ public class Swarm {
         Swarm swarm = new Swarm(args);
         try {
             swarm.start().deploy();
-        } catch (Throwable t) {
-            swarm.stop();
+        } catch (final VirtualMachineError vme) {
+            // Don't even try to swarm.stop() in case of OOM etc.
+            vme.printStackTrace();
+            System.exit(1);
+        } catch (final Throwable t) {
+            tryToStopAfterStartupError(t, swarm);
             throw t;
+        }
+    }
+
+    private static void tryToStopAfterStartupError(final Throwable errorCause, final Swarm swarm) {
+        // Try to swarm.stop() if needed.
+        if (swarm.server != null) {
+            // Server was apparently started but might be in an inconsistent state and stop() might therefore fail.
+            // So, to avoid overlaying/shadowing of errorCause we need to perform a "failsafe" stop().
+            try {
+                swarm.stop();
+            } catch (final Throwable t) {
+                // To avoid keeping the potentially inconsistent server/JVM running, we explicitly kill it.
+                // SwarmMessages is not usable here because swarm.start() might not even have made it past logging setup.
+                errorCause.printStackTrace();
+                t.printStackTrace();
+                System.exit(1);
+            }
         }
     }
 

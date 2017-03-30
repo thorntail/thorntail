@@ -114,7 +114,7 @@ public class RuntimeServer implements Server {
 
     public RuntimeServer() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (container != null) {
+            if (containerStarted) {
                 try {
                     SwarmMessages.MESSAGES.shutdownRequested();
                     stop();
@@ -200,6 +200,7 @@ public class RuntimeServer implements Server {
             try (AutoCloseable startWildflyItself = Performance.time("Starting WildFly itself")) {
                 //serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
                 serviceContainer = this.container.start(bootstrapOperations, null, activators);
+                this.containerStarted = true;
             }
             try (AutoCloseable checkFailedServices = Performance.time("Checking for failed services")) {
                 for (ServiceName serviceName : serviceContainer.getServiceNames()) {
@@ -251,6 +252,7 @@ public class RuntimeServer implements Server {
     public void stop() throws Exception {
         this.container.stop();
         awaitContainerTermination();
+        this.containerStarted = false;
         this.container = null;
         this.client = null;
         this.deployer = null;
@@ -273,6 +275,9 @@ public class RuntimeServer implements Server {
     }
 
     private SelfContainedContainer container;
+
+    // Container does not expose this state and it's class is final so it cannot be subclassed.
+    private boolean containerStarted;
 
     private ModelControllerClient client;
 }
