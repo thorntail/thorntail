@@ -145,7 +145,6 @@ public class TopologySSEServlet extends HttpServlet {
         }
 
         json.append("}\n\n");
-        System.out.println("*********************** JSON: " + json);
         return json.toString();
     }
 
