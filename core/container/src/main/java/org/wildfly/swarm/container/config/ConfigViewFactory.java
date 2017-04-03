@@ -1,12 +1,12 @@
 /**
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 package org.wildfly.swarm.container.config;
+
+import org.jboss.modules.ModuleLoadException;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.nodes.NodeId;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
+import org.yaml.snakeyaml.resolver.Resolver;
+
+import javax.enterprise.inject.Vetoed;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,11 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-
-import javax.enterprise.inject.Vetoed;
-
-import org.jboss.modules.ModuleLoadException;
-import org.yaml.snakeyaml.Yaml;
+import java.util.regex.Pattern;
 
 /**
  * @author Heiko Braun
@@ -139,7 +146,7 @@ public class ConfigViewFactory {
 
     @SuppressWarnings("unchecked")
     private void loadProjectStages(InputStream inputStream) {
-        Yaml yaml = new Yaml();
+        Yaml yaml = newYaml();
         Iterable<Object> docs = yaml.loadAll(inputStream);
 
         for (Object item : docs) {
@@ -166,13 +173,40 @@ public class ConfigViewFactory {
 
     @SuppressWarnings("unchecked")
     private void loadYamlProjectConfig(String name, InputStream inputStream) {
-        Yaml yaml = new Yaml();
-        Map<String, ?> doc = (Map<String, ?>) yaml.load(inputStream);
+        Map<String, ?> doc = loadYaml(inputStream);
 
         ConfigNode node = MapConfigNodeFactory.load(doc);
         this.configView.register(name, node);
         this.configView.withProfile(name);
     }
+
+    static Map<String, ?> loadYaml(InputStream input) {
+        Yaml yaml = newYaml();
+
+        yaml.addImplicitResolver(Tag.STR, Pattern.compile("on"), null);
+        return (Map<String, ?>) yaml.load(input);
+    }
+
+    private static Yaml newYaml() {
+        return new Yaml(new Constructor(),
+                        new Representer(),
+                        new DumperOptions(),
+                        new Resolver() {
+                            @Override
+                            public Tag resolve(NodeId kind, String value, boolean implicit) {
+                                if (value != null) {
+                                    if (value.equalsIgnoreCase("on") ||
+                                            value.equalsIgnoreCase("off") ||
+                                            value.equalsIgnoreCase("yes") ||
+                                            value.equalsIgnoreCase("no")) {
+                                        return Tag.STR;
+                                    }
+                                }
+                                return super.resolve(kind, value, implicit);
+                            }
+                        });
+    }
+
 
     public void withProfile(String name) {
         this.configView.withProfile(name);
