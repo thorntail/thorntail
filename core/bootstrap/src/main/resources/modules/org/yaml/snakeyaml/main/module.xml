@@ -10,6 +10,9 @@
     <system export="true">
       <paths>
         <path name="org/yaml/snakeyaml"/>
+        <path name="org/yaml/snakeyaml/constructor"/>
+        <path name="org/yaml/snakeyaml/representer"/>
+        <path name="org/yaml/snakeyaml/resolver"/>
       </paths>
     </system>
   </dependencies>
