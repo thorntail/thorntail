@@ -198,6 +198,12 @@ public class MavenPluginTest {
         verifier = new Verifier(projectDir.getAbsolutePath(), true);
         verifier.setForkJvm(true);
 
+        String settingsXml = System.getProperty("org.apache.maven.user-settings");
+        if (settingsXml != null && new File(settingsXml).isFile()) {
+            verifier.addCliOption("-s");
+            verifier.addCliOption(settingsXml);
+        }
+
         logPath = Paths.get(verifier.getBasedir()).resolve(verifier.getLogFileName());
     }
 
