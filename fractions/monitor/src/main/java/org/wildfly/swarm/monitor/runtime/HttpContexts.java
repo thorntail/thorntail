@@ -16,6 +16,7 @@
 package org.wildfly.swarm.monitor.runtime;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -138,7 +139,7 @@ class HttpContexts implements HttpHandler {
                 }
 
 
-                boolean failed = false;
+                boolean overallFailure = false;
                 if (!responses.isEmpty()) {
 
                     if (responses.size() != monitor.getHealthURIs().size()) {
@@ -149,28 +150,31 @@ class HttpContexts implements HttpHandler {
                     sb.append("\"checks\": [\n");
 
                     int i = 0;
-                    for (InVMResponse resp : responses) {
-                        if (200 == resp.getStatus()) {
-                            sb.append(resp.getPayload());
-                        } else if (503 == resp.getStatus()) {
-                            sb.append(resp.getPayload());
-                            failed = true;
+
+                    List<InVMResponse> successes = new ArrayList<InVMResponse>();
+                    for (InVMResponse r : responses) {
+                        if (200 == r.getStatus()) {
+                            successes.add(r);
                         } else {
-                            throw new RuntimeException("Unexpected status code: " + resp.getStatus());
+                            overallFailure = true;
                         }
-                        if (i < responses.size() - 1) {
+                    }
+
+                    for (InVMResponse resp : successes) {
+                        sb.append(resp.getPayload());
+                        if (i < successes.size() - 1) {
                             sb.append(",\n");
                         }
                         i++;
                     }
                     sb.append("],\n");
 
-                    String outcome = failed ? "DOWN" : "UP"; // we don't have policies yet, so keep it simple
+                    String outcome = overallFailure ? "DOWN" : "UP"; // we don't have policies yet, so keep it simple
                     sb.append("\"outcome\": \"" + outcome + "\"\n");
                     sb.append("}\n");
 
                     // send a response
-                    if (failed) {
+                    if (overallFailure) {
                         exchange.setStatusCode(503);
                     }
 

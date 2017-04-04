@@ -102,8 +102,9 @@ public class HealthStatus implements Status {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         sb.append(ESCAPED_QUOTE).append(ID).append("\":\"").append(name).append("\",");
-        sb.append(ESCAPED_QUOTE).append(RESULT).append("\":\"").append(state.name()).append("\",");
+        sb.append(ESCAPED_QUOTE).append(RESULT).append("\":\"").append(state.name()).append("\"");
         if (message.isPresent()) {
+            sb.append(",");
             sb.append(ESCAPED_QUOTE).append(DATA).append("\": {");
             Map<String, Object> atts = message.get();
             int i = 0;

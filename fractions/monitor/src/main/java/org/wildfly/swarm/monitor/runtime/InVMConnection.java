@@ -104,7 +104,7 @@ final class InVMConnection extends ServerConnection {
 
     @Override
     public boolean isOpen() {
-        return true;
+        return !this.closed;
     }
 
     @Override
@@ -124,6 +124,7 @@ final class InVMConnection extends ServerConnection {
 
     @Override
     public void close() throws IOException {
+        this.closed = true;
     }
 
     @Override
@@ -248,4 +249,5 @@ final class InVMConnection extends ServerConnection {
         return "mock";
     }
 
+    private boolean closed;
 }
