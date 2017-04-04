@@ -221,7 +221,20 @@ class HttpContexts implements HttpHandler {
                     StringBuffer sb = new StringBuffer();
                     ((InVMConnection) connection).flushTo(sb);
                     LOG.trace("Response payload: " + sb.toString());
-                    responses.add(new InVMResponse(mockExchange.getStatusCode(), sb.toString()));
+                    if ("application/json".equals(mockExchange.getResponseHeaders().getFirst(Headers.CONTENT_TYPE))) {
+                        responses.add(new InVMResponse(mockExchange.getStatusCode(), sb.toString()));
+                    } else {
+                        StringBuffer json = new StringBuffer("{");
+                        json.append("\"id\"").append(":\"").append(mockExchange.getRelativePath()).append("\",");
+                        json.append("\"result\"").append(":\"").append("DOWN").append("\",");
+                            json.append("\"data\"").append(":").append("{");
+                                json.append("\"status-code\"").append(":").append(mockExchange.getStatusCode());
+                            json.append("}");
+                        json.append("}");
+
+                        responses.add(new InVMResponse(mockExchange.getStatusCode(), json.toString()));
+                    }
+
                     mockExchange.removeAttachment(RESPONSES);
                     IoUtils.safeClose(connection);
                     latch.countDown();
