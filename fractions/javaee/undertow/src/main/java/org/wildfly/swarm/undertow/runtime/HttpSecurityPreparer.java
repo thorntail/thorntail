@@ -33,6 +33,7 @@ import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 /**
  * @author Heiko Braun
+ * @author Ken Finnigan
  */
 @ApplicationScoped
 public class HttpSecurityPreparer implements ArchivePreparer {
@@ -65,42 +66,44 @@ public class HttpSecurityPreparer implements ArchivePreparer {
 
         Map<String, Object> deploymentConfig = (Map<String, Object>) matchingConfig.get("web");
 
-        // unsupported auth method
-        Map<String, Object> loginConfig = (Map<String, Object>) deploymentConfig.get("login-config");
-        String authMethod = (String)loginConfig.getOrDefault("auth-method", "NONE");
-        boolean isSupported = false;
-        for (String supported : SUPPORTED_AUTH_METHODS) {
-            if (authMethod.equals(supported)) {
-                isSupported = true;
-                break;
-            }
-        }
-
-        if (!isSupported) {
-            LOG.warn("Ignoring unsupported auth-method: " + authMethod);
-            return;
-        }
-
         WARArchive war = archive.as(WARArchive.class);
         WebXmlAsset webXml = war.findWebXmlAsset();
         JBossWebAsset jbossWeb = war.findJbossWebAsset();
 
-        // Setup web.xml
-        webXml.setLoginConfig(authMethod, "ignored");
+        // unsupported auth method
+        Map<String, Object> loginConfig = (Map<String, Object>) deploymentConfig.get("login-config");
+        if (loginConfig != null) {
+            String authMethod = (String)loginConfig.getOrDefault("auth-method", "NONE");
+            boolean isSupported = false;
+            for (String supported : SUPPORTED_AUTH_METHODS) {
+                if (authMethod.equals(supported)) {
+                    isSupported = true;
+                    break;
+                }
+            }
 
-        // security domain
-        if (loginConfig.containsKey("security-domain")) {
-            jbossWeb.setSecurityDomain((String)loginConfig.get("security-domain"));
-        }
+            if (!isSupported) {
+                LOG.warn("Ignoring unsupported auth-method: " + authMethod);
+                return;
+            }
 
-        // form login
-        if (loginConfig.containsKey("form-login-config")) {
-            Map<String, Object> formLoginConfig = (Map<String, Object>) loginConfig.get("form-login-config");
-            webXml.setFormLoginConfig(
-                    "Security Realm",
-                    (String)formLoginConfig.get("form-login-page"),
-                    (String)formLoginConfig.get("form-error-page")
-                    );
+            // Setup login-config
+            webXml.setLoginConfig(authMethod, "ignored");
+
+            // security domain
+            if (loginConfig.containsKey("security-domain")) {
+                jbossWeb.setSecurityDomain((String)loginConfig.get("security-domain"));
+            }
+
+            // form login
+            if (loginConfig.containsKey("form-login-config")) {
+                Map<String, Object> formLoginConfig = (Map<String, Object>) loginConfig.get("form-login-config");
+                webXml.setFormLoginConfig(
+                        "Security Realm",
+                        (String)formLoginConfig.get("form-login-page"),
+                        (String)formLoginConfig.get("form-error-page")
+                );
+            }
         }
 
         // security constraints

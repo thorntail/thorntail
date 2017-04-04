@@ -1,0 +1,7 @@
+swarm:
+  deployment:
+    app.war:
+      web:
+        security-constraints:
+          - url-pattern: /protected
+            roles: [admin]
