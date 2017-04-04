@@ -16,7 +16,6 @@
 package org.wildfly.swarm.monitor.runtime;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -139,7 +138,7 @@ class HttpContexts implements HttpHandler {
                 }
 
 
-                boolean overallFailure = false;
+                boolean failed = false;
                 if (!responses.isEmpty()) {
 
                     if (responses.size() != monitor.getHealthURIs().size()) {
@@ -150,31 +149,28 @@ class HttpContexts implements HttpHandler {
                     sb.append("\"checks\": [\n");
 
                     int i = 0;
-
-                    List<InVMResponse> successes = new ArrayList<InVMResponse>();
-                    for (InVMResponse r : responses) {
-                        if (200 == r.getStatus()) {
-                            successes.add(r);
+                    for (InVMResponse resp : responses) {
+                        if (200 == resp.getStatus()) {
+                            sb.append(resp.getPayload());
+                        } else if (503 == resp.getStatus()) {
+                            sb.append(resp.getPayload());
+                            failed = true;
                         } else {
-                            overallFailure = true;
+                            throw new RuntimeException("Unexpected status code: " + resp.getStatus());
                         }
-                    }
-
-                    for (InVMResponse resp : successes) {
-                        sb.append(resp.getPayload());
-                        if (i < successes.size() - 1) {
+                        if (i < responses.size() - 1) {
                             sb.append(",\n");
                         }
                         i++;
                     }
                     sb.append("],\n");
 
-                    String outcome = overallFailure ? "DOWN" : "UP"; // we don't have policies yet, so keep it simple
+                    String outcome = failed ? "DOWN" : "UP"; // we don't have policies yet, so keep it simple
                     sb.append("\"outcome\": \"" + outcome + "\"\n");
                     sb.append("}\n");
 
                     // send a response
-                    if (overallFailure) {
+                    if (failed) {
                         exchange.setStatusCode(503);
                     }
 
@@ -225,7 +221,20 @@ class HttpContexts implements HttpHandler {
                     StringBuffer sb = new StringBuffer();
                     ((InVMConnection) connection).flushTo(sb);
                     LOG.trace("Response payload: " + sb.toString());
-                    responses.add(new InVMResponse(mockExchange.getStatusCode(), sb.toString()));
+                    if ("application/json".equals(mockExchange.getResponseHeaders().getFirst(Headers.CONTENT_TYPE))) {
+                        responses.add(new InVMResponse(mockExchange.getStatusCode(), sb.toString()));
+                    } else {
+                        StringBuffer json = new StringBuffer("{");
+                        json.append("\"id\"").append(":\"").append(mockExchange.getRelativePath()).append("\",");
+                        json.append("\"result\"").append(":\"").append("DOWN").append("\",");
+                            json.append("\"data\"").append(":").append("{");
+                                json.append("\"status-code\"").append(":").append(mockExchange.getStatusCode());
+                            json.append("}");
+                        json.append("}");
+
+                        responses.add(new InVMResponse(mockExchange.getStatusCode(), json.toString()));
+                    }
+
                     mockExchange.removeAttachment(RESPONSES);
                     IoUtils.safeClose(connection);
                     latch.countDown();
