@@ -18,8 +18,11 @@ package org.wildfly.swarm.topology.webapp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+
+import static org.wildfly.swarm.spi.api.Defaultable.*;
 
 /**
  * @author Lance Ball
@@ -75,15 +78,15 @@ public class TopologyWebAppFraction implements Fraction<TopologyWebAppFraction> 
      * @param exposeTopologyEndpoint whether to expose the endpoint or not
      */
     public void exposeTopologyEndpoint(boolean exposeTopologyEndpoint) {
-        this.exposeTopologyEndpoint = exposeTopologyEndpoint;
+        this.exposeTopologyEndpoint.set(exposeTopologyEndpoint);
     }
 
     public boolean exposeTopologyEndpoint() {
-        return exposeTopologyEndpoint;
+        return exposeTopologyEndpoint.get();
     }
 
     private Map<String, String> proxiedServiceMappings = new HashMap<>();
 
-    private boolean exposeTopologyEndpoint = true;
+    private Defaultable<Boolean> exposeTopologyEndpoint = bool(true);
 
 }

@@ -1483,6 +1483,7 @@
         <module>testsuite/testsuite-topology-consul</module>
         <module>testsuite/testsuite-topology-jgroups</module>
         <module>testsuite/testsuite-topology-webapp</module>
+        <module>testsuite/testsuite-topology-webapp-no-endpoint</module>
         <module>testsuite/testsuite-vertx</module>
         <module>testsuite/testsuite-webservices</module>
         <module>testsuite/testsuite-zipkin-jaxrs</module>
