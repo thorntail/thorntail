@@ -231,7 +231,9 @@ public class RuntimeServer implements Server {
 
             try (AutoCloseable deployments = Performance.time("Implicit Deployments")) {
                 for (Archive each : this.implicitDeployments) {
-                    deployer.deploy(each);
+                    if (each != null) {
+                        deployer.deploy(each);
+                    }
                 }
             }
 

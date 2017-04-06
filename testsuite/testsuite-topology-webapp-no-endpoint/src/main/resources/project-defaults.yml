@@ -1,0 +1,6 @@
+swarm:
+  topology:
+    web-app:
+      expose-topology-endpoint: false
+      proxied-service-mappings:
+        myService: /my-proxy
