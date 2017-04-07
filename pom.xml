@@ -1344,6 +1344,7 @@
     <module>testsuite/testsuite-buildtool</module>
     <module>testsuite/testsuite-cdi</module>
     <module>testsuite/testsuite-cdi-bean-validation</module>
+    <module>testsuite/testsuite-cdi-ejb</module>
     <module>testsuite/testsuite-connector</module>
     <module>testsuite/testsuite-container</module>
     <module>testsuite/testsuite-datasources</module>
