@@ -1345,6 +1345,7 @@
     <module>testsuite/testsuite-cdi</module>
     <module>testsuite/testsuite-cdi-bean-validation</module>
     <module>testsuite/testsuite-cdi-ejb</module>
+    <module>testsuite/testsuite-cdi-jpa-jta</module>
     <module>testsuite/testsuite-connector</module>
     <module>testsuite/testsuite-container</module>
     <module>testsuite/testsuite-datasources</module>
@@ -1467,6 +1468,7 @@
         <module>testsuite/testsuite-camel-jpa</module>
         <module>testsuite/testsuite-camel-ognl</module>
         <module>testsuite/testsuite-cdi-jaxrsapi</module>
+        <module>testsuite/testsuite-cdi-jaxws</module>
         <module>testsuite/testsuite-classloader</module>
         <module>testsuite/testsuite-drools-server</module>
         <module>testsuite/testsuite-ejb-remote</module>
