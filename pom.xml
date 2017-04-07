@@ -1355,6 +1355,7 @@
     <module>testsuite/testsuite-ejb</module>
     <module>testsuite/testsuite-io</module>
     <module>testsuite/testsuite-jaxrs</module>
+    <module>testsuite/testsuite-jaxrs-cdi</module>
     <module>testsuite/testsuite-jca</module>
     <module>testsuite/testsuite-jgroups</module>
     <module>testsuite/testsuite-jmx</module>
