@@ -30,6 +30,8 @@
   <name>Camel Component :: Ejb</name>
   <artifactId>camel-ejb</artifactId>
 
+  <description>The ejb component is for invoking EJB Java beans from Camel.</description>
+  
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Camel,Integration</swarm.fraction.tags>
@@ -39,7 +41,7 @@
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-ejb</artifactId>
-      <version>2.18.2</version>
+      <version>${version.apache.camel}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -54,18 +56,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>ejb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.camel</groupId>
-      <artifactId>wildfly-camel-feature-pack</artifactId>
-      <scope>provided</scope>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 

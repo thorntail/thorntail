@@ -30,6 +30,8 @@
   <name>Camel Component :: Activemq</name>
   <artifactId>camel-activemq</artifactId>
 
+  <description>Component activemq</description>
+  
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Camel,Integration</swarm.fraction.tags>
@@ -57,18 +59,6 @@
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-feature-pack</artifactId>
-      <scope>provided</scope>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.camel</groupId>
-      <artifactId>wildfly-camel-feature-pack</artifactId>
       <scope>provided</scope>
       <type>zip</type>
       <exclusions>

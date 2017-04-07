@@ -30,6 +30,8 @@
   <name>Camel Component :: Undertow</name>
   <artifactId>camel-undertow</artifactId>
 
+  <description>The undertow component provides HTTP-based endpoints for consuming and producing HTTP requests.</description>
+  
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Camel,Integration</swarm.fraction.tags>
@@ -39,7 +41,7 @@
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-undertow</artifactId>
-      <version>2.18.2</version>
+      <version>${version.apache.camel}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -70,18 +72,6 @@
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
-      <scope>provided</scope>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.camel</groupId>
-      <artifactId>wildfly-camel-feature-pack</artifactId>
       <scope>provided</scope>
       <type>zip</type>
       <exclusions>

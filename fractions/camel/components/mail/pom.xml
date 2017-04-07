@@ -30,6 +30,8 @@
   <name>Camel Component :: Mail</name>
   <artifactId>camel-mail</artifactId>
 
+  <description>To send or receive emails using imap/pop3 or stmp protocols.</description>
+  
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Camel,Integration</swarm.fraction.tags>
@@ -39,7 +41,7 @@
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-mail</artifactId>
-      <version>2.18.2</version>
+      <version>${version.apache.camel}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -54,18 +56,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>mail</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.camel</groupId>
-      <artifactId>wildfly-camel-feature-pack</artifactId>
-      <scope>provided</scope>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 
