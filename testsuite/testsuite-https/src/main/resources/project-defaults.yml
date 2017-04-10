@@ -1,0 +1,8 @@
+swarm:
+  https:
+    keystore:
+      # keystore is generated in target/, but the uberjar runs in a temporary directory target/arquillianNNNNNNNNN
+      path: ../keystore.jks
+      password: password
+    key:
+      alias: httpskey

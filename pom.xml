@@ -108,6 +108,7 @@
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
     <version.maven-shade-plugin>2.4.1</version.maven-shade-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
+    <version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
     <version.maven.plugin.api>3.2.5</version.maven.plugin.api>
 
     <version.checkstyle>7.4</version.checkstyle>
@@ -264,6 +265,11 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${version.build-helper-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>keytool-maven-plugin</artifactId>
+          <version>${version.keytool-maven-plugin}</version>
         </plugin>
         <plugin>
           <artifactId>maven-javadoc-plugin</artifactId>
@@ -1354,6 +1360,7 @@
     <module>testsuite/testsuite-default-deployment</module>
     <module>testsuite/testsuite-ee</module>
     <module>testsuite/testsuite-ejb</module>
+    <module>testsuite/testsuite-https</module>
     <module>testsuite/testsuite-io</module>
     <module>testsuite/testsuite-jaxrs</module>
     <module>testsuite/testsuite-jaxrs-cdi</module>
