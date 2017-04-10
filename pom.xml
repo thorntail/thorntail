@@ -1341,6 +1341,7 @@
     <module>standalone-servers/microprofile</module>
 
     <module>testsuite</module>
+    <module>testsuite/testsuite-ajp</module>
     <module>testsuite/testsuite-buildtool</module>
     <module>testsuite/testsuite-cdi</module>
     <module>testsuite/testsuite-cdi-bean-validation</module>
