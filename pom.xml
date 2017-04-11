@@ -1389,6 +1389,7 @@
     <module>testsuite/testsuite-request-controller</module>
     <module>testsuite/testsuite-security</module>
     <module>testsuite/testsuite-servlet-cdi</module>
+    <module>testsuite/testsuite-servlet-ejb</module>
     <module>testsuite/testsuite-topology</module>
     <module>testsuite/testsuite-topology-api</module>
     <module>testsuite/testsuite-topology-openshift</module>
