@@ -1,5 +1,0 @@
-
-swarm:
-  msc:
-    service-activators:
-      MyServiceActivator

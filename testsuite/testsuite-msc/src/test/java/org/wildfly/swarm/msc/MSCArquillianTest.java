@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -42,6 +43,7 @@ public class MSCArquillianTest {
     public void testNothing() throws NamingException {
         ServiceController<?> service = registry.getService(ServiceName.of("swarm", "test", "cheese"));
         assertNotNull(service);
+        assertEquals("cheddar", service.getValue());
     }
 
 }
