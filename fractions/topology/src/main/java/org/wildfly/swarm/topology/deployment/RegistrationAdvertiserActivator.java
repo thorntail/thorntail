@@ -19,6 +19,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.inject.Vetoed;
 
@@ -39,24 +44,38 @@ public class RegistrationAdvertiserActivator implements ServiceActivator {
 
         ServiceTarget target = context.getServiceTarget();
 
-        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(TopologyArchive.REGISTRATION_CONF);
+
+        forEachLine(TopologyArchive.REGISTRATION_CONF, registrationLine -> {
+            int separatorIndex = registrationLine.indexOf(TopologyArchive.SERVICE_TAG_SEPARATOR);
+            String serviceName = registrationLine;
+            List<String> tags = Collections.emptyList();
+            if (separatorIndex > 0) {
+                serviceName = registrationLine.substring(0, separatorIndex);
+                tags = getTags(registrationLine.substring(separatorIndex + 1));
+            }
+            RegistrationAdvertiser.install(target, serviceName, "http", tags);
+            RegistrationAdvertiser.install(target, serviceName, "https", tags);
+        });
+    }
+
+    private List<String> getTags(String tagsAsString) {
+        return Stream.of(tagsAsString.split(TopologyArchive.TAG_SEPARATOR))
+                .map(String::trim)
+                .collect(Collectors.toList());
+    }
+
+    private void forEachLine(String resourceName, Consumer<String> consumer) {
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
 
         if (in == null) {
             return;
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-
-            String serviceName = null;
-
-            while ((serviceName = reader.readLine()) != null) {
-                serviceName = serviceName.trim();
-                if (!serviceName.isEmpty()) {
-                    RegistrationAdvertiser.install(target, serviceName, "http");
-                    RegistrationAdvertiser.install(target, serviceName, "https");
-                }
+            String line;
+            while ((line = reader.readLine()) != null) {
+                consumer.accept(line.trim());
             }
-
         } catch (IOException e) {
             throw new ServiceRegistryException(e);
         }

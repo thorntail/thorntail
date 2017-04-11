@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.topology;
+package org.wildfly.swarm.topology.consul.annotationtest;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.jboss.shrinkwrap.api.Assignable;
+import org.wildfly.swarm.topology.Advertise;
 
 /**
- * @author Bob McWhirter
- * @author Ken Finnigan
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
+ * <br>
+ * Date: 4/11/17
+ * Time: 2:42 PM
  */
-public interface TopologyArchive extends Assignable {
-    String REGISTRATION_CONF = "META-INF/swarm-topology-registration.conf";
-    String SERVICE_TAG_SEPARATOR = " ";
-    String TAG_SEPARATOR = ",";
-
-    TopologyArchive advertise();
-
-    TopologyArchive advertise(String serviceName);
-
-    TopologyArchive advertise(String serviceName, Collection<String> tags);
-
-    List<String> advertisements();
-
-    boolean hasAdvertised();
+@Advertise(value = TaggedAdvertiser.SERVICE_NAME, tags = TaggedAdvertiser.TAG_NAME)
+public class TaggedAdvertiser {
+    public static final String SERVICE_NAME = "annotatedTaggedService";
+    public static final String TAG_NAME = "annotatedTag";
 }

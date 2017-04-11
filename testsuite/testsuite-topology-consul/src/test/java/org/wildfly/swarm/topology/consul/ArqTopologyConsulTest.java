@@ -39,7 +39,7 @@ import static org.fest.assertions.Assertions.assertThat;
 public class ArqTopologyConsulTest {
 
     @Deployment
-    public static Archive createDeployment() {
+    public static Archive<?> createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
         deployment.addPackage(Assertions.class.getPackage());
@@ -47,7 +47,7 @@ public class ArqTopologyConsulTest {
     }
 
     @CreateSwarm
-    public static Swarm newContainer(String... args) throws Exception {
+    public static Swarm newContainer() throws Exception {
         return new Swarm().fraction(new ConsulTopologyFraction());
     }
 

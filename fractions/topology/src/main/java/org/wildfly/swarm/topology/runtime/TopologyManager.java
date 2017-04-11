@@ -16,6 +16,7 @@
 package org.wildfly.swarm.topology.runtime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -53,9 +54,11 @@ public class TopologyManager implements Topology {
     }
 
     @Override
-    public AdvertisementHandle advertise(String name) {
-        ServiceController<Void> httpAdvert = RegistrationAdvertiser.install(this.serviceTarget, name, "http");
-        ServiceController<Void> httpsAdvert = RegistrationAdvertiser.install(this.serviceTarget, name, "https");
+    public AdvertisementHandle advertise(String name, String... tags) {
+        ServiceController<Void> httpAdvert =
+                RegistrationAdvertiser.install(this.serviceTarget, name, "http", Arrays.asList(tags));
+        ServiceController<Void> httpsAdvert =
+                RegistrationAdvertiser.install(this.serviceTarget, name, "https", Arrays.asList(tags));
         return new AdvertisementHandleImpl(httpAdvert, httpsAdvert);
     }
 

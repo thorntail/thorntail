@@ -65,7 +65,8 @@ public class RibbonArchiveTest {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, "myapp.war");
         archive.as(RibbonArchive.class)
                 .advertise("service-a")
-                .advertise("service-b", "service-c");
+                .advertise("service-b")
+                .advertise("service-c");
 
         Asset asset = archive.get(RibbonArchive.REGISTRATION_CONF).getAsset();
 

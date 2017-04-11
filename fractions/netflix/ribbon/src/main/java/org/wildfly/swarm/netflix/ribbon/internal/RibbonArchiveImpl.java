@@ -41,7 +41,7 @@ public class RibbonArchiveImpl extends TopologyArchiveImpl implements RibbonArch
     }
 
     @Override
-    public RibbonArchive advertise(String... serviceNames) {
-        return (RibbonArchive) super.advertise(serviceNames);
+    public RibbonArchive advertise(String serviceName) {
+        return (RibbonArchive) super.advertise(serviceName);
     }
 }

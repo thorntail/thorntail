@@ -36,7 +36,7 @@ public interface Topology {
 
     void removeListener(TopologyListener listener);
 
-    AdvertisementHandle advertise(String name);
+    AdvertisementHandle advertise(String name, String... tags);
 
     Map<String, List<Entry>> asMap();
 
