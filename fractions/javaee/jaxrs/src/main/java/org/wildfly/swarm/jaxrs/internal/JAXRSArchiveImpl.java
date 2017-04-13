@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.ws.rs.core.Application;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchiveEvent;
 import org.jboss.shrinkwrap.api.ArchiveEventHandler;
@@ -33,6 +35,8 @@ import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.objectweb.asm.ClassReader;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
+import org.wildfly.swarm.jaxrs.JAXRSMessages;
+import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 /**
  * @author Bob McWhirter
@@ -99,8 +103,45 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         return false;
     }
 
+    private static boolean hasApplicationServletMapping(Archive<?> archive) {
+        Node webXmlNode = archive.get(PATH_WEB_XML);
+        if (webXmlNode != null) {
+            return hasApplicationServletMapping(webXmlNode.getAsset());
+        }
+        return false;
+    }
+
+    private static boolean hasApplicationServletMapping(Asset asset) {
+        if (asset == null) {
+            return false;
+        }
+        WebXmlAsset webXmlAsset;
+        if (asset instanceof WebXmlAsset) {
+            webXmlAsset = (WebXmlAsset) asset;
+        } else {
+            try {
+                webXmlAsset = new WebXmlAsset(asset.openStream());
+            } catch (Exception e) {
+                JAXRSMessages.MESSAGES.unableToParseWebXml(e);
+                return false;
+            }
+        }
+        return !webXmlAsset.getServletMapping(Application.class.getName()).isEmpty();
+    }
+
+    /**
+     * See also JAX-RS spec, section 2.3.2 Servlet.
+     *
+     * @param archive
+     * @return <code>true</code> if there is an  {@link javax.ws.rs.core.Application} subclass annotated with {@link javax.ws.rs.ApplicationPath} or web.xml with
+     *         mapping for <code>javax.ws.rs.core.Application</code> servlet, <code>false</code> otherwise
+     */
+    private boolean hasApplicationPathOrServletMapping(Archive<?> archive) {
+        return hasApplicationServletMapping(archive) || hasApplicationPathAnnotation(archive);
+    }
+
     protected void addGeneratedApplication() throws IOException {
-        if (!hasApplicationPathAnnotation(getArchive())) {
+        if (!hasApplicationPathOrServletMapping(getArchive())) {
             String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
             String path = "WEB-INF/classes/" + name.replace('.', '/') + ".class";
 
@@ -234,6 +275,11 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
 
     /**
+     * Path to the web.xml descriptor.
+     */
+    private static final ArchivePath PATH_WEB_XML = ArchivePaths.create(PATH_WEB_INF, "web.xml");
+
+    /**
      * Path to the resources inside of the Archive.
      */
     private static final ArchivePath PATH_RESOURCE = ArchivePaths.create(PATH_WEB_INF, "classes");
@@ -258,7 +304,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
      */
     private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
 
-
     public static class ApplicationHandler implements ArchiveEventHandler {
 
         public ApplicationHandler(JAXRSArchive archive, String path) {
@@ -269,7 +314,8 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
         @Override
         public void handle(ArchiveEvent event) {
             Asset asset = event.getAsset();
-            if (hasApplicationPathAnnotation(event.getPath(), asset)) {
+            if ((PATH_WEB_XML.equals(event.getPath()) && hasApplicationServletMapping(asset))
+                    || hasApplicationPathAnnotation(event.getPath(), asset)) {
                 this.archive.delete(this.path);
             }
         }
