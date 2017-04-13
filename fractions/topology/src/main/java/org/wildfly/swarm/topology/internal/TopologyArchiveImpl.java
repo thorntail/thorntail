@@ -15,14 +15,6 @@
  */
 package org.wildfly.swarm.topology.internal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.impl.base.ArchiveBase;
@@ -30,6 +22,18 @@ import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.topology.TopologyArchive;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Bob McWhirter
@@ -50,38 +54,31 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
         Node regConf = as(JARArchive.class).get(REGISTRATION_CONF);
         if (regConf != null && regConf.getAsset() != null) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(regConf.getAsset().openStream()))) {
-                reader.lines()
-                        .forEach(line -> {
-                            this.serviceNames.add(line);
-                        });
+                reader.lines().forEach(this::parseConfigLine);
             }
         }
     }
 
     @Override
     public TopologyArchive advertise() {
-        doAdvertise();
-        return this;
+        return doAdvertise();
     }
 
     @Override
-    public TopologyArchive advertise(String... serviceNames) {
-        for (String serviceName : serviceNames) {
-            this.serviceNames.add(serviceName);
-        }
-
-        return advertise();
+    public TopologyArchive advertise(String serviceName) {
+        return advertise(serviceName, Collections.emptyList());
     }
 
     @Override
-    public TopologyArchive advertise(Collection<String> serviceNames) {
-        this.serviceNames.addAll(serviceNames);
-        return advertise();
+    public TopologyArchive advertise(String serviceName, Collection<String> tags) {
+        tagsByService.put(serviceName, tags);
+        return doAdvertise();
     }
 
     @Override
     public List<String> advertisements() {
-        return Collections.unmodifiableList(this.serviceNames);
+        List<String> serviceNames = new ArrayList<>(tagsByService.keySet());
+        return Collections.unmodifiableList(serviceNames);
     }
 
     @Override
@@ -89,9 +86,23 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
         return as(JARArchive.class).get(REGISTRATION_CONF) != null;
     }
 
+    private void parseConfigLine(String line) {
+        line = line.trim();
+        if (!line.isEmpty()) {
+            List<String> split = new ArrayList<>(Arrays.asList(line.split(SERVICE_TAG_SEPARATOR)));
+            String serviceName = split.get(0);
+
+            List<String> tags = split.size() > 1
+                    ? split.subList(1, split.size())
+                    : Collections.emptyList();
+            tagsByService.put(serviceName, tags);
+        }
+    }
+
     protected List<String> getServiceNames() {
-        if (!this.serviceNames.isEmpty()) {
-            return this.serviceNames;
+        List<String> result = advertisements();
+        if (!result.isEmpty()) {
+            return result;
         }
         String archiveName = this.getArchive().getName();
         int lastDotLoc = archiveName.lastIndexOf('.');
@@ -107,18 +118,26 @@ public class TopologyArchiveImpl extends AssignableBase<ArchiveBase<?>> implemen
             //as(JARArchive.class).addModule("org.wildfly.swarm.topology", "deployment");
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder registrationConf = new StringBuilder();
 
         List<String> names = getServiceNames();
         for (String name : names) {
-            buf.append(name).append("\n");
+            Collection<String> tags = tagsByService.getOrDefault(name, Collections.emptyList());
+            registrationConf.append(name);
+            if (!tags.isEmpty()) {
+                registrationConf.append(" ")
+                        .append(
+                                tags.stream().collect(Collectors.joining(TAG_SEPARATOR))
+                        );
+            }
+            registrationConf.append("\n");
         }
 
-        as(JARArchive.class).add(new StringAsset(buf.toString()), REGISTRATION_CONF);
+        as(JARArchive.class).add(new StringAsset(registrationConf.toString()), REGISTRATION_CONF);
         return this;
     }
 
-    private List<String> serviceNames = new ArrayList<>();
+    private Map<String, Collection<String>> tagsByService = new HashMap<>();
 
 
 }

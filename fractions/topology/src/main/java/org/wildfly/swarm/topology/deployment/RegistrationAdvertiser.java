@@ -30,6 +30,9 @@ import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.topology.TopologyConnector;
 import org.wildfly.swarm.topology.TopologyMessages;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 /**
  * @author Bob McWhirter
  */
@@ -38,9 +41,15 @@ public class RegistrationAdvertiser implements Service<Void> {
 
     public static final ServiceName CONNECTOR_SERVICE_NAME = ServiceName.of("swarm", "topology", "connector");
 
-    public static ServiceController<Void> install(ServiceTarget target, String serviceName, String socketBindingName) {
+    public static ServiceController<Void> install(ServiceTarget target,
+                                                  String serviceName,
+                                                  String socketBindingName,
+                                                  Collection<String> userDefinedTags) {
+        List<String> tags = new ArrayList<>(userDefinedTags);
+        tags.add(socketBindingName);
+
         ServiceName socketBinding = ServiceName.parse("org.wildfly.network.socket-binding." + socketBindingName);
-        RegistrationAdvertiser advertiser = new RegistrationAdvertiser(serviceName, socketBindingName);
+        RegistrationAdvertiser advertiser = new RegistrationAdvertiser(serviceName, tags.toArray(new String[tags.size()]));
 
         return target.addService(ServiceName.of("swarm", "topology", "register", serviceName, socketBindingName), advertiser)
                 .addDependency(CONNECTOR_SERVICE_NAME, TopologyConnector.class, advertiser.getTopologyConnectorInjector())

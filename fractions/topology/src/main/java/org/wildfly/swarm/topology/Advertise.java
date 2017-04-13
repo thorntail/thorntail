@@ -13,5 +13,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Repeatable(Advertises.class)
 public @interface Advertise {
+    String TAGS_ATTRIBUTE_NAME = "tags";
+
     String value();
+
+    String[] tags() default {};
 }

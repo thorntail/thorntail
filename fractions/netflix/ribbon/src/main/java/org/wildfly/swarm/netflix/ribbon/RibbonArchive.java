@@ -24,6 +24,6 @@ public interface RibbonArchive extends TopologyArchive {
 
     RibbonArchive advertise();
 
-    RibbonArchive advertise(String... serviceNames);
+    RibbonArchive advertise(String serviceNames);
 
 }
