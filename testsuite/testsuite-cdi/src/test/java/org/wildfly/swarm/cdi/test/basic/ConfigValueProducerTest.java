@@ -13,35 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi.test;
-
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
+package org.wildfly.swarm.cdi.test.basic;
 
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.cdi.test.basic.ConfigAwareBean;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @author Bob McWhirter
+ * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
+@Ignore
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
-public class CDIArquillianTest {
-
-    @Inject
-    private Cheddar cheddar;
+public class ConfigValueProducerTest {
 
     @Test
-    public void testInjection() {
-        assertNotNull(cheddar);
+    public void testInjection(ConfigAwareBean configAwareBean) {
+        assertNotNull(configAwareBean);
+
+        assertEquals(Integer.valueOf(10), configAwareBean.getPortOffset());
+        assertEquals("DEBUG", configAwareBean.getLogLevel());
+        assertEquals(Integer.valueOf(10), configAwareBean
+                .getPortOffsetResolver().as(Integer.class).getValue());
     }
 
-    @Test
-    public void testCDIContainerPresence() throws Exception {
-        assertNotNull(CDI.current());
-    }
 }
