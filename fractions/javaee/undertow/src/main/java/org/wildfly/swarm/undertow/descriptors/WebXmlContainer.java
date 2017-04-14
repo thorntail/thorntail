@@ -80,9 +80,6 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
         // Add services entry for FaviconServletExtension
         this.addAsServiceProvider(ServletExtension.class.getName(), FaviconServletExtension.EXTENSION_NAME);
 
-        // Add JBoss Modules to deployment
-        this.addModule("org.jboss.modules");
-
         return (T) this;
     }
 
