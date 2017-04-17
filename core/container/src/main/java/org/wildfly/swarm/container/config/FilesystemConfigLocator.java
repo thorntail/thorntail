@@ -32,6 +32,12 @@ public class FilesystemConfigLocator extends ConfigLocator {
             located.add(path.toUri().toURL());
         }
 
+        path = this.root.resolve(PROJECT_PREFIX + profileName + ".yaml");
+
+        if (Files.exists(path)) {
+            located.add(path.toUri().toURL());
+        }
+
         path = this.root.resolve(PROJECT_PREFIX + profileName + ".properties");
         if (Files.exists(path)) {
             located.add(path.toUri().toURL());

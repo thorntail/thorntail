@@ -344,6 +344,7 @@ public class CommandLine {
         if (get(BIND) != null) {
             swarm.withProperty(SwarmProperties.BIND_ADDRESS, get(BIND));
         }
+
     }
 
     /**

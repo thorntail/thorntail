@@ -224,7 +224,7 @@ public class Swarm {
         this.configView = ConfigViewFactory.defaultFactory(properties, environment);
         this.commandLine = CommandLine.parse(args);
         this.commandLine.apply(this);
-        initializeConfigView();
+        initializeConfigView(properties);
 
         this.isConstructing = false;
     }
@@ -517,7 +517,7 @@ public class Swarm {
                         props.load(in);
                         if (props.containsKey(BootstrapProperties.APP_ARTIFACT)) {
                             System.setProperty(BootstrapProperties.APP_ARTIFACT,
-                                    props.getProperty(BootstrapProperties.APP_ARTIFACT));
+                                               props.getProperty(BootstrapProperties.APP_ARTIFACT));
                         }
 
                         Set<String> names = props.stringPropertyNames();
@@ -536,7 +536,7 @@ public class Swarm {
         return false;
     }
 
-    private void initializeConfigView() throws IOException, ModuleLoadException {
+    private void initializeConfigView(Properties props) throws IOException, ModuleLoadException {
         try (AutoCloseable handle = Performance.time("Loading YAML")) {
             if (System.getProperty(SwarmProperties.PROJECT_STAGE_FILE) != null) {
                 String file = System.getProperty(SwarmProperties.PROJECT_STAGE_FILE);
@@ -563,10 +563,22 @@ public class Swarm {
 
             //List<String> activatedNames = new ArrayList<>();
 
-            if (System.getProperty(SwarmProperties.PROJECT_STAGE) != null) {
-                String prop = System.getProperty(SwarmProperties.PROJECT_STAGE);
-                String[] activated = prop.split(",");
+            String projectStageProp = System.getProperty(SwarmProperties.PROJECT_STAGE);
+            if (projectStageProp == null && props != null) {
+                projectStageProp = props.getProperty(SwarmProperties.PROJECT_STAGE);
+            }
+
+            if (projectStageProp == null) {
+                projectStageProp = this.configView.get().resolve(SwarmProperties.PROJECT_STAGE).withDefault("NOT_FOUND").getValue();
+                if (projectStageProp != null && projectStageProp.equals("NOT_FOUND")) {
+                    projectStageProp = null;
+                }
+            }
+
+            if (projectStageProp != null) {
+                String[] activated = projectStageProp.split(",");
                 for (String each : activated) {
+                    this.configView.load(each);
                     this.configView.withProfile(each);
                 }
             }
