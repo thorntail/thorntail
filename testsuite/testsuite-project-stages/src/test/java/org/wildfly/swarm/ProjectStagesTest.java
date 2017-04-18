@@ -127,4 +127,25 @@ public class ProjectStagesTest {
         assertThat(view.resolve("swarm.myname").getValue()).isEqualTo("tacos");
     }
 
+    @Test
+    public void testPseudoPropertiesToSelectProjectStage() throws Exception {
+        Swarm swarm = new Swarm(new Properties(),
+                                "-Dswarm.project.stage=production");
+
+        ConfigView view = swarm.configView();
+        assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("brie");
+    }
+
+    @Test
+    public void testIsolatedPropertiesToSelectProjectStage() throws Exception {
+        Properties props = new Properties();
+        props.setProperty("swarm.project.stage", "production");
+        Swarm swarm = new Swarm(props,
+                                "-Dswarm.project.stage=production");
+
+        ConfigView view = swarm.configView();
+        assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("brie");
+        assertThat(view.resolve("foo.bar.taco").getValue()).isEqualTo("crunchy");
+    }
+
 }

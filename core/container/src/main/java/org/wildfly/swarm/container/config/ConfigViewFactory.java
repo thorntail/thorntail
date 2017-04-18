@@ -104,7 +104,7 @@ public class ConfigViewFactory {
     public void load(String profileName, URL url) throws IOException {
         if (url.getPath().endsWith(".properties")) {
             loadProperties(profileName, url);
-        } else if (url.getPath().endsWith(".yml")) {
+        } else if (url.getPath().endsWith(".yml") || url.getPath().endsWith(".yaml")) {
             loadYaml(profileName, url);
         }
     }
@@ -118,7 +118,7 @@ public class ConfigViewFactory {
     }
 
     protected void loadYaml(String profileName, URL url) throws IOException {
-        if (profileName.equals(STAGES) || url.getPath().endsWith("-stages.yml")) {
+        if (profileName.equals(STAGES) || url.getPath().endsWith("-stages.yml") || url.getPath().endsWith("-stages.yaml")) {
             loadProjectStages(url);
             return;
         }

@@ -41,6 +41,13 @@ public class ClassLoaderConfigLocator extends ConfigLocator {
             located.add(each);
         }
 
+        resources = this.classLoader.getResources(PROJECT_PREFIX + profileName + ".yaml");
+
+        while (resources.hasMoreElements()) {
+            URL each = resources.nextElement();
+            located.add(each);
+        }
+
         resources = this.classLoader.getResources(PROJECT_PREFIX + profileName + ".properties");
 
         while (resources.hasMoreElements()) {
