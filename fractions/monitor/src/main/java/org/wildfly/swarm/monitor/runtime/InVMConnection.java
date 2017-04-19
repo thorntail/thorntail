@@ -1,6 +1,7 @@
 package org.wildfly.swarm.monitor.runtime;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -54,9 +55,10 @@ final class InVMConnection extends ServerConnection {
 
     protected final List<CloseListener> closeListeners = new LinkedList<>();
 
-    InVMConnection(XnioWorker worker) {
+    InVMConnection(XnioWorker worker, int port) {
         this.bufferPool = new DefaultByteBufferPool(false, 1024, 0, 0);
         this.worker = worker;
+        this.address = new InetSocketAddress(port); // port carried forward from the initial
     }
 
     public void flushTo(StringBuffer sb) {
@@ -144,12 +146,12 @@ final class InVMConnection extends ServerConnection {
 
     @Override
     public SocketAddress getLocalAddress() {
-        return null;
+        return address;
     }
 
     @Override
     public <A extends SocketAddress> A getLocalAddress(Class<A> type) {
-        return null;
+        return (A) address;
     }
 
     @Override
@@ -250,4 +252,6 @@ final class InVMConnection extends ServerConnection {
     }
 
     private boolean closed;
+
+    private final InetSocketAddress address;
 }

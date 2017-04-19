@@ -16,6 +16,7 @@
 package org.wildfly.swarm.monitor.runtime;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -150,14 +151,13 @@ class HttpContexts implements HttpHandler {
 
                     int i = 0;
                     for (InVMResponse resp : responses) {
-                        if (200 == resp.getStatus()) {
-                            sb.append(resp.getPayload());
-                        } else if (503 == resp.getStatus()) {
-                            sb.append(resp.getPayload());
-                            failed = true;
-                        } else {
-                            throw new RuntimeException("Unexpected status code: " + resp.getStatus());
+
+                        sb.append(resp.getPayload());
+
+                        if (!failed) {
+                            failed = resp.getStatus() != 200;
                         }
+
                         if (i < responses.size() - 1) {
                             sb.append(",\n");
                         }
@@ -203,7 +203,10 @@ class HttpContexts implements HttpHandler {
 
             String delegateContext = healthCheck.getWebContext();
 
-            final InVMConnection connection = new InVMConnection(worker);
+            final InVMConnection connection = new InVMConnection(
+                    worker,
+                    exchange.getConnection().getLocalAddress(InetSocketAddress.class).getPort()
+            );
             final HttpServerExchange mockExchange = new HttpServerExchange(connection);
             mockExchange.setRequestScheme("http");
             mockExchange.setRequestMethod(new HttpString("GET"));
