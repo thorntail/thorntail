@@ -40,6 +40,21 @@ may be used when defining a datasource is as follows:
 
 |Sybase
 |`sybase`
+
+|Teiid
+|`teiid`
+
+|MariaDB
+|`mariadb`
+
+|Derby
+|`derby`
+
+|Hive2
+|`hive2`
+
+|PrestoDB
+|`prestodb`
 |===
 
 
