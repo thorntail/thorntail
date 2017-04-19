@@ -28,6 +28,7 @@ import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.ConfigurableAlias;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -46,6 +47,7 @@ import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_SERVER;
  */
 @MarshalDMR
 @WildFlyExtension(module = "org.wildfly.extension.undertow")
+@DeploymentModule(name = "org.jboss.modules")
 public class UndertowFraction extends Undertow<UndertowFraction> implements Fraction {
 
     /**
