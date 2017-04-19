@@ -29,7 +29,7 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>52</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>53</version.wildfly.swarm.fraction.plugin>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
