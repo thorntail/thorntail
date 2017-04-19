@@ -16,6 +16,7 @@
 package org.wildfly.swarm.fractions;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -118,14 +119,69 @@ public class FractionUsageAnalyzer {
         return detectedFractions;
     }
 
+    private boolean isZipFile(File source) {
+        if (source.isDirectory()) {
+            return false;
+        }
+
+        return source.getName().endsWith(".jar") || source.getName().endsWith(".war") || source.getName().endsWith(".zip");
+    }
+
     private void scanFile(File source) {
-        fireScanner(suffix(source.getName()), s -> {
+        if (isZipFile(source)) {
+            fireScanner(suffix(source.getName()), zipFileScannerConsumer(source));
+        } else {
+            if (source.isDirectory()) {
+                if (source.getName().endsWith(".war") || new File(source, "WEB-INF").exists()) {
+                    fireScanner("war", explodedScannerConsumer(source));
+                } else {
+                    fireScanner("jar", explodedScannerConsumer(source));
+                }
+            } else {
+                fireScanner(suffix(source.getName()), explodedScannerConsumer(source));
+            }
+        }
+    }
+
+    private Consumer<Scanner<?>> zipFileScannerConsumer(File source) {
+        return s -> {
             try (ZipFile zip = new ZipFile(source)) {
                 s.scan(zip, this::scanSource);
             } catch (IOException e) {
                 log.error("", e);
             }
-        });
+        };
+    }
+
+    private Consumer<Scanner<?>> explodedScannerConsumer(File source) {
+        return s -> {
+            try {
+                s.scan(source.toPath(), this::scanSource);
+            } catch (IOException e) {
+                log.error("", e);
+            }
+        };
+    }
+
+    private void scanSource(final Path source) {
+        final String suffix = suffix(source.getFileName().toString());
+
+        Collection<FractionDetector<?>> validDetectors =
+                detectors.stream()
+                        .filter(d -> d.extensionToDetect().equals(suffix))
+                        .filter(d -> !d.detectionComplete())
+                        .collect(Collectors.toList());
+
+        if (validDetectors.size() > 0) {
+            fireScanner(suffix, s -> {
+                try (InputStream input = new FileInputStream(source.toFile())) {
+                    s.scan(source.getFileName().toString(), input, convertDetectors(validDetectors), this::scanFile);
+                } catch (IOException e) {
+                    log.error("", e);
+                }
+            });
+        }
+
     }
 
     private void scanSource(ZipEntry entry, ZipFile source) {
@@ -165,6 +221,7 @@ public class FractionUsageAnalyzer {
         List<Scanner<?>> scanners = this.scanners.stream()
                 .filter(s -> s.extension().equals(suffix))
                 .collect(Collectors.toList());
+
         scanners.forEach(scannerConsumer);
     }
 

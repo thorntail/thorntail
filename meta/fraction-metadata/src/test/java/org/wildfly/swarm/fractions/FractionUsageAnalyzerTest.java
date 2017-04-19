@@ -17,9 +17,12 @@ package org.wildfly.swarm.fractions;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
@@ -47,6 +50,23 @@ public class FractionUsageAnalyzerTest {
     }
 
     @Test
+    public void testExplodedFractionMatching() throws Exception {
+        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class);
+        archive.addClass(MyResource.class);
+        FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
+
+        Path dir = Files.createTempDirectory(archive.getName());
+        archive.as(ExplodedExporter.class).exportExplodedInto(dir.toFile());
+
+        analyzer.source(dir.toFile());
+        assertThat(analyzer.detectNeededFractions()
+                           .stream()
+                           .filter(fd -> fd.getArtifactId().equals("jaxrs"))
+                           .count())
+                .isEqualTo(1);
+    }
+
+    @Test
     public void testDetectEmptyWarAsUndertow() throws Exception {
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "test.war");
         archive.add(EmptyAsset.INSTANCE, "nothing");
@@ -57,9 +77,9 @@ public class FractionUsageAnalyzerTest {
 
         analyzer.source(out);
         assertThat(analyzer.detectNeededFractions()
-                .stream()
-                .filter(fd -> fd.getArtifactId().equals("undertow"))
-                .count())
+                           .stream()
+                           .filter(fd -> fd.getArtifactId().equals("undertow"))
+                           .count())
                 .isEqualTo(1);
     }
 }

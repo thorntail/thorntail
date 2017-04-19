@@ -19,6 +19,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.function.BiConsumer;
@@ -33,6 +38,20 @@ import org.wildfly.swarm.spi.meta.FractionDetector;
  */
 public interface Scanner<T> {
     String extension();
+
+    default void scan(Path source, Consumer<Path> childHandler) throws IOException {
+        if (Files.isDirectory(source)) {
+            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    childHandler.accept(file);
+                    return super.visitFile(file, attrs);
+                }
+            });
+        } else {
+            childHandler.accept(source);
+        }
+    }
 
     default void scan(ZipFile source, BiConsumer<ZipEntry, ZipFile> childHandler) throws IOException {
         final Enumeration<? extends ZipEntry> entries = source.entries();
