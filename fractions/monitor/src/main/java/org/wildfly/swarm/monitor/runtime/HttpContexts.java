@@ -16,6 +16,7 @@
 package org.wildfly.swarm.monitor.runtime;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -202,7 +203,10 @@ class HttpContexts implements HttpHandler {
 
             String delegateContext = healthCheck.getWebContext();
 
-            final InVMConnection connection = new InVMConnection(worker);
+            final InVMConnection connection = new InVMConnection(
+                    worker,
+                    exchange.getConnection().getLocalAddress(InetSocketAddress.class).getPort()
+            );
             final HttpServerExchange mockExchange = new HttpServerExchange(connection);
             mockExchange.setRequestScheme("http");
             mockExchange.setRequestMethod(new HttpString("GET"));
