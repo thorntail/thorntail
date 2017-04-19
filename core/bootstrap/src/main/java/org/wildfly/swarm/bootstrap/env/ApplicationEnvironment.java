@@ -262,11 +262,11 @@ public class ApplicationEnvironment {
      *
      * @return The list of Maven GAVs for application dependencies.
      */
-    public List<String> getDependencies() {
+    public Set<String> getDependencies() {
         if (this.mode == Mode.UBERJAR) {
             return this.applicationManifest.getDependencies();
         }
-        return Collections.emptyList();
+        return Collections.emptySet();
     }
 
     /**

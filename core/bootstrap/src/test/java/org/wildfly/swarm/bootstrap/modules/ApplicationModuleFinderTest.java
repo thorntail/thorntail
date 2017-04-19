@@ -23,7 +23,7 @@ public class ApplicationModuleFinderTest {
     public void testDependency() {
         // Mocks
         ApplicationEnvironment env = mock(ApplicationEnvironment.class);
-        when(env.getDependencies()).thenReturn(Collections.singletonList("org.jboss.forge.addon:ui-spi:jar:3.4.0.Final"));
+        when(env.getDependencies()).thenReturn(Collections.singleton("org.jboss.forge.addon:ui-spi:jar:3.4.0.Final"));
 
         ModuleSpec.Builder builder = mock(ModuleSpec.Builder.class);
 
@@ -37,7 +37,7 @@ public class ApplicationModuleFinderTest {
     public void testDependencyHasClassifier() {
         // Mocks
         ApplicationEnvironment env = mock(ApplicationEnvironment.class);
-        when(env.getDependencies()).thenReturn(Collections.singletonList("org.jboss.forge.addon:ui-spi:jar:forge-addon:3.4.0.Final"));
+        when(env.getDependencies()).thenReturn(Collections.singleton("org.jboss.forge.addon:ui-spi:jar:forge-addon:3.4.0.Final"));
 
         ModuleSpec.Builder builder = mock(ModuleSpec.Builder.class);
 
