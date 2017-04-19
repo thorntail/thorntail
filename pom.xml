@@ -552,6 +552,11 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-activemq</artifactId>
+        <version>2017.5.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>camel-cdi</artifactId>
         <version>2017.5.0-SNAPSHOT</version>
       </dependency>
@@ -592,7 +597,12 @@
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>camel-other</artifactId>
+        <artifactId>camel-ognl</artifactId>
+        <version>2017.5.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>camel-swagger</artifactId>
         <version>2017.5.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -1457,7 +1467,7 @@
         <module>testsuite/testsuite-camel-jms</module>
         <module>testsuite/testsuite-camel-jmx</module>
         <module>testsuite/testsuite-camel-jpa</module>
-        <module>testsuite/testsuite-camel-other</module>
+        <module>testsuite/testsuite-camel-ognl</module>
         <module>testsuite/testsuite-cdi-jaxrsapi</module>
         <module>testsuite/testsuite-classloader</module>
         <module>testsuite/testsuite-drools-server</module>

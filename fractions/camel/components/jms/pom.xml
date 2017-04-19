@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Camel Full :: API
+  WildFly Swarm Camel
   %%
   Copyright (C) 2016 RedHat
   %%
@@ -18,8 +18,6 @@
   limitations under the License.
   #L%
   -->
-
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -29,41 +27,31 @@
     <version>2017.5.0-SNAPSHOT</version>
   </parent>
 
-  <name>Camel JMS</name>
-  <description>JMS Spec 1.1 client based on Spring JMS project and able to produce or consume JMS messages from queues/topics exposed by a JMS Broker or Apache ActiveMQ.</description>
-
+  <name>Camel Component :: Jms</name>
   <artifactId>camel-jms</artifactId>
 
+  <description>The jms component allows messages to be sent to (or consumed from) a JMS Queue or Topic.</description>
+  
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>Camel,Integration,EIP,JMS</swarm.fraction.tags>
+    <swarm.fraction.tags>Camel,Integration</swarm.fraction.tags>
   </properties>
-
 
   <dependencies>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>camel-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-camel</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-jms</artifactId>
+      <version>${version.apache.camel}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>camel-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -81,28 +69,9 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.camel</groupId>
-      <artifactId>wildfly-camel-feature-pack</artifactId>
-      <version>${version.wildfly.camel}</version>
-      <scope>provided</scope>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
-  
+
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
