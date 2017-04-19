@@ -150,14 +150,13 @@ class HttpContexts implements HttpHandler {
 
                     int i = 0;
                     for (InVMResponse resp : responses) {
-                        if (200 == resp.getStatus()) {
-                            sb.append(resp.getPayload());
-                        } else if (503 == resp.getStatus()) {
-                            sb.append(resp.getPayload());
-                            failed = true;
-                        } else {
-                            throw new RuntimeException("Unexpected status code: " + resp.getStatus());
+
+                        sb.append(resp.getPayload());
+
+                        if (!failed) {
+                            failed = resp.getStatus() != 200;
                         }
+
                         if (i < responses.size() - 1) {
                             sb.append(",\n");
                         }
