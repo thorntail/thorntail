@@ -18,6 +18,7 @@ package org.wildfly.swarm.undertow.descriptors;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +131,16 @@ public class WebXmlAsset implements NamedAsset {
         SecurityConstraint constraint = new SecurityConstraint(urlPattern);
         this.constraints.add(constraint);
         return constraint;
+    }
+
+    /**
+     *
+     * @param servletName
+     * @return the list of <code>url-pattern</code> elements or an empty list if no mapping is present
+     */
+    public List<String> getServletMapping(String servletName) {
+        return this.descriptor.getAllServletMapping().stream().filter((mapping) -> mapping.getServletName().equals(servletName)).findFirst()
+                .map(m -> m.getAllUrlPattern()).orElse(Collections.emptyList());
     }
 
     @Override
