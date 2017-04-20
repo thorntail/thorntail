@@ -1319,9 +1319,7 @@
     <module>fractions/javaee/transactions</module>
     <module>fractions/javaee/undertow</module>
 
-    <module>fractions/wildfly/hibernate-search</module>
     <module>fractions/wildfly/hibernate-validator</module>
-    <module>fractions/wildfly/infinispan</module>
     <module>fractions/wildfly/io</module>
     <module>fractions/wildfly/jgroups</module>
     <module>fractions/wildfly/logging</module>
@@ -1333,14 +1331,11 @@
     <module>fractions/keycloak</module>
     <module>fractions/microprofile</module>
     <module>fractions/monitor</module>
-    <module>fractions/netflix</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>
     <module>fractions/topology-webapp</module>
 
     <module>fractions/cdi-extensions/cdi-config</module>
-
-    <module>fractions/teiid</module>
 
     <module>standalone-servers</module>
     <module>standalone-servers/microprofile</module>
@@ -1355,8 +1350,6 @@
     <module>testsuite/testsuite-default-deployment</module>
     <module>testsuite/testsuite-ee</module>
     <module>testsuite/testsuite-ejb</module>
-    <module>testsuite/testsuite-hystrix</module>
-    <module>testsuite/testsuite-infinispan</module>
     <module>testsuite/testsuite-io</module>
     <module>testsuite/testsuite-jaxrs</module>
     <module>testsuite/testsuite-jca</module>
@@ -1381,8 +1374,6 @@
     <module>testsuite/testsuite-project-stages</module>
     <module>testsuite/testsuite-remoting</module>
     <module>testsuite/testsuite-request-controller</module>
-    <module>testsuite/testsuite-ribbon</module>
-    <module>testsuite/testsuite-ribbon-secured</module>
     <module>testsuite/testsuite-security</module>
     <module>testsuite/testsuite-topology</module>
     <module>testsuite/testsuite-topology-api</module>
@@ -1449,9 +1440,14 @@
         <module>fractions/zipkin-jaxrs</module>
 
         <module>fractions/wildfly/cli</module>
+        <module>fractions/wildfly/hibernate-search</module>
+        <module>fractions/wildfly/infinispan</module>
         <module>fractions/wildfly/jdr</module>
         <module>fractions/wildfly/management-console</module>
         <module>fractions/wildfly/mod_cluster</module>
+
+        <module>fractions/netflix</module>
+        <module>fractions/teiid</module>
 
         <module>fractions/cdi-extensions/cdi-jaxrsapi</module>
 
@@ -1473,6 +1469,8 @@
         <module>testsuite/testsuite-drools-server</module>
         <module>testsuite/testsuite-ejb-remote</module>
         <module>testsuite/testsuite-flyway</module>
+        <module>testsuite/testsuite-infinispan</module>
+        <module>testsuite/testsuite-hystrix</module>
         <module>testsuite/testsuite-javafx</module>
         <module>testsuite/testsuite-jdr</module>
         <module>testsuite/testsuite-jolokia</module>
@@ -1486,6 +1484,8 @@
         <module>testsuite/testsuite-messaging-remote</module>
         <module>testsuite/testsuite-mod_cluster</module>
         <module>testsuite/testsuite-resource-adapters</module>
+        <module>testsuite/testsuite-ribbon</module>
+        <module>testsuite/testsuite-ribbon-secured</module>
         <module>testsuite/testsuite-spring</module>
         <module>testsuite/testsuite-swagger</module>
         <module>testsuite/testsuite-swagger-customized</module>
