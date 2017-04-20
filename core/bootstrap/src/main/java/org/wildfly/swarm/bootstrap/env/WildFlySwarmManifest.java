@@ -10,10 +10,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.yaml.snakeyaml.DumperOptions;
@@ -160,7 +162,7 @@ public class WildFlySwarmManifest {
         this.dependencies.add(gav);
     }
 
-    public List<String> getDependencies() {
+    public Set<String> getDependencies() {
         return this.dependencies;
     }
 
@@ -223,7 +225,7 @@ public class WildFlySwarmManifest {
 
     private List<String> bootstrapArtifacts = new ArrayList<>();
 
-    private List<String> dependencies = new ArrayList<>();
+    private Set<String> dependencies = new HashSet<>();
 
     private Properties properties = new Properties();
 
