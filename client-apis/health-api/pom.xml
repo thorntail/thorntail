@@ -37,5 +37,13 @@
       <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+       <groupId>org.eclipse.microprofile.apis</groupId>
+       <artifactId>microprofile-health-api</artifactId>
+       <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+     </dependency>
+
   </dependencies>
 </project>

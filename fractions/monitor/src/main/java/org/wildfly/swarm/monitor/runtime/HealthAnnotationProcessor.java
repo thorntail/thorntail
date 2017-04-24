@@ -42,6 +42,8 @@ public class HealthAnnotationProcessor implements DeploymentProcessor {
 
     public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.health.Health");
 
+    public static final DotName MP_HEALTH = DotName.createSimple("org.eclipse.microprofile.health.inject.Health");
+
     public static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
 
     public static final DotName APP_PATH = DotName.createSimple("javax.ws.rs.ApplicationPath");
@@ -81,7 +83,7 @@ public class HealthAnnotationProcessor implements DeploymentProcessor {
                 ClassInfo classInfo = annotation.target().asClass();
 
                 for (MethodInfo methodInfo : classInfo.methods()) {
-                    if (methodInfo.hasAnnotation(HEALTH)) {
+                    if (methodInfo.hasAnnotation(HEALTH) || methodInfo.hasAnnotation(MP_HEALTH)) {
                         StringBuilder sb = new StringBuilder();
                         boolean isSecure = false;
 
@@ -111,8 +113,12 @@ public class HealthAnnotationProcessor implements DeploymentProcessor {
                             // the method level @Path
                             safeAppend(sb, methodInfo.annotation(PATH).value().asString());
 
-                            // the method level @Health
+                            // the method level @Health either MP or regular Swarm
                             AnnotationInstance healthAnnotation = methodInfo.annotation(HEALTH);
+                            if (null == healthAnnotation) {
+                                healthAnnotation = methodInfo.annotation(MP_HEALTH);
+                            }
+
                             isSecure = healthAnnotation.value("inheritSecurity") != null ? healthAnnotation.value("inheritSecurity").asBoolean() : true;
 
                         } else {
