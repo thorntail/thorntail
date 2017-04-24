@@ -34,11 +34,19 @@ public class InstallMonitorFilter implements DeploymentProcessor {
         this.archive = archive;
     }
 
+    // TODO
+    private static final String MP_HEALTH_VERSION = "1.0-SNAPSHOT";
+
     @Override
     public void process() throws Exception {
-        WARArchive warArchive = archive.as(WARArchive.class);
-        warArchive.addDependency("org.wildfly.swarm:health-api:jar:" + SwarmInfo.VERSION);
-        warArchive.findWebXmlAsset().setContextParam("resteasy.scan", "true");
+        try {
+            WARArchive warArchive = archive.as(WARArchive.class);
+            warArchive.addDependency("org.wildfly.swarm:health-api:jar:" + SwarmInfo.VERSION);
+            warArchive.addDependency("org.eclipse.microprofile.apis:microprofile-health-api:jar:" + MP_HEALTH_VERSION);
+            warArchive.findWebXmlAsset().setContextParam("resteasy.scan", "true");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to install health processor", e);
+        }
     }
 
     private final Archive archive;
