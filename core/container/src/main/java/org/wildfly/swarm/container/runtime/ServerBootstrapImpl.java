@@ -113,7 +113,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                     logFractions();
                 }
 
-                return LogSilencer.silently("org.jboss.weld").execute(() -> {
+                RuntimeServer outerServer = LogSilencer.silently("org.jboss.weld").execute(() -> {
                     Weld weld = new Weld(WELD_INSTANCE_ID);
                     weld.setClassLoader(module.getClassLoader());
 
@@ -145,11 +145,13 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                             server = weldContainer.select(RuntimeServer.class).get();
                         }
                     }
-                    try (AutoCloseable weldInitHandle = Performance.time("Server start")) {
-                        server.start(true);
-                    }
                     return server;
                 });
+
+                try (AutoCloseable weldInitHandle = Performance.time("Server start")) {
+                    outerServer.start(true);
+                }
+                return outerServer;
             });
         } finally {
             SwarmMetricsMessages.MESSAGES.bootPerformance(Performance.dump());
