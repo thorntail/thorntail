@@ -15,21 +15,17 @@
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>testsuite-jsf</artifactId>
+  <artifactId>testsuite-jsp</artifactId>
 
-  <name>Test Suite: JSF</name>
-  <description>Test Suite: JSF</description>
+  <name>Test Suite: JSP</name>
+  <description>Test Suite: JSP</description>
 
   <packaging>war</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>cdi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jsf</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -55,12 +51,6 @@
             <version>${project.version}</version>
             <executions>
               <execution>
-                <id>package</id>
-                <goals>
-                  <goal>package</goal>
-                </goals>
-              </execution>
-              <execution>
                 <id>start</id>
                 <phase>pre-integration-test</phase>
                 <goals>
@@ -69,7 +59,6 @@
                 <configuration>
                   <stdoutFile>target/stdout.log</stdoutFile>
                   <stderrFile>target/stderr.log</stderrFile>
-                  <useUberJar>true</useUberJar> <!-- TODO mysterious CDI-related failures otherwise -->
                 </configuration>
               </execution>
               <execution>

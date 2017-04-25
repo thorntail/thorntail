@@ -108,6 +108,7 @@
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
     <version.maven-shade-plugin>2.4.1</version.maven-shade-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
+    <version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
     <version.maven.plugin.api>3.2.5</version.maven.plugin.api>
 
     <version.checkstyle>7.4</version.checkstyle>
@@ -264,6 +265,11 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${version.build-helper-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>keytool-maven-plugin</artifactId>
+          <version>${version.keytool-maven-plugin}</version>
         </plugin>
         <plugin>
           <artifactId>maven-javadoc-plugin</artifactId>
@@ -1341,8 +1347,12 @@
     <module>standalone-servers/microprofile</module>
 
     <module>testsuite</module>
+    <module>testsuite/testsuite-ajp</module>
     <module>testsuite/testsuite-buildtool</module>
     <module>testsuite/testsuite-cdi</module>
+    <module>testsuite/testsuite-cdi-bean-validation</module>
+    <module>testsuite/testsuite-cdi-ejb</module>
+    <module>testsuite/testsuite-cdi-jpa-jta</module>
     <module>testsuite/testsuite-connector</module>
     <module>testsuite/testsuite-container</module>
     <module>testsuite/testsuite-datasources</module>
@@ -1350,8 +1360,11 @@
     <module>testsuite/testsuite-default-deployment</module>
     <module>testsuite/testsuite-ee</module>
     <module>testsuite/testsuite-ejb</module>
+    <module>testsuite/testsuite-https</module>
     <module>testsuite/testsuite-io</module>
     <module>testsuite/testsuite-jaxrs</module>
+    <module>testsuite/testsuite-jaxrs-cdi</module>
+    <module>testsuite/testsuite-jaxrs-ejb</module>
     <module>testsuite/testsuite-jca</module>
     <module>testsuite/testsuite-jgroups</module>
     <module>testsuite/testsuite-jmx</module>
@@ -1362,6 +1375,7 @@
     <module>testsuite/testsuite-jpa-mysql</module>
     <module>testsuite/testsuite-jpa-postgresql</module>
     <module>testsuite/testsuite-jsf</module>
+    <module>testsuite/testsuite-jsp</module>
     <module>testsuite/testsuite-keycloak</module>
     <module>testsuite/testsuite-local-dependencies</module>
     <module>testsuite/testsuite-logging</module>
@@ -1375,6 +1389,9 @@
     <module>testsuite/testsuite-remoting</module>
     <module>testsuite/testsuite-request-controller</module>
     <module>testsuite/testsuite-security</module>
+    <module>testsuite/testsuite-servlet-cdi</module>
+    <module>testsuite/testsuite-servlet-ejb</module>
+    <module>testsuite/testsuite-servlet-jpa-jta</module>
     <module>testsuite/testsuite-topology</module>
     <module>testsuite/testsuite-topology-api</module>
     <module>testsuite/testsuite-topology-openshift</module>
@@ -1465,6 +1482,7 @@
         <module>testsuite/testsuite-camel-jpa</module>
         <module>testsuite/testsuite-camel-ognl</module>
         <module>testsuite/testsuite-cdi-jaxrsapi</module>
+        <module>testsuite/testsuite-cdi-jaxws</module>
         <module>testsuite/testsuite-classloader</module>
         <module>testsuite/testsuite-drools-server</module>
         <module>testsuite/testsuite-ejb-remote</module>
