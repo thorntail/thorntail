@@ -82,7 +82,6 @@ public class LoggingFraction extends Logging<LoggingFraction> implements Fractio
                     logger(logger, (l) -> {
                         l.level(loggerLevel);
                         l.category(logger);
-                        l.handler(CONSOLE);
                     });
                 } catch (IllegalArgumentException e) {
                     // apparently wasn't a logging category+level, ignore.
