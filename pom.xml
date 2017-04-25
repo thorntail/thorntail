@@ -1375,6 +1375,7 @@
     <module>testsuite/testsuite-jpa-mysql</module>
     <module>testsuite/testsuite-jpa-postgresql</module>
     <module>testsuite/testsuite-jsf</module>
+    <module>testsuite/testsuite-jsp</module>
     <module>testsuite/testsuite-keycloak</module>
     <module>testsuite/testsuite-local-dependencies</module>
     <module>testsuite/testsuite-logging</module>
