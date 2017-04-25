@@ -37,6 +37,20 @@ public class ArqLoggingLevelsTest {
 
         logger.info("gouda info");
         logger.debug("gouda debug");
+        logger.trace("gouda trace");
+
+        assertFalse(logger.isTraceEnabled());
+        assertTrue(logger.isDebugEnabled());
+        assertTrue(logger.isInfoEnabled());
+    }
+
+    @Test
+    public void testCustomCategoryChildren() {
+        Logger logger = Logger.getLogger("custom.category.children.Something");
+
+        logger.info("gouda info");
+        logger.debug("gouda debug");
+        logger.trace("gouda trace");
 
         assertFalse(logger.isTraceEnabled());
         assertTrue(logger.isDebugEnabled());
@@ -49,6 +63,7 @@ public class ArqLoggingLevelsTest {
 
         logger.info("gouda info");
         logger.debug("gouda debug");
+        logger.trace("gouda trace");
 
         assertTrue(logger.isTraceEnabled());
         assertTrue(logger.isDebugEnabled());
