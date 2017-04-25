@@ -29,7 +29,9 @@
   </scm>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>53</version.wildfly.swarm.fraction.plugin>
+    <version.certified-community>2017.5.0-SNAPSHOT</version.certified-community>
+
+    <version.wildfly.swarm.fraction.plugin>54</version.wildfly.swarm.fraction.plugin>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
@@ -1384,6 +1386,18 @@
   </modules>
 
   <profiles>
+
+    <profile>
+      <id>product-only</id>
+      <activation>
+        <property>
+          <name>swarm.product.build</name>
+        </property>
+      </activation>
+      <modules>
+        <module>boms/bom-certified</module>
+      </modules>
+    </profile>
     <profile>
       <id>unsupported</id>
       <activation>
