@@ -90,7 +90,7 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     private Collection<ResolvedArtifact> doResolve(final Collection<ArtifactSpec> deps, boolean transitive) {
-        final Configuration config = this.project.getConfigurations().detachedConfiguration();
+        final Configuration config = this.project.getConfigurations().detachedConfiguration().setTransitive(transitive);
         final DependencySet dependencySet = config.getDependencies();
 
         if (transitive) {
