@@ -28,6 +28,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.config.datasources.DataSource;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -51,18 +52,23 @@ public class DatasourceAndDriverCustomizer implements Customizer {
 
     private String defaultDatasourceName;
 
+    @AttributeDocumentation("Name of the default datasource")
     @Configurable("swarm.ds.name")
     private String datasourceName = "ExampleDS";
 
+    @AttributeDocumentation("Default datasource connection URL")
     @Configurable("swarm.ds.connection.url")
     private String datasourceConnectionUrl;
 
+    @AttributeDocumentation("Default datasource connection user name")
     @Configurable("swarm.ds.username")
     private String datasourceUserName;
 
+    @AttributeDocumentation("Defatul datasource connection password")
     @Configurable("swarm.ds.password")
     private String datasourcePassword;
 
+    @AttributeDocumentation("Defatul datasource JDBC driver name")
     @Configurable("swarm.jdbc.driver")
     private String driverName;
 

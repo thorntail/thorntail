@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.Modcluster;
 import org.wildfly.swarm.config.modcluster.ConfigurationModClusterConfig;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -71,8 +72,10 @@ public class ModclusterFraction extends Modcluster<ModclusterFraction> implement
         return this.multicastPort.get();
     }
 
+    @AttributeDocumentation("Multicast address")
     private Defaultable<String> multicastAddress = string("224.01.105");
 
+    @AttributeDocumentation("Multicast port")
     private Defaultable<Integer> multicastPort = integer(23364);
 
 }

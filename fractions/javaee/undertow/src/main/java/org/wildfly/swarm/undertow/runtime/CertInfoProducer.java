@@ -19,6 +19,7 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -36,12 +37,15 @@ public class CertInfoProducer {
     @Inject
     UndertowFraction undertow;
 
+    @AttributeDocumentation("Should a self-signed certificate be generated")
     @Configurable("swarm.https.certificate.generate")
     Defaultable<Boolean> generateSelfCertificate = bool(false);
 
+    @AttributeDocumentation("Hostname for the generated self-signed certificate")
     @Configurable("swarm.https.certificate.generate.host")
     Defaultable<String> selfCertificateHost = string("localhost");
 
+    @AttributeDocumentation("Should an embedded keystore be created")
     @Configurable("swarm.https.keystore.embedded")
     Defaultable<Boolean> embeddedKeystore = bool(false);
 

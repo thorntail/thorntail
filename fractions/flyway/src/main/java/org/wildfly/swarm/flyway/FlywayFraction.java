@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.flyway;
 
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
@@ -32,8 +33,11 @@ public class FlywayFraction implements Fraction<FlywayFraction> {
      * Uses the specified connection info if not <code>null</code>. Otherwise
      * use primary Datasource
      */
+    @AttributeDocumentation("JDBC connection URL")
     private String jdbcUrl;
+    @AttributeDocumentation("JDBC connection user name")
     private String jdbcUser;
+    @AttributeDocumentation("JDBC connection password")
     private String jdbcPassword;
 
     public String jdbcPassword() {

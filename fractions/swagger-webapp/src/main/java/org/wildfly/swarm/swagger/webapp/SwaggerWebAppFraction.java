@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -99,6 +100,7 @@ public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
         return archive;
     }
 
+    @AttributeDocumentation("Web context path for Swagger end point")
     private Defaultable<String> context = string(DEFAULT_CONTEXT);
 
     private Archive<?> webContent;

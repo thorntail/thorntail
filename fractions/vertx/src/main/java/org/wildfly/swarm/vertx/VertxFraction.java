@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.vertx;
 
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.Module;
@@ -72,14 +73,18 @@ public class VertxFraction implements Fraction<VertxFraction> {
         return inhibitAdapterDeployment;
     }
 
+    @AttributeDocumentation("Flag to inhibit resource-adapter deployment")
     private boolean inhibitAdapterDeployment;
 
+    @AttributeDocumentation("JNDI name of the Vertx connector")
     @Configurable("swarm.vertx.jndi-name")
     private Defaultable<String> jndiName = string(DEFAULT_JNDI_NAME);
 
+    @AttributeDocumentation("Vertx cluster host name")
     @Configurable("swarm.vertx.cluster.host")
     private Defaultable<String> clusterHost = string(DEFAULT_CLUSTER_HOST);
 
+    @AttributeDocumentation("Vertx cluster port")
     @Configurable("swarm.vertx.cluster.port")
     private Defaultable<Integer> clusterPort = integer(DEFAULT_CLUSTER_PORT);
 }

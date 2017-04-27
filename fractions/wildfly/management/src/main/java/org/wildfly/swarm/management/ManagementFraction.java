@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.ManagementCoreService;
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterfaceConsumer;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -134,12 +135,15 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
         return this;
     }
 
+    @AttributeDocumentation("Port for HTTP access to management interface")
     @Configurable("swarm.management.http.port")
     private Defaultable<Integer> httpPort = integer(DEFAULT_HTTP_PORT);
 
+    @AttributeDocumentation("Port for HTTPS access to management interface")
     @Configurable("swarm.management.https.port")
     private Defaultable<Integer> httpsPort = integer(DEFAULT_HTTPS_PORT);
 
+    @AttributeDocumentation("Flag to disable HTTP access to management interface")
     @Configurable("swarm.management.http.disable")
     private Defaultable<Boolean> httpDisable = bool(false);
 }

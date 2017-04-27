@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.management.console;
 
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -41,5 +42,6 @@ public class ManagementConsoleFraction implements Fraction<ManagementConsoleFrac
         return context.get();
     }
 
+    @AttributeDocumentation("Web context path of the management console")
     private Defaultable<String> context = string(DEFAULT_CONTEXT);
 }

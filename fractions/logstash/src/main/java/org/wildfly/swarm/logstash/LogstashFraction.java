@@ -18,6 +18,7 @@ package org.wildfly.swarm.logstash;
 import java.util.Properties;
 
 import org.wildfly.swarm.config.logging.Level;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -92,14 +93,19 @@ public class LogstashFraction implements Fraction<LogstashFraction> {
         return this.enabled.get();
     }
 
+    @AttributeDocumentation("Host name of the Logstash server")
     private Defaultable<String> hostname = string(DEFAULT_HOSTNAME);
 
+    @AttributeDocumentation("Port of the Logstash server")
     private Defaultable<Integer> port = integer(DEFAULT_PORT);
 
+    @AttributeDocumentation("Flag to enable Logstash logging")
     private Defaultable<Boolean> enabled = ifAnyExplicitlySet(hostname, port);
 
+    @AttributeDocumentation("Logstash formatter properties")
     private Properties formatterProperties = new Properties();
 
+    @AttributeDocumentation("Log level")
     private Level level;
 
 }

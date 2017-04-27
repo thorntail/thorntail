@@ -16,6 +16,7 @@
 package org.wildfly.swarm.transactions;
 
 import org.wildfly.swarm.config.Transactions;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
@@ -63,7 +64,9 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
         return this.statusPort.get();
     }
 
+    @AttributeDocumentation("Port for transaction manager")
     private Defaultable<Integer> port = integer(DEFAULT_PORT);
 
+    @AttributeDocumentation("Status port for transaction manager")
     private Defaultable<Integer> statusPort = integer(DEFAULT_STATUS_PORT);
 }

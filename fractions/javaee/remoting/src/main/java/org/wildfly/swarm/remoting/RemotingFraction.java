@@ -18,6 +18,7 @@ package org.wildfly.swarm.remoting;
 import org.wildfly.swarm.config.Remoting;
 import org.wildfly.swarm.config.remoting.EndpointConfiguration;
 import org.wildfly.swarm.config.remoting.HTTPConnector;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -64,5 +65,6 @@ public class RemotingFraction extends Remoting<RemotingFraction> implements Frac
         return this.port.get();
     }
 
+    @AttributeDocumentation("Port for legacy remoting connector")
     private Defaultable<Integer> port = integer(4447);
 }

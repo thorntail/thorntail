@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.jolokia.access.APIJolokiaAccessPreparer;
 import org.wildfly.swarm.jolokia.access.FileJolokiaAccessPreparer;
 import org.wildfly.swarm.jolokia.access.JolokiaAccess;
@@ -77,6 +78,7 @@ public class JolokiaFraction implements Fraction<JolokiaFraction> {
         return new APIJolokiaAccessPreparer(supplier.get());
     }
 
+    @AttributeDocumentation("Context path for the Jolokia endpoints")
     private String context;
 
     private Consumer<Archive> jolokiaWarPreparer;

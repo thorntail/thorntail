@@ -22,6 +22,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -34,9 +35,11 @@ import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 @ApplicationScoped
 public class ContextPathArchivePreparer implements ArchivePreparer {
 
+    @AttributeDocumentation("Web context path for the default deployment")
     @Configurable("swarm.context.path")
     Defaultable<String> contextPath = Defaultable.string("/");
 
+    @AttributeDocumentation("List of content mounts")
     @Configurable("swarm.context.mounts")
     List<String> mounts;
 
