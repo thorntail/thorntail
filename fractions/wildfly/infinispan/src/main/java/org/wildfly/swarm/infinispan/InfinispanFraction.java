@@ -54,6 +54,5 @@ public class InfinispanFraction extends Infinispan<InfinispanFraction> implement
         return this.defaultFraction;
     }
 
-
     private boolean defaultFraction = false;
 }

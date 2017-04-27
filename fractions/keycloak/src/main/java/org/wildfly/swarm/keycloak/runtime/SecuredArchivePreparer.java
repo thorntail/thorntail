@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -111,6 +112,7 @@ public class SecuredArchivePreparer implements ArchivePreparer {
         return new ByteArrayAsset(str.toString().getBytes());
     }
 
+    @AttributeDocumentation("Path to keycloak.json configuration")
     @Configurable("swarm.keycloak.json.path")
     String keycloakJsonPath;
 

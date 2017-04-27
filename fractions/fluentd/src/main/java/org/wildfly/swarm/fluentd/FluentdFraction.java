@@ -16,6 +16,7 @@
 package org.wildfly.swarm.fluentd;
 
 import org.wildfly.swarm.config.logging.Level;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Fraction;
 
 /**
@@ -64,12 +65,16 @@ public class FluentdFraction implements Fraction<FluentdFraction> {
         return tag;
     }
 
+    @AttributeDocumentation("Host name of the fluentd server")
     private String hostname;
 
+    @AttributeDocumentation("Port of the fluentd server")
     private int port;
 
+    @AttributeDocumentation("Logging level")
     private Level level;
 
+    @AttributeDocumentation("Logging tag")
     private String tag = "local";
 
 }

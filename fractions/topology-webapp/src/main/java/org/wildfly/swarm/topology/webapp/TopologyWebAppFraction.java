@@ -18,6 +18,7 @@ package org.wildfly.swarm.topology.webapp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -85,8 +86,10 @@ public class TopologyWebAppFraction implements Fraction<TopologyWebAppFraction> 
         return exposeTopologyEndpoint.get();
     }
 
+    @AttributeDocumentation("Service name to URL path proxy mappings")
     private Map<String, String> proxiedServiceMappings = new HashMap<>();
 
+    @AttributeDocumentation("Flag to enable or disable the topology web endpoint")
     private Defaultable<Boolean> exposeTopologyEndpoint = bool(true);
 
 }

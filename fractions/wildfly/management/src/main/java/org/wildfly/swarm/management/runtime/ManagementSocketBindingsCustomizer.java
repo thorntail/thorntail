@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.wildfly.swarm.config.management.HTTPInterfaceManagementInterface;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.Defaultable;
@@ -57,6 +58,7 @@ public class ManagementSocketBindingsCustomizer implements Customizer {
         }
     }
 
+    @AttributeDocumentation("Interface to bind for the management ports")
     @Configurable("swarm.management.bind.interface")
     private Defaultable<String> iface = string("management");
 }

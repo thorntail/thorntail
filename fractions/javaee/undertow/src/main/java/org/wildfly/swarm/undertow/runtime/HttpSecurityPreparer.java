@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.undertow.WARArchive;
@@ -122,6 +123,7 @@ public class HttpSecurityPreparer implements ArchivePreparer {
         }
     }
 
+    @AttributeDocumentation("Map of security configuration by deployment")
     @Configurable("swarm.deployment")
     Map<String, Object> deploymentConfigs;
 

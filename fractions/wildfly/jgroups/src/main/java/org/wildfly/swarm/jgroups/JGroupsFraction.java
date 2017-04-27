@@ -18,6 +18,7 @@ package org.wildfly.swarm.jgroups;
 import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.JGroups;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -90,6 +91,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
         return this.defaultMulticastAddress.get();
     }
 
+    @AttributeDocumentation("Default multicast address for JGroups")
     @Configurable("swarm.default.multicast.address")
     private Defaultable<String> defaultMulticastAddress = string("230.0.0.4");
 

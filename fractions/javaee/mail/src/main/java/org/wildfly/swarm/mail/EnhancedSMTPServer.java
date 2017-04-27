@@ -16,6 +16,7 @@
 package org.wildfly.swarm.mail;
 
 import org.wildfly.swarm.config.mail.mail_session.SMTPServer;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 
@@ -69,9 +70,11 @@ public class EnhancedSMTPServer extends SMTPServer<EnhancedSMTPServer> {
 
     private final String sessionKey;
 
+    @AttributeDocumentation("Host name of the default SMTP server")
     @Configurable("swarm.mail.smtp.host")
     private Defaultable<String> host = string("localhost");
 
+    @AttributeDocumentation("Port of the default SMTP server")
     @Configurable("swarm.mail.smtp.port")
     private Defaultable<Integer> port = integer(25);
 

@@ -18,6 +18,7 @@ package org.wildfly.swarm.topology.consul;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -103,6 +104,7 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
         DEFAULT_URL = tmp;
     }
 
+    @AttributeDocumentation("URL of the Consul server")
     private Defaultable<URL> url = Defaultable.url(DEFAULT_URL);
 
 }
