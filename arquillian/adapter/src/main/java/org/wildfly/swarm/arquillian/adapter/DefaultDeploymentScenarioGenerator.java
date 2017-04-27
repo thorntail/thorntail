@@ -31,7 +31,9 @@ import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
 import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.MarkerContainer;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 
@@ -55,11 +57,15 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
                         : "WEB-INF/classes"
         );
 
-        Archive archive = (
-                anno.type() == DefaultDeployment.Type.JAR
-                        ? ShrinkWrap.create(JavaArchive.class, testClass.getJavaClass().getSimpleName() + ".jar")
-                        : ShrinkWrap.create(WebArchive.class, testClass.getJavaClass().getSimpleName() + ".war")
-        );
+        Archive<?> archive;
+        if (DefaultDeployment.Type.WAR.equals(anno.type())) {
+            WebArchive webArchive = ShrinkWrap.create(WebArchive.class, testClass.getJavaClass().getSimpleName() + ".war");
+            // Add the marker to also include the project dependencies
+            MarkerContainer.addMarker(webArchive, DependenciesContainer.ALL_DEPENDENCIES_MARKER);
+            archive = webArchive;
+        } else {
+            archive = ShrinkWrap.create(JavaArchive.class, testClass.getJavaClass().getSimpleName() + ".jar");
+        }
 
         ClassLoader cl = testClass.getJavaClass().getClassLoader();
 

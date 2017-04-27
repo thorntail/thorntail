@@ -13,33 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.cdi.test;
+package org.wildfly.swarm.cdi.test.basic;
+
+import java.util.Optional;
+
+import javax.inject.Inject;
 
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 /**
- * @author Martin Kouba
+ * @author George Gastaldi
  */
 @RunWith(Arquillian.class)
-@Ignore
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
-public class ConfigValueProducerTest {
+public class ConfigurationValueProducerTest {
+
+    @Inject
+    @ConfigurationValue("logger.level")
+    private Optional<String> loggerLevel;
 
     @Test
-    public void testInjection(ConfigAwareBean configAwareBean) {
-        assertNotNull(configAwareBean);
-
-        assertEquals(Integer.valueOf(10), configAwareBean.getPortOffset());
-        assertEquals("DEBUG", configAwareBean.getLogLevel());
-        assertEquals(Integer.valueOf(10), configAwareBean
-                .getPortOffsetResolver().as(Integer.class).getValue());
+    public void testServerAddressExists() {
+        Assert.assertNotNull(loggerLevel);
+        Assert.assertEquals("DEBUG", loggerLevel.get());
     }
 
 }

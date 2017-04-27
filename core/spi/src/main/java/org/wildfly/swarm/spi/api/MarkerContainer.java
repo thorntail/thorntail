@@ -32,12 +32,19 @@ public interface MarkerContainer<T extends Archive<T>> extends ManifestContainer
 
     @SuppressWarnings("unchecked")
     default T addMarker(String markerName) {
-        addAsManifestResource(new StringAsset("marker"), ArchivePaths.create(PATH_MARKERS, markerName));
-
+        addMarker(this, markerName);
         return (T) this;
     }
 
     default boolean hasMarker(String markerName) {
-        return contains(ArchivePaths.create("META-INF/markers", markerName));
+        return hasMarker(this, markerName);
+    }
+
+    static void addMarker(ManifestContainer<?> manifestContainer, String markerName) {
+        manifestContainer.addAsManifestResource(new StringAsset("marker"), ArchivePaths.create(PATH_MARKERS, markerName));
+    }
+
+    static boolean hasMarker(Archive<?> archive, String markerName) {
+        return archive.contains(ArchivePaths.create("META-INF/markers", markerName));
     }
 }

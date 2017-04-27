@@ -29,9 +29,27 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!-- Used to test that the default deployment of type WAR includes non-fraction project dependencies -->
+    <dependency>
+       <groupId>org.jboss.cdi.tck</groupId>
+       <artifactId>cdi-tck-ext-lib</artifactId>
+       <version>1.2.10.Final</version>
+       <exclusions>
+          <exclusion>
+             <groupId>javax.enterprise</groupId>
+             <artifactId>cdi-api</artifactId>
+          </exclusion>
+       </exclusions>
+    </dependency>
+
   </dependencies>
 
 </project>
