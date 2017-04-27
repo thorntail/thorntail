@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 
 /**
  * @author Ken Finnigan
@@ -46,7 +45,7 @@ public class FaviconErrorHandler implements HttpHandler {
             }
 
             if (!faviconHandled) {
-                Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.undertow", "runtime"));
+                Module module = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.undertow:runtime");
                 ClassLoader cl = module.getClassLoader();
 
                 try (InputStream in = cl.getResourceAsStream("favicon.ico")) {

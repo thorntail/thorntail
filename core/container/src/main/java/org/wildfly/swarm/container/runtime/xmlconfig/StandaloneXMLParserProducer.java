@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -36,7 +37,6 @@ import org.jboss.as.controller.parsing.ExtensionParsingContext;
 import org.jboss.as.controller.parsing.ProfileParsingCompletionHandler;
 import org.jboss.dmr.ModelNode;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.staxmapper.XMLElementReader;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.internal.SwarmConfigMessages;
@@ -86,7 +86,7 @@ public class StandaloneXMLParserProducer {
                 extensionClassName = null;
             }
 
-            Module extensionModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(extensionModuleName));
+            Module extensionModule = Module.getBootModuleLoader().loadModule(extensionModuleName);
 
             if (noClass) {
                 // ignore it all
@@ -139,6 +139,12 @@ public class StandaloneXMLParserProducer {
         @Override
         public void setSubsystemXmlMapping(String localName, String namespace, XMLElementReader<List<ModelNode>> parser) {
             StandaloneXMLParserProducer.this.parser.addDelegate(new QName(namespace, "subsystem"), parser);
+        }
+
+        @Override
+        public void setSubsystemXmlMapping(String localName, String namespace, Supplier<XMLElementReader<List<ModelNode>>> supplier) {
+            StandaloneXMLParserProducer.this.parser.addDelegate(new QName(namespace, "subsystem"), supplier);
+
         }
 
         @Override

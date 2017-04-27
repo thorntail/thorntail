@@ -23,7 +23,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -52,7 +51,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
     }
 
     protected ApplicationModuleFinder(String slot) {
-        super(MODULE_NAME, slot);
+        super(MODULE_NAME + ": " + slot);
     }
 
     @Override
@@ -71,7 +70,8 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                                     ClassFilters.acceptAll(),
                                     ClassFilters.acceptAll(),
                                     null,
-                                    ModuleIdentifier.create(module), false));
+                                    module,
+                                    false));
 
                 });
 
@@ -83,10 +83,10 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
         addDependencies(builder, env);
 
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.swarm.configuration"), false, true));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("sun.jdk"), false, true));
+        builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.modules"));
+        builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.shrinkwrap"));
+        builder.addDependency(DependencySpec.createModuleDependencySpec("org.wildfly.swarm.configuration", false, true));
+        builder.addDependency(DependencySpec.createModuleDependencySpec("sun.jdk", false, true));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -97,7 +97,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.wildfly.swarm.container", "api"), true));
+                        "org.wildfly.swarm.container:api", true));
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
     }
@@ -144,7 +144,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
         if (".war".equalsIgnoreCase(ext)) {
             final ResourceLoader warLoader = ResourceLoaders.createFileResourceLoader(jarName + "WEBINF",
-                    new File(tmpDir.getAbsolutePath() + File.separator + "WEB-INF" + File.separator + "classes"));
+                                                                                      new File(tmpDir.getAbsolutePath() + File.separator + "WEB-INF" + File.separator + "classes"));
 
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));
         }

@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
@@ -82,7 +81,7 @@ public class CertInfoProducer {
                 try {
                     URL jks = ClassLoader.getSystemClassLoader().getResource(keystorePath);
                     if (jks == null) {
-                        Module appModule = Module.getCallerModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                        Module appModule = Module.getCallerModuleLoader().loadModule("swarm.application");
                         jks = appModule.getClassLoader().getResource(keystorePath);
                     }
                     if (jks == null) {

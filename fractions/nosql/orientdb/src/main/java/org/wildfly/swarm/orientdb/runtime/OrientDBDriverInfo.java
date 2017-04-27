@@ -17,7 +17,6 @@ package org.wildfly.swarm.orientdb.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.container.util.DriverModuleBuilder;
 import org.wildfly.swarm.container.util.Messages;
 import org.wildfly.swarm.orientdb.OrientDBFraction;
@@ -46,12 +45,12 @@ public class OrientDBDriverInfo extends DriverModuleBuilder {
                         "com.orientechnologies.orient.object.db.OObjectDatabaseTx",
                         "com.orientechnologies.orient.server.distributed.impl.task.OSyncClusterTask"
                 },
-                new ModuleIdentifier[]{
-                        ModuleIdentifier.create("javax.api"),
-                        ModuleIdentifier.create("org.picketbox"),
-                        ModuleIdentifier.create("sun.jdk"),
-                        ModuleIdentifier.create("org.slf4j"),
-                        ModuleIdentifier.create("javax.transaction.api")
+                new String[]{
+                        "javax.api",
+                        "org.picketbox",
+                        "sun.jdk",
+                        "org.slf4j",
+                        "javax.transaction.api",
                 });
     }
 

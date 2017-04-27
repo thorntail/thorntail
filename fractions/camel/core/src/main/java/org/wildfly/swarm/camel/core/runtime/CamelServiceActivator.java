@@ -15,7 +15,6 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.ExplicitCamelContextNameStrategy;
 import org.apache.camel.model.ModelCamelContext;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.msc.service.AbstractService;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
@@ -72,7 +71,7 @@ public class CamelServiceActivator implements ServiceActivator {
         @Override
         public void start(StartContext startContext) throws StartException {
             try {
-                Module appModule = Module.getCallerModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+                Module appModule = Module.getCallerModuleLoader().loadModule("swarm.application");
                 ModuleClassLoaderAssociationHandler.associate(appModule.getClassLoader());
                 try {
                     for (Map.Entry<String, RouteBuilder> entry : fraction.getRouteBuilders().entrySet()) {

@@ -26,7 +26,6 @@ import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ResourceLoaderSpec;
@@ -46,14 +45,14 @@ public abstract class DriverModuleBuilder {
     private final String name;
     private final String detectableClassName;
     private final String[] optionalClassNames;
-    private final ModuleIdentifier[] driverModuleDependencies;
+    private final String[] driverModuleDependencies;
 
     private boolean installed;
 
     public DriverModuleBuilder(final String name,
                                final String detectableClassName,
                                final String[] optionalClassNames,
-                               final ModuleIdentifier[] driverModuleDependencies) {
+                               final String[] driverModuleDependencies) {
         this.name = name;
         this.detectableClassName = detectableClassName;
         this.optionalClassNames = optionalClassNames;
@@ -74,8 +73,7 @@ public abstract class DriverModuleBuilder {
             Set<File> optionalJars = findOptionalJars();
 
             optionalJars.add(primaryJar);
-            ModuleIdentifier moduleIdentifier = ModuleIdentifier.create(moduleName);
-            DynamicModuleFinder.register(moduleIdentifier, (id, loader) -> {
+            DynamicModuleFinder.register(moduleName, (id, loader) -> {
                 ModuleSpec.Builder builder = ModuleSpec.build(id);
 
                 for (File eachJar : optionalJars) {
@@ -91,7 +89,7 @@ public abstract class DriverModuleBuilder {
                     }
                 }
 
-                for (ModuleIdentifier eachModuleIdentifier : driverModuleDependencies) {
+                for (String eachModuleIdentifier : driverModuleDependencies) {
                     builder.addDependency(DependencySpec.createModuleDependencySpec(eachModuleIdentifier));
                 }
                 builder.addDependency(DependencySpec.createLocalDependencySpec());
@@ -124,7 +122,7 @@ public abstract class DriverModuleBuilder {
 
     private File findLocationOfClass(String className) {
         try {
-            ClassLoader cl = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application")).getClassLoader();
+            ClassLoader cl = Module.getBootModuleLoader().loadModule("swarm.application").getClassLoader();
             File candidate = findLocationOfClass(cl, className);
             if (candidate == null) {
                 candidate = findLocationOfClass(ClassLoader.getSystemClassLoader(), className);

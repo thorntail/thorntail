@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.infinispan.test;
 
+import java.util.concurrent.CountDownLatch;
+
 import javax.naming.InitialContext;
 
 import org.infinispan.Cache;
@@ -37,6 +39,7 @@ public class InfinispanRemoteTest {
 
     @Test
     public void testBasic() throws Exception {
+        //new CountDownLatch(1).await();
         CacheContainer cacheContainer =
                 (CacheContainer) new InitialContext().lookup("java:jboss/infinispan/container/server");
         Cache<String,String> cache = cacheContainer.getCache("default");

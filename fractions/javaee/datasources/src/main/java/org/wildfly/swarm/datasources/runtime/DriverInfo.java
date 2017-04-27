@@ -52,7 +52,7 @@ public abstract class DriverInfo {
 
     private final String name;
 
-    private final ModuleIdentifier moduleIdentifier;
+    private final String moduleIdentifier;
 
     private final String detectableClassName;
 
@@ -61,7 +61,7 @@ public abstract class DriverInfo {
     private boolean installed;
 
     protected DriverInfo(String name,
-                         ModuleIdentifier moduleIdentifier,
+                         String moduleIdentifier,
                          String detectableClassName,
                          String... optionalClassNames) {
         this.name = name;
@@ -104,8 +104,10 @@ public abstract class DriverInfo {
             optionalJars.add(primaryJar);
 
             fraction.jdbcDriver(this.name, (driver) -> {
-                driver.driverModuleName(this.moduleIdentifier.getName());
-                driver.moduleSlot(this.moduleIdentifier.getSlot());
+                //noinspection deprecation
+                ModuleIdentifier identifier = ModuleIdentifier.fromString(this.moduleIdentifier);
+                driver.driverModuleName(identifier.getName());
+                driver.moduleSlot(identifier.getSlot());
                 this.configureDriver(driver);
             });
 
@@ -125,8 +127,8 @@ public abstract class DriverInfo {
                     }
                 }
 
-                builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
-                builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.transactions.api"), false, true));
+                builder.addDependency(DependencySpec.createModuleDependencySpec("javax.api"));
+                builder.addDependency(DependencySpec.createModuleDependencySpec("javax.transactions.api", false, true));
                 builder.addDependency(DependencySpec.createLocalDependencySpec());
                 addModuleDependencies(builder);
 
@@ -160,7 +162,7 @@ public abstract class DriverInfo {
 
     private File findLocationOfClass(String className) {
         try {
-            ClassLoader cl = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application")).getClassLoader();
+            ClassLoader cl = Module.getBootModuleLoader().loadModule("swarm.application").getClassLoader();
             File candidate = findLocationOfClass(cl, className);
             if (candidate == null) {
                 candidate = findLocationOfClass(ClassLoader.getSystemClassLoader(), className);

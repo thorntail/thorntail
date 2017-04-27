@@ -94,6 +94,7 @@ public class PackageMojo extends AbstractSwarmMojo {
     }
 
 
+    @SuppressWarnings("deprecation")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 

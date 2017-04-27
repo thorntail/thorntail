@@ -28,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
-      <artifactId>asm-all</artifactId>
+      <artifactId>asm</artifactId>
     </dependency>
     <dependency>
       <groupId>com.eclipsesource.minimal-json</groupId>

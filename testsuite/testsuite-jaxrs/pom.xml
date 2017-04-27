@@ -33,6 +33,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>elytron</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>2.7</version>
