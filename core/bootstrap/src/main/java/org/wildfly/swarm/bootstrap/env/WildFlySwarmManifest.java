@@ -7,12 +7,11 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -146,7 +145,7 @@ public class WildFlySwarmManifest {
         this.bootstrapModules.add(module);
     }
 
-    public List<String> bootstrapModules() {
+    public Set<String> bootstrapModules() {
         return this.bootstrapModules;
     }
 
@@ -154,7 +153,7 @@ public class WildFlySwarmManifest {
         this.bootstrapArtifacts.add(artifact);
     }
 
-    public List<String> bootstrapArtifacts() {
+    public Set<String> bootstrapArtifacts() {
         return this.bootstrapArtifacts;
     }
 
@@ -188,7 +187,6 @@ public class WildFlySwarmManifest {
         this.bundleDependencies = bundleDependencies;
     }
 
-    @SuppressWarnings("unused")
     public boolean isBundleDependencies() {
         if (this.bundleDependencies == null) {
             return true;
@@ -221,9 +219,9 @@ public class WildFlySwarmManifest {
 
     private String asset = null;
 
-    private List<String> bootstrapModules = new ArrayList<>();
+    private Set<String> bootstrapModules = new LinkedHashSet<>();
 
-    private List<String> bootstrapArtifacts = new ArrayList<>();
+    private Set<String> bootstrapArtifacts = new LinkedHashSet<>();
 
     private Set<String> dependencies = new HashSet<>();
 
