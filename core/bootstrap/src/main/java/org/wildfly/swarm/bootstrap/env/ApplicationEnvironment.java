@@ -1,5 +1,6 @@
 package org.wildfly.swarm.bootstrap.env;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,10 +18,15 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.maven.ArtifactCoordinates;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
@@ -138,6 +144,19 @@ public class ApplicationEnvironment {
         return this.bootstrapArtifacts;
     }
 
+    public List<ArtifactCoordinates> bootstrapArtifactsAsCoordinates() {
+        return this.bootstrapArtifacts.stream().map(artifact -> {
+            String[] parts = artifact.split(":");
+            ArtifactCoordinates coords = null;
+            if (parts.length == 4) {
+                coords = new ArtifactCoordinates(parts[0], parts[1], parts[3]);
+            } else if (parts.length == 5) {
+                coords = new ArtifactCoordinates(parts[0], parts[1], parts[3], parts[4]);
+            }
+            return coords;
+        }).collect(Collectors.toList());
+    }
+
     public Mode getMode() {
         return mode;
     }
@@ -171,6 +190,7 @@ public class ApplicationEnvironment {
         }
 
         this.manifests = new ArrayList<>();
+        Set<String> modulesManifests = new HashSet<>();
 
         this.bootstrapModules
                 .forEach(moduleName -> {
@@ -184,11 +204,32 @@ public class ApplicationEnvironment {
                             URL each = results.nextElement();
                             FractionManifest manifest = new FractionManifest(each);
                             this.manifests.add(manifest);
+                            modulesManifests.add(manifest.getGroupId() + manifest.getArtifactId());
                         }
                     } catch (ModuleLoadException | IOException e) {
                         throw new RuntimeException(e);
                     }
                 });
+
+        bootstrapArtifactsAsCoordinates().forEach((coords) -> {
+            try {
+                File artifactFile = MavenResolvers.get().resolveJarArtifact(coords);
+                if (artifactFile == null) {
+                    throw new RuntimeException("Unable to resolve artifact from coordinates: " + coords);
+                }
+                try (ZipFile zip = new ZipFile(artifactFile)) {
+                    ZipEntry manifestEntry = zip.getEntry(FractionManifest.CLASSPATH_LOCATION);
+                    if (manifestEntry != null) {
+                        FractionManifest manifest = new FractionManifest(zip.getInputStream(manifestEntry));
+                        if (!modulesManifests.contains(manifest.getGroupId() + manifest.getArtifactId())) {
+                            this.manifests.add(manifest);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         this.manifests.sort(new ManifestComparator());
     }
