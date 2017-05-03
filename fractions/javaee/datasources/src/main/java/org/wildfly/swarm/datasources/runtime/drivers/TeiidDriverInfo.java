@@ -22,7 +22,7 @@ public class TeiidDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "password1!";
 
     protected TeiidDriverInfo() {
-        super("teiid", ModuleIdentifier.create("org.teiid.jdbc"), "org.teiid.jdbc.TeiidDriver");
+        super("teiid", ModuleIdentifier.create("org.teiid.jdbc"), "org.teiid.jdbc.TeiidDriver", "org.teiid.core.types.JDBCSQLTypeInfo");
     }
 
     @Override
