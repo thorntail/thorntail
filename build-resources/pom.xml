@@ -6,6 +6,7 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>parent</artifactId>
     <version>8</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
