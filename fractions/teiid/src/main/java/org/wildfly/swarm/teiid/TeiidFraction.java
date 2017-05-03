@@ -50,6 +50,8 @@ public class TeiidFraction extends Teiid<TeiidFraction> implements Fraction<Teii
     @AttributeDocumentation("Set the port for the default ODBC socket listener")
     private Defaultable<Integer> odbcPort = integer(DEFAULT_ODBC_PORT);
 
+    private boolean isJdbcTransportInstalled = false;
+
     public TeiidFraction() {
 
     }
@@ -60,7 +62,11 @@ public class TeiidFraction extends Teiid<TeiidFraction> implements Fraction<Teii
     }
 
     public TeiidFraction jdbcTransport() {
-        return transport(JDBC_TRANSPORT_NAME, t -> t.socketBinding(JDBC_SOCKET_BINDING_NAME).protocol(Transport.Protocol.TEIID));
+        if (!isJdbcTransportInstalled) {
+            transport(JDBC_TRANSPORT_NAME, t -> t.socketBinding(JDBC_SOCKET_BINDING_NAME).protocol(Transport.Protocol.TEIID));
+            this.isJdbcTransportInstalled = true;
+        }
+        return this;
     }
 
     public TeiidFraction odbcTransport() {
