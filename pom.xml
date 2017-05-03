@@ -45,7 +45,7 @@
 
     <version.wildfly>10.1.0.Final</version.wildfly>
     <version.org.wildfly.core>2.2.1.Final</version.org.wildfly.core>
-    <version.org.jboss.msc.jboss-msc>1.2.6.Final</version.org.jboss.msc.jboss-msc>
+    <version.org.jboss.msc.jboss-msc>1.2.7.Final</version.org.jboss.msc.jboss-msc>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
 
 
