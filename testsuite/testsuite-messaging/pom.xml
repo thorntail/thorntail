@@ -37,6 +37,16 @@
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>ejb</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>fraction-metadata</artifactId>
+        <scope>test</scope>
+     </dependency>
   </dependencies>
 
 </project>
