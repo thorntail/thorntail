@@ -15,9 +15,13 @@
  */
 package org.wildfly.swarm.jaxrs.btm;
 
+import java.util.UUID;
+
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.LoggingReporter;
 import com.github.kristofa.brave.Sampler;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
@@ -36,38 +40,51 @@ import zipkin.reporter.urlconnection.URLConnectionSender;
 public class ZipkinFraction implements Fraction<ZipkinFraction> {
 
     public ZipkinFraction() {
-        this.builder = new Brave.Builder();
     }
 
-    public ZipkinFraction(String serviceName) {
-        this.builder = new Brave.Builder(serviceName);
+    public ZipkinFraction(String name) {
+        setName(name);
     }
-
-    @Override
-    public ZipkinFraction applyDefaults() {
-        builder.reporter(new LoggingReporter())
-                .traceSampler(Sampler.create(1.0f));
-        return this;
-    }
-
-    public ZipkinFraction reportAsync(String url) {
-        AsyncReporter<Span> asyncReporter = AsyncReporter.builder(URLConnectionSender.create(url)).build();
-
-        builder.reporter(asyncReporter)
-                .traceSampler(Sampler.create(1.0f));
-        return this;
-    }
-
-    public ZipkinFraction sampleRate(float rate) {
-        builder.traceSampler(Sampler.create(rate));
-        return this;
-    }
-
 
     public Brave getBraveInstance() {
+
+        Brave.Builder builder = new Brave.Builder(name.get());
+
+        if (this.url.isDefault()) {
+            builder.reporter(new LoggingReporter())
+                           .traceSampler(Sampler.create(1.0f));
+        } else {
+            AsyncReporter<Span> asyncReporter = AsyncReporter.builder(URLConnectionSender.create(url.get())).build();
+            builder.reporter(asyncReporter)
+                    .traceSampler(Sampler.create(rate.get()));
+        }
         return builder.build();
     }
 
-    private final Brave.Builder builder;
+    public ZipkinFraction setName(String name) {
+        this.name.set(name);
+        return this;
+    }
+
+    public ZipkinFraction setUrl(String url) {
+        this.url.set(url);
+        return this;
+    }
+
+    public ZipkinFraction setRate(Float rate) {
+        this.rate.set(rate);
+        return this;
+    }
+
+    @AttributeDocumentation("The service name used in reports")
+    private Defaultable<String> name = Defaultable.string(UUID.randomUUID().toString());
+
+    @AttributeDocumentation("URL of the Zipkin server")
+    private Defaultable<String> url = Defaultable.string("http://localhost:9411/");
+
+    @AttributeDocumentation("The reporting rate")
+    private Defaultable<Float> rate = Defaultable.floating(1.0f);
+
+
 
 }
