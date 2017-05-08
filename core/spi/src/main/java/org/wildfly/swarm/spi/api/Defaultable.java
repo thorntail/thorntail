@@ -26,8 +26,16 @@ public class Defaultable<T> implements Supplier<T> {
         return integer(() -> defaultValue);
     }
 
+    public static Defaultable<Float> floating(float defaultValue) {
+        return floating(() -> defaultValue);
+    }
+
     public static Defaultable<Integer> integer(Supplier<Integer> defaultValueSupplier) {
         return new Defaultable<>(Integer.class, defaultValueSupplier);
+    }
+
+    public static Defaultable<Float> floating(Supplier<Float> defaultValueSupplier) {
+        return new Defaultable<>(Float.class, defaultValueSupplier);
     }
 
     public static Defaultable<Long> longInteger(long defaultValue) {
