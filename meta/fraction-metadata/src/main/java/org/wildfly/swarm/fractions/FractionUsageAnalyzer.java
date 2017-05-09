@@ -39,6 +39,7 @@ import org.wildfly.swarm.fractions.scanner.JarScanner;
 import org.wildfly.swarm.fractions.scanner.Scanner;
 import org.wildfly.swarm.fractions.scanner.WarScanner;
 import org.wildfly.swarm.fractions.scanner.WebXmlDescriptorScanner;
+import org.wildfly.swarm.spi.meta.FileSource;
 import org.wildfly.swarm.spi.meta.FractionDetector;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
 
@@ -131,14 +132,20 @@ public class FractionUsageAnalyzer {
         if (isZipFile(source)) {
             fireScanner(suffix(source.getName()), zipFileScannerConsumer(source));
         } else {
+            File basePathFile = source.getAbsoluteFile();
+            Path basePath = null;
+            if (basePathFile.isDirectory()) {
+               basePath = basePathFile.toPath();
+            }
+
             if (source.isDirectory()) {
                 if (source.getName().endsWith(".war") || new File(source, "WEB-INF").exists()) {
-                    fireScanner("war", explodedScannerConsumer(source));
+                    fireScanner("war", explodedScannerConsumer(basePath, source));
                 } else {
-                    fireScanner("jar", explodedScannerConsumer(source));
+                    fireScanner("jar", explodedScannerConsumer(basePath, source));
                 }
             } else {
-                fireScanner(suffix(source.getName()), explodedScannerConsumer(source));
+                fireScanner(suffix(source.getName()), explodedScannerConsumer(basePath, source));
             }
         }
     }
@@ -153,18 +160,18 @@ public class FractionUsageAnalyzer {
         };
     }
 
-    private Consumer<Scanner<?>> explodedScannerConsumer(File source) {
+    private Consumer<Scanner<?>> explodedScannerConsumer(Path basePath, File source) {
         return s -> {
             try {
-                s.scan(source.toPath(), this::scanSource);
+                s.scan(source.toPath(), basePath, this::scanSource);
             } catch (IOException e) {
                 log.error("", e);
             }
         };
     }
 
-    private void scanSource(final Path source) {
-        final String suffix = suffix(source.getFileName().toString());
+    private void scanSource(final FileSource source) {
+        final String suffix = suffix(source.getSource().getFileName().toString());
 
         Collection<FractionDetector<?>> validDetectors =
                 detectors.stream()
@@ -174,8 +181,8 @@ public class FractionUsageAnalyzer {
 
         if (validDetectors.size() > 0) {
             fireScanner(suffix, s -> {
-                try (InputStream input = new FileInputStream(source.toFile())) {
-                    s.scan(source.getFileName().toString(), input, convertDetectors(validDetectors), this::scanFile);
+                try (InputStream input = new FileInputStream(source.getSource().toFile())) {
+                    s.scan(source, input, convertDetectors(validDetectors), this::scanFile);
                 } catch (IOException e) {
                     log.error("", e);
                 }
@@ -196,7 +203,7 @@ public class FractionUsageAnalyzer {
         if (validDetectors.size() > 0) {
             fireScanner(suffix, s -> {
                 try (InputStream input = source.getInputStream(entry)) {
-                    s.scan(entry.getName(), input, convertDetectors(validDetectors), this::scanFile);
+                    s.scan(new FileSource(null, new File(entry.getName()).toPath()), input, convertDetectors(validDetectors), this::scanFile);
                 } catch (IOException e) {
                     log.error("", e);
                 }
