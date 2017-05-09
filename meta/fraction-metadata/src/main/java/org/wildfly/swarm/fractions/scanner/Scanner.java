@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.wildfly.swarm.spi.meta.FileSource;
 import org.wildfly.swarm.spi.meta.FractionDetector;
 
 /**
@@ -53,6 +54,20 @@ public interface Scanner<T> {
         }
     }
 
+    default void scan(Path source, Path basePath, Consumer<FileSource> childHandler) throws IOException {
+        if (Files.isDirectory(source)) {
+            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    childHandler.accept(new FileSource(basePath, file));
+                    return super.visitFile(file, attrs);
+                }
+            });
+        } else {
+            childHandler.accept(new FileSource(basePath, source));
+        }
+    }
+
     default void scan(ZipFile source, BiConsumer<ZipEntry, ZipFile> childHandler) throws IOException {
         final Enumeration<? extends ZipEntry> entries = source.entries();
         while (entries.hasMoreElements()) {
@@ -64,6 +79,10 @@ public interface Scanner<T> {
     }
 
     default void scan(String name, InputStream input, Collection<FractionDetector<T>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+    }
+
+    default void scan(FileSource fileSource, InputStream input, Collection<FractionDetector<T>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+        scan(fileSource.getSource().getFileName().toString(), input, detectors, handleFileAsZip);
     }
 
     default void copy(InputStream input, OutputStream output) throws IOException {
