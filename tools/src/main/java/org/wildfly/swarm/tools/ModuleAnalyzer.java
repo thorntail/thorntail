@@ -38,6 +38,8 @@ import org.jboss.shrinkwrap.descriptor.spi.node.dom.XmlDomNodeImporterImpl;
  */
 public class ModuleAnalyzer {
 
+    private static final String DEFAULT_LOCAL_REPO = System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository";
+
     public ModuleAnalyzer(File f) throws IOException {
         this(new FileInputStream(f));
     }
@@ -81,7 +83,7 @@ public class ModuleAnalyzer {
 
         List<ArtifactSpec> dependencies = new ArrayList<>();
 
-        String localRepo = System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository";
+        String localRepo = System.getProperty("maven.repo.local", DEFAULT_LOCAL_REPO);
 
         for (ArtifactType<ResourcesType<ModuleDescriptor>> artifact : artifacts) {
             ArtifactSpec dep = ArtifactSpec.fromMscGav(artifact.getName());
