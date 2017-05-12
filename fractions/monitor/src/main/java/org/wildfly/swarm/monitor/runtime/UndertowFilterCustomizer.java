@@ -37,7 +37,9 @@ public class UndertowFilterCustomizer implements Customizer {
         if (!undertowFractionInstance.isUnsatisfied()) {
             UndertowFraction undertow = undertowFractionInstance.get();
 
-            undertow.filterConfiguration();
+            if (undertow.subresources().filterConfiguration() == null) {
+              undertow.filterConfiguration();
+            }
             undertow.subresources().filterConfiguration()
                     .customFilter("wfs-monitor", customFilter -> {
                         customFilter.module("org.wildfly.swarm.monitor:runtime");
