@@ -15,14 +15,6 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.artifact.repository.Authentication;
@@ -53,6 +45,14 @@ import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Bob McWhirter
@@ -178,6 +178,10 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 nodes.add(node);
             }
         }
+
+        List<DependencyNode> extraDependencies = ExtraArtifactsHandler.getExtraDependencies(nodes);
+
+        nodes.addAll(extraDependencies);
 
         resolveDependenciesInParallel(nodes);
 
