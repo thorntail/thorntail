@@ -44,6 +44,23 @@ public class CompositeKey implements ConfigKey {
     }
 
     @Override
+    public boolean isChildOf(ConfigKey possibleParent) {
+        if (possibleParent.head() == ConfigKey.EMPTY) {
+            return true;
+        }
+        if (!this.head().equals(possibleParent.head())) {
+            return false;
+        }
+
+        return this.subkey(1).isChildOf(possibleParent.subkey(1));
+    }
+
+    @Override
+    public void replace(int position, String name) {
+        this.parts.get(position).replace(0, name);
+    }
+
+    @Override
     public SimpleKey head() {
         if (this.parts.isEmpty()) {
             return ConfigKey.EMPTY;
@@ -70,13 +87,13 @@ public class CompositeKey implements ConfigKey {
     @Override
     public String name() {
         return String.join(".",
-                this.parts.stream().map(SimpleKey::propertyName).collect(Collectors.toList()));
+                           this.parts.stream().map(SimpleKey::propertyName).collect(Collectors.toList()));
     }
 
     @Override
     public String propertyName() {
         return String.join(".",
-                this.parts.stream().map(SimpleKey::propertyName).collect(Collectors.toList()));
+                           this.parts.stream().map(SimpleKey::propertyName).collect(Collectors.toList()));
     }
 
     public CompositeKey append(String... names) {

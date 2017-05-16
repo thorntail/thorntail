@@ -15,28 +15,30 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.naming.NamingException;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
-import org.jboss.jandex.Index;
+import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.monitor.HealthMetaData;
-import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
+import org.wildfly.swarm.spi.api.DeploymentProcessor;
+import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
+import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
 
 /**
  * @author Ken Finnigan
  */
-@ApplicationScoped
-public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
+@DeploymentScoped
+public class HealthAnnotationProcessor implements DeploymentProcessor {
 
     public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.health.Health");
 
@@ -44,13 +46,20 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
     public static final DotName APP_PATH = DotName.createSimple("javax.ws.rs.ApplicationPath");
 
+    @Inject
+    public HealthAnnotationProcessor(Archive archive, IndexView index) {
+        this.archive = archive;
+        this.index = index;
+    }
+
     @Override
-    public void processArchive(Archive<?> archive, Index index) throws NamingException {
+    public void process() throws NamingException {
 
         // first pass: jboss-web context root
         Optional<String> jbossWebContext = Optional.empty();
-        if (archive instanceof JBossWebContainer) {
-            JBossWebContainer war = (JBossWebContainer) archive;
+        //if (archive instanceof JBossWebContainer) {
+        if (archive.getName().endsWith(".war")) {
+            JBossWebContainer war = archive.as(WARArchive.class);
             if (war.getContextRoot() != null) {
                 jbossWebContext = Optional.of(war.getContextRoot());
             }
@@ -58,7 +67,7 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
 
         // second pass: JAX-RS applications
         Optional<String> appPath = Optional.empty();
-        List<AnnotationInstance> appPathAnnotations = index.getAnnotations(APP_PATH);
+        Collection<AnnotationInstance> appPathAnnotations = index.getAnnotations(APP_PATH);
         for (AnnotationInstance annotation : appPathAnnotations) {
             if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
                 appPath = Optional.of(annotation.value().asString());
@@ -66,7 +75,7 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
         }
 
         // third pass: JAX-RS resources
-        List<AnnotationInstance> pathAnnotations = index.getAnnotations(PATH);
+        Collection<AnnotationInstance> pathAnnotations = index.getAnnotations(PATH);
         for (AnnotationInstance annotation : pathAnnotations) {
             if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
                 ClassInfo classInfo = annotation.target().asClass();
@@ -135,4 +144,8 @@ public class HealthAnnotationProcessor implements ArchiveMetadataProcessor {
         sb.append(pathToken);
 
     }
+
+    private final Archive<?> archive;
+
+    private final IndexView index;
 }

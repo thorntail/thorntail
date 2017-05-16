@@ -22,7 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,17 +33,23 @@ import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
-import org.wildfly.swarm.spi.api.ArchivePreparer;
+import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 
-@ApplicationScoped
-public class SecuredArchivePreparer implements ArchivePreparer {
+@DeploymentScoped
+public class SecuredArchivePreparer implements DeploymentProcessor {
 
     private static final Logger LOG = Logger.getLogger(SecuredArchivePreparer.class);
 
+    @Inject
+    public SecuredArchivePreparer(Archive archive) {
+        this.archive = archive;
+    }
+
     @Override
-    public void prepareArchive(Archive<?> archive) throws IOException {
+    public void process() throws IOException {
         InputStream keycloakJson = null;
         if (keycloakJsonPath != null) {
             keycloakJson = getKeycloakJson(keycloakJsonPath);
@@ -111,6 +117,8 @@ public class SecuredArchivePreparer implements ArchivePreparer {
         }
         return new ByteArrayAsset(str.toString().getBytes());
     }
+
+    private final Archive archive;
 
     @AttributeDocumentation("Path to keycloak.json configuration")
     @Configurable("swarm.keycloak.json.path")

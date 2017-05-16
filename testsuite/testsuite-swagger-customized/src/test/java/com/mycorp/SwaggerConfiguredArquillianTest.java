@@ -33,7 +33,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(Arquillian.class)
 @DefaultDeployment
-public class SwaggerArquillianTest {
+public class SwaggerConfiguredArquillianTest {
 
     @RunAsClient
     @Test

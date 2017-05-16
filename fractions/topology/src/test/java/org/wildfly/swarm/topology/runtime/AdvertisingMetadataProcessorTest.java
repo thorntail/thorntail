@@ -27,8 +27,8 @@ public class AdvertisingMetadataProcessorTest {
     public void testNoAnnotations() throws IOException {
         JARArchive archive = ShrinkWrap.create(JARArchive.class);
 
-        AdvertisingMetadataProcessor processor = new AdvertisingMetadataProcessor();
-        processor.processArchive(archive, createIndex(archive));
+        AdvertisingMetadataProcessor processor = new AdvertisingMetadataProcessor(archive, createIndex(archive));
+        processor.process();
 
         List<String> advertisements = archive.as(TopologyArchive.class).advertisements();
 
@@ -41,8 +41,8 @@ public class AdvertisingMetadataProcessorTest {
 
         archive.addClass(MyClass.class);
 
-        AdvertisingMetadataProcessor processor = new AdvertisingMetadataProcessor();
-        processor.processArchive(archive, createIndex(archive));
+        AdvertisingMetadataProcessor processor = new AdvertisingMetadataProcessor(archive, createIndex(archive));
+        processor.process();
 
         List<String> advertisements = archive.as(TopologyArchive.class).advertisements();
 
@@ -56,8 +56,8 @@ public class AdvertisingMetadataProcessorTest {
 
         archive.addClass(MyRepeatingClass.class);
 
-        AdvertisingMetadataProcessor processor = new AdvertisingMetadataProcessor();
-        processor.processArchive(archive, createIndex(archive));
+        AdvertisingMetadataProcessor processor = new AdvertisingMetadataProcessor(archive, createIndex(archive));
+        processor.process();
 
         List<String> advertisements = archive.as(TopologyArchive.class).advertisements();
 
@@ -72,7 +72,6 @@ public class AdvertisingMetadataProcessorTest {
         Map<ArchivePath, Node> c = archive.getContent();
         for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
             if (each.getKey().get().endsWith(".class")) {
-                System.err.println( "indexing: " + each.getKey().get() );
                 indexer.index(each.getValue().getAsset().openStream());
             }
         }

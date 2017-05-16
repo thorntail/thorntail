@@ -1,4 +1,4 @@
-package org.wildfly.swarm.cdi.jaxrsapi;
+package org.wildfly.swarm.cdi.jaxrsapi.test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

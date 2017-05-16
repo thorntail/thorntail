@@ -60,7 +60,6 @@ import org.wildfly.swarm.container.runtime.wildfly.UUIDFactory;
 import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapConfiguration;
 import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapPersister;
 import org.wildfly.swarm.internal.SwarmMessages;
-import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.UserSpaceExtensionFactory;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
@@ -86,12 +85,8 @@ public class RuntimeServer implements Server {
     private Instance<ServiceActivator> serviceActivators;
 
     @Inject
-    @Any
+    @ImplicitDeployment
     private Instance<Archive> implicitDeployments;
-
-    @Inject
-    @Any
-    private Instance<ArchivePreparer> archivePreparers;
 
     @Inject
     private DMRMarshaller dmrMarshaller;
@@ -167,6 +162,7 @@ public class RuntimeServer implements Server {
             }
         }
 
+        /*
         this.archivePreparers.forEach(e -> {
             // Log it to prevent dead-code elimination.
             //
@@ -174,6 +170,7 @@ public class RuntimeServer implements Server {
             // prior to logging the configurables.
             SwarmMessages.MESSAGES.registeredArchivePreparer(e.toString());
         });
+        */
 
         try (AutoCloseable handle = Performance.time("configurable-manager rescan")) {
             this.configurableManager.rescan();

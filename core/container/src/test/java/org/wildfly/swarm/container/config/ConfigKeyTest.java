@@ -58,5 +58,32 @@ public class ConfigKeyTest {
 
         assertThat(key.name()).isEqualTo("foo.[bar.baz].taco");
     }
+
+    @Test
+    public void testParentage() {
+        ConfigKey child = ConfigKey.parse( "swarm.deployment.*.foo");
+        ConfigKey parent = ConfigKey.parse( "swarm.deployment.*");
+        ConfigKey cousin = ConfigKey.parse( "swarm.deployment.tacos");
+
+        assertThat( child.isChildOf(parent)).isTrue();
+        assertThat( parent.isChildOf(child)).isFalse();
+        assertThat( cousin.isChildOf(child)).isFalse();
+        assertThat( child.isChildOf(cousin)).isFalse();
+        assertThat( cousin.isChildOf(parent)).isFalse();
+        assertThat( parent.isChildOf(parent)).isFalse();
+    }
+
+    @Test
+    public void testReplace() {
+        ConfigKey key = ConfigKey.parse("swarm.deployment.*.foo");
+
+        key.replace(2, "taco.jar");
+
+        assertThat( key.head().name() ).isEqualTo( "swarm");
+        assertThat( key.subkey(1).head().name() ).isEqualTo( "deployment");
+        assertThat( key.subkey(2).head().name() ).isEqualTo( "taco.jar");
+        assertThat( key.subkey(3).head().name() ).isEqualTo( "foo");
+
+    }
 }
 
