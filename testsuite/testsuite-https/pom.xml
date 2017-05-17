@@ -59,6 +59,7 @@
           <validity>100</validity>
           <keyalg>RSA</keyalg>
           <keysize>2048</keysize>
+          <skipIfExist>true</skipIfExist>
         </configuration>
         <executions>
           <execution>
