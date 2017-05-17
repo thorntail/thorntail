@@ -48,8 +48,8 @@
               <goal>generate-certified-bom</goal>
             </goals>
             <configuration>
-              <template>${project.parent.build.directory}/bom-template.xml</template>
-            </configuration>
+		<template>${project.basedir}/../target/bom-template.xml</template>            
+	   </configuration>
           </execution>
         </executions>
       </plugin>
