@@ -15,10 +15,16 @@
  */
 package org.wildfly.swarm.jsf.test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.http.client.fluent.Request;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.junit.Test;
+import org.wildfly.swarm.fractions.FractionUsageAnalyzer;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -30,5 +36,38 @@ public class JsfIT {
     public void jsf() throws IOException, InterruptedException {
         String result = Request.Get("http://localhost:8080/index.jsf").execute().returnContent().asString();
         assertThat(result).contains("Hello from JSF");
+        assertThat(result).contains("Message from faces-config.xml bean");
+        assertThat(result).contains("Message from custom-library.faces-config.xml bean");
+    }
+
+    @Test
+    public void testFractionMatching() throws Exception {
+        JARArchive archive = ShrinkWrap.create(JARArchive.class);
+        archive.addAsResource("WEB-INF/faces-config.xml");
+        FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
+
+        final File out = Files.createTempFile(archive.getName(), ".war").toFile();
+        archive.as(ZipExporter.class).exportTo(out, true);
+        analyzer.source(out);
+
+        assertThat(analyzer.detectNeededFractions()
+                       .stream()
+                       .filter(fd -> fd.getArtifactId().equals("jsf"))
+                       .count()).isEqualTo(1);
+    }
+
+    @Test
+    public void testFractionMatchingMETAINF() throws Exception {
+        JARArchive archive = ShrinkWrap.create(JARArchive.class);
+        archive.addAsResource("META-INF/faces-config.xml");
+        FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
+
+        final File out = Files.createTempFile(archive.getName(), ".war").toFile();
+        archive.as(ZipExporter.class).exportTo(out, true);
+        analyzer.source(out);
+        assertThat(analyzer.detectNeededFractions()
+                       .stream()
+                       .filter(fd -> fd.getArtifactId().equals("jsf"))
+                       .count()).isEqualTo(1);
     }
 }

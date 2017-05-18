@@ -17,6 +17,7 @@
 package org.wildfly.swarm.jpa.detect;
 
 import org.wildfly.swarm.spi.meta.FileDetector;
+import org.wildfly.swarm.spi.meta.FileSource;
 
 /**
  * @author Heiko Braun
@@ -39,8 +40,9 @@ public class PersistenceXmlDetector extends FileDetector {
     }
 
     @Override
-    public void detect(String fileName) {
-        if (!detectionComplete() && fileName.endsWith(PERSISTENCE_XML)) {
+    public void detect(FileSource fileSource) {
+        String relativePath = fileSource.getRelativePath();
+        if (!detectionComplete() && relativePath.equals(PERSISTENCE_XML)) {
             detected = true;
             detectionComplete = true;
         }
@@ -53,7 +55,7 @@ public class PersistenceXmlDetector extends FileDetector {
 
     private static final String XML = "xml";
 
-    private static final String PERSISTENCE_XML = "persistence.xml";
+    private static final String PERSISTENCE_XML = "META-INF/persistence.xml";
 
     private static final String JPA = "jpa";
 

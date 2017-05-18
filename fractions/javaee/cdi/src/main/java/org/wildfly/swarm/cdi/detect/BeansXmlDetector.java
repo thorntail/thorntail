@@ -17,6 +17,7 @@
 package org.wildfly.swarm.cdi.detect;
 
 import org.wildfly.swarm.spi.meta.FileDetector;
+import org.wildfly.swarm.spi.meta.FileSource;
 
 /**
  * @author Heiko Braun
@@ -39,8 +40,11 @@ public class BeansXmlDetector extends FileDetector {
     }
 
     @Override
-    public void detect(String fileName) {
-        if (!detectionComplete() && fileName.endsWith(BEANS_XML)) {
+    public void detect(FileSource fileSource) {
+        String relativePath = fileSource.getRelativePath();
+        if (!detectionComplete() &&
+                (relativePath.equals(BEANS_XML_WEB_INF_1) ||
+                relativePath.equals(BEANS_XML_WEB_INF_2) || relativePath.equals(BEANS_XML_META_INF))) {
             detected = true;
             detectionComplete = true;
         }
@@ -53,7 +57,9 @@ public class BeansXmlDetector extends FileDetector {
 
     private static final String XML = "xml";
 
-    private static final String BEANS_XML = "beans.xml";
+    private static final String BEANS_XML_WEB_INF_1 = "WEB-INF/beans.xml";
+    private static final String BEANS_XML_WEB_INF_2 = "WEB-INF/classes/META-INF/beans.xml";
+    private static final String BEANS_XML_META_INF = "META-INF/beans.xml";
 
     private static final String CDI = "cdi";
 
