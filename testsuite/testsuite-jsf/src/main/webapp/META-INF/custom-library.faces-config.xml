@@ -5,8 +5,8 @@
               version="2.2">
 
     <managed-bean>
-      <managed-bean-class>org.wildfly.swarm.jsf.test.HelloBean</managed-bean-class>
-      <managed-bean-name>helloBean</managed-bean-name>
+      <managed-bean-class>org.wildfly.swarm.jsf.test.LibraryHelloBean</managed-bean-class>
+      <managed-bean-name>libraryHelloBean</managed-bean-name>
       <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 </faces-config>

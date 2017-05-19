@@ -22,12 +22,13 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 import org.wildfly.swarm.spi.meta.FileDetector;
+import org.wildfly.swarm.spi.meta.FileSource;
 import org.wildfly.swarm.spi.meta.FractionDetector;
 
 /**
  * @author Heiko Braun
  */
-public class FilePresenceScanner implements Scanner<String> {
+public class FilePresenceScanner implements Scanner<FileSource> {
     @Override
     public String extension() {
         return XML;
@@ -36,11 +37,10 @@ public class FilePresenceScanner implements Scanner<String> {
     /**
      * scans all xml files
      */
-    @Override
-    public void scan(String name, final InputStream input, Collection<FractionDetector<String>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+    public void scan(FileSource fileSource, final InputStream input, Collection<FractionDetector<FileSource>> detectors, Consumer<File> handleFileAsZip) throws IOException {
         detectors.stream()
                 .filter(d -> FileDetector.class.isAssignableFrom(d.getClass()))
-                .forEach(d -> d.detect(name));
+                .forEach(d -> d.detect(fileSource));
     }
 
     private static final String XML = "xml";

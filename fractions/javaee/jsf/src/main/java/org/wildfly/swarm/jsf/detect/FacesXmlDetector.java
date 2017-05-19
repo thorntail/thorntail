@@ -16,7 +16,10 @@
 
 package org.wildfly.swarm.jsf.detect;
 
+import java.io.File;
+
 import org.wildfly.swarm.spi.meta.FileDetector;
+import org.wildfly.swarm.spi.meta.FileSource;
 
 /**
  * @author Heiko Braun
@@ -39,8 +42,11 @@ public class FacesXmlDetector extends FileDetector {
     }
 
     @Override
-    public void detect(String fileName) {
-        if (!detectionComplete() && fileName.endsWith(FACES_CONFIG_XML)) {
+    public void detect(FileSource fileSource) {
+        String relativePath = fileSource.getRelativePath();
+        if (!detectionComplete() &&
+                (relativePath.equals(FACES_CONFIG_XML_WEB_INF) || relativePath.equals(FACES_CONFIG_XML_META_INF) ||
+                relativePath.endsWith(FACES_CONFIG_SUFFIX))) {
             detected = true;
             detectionComplete = true;
         }
@@ -53,7 +59,9 @@ public class FacesXmlDetector extends FileDetector {
 
     private static final String XML = "xml";
 
-    private static final String FACES_CONFIG_XML = "faces-config.xml";
+    private static final String FACES_CONFIG_XML_WEB_INF = "WEB-INF" + File.separator + "faces-config.xml";
+    private static final String FACES_CONFIG_XML_META_INF = "META-INF" + File.separator + "faces-config.xml";
+    private static final String FACES_CONFIG_SUFFIX = ".faces-config.xml";
 
     private static final String JSF = "jsf";
 
