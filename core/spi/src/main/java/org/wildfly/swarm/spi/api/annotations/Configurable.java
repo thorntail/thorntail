@@ -16,6 +16,7 @@
 package org.wildfly.swarm.spi.api.annotations;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -26,10 +27,6 @@ import javax.inject.Qualifier;
 /**
  * A group of configuration properties.
  *
- * <p>The root class of any configuration group <b>must</b> contain this annotation.
- * Any inner classes must be static, but are not required to use this annotation,
- * but they may.</p>
- *
  * <p>When calculating configuration item names, the presence of this annotation
  * will override the naming heuristics usually used.</p>
  *
@@ -38,6 +35,7 @@ import javax.inject.Qualifier;
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
+@Repeatable(Configurables.class)
 public @interface Configurable {
     @Nonbinding String value() default "";
 

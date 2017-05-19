@@ -37,10 +37,12 @@ import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 public class ContextPathArchivePreparer implements DeploymentProcessor {
 
     @AttributeDocumentation("Web context path for the default deployment")
+    @Configurable("swarm.deployment.*.context.path")
     @Configurable("swarm.context.path")
     Defaultable<String> contextPath = Defaultable.string("/");
 
     @AttributeDocumentation("List of content mounts")
+    @Configurable("swarm.deployment.*.mounts")
     @Configurable("swarm.context.mounts")
     List<String> mounts;
 

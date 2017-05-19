@@ -268,9 +268,6 @@ public class RuntimeDeployer implements Deployer {
     @Inject
     DeploymentContext deploymentContext;
 
-    //@Inject
-    //private BeanManager beanManager;
-
     private String defaultDeploymentType;
 
     @SuppressWarnings("unused")

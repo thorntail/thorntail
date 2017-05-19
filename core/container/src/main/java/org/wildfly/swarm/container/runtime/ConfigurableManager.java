@@ -26,7 +26,7 @@ import org.wildfly.swarm.internal.SwarmConfigMessages;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
-import org.wildfly.swarm.spi.api.annotations.ConfigurableAlias;
+import org.wildfly.swarm.spi.api.annotations.Configurables;
 import org.wildfly.swarm.spi.api.config.ConfigKey;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 import org.wildfly.swarm.spi.api.config.Converter;
@@ -96,7 +96,7 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> void configure(ConfigurableHandle configurable) throws Exception {
+    protected <T> boolean configure(ConfigurableHandle configurable) throws Exception {
         try (AutoCloseable handle = Performance.accumulate("ConfigurableManager#configure")) {
             Resolver<?> resolver = this.configView.resolve(configurable.key());
 
@@ -131,9 +131,12 @@ public class ConfigurableManager implements AutoCloseable {
                     // also ignore
                 } else {
                     configurable.set(resolvedType.cast(resolvedValue));
+                    return true;
                 }
             }
         }
+
+        return false;
     }
 
     private <ENUMTYPE extends Enum<ENUMTYPE>> Converter<ENUMTYPE> converter(Class<ENUMTYPE> enumType) {
@@ -294,22 +297,20 @@ public class ConfigurableManager implements AutoCloseable {
                 if (isBlacklisted(field)) {
                     continue;
                 }
-                if (isFraction || field.getAnnotation(Configurable.class) != null) {
+                if (isFraction || field.getAnnotation(Configurable.class) != null || field.getAnnotation(Configurables.class) != null) {
                     if (isConfigurableType(field.getType())) {
-                        ConfigKey name = nameFor(prefix, field);
-                        if (!seen(name)) {
-                            ConfigurableHandle configurable = new ObjectBackedConfigurableHandle(name, instance, field);
-                            this.configurables.add(configurable);
-                            configure(configurable);
-                        }
+                        List<ConfigKey> names = namesFor(prefix, field);
 
-                        // Process @ConfigurableAlias
-                        if (field.getAnnotation(ConfigurableAlias.class) != null) {
-                            name = nameForAlias(prefix, field);
+                        boolean configured = false;
+
+                        for (ConfigKey name : names) {
                             if (!seen(name)) {
                                 ConfigurableHandle configurable = new ObjectBackedConfigurableHandle(name, instance, field);
                                 this.configurables.add(configurable);
-                                configure(configurable);
+                                configured = configure(configurable);
+                            }
+                            if (configured) {
+                                break;
                             }
                         }
                     }
@@ -321,6 +322,11 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     private boolean seen(ConfigKey name) {
+        if (this.deploymentContext.isActive()) {
+            // we wish to allow multiple configurables if
+            // this is a deployment-activated context.
+            return false;
+        }
         return this.configurables.stream().anyMatch(e -> e.key().equals(name));
     }
 
@@ -351,19 +357,46 @@ public class ConfigurableManager implements AutoCloseable {
         return isBlacklisted(field.getType());
     }
 
-    protected ConfigKey nameFor(ConfigKey prefix, Field field) {
-        Configurable anno = field.getAnnotation(Configurable.class);
+    protected List<ConfigKey> namesFor(ConfigKey prefix, Field field) {
 
-        if (anno != null) {
-            if (!anno.value().equals("")) {
-                return handleDeploymentConfiguration(ConfigKey.parse(anno.value()));
+        List<ConfigKey> names = new ArrayList<>();
+
+        Configurables plural = field.getAnnotation(Configurables.class);
+        if (plural != null) {
+            for (Configurable each : plural.value()) {
+                ConfigKey key = nameFor(prefix, each);
+                if (key != null) {
+                    names.add(key);
+                }
             }
-            if (!anno.simpleName().equals("")) {
-                return handleDeploymentConfiguration(prefix.append(ConfigKey.parse(anno.simpleName())));
+        } else {
+            Configurable[] annos = field.getAnnotationsByType(Configurable.class);
+            if (annos != null && annos.length > 0) {
+                for (Configurable anno : annos) {
+                    ConfigKey key = nameFor(prefix, anno);
+                    if (key != null) {
+                        names.add(key);
+                    }
+                }
+            } else {
+                ConfigKey key = handleDeploymentConfiguration(prefix.append(nameFor(field)));
+                names.add(key);
             }
         }
 
-        return handleDeploymentConfiguration(prefix.append(nameFor(field)));
+        return names;
+    }
+
+    protected ConfigKey nameFor(ConfigKey prefix, Configurable anno) {
+        if (!anno.value().equals("")) {
+            return handleDeploymentConfiguration(ConfigKey.parse(anno.value()));
+        }
+
+        if (!anno.simpleName().equals("")) {
+            handleDeploymentConfiguration(prefix.append(ConfigKey.parse(anno.simpleName())));
+        }
+
+        return null;
     }
 
     private static ConfigKey DEPLOYMENT_PREFIX = ConfigKey.parse("swarm.deployment.*");
@@ -378,18 +411,6 @@ public class ConfigurableManager implements AutoCloseable {
         }
 
         return in;
-    }
-
-    protected ConfigKey nameForAlias(ConfigKey prefix, Field field) {
-        ConfigurableAlias annoAlias = field.getAnnotation(ConfigurableAlias.class);
-
-        if (annoAlias != null) {
-            if (!annoAlias.value().equals("")) {
-                return ConfigKey.parse(annoAlias.value());
-            }
-        }
-
-        return prefix.append(nameFor(field));
     }
 
     protected ConfigKey nameFor(Field field) {
