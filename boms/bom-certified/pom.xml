@@ -22,7 +22,7 @@
 
   <packaging>jar</packaging>
 
-   <build>
+  <build>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -48,8 +48,8 @@
               <goal>generate-certified-bom</goal>
             </goals>
             <configuration>
-		<template>${project.basedir}/../target/bom-template.xml</template>            
-	   </configuration>
+              <template>${project.basedir}/../target/bom-template.xml</template>
+            </configuration>
           </execution>
         </executions>
       </plugin>
