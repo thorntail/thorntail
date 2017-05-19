@@ -22,8 +22,8 @@ public class SwaggerArchivePreparerTest {
         archive.addResource(MyResource.class);
         archive.addResource(MyOtherResource.class);
 
-        SwaggerArchivePreparer preparer = new SwaggerArchivePreparer();
-        preparer.prepareArchive(archive);
+        SwaggerArchivePreparer preparer = new SwaggerArchivePreparer(archive);
+        preparer.process();
 
         SwaggerArchive swaggerArchive = archive.as(SwaggerArchive.class);
 
@@ -38,8 +38,8 @@ public class SwaggerArchivePreparerTest {
         archive.addResource(MyOtherResource.class);
         archive.add(new ByteArrayAsset("packages: com.myapp.mysubstuff".getBytes()), "META-INF/swarm.swagger.conf");
 
-        SwaggerArchivePreparer preparer = new SwaggerArchivePreparer();
-        preparer.prepareArchive(archive);
+        SwaggerArchivePreparer preparer = new SwaggerArchivePreparer(archive);
+        preparer.process();
 
         SwaggerArchive swaggerArchive = archive.as(SwaggerArchive.class);
 
@@ -54,8 +54,8 @@ public class SwaggerArchivePreparerTest {
         archive.addResource(MyOtherResource.class);
         archive.add(new ByteArrayAsset("packages: com.myapp.mysubstuff".getBytes()), "WEB-INF/classes/META-INF/swarm.swagger.conf");
 
-        SwaggerArchivePreparer preparer = new SwaggerArchivePreparer();
-        preparer.prepareArchive(archive);
+        SwaggerArchivePreparer preparer = new SwaggerArchivePreparer(archive);
+        preparer.process();
 
         SwaggerArchive swaggerArchive = archive.as(SwaggerArchive.class);
 

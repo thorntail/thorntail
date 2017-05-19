@@ -26,13 +26,12 @@ import java.util.stream.Stream;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
-import org.jboss.jandex.Index;
-import org.jboss.jandex.Indexer;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filters;
@@ -50,15 +49,15 @@ import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.internal.Deployer;
+import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
 import org.wildfly.swarm.container.runtime.wildfly.SwarmContentRepository;
 import org.wildfly.swarm.internal.DeployerMessages;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.SwarmMessages;
-import org.wildfly.swarm.spi.api.ArchiveMetadataProcessor;
-import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
+import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
@@ -183,11 +182,11 @@ public class RuntimeDeployer implements Deployer {
                                 } else if (pathFile.isDirectory()) {
                                     depContainer
                                             .merge(ShrinkWrap.create(GenericArchive.class)
-                                                            .as(ExplodedImporter.class)
-                                                            .importDirectory(pathFile)
-                                                            .as(GenericArchive.class),
-                                                    "/WEB-INF/classes",
-                                                    Filters.includeAll());
+                                                           .as(ExplodedImporter.class)
+                                                           .importDirectory(pathFile)
+                                                           .as(GenericArchive.class),
+                                                   "/WEB-INF/classes",
+                                                   Filters.includeAll());
                                 }
                             }
                         }
@@ -197,32 +196,14 @@ public class RuntimeDeployer implements Deployer {
                 }
             }
 
-            // 1. create a meta data index, but only if we have processors for it
-            if (!this.archiveMetadataProcessors.isUnsatisfied()) {
-                Indexer indexer = new Indexer();
-                Map<ArchivePath, Node> c = deployment.getContent();
-                try {
-                    for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
-                        if (each.getKey().get().endsWith(CLASS_SUFFIX)) {
-                            indexer.index(each.getValue().getAsset().openStream());
-                        }
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                Index index = indexer.complete();
-
-                // 2.1 let fractions process the meta data
-                for (ArchiveMetadataProcessor processor : this.archiveMetadataProcessors) {
-                    processor.processArchive(deployment, index);
-                }
-            }
+            this.deploymentContext.activate(deployment);
 
             // 2. give fractions a chance to handle the deployment
-            for (ArchivePreparer preparer : this.archivePreparers) {
-                preparer.prepareArchive(deployment);
+            for (DeploymentProcessor processor : this.deploymentProcessors) {
+                processor.process();
             }
+
+            this.deploymentContext.deactivate();
 
             if (DeployerMessages.MESSAGES.isDebugEnabled()) {
                 DeployerMessages.MESSAGES.deploying(deployment.getName());
@@ -284,7 +265,11 @@ public class RuntimeDeployer implements Deployer {
     void stop() {
     }
 
-    private static final String CLASS_SUFFIX = ".class";
+    @Inject
+    DeploymentContext deploymentContext;
+
+    //@Inject
+    //private BeanManager beanManager;
 
     private String defaultDeploymentType;
 
@@ -309,9 +294,6 @@ public class RuntimeDeployer implements Deployer {
 
     @SuppressWarnings("unused")
     @Inject
-    private Instance<ArchivePreparer> archivePreparers;
-
-    @SuppressWarnings("unused")
-    @Inject
-    private Instance<ArchiveMetadataProcessor> archiveMetadataProcessors;
+    @Any
+    private Instance<DeploymentProcessor> deploymentProcessors;
 }

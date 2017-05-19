@@ -59,6 +59,16 @@ public interface ConfigKey {
     ConfigKey append(ConfigKey key);
 
     /**
+     * Determine if this key is a child of the argument.
+     *
+     * @param possibleParent The possible parent key.
+     * @return {@code true} if this key is a child of the argument, otherwise {@code false}.
+     */
+    boolean isChildOf(ConfigKey possibleParent);
+
+    void replace(int position, String name);
+
+    /**
      * Create a key from a series of names.
      *
      * @param parts The segments.

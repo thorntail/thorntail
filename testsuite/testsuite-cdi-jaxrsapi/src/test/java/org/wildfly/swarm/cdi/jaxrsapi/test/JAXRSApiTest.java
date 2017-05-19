@@ -1,4 +1,4 @@
-package org.wildfly.swarm.cdi.jaxrsapi;
+package org.wildfly.swarm.cdi.jaxrsapi.test;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -9,6 +9,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.cdi.jaxrsapi.test.MessageResource;
+import org.wildfly.swarm.cdi.jaxrsapi.test.TimeResource;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -18,17 +21,20 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
+@DefaultDeployment
 public class JAXRSApiTest {
 
     @Drone
     WebDriver browser;
 
+    /*
     @Deployment
     public static Archive createDeployment() {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
         deployment.addPackage(MessageResource.class.getPackage());
         return deployment;
     }
+    */
 
     @Test
     public void syncCall() throws Exception {

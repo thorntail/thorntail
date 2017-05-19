@@ -35,4 +35,9 @@ public class HealthMetaData {
     public String getWebContext() {
         return webContext;
     }
+
+    public String toString() {
+        return "[HealthMetaData: webContext=" + this.webContext + "; isSecure=" + this.isSecure + "]";
+
+    }
 }

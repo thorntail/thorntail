@@ -19,21 +19,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
-import org.wildfly.swarm.spi.api.ArchivePreparer;
 import org.wildfly.swarm.spi.api.Defaultable;
+import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.internal.UndertowExternalMountsAsset;
 
 /**
  * @author Ken Finnigan
  */
-@ApplicationScoped
-public class ContextPathArchivePreparer implements ArchivePreparer {
+@DeploymentScoped
+public class ContextPathArchivePreparer implements DeploymentProcessor {
 
     @AttributeDocumentation("Web context path for the default deployment")
     @Configurable("swarm.context.path")
@@ -43,8 +44,15 @@ public class ContextPathArchivePreparer implements ArchivePreparer {
     @Configurable("swarm.context.mounts")
     List<String> mounts;
 
+    private final Archive archive;
+
+    @Inject
+    public ContextPathArchivePreparer(Archive archive) {
+        this.archive = archive;
+    }
+
     @Override
-    public void prepareArchive(Archive<?> archive) {
+    public void process() {
         WARArchive warArchive = archive.as(WARArchive.class);
 
         if (warArchive.getContextRoot() == null) {

@@ -49,12 +49,16 @@ public class SimpleHttp {
         try {
 
             CredentialsProvider provider = new BasicCredentialsProvider();
-            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("admin", "password");
-            provider.setCredentials(AuthScope.ANY, credentials);
 
             HttpClientBuilder builder = HttpClientBuilder.create();
-            if (!followRedirects) builder.disableRedirectHandling();
-            if (useAuth) builder.setDefaultCredentialsProvider(provider);
+            if (!followRedirects) {
+                builder.disableRedirectHandling();
+            }
+            if (useAuth) {
+                UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("admin", "password");
+                provider.setCredentials(AuthScope.ANY, credentials);
+                builder.setDefaultCredentialsProvider(provider);
+            }
             HttpClient client = builder.build();
 
             HttpResponse response = client.execute(new HttpGet(theUrl));

@@ -1,21 +1,26 @@
 package org.wildfly.swarm.arquillian.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.msc.ServiceActivatorArchive;
-import org.wildfly.swarm.spi.api.ArchivePreparer;
+import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 
 /**
  * @author Bob McWhirter
  */
-@ApplicationScoped
-public class ArquillianArchivePreparer implements ArchivePreparer {
+@DeploymentScoped
+public class ArquillianArchivePreparer implements DeploymentProcessor {
 
-    @Override
-    public void prepareArchive(Archive<?> archive) {
+    @Inject
+    public ArquillianArchivePreparer(Archive archive) {
+        this.archive = archive;
+    }
+
+    public void process() {
         if (archive.get("META-INF/arquillian-testable") == null) {
             return;
         }
@@ -32,4 +37,6 @@ public class ArquillianArchivePreparer implements ArchivePreparer {
                 .addServiceActivator("org.wildfly.swarm.arquillian.deployment.TestableArchiveServiceActivator");
 
     }
+
+    private final Archive archive;
 }

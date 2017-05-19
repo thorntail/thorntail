@@ -29,13 +29,13 @@ public class HttpSecurityPreparerTest {
 
     @Before
     public void setUp() {
-        preparer = new HttpSecurityPreparer();
         archive = ShrinkWrap.create(WARArchive.class, "app.war");
+        preparer = new HttpSecurityPreparer(archive);
     }
 
     @Test
     public void do_nothing_if_not_specified_security_constraints() throws Exception {
-        preparer.prepareArchive(archive);
+        preparer.process();
         assertThat(archive.get(WebXmlAsset.NAME)).isNull();
     }
 
@@ -49,7 +49,7 @@ public class HttpSecurityPreparerTest {
         Map<String, Object> httpConfig = (Map<String, Object>) yaml.load(in);
 
         preparer.deploymentConfigs = (Map) ((Map) httpConfig.get("swarm")).get("deployment");
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         WebAppDescriptor webXml = Descriptors.importAs(WebAppDescriptor.class).fromStream(archive.get(WebXmlAsset.NAME).getAsset().openStream());
 
@@ -67,7 +67,7 @@ public class HttpSecurityPreparerTest {
         Map<String, Object> httpConfig = (Map<String, Object>) yaml.load(in);
 
         preparer.deploymentConfigs = (Map) ((Map) httpConfig.get("swarm")).get("deployment");
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         WebAppDescriptor webXml = Descriptors.importAs(WebAppDescriptor.class).fromStream(archive.get(WebXmlAsset.NAME).getAsset().openStream());
 
@@ -85,7 +85,7 @@ public class HttpSecurityPreparerTest {
         webConfig.put("login-config", loginConfig);
 
         preparer.deploymentConfigs = deploymentConfig;
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         WebAppDescriptor webXml = Descriptors.importAs(WebAppDescriptor.class).fromStream(archive.get(WebXmlAsset.NAME).getAsset().openStream());
         assertThat(webXml.getAllLoginConfig()).isEmpty();
@@ -102,7 +102,7 @@ public class HttpSecurityPreparerTest {
         webConfig.put("security-constraints", Collections.singletonList(securityConstraint));
 
         preparer.deploymentConfigs = deploymentConfig;
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         WebAppDescriptor webXml = Descriptors.importAs(WebAppDescriptor.class).fromStream(archive.get(WebXmlAsset.NAME).getAsset().openStream());
 
@@ -151,7 +151,7 @@ public class HttpSecurityPreparerTest {
 
         webConfig.put("security-constraints", Arrays.asList(securityConstraint1, securityConstraint2));
         preparer.deploymentConfigs = deploymentConfig;
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         WebAppDescriptor webXml = Descriptors.importAs(WebAppDescriptor.class).fromStream(archive.get(WebXmlAsset.NAME).getAsset().openStream());
 
@@ -171,7 +171,7 @@ public class HttpSecurityPreparerTest {
 
         webConfig.put("security-constraints", Collections.singletonList(securityConstraint));
         preparer.deploymentConfigs = deploymentConfig;
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         WebAppDescriptor webXml = Descriptors.importAs(WebAppDescriptor.class).fromStream(archive.get(WebXmlAsset.NAME).getAsset().openStream());
 
@@ -191,7 +191,7 @@ public class HttpSecurityPreparerTest {
 
         webConfig.put("security-constraints", Collections.singletonList(securityConstraint));
         preparer.deploymentConfigs = deploymentConfig;
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         WebAppDescriptor webXml = Descriptors.importAs(WebAppDescriptor.class).fromStream(archive.get(WebXmlAsset.NAME).getAsset().openStream());
 

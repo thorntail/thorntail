@@ -42,7 +42,8 @@ public class ContextPathArchivePreparerTest {
 
         assertThat(archive.getContextRoot()).isNull();
 
-        new ContextPathArchivePreparer().prepareArchive(archive);
+        ContextPathArchivePreparer processor = new ContextPathArchivePreparer(archive);
+        processor.process();
 
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("/");
@@ -58,7 +59,7 @@ public class ContextPathArchivePreparerTest {
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("myRoot");
 
-        new ContextPathArchivePreparer().prepareArchive(archive);
+        new ContextPathArchivePreparer(archive).process();
 
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("myRoot");
@@ -70,9 +71,9 @@ public class ContextPathArchivePreparerTest {
 
         assertThat(archive.getContextRoot()).isNull();
 
-        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();
+        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer(archive);
         preparer.contextPath.set("/another-root");
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         assertThat(archive.getContextRoot()).isNotNull();
         assertThat(archive.getContextRoot()).isEqualTo("/another-root");
@@ -93,10 +94,10 @@ public class ContextPathArchivePreparerTest {
 
         List<String> mounts = view.resolve("swarm.context.mounts").as(List.class).getValue();
 
-        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer();
+        ContextPathArchivePreparer preparer = new ContextPathArchivePreparer(archive);
         preparer.mounts = mounts;
 
-        preparer.prepareArchive(archive);
+        preparer.process();
 
         Node externalMount = archive.get(WARArchive.EXTERNAL_MOUNT_PATH);
         assertThat(externalMount).isNotNull();

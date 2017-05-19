@@ -119,15 +119,28 @@ public class SecureHttpContexts implements HttpHandler {
         // the predicate handler takes care that all of the above
         // will only be enacted on relevant web contexts
         handler = new PredicateHandler(exchange -> {
-            return monitor.getSecurityRealm().isPresent() &&
-                    (
-                            Queries.isAggregatorEndpoint(monitor, exchange.getRelativePath()) ||
-                                    (Queries.isDirectAccessToHealthEndpoint(monitor, exchange.getRelativePath())
-                                            && !hasTokenAuth(exchange)) ||
-                                    HttpContexts.getDefaultContextNames().contains(exchange.getRelativePath())
-                    );
-        }, handler, toWrap);
+            if (!monitor.getSecurityRealm().isPresent()) {
+                return false;
+            }
 
+            if (Queries.isAggregatorEndpoint(monitor, exchange.getRelativePath())) {
+                return true;
+            }
+
+            if (Queries.isDirectAccessToHealthEndpoint(monitor, exchange.getRelativePath())) {
+                if (!hasTokenAuth(exchange)) {
+                    return true;
+                }
+                return false;
+            }
+
+            if (HttpContexts.getDefaultContextNames().contains(exchange.getRelativePath())) {
+                return true;
+            }
+
+            return false;
+
+        }, handler, toWrap);
 
         return handler;
     }

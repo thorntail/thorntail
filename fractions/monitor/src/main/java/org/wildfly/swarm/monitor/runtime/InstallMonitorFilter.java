@@ -15,27 +15,31 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.SwarmInfo;
-import org.wildfly.swarm.spi.api.ArchivePreparer;
+import org.wildfly.swarm.spi.api.DeploymentProcessor;
+import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Ken Finnigan
  */
-@ApplicationScoped
-public class InstallMonitorFilter implements ArchivePreparer {
+@DeploymentScoped
+public class InstallMonitorFilter implements DeploymentProcessor {
+
+    @Inject
+    public InstallMonitorFilter(Archive archive) {
+        this.archive = archive;
+    }
 
     @Override
-    public void prepareArchive(Archive<?> archive) {
-        try {
-            WARArchive warArchive = archive.as(WARArchive.class);
-            warArchive.addDependency("org.wildfly.swarm:health-api:jar:" + SwarmInfo.VERSION);
-            warArchive.findWebXmlAsset().setContextParam("resteasy.scan", "true");
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to install health processor", e);
-        }
+    public void process() throws Exception {
+        WARArchive warArchive = archive.as(WARArchive.class);
+        warArchive.addDependency("org.wildfly.swarm:health-api:jar:" + SwarmInfo.VERSION);
+        warArchive.findWebXmlAsset().setContextParam("resteasy.scan", "true");
     }
+
+    private final Archive archive;
 }

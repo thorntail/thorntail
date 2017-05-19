@@ -72,9 +72,10 @@ public class MonitorSecurityTest extends SimpleHttp {
     @RunAsClient
     public void testHealthIntegration() throws Exception {
 
+        Response response = null;
         // aggregator / with auth
-        Response response = getUrlContents("http://localhost:8080/health");
-        System.out.println(response.getBody());
+
+        response = getUrlContents("http://localhost:8080/health");
         Assert.assertTrue(
                 response.getBody().contains("first") &&
                         response.getBody().contains("second")
@@ -87,7 +88,6 @@ public class MonitorSecurityTest extends SimpleHttp {
         // direct / no auth
         response = getUrlContents("http://localhost:8080/rest/v1/success/first", false);
         Assert.assertEquals("Expected 401 when directly accessing secured health endpoint wihthout credentials", 401, response.getStatus());
-
 
         // direct // with auth
         response = getUrlContents("http://localhost:8080/rest/v1/success/first", true);

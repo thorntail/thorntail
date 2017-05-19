@@ -20,13 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
-import org.wildfly.swarm.spi.api.ArchivePreparer;
+import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.JBossWebAsset;
 import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
@@ -36,16 +37,23 @@ import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
  * @author Heiko Braun
  * @author Ken Finnigan
  */
-@ApplicationScoped
-public class HttpSecurityPreparer implements ArchivePreparer {
+@DeploymentScoped
+public class HttpSecurityPreparer implements DeploymentProcessor {
 
     private static final Logger LOG = Logger.getLogger(HttpSecurityPreparer.class);
 
-    private final String[] SUPPORTED_AUTH_METHODS = new String[] {"BASIC", "DIGEST", "FORM", "KEYCLOAK"};
+    private final String[] SUPPORTED_AUTH_METHODS = new String[]{"BASIC", "DIGEST", "FORM", "KEYCLOAK"};
+
+    private final Archive archive;
+
+    @Inject
+    public HttpSecurityPreparer(Archive archive) {
+        this.archive = archive;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void prepareArchive(Archive<?> archive) {
+    public void process() {
 
         if (deploymentConfigs == null || deploymentConfigs.isEmpty()) {
             return;
@@ -74,7 +82,7 @@ public class HttpSecurityPreparer implements ArchivePreparer {
         // unsupported auth method
         Map<String, Object> loginConfig = (Map<String, Object>) deploymentConfig.get("login-config");
         if (loginConfig != null) {
-            String authMethod = (String)loginConfig.getOrDefault("auth-method", "NONE");
+            String authMethod = (String) loginConfig.getOrDefault("auth-method", "NONE");
             boolean isSupported = false;
             for (String supported : SUPPORTED_AUTH_METHODS) {
                 if (authMethod.equals(supported)) {
@@ -93,7 +101,7 @@ public class HttpSecurityPreparer implements ArchivePreparer {
 
             // security domain
             if (loginConfig.containsKey("security-domain")) {
-                jbossWeb.setSecurityDomain((String)loginConfig.get("security-domain"));
+                jbossWeb.setSecurityDomain((String) loginConfig.get("security-domain"));
             }
 
             // form login
@@ -101,8 +109,8 @@ public class HttpSecurityPreparer implements ArchivePreparer {
                 Map<String, Object> formLoginConfig = (Map<String, Object>) loginConfig.get("form-login-config");
                 webXml.setFormLoginConfig(
                         "Security Realm",
-                        (String)formLoginConfig.get("form-login-page"),
-                        (String)formLoginConfig.get("form-error-page")
+                        (String) formLoginConfig.get("form-login-page"),
+                        (String) formLoginConfig.get("form-error-page")
                 );
             }
         }

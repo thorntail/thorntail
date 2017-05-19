@@ -43,6 +43,32 @@ public class SimpleKey implements ConfigKey {
     }
 
     @Override
+    public boolean isChildOf(ConfigKey possibleParent) {
+        if (this == ConfigKey.EMPTY) {
+            return true;
+        }
+
+        if (possibleParent == ConfigKey.EMPTY) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void replace(int position, String name) {
+        if (this == ConfigKey.EMPTY) {
+            throw new RuntimeException("Cannot replace an empty key");
+        }
+
+        if (position != 0) {
+            throw new IndexOutOfBoundsException("Cannot replace position: " + position);
+        }
+
+        this.name = name;
+    }
+
+    @Override
     public ConfigKey append(ConfigKey key) {
         if (this == ConfigKey.EMPTY) {
             return key;
@@ -92,6 +118,6 @@ public class SimpleKey implements ConfigKey {
         return name();
     }
 
-    private final String name;
+    private String name;
 
 }

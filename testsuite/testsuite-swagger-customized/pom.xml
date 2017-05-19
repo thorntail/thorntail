@@ -17,8 +17,8 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-swagger-customized</artifactId>
 
-  <name>Test Suite: Swagger Adapter</name>
-  <description>Test Suite: Swagger Adapter</description>
+  <name>Test Suite: Swagger Adapter + Config</name>
+  <description>Test Suite: Swagger Adapter + Config</description>
 
   <packaging>jar</packaging>
 

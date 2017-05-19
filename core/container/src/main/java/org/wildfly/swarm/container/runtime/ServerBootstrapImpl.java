@@ -33,7 +33,11 @@ import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
 import org.wildfly.swarm.container.runtime.cdi.ConfigViewProducingExtension;
+import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
+import org.wildfly.swarm.container.runtime.cdi.DeploymentContextImpl;
+import org.wildfly.swarm.container.runtime.cdi.DeploymentScopedExtension;
 import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
+import org.wildfly.swarm.container.runtime.cdi.ImplicitArchiveExtension;
 import org.wildfly.swarm.container.runtime.cdi.OutboundSocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.SocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.XMLConfigProducingExtension;
@@ -117,18 +121,20 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                     Weld weld = new Weld(WELD_INSTANCE_ID);
                     weld.setClassLoader(module.getClassLoader());
 
-                    ConfigViewProducingExtension projectStageProducingExtension = new ConfigViewProducingExtension(this.configView);
-
-                    ConfigurableManager configurableManager = new ConfigurableManager(this.configView);
+                    ConfigViewProducingExtension configViewProducingExtension = new ConfigViewProducingExtension(this.configView);
+                    DeploymentContext deploymentContext = new DeploymentContextImpl();
+                    ConfigurableManager configurableManager = new ConfigurableManager(this.configView, deploymentContext);
 
                     // Add Extension that adds User custom bits into configurator
                     weld.addExtension(new FractionProducingExtension(explicitlyInstalledFractions, configurableManager));
                     weld.addExtension(new ConfigurableExtension(configurableManager));
                     weld.addExtension(new CommandLineArgsExtension(args));
-                    weld.addExtension(projectStageProducingExtension);
+                    weld.addExtension(configViewProducingExtension);
                     weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
                     weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
                     weld.addExtension(new SocketBindingExtension(this.socketBindings));
+                    weld.addExtension(new DeploymentScopedExtension(deploymentContext));
+                    weld.addExtension(new ImplicitArchiveExtension());
 
                     for (Class<?> each : this.userComponents) {
                         weld.addBeanClass(each);

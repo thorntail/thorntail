@@ -15,26 +15,28 @@
  */
 package org.wildfly.swarm.flyway.runtime;
 
-import org.wildfly.swarm.flyway.deployment.FlywayMigrationServletContextListener;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.flyway.FlywayFraction;
-import org.wildfly.swarm.spi.api.ArchivePreparer;
+import org.wildfly.swarm.flyway.deployment.FlywayMigrationServletContextListener;
+import org.wildfly.swarm.spi.api.DeploymentProcessor;
+import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
+import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
-import org.wildfly.swarm.undertow.descriptors.WebXmlContainer;
 
 /**
- *
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
-@ApplicationScoped
-public class FlywayMigrationArchivePreparer implements ArchivePreparer {
+@DeploymentScoped
+public class FlywayMigrationArchivePreparer implements DeploymentProcessor {
+
+    private final Archive<?> archive;
 
     @Inject
     private Instance<DatasourcesFraction> dsFractionInstance;
@@ -42,10 +44,15 @@ public class FlywayMigrationArchivePreparer implements ArchivePreparer {
     @Inject
     private Instance<FlywayFraction> flywayFractionInstance;
 
+    @Inject
+    public FlywayMigrationArchivePreparer(Archive archive) {
+        this.archive = archive;
+    }
+
     @Override
-    public void prepareArchive(Archive<?> archive) {
-        if (archive instanceof WebXmlContainer) {
-            WebXmlContainer<? extends Archive<?>> webArchive = ((WebXmlContainer<?>) archive);
+    public void process() {
+        if (archive.getName().endsWith(".war")) {
+            WARArchive webArchive = archive.as(WARArchive.class);
             WebXmlAsset webXml = webArchive.findWebXmlAsset();
             webXml.addListener("org.wildfly.swarm.flyway.deployment.FlywayMigrationServletContextListener");
             FlywayFraction flywayFraction = flywayFractionInstance.get();

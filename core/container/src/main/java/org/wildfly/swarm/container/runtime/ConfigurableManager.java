@@ -21,6 +21,7 @@ import org.jboss.logging.Logger;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.config.runtime.Keyed;
 import org.wildfly.swarm.config.runtime.SubresourceInfo;
+import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
 import org.wildfly.swarm.internal.SwarmConfigMessages;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -81,8 +82,9 @@ public class ConfigurableManager implements AutoCloseable {
 
     private final ConfigView configView;
 
-    public ConfigurableManager(ConfigView configView) {
+    public ConfigurableManager(ConfigView configView, DeploymentContext deploymentContext) {
         this.configView = configView;
+        this.deploymentContext = deploymentContext;
     }
 
     public ConfigView configView() {
@@ -140,7 +142,7 @@ public class ConfigurableManager implements AutoCloseable {
                 return Enum.valueOf(enumType, str.toUpperCase().replace('-', '_'));
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Invalid value '" + str + "'; should be one of: "
-                        + String.join(",", Arrays.stream(enumType.getEnumConstants()).map((constant) -> constant.toString()).collect(Collectors.toList())));
+                                                           + String.join(",", Arrays.stream(enumType.getEnumConstants()).map((constant) -> constant.toString()).collect(Collectors.toList())));
             }
         };
     }
@@ -165,7 +167,7 @@ public class ConfigurableManager implements AutoCloseable {
 
     private Converter<Map> mapConverter(ConfigKey key) {
         return (ignored) -> {
-            Map<String,Object> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             Set<SimpleKey> subKeys = this.configView.simpleSubkeys(key);
 
             for (SimpleKey subKey : subKeys) {
@@ -354,14 +356,28 @@ public class ConfigurableManager implements AutoCloseable {
 
         if (anno != null) {
             if (!anno.value().equals("")) {
-                return ConfigKey.parse(anno.value());
+                return handleDeploymentConfiguration(ConfigKey.parse(anno.value()));
             }
             if (!anno.simpleName().equals("")) {
-                return prefix.append(ConfigKey.parse(anno.simpleName()));
+                return handleDeploymentConfiguration(prefix.append(ConfigKey.parse(anno.simpleName())));
             }
         }
 
-        return prefix.append(nameFor(field));
+        return handleDeploymentConfiguration(prefix.append(nameFor(field)));
+    }
+
+    private static ConfigKey DEPLOYMENT_PREFIX = ConfigKey.parse("swarm.deployment.*");
+
+    protected ConfigKey handleDeploymentConfiguration(ConfigKey in) {
+        if (!this.deploymentContext.isActive()) {
+            return in;
+        }
+
+        if (in.isChildOf(DEPLOYMENT_PREFIX)) {
+            in.replace(2, this.deploymentContext.getCurrentArchive().getName());
+        }
+
+        return in;
     }
 
     protected ConfigKey nameForAlias(ConfigKey prefix, Field field) {
@@ -676,4 +692,5 @@ public class ConfigurableManager implements AutoCloseable {
         this.deferred.clear();
     }
 
+    private final DeploymentContext deploymentContext;
 }
