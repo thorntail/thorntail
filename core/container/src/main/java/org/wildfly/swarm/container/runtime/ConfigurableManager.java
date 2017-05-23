@@ -97,6 +97,9 @@ public class ConfigurableManager implements AutoCloseable {
 
     @SuppressWarnings("unchecked")
     protected <T> boolean configure(ConfigurableHandle configurable) throws Exception {
+        if (this.rescanning) {
+            return true;
+        }
         try (AutoCloseable handle = Performance.accumulate("ConfigurableManager#configure")) {
             Resolver<?> resolver = this.configView.resolve(configurable.key());
 
@@ -120,6 +123,7 @@ public class ConfigurableManager implements AutoCloseable {
             } else {
                 resolver = resolver.as(resolvedType);
             }
+
 
             if (isList || isMap || isProperties || resolver.hasValue()) {
                 Object resolvedValue = resolver.getValue();
@@ -197,8 +201,13 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     public void rescan() throws Exception {
-        for (Object each : this.deferred) {
-            scanInternal(each);
+        this.rescanning = true;
+        try {
+            for (Object each : this.deferred) {
+                scanInternal(each);
+            }
+        } finally {
+            this.rescanning = false;
         }
     }
 
@@ -279,14 +288,14 @@ public class ConfigurableManager implements AutoCloseable {
         return ConfigKey.of("swarm").append(key);
     }
 
-    protected void scan(ConfigKey prefix, Object instance, boolean isFraction) throws Exception {
-        scan(prefix, instance, instance.getClass(), isFraction);
-        if (isFraction) {
+    protected void scan(ConfigKey prefix, Object instance, boolean implicit) throws Exception {
+        scan(prefix, instance, instance.getClass(), implicit);
+        if (implicit) {
             scanSubresources(prefix, instance);
         }
     }
 
-    protected void scan(ConfigKey prefix, Object instance, Class<?> curClass, boolean isFraction) throws Exception {
+    protected void scan(ConfigKey prefix, Object instance, Class<?> curClass, boolean implicit) throws Exception {
         if (curClass == null || curClass == Object.class || isBlacklisted(curClass)) {
             return;
         }
@@ -297,7 +306,7 @@ public class ConfigurableManager implements AutoCloseable {
                 if (isBlacklisted(field)) {
                     continue;
                 }
-                if (isFraction || field.getAnnotation(Configurable.class) != null || field.getAnnotation(Configurables.class) != null) {
+                if (implicit || field.getAnnotation(Configurable.class) != null || field.getAnnotation(Configurables.class) != null) {
                     if (isConfigurableType(field.getType())) {
                         List<ConfigKey> names = namesFor(prefix, field);
 
@@ -318,7 +327,38 @@ public class ConfigurableManager implements AutoCloseable {
             }
         }
 
-        scan(prefix, instance, curClass.getSuperclass(), isFraction);
+        if (!rescanning) {
+            Method[] methods = curClass.getDeclaredMethods();
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(Configurable.class)) {
+                    ConfigKey subPrefix = prefix.append(nameFor(method));
+                    if (method.getParameterCount() == 1) {
+                        // If doesn't exist, only create it if there's some
+                        // configuration keys that imply we want it.
+                        if (this.configView.hasKeyOrSubkeys(subPrefix)) {
+                            Object lambda = createLambda(subPrefix, method);
+                            if (lambda != null) {
+                                method.invoke(instance, lambda);
+                            }
+                        }
+                    } else if (method.getParameterCount() == 2) {
+                        Set<SimpleKey> keysWithConfiguration = this.configView.simpleSubkeys(subPrefix);
+                        if (!keysWithConfiguration.isEmpty()) {
+                            for (SimpleKey key : keysWithConfiguration) {
+                                ConfigKey itemPrefix = subPrefix.append(key);
+                                Object lambda = createLambda(itemPrefix, method);
+                                if (lambda != null) {
+                                    method.invoke(instance, key.name(), lambda);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        scan(prefix, instance, curClass.getSuperclass(), implicit);
     }
 
     private boolean seen(ConfigKey name) {
@@ -413,10 +453,10 @@ public class ConfigurableManager implements AutoCloseable {
         return in;
     }
 
-    protected ConfigKey nameFor(Field field) {
+    protected ConfigKey nameFor(Field member) {
         StringBuilder str = new StringBuilder();
 
-        char[] chars = field.getName().toCharArray();
+        char[] chars = member.getName().toCharArray();
 
         for (char c : chars) {
             if (Character.isUpperCase(c)) {
@@ -424,6 +464,27 @@ public class ConfigurableManager implements AutoCloseable {
             }
 
             str.append(Character.toLowerCase(c));
+        }
+
+        return ConfigKey.of(str.toString());
+    }
+
+    protected ConfigKey nameFor(Method member) {
+        StringBuilder str = new StringBuilder();
+
+        char[] chars = member.getName().toCharArray();
+
+        for (char c : chars) {
+            if (Character.isUpperCase(c)) {
+                str.append("-");
+            }
+
+            str.append(Character.toLowerCase(c));
+        }
+
+        if (member.getParameterCount() == 2) {
+            // pluralize since it's keyed.
+            str.append("s");
         }
 
         return ConfigKey.of(str.toString());
@@ -714,4 +775,6 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     private final DeploymentContext deploymentContext;
+
+    private boolean rescanning;
 }

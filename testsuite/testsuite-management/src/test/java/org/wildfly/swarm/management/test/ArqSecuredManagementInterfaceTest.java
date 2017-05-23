@@ -25,10 +25,8 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.management.AuthCallbackHandler;
-import org.wildfly.swarm.management.ManagementFraction;
 
 import static org.fest.assertions.Assertions.assertThat;
 
