@@ -38,7 +38,31 @@ public class WebXmlDescriptorScanner implements Scanner<InputStream> {
         if (name.endsWith("web.xml")) {
             detectors.stream()
                     .filter(d -> WebXmlFractionDetector.class.isAssignableFrom(d.getClass()))
-                    .forEach(d -> d.detect(input));
+                    .forEach(d -> {
+                        if (input.markSupported()) {
+                            boolean available = false;
+                            boolean closed = false;
+                            try {
+                                available = (input.available() > 0);
+                            } catch (IOException e) {
+                                //input is probably already closed.
+                                closed = true;
+                            }
+
+                            try {
+                                if (!closed) {
+                                    if (!available) {
+                                        input.reset();
+                                    } else {
+                                        input.mark(input.available() + 1);
+                                    }
+                                }
+                            } catch (IOException e) {
+                            }
+                        }
+
+                        d.detect(input);
+                    });
         }
     }
 }

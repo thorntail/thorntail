@@ -46,20 +46,14 @@ public abstract class WebXmlFractionDetector implements FractionDetector<InputSt
     @Override
     public void detect(InputStream element) {
         if (!detectionComplete() && element != null) {
-            WebAppDescriptor webXMl = Descriptors.importAs(WebAppDescriptor.class)
-                    .fromStream(element);
-            if (webXMl != null) {
-                long servletsFound =
-                        webXMl.getAllServlet()
-                                .stream()
-                                .map(ServletType::getServletClass)
-                                .filter(c -> servletClasses.contains(c))
-                                .count();
-                if (servletsFound > 0) {
+              this.webXMl = Descriptors.importAs(WebAppDescriptor.class).
+                      fromStream(element);
+              if (this.webXMl != null) {
+                 if (doDetect()) {
                     detected = true;
                     detectionComplete = true;
-                }
-            }
+                 }
+              }
         }
     }
 
@@ -67,9 +61,25 @@ public abstract class WebXmlFractionDetector implements FractionDetector<InputSt
         this.servletClasses.add(servletClass);
     }
 
+    protected boolean doDetect() {
+        long servletsFound =
+                this.webXMl.getAllServlet()
+                        .stream()
+                        .map(ServletType::getServletClass)
+                        .filter(c -> servletClasses.contains(c))
+                        .count();
+
+        if (servletsFound > 0) {
+            return true;
+        }
+        return false;
+    }
+
     private boolean detected = false;
 
     private boolean detectionComplete = false;
 
     private Collection<String> servletClasses = new HashSet<>();
+
+    protected WebAppDescriptor webXMl;
 }

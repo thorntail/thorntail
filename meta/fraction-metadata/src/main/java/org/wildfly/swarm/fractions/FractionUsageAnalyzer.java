@@ -42,6 +42,7 @@ import org.wildfly.swarm.fractions.scanner.WebXmlDescriptorScanner;
 import org.wildfly.swarm.spi.meta.FileSource;
 import org.wildfly.swarm.spi.meta.FractionDetector;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
+import org.wildfly.swarm.spi.meta.UncloseableBufferedInputStream;
 
 /**
  * @author Bob McWhirter
@@ -182,7 +183,7 @@ public class FractionUsageAnalyzer {
         if (validDetectors.size() > 0) {
             fireScanner(suffix, s -> {
                 try (InputStream input = new FileInputStream(source.getSource().toFile())) {
-                    s.scan(source, input, convertDetectors(validDetectors), this::scanFile);
+                    s.scan(source, new UncloseableBufferedInputStream(input), convertDetectors(validDetectors), this::scanFile);
                 } catch (IOException e) {
                     log.error("", e);
                 }
@@ -203,7 +204,7 @@ public class FractionUsageAnalyzer {
         if (validDetectors.size() > 0) {
             fireScanner(suffix, s -> {
                 try (InputStream input = source.getInputStream(entry)) {
-                    s.scan(new FileSource(null, new File(entry.getName()).toPath()), input, convertDetectors(validDetectors), this::scanFile);
+                    s.scan(new FileSource(null, new File(entry.getName()).toPath()), new UncloseableBufferedInputStream(input), convertDetectors(validDetectors), this::scanFile);
                 } catch (IOException e) {
                     log.error("", e);
                 }
