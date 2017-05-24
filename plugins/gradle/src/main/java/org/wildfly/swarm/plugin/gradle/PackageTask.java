@@ -17,6 +17,7 @@ package org.wildfly.swarm.plugin.gradle;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,7 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.plugins.ApplicationPluginConvention;
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
@@ -39,6 +41,7 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
+import org.gradle.api.tasks.SourceSet;
 import org.wildfly.swarm.fractions.PropertiesUtil;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
 import org.wildfly.swarm.tools.ArtifactSpec;
@@ -49,6 +52,8 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
  * @author Bob McWhirter
  */
 public class PackageTask extends DefaultTask {
+
+    private static final String MODULE_DIR_NAME = "modules";
 
     private BuildTool tool;
 
@@ -66,6 +71,23 @@ public class PackageTask extends DefaultTask {
 
         GradleArtifactResolvingHelper resolvingHelper = new GradleArtifactResolvingHelper(project);
         Properties propertiesFromExtension = getPropertiesFromExtension();
+        List<File> moduleDirs = getModuleDirs();
+        if (moduleDirs.isEmpty()) {
+            Path resourcesOutputDir = project.getConvention()
+                    .getPlugin(JavaPluginConvention.class)
+                    .getSourceSets()
+                    .findByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                    .getOutput()
+                    .getResourcesDir()
+                    .toPath()
+                    .resolve(MODULE_DIR_NAME);
+            if (Files.isDirectory(resourcesOutputDir)) {
+                File moduleDir = resourcesOutputDir.toFile();
+
+                moduleDirs.add(moduleDir);
+            }
+        }
+
 
         this.tool = new BuildTool(resolvingHelper)
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
@@ -77,8 +99,8 @@ public class PackageTask extends DefaultTask {
                 .properties(propertiesFromExtension)
                 .properties(getPropertiesFromFile())
                 .properties(PropertiesUtil.filteredSystemProperties(propertiesFromExtension, false))
-                .fractionDetectionMode(BuildTool.FractionDetectionMode.when_missing)
-                .additionalModules(getModuleDirs().stream()
+                .fractionDetectionMode(getSwarmExtension().getFractionDetectMode())
+                .additionalModules(moduleDirs.stream()
                         .filter(File::exists)
                         .map(File::getAbsolutePath)
                         .collect(Collectors.toList()))

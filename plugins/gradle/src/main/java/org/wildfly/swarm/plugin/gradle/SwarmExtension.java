@@ -16,24 +16,20 @@
 package org.wildfly.swarm.plugin.gradle;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import groovy.lang.Closure;
 import groovy.util.ConfigObject;
-import org.gradle.api.plugins.JavaPluginConvention;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.Project;
+import org.wildfly.swarm.tools.BuildTool;
 
 /**
  * @author Bob McWhirter
  */
 public class SwarmExtension {
-    private static final String MODULE_DIR_NAME = "modules";
 
     private Project project;
 
@@ -53,21 +49,10 @@ public class SwarmExtension {
 
     private Jar archiveTask;
 
+    private BuildTool.FractionDetectionMode fractionDetectMode = BuildTool.FractionDetectionMode.when_missing;
+
     public SwarmExtension(Project project) {
         this.project = project;
-        Path resourcesOutputDir = project.getConvention()
-                .getPlugin(JavaPluginConvention.class)
-                .getSourceSets()
-                .findByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                .getOutput()
-                .getResourcesDir()
-                .toPath()
-                .resolve(MODULE_DIR_NAME);
-        if (Files.isDirectory(resourcesOutputDir)) {
-            File moduleDir = resourcesOutputDir.toFile();
-
-            this.moduleDirs.add(moduleDir);
-        }
     }
 
     public void properties(Closure<Properties> closure) {
@@ -137,5 +122,13 @@ public class SwarmExtension {
 
     public void setArchiveTask(Jar archiveTask) {
         this.archiveTask = archiveTask;
+    }
+
+    public BuildTool.FractionDetectionMode getFractionDetectMode() {
+        return fractionDetectMode;
+    }
+
+    public void setFractionDetectMode(BuildTool.FractionDetectionMode fractionDetectMode) {
+        this.fractionDetectMode = fractionDetectMode;
     }
 }
