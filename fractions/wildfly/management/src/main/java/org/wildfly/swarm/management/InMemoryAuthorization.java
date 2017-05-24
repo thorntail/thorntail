@@ -15,11 +15,16 @@
  */
 package org.wildfly.swarm.management;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.wildfly.swarm.config.management.security_realm.PlugInAuthorization;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
  * @author Bob McWhirter
  */
+@Configurable
 public class InMemoryAuthorization {
 
     public InMemoryAuthorization(PlugInAuthorization plugin) {
@@ -31,7 +36,21 @@ public class InMemoryAuthorization {
             String value = String.join(",", roles);
             prop.value(value);
         });
+    }
 
+    public void add(String userName, List<String> roles) {
+        this.plugin.property(userName + ".roles", (prop) -> {
+            String value = String.join(",", roles);
+            prop.value(value);
+        });
+    }
+
+    @Configurable
+    public InMemoryAuthorization user(String userName, Consumer<InMemoryUserAuthorization> config) {
+        InMemoryUserAuthorization authz = new InMemoryUserAuthorization();
+        config.accept(authz);
+        add(userName, authz.roles());
+        return this;
     }
 
     private final PlugInAuthorization plugin;

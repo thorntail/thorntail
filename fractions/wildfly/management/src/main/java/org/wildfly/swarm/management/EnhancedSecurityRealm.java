@@ -16,6 +16,7 @@
 package org.wildfly.swarm.management;
 
 import org.wildfly.swarm.config.management.SecurityRealm;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 /**
  * @author Bob McWhirter
@@ -29,6 +30,7 @@ public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> 
         plugIn("org.wildfly.swarm.management:runtime");
     }
 
+    @Configurable("in-memory-authentication")
     public EnhancedSecurityRealm inMemoryAuthentication(InMemoryAuthenticationConsumer consumer) {
         return plugInAuthentication((plugin) -> {
             plugin.name(IN_MEMORY_PLUGIN_NAME);
@@ -42,6 +44,7 @@ public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> 
         });
     }
 
+    @Configurable("in-memory-authorization")
     public EnhancedSecurityRealm inMemoryAuthorization(InMemoryAuthorizationConsumer consumer) {
         return plugInAuthorization((plugin) -> {
             plugin.name(IN_MEMORY_PLUGIN_NAME);
