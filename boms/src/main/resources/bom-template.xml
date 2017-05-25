@@ -54,6 +54,7 @@
   <dependencyManagement>
     <dependencies>
 #{dependencies}
+#{remove-if-bom-certified}
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-bom</artifactId>
@@ -68,6 +69,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+#{/remove-if-bom-certified}
     </dependencies>
   </dependencyManagement>
 
