@@ -1,19 +1,13 @@
 package org.wildfly.swarm.opentracing.hawkular.jaxrs;
 
-import org.hawkular.apm.api.services.TracePublisher;
-import org.hawkular.apm.client.api.recorder.BatchTraceRecorder;
-import org.hawkular.apm.client.api.recorder.LoggingRecorder;
-import org.hawkular.apm.client.api.recorder.TraceRecorder;
-import org.hawkular.apm.client.api.sampler.PercentageSampler;
-import org.hawkular.apm.client.opentracing.APMTracer;
-import org.hawkular.apm.client.opentracing.DeploymentMetaData;
-import org.hawkular.apm.trace.publisher.rest.client.TracePublisherRESTClient;
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
+import java.util.function.Consumer;
 
 import io.opentracing.contrib.global.GlobalTracer;
-import io.opentracing.contrib.jaxrs2.server.ServerTracingDynamicFeature;
+import org.wildfly.swarm.config.runtime.SubresourceInfo;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 
 /**
  * OpenTracing JAX-RS Hawkular fraction. This fraction traces all
@@ -27,109 +21,58 @@ import io.opentracing.contrib.jaxrs2.server.ServerTracingDynamicFeature;
  *
  * <p>Initialization:
  * {@code
- *  OpenTracingHawkularFraction openTracingHawkularFraction = new OpenTracingHawkularFraction();
+ * OpenTracingHawkularFraction openTracingHawkularFraction = new OpenTracingHawkularFraction();
  *
- *  openTracingHawkularFraction.tracerBuilder()
- *      .withServiceName("wildfly-swarm")
- *      .withBatchRecorderBuilder(new OpenTracingHawkularFraction.TraceRecorderBuilder()
- *      .withHttpRecorder("jdoe", "password", "http://localhost:8180"))
- *      .withSampleRate(100);
+ * openTracingHawkularFraction.tracerBuilder()
+ * .withServiceName("wildfly-swarm")
+ * .withBatchRecorderBuilder(new OpenTracingHawkularFraction.NotTraceRecorder()
+ * .withHttpRecorder("jdoe", "password", "http://localhost:8180"))
+ * .withSampleRate(100);
  *
- *  container.fraction(openTracingHawkularFraction);
+ * container.fraction(openTracingHawkularFraction);
  * }
+ *
  * @author Pavol Loffay
  */
 @DeploymentModules({
         @DeploymentModule(name = "io.opentracing.hawkular"),
         @DeploymentModule(name = "org.wildfly.swarm.opentracing.hawkular.jaxrs", slot = "main")
 })
+@Configurable("swarm.opentracing-hawkular")
 public class OpenTracingHawkularFraction implements Fraction<OpenTracingHawkularFraction> {
 
-    private APMJaxRsTracingBuilder apmJaxRsTracingBuilder;
+
+    private OpenTracingHawkularResources subresources = new OpenTracingHawkularResources();
 
     public OpenTracingHawkularFraction() {
-        this.apmJaxRsTracingBuilder = new APMJaxRsTracingBuilder();
+    }
+
+    public OpenTracingHawkularResources subresources() {
+        return this.subresources;
     }
 
     @Override
     public OpenTracingHawkularFraction applyDefaults() {
+        tracing((tracing) -> {
+            // nothing.
+        });
         return this;
     }
 
-    public APMJaxRsTracingBuilder apmJaxRsTracingBuilder() {
-        return apmJaxRsTracingBuilder;
+    public OpenTracingHawkularFraction tracing(Consumer<Tracing> config) {
+        this.subresources.tracing = new Tracing();
+        config.accept(this.subresources.tracing);
+        return this;
     }
 
-    public ServerTracingDynamicFeature.Builder getJaxrsTraceBuilder() {
-        return apmJaxRsTracingBuilder.build();
+    public Tracing tracing() {
+        return this.subresources.tracing;
     }
 
-    public class APMJaxRsTracingBuilder {
-        private int percentageSampling = 100;
-        private String serviceName;
-        private String buildStamp;
-        private boolean consoleRecorder;
-        private TraceRecorderBuilder batchTraceRecorderBuilder;
-
-        public APMJaxRsTracingBuilder withSampleRate(int percentage) {
-            this.percentageSampling = percentage;
-            return this;
-        }
-
-        public APMJaxRsTracingBuilder withServiceName(String serviceName) {
-            this.serviceName = serviceName;
-            return this;
-        }
-
-        public APMJaxRsTracingBuilder withBuilStamp(String buildStamp) {
-            this.buildStamp = buildStamp;
-            return this;
-        }
-
-        public APMJaxRsTracingBuilder withConsoleRecorder(boolean consoleRecorder) {
-            this.consoleRecorder = consoleRecorder;
-            return this;
-        }
-
-        public APMJaxRsTracingBuilder withBatchRecorderBuilder(TraceRecorderBuilder builder) {
-            this.batchTraceRecorderBuilder = builder;
-            return this;
-        }
-
-        private ServerTracingDynamicFeature.Builder build() {
-            TraceRecorder traceRecorder = consoleRecorder ? new LoggingRecorder() :
-                    batchTraceRecorderBuilder != null ?
-                            this.batchTraceRecorderBuilder.build() : new BatchTraceRecorder();
-
-            APMTracer apmTracer = new APMTracer(traceRecorder, PercentageSampler.withPercentage(percentageSampling),
-                    new DeploymentMetaData(serviceName, buildStamp));
-
-            GlobalTracer.register(apmTracer);
-
-            return ServerTracingDynamicFeature.Builder
-                    .traceAll(apmTracer);
-        }
+    public static class OpenTracingHawkularResources {
+        @SubresourceInfo("tracing")
+        Tracing tracing;
     }
 
-    public static class TraceRecorderBuilder extends BatchTraceRecorder.BatchTraceRecorderBuilder {
-
-        public TraceRecorderBuilder withHttpRecorder(String userName, String password, String url) {
-            super.withTracePublisher(new TracePublisherRESTClient(userName, password, url));
-            return this;
-        }
-
-        /**
-         * Do not use this method instead use {@link #withHttpRecorder(String, String, String)}.
-         *
-         * @param tracePublisher trace publisher
-         * @return builder
-         */
-        @Deprecated
-        @Override
-        public BatchTraceRecorder.BatchTraceRecorderBuilder withTracePublisher(TracePublisher tracePublisher) {
-            throw new IllegalArgumentException("Please use #withHttpRecoreder");
-        }
-
-    }
 }
 
