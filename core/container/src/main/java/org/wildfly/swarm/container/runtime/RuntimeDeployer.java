@@ -18,8 +18,10 @@ package org.wildfly.swarm.container.runtime;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -58,6 +60,7 @@ import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.internal.SwarmInternalProperties;
 
@@ -157,6 +160,22 @@ public class RuntimeDeployer implements Deployer {
 
     @Override
     public void deploy(Archive<?> deployment) throws DeploymentException {
+        deploy(deployment, deployment.getName());
+    }
+
+    public void deploy(Archive<?> deployment, String asName) throws DeploymentException {
+
+        if (deployment.getName().endsWith(".rar")) {
+            // Track any .rar deployments
+            this.rarDeploymentNames.add(deployment.getName());
+        } else if (!this.rarDeploymentNames.isEmpty()) {
+            // Add any previous .rar deployments as dependencies
+            // of any non-.rar deployments.
+            JARArchive mutable = deployment.as(JARArchive.class);
+            this.rarDeploymentNames.forEach(e -> {
+                mutable.addModule("deployment." + e);
+            });
+        }
 
         try (AutoCloseable deploymentTimer = Performance.time("deployment: " + deployment.getName())) {
 
@@ -196,7 +215,7 @@ public class RuntimeDeployer implements Deployer {
                 }
             }
 
-            this.deploymentContext.activate(deployment);
+            this.deploymentContext.activate(deployment, asName);
 
             // 2. give fractions a chance to handle the deployment
             for (DeploymentProcessor processor : this.deploymentProcessors) {
@@ -293,4 +312,6 @@ public class RuntimeDeployer implements Deployer {
     @Inject
     @Any
     private Instance<DeploymentProcessor> deploymentProcessors;
+
+    private List<String> rarDeploymentNames = new ArrayList<>();
 }

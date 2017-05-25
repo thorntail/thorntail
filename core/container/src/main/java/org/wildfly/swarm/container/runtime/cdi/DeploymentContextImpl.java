@@ -25,6 +25,7 @@ public class DeploymentContextImpl implements DeploymentContext {
     private final ThreadLocal<Map<Contextual<?>, ContextualInstance<?>>> currentContext = new ThreadLocal<>();
 
     private final ThreadLocal<Archive> currentArchive = new ThreadLocal<>();
+    private final ThreadLocal<String> currentName = new ThreadLocal<>();
 
     public Class<? extends Annotation> getScope() {
         return DeploymentScoped.class;
@@ -66,9 +67,10 @@ public class DeploymentContextImpl implements DeploymentContext {
         ctx.remove(contextual);
     }
 
-    public void activate(Archive archive) {
+    public void activate(Archive archive, String asName) {
         currentContext.set(new HashMap<>());
         currentArchive.set(archive);
+        currentName.set(asName);
     }
 
     public void deactivate() {
@@ -86,10 +88,15 @@ public class DeploymentContextImpl implements DeploymentContext {
         ctx.clear();
         currentContext.remove();
         currentArchive.set(null);
+        currentName.set(null);
     }
 
     public Archive getCurrentArchive() {
         return currentArchive.get();
+    }
+
+    public String getCurrentName() {
+        return currentName.get();
     }
 
     /**
@@ -143,13 +150,13 @@ public class DeploymentContextImpl implements DeploymentContext {
         }
 
         @Override
-        public void activate(Archive archive) {
+        public void activate(Archive archive, String asName) {
             try {
                 beanManager.getContext(delegate.getScope());
                 LOGGER.info("Command context already active");
             } catch (ContextNotActiveException e) {
                 // Only activate the context if not already active
-                delegate.activate(archive);
+                delegate.activate(archive, asName);
                 isActivator = true;
             }
         }
@@ -166,6 +173,11 @@ public class DeploymentContextImpl implements DeploymentContext {
         @Override
         public Archive getCurrentArchive() {
             return this.delegate.getCurrentArchive();
+        }
+
+        @Override
+        public String getCurrentName() {
+            return this.delegate.getCurrentName();
         }
     }
 

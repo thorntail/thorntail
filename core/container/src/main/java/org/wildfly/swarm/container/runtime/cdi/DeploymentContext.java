@@ -8,9 +8,10 @@ import org.jboss.shrinkwrap.api.Archive;
  * Created by bob on 5/12/17.
  */
 public interface DeploymentContext extends AlterableContext {
-    void activate(Archive<?> archive);
+    void activate(Archive<?> archive, String asName);
     void deactivate();
 
     Archive<?> getCurrentArchive();
+    String getCurrentName();
 
 }
