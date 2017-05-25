@@ -19,7 +19,7 @@ package org.wildfly.swarm.jsf.detect;
 import java.io.File;
 
 import org.wildfly.swarm.spi.meta.FileDetector;
-import org.wildfly.swarm.spi.meta.FileSource;
+import org.wildfly.swarm.spi.meta.PathSource;
 
 /**
  * @author Heiko Braun
@@ -42,7 +42,7 @@ public class FacesXmlDetector extends FileDetector {
     }
 
     @Override
-    public void detect(FileSource fileSource) {
+    public void detect(PathSource fileSource) {
         String relativePath = fileSource.getRelativePath();
         if (!detectionComplete() &&
                 (relativePath.equals(FACES_CONFIG_XML_WEB_INF) || relativePath.equals(FACES_CONFIG_XML_META_INF) ||

@@ -19,19 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.wildfly.swarm.spi.meta.FileSource;
+import org.wildfly.swarm.spi.meta.PathSource;
+import org.wildfly.swarm.spi.meta.ZipPathSource;
 import org.wildfly.swarm.spi.meta.FractionDetector;
 
 /**
@@ -40,49 +34,12 @@ import org.wildfly.swarm.spi.meta.FractionDetector;
 public interface Scanner<T> {
     String extension();
 
-    default void scan(Path source, Consumer<Path> childHandler) throws IOException {
-        if (Files.isDirectory(source)) {
-            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    childHandler.accept(file);
-                    return super.visitFile(file, attrs);
-                }
-            });
-        } else {
-            childHandler.accept(source);
-        }
+
+    default void scan(PathSource fileSource, Collection<FractionDetector<T>> detectors, Consumer<File> handleFileAsZip) throws IOException {
     }
 
-    default void scan(Path source, Path basePath, Consumer<FileSource> childHandler) throws IOException {
-        if (Files.isDirectory(source)) {
-            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    childHandler.accept(new FileSource(basePath, file));
-                    return super.visitFile(file, attrs);
-                }
-            });
-        } else {
-            childHandler.accept(new FileSource(basePath, source));
-        }
-    }
-
-    default void scan(ZipFile source, BiConsumer<ZipEntry, ZipFile> childHandler) throws IOException {
-        final Enumeration<? extends ZipEntry> entries = source.entries();
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = entries.nextElement();
-            if (!entry.isDirectory()) {
-                childHandler.accept(entry, source);
-            }
-        }
-    }
-
-    default void scan(String name, InputStream input, Collection<FractionDetector<T>> detectors, Consumer<File> handleFileAsZip) throws IOException {
-    }
-
-    default void scan(FileSource fileSource, InputStream input, Collection<FractionDetector<T>> detectors, Consumer<File> handleFileAsZip) throws IOException {
-        scan(fileSource.getSource().getFileName().toString(), input, detectors, handleFileAsZip);
+    default void scan(ZipEntry entry, ZipFile source, Collection<FractionDetector<T>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+        scan(new ZipPathSource(source, entry), detectors, handleFileAsZip);
     }
 
     default void copy(InputStream input, OutputStream output) throws IOException {

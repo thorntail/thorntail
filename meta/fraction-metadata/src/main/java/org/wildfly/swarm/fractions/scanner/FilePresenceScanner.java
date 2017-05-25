@@ -17,18 +17,17 @@ package org.wildfly.swarm.fractions.scanner;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.function.Consumer;
 
 import org.wildfly.swarm.spi.meta.FileDetector;
-import org.wildfly.swarm.spi.meta.FileSource;
+import org.wildfly.swarm.spi.meta.PathSource;
 import org.wildfly.swarm.spi.meta.FractionDetector;
 
 /**
  * @author Heiko Braun
  */
-public class FilePresenceScanner implements Scanner<FileSource> {
+public class FilePresenceScanner implements Scanner<PathSource> {
     @Override
     public String extension() {
         return XML;
@@ -37,7 +36,7 @@ public class FilePresenceScanner implements Scanner<FileSource> {
     /**
      * scans all xml files
      */
-    public void scan(FileSource fileSource, final InputStream input, Collection<FractionDetector<FileSource>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+    public void scan(PathSource fileSource, Collection<FractionDetector<PathSource>> detectors, Consumer<File> handleFileAsZip) throws IOException {
         detectors.stream()
                 .filter(d -> FileDetector.class.isAssignableFrom(d.getClass()))
                 .forEach(d -> d.detect(fileSource));

@@ -36,6 +36,7 @@ import org.objectweb.asm.TypePath;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
 import org.wildfly.swarm.spi.meta.FractionDetector;
+import org.wildfly.swarm.spi.meta.PathSource;
 
 /**
  * @author Toby Crawley
@@ -49,8 +50,10 @@ public class ClassAndPackageScanner implements Scanner<String> {
     }
 
     @Override
-    public void scan(String name, InputStream input, Collection<FractionDetector<String>> detectors, Consumer<File> handleFileAsZip) throws IOException {
-        new ClassReader(input).accept(new PackageCollector(detectors), 0);
+    public void scan(PathSource pathSource, Collection<FractionDetector<String>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+        try (InputStream input = pathSource.getInputStream()) {
+            new ClassReader(input).accept(new PackageCollector(detectors), 0);
+        }
     }
 
     public static Set<String> classesPackagesAlreadyDetected = new HashSet<>();

@@ -16,13 +16,16 @@
 package org.wildfly.swarm.fractions;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -39,9 +42,11 @@ import org.wildfly.swarm.fractions.scanner.JarScanner;
 import org.wildfly.swarm.fractions.scanner.Scanner;
 import org.wildfly.swarm.fractions.scanner.WarScanner;
 import org.wildfly.swarm.fractions.scanner.WebXmlDescriptorScanner;
-import org.wildfly.swarm.spi.meta.FileSource;
+import org.wildfly.swarm.spi.meta.PathSource;
+import org.wildfly.swarm.spi.meta.FilePathSource;
 import org.wildfly.swarm.spi.meta.FractionDetector;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
+import org.wildfly.swarm.spi.meta.ZipPathSource;
 
 /**
  * @author Bob McWhirter
@@ -153,7 +158,7 @@ public class FractionUsageAnalyzer {
     private Consumer<Scanner<?>> zipFileScannerConsumer(File source) {
         return s -> {
             try (ZipFile zip = new ZipFile(source)) {
-                s.scan(zip, this::scanSource);
+                scanEntries(zip);
             } catch (IOException e) {
                 log.error("", e);
             }
@@ -163,14 +168,14 @@ public class FractionUsageAnalyzer {
     private Consumer<Scanner<?>> explodedScannerConsumer(Path basePath, File source) {
         return s -> {
             try {
-                s.scan(source.toPath(), basePath, this::scanSource);
+                scanEntries(source.toPath(), basePath);
             } catch (IOException e) {
                 log.error("", e);
             }
         };
     }
 
-    private void scanSource(final FileSource source) {
+    private void scanSource(final PathSource source) {
         final String suffix = suffix(source.getSource().getFileName().toString());
 
         Collection<FractionDetector<?>> validDetectors =
@@ -181,8 +186,8 @@ public class FractionUsageAnalyzer {
 
         if (validDetectors.size() > 0) {
             fireScanner(suffix, s -> {
-                try (InputStream input = new FileInputStream(source.getSource().toFile())) {
-                    s.scan(source, input, convertDetectors(validDetectors), this::scanFile);
+                try {
+                    s.scan(source, convertDetectors(validDetectors), this::scanFile);
                 } catch (IOException e) {
                     log.error("", e);
                 }
@@ -202,12 +207,36 @@ public class FractionUsageAnalyzer {
 
         if (validDetectors.size() > 0) {
             fireScanner(suffix, s -> {
-                try (InputStream input = source.getInputStream(entry)) {
-                    s.scan(new FileSource(null, new File(entry.getName()).toPath()), input, convertDetectors(validDetectors), this::scanFile);
+                try {
+                   s.scan(new ZipPathSource(source, entry), convertDetectors(validDetectors), this::scanFile);
                 } catch (IOException e) {
                     log.error("", e);
                 }
             });
+        }
+    }
+
+    private void scanEntries(ZipFile source) throws IOException {
+        final Enumeration<? extends ZipEntry> entries = source.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = entries.nextElement();
+            if (!entry.isDirectory()) {
+                scanSource(entry, source);
+            }
+        }
+    }
+
+    private void scanEntries(Path source, Path basePath) throws IOException {
+        if (Files.isDirectory(source)) {
+            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    scanSource(new FilePathSource(basePath, file.toFile()));
+                    return super.visitFile(file, attrs);
+                }
+            });
+        } else {
+            scanSource(new FilePathSource(basePath, source.toFile()));
         }
     }
 

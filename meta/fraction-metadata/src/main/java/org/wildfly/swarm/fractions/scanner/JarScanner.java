@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 import org.wildfly.swarm.spi.meta.FractionDetector;
+import org.wildfly.swarm.spi.meta.PathSource;
 
 /**
  * @author Ken Finnigan
@@ -34,11 +35,12 @@ public class JarScanner implements Scanner<InputStream> {
     }
 
     @Override
-    public void scan(String name, InputStream input, Collection<FractionDetector<InputStream>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+    public void scan(PathSource pathSource, Collection<FractionDetector<InputStream>> detectors, Consumer<File> handleFileAsZip) throws IOException {
         final File jarFile = File.createTempFile("swarmPackageDetector", ".jar");
         jarFile.deleteOnExit();
 
-        try (FileOutputStream out = new FileOutputStream(jarFile)) {
+        try (InputStream input = pathSource.getInputStream();
+                FileOutputStream out = new FileOutputStream(jarFile)) {
             copy(input, out);
         }
 
