@@ -447,7 +447,7 @@ public class ConfigurableManager implements AutoCloseable {
         }
 
         if (in.isChildOf(DEPLOYMENT_PREFIX)) {
-            in.replace(2, this.deploymentContext.getCurrentArchive().getName());
+            in.replace(2, this.deploymentContext.getCurrentName());
         }
 
         return in;

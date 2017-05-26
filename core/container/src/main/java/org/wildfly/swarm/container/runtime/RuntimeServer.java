@@ -234,6 +234,8 @@ public class RuntimeServer implements Server {
                 }
             }
 
+            this.artifactDeployer.deploy();
+
             return deployer;
         }
     }
@@ -277,6 +279,9 @@ public class RuntimeServer implements Server {
 
     // Container does not expose this state and it's class is final so it cannot be subclassed.
     private boolean containerStarted;
+
+    @Inject
+    private ArtifactDeployer artifactDeployer;
 
     private ModelControllerClient client;
 }
