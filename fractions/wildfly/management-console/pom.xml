@@ -16,6 +16,7 @@
   <description>UI to manage a running WildFly/Swarm server</description>
 
   <properties>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Web,Management</swarm.fraction.tags>
   </properties>
 
