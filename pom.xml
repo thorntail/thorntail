@@ -1485,7 +1485,6 @@
         <module>fractions/jolokia</module>
         <module>fractions/logstash</module>
         <module>fractions/keycloak-server</module>
-        <module>fractions/opentracing-hawkular-jaxrs</module>
         <module>fractions/spring</module>
         <module>fractions/swagger</module>
         <module>fractions/swagger-webapp</module>
