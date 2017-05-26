@@ -17,28 +17,28 @@ package org.wildfly.swarm.fractions.scanner;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.function.Consumer;
 
 import org.wildfly.swarm.spi.meta.FractionDetector;
+import org.wildfly.swarm.spi.meta.PathSource;
 import org.wildfly.swarm.spi.meta.WebXmlFractionDetector;
 
 /**
  * @author Ken Finnigan
  */
-public class WebXmlDescriptorScanner implements Scanner<InputStream> {
+public class WebXmlDescriptorScanner implements Scanner<PathSource> {
     @Override
     public String extension() {
         return "xml";
     }
 
     @Override
-    public void scan(String name, final InputStream input, Collection<FractionDetector<InputStream>> detectors, Consumer<File> handleFileAsZip) throws IOException {
-        if (name.endsWith("web.xml")) {
+    public void scan(PathSource pathSource, Collection<FractionDetector<PathSource>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+        if (pathSource.getSource().getFileName().endsWith("web.xml")) {
             detectors.stream()
                     .filter(d -> WebXmlFractionDetector.class.isAssignableFrom(d.getClass()))
-                    .forEach(d -> d.detect(input));
+                    .forEach(d -> d.detect(pathSource));
         }
     }
 }

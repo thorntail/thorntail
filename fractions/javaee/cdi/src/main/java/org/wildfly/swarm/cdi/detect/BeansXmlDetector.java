@@ -19,7 +19,7 @@ package org.wildfly.swarm.cdi.detect;
 import java.io.File;
 
 import org.wildfly.swarm.spi.meta.FileDetector;
-import org.wildfly.swarm.spi.meta.FileSource;
+import org.wildfly.swarm.spi.meta.PathSource;
 
 /**
  * @author Heiko Braun
@@ -42,7 +42,7 @@ public class BeansXmlDetector extends FileDetector {
     }
 
     @Override
-    public void detect(FileSource fileSource) {
+    public void detect(PathSource fileSource) {
         String relativePath = fileSource.getRelativePath();
         if (!detectionComplete() &&
                 (relativePath.equals(BEANS_XML_WEB_INF_1) ||
