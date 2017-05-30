@@ -27,10 +27,10 @@
     <version>2017.6.0-SNAPSHOT</version>
   </parent>
 
-  <name>Camel Component :: Mllp</name>
-  <artifactId>camel-mllp</artifactId>
+  <name>Camel Component :: Box</name>
+  <artifactId>camel-box</artifactId>
 
-  <description>Provides functionality required by Healthcare providers to communicate with other systems using the MLLP protocol.</description>
+  <description>For uploading downloading and managing files folders groups collaborations etc on box DOT com.</description>
   
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
@@ -40,7 +40,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-mllp</artifactId>
+      <artifactId>camel-box</artifactId>
       <version>${version.apache.camel}</version>
       <exclusions>
         <exclusion>
