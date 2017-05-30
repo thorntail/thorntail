@@ -49,24 +49,19 @@
   <properties>
     <version.shrinkwrap>${version.org.jboss.shrinkwrap}</version.shrinkwrap>
     <version.shrinkwrap-descriptors>${version.org.jboss.shrinkwrap.descriptors}</version.shrinkwrap-descriptors>
+    <version.wildfly>${version.wildfly}</version.wildfly>
+    <version.wildfly-core>${version.org.wildfly.core}</version.wildfly-core>
+    <version.maven-aether>${version.maven.aether}</version.maven-aether>
   </properties>
 
   <dependencyManagement>
     <dependencies>
 #{dependencies}
       <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-core-parent</artifactId>
-        <version>${version.org.wildfly.core}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-parent</artifactId>
-        <version>${version.wildfly}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>${version.maven-aether}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
@@ -81,6 +76,33 @@
         <version>${version.shrinkwrap-descriptors}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.core</groupId>
+        <artifactId>wildfly-core-feature-pack</artifactId>
+        <version>${version.wildfly-core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-servlet-feature-pack</artifactId>
+        <version>${version.wildfly}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-feature-pack</artifactId>
+        <version>${version.wildfly}</version>
+        <type>pom</type>
+        <scope>import</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-core-feature-pack</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
     </dependencies>
   </dependencyManagement>
