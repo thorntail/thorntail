@@ -20,23 +20,16 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.Application;
-
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchiveEvent;
-import org.jboss.shrinkwrap.api.ArchiveEventHandler;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.ArchiveAsset;
 import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 import org.jboss.shrinkwrap.impl.base.spec.WebArchiveImpl;
 import org.objectweb.asm.ClassReader;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
-import org.wildfly.swarm.jaxrs.JAXRSMessages;
-import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 /**
  * @author Bob McWhirter
@@ -56,7 +49,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     public JAXRSArchiveImpl(Archive<?> delegate) throws IOException {
         super(JAXRSArchive.class, delegate);
 
-        addGeneratedApplication();
         addFaviconExceptionHandler();
     }
 
@@ -64,92 +56,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     public JAXRSArchive addResource(Class<?> resource) {
         addClass(resource);
         return covarientReturn();
-    }
-
-    private static boolean hasApplicationPathAnnotation(ArchivePath path, Asset asset) {
-        if (asset == null) {
-            return false;
-        }
-
-        if (asset instanceof ArchiveAsset) {
-            return hasApplicationPathAnnotation(((ArchiveAsset) asset).getArchive());
-        }
-
-        if (!path.get().endsWith(".class")) {
-            return false;
-        }
-
-        try (InputStream in = asset.openStream()) {
-            ClassReader reader = new ClassReader(in);
-            ApplicationPathAnnotationSeekingClassVisitor visitor = new ApplicationPathAnnotationSeekingClassVisitor();
-            reader.accept(visitor, 0);
-            return visitor.isFound();
-        } catch (IOException ignored) {
-        }
-
-        return false;
-    }
-
-    private static boolean hasApplicationPathAnnotation(Archive<?> archive) {
-        Map<ArchivePath, Node> content = archive.getContent();
-        for (Map.Entry<ArchivePath, Node> entry : content.entrySet()) {
-            Node node = entry.getValue();
-            Asset asset = node.getAsset();
-            if (hasApplicationPathAnnotation(node.getPath(), asset)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static boolean hasApplicationServletMapping(Archive<?> archive) {
-        Node webXmlNode = archive.get(PATH_WEB_XML);
-        if (webXmlNode != null) {
-            return hasApplicationServletMapping(webXmlNode.getAsset());
-        }
-        return false;
-    }
-
-    private static boolean hasApplicationServletMapping(Asset asset) {
-        if (asset == null) {
-            return false;
-        }
-        WebXmlAsset webXmlAsset;
-        if (asset instanceof WebXmlAsset) {
-            webXmlAsset = (WebXmlAsset) asset;
-        } else {
-            try {
-                webXmlAsset = new WebXmlAsset(asset.openStream());
-            } catch (Exception e) {
-                JAXRSMessages.MESSAGES.unableToParseWebXml(e);
-                return false;
-            }
-        }
-        return !webXmlAsset.getServletMapping(Application.class.getName()).isEmpty();
-    }
-
-    /**
-     * See also JAX-RS spec, section 2.3.2 Servlet.
-     *
-     * @param archive
-     * @return <code>true</code> if there is an  {@link javax.ws.rs.core.Application} subclass annotated with {@link javax.ws.rs.ApplicationPath} or web.xml with
-     *         mapping for <code>javax.ws.rs.core.Application</code> servlet, <code>false</code> otherwise
-     */
-    private boolean hasApplicationPathOrServletMapping(Archive<?> archive) {
-        return hasApplicationServletMapping(archive) || hasApplicationPathAnnotation(archive);
-    }
-
-    protected void addGeneratedApplication() throws IOException {
-        if (!hasApplicationPathOrServletMapping(getArchive())) {
-            String name = "org.wildfly.swarm.generated.WildFlySwarmDefaultJAXRSApplication";
-            String path = "WEB-INF/classes/" + name.replace('.', '/') + ".class";
-
-            byte[] generatedApp;
-            generatedApp = ApplicationFactory2.create(name, "/");
-            add(new ByteArrayAsset(generatedApp), path);
-            addHandlers(new ApplicationHandler(this, path));
-        }
     }
 
     /**
@@ -275,11 +181,6 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
     private static final ArchivePath PATH_WEB_INF = ArchivePaths.create("WEB-INF");
 
     /**
-     * Path to the web.xml descriptor.
-     */
-    private static final ArchivePath PATH_WEB_XML = ArchivePaths.create(PATH_WEB_INF, "web.xml");
-
-    /**
      * Path to the resources inside of the Archive.
      */
     private static final ArchivePath PATH_RESOURCE = ArchivePaths.create(PATH_WEB_INF, "classes");
@@ -304,24 +205,4 @@ public class JAXRSArchiveImpl extends WebContainerBase<JAXRSArchive> implements 
      */
     private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
 
-    public static class ApplicationHandler implements ArchiveEventHandler {
-
-        public ApplicationHandler(JAXRSArchive archive, String path) {
-            this.archive = archive;
-            this.path = path;
-        }
-
-        @Override
-        public void handle(ArchiveEvent event) {
-            Asset asset = event.getAsset();
-            if ((PATH_WEB_XML.equals(event.getPath()) && hasApplicationServletMapping(asset))
-                    || hasApplicationPathAnnotation(event.getPath(), asset)) {
-                this.archive.delete(this.path);
-            }
-        }
-
-        private final JAXRSArchive archive;
-
-        private final String path;
-    }
 }

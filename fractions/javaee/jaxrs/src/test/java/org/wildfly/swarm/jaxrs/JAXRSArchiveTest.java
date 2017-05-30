@@ -15,11 +15,7 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.wildfly.swarm.undertow.WARArchive;
 
@@ -29,42 +25,6 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Bob McWhirter
  */
 public class JAXRSArchiveTest {
-
-    public static final String PATH = "WEB-INF/classes/org/wildfly/swarm/generated/WildFlySwarmDefaultJAXRSApplication.class";
-
-    @Test
-    public void testApplicationPathAnnotation_None() {
-        JAXRSArchive archive = ShrinkWrap.create( JAXRSArchive.class );
-
-        Node generated = archive.get(PATH);
-        Asset asset = generated.getAsset();
-
-        assertThat( generated ).isNotNull();
-        assertThat( asset ).isNotNull();
-    }
-
-    @Test
-    public void testApplicationPathAnnotation_DirectlyInArchive() {
-        JAXRSArchive archive = ShrinkWrap.create( JAXRSArchive.class );
-
-        archive.addClass( MySampleApplication.class );
-
-        Node generated = archive.get(PATH);
-        assertThat( generated ).isNull();
-    }
-
-    @Test
-    public void testApplicationPathAnnotation_InWebInfLibArchive() {
-
-        JAXRSArchive archive = ShrinkWrap.create( JAXRSArchive.class );
-        JavaArchive subArchive = ShrinkWrap.create(JavaArchive.class, "mysubarchive.jar");
-
-        subArchive.addClass( MySampleApplication.class );
-        archive.addAsLibrary( subArchive );
-
-        Node generated = archive.get(PATH);
-        assertThat( generated ).isNull();
-    }
 
     @Test
     public void testDetectJAXRSness_isNot() {
@@ -85,34 +45,6 @@ public class JAXRSArchiveTest {
         WARArchive archive = ShrinkWrap.create( WARArchive.class );
         archive.addClass( MyOtherResource.class );
         assertThat( JAXRSArchive.isJAXRS( archive )).isTrue();
-    }
-
-    @Test
-    public void testWebXmlApplicationServletMappingPresent() {
-        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class);
-        archive.addClass(MyResource.class);
-        archive.setWebXML(new StringAsset(
-                "<web-app><servlet-mapping><servlet-name>Faces Servlet</servlet-name><url-pattern>*.jsf</url-pattern></servlet-mapping><servlet-mapping><servlet-name>javax.ws.rs.core.Application</servlet-name><url-pattern>/foo/*</url-pattern></servlet-mapping></web-app>"));
-        Node generated = archive.get(PATH);
-        assertThat(generated).isNull();
-    }
-
-    @Test
-    public void testWebXmlApplicationServletMappingAbsent() {
-        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class);
-        archive.addClass(MyResource.class);
-        archive.setWebXML(new StringAsset("<web-app><display-name>Foo</display-name></web-app>"));
-        Node generated = archive.get(PATH);
-        assertThat(generated).isNotNull();
-    }
-
-    @Test
-    public void testMalformedWebXmlApplicationServletMappingAbsent() {
-        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class);
-        archive.addClass(MyResource.class);
-        archive.setWebXML(new StringAsset("blablabla"));
-        Node generated = archive.get(PATH);
-        assertThat(generated).isNotNull();
     }
 
 }
