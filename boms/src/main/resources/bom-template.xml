@@ -55,6 +55,20 @@
     <dependencies>
 #{dependencies}
       <dependency>
+        <groupId>org.wildfly.core</groupId>
+        <artifactId>wildfly-core-parent</artifactId>
+        <version>${version.org.wildfly.core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-parent</artifactId>
+        <version>${version.wildfly}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-bom</artifactId>
         <version>${version.shrinkwrap}</version>
