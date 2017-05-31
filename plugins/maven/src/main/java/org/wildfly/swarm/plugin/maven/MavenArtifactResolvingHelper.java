@@ -59,7 +59,9 @@ import java.util.stream.Collectors;
  */
 public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
-    public static final ArtifactRepositoryPolicy DEFAULT_ARTIFACT_REPOSITORY_POLICY = new ArtifactRepositoryPolicy();
+    public static final ArtifactRepositoryPolicy ENABLED_POLICY = new ArtifactRepositoryPolicy(true, null, null);
+
+    public static final ArtifactRepositoryPolicy DISABLED_POLICY = new ArtifactRepositoryPolicy(false, null, null);
 
     public MavenArtifactResolvingHelper(ArtifactResolver resolver,
                                         RepositorySystem system,
@@ -72,8 +74,8 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         this.remoteRepositories.add(buildRemoteRepository("jboss-public-repository-group",
                                                           "https://repository.jboss.org/nexus/content/groups/public/",
                                                           null,
-                                                          DEFAULT_ARTIFACT_REPOSITORY_POLICY,
-                                                          DEFAULT_ARTIFACT_REPOSITORY_POLICY));
+                                                          ENABLED_POLICY,
+                                                          DISABLED_POLICY));
     }
 
     public void remoteRepository(ArtifactRepository repo) {
