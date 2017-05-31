@@ -29,7 +29,7 @@
   </scm>
 
   <properties>
-    <version.certified-community>2017.5.0-SNAPSHOT</version.certified-community>
+    <version.certified-community>2017.5.0</version.certified-community>
 
     <version.wildfly.swarm.fraction.plugin>55</version.wildfly.swarm.fraction.plugin>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
