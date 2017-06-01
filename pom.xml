@@ -100,12 +100,6 @@
     <version.zipkin.reporter>0.6.1</version.zipkin.reporter>
     <version.zipkin>1.13.1</version.zipkin>
 
-    <version.io.opentracing>0.20.7</version.io.opentracing>
-    <version.io.opentracing.contrib.jaxrs2>0.0.1</version.io.opentracing.contrib.jaxrs2>
-    <version.io.opentracing.contrib.web-servlet-filter>0.0.2</version.io.opentracing.contrib.web-servlet-filter>
-    <version.io.opentracing.contrib.globaltracer>0.1.0</version.io.opentracing.contrib.globaltracer>
-    <version.org.hawkular.apm>0.14.1.Final</version.org.hawkular.apm>
-
     <version.jruby-maven-plugin>1.1.3</version.jruby-maven-plugin>
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
     <version.maven-shade-plugin>2.4.1</version.maven-shade-plugin>
@@ -1100,12 +1094,6 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>zipkin-jaxrs</artifactId>
         <version>2017.6.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>opentracing-hawkular-jaxrs</artifactId>
-        <version>2017.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
