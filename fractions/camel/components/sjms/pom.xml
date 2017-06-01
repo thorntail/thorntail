@@ -30,7 +30,7 @@
   <name>Camel Component :: Sjms</name>
   <artifactId>camel-sjms</artifactId>
 
-  <description>The sjms component (simple jms) allows messages to be sent to (or consumed from) a JMS Queue or Topic.</description>
+  <description>The sjms component (simple jms) allows messages to be sent to (or consumed from) a JMS Queue or Topic (uses JMS 1.x API).</description>
   
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>

@@ -30,7 +30,7 @@
   <name>Camel Component :: Mail</name>
   <artifactId>camel-mail</artifactId>
 
-  <description>To send or receive emails using imap/pop3 or stmp protocols.</description>
+  <description>To send or receive emails using imap/pop3 or smtp protocols.</description>
   
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>

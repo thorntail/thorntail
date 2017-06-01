@@ -27,10 +27,10 @@
     <version>2017.6.0-SNAPSHOT</version>
   </parent>
 
-  <name>Camel Component :: Mllp</name>
-  <artifactId>camel-mllp</artifactId>
+  <name>Camel Component :: Rest-swagger</name>
+  <artifactId>camel-rest-swagger</artifactId>
 
-  <description>Provides functionality required by Healthcare providers to communicate with other systems using the MLLP protocol.</description>
+  <description>An awesome REST endpoint backed by Swagger specifications.</description>
   
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
@@ -40,7 +40,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-mllp</artifactId>
+      <artifactId>camel-rest-swagger</artifactId>
       <version>${version.apache.camel}</version>
       <exclusions>
         <exclusion>

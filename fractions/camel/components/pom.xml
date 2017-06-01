@@ -51,38 +51,48 @@
 
     <modules>
         <module>activemq</module>
+        <module>ahc</module>
+        <module>ahc-ws</module>
         <module>amqp</module>
         <module>atom</module>
         <module>avro</module>
+        <module>aws</module>
         <module>barcode</module>
         <module>base64</module>
         <module>bean-validator</module>
         <module>beanio</module>
         <module>bindy</module>
+        <module>box</module>
         <module>braintree</module>
         <module>cassandraql</module>
         <module>castor</module>
         <module>cdi</module>
+        <module>coap</module>
         <module>context</module>
+        <module>couchdb</module>
         <module>crypto</module>
         <module>csv</module>
         <module>cxf</module>
         <module>dns</module>
         <module>dozer</module>
+        <module>dropbox</module>
         <module>ejb</module>
         <module>elasticsearch</module>
         <module>elsql</module>
         <module>exec</module>
+        <module>facebook</module>
         <module>flatpack</module>
         <module>freemarker</module>
         <module>ftp</module>
         <module>git</module>
+        <module>github</module>
         <module>groovy</module>
         <module>gson</module>
         <module>hl7</module>
         <module>http4</module>
         <module>hystrix</module>
         <module>infinispan</module>
+        <module>influxdb</module>
         <module>irc</module>
         <module>jackson</module>
         <module>jacksonxml</module>
@@ -98,6 +108,7 @@
         <module>jsch</module>
         <module>jsonpath</module>
         <module>kafka</module>
+        <module>kubernetes</module>
         <module>ldap</module>
         <module>linkedin</module>
         <module>lucene</module>
@@ -119,6 +130,8 @@
         <module>protobuf</module>
         <module>quartz2</module>
         <module>rabbitmq</module>
+        <module>reactive-streams</module>
+        <module>rest-swagger</module>
         <module>rss</module>
         <module>salesforce</module>
         <module>sap-netweaver</module>
@@ -128,6 +141,7 @@
         <module>servicenow</module>
         <module>servlet</module>
         <module>sjms</module>
+        <module>sjms2</module>
         <module>smpp</module>
         <module>snakeyaml</module>
         <module>snmp</module>
