@@ -156,7 +156,7 @@ public class ServiceWatcher implements Service<ServiceWatcher>, IOpenShiftWatchL
                 .forEach(servicePort -> {
                     Registration registration = new Registration(TOPOLOGY_SOURCE_KEY,
                                                                  service.getName(),
-                                                                 service.getClusterIP(),
+                                                                 service.getName(),
                                                                  servicePort.getPort());
                     if (servicePort.getPort() == DEFAULT_HTTPS_PORT) {
                         registration.addTags(Collections.singletonList("https"));
