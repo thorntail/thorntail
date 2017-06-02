@@ -1,0 +1,40 @@
+= Wildfly-Swarm Microprofile fault tolerance implementation with Hystrix
+
+This project is the https://github.com/eclipse/microprofile-fault-tolerance[Eclipse Microprofile Fault tolerance API^] implementation based on Hystrix for WildFly-Swarm.
+
+It provides CDI integration for the https://github.com/Netflix/Hystrix[Hystrix Framework^] through the Microprofile Fault Tolerance (MP FT) API.
+
+== Status
+
+Right now the following feature are implemented:
+
+* Asynchronous operation with `@Asynchronous` annotation
+* Timeout management with `@Timeout` annotation
+* Fallback management with `@Fallback` annotation and fallback MP FT api
+
+These feature are not yet implemented:
+
+* CircuitBreaker
+* Retry
+
+== Building and testing
+
+You'll need first to build and install MP FT api before this project (some submodules may fails, but it's ok as lonk as api module is compiled and installed)
+
+[source, terminal]
+----
+$ git clone git@github.com:eclipse/microprofile-fault-tolerance.git
+
+$ mvn clean install
+----
+
+Then you can build the project with:
+
+[source, terminal]
+----
+$ git clone git@github.com:wildfly-swarm/microprofile-fault-tolerance.git
+
+$ mvn clean install
+----
+
+Project contains 3 tests (using https://github.com/weld/weld-junit[weld-junit] project) to test existing features.
