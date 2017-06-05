@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,6 +52,7 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.adapter.resources.ContextRoot;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
 import org.wildfly.swarm.spi.api.JARArchive;
@@ -282,10 +282,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
         executor.withJVMArguments(getJavaVmArgumentsList());
         executor.withExecutableJar(executable.toPath());
 
-        File workingDirectory = Files.createTempDirectory("arquillian").toFile();
-        workingDirectory.deleteOnExit();
+        File workingDirectory = TempFileManager.INSTANCE.newTempDirectory("arquillian", null);
         executor.withWorkingDirectory(workingDirectory.toPath());
-
 
         this.process = executor.execute();
         this.process.getOutputStream().close();
