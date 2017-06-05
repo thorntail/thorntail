@@ -34,6 +34,7 @@ import org.jboss.modules.AbstractResourceLoader;
 import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaders;
 import org.wildfly.swarm.bootstrap.performance.Performance;
+import org.wildfly.swarm.bootstrap.util.BootstrapUtil;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 /**
@@ -131,23 +132,42 @@ public class NestedJarResourceLoader {
         Path exp = explodedJar(base);
 
         String urlString = base.toExternalForm();
+
         if (exp != null) {
             int endLoc = urlString.indexOf(JAR_SUFFIX);
             if (endLoc > 0) {
                 Path resourceRoot = exp.resolve(loaderPath);
                 if (!Files.isDirectory(resourceRoot) && (resourceRoot.getFileName().toString().endsWith(".jar") || resourceRoot.getFileName().toString().endsWith(".war"))) {
-                    JarFile jar = new JarFile(resourceRoot.toFile());
-                    return ResourceLoaders.createJarResourceLoader(loaderName, jar);
+                    final File file = resourceRoot.toFile();
+                    final JarFile jarFile = new JarFile(file);
+
+                    File tmpDir = TempFileManager.INSTANCE.newTempDirectory("nestedjarloader", null);
+                    //Explode jar due to some issues in Windows on stopping (JarFiles cannot be deleted)
+                    BootstrapUtil.explodeJar(jarFile, tmpDir.getAbsolutePath());
+
+                    jarFile.close();
+                    file.delete();
+
+                    return ResourceLoaders.createFileResourceLoader(loaderName, tmpDir);
                 } else {
                     return ResourceLoaders.createFileResourceLoader(loaderName, resourceRoot.toFile());
                 }
             }
         } else if (urlString.startsWith("file:")) {
             if (loaderName.endsWith(".jar") || loaderName.endsWith(".war")) {
-                return ResourceLoaders.createJarResourceLoader(
-                        loaderName,
-                        new JarFile(new File(urlString.substring(5), loaderPath)));
+                final File file = new File(urlString.substring(5), loaderPath);
+                final JarFile jarFile = new JarFile(file);
+
+                File tmpDir = TempFileManager.INSTANCE.newTempDirectory("nestedjarloader", null);
+                //Explode jar due to some issues in Windows on stopping (JarFiles cannot be deleted)
+                BootstrapUtil.explodeJar(jarFile, tmpDir.getAbsolutePath());
+
+                jarFile.close();
+                file.delete();
+
+                return ResourceLoaders.createFileResourceLoader(loaderName, tmpDir);
             }
+
             return ResourceLoaders.createFileResourceLoader(
                     loaderPath,
                     new File(urlString.substring(5))

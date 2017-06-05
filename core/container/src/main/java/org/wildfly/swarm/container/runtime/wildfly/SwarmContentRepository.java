@@ -133,6 +133,21 @@ public class SwarmContentRepository implements ContentRepository, Service<Conten
 
     }
 
+    public void removeAllContent() throws IOException {
+        IOException exception = null;
+        for (Path path: this.index.values()) {
+            try {
+                Files.delete(path);
+            } catch (IOException e) {
+                exception = e;
+            }
+        }
+
+        if (exception != null) {
+            throw exception;
+        }
+    }
+
     @Override
     public Map<String, Set<String>> cleanObsoleteContent() {
         HashMap<String, Set<String>> result = new HashMap<>();
