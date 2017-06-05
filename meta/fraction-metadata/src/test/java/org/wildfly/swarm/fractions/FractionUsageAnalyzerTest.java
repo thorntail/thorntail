@@ -17,8 +17,6 @@ package org.wildfly.swarm.fractions;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -26,6 +24,7 @@ import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -40,6 +39,7 @@ public class FractionUsageAnalyzerTest {
 
         final File out = Files.createTempFile(archive.getName(), ".war").toFile();
         archive.as(ZipExporter.class).exportTo(out, true);
+        out.deleteOnExit();
 
         analyzer.source(out);
         assertThat(analyzer.detectNeededFractions()
@@ -55,10 +55,10 @@ public class FractionUsageAnalyzerTest {
         archive.addClass(MyResource.class);
         FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
 
-        Path dir = Files.createTempDirectory(archive.getName());
-        archive.as(ExplodedExporter.class).exportExplodedInto(dir.toFile());
+        File dirFile = TempFileManager.INSTANCE.newTempDirectory("fractionusagetest", null);
+        archive.as(ExplodedExporter.class).exportExplodedInto(dirFile);
 
-        analyzer.source(dir.toFile());
+        analyzer.source(dirFile);
         assertThat(analyzer.detectNeededFractions()
                            .stream()
                            .filter(fd -> fd.getArtifactId().equals("jaxrs"))
@@ -74,6 +74,7 @@ public class FractionUsageAnalyzerTest {
 
         final File out = Files.createTempFile(archive.getName(), ".war").toFile();
         archive.as(ZipExporter.class).exportTo(out, true);
+        out.deleteOnExit();
 
         analyzer.source(out);
         assertThat(analyzer.detectNeededFractions()

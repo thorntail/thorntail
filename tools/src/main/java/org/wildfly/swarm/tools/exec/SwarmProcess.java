@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.tools.exec;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
@@ -27,10 +28,15 @@ import java.util.concurrent.TimeUnit;
 public class SwarmProcess {
 
     public SwarmProcess(Process process, OutputStream stdout, Path stdoutFile, OutputStream stderr, Path stderrFile) throws IOException {
+        this(process, null, stdout, stdoutFile, stderr, stderrFile);
+    }
+
+    public SwarmProcess(Process process, File processFile, OutputStream stdout, Path stdoutFile, OutputStream stderr, Path stderrFile) throws IOException {
         this.process = process;
         this.latch = new CountDownLatch(1);
         this.stdout = new IOBridge(this.latch, process.getInputStream(), stdout, stdoutFile);
         this.stderr = new IOBridge(this.latch, process.getErrorStream(), stderr, stderrFile);
+        this.processFile = processFile;
 
         new Thread(this.stdout).start();
         new Thread(this.stderr).start();
@@ -96,10 +102,27 @@ public class SwarmProcess {
     }
 
     public int stop(long timeout, TimeUnit timeUnit) throws InterruptedException {
-        this.process.destroy();
-        if (!this.process.waitFor(timeout, timeUnit)) {
-            process.destroyForcibly();
+
+        if (this.processFile != null) {
+            this.processFile.delete();
+            long timeoutMillis = timeUnit.toMillis(timeout);
+            long initialTimeMillis = System.currentTimeMillis();
+            while (true) {
+                long currentTimeMillis = System.currentTimeMillis();
+                if (!process.isAlive() || (currentTimeMillis - initialTimeMillis) > timeoutMillis) {
+                    break;
+                }
+            }
+            if (process.isAlive()) {
+                process.destroyForcibly();
+            }
+        } else {
+            this.process.destroy();
+            if (!this.process.waitFor(timeout, timeUnit)) {
+                process.destroyForcibly();
+            }
         }
+
         try {
             this.stdout.close();
         } catch (IOException e) {
@@ -126,4 +149,6 @@ public class SwarmProcess {
     private final IOBridge stderr;
 
     private final CountDownLatch latch;
+
+    private File processFile;
 }
