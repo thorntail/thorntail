@@ -7,6 +7,8 @@ import org.wildfly.swarm.Swarm;
  */
 public class MainWithProperties {
 
+    private static Swarm swarm;
+
     private MainWithProperties() {
     }
 
@@ -14,8 +16,12 @@ public class MainWithProperties {
         System.setProperty("swarm.logging", "TRACE");
         System.setProperty("swarm.logging.custom.category", "DEBUG");
         System.setProperty("swarm.logging.pattern-formatters.MY_COLOR_PATTERN.pattern", "%K{level}%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p (%t) [%c.%M()] %s%e%n");
-        Swarm swarm = new Swarm(args);
+        swarm = new Swarm(args);
         swarm.start().deploy();
+    }
+
+    public static void stopMain() throws Exception {
+        swarm.stop();
     }
 
 }

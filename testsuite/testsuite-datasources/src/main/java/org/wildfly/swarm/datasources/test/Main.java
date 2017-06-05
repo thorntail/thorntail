@@ -23,11 +23,13 @@ import org.wildfly.swarm.datasources.DatasourcesFraction;
  */
 public class Main {
 
+    private static Swarm swarm;
+
     protected Main() {
     }
 
     public static void main(String... args) throws Exception {
-        Swarm swarm = new Swarm(args);
+        swarm = new Swarm(args);
 
         swarm.fraction(
                 new DatasourcesFraction()
@@ -46,5 +48,10 @@ public class Main {
 
         swarm.start().deploy();
     }
+
+    public static void stopMain() throws Exception {
+        swarm.stop();
+    }
+
 }
 

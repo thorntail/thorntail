@@ -25,16 +25,25 @@ import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 /*END:custom main:JAR_WITH_MAIN*/
 
 public class Main {
+    
+    private static Swarm swarm;
+    private static Swarm swarm2;
+
     public static void main(String[] args) throws Exception {
         /*BEGIN:custom main:JAR_WITH_MAIN*/
-        Swarm swarm = new Swarm();
+        swarm = new Swarm();
         WARArchive war = ShrinkWrap.create(WARArchive.class)
                 .addPackage(Main.class.getPackage())
                 .addAsWebInfResource(new ClassLoaderAsset("web.xml", Main.class.getClassLoader()), WebXmlAsset.NAME);
         swarm.start().deploy(war);
         /*END:custom main:JAR_WITH_MAIN*/
         /*BEGIN:custom main:WAR_WITH_MAIN*/
-        new Swarm().start().deploy();
+        swarm2 = new Swarm().start().deploy();
         /*END:custom main:WAR_WITH_MAIN*/
+    }
+
+    public static void stopMain() throws Exception {
+        swarm.stop();
+        swarm2.stop();
     }
 }
