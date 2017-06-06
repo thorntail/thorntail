@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
+import org.wildfly.swarm.spi.runtime.ConfigurationMarshaller;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;

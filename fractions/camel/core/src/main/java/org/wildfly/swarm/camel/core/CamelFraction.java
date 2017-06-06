@@ -20,6 +20,7 @@
 package org.wildfly.swarm.camel.core;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -27,25 +28,51 @@ import org.apache.camel.builder.RouteBuilder;
 import org.jboss.gravia.utils.IllegalArgumentAssertion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
+import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 
-public abstract class AbstractCamelFraction<T extends AbstractCamelFraction<T>> {
+@WildFlyExtension(module = "org.wildfly.extension.camel")
+@WildFlySubsystem("camel")
+@Configurable("swarm.camel")
+public final class CamelFraction implements Fraction<CamelFraction> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("org.wildfly.swarm.camel");
 
+    public CamelFraction() {
+    }
+
     private final Map<String, RouteBuilder> routeBuilders = new LinkedHashMap<>();
 
-    public T addRouteBuilder(RouteBuilder builder) {
+    public CamelFraction addRouteBuilder(RouteBuilder builder) {
         return addRouteBuilder(null, builder);
     }
 
     @SuppressWarnings("unchecked")
-    public T addRouteBuilder(String name, RouteBuilder builder) {
+    public CamelFraction addRouteBuilder(String name, RouteBuilder builder) {
         IllegalArgumentAssertion.assertNotNull(builder, "builder");
         routeBuilders.put(name, builder);
-        return (T) this;
+        return this;
     }
 
     public Map<String, RouteBuilder> getRouteBuilders() {
         return Collections.unmodifiableMap(routeBuilders);
     }
+
+    public void context(String key, String path) {
+        this.contexts.put(key, path);
+    }
+
+    public void contexts(Map<String, String> contexts) {
+        this.contexts.clear();
+        this.contexts.putAll(contexts);
+    }
+
+    public Map<String, String> contexts() {
+        return this.contexts;
+    }
+
+    private Map<String, String> contexts = new HashMap<>();
+
 }

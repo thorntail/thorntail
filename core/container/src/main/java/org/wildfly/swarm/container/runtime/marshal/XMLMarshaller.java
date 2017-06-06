@@ -28,6 +28,7 @@ import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.container.runtime.xmlconfig.StandaloneXMLParser;
 import org.wildfly.swarm.container.runtime.xmlconfig.XMLConfig;
 import org.wildfly.swarm.internal.SwarmConfigMessages;
+import org.wildfly.swarm.spi.runtime.ConfigurationMarshaller;
 
 /**
  * Marshals a collection of XML configurations (standalone.xml) to DMR.
