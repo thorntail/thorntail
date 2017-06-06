@@ -63,6 +63,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(defaultValue = "${session}", readonly = true)
     protected MavenSession mavenSession;
 
+    @Deprecated
     @Parameter(alias = "mainClass", property = "swarm.mainClass")
     protected String mainClass;
 
@@ -96,6 +97,17 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     AbstractSwarmMojo() {
         if (this.additionalModules.isEmpty()) {
             this.additionalModules.add("modules");
+        }
+    }
+
+    protected void deprecationWarnings() {
+        if (mainClass != null && !mainClass.equals("")) {
+            getLog().warn(
+                    "\n------\n" +
+                    "Custom main() usage is intended to be deprecated in a future release and is no longer supported, \n" +
+                            "please refer to http://reference.wildfly-swarm.io for YAML configuration that replaces it." +
+                    "\n------"
+            );
         }
     }
 

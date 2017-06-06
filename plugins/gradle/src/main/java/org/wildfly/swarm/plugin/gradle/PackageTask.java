@@ -200,6 +200,15 @@ public class PackageTask extends DefaultTask {
             mainClassName = app.getMainClassName();
         }
 
+        if (mainClassName != null && !mainClassName.equals("")) {
+            getLogger().warn(
+                    "\n------\n" +
+                    "Custom main() usage is intended to be deprecated in a future release and is no longer supported, \n" +
+                    "please refer to http://reference.wildfly-swarm.io for YAML configuration that replaces it." +
+                    "\n------"
+            );
+        }
+
         return mainClassName;
     }
 
