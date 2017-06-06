@@ -67,6 +67,8 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        deprecationWarnings();
         initProperties(true);
         initEnvironment();
 
