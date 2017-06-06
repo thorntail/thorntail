@@ -17,22 +17,18 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.swarm.camel.core;
+package org.wildfly.swarm.camel.core.test;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.camel.core.subA.RouteBuilderA;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.camel.core.test.RouteBuilderA;
 
 
 /**
@@ -40,8 +36,10 @@ import org.wildfly.swarm.spi.api.JARArchive;
  * @since 09-Feb-2016
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class SimpleCoreTransformTest {
 
+    /*
     @Deployment
     public static JARArchive deployment() {
         JARArchive archive = ShrinkWrap.create(JARArchive.class);
@@ -52,8 +50,9 @@ public class SimpleCoreTransformTest {
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction());
+        return new Swarm().fraction(new CamelFraction());
     }
+    */
 
     @Test
     public void testSimpleTransform() throws Exception {

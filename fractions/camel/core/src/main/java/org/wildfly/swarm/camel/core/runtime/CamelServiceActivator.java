@@ -27,21 +27,22 @@ import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wildfly.extension.camel.CamelConstants;
 import org.wildfly.extension.camel.handler.ModuleClassLoaderAssociationHandler;
-import org.wildfly.swarm.camel.core.CamelCoreFraction;
-
-import static org.wildfly.swarm.camel.core.AbstractCamelFraction.LOGGER;
+import org.wildfly.swarm.camel.core.CamelFraction;
 
 /**
  * @author Bob McWhirter
  */
 @ApplicationScoped
 public class CamelServiceActivator implements ServiceActivator {
+    public static final Logger LOGGER = LoggerFactory.getLogger("org.wildfly.swarm.camel");
 
     @Inject
     @Any
-    private CamelCoreFraction fraction;
+    private CamelFraction fraction;
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
@@ -54,9 +55,9 @@ public class CamelServiceActivator implements ServiceActivator {
 
         List<CamelContext> systemContexts = new ArrayList<>();
 
-        CamelCoreFraction fraction;
+        CamelFraction fraction;
 
-        static ServiceController<Void> addService(ServiceTarget serviceTarget, CamelCoreFraction fraction) {
+        static ServiceController<Void> addService(ServiceTarget serviceTarget, CamelFraction fraction) {
             BootstrapCamelContextService service = new BootstrapCamelContextService(fraction);
             ServiceName serviceName = SERVICE_NAME;
             ServiceBuilder<Void> builder = serviceTarget.addService(serviceName, service);
@@ -64,7 +65,7 @@ public class CamelServiceActivator implements ServiceActivator {
             return builder.install();
         }
 
-        BootstrapCamelContextService(CamelCoreFraction fraction) {
+        BootstrapCamelContextService(CamelFraction fraction) {
             this.fraction = fraction;
         }
 

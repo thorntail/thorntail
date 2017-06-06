@@ -27,6 +27,7 @@ import org.jboss.dmr.ModelType;
 import org.jboss.dmr.Property;
 import org.jboss.dmr.ValueExpression;
 import org.wildfly.swarm.container.Interface;
+import org.wildfly.swarm.spi.runtime.ConfigurationMarshaller;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INET_ADDRESS;

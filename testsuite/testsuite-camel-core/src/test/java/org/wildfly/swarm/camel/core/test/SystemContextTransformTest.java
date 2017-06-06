@@ -17,25 +17,19 @@
  * limitations under the License.
  * #L%
  */
-package org.wildfly.swarm.camel.core;
+package org.wildfly.swarm.camel.core.test;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.ServiceStatus;
-import org.apache.camel.builder.RouteBuilder;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.gravia.runtime.ServiceLocator;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.camel.CamelAware;
 import org.wildfly.extension.camel.CamelContextRegistry;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 
 /**
@@ -46,18 +40,22 @@ import org.wildfly.swarm.spi.api.JARArchive;
  */
 @CamelAware
 @RunWith(Arquillian.class)
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class SystemContextTransformTest {
 
+    /*
     @Deployment
     public static JARArchive deployment() {
         JARArchive archive = ShrinkWrap.create(JARArchive.class, "system-context-tests.jar");
         archive.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;
     }
+    */
 
+    /*
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction().addRouteBuilder("myname", new RouteBuilder() {
+        return new Swarm().fraction(new CamelFraction().addRouteBuilder("myname", new RouteBuilder() {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
@@ -65,6 +63,7 @@ public class SystemContextTransformTest {
             }
         }));
     }
+    */
 
     @Test
     public void testSimpleTransform() throws Exception {

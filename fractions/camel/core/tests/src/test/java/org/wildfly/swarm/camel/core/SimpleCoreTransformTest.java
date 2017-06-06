@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.camel.core.subA.RouteBuilderA;
+import org.wildfly.swarm.camel.core.test.RouteBuilderA;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 

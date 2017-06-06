@@ -18,10 +18,14 @@ package org.wildfly.swarm.container.runtime.marshal;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.dmr.ModelNode;
 import org.wildfly.swarm.bootstrap.performance.Performance;
+
+import org.wildfly.swarm.spi.runtime.ConfigurationMarshaller;
+import org.wildfly.swarm.spi.runtime.CustomMarshaller;
 
 /**
  * @author Bob McWhirter
@@ -42,10 +46,14 @@ public class DMRMarshaller implements ConfigurationMarshaller {
     private SubsystemMarshaller subsystemMarshaller;
 
     @Inject
+    private Instance<CustomMarshaller> customMarshallers;
+
+    @Inject
     private InterfaceMarshaller interfaceMarshaller;
 
     @Inject
     private SocketBindingGroupMarshaller socketBindingGroupMarshaller;
+
 
     public void marshal(List<ModelNode> list) {
         try {
@@ -60,6 +68,9 @@ public class DMRMarshaller implements ConfigurationMarshaller {
             }
             try (AutoCloseable handle = Performance.time("marshal subsystems")) {
                 this.subsystemMarshaller.marshal(list);
+            }
+            try (AutoCloseable handle = Performance.time("marshal custom")) {
+                this.customMarshallers.forEach(e -> e.marshal(list));
             }
             try (AutoCloseable handle = Performance.time("marshal interfaces")) {
                 this.interfaceMarshaller.marshal(list);
