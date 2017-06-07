@@ -211,7 +211,7 @@ public class MavenPluginTest {
     public void buildUberjarAndRunTests() {
         try {
             doBuildUberjarAndRunTests();
-        } catch (Exception e) {
+        } catch (Exception | AssertionError e) {
             String additionalMessage;
             if (System.getProperty(SINGLE_TESTING_PROJECT_KEY) == null) {
                 additionalMessage = "Test failed for project [" + testingProject + "], use -D" + SINGLE_TESTING_PROJECT_KEY
@@ -221,7 +221,7 @@ public class MavenPluginTest {
                         + verifier.getBasedir() + " for manual inspection";
             }
 
-            throw new AssertionError(additionalMessage + "\n\n" + e.getMessage(), e);
+            throw new AssertionError(e.getMessage() + "\n\n" + additionalMessage, e);
         }
     }
 
@@ -256,9 +256,21 @@ public class MavenPluginTest {
         String log = new String(Files.readAllBytes(logPath), StandardCharsets.UTF_8);
 
         assertThat(log).doesNotContain("[ERROR]");
+        if (testingProject.packaging.hasCustomMain()) {
+            int count = 0;
+            int index = 0;
+            while ((index = log.indexOf("[WARNING]", index)) != -1) {
+                count++;
+                index++;
+            }
 
-        // TODO: https://issues.jboss.org/browse/SWARM-1376
-        //assertThat(log).doesNotContain("[WARNING]");
+            assertThat(log).contains("Custom main() usage is intended to be deprecated in a future release");
+            // 1st warning for wildfly-swarm:package
+            // 2nd warning possibly for wildfly-swarm:start for tests
+            assertThat(count).as("There should only be 1 or 2 warnings").isIn(1, 2);
+        } else {
+            assertThat(log).doesNotContain("[WARNING]");
+        }
 
         assertThat(log).contains("BUILD SUCCESS");
 
