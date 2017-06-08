@@ -230,7 +230,6 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                                               .addPassword(auth.getPassword()).build());
         }
 
-        System.err.println("Adding repository: " + id + " - " + url + " - releases=" + releasesPolicy.isEnabled() + ", snapshots=" + snapshotsPolicy.isEnabled());
         builder.setSnapshotPolicy(new RepositoryPolicy(snapshotsPolicy.isEnabled(), snapshotsPolicy.getUpdatePolicy(), snapshotsPolicy.getChecksumPolicy()));
         builder.setReleasePolicy(new RepositoryPolicy(releasesPolicy.isEnabled(), releasesPolicy.getUpdatePolicy(), releasesPolicy.getChecksumPolicy()));
 
@@ -241,9 +240,14 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         if (mirror != null) {
             final org.eclipse.aether.repository.Authentication mirrorAuth = session.getAuthenticationSelector()
                     .getAuthentication(mirror);
-            repository = mirrorAuth != null
-                    ? new RemoteRepository.Builder(mirror).setAuthentication(mirrorAuth).build()
-                    : mirror;
+            RemoteRepository.Builder mirrorBuilder = new RemoteRepository.Builder(mirror)
+                    .setId(repository.getId())
+                    .setSnapshotPolicy(new RepositoryPolicy(snapshotsPolicy.isEnabled(), snapshotsPolicy.getUpdatePolicy(), snapshotsPolicy.getChecksumPolicy()))
+                    .setReleasePolicy(new RepositoryPolicy(releasesPolicy.isEnabled(), releasesPolicy.getUpdatePolicy(), releasesPolicy.getChecksumPolicy()));
+            if (mirrorAuth != null) {
+                mirrorBuilder.setAuthentication(mirrorAuth);
+            }
+            repository = mirrorBuilder.build();
         }
 
         Proxy proxy = session.getProxySelector().getProxy(repository);
@@ -251,7 +255,6 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
         if (proxy != null) {
             repository = new RemoteRepository.Builder(repository).setProxy(proxy).build();
         }
-        System.err.println("--" + repository);
 
         return repository;
     }
