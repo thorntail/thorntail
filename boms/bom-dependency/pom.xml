@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>dependency-bom</artifactId>
+
+  <name>Version alignment BOM</name>
+  <description>Manages transitive dependency versions in user project builds</description>
+  <version>2017.7.0-SNAPSHOT</version>
+
+  <packaging>pom</packaging>
+
+  <properties>
+    <version.openjdk.orb>8.0.6.Final</version.openjdk.orb>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.openjdk-orb</groupId>
+        <artifactId>openjdk-orb</artifactId>
+        <version>${version.openjdk.orb}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>

@@ -1238,7 +1238,7 @@
       </dependency>
       <!--Teiid integration end-->
 
-      
+
       <!-- The following are not used, they are here to make PME align proper versions-->
       <dependency>
         <groupId>com.squareup.okhttp3</groupId>
@@ -1307,6 +1307,7 @@
     <module>meta/fraction-metadata</module>
     <module>plugins/maven</module>
     <module>boms</module>
+    <module>boms/bom-dependency</module>
     <module>boms/bom</module>
 
     <module>arquillian/daemon</module>
