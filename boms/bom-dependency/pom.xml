@@ -7,6 +7,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>parent</artifactId>
+    <version>8</version>
+  </parent>
+
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>dependency-bom</artifactId>
 
@@ -19,6 +25,28 @@
   <properties>
     <version.openjdk.orb>8.0.6.Final</version.openjdk.orb>
   </properties>
+
+  <url>http://wildfly-swarm.io/</url>
+   <developers>
+     <developer>
+       <id>wildfly-swarm.io</id>
+       <name>WildFly Swarm Community</name>
+       <organization>WildFly Swarm</organization>
+       <organizationUrl>http://wildfly-swarm.io/</organizationUrl>
+     </developer>
+   </developers>
+
+   <scm>
+     <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
+     <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
+     <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
+   </scm>
+
+   <licenses>
+     <license>
+       <name>AL2</name>
+     </license>
+   </licenses>
 
   <dependencyManagement>
     <dependencies>
