@@ -15,10 +15,9 @@
  */
 package org.wildfly.swarm.mail;
 
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.Mail;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -28,11 +27,6 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @WildFlyExtension(module = "org.jboss.as.mail")
 @MarshalDMR
 public class MailFraction extends Mail<MailFraction> implements Fraction<MailFraction> {
-
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
 
     public static MailFraction defaultFraction() {
         return new MailFraction().applyDefaults();
@@ -44,6 +38,7 @@ public class MailFraction extends Mail<MailFraction> implements Fraction<MailFra
         return this;
     }
 
+    @Configurable
     public MailFraction mailSession(String key, EnhancedMailSessionConsumer consumer) {
         EnhancedMailSession session = new EnhancedMailSession(key);
         return super.mailSession(() -> {
@@ -57,6 +52,7 @@ public class MailFraction extends Mail<MailFraction> implements Fraction<MailFra
         });
     }
 
+    @Configurable
     public MailFraction smtpServer(String key, EnhancedSMTPServerConsumer consumer) {
         return this.mailSession(key, (session) -> {
             session.smtpServer(consumer);
