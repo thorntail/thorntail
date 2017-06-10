@@ -8,7 +8,8 @@ import org.junit.runners.Suite;
         JAXRSArquillianTest.class,
         MonitorPayloadTest.class,
         MonitorSecurityTest.class,
-        ArqJAXRSExceptionMapperTest.class
+        ArqJAXRSExceptionMapperTest.class,
+        ApplicationPathTest.class
 })
 
 public class JAXRSTestSuite {
