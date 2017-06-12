@@ -26,7 +26,9 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
         <configuration>
-          <mainClass>org.wildfly.swarm.servers.management.console.Main</mainClass>
+          <properties>
+            <swarm.inhibit.default-deployment>true</swarm.inhibit.default-deployment>
+          </properties>
         </configuration>
         <executions>
           <execution>
