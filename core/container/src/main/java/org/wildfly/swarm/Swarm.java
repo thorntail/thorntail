@@ -620,7 +620,10 @@ public class Swarm {
 
         Swarm swarm = new Swarm(args);
         try {
-            swarm.start().deploy();
+            swarm.start();
+            if (System.getProperty("swarm.inhibit.default-deployment") == null) {
+                swarm.deploy();
+            }
         } catch (final VirtualMachineError vme) {
             // Don't even try to swarm.stop() in case of OOM etc.
             vme.printStackTrace();
