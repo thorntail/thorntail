@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="urn:jboss:module:1.5" name="org.jboss.weld.se">
   <resources>
-    <!--<resource-root path="weld-se-core-${version.weld}.jar"/>-->
-    <artifact name="org.jboss.weld.environment:weld-environment-common:${version.weld}"/>
-    <artifact name="org.jboss.weld:weld-api:${version.weld-api}"/>
-    <artifact name="org.jboss.weld:weld-spi:${version.weld-api}"/>
-    <artifact name="org.jboss.weld:weld-core-impl:${version.weld}"/>
-    <artifact name="org.jboss.weld.se:weld-se-core:${version.weld}"/>
+    <artifact name="org.jboss.weld.environment:weld-environment-common:${version.weld-se}"/>
+    <artifact name="org.jboss.weld:weld-api:${org.jboss.weld:weld-api:jar.version}"/>
+    <artifact name="org.jboss.weld:weld-spi:${org.jboss.weld:weld-api:jar.version}"/>
+    <artifact name="org.jboss.weld:weld-core-impl:${org.jboss.weld:weld-core-impl:jar.version}"/>
+    <artifact name="org.jboss.weld.se:weld-se-core:${version.weld-se}"/>
   </resources>
 
   <dependencies>

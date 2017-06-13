@@ -14,7 +14,6 @@
     <relativePath>../../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>container</artifactId>
 
   <name>Container</name>
@@ -25,26 +24,75 @@
   <properties>
     <swarm.fraction.internal>true</swarm.fraction.internal>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <version.weld-api>2.3.SP2</version.weld-api>
-    <version.weld>2.3.5.Final</version.weld>
-    <version.cdi>1.2</version.cdi>
   </properties>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
+   <build>
+      <resources>
+         <resource>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <filtering>true</filtering>
+         </resource>
+      </resources>
+      <plugins>
+         <!-- Used to verify the Weld version used for weld-se-core is the
+            same as the version provided by WildFly feature pack -->
+         <plugin>
+            <groupId>io.reformanda.semper</groupId>
+            <artifactId>dependencyversion-maven-plugin</artifactId>
+            <version>1.0.1</version>
+            <executions>
+               <execution>
+                  <id>set-versions</id>
+                  <goals>
+                     <goal>set-version</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <propertySets>
+                  <propertySet>
+                     <includes>
+                        <include>org.jboss.weld:weld-core-impl:jar</include>
+                        <include>org.jboss.weld:weld-api:jar</include>
+                     </includes>
+                  </propertySet>
+               </propertySets>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>verify-weld-version</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <configuration>
+                     <tasks>
+                        <fail
+                           message="Weld SE version ${version.weld-se} does not align with version provided by the WildFly feature pack!">
+                           <condition>
+                              <not>
+                                 <equals arg1="${version.weld-se}"
+                                    arg2="${org.jboss.weld:weld-core-impl:jar.version}" />
+                              </not>
+                           </condition>
+                        </fail>
+                     </tasks>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
 
   <dependencies>
     <!-- not used, only to make PME align version.weld-api-->
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-api</artifactId>
-      <version>${version.weld-api}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -94,7 +142,6 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
-      <version>${version.cdi}</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -110,7 +157,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>${version.weld}</version>
+      <version>${version.weld-se}</version>
       <scope>provided</scope>
     </dependency>
 

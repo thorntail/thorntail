@@ -46,7 +46,8 @@
     <version.wildfly>10.1.0.Final</version.wildfly>
     <version.org.wildfly.core>2.2.1.Final</version.org.wildfly.core>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
-
+    <!-- Weld SE version must be aligned with the version used in WildFly -->
+    <version.weld-se>2.3.5.Final</version.weld-se>
 
     <version.org.arquillian>1.1.12.Final</version.org.arquillian>
     <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
@@ -252,39 +253,39 @@
         </executions>
       </plugin>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-enforcer-plugin</artifactId>
-	<version>1.4.1</version>
-	<dependencies>
-	  <dependency>
-	    <groupId>org.wildfly.swarm</groupId>
-	    <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
-	    <version>2017.7.0-SNAPSHOT</version>
-	  </dependency>
-	</dependencies>
-	<executions>
-	  <execution>
-	    <id>enforce</id>
-	    <phase>verify</phase>
-	    <configuration>
-	      <rules>
-		<patternSizeRule implementation="org.wildfly.swarm.plugin.enforcer.patternsize.RequireFilePatternSize">
-		  <requiredFilePatterns>
-		      <requiredFilePattern>
-		        <maxSize>0</maxSize>
-		        <recursive>false</recursive>
-			<directory>${project.build.directory}</directory>
-			<pattern>\S+[0-9]{5,}.\S{5,}</pattern>
-		      </requiredFilePattern>
-		  </requiredFilePatterns>
-		</patternSizeRule>
-	      </rules>
-	    </configuration>
-	    <goals>
-	      <goal>enforce</goal>
-	    </goals>
-	  </execution>
-	</executions>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-enforcer-plugin</artifactId>
+         <version>1.4.1</version>
+         <dependencies>
+            <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
+            <version>2017.7.0-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <phase>verify</phase>
+            <configuration>
+              <rules>
+          <patternSizeRule implementation="org.wildfly.swarm.plugin.enforcer.patternsize.RequireFilePatternSize">
+            <requiredFilePatterns>
+                <requiredFilePattern>
+                  <maxSize>0</maxSize>
+                  <recursive>false</recursive>
+            <directory>${project.build.directory}</directory>
+            <pattern>\S+[0-9]{5,}.\S{5,}</pattern>
+                </requiredFilePattern>
+            </requiredFilePatterns>
+          </patternSizeRule>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -1530,7 +1531,7 @@
         <module>fractions/wildfly/management-console</module>
         <module>fractions/wildfly/mod_cluster</module>
         <module>fractions/wildfly/scanner</module>
-        
+
         <module>fractions/netflix</module>
         <module>fractions/teiid</module>
 
