@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs.internal;
+package org.wildfly.swarm.jaxrs.runtime;
 
 import java.io.IOException;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.commons.RemappingClassAdapter;
@@ -27,13 +29,41 @@ import org.objectweb.asm.commons.RemappingClassAdapter;
 /**
  * @author Bob McWhirter
  */
-public class ApplicationFactory2 implements Opcodes {
+public class DefaultApplicationFactory implements Opcodes {
 
-    protected ApplicationFactory2() {
+    protected DefaultApplicationFactory() {
+    }
+
+    static byte[] basicClassBytes() {
+        ClassWriter cw = new ClassWriter(0);
+        MethodVisitor mv;
+
+        cw.visit(52, ACC_PUBLIC + ACC_SUPER, "org/wildfly/swarm/jaxrs/runtime/DefaultApplication", null, "javax/ws/rs/core/Application", null);
+
+        cw.visitSource("DefaultApplication.java", null);
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+            mv.visitLineNumber(23, l0);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, "javax/ws/rs/core/Application", "<init>", "()V", false);
+            mv.visitInsn(RETURN);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            mv.visitLocalVariable("this", "Lorg/wildfly/swarm/jaxrs/runtime/DefaultApplication;", null, l0, l1, 0);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
+        cw.visitEnd();
+
+        return cw.toByteArray();
+
     }
 
     public static byte[] create(String name, String path) throws IOException {
-        ClassReader reader = new ClassReader(DefaultApplication.class.getClassLoader().getResourceAsStream(DefaultApplication.class.getName().replace('.', '/') + ".class"));
+        ClassReader reader = new ClassReader(basicClassBytes());
 
         String slashName = name.replace('.', '/');
 
@@ -41,7 +71,7 @@ public class ApplicationFactory2 implements Opcodes {
         Remapper remapper = new Remapper() {
             @Override
             public String map(String typeName) {
-                if (typeName.equals("org/wildfly/swarm/jaxrs/internal/DefaultApplication")) {
+                if (typeName.equals("org/wildfly/swarm/jaxrs/runtime/DefaultApplication")) {
                     return slashName;
                 }
                 return super.map(typeName);

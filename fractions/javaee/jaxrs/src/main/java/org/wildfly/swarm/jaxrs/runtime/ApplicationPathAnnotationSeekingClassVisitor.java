@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jaxrs.internal;
+package org.wildfly.swarm.jaxrs.runtime;
 
-import javax.ws.rs.core.Application;
+import org.wildfly.swarm.jaxrs.internal.AnnotationSeekingClassVisitor;
 
 /**
  * @author Bob McWhirter
  */
-public class DefaultApplication extends Application {
+public class ApplicationPathAnnotationSeekingClassVisitor extends AnnotationSeekingClassVisitor {
+
+    public ApplicationPathAnnotationSeekingClassVisitor() {
+        super("javax/ws/rs/ApplicationPath");
+    }
 }
