@@ -16,14 +16,11 @@
 
 package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
-import java.time.temporal.ChronoUnit;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.fault.tolerance.inject.Asynchronous;
 import org.eclipse.microprofile.fault.tolerance.inject.Fallback;
 import org.eclipse.microprofile.fault.tolerance.inject.Timeout;
-
 
 /**
  * @author Antoine Sabot-Durand
@@ -31,27 +28,58 @@ import org.eclipse.microprofile.fault.tolerance.inject.Timeout;
 @ApplicationScoped
 public class MyMicroservice {
 
-    @Asynchronous
-    @Timeout(value = 7, unit = ChronoUnit.SECONDS)
-    //@Fallback(handler = MyFallbackHandler.class)
-    public Object sayHello() {
+    static final String HELLO = "Hello";
+
+    @Timeout(500)
+    public String sayHello() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(400);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return "Hello";
+        return HELLO;
+    }
+
+    @Timeout(200)
+    @Fallback(MyFallbackHandler.class)
+    public String sayHelloWithFallback() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return HELLO;
+    }
+
+    @Timeout(200)
+    public String sayHelloTimeoutNoFallback() {
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return HELLO;
     }
 
     @Asynchronous
-    @Timeout(value = 7, unit = ChronoUnit.SECONDS)
-    @Fallback(MyFallbackHandler.class)
-    public Object sayHelloWithFailback() {
+    public Object sayHelloAsync() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return "Hello";
+        return HELLO;
+    }
+
+    @Asynchronous
+    @Timeout(200)
+    @Fallback(MyFallbackHandler.class)
+    public Object sayHelloAsyncTimeoutFallback() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return HELLO;
     }
 }

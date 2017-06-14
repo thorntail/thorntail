@@ -21,23 +21,27 @@ import java.util.function.Supplier;
 /**
  * @author Antoine Sabot-Durand
  */
-public class DefaultCommand<R> extends com.netflix.hystrix.HystrixCommand<R> {
+public class DefaultCommand extends com.netflix.hystrix.HystrixCommand<Object> {
 
-
-    protected DefaultCommand(Setter setter, Supplier<R> toRun, Supplier<R> fallback) {
+    /**
+     *
+     * @param setter
+     * @param toRun
+     * @param fallback
+     */
+    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback) {
         super(setter);
         this.toRun = toRun;
         this.fallback = fallback;
     }
 
-
     @Override
-    protected R run() throws Exception {
+    protected Object run() throws Exception {
         return toRun.get();
     }
 
     @Override
-    protected R getFallback() {
+    protected Object getFallback() {
         if (fallback == null) {
             return super.getFallback();
         }
@@ -45,7 +49,7 @@ public class DefaultCommand<R> extends com.netflix.hystrix.HystrixCommand<R> {
     }
 
 
-    private final Supplier<R> fallback;
+    private final Supplier<Object> fallback;
 
-    private final Supplier<R> toRun;
+    private final Supplier<Object> toRun;
 }

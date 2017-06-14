@@ -23,8 +23,11 @@ import org.eclipse.microprofile.fault.tolerance.inject.FallbackHandler;
  * @author Antoine Sabot-Durand
  */
 public class MyFallbackHandler implements FallbackHandler<String> {
+
+    static final String FALLBACK = "Store is closed";
+
     @Override
     public String handle(ExecutionContext executionContext) {
-        return "Store is closed";
+        return FALLBACK;
     }
 }

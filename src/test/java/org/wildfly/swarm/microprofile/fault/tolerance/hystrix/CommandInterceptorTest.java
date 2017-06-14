@@ -16,20 +16,21 @@
 
 package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
-import com.netflix.config.ConfigurationManager;
-import org.apache.commons.configuration.AbstractConfiguration;
-import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.junit4.WeldInitiator;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.extension.HystrixExtension;
 
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 
 /**
  * @author Antoine Sabot-Durand
@@ -37,63 +38,45 @@ import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.extension.HystrixE
 public class CommandInterceptorTest {
 
     @Rule
-    public WeldInitiator weld = WeldInitiator.from(
-            new Weld()
-                    .addExtension(new HystrixExtension())
-                    .addPackages(true
-                            , DefaultCommand.class
-                            , getClass())
-    ).inject(this)
-            .build();
+    public WeldInitiator weld = WeldInitiator
+            .from(WeldInitiator.createWeld().addExtension(new HystrixExtension()).addPackages(true, DefaultCommand.class, getClass())).inject(this).build();
+
+    @Inject
+    MyMicroservice service;
 
     @Test
     public void shouldRunWithLongExecutionTime() {
-        Object res = mm.sayHello();
-        try {
-            Assert.assertEquals("Hello", ((Future) res).get());
-        } catch (InterruptedException | ExecutionException e) {
-            Assert.fail("Timeout");
-        }
+        assertEquals(MyMicroservice.HELLO, service.sayHello());
     }
-
-
-    @Test(expected = MicroprofileHystrixException.class)
-    public void shouldTimeout() {
-        AbstractConfiguration conf = ConfigurationManager.getConfigInstance();
-
-        conf.setProperty("hystrix.command.DefaultCommand.execution.isolation.thread.timeoutInMilliseconds",
-                         new Long(1000));
-        Object res = mm.sayHello();
-        try {
-            ((Future) res).get();
-            Assert.fail("Should have been in timeout state");
-        } catch (InterruptedException | ExecutionException e) {
-            throw new MicroprofileHystrixException("expected timeout", e);
-        } finally {
-            conf.clearProperty("hystrix.command.DefaultCommand.execution.isolation.thread.timeoutInMilliseconds");
-        }
-    }
-
 
     @Test
-    public void shouldFallbackAfterTimeout() {
-        AbstractConfiguration conf = ConfigurationManager.getConfigInstance();
-
-        conf.setProperty("hystrix.command.DefaultCommand.execution.isolation.thread.timeoutInMilliseconds",
-                         new Long(1000));
-        Object res = mm.sayHelloWithFailback();
-        try {
-            Assert.assertEquals("Store is closed", ((Future) res).get());
-        } catch (InterruptedException | ExecutionException e) {
-            throw new MicroprofileHystrixException("expected timeout", e);
-        } finally {
-            conf.clearProperty("hystrix.command.DefaultCommand.execution.isolation.thread.timeoutInMilliseconds");
-
-        }
+    public void testTimeoutFallback() {
+        assertEquals(MyFallbackHandler.FALLBACK, service.sayHelloWithFallback());
     }
 
+    // TODO: should throw TimeoutException instead!
+    @Test(expected = HystrixRuntimeException.class)
+    public void testTimeoutNoFallback() {
+        service.sayHelloTimeoutNoFallback();
+        fail();
+    }
 
-    @Inject
-    MyMicroservice mm;
+    @Test
+    public void testHelloAsync() throws InterruptedException, ExecutionException {
+        Object result = service.sayHelloAsync();
+        assertTrue(result instanceof Future);
+        @SuppressWarnings("unchecked")
+        Future<String> future = (Future<String>) result;
+        assertEquals(MyMicroservice.HELLO, future.get());
+    }
+
+    @Test
+    public void testHelloAsyncTimeoutFallback() throws InterruptedException, ExecutionException {
+        Object result = service.sayHelloAsyncTimeoutFallback();
+        assertTrue(result instanceof Future);
+        @SuppressWarnings("unchecked")
+        Future<String> future = (Future<String>) result;
+        assertEquals(MyFallbackHandler.FALLBACK, future.get());
+    }
 
 }
