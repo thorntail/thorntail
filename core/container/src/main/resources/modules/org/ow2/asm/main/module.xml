@@ -6,8 +6,20 @@
   -->
 
 <module xmlns="urn:jboss:module:1.3" name="org.ow2.asm">
-  <resources>
-    <artifact name="org.ow2.asm:asm-all:${version.org.objectweb.asm}"/>
-  </resources>
+
+  <dependencies>
+    <system export="true">
+      <paths>
+        <path name="org/objectweb/asm"/>
+        <path name="org/objectweb/asm/commons"/>
+        <path name="org/objectweb/asm/commons"/>
+        <path name="org/objectweb/asm/signature"/>
+        <path name="org/objectweb/asm/tree"/>
+        <path name="org/objectweb/asm/util"/>
+        <path name="org/objectweb/asm/xml"/>
+      </paths>
+    </system>
+    <module name="org.ow2.asm" slot="impl" services="import" export="true"/>
+  </dependencies>
 
 </module>
