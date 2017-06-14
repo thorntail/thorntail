@@ -1349,6 +1349,7 @@
     <module>fractions/keycloak</module>
     <module>fractions/microprofile</module>
     <module>fractions/monitor</module>
+    <module>fractions/opentracing</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>
     <module>fractions/topology-webapp</module>
