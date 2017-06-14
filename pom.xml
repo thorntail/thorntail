@@ -1349,7 +1349,6 @@
     <module>fractions/keycloak</module>
     <module>fractions/microprofile</module>
     <module>fractions/monitor</module>
-    <module>fractions/opentracing</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>
     <module>fractions/topology-webapp</module>
@@ -1449,6 +1448,7 @@
         <module>fractions/jolokia</module>
         <module>fractions/logstash</module>
         <module>fractions/keycloak-server</module>
+        <module>fractions/opentracing</module>
         <module>fractions/spring</module>
         <module>fractions/swagger</module>
         <module>fractions/swagger-webapp</module>
