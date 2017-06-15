@@ -33,6 +33,8 @@
 
         mvn versions:set -DnewVersion=2017.3.0-SNAPSHOT
 
+* Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command.
+
 * And commit, and push it all
 
         git commit -a -m 'Prepare for next development version'
