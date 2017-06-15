@@ -20,7 +20,9 @@ import java.lang.reflect.Method;
 
 import javax.interceptor.InvocationContext;
 
-import org.eclipse.microprofile.fault.tolerance.inject.ExecutionContext;
+import org.eclipse.microprofile.faulttolerance.ExecutionContext;
+import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
+
 
 /**
  * @author Antoine Sabot-Durand
@@ -45,7 +47,7 @@ public class ExecutionContextWithInvocationContext implements ExecutionContext {
         try {
             return ic.proceed();
         } catch (Exception e) {
-            throw new MicroprofileHystrixException("Hystrix execution failed", e);
+            throw new FaultToleranceException("Hystrix execution failed", e);
         }
     }
 

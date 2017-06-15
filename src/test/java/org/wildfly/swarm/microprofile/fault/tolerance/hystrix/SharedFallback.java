@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.microprofile.fault.tolerance.hystrix.extension;
+package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.enterprise.util.Nonbinding;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
- * @author Antoine Sabot-Durand
+ * @author Martin Kouba
  */
-public class NonbindingLiteral extends AnnotationLiteral<Nonbinding> implements Nonbinding {
+@ApplicationScoped
+public class SharedFallback {
 
-    public static final Nonbinding INSTANCE = new NonbindingLiteral();
+    boolean ping() {
+        return true;
+    }
 
-    private static final long serialVersionUID = 1L;
 }

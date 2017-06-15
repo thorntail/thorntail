@@ -51,7 +51,9 @@ public class CommandInterceptorTest {
 
     @Test
     public void testTimeoutFallback() {
+        MyFallbackHandler.reset();
         assertEquals(MyFallbackHandler.FALLBACK, service.sayHelloWithFallback());
+        assertTrue(MyFallbackHandler.DISPOSED.get());
     }
 
     // TODO: should throw TimeoutException instead!

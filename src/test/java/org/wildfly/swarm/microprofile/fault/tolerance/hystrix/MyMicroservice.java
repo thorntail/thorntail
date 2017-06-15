@@ -18,17 +18,16 @@ package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.fault.tolerance.inject.Asynchronous;
-import org.eclipse.microprofile.fault.tolerance.inject.Fallback;
-import org.eclipse.microprofile.fault.tolerance.inject.Timeout;
+import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+
 
 /**
  * @author Antoine Sabot-Durand
  */
 @ApplicationScoped
 public class MyMicroservice {
-
-    static final String HELLO = "Hello";
 
     @Timeout(500)
     public String sayHello() {
@@ -82,4 +81,6 @@ public class MyMicroservice {
         }
         return HELLO;
     }
+
+    static final String HELLO = "Hello";
 }

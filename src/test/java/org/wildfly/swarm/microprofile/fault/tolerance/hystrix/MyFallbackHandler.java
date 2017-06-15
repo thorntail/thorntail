@@ -16,18 +16,39 @@
 
 package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
-import org.eclipse.microprofile.fault.tolerance.inject.ExecutionContext;
-import org.eclipse.microprofile.fault.tolerance.inject.FallbackHandler;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+
+import org.eclipse.microprofile.faulttolerance.ExecutionContext;
+import org.eclipse.microprofile.faulttolerance.FallbackHandler;
+
 
 /**
  * @author Antoine Sabot-Durand
  */
 public class MyFallbackHandler implements FallbackHandler<String> {
 
-    static final String FALLBACK = "Store is closed";
-
     @Override
     public String handle(ExecutionContext executionContext) {
         return FALLBACK;
     }
+
+    static void reset() {
+        DISPOSED.set(false);
+    }
+
+    @PreDestroy
+    void dispose() {
+        DISPOSED.set(shared.ping());
+    }
+
+    static final String FALLBACK = "Store is closed";
+
+    static final AtomicBoolean DISPOSED = new AtomicBoolean(false);
+
+    @Inject
+    SharedFallback shared;
+
 }

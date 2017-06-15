@@ -24,19 +24,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import javax.annotation.Priority;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Unmanaged;
+import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import org.eclipse.microprofile.fault.tolerance.inject.Asynchronous;
-import org.eclipse.microprofile.fault.tolerance.inject.Fallback;
-import org.eclipse.microprofile.fault.tolerance.inject.FallbackHandler;
-import org.eclipse.microprofile.fault.tolerance.inject.Timeout;
 
 import com.netflix.hystrix.HystrixCommand.Setter;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
+import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.FallbackHandler;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 
 /**
  * @author Antoine Sabot-Durand
@@ -47,36 +49,55 @@ import com.netflix.hystrix.HystrixCommandProperties;
 @Priority(Interceptor.Priority.LIBRARY_AFTER + 1)
 public class HystrixCommandInterceptor {
 
-    private final Map<Method, Setter> methodToSetterMap = new ConcurrentHashMap<>();
-
     @AroundInvoke
     public Object interceptCommand(InvocationContext ic) throws Exception {
 
         Method method = ic.getMethod();
-
-        ExecutionContextWithInvocationContext ec = new ExecutionContextWithInvocationContext(ic);
-        Asynchronous async = getAnnotation(method, Asynchronous.class);
+        ExecutionContextWithInvocationContext ctx = new ExecutionContextWithInvocationContext(ic);
 
         // TODO
         // CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
         // Retry retry = getAnnotation(method, Retry.class);
 
-        Fallback fallback = getAnnotation(method, Fallback.class);
-        Supplier<Object> fallbackToRun = null;
+        CommandMetadata metadata = commandMetadataMap.computeIfAbsent(method, (key) -> new CommandMetadata(key));
 
-        if (fallback != null) {
-            FallbackHandler<?> fbh = fallback.value().newInstance();
-            fallbackToRun = (() -> fbh.handle(ec));
-        }
+        Supplier<Object> fallback = metadata.hasFallback() ? () -> {
+            Unmanaged.UnmanagedInstance<FallbackHandler<?>> unmanagedInstance = metadata.unmanaged.newInstance();
+            FallbackHandler<?> handler = unmanagedInstance.produce().inject().postConstruct().get();
+            try {
+                return handler.handle(ctx);
+            } finally {
+                // The instance exists to service a single invocation only
+                unmanagedInstance.preDestroy().dispose();
+            }
+        } : null;
 
-        Setter setter = methodToSetterMap.computeIfAbsent(method, this::initSetter);
-        DefaultCommand command = new DefaultCommand(setter, ec::proceed, fallbackToRun);
+        DefaultCommand command = new DefaultCommand(metadata.setter, ctx::proceed, fallback);
 
+        Asynchronous async = getAnnotation(method, Asynchronous.class);
         if (async != null) {
             return command.queue();
         } else {
             return command.execute();
         }
+    }
+
+    private <T extends Annotation> T getAnnotation(Method method, Class<T> annotation) {
+        if (method.isAnnotationPresent(annotation)) {
+            return method.getAnnotation(annotation);
+        } else if (method.getDeclaringClass().isAnnotationPresent(annotation)) {
+            return method.getDeclaringClass().getAnnotation(annotation);
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Unmanaged<FallbackHandler<?>> initUnmanaged(Method method) {
+        Fallback fallback = getAnnotation(method, Fallback.class);
+        if (fallback != null) {
+            return (Unmanaged<FallbackHandler<?>>) new Unmanaged<>(beanManager, fallback.value());
+        }
+        return null;
     }
 
     private Setter initSetter(Method method) {
@@ -94,13 +115,26 @@ public class HystrixCommandInterceptor {
                 .andCommandPropertiesDefaults(propertiesSetter);
     }
 
-    private <T extends Annotation> T getAnnotation(Method method, Class<T> annotation) {
-        if (method.isAnnotationPresent(annotation)) {
-            return method.getAnnotation(annotation);
-        } else if (method.getDeclaringClass().isAnnotationPresent(annotation)) {
-            return method.getDeclaringClass().getAnnotation(annotation);
+    private final Map<Method, CommandMetadata> commandMetadataMap = new ConcurrentHashMap<>();
+
+    @Inject
+    private BeanManager beanManager;
+
+    private class CommandMetadata {
+
+        public CommandMetadata(Method method) {
+            setter = initSetter(method);
+            unmanaged = initUnmanaged(method);
         }
-        return null;
+
+        boolean hasFallback() {
+            return unmanaged != null;
+        }
+
+        private final Setter setter;
+
+        private final Unmanaged<FallbackHandler<?>> unmanaged;
+
     }
 
 }
