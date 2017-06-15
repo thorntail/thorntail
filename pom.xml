@@ -1306,9 +1306,6 @@
     <module>meta/meta-spi</module>
     <module>meta/fraction-metadata</module>
     <module>plugins/maven</module>
-    <module>boms</module>
-    <module>boms/bom-dependency</module>
-    <module>boms/bom</module>
 
     <module>arquillian/daemon</module>
     <module>arquillian/resolver</module>
@@ -1393,7 +1390,6 @@
     <module>testsuite/testsuite-local-dependencies</module>
     <module>testsuite/testsuite-logging</module>
     <module>testsuite/testsuite-management</module>
-    <module>testsuite/testsuite-maven-plugin</module>
     <module>testsuite/testsuite-modules</module>
     <module>testsuite/testsuite-monitor</module>
     <module>testsuite/testsuite-msc</module>
@@ -1416,17 +1412,6 @@
   <profiles>
 
     <profile>
-      <id>product-only</id>
-      <activation>
-        <property>
-          <name>swarm.product.build</name>
-        </property>
-      </activation>
-      <modules>
-        <module>boms/bom-certified</module>
-      </modules>
-    </profile>
-    <profile>
       <id>unsupported</id>
       <activation>
         <property>
@@ -1443,15 +1428,6 @@
         <module>cli</module>
 
         <module>plugins/gradle</module>
-
-        <module>boms/bom-deprecated</module>
-        <module>boms/bom-experimental</module>
-        <module>boms/bom-unstable</module>
-        <module>boms/bom-stable</module>
-        <module>boms/bom-frozen</module>
-        <module>boms/bom-locked</module>
-
-        <module>boms/bom-all</module>
 
         <module>arquillian/gradle-adapter</module>
 
@@ -1541,6 +1517,49 @@
         <module>testsuite/testsuite-vertx</module>
         <module>testsuite/testsuite-webservices</module>
         <module>testsuite/testsuite-zipkin-jaxrs</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>boms-product</id>
+      <activation>
+        <property>
+          <name>swarm.product.build</name>
+        </property>
+      </activation>
+      <modules>
+        <module>boms</module>
+        <module>boms/bom-dependency</module>
+        <module>boms/bom-certified</module>
+        <module>boms/bom</module>
+
+        <!-- This testsuite requires `bom` but needs to be added here to prevent Maven moving the `bom` generation higher in the ordering -->
+        <module>testsuite/testsuite-maven-plugin</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>boms-unsupported</id>
+      <activation>
+        <property>
+          <name>!swarm.product.build</name>
+        </property>
+      </activation>
+      <properties>
+        <testCategory.excluded>category.ProductOnly</testCategory.excluded>
+      </properties>
+      <modules>
+        <module>boms</module>
+        <module>boms/bom-dependency</module>
+        <module>boms/bom</module>
+        <module>boms/bom-deprecated</module>
+        <module>boms/bom-experimental</module>
+        <module>boms/bom-unstable</module>
+        <module>boms/bom-stable</module>
+        <module>boms/bom-frozen</module>
+        <module>boms/bom-locked</module>
+        <module>boms/bom-all</module>
+
+        <!-- This testsuite requires `bom` but needs to be added here to prevent Maven moving the `bom` generation higher in the ordering -->
+        <module>testsuite/testsuite-maven-plugin</module>
       </modules>
     </profile>
 
