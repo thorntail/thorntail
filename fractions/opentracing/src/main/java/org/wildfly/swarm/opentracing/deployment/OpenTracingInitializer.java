@@ -17,13 +17,16 @@ package org.wildfly.swarm.opentracing.deployment;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
+import io.opentracing.contrib.web.servlet.filter.TracingFilter;
 import io.opentracing.util.GlobalTracer;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.inject.Vetoed;
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.util.EnumSet;
 
 /**
  * @author Juraci Paixão Kröhling
@@ -48,6 +51,11 @@ public class OpenTracingInitializer implements ServletContextListener {
 
         logger.info(String.format("Registering %s as the OpenTracing Tracer", tracer.getClass().getName()));
         GlobalTracer.register(tracer);
+        servletContextEvent
+                .getServletContext()
+                .addFilter("tracingFilter", new TracingFilter())
+                .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
+
     }
 
     @Override

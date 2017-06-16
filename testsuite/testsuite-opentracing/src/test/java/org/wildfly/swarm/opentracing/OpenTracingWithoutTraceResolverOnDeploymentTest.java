@@ -48,7 +48,7 @@ public class OpenTracingWithoutTraceResolverOnDeploymentTest {
     }
 
     @Test
-    public void testMockTracerIsNotAvailable() throws NamingException {
+    public void testMockTracerIsNotAvailable() {
         assertFalse(GlobalTracer.isRegistered());
     }
 }
