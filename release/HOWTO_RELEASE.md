@@ -7,6 +7,8 @@
 
 * Wait for release to be available in Maven Central before continuing
 
+* Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command (Maybe add something to CI job to do this?).
+
 # Tag the examples repository
 
 * Checkout/rebase latest from https://github.com/wildfly-swarm/wildfly-swarm-examples
@@ -32,8 +34,6 @@
 * Then prepare for the next development version:
 
         mvn versions:set -DnewVersion=2017.3.0-SNAPSHOT
-
-* Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command.
 
 * And commit, and push it all
 
