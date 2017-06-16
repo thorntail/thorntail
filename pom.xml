@@ -100,6 +100,11 @@
     <version.zipkin.reporter>0.6.1</version.zipkin.reporter>
     <version.zipkin>1.13.1</version.zipkin>
 
+    <!-- OpenTracing related versions -->
+    <version.opentracing>0.22.0</version.opentracing>
+    <version.globaltracer>0.1.2</version.globaltracer>
+    <version.tracerresolver>0.1.0</version.tracerresolver>
+
     <version.jruby-maven-plugin>1.1.3</version.jruby-maven-plugin>
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
     <version.maven-shade-plugin>2.4.1</version.maven-shade-plugin>
@@ -933,6 +938,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>opentracing</artifactId>
+        <version>2017.7.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>remoting</artifactId>
         <version>2017.7.0-SNAPSHOT</version>
       </dependency>
@@ -1504,6 +1515,7 @@
         <module>testsuite/testsuite-messaging</module>
         <module>testsuite/testsuite-messaging-remote</module>
         <module>testsuite/testsuite-mod_cluster</module>
+        <module>testsuite/testsuite-opentracing</module>
         <module>testsuite/testsuite-resource-adapters</module>
         <module>testsuite/testsuite-ribbon</module>
         <module>testsuite/testsuite-ribbon-secured</module>

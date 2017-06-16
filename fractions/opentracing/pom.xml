@@ -23,10 +23,6 @@
   <packaging>jar</packaging>
 
   <properties>
-    <version.opentracing>0.22.0</version.opentracing>
-    <version.globaltracer>0.1.2</version.globaltracer>
-    <version.tracerresolver>0.1.0</version.tracerresolver>
-
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>OpenTracing, Tracing, Monitoring</swarm.fraction.tags>
   </properties>
