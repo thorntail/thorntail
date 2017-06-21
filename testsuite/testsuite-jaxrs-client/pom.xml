@@ -11,6 +11,7 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>parent</artifactId>
     <version>9</version>
+    <relativePath></relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
