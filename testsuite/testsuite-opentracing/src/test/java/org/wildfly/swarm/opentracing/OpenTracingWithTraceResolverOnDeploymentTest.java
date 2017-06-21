@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.opentracing;
 
-import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.util.GlobalTracer;
@@ -29,8 +28,14 @@ import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.undertow.WARArchive;
 
-import javax.naming.NamingException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -40,14 +45,16 @@ import static org.junit.Assert.assertTrue;
 public class OpenTracingWithTraceResolverOnDeploymentTest {
 
     @Deployment
-    public static Archive createDeployment() {
+    public static Archive createDeployment() throws Exception {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
 
         // on real world deployments, these parts would come from a dependency of the target application
         deployment.addClass(MockTracerResolver.class);
-        deployment.addPackage(Tracer.class.getPackage());
         deployment.addPackage(MockTracer.class.getPackage());
         deployment.addAsServiceProvider(TracerResolver.class, MockTracerResolver.class);
+
+        // this is a simple servlet, that we can hit with our tests
+        deployment.addClass(SimpleServlet.class);
 
         return deployment;
     }
@@ -58,7 +65,23 @@ public class OpenTracingWithTraceResolverOnDeploymentTest {
     }
 
     @Test
-    public void testMockTracerIsAvailable() throws NamingException {
+    public void testMockTracerIsAvailable() {
         assertTrue(GlobalTracer.isRegistered());
+    }
+
+    @Test
+    public void testOneSpanIsReportedPerRequest() throws IOException {
+        MockTracer tracer = MockTracerResolver.TRACER_INSTANCE;
+        assertEquals(0, tracer.finishedSpans().size());
+        hitEndpoint();
+        assertEquals(2, tracer.finishedSpans().size());
+    }
+
+    private void hitEndpoint() throws IOException {
+        InputStream response = new URL("http://localhost:8080/_opentracing/hello").openStream();
+        String contents;
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(response))) {
+            contents = buffer.lines().collect(Collectors.joining("\n"));
+        }
     }
 }

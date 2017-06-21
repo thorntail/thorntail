@@ -8,8 +8,10 @@ import io.opentracing.mock.MockTracer;
  * @author Juraci Paixão Kröhling
  */
 public class MockTracerResolver extends TracerResolver {
+    static final MockTracer TRACER_INSTANCE = new MockTracer();
+
     @Override
     protected Tracer resolve() {
-        return new MockTracer();
+        return TRACER_INSTANCE;
     }
 }
