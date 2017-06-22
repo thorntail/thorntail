@@ -17,6 +17,8 @@
 
         mvn versions:set -DnewVersion=2017.2.0
 
+* Update `gradle/build.gradle` and `gradle/pom.xml` to new version
+
 * Then build both regular and uberjar versions
 
         mvn clean && mvn install 
@@ -34,6 +36,8 @@
 * Then prepare for the next development version:
 
         mvn versions:set -DnewVersion=2017.3.0-SNAPSHOT
+
+* Update `gradle/build.gradle` and `gradle/pom.xml` to next development version
 
 * And commit, and push it all
 
