@@ -1,5 +1,7 @@
 package org.wildfly.swarm.container.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -134,5 +136,32 @@ public class ConfigNodeTest {
         assertThat(config.valueOf(ConfigKey.parse("company.name"))).isEqualTo("cheeseCorp");
         config.recursiveChild(ConfigKey.parse("company.name"), "Wheel O'Cheese");
         assertThat(config.valueOf(ConfigKey.parse("company.name"))).isEqualTo("Wheel O'Cheese");
+    }
+
+    @Test
+    public void testOrderingOfChildren() {
+        ConfigNode config = new ConfigNode();
+
+        config.child( "Z", "26");
+        config.child( "A", "1");
+
+        List<SimpleKey> keys = new ArrayList<>();
+        keys.addAll( config.childrenKeys() );
+
+        assertThat( keys.get(0).toString()).isEqualTo("Z");
+        assertThat( keys.get(1).toString()).isEqualTo("A");
+    }
+
+    @Test
+    public void testOrderingOfChildrenRecursively() {
+        ConfigNode config = new ConfigNode();
+
+        config.child( "Z", "26");
+        config.child( "A", "1");
+
+        List<ConfigKey> keys = config.allKeysRecursively().collect(Collectors.toList());
+
+        assertThat( keys.get(0).toString()).isEqualTo("Z");
+        assertThat( keys.get(1).toString()).isEqualTo("A");
     }
 }

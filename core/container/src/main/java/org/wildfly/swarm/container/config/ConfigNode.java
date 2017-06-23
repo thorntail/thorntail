@@ -1,6 +1,7 @@
 package org.wildfly.swarm.container.config;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -243,7 +244,7 @@ public class ConfigNode implements ConfigTree {
         return "[ConfigNode: (" + System.identityHashCode(this.children) + ") children=" + this.children + "; value=" + this.value + "]";
     }
 
-    private Map<SimpleKey, ConfigNode> children = new HashMap<>();
+    private Map<SimpleKey, ConfigNode> children = new LinkedHashMap<>();
 
     private Object value;
 

@@ -1,0 +1,20 @@
+swarm:
+  security:
+    security-domains:
+      jaspioauth:
+        jaspi-authentication:
+          auth-modules:
+            2-OAuth2:
+              code: xxxxx.OpenIDConnectAuthModule
+              flag: sufficient
+              module-options:
+                client_id: SwarmOAth
+                client_secret: secret
+                scope: openid profile email
+                redirection_endpoint: /mycontext
+                cookie_context: /
+                issuer_uri: https://stst.xxx.it:9031/as/token.oauth2
+                disable_certificate_checks: true
+            1-JWT:
+              code: it.xxx.jaspic.ValidationServerAuthModule
+              flag: sufficient
