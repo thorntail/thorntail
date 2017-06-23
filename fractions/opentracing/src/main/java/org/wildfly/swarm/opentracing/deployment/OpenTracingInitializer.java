@@ -23,6 +23,7 @@ import org.jboss.logging.Logger;
 
 import javax.enterprise.inject.Vetoed;
 import javax.servlet.DispatcherType;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -38,6 +39,19 @@ public class OpenTracingInitializer implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        ServletContext servletContext = servletContextEvent.getServletContext();
+
+        logger.info("Registering Tracing Filter");
+        servletContext
+                .addFilter("tracingFilter", new TracingFilter())
+                .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
+
+        String skipParameter = servletContext.getInitParameter("skipOpenTracingResolver");
+        if (skipParameter != null && Boolean.parseBoolean(skipParameter)) {
+            logger.info("OpenTracing automatic resolution is being explicitly skipped.");
+            return;
+        }
+
         if (GlobalTracer.isRegistered()) {
             logger.info("A Tracer is already registered at the GlobalTracer. Skipping resolution via TraceResolver.");
             return;
@@ -51,11 +65,6 @@ public class OpenTracingInitializer implements ServletContextListener {
 
         logger.info(String.format("Registering %s as the OpenTracing Tracer", tracer.getClass().getName()));
         GlobalTracer.register(tracer);
-        servletContextEvent
-                .getServletContext()
-                .addFilter("tracingFilter", new TracingFilter())
-                .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
-
     }
 
     @Override

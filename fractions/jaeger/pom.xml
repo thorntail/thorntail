@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+~
+~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm</artifactId>
+    <version>2017.7.0-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
+  </parent>
+
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>jaeger</artifactId>
+
+  <name>Jaeger</name>
+  <description>Jaeger integration, including the OpenTracing fraction</description>
+
+  <packaging>jar</packaging>
+
+  <properties>
+    <swarm.fraction.stability>experimental</swarm.fraction.stability>
+    <swarm.fraction.tags>Jaeger, OpenTracing, Tracing, Monitoring</swarm.fraction.tags>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>spi</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>opentracing</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.uber.jaeger</groupId>
+      <artifactId>jaeger-core</artifactId>
+      <version>${version.jaeger}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.uber.jaeger</groupId>
+      <artifactId>jaeger-tracerresolver</artifactId>
+      <version>${version.jaeger}</version>
+    </dependency>
+  </dependencies>
+</project>
