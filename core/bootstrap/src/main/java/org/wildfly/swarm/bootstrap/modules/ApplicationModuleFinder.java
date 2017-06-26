@@ -59,7 +59,6 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
         ApplicationEnvironment env = ApplicationEnvironment.get();
 
-
         env.bootstrapModules()
                 .forEach((module) -> {
                     builder.addDependency(
@@ -84,10 +83,8 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
         addDependencies(builder, env);
 
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.wildfly.swarm.configuration"), false, true));
-        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
         builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("sun.jdk"), false, true));
 
         builder.addDependency(
