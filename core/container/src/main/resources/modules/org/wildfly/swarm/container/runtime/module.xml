@@ -41,6 +41,7 @@
     <module name="org.wildfly.swarm.spi" slot="runtime" export="true"/>
 
     <module name="org.jboss.modules" export="true"/>
+    <module name="org.jboss.msc" export="true"/>
     <module name="org.jboss.vfs"/>
     <module name="org.jboss.jandex"/>
     <module name="org.jboss.logging" export="true"/>

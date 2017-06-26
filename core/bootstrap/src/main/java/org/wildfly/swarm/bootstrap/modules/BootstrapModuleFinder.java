@@ -84,9 +84,7 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
 
             builder.addDependency(DependencySpec.createLocalDependencySpec());
             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
-            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.msc")));
             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
-            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
             builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.yaml.snakeyaml")));
 
             HashSet<String> paths = new HashSet<>();
