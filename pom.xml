@@ -1349,6 +1349,7 @@
     <module>fractions/javaee/transactions</module>
     <module>fractions/javaee/undertow</module>
 
+    <module>fractions/wildfly/scanner</module>
     <module>fractions/wildfly/hibernate-validator</module>
     <module>fractions/wildfly/io</module>
     <module>fractions/wildfly/jgroups</module>
