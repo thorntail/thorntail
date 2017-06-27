@@ -17,6 +17,7 @@ package org.wildfly.swarm.bootstrap.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,16 +27,29 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TempFileManager {
 
+    public static final String TMPDIR_PROPERTY = "swarm.io.tmpdir";
+
     public static final TempFileManager INSTANCE = new TempFileManager();
 
     private TempFileManager() {
+        String tmpDir = System.getProperty(TMPDIR_PROPERTY);
+        if (tmpDir != null) {
+            this.tmpDir = new File(tmpDir);
+            if (!Files.exists(this.tmpDir.toPath())) {
+                try {
+                    Files.createDirectories(this.tmpDir.toPath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             INSTANCE.close();
         }));
     }
 
     public File newTempDirectory(String base, String ext) throws IOException {
-        File tmp = File.createTempFile(base, ext);
+        File tmp = File.createTempFile(base, ext, this.tmpDir);
         tmp.delete();
         tmp.mkdirs();
         tmp.deleteOnExit();
@@ -44,7 +58,7 @@ public class TempFileManager {
     }
 
     public File newTempFile(String base, String ext) throws IOException {
-        File tmp = File.createTempFile(base, ext);
+        File tmp = File.createTempFile(base, ext, this.tmpDir);
         tmp.delete();
         tmp.deleteOnExit();
         register(tmp);
@@ -78,5 +92,7 @@ public class TempFileManager {
     }
 
     private Set<File> registered = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    private File tmpDir;
 
 }
