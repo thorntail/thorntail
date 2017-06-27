@@ -19,7 +19,6 @@ import com.uber.jaeger.Configuration;
 import io.opentracing.util.GlobalTracer;
 import org.jboss.logging.Logger;
 
-import javax.enterprise.inject.Vetoed;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -30,7 +29,6 @@ import static com.uber.jaeger.Configuration.*;
 /**
  * @author Juraci Paixão Kröhling
  */
-@Vetoed
 @WebListener
 public class JaegerInitializer implements ServletContextListener {
     private static final Logger logger = Logger.getLogger(JaegerInitializer.class);

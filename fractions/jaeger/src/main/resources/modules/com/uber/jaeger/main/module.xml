@@ -3,16 +3,13 @@
     <artifact name="com.uber.jaeger:jaeger-core:${version.jaeger}"/>
     <artifact name="com.uber.jaeger:jaeger-tracerresolver:${version.jaeger}"/>
     <artifact name="com.uber.jaeger:jaeger-thrift:${version.jaeger}"/>
-    <artifact name="org.apache.thrift:libthrift:0.9.2"/>
-    <artifact name="org.apache.httpcomponents:httpclient:4.2.5"/>
-    <artifact name="commons-logging:commons-logging:1.1.1"/>
-    <artifact name="commons-codec:commons-codec:1.6"/>
-    <artifact name="org.apache.httpcomponents:httpcore:4.2.4"/>
-    <artifact name="com.google.code.gson:gson:2.8.0"/>
   </resources>
 
   <dependencies>
     <module name="org.slf4j"/>
     <module name="io.opentracing"/>
+    <module name="org.apache.httpcomponents"/>
+    <module name="org.apache.thrift" slot="jaeger"/>
+    <module name="com.google.code.gson" slot="jaeger"/>
   </dependencies>
 </module>

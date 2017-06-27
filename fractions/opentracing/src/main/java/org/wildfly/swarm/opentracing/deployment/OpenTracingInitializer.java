@@ -21,7 +21,6 @@ import io.opentracing.contrib.web.servlet.filter.TracingFilter;
 import io.opentracing.util.GlobalTracer;
 import org.jboss.logging.Logger;
 
-import javax.enterprise.inject.Vetoed;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -32,7 +31,6 @@ import java.util.EnumSet;
 /**
  * @author Juraci Paixão Kröhling
  */
-@Vetoed
 @WebListener
 public class OpenTracingInitializer implements ServletContextListener {
     private static final Logger logger = Logger.getLogger(OpenTracingInitializer.class);
