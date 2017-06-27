@@ -1469,7 +1469,8 @@
         <module>fractions/wildfly/jdr</module>
         <module>fractions/wildfly/management-console</module>
         <module>fractions/wildfly/mod_cluster</module>
-
+        <module>fractions/wildfly/scanner</module>
+        
         <module>fractions/netflix</module>
         <module>fractions/teiid</module>
 
