@@ -23,7 +23,7 @@ public class SimpleServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Tracer tracer = GlobalTracer.get();
         SpanContext context = (SpanContext) req.getAttribute(SERVER_SPAN_CONTEXT);
-        tracer.buildSpan("business-operation-1").asChildOf(context).start().close();
+        tracer.buildSpan("business-operation-1").asChildOf(context).startActive().close();
         resp.getWriter().write("world");
     }
 }
