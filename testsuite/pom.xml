@@ -25,6 +25,8 @@
   <properties>
     <browser>phantomjs</browser>
     <version.resteasy>3.0.11.Final</version.resteasy>
+    <httpclient.version>4.5</httpclient.version>
+    <fluent-hc.version>4.5</fluent-hc.version>
   </properties>
 
   <build>
@@ -75,6 +77,21 @@
          ANY MODULES SHOULD BE ADDED, AS APPROPRIATE, TO THE ROOT
          pom.xml OF THIS PROJECT. -->
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${httpclient.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>fluent-hc</artifactId>
+        <version>${fluent-hc.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
