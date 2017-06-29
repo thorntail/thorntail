@@ -8,6 +8,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.junit.Test;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.fractions.FractionUsageAnalyzer;
 import org.wildfly.swarm.spi.api.JARArchive;
 
@@ -22,6 +23,7 @@ public class JPATest {
         FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
 
         final File out = Files.createTempFile(archive.getName(), ".war").toFile();
+        out.deleteOnExit();
         archive.as(ZipExporter.class).exportTo(out, true);
 
         analyzer.source(out);
@@ -37,10 +39,10 @@ public class JPATest {
         archive.addAsResource("META-INF/persistence.xml");
         FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
 
-        Path dir = Files.createTempDirectory(archive.getName());
-        archive.as(ExplodedExporter.class).exportExplodedInto(dir.toFile());
+        File dirFile = TempFileManager.INSTANCE.newTempDirectory("jpatest", null);
+        archive.as(ExplodedExporter.class).exportExplodedInto(dirFile);
 
-        analyzer.source(dir.toFile());
+        analyzer.source(dirFile);
         assertThat(analyzer.detectNeededFractions()
                        .stream()
                        .filter(fd -> fd.getArtifactId().equals("jpa"))

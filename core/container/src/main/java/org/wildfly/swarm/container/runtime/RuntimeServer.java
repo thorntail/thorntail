@@ -256,6 +256,7 @@ public class RuntimeServer implements Server {
         this.containerStarted = false;
         this.container = null;
         this.client = null;
+        this.deployer.get().removeAllContent();
         this.deployer = null;
     }
 

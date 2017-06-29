@@ -2,6 +2,7 @@ package org.wildfly.swarm.bootstrap.modules;
 
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.junit.Test;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,8 @@ public class GradleResolverTest {
     @Test
     public void downloadFromRemoteRepository() throws IOException {
         //GIVEN
-        Path gradleCachePath = Files.createTempDirectory(".gradle");
+        File dirFile = TempFileManager.INSTANCE.newTempDirectory(".gradle", null);
+        Path gradleCachePath = dirFile.toPath();
         String group = "org.wildfly.swarm";
         String packaging = "jar";
         String artifact = "bootstrap";
@@ -48,7 +50,8 @@ public class GradleResolverTest {
     @Test
     public void downloadFromRemoteRepository_unknown() throws IOException {
         //GIVEN
-        Path gradleCachePath = Files.createTempDirectory(".gradle");
+        File dirFile = TempFileManager.INSTANCE.newTempDirectory(".gradle", null);
+        Path gradleCachePath = dirFile.toPath();
         String group = "org.wildfly.swarm";
         String packaging = "jar";
         String artifact = "test";
@@ -104,7 +107,8 @@ public class GradleResolverTest {
     @Test
     public void testResolveArtifact() throws IOException {
         //GIVEN
-        Path gradleCachePath = Files.createTempDirectory("gradle");
+        File dirFile = TempFileManager.INSTANCE.newTempDirectory("gradle", null);
+        Path gradleCachePath = dirFile.toPath();
         String group = "org.wildfly.swarm";
         String packaging = "jar";
         String artifact = "test";
@@ -126,7 +130,8 @@ public class GradleResolverTest {
     @Test
     public void testResolveArtifact_latest() throws IOException, InterruptedException {
         //GIVEN
-        Path gradleCachePath = Files.createTempDirectory("gradle");
+        File dirFile = TempFileManager.INSTANCE.newTempDirectory("gradle", null);
+        Path gradleCachePath = dirFile.toPath();
         String group = "org.wildfly.swarm";
         String packaging = "jar";
         String artifact = "test";
@@ -151,7 +156,8 @@ public class GradleResolverTest {
     @Test
     public void testResolveArtifact_notExists() throws IOException {
         //GIVEN
-        Path gradleCachePath = Files.createTempDirectory("gradle");
+        File dirFile = TempFileManager.INSTANCE.newTempDirectory("gradle", null);
+        Path gradleCachePath = dirFile.toPath();
         String group = "org.wildfly.swarm";
         String packaging = "jar";
         String artifact = "test";

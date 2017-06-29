@@ -20,6 +20,7 @@ public class CDITest {
         FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
 
         final File out = Files.createTempFile(archive.getName(), ".war").toFile();
+        out.deleteOnExit();
         archive.as(ZipExporter.class).exportTo(out, true);
         analyzer.source(out);
 
@@ -36,6 +37,7 @@ public class CDITest {
         FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
 
         final File out = Files.createTempFile(archive.getName(), ".war").toFile();
+        out.deleteOnExit();
         archive.as(ZipExporter.class).exportTo(out, true);
         analyzer.source(out);
 
@@ -52,6 +54,7 @@ public class CDITest {
         FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
 
         final File out = Files.createTempFile(archive.getName(), ".war").toFile();
+        out.deleteOnExit();
         archive.as(ZipExporter.class).exportTo(out, true);
         analyzer.source(out);
 
