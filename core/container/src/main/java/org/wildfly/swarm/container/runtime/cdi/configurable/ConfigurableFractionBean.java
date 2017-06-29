@@ -30,7 +30,7 @@ public class ConfigurableFractionBean<T extends Fraction> implements Bean<T> {
 
     public ConfigurableFractionBean(Class<T> cls, ConfigurableManager configurableManager) throws Exception {
         this.instance = cls.newInstance();
-        this.instance.applyDefaults();
+        this.instance.applyDefaults(configurableManager.hasConfiguration(this.instance));
         configurableManager.scan(this.instance);
     }
 

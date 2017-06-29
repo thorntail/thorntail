@@ -45,4 +45,9 @@ public interface Fraction<T extends Fraction> {
     default T applyDefaults() {
         return (T) this;
     }
+
+    @SuppressWarnings("unchecked")
+    default T applyDefaults(boolean hasConfiguration) {
+        return applyDefaults();
+    }
 }

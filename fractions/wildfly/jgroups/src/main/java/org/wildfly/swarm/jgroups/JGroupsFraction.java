@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.jgroups;
 
-import javax.annotation.PostConstruct;
-
 import org.wildfly.swarm.config.JGroups;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
@@ -37,23 +35,21 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
     public JGroupsFraction() {
     }
 
-    @PostConstruct
-    public void postConstruct() {
-        applyDefaults();
-    }
-
     public static JGroupsFraction defaultFraction() {
-        return new JGroupsFraction().applyDefaults();
+        return new JGroupsFraction().applyMulticastDefaults();
     }
 
     public static JGroupsFraction defaultMulticastFraction() {
         return new JGroupsFraction().applyMulticastDefaults();
     }
 
-    public JGroupsFraction applyDefaults() {
+    @Override
+    public JGroupsFraction applyDefaults(boolean hasConfiguration) {
+        if (hasConfiguration) {
+            return this;
+        }
         return applyMulticastDefaults();
     }
-
 
     public JGroupsFraction applyMulticastDefaults() {
         return defaultChannel("swarm-jgroups")
