@@ -15,18 +15,6 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.inject.Vetoed;
-import javax.naming.NamingException;
-
 import io.undertow.client.ClientCallback;
 import io.undertow.client.ClientExchange;
 import io.undertow.client.ClientResponse;
@@ -40,8 +28,11 @@ import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import io.undertow.util.Protocols;
 import io.undertow.util.StringReadChannelListener;
+import org.eclipse.microprofile.health.HealthCheckProcedure;
+import org.eclipse.microprofile.health.Status;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.monitor.HealthMetaData;
+import org.wildfly.swarm.monitor.api.Monitor;
 import org.xnio.ChannelListeners;
 import org.xnio.IoUtils;
 import org.xnio.OptionMap;
@@ -49,6 +40,16 @@ import org.xnio.Options;
 import org.xnio.Xnio;
 import org.xnio.XnioWorker;
 import org.xnio.channels.StreamSinkChannel;
+
+import javax.enterprise.inject.Vetoed;
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * The actual monitoring HTTP endpoints. These are wrapped by {@link SecureHttpContexts}.
@@ -110,14 +111,65 @@ class HttpContexts implements HttpHandler {
             threads(exchange);
             return;
         } else if (HEALTH.equals(exchange.getRequestPath())) {
-            proxyRequests(exchange);
+            proxyRequestsCDI(exchange);
             return;
         }
 
         next.handleRequest(exchange);
     }
 
-    private void proxyRequests(HttpServerExchange exchange) {
+    private void proxyRequestsCDI(HttpServerExchange exchange) {
+
+        List<Object> procedures = monitor.getHealthDelegates();
+
+        if (procedures.isEmpty()) {
+            noHealthEndpoints(exchange);
+        }
+
+        List<org.eclipse.microprofile.health.HealthStatus> responses = new ArrayList<>();
+
+        for (Object procedure : procedures) {
+            org.eclipse.microprofile.health.HealthStatus status = ((HealthCheckProcedure)procedure).execute();
+            responses.add(status);
+        }
+
+        StringBuffer sb = new StringBuffer("{");
+        sb.append("\"checks\": [\n");
+
+        int i = 0;
+        boolean failed = false;
+
+        for (org.eclipse.microprofile.health.HealthStatus resp : responses) {
+
+            sb.append(resp.toJson());
+
+            if (!failed) {
+                failed = resp.getState() != Status.State.UP;
+            }
+
+            if (i < responses.size() - 1) {
+                sb.append(",\n");
+            }
+            i++;
+        }
+        sb.append("],\n");
+
+        String outcome = failed ? "DOWN" : "UP";
+        sb.append("\"outcome\": \"" + outcome + "\"\n");
+        sb.append("}\n");
+
+        // send a response
+        if (failed) {
+            exchange.setStatusCode(503);
+        }
+
+        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+        exchange.getResponseSender().send(sb.toString());
+
+        exchange.endExchange();
+    }
+
+   /* private void proxyRequests(HttpServerExchange exchange) {
 
         if (monitor.getHealthURIs().isEmpty()) {
             noHealthEndpoints(exchange);
@@ -196,7 +248,7 @@ class HttpContexts implements HttpHandler {
 
         }
 
-    }
+    }*/
 
     private void invokeHealthInVM(final HttpServerExchange exchange, HealthMetaData healthCheck, List<InVMResponse> responses, CountDownLatch latch) {
         try {
