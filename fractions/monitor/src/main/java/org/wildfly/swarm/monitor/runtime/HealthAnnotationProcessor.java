@@ -29,6 +29,7 @@ import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.monitor.HealthMetaData;
+import org.wildfly.swarm.monitor.api.Monitor;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;

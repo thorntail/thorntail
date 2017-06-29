@@ -40,6 +40,7 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.monitor.HealthMetaData;
+import org.wildfly.swarm.monitor.api.Monitor;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
@@ -166,8 +167,19 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     }
 
     @Override
+    public void registerHealthBean(Object obj) {
+        LOG.info("Adding health bean: " + obj.getClass().getName());
+        this.beans.add(obj);
+    }
+
+    @Override
     public List<HealthMetaData> getHealthURIs() {
         return Collections.unmodifiableList(this.endpoints);
+    }
+
+    @Override
+    public List<Object> getHealthDelegates() {
+        return this.beans;
     }
 
     @Override
@@ -220,4 +232,6 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     private ModelControllerClient controllerClient;
 
     private CopyOnWriteArrayList<HealthMetaData> endpoints = new CopyOnWriteArrayList<HealthMetaData>();
+
+    private CopyOnWriteArrayList<Object> beans = new CopyOnWriteArrayList<Object>();
 }

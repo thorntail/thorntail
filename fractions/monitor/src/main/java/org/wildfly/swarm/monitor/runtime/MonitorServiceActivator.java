@@ -39,6 +39,7 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.monitor.MonitorFraction;
+import org.wildfly.swarm.monitor.api.Monitor;
 
 /**
  * Installs a monitoring service so we get hold of the MSC services

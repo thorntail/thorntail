@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.health;
+package org.wildfly.swarm.monitor.deployment;
 
 import java.io.IOException;
 
@@ -24,14 +24,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class HealthResponseFilter implements ContainerResponseFilter {
+public class MicroprofileHealthResponseFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext resp) throws IOException {
 
-        if (resp.hasEntity() && (resp.getEntity() instanceof Status)) {
-            Status status = (Status) resp.getEntity();
-            int code = (Status.State.UP == status.getState()) ? 200 : 503;
+        if (resp.hasEntity() && (resp.getEntity() instanceof org.eclipse.microprofile.health.Status)) {
+            org.eclipse.microprofile.health.Status status = (org.eclipse.microprofile.health.Status) resp.getEntity();
+            int code = (org.eclipse.microprofile.health.Status.State.UP == status.getState()) ? 200 : 503;
             resp.setStatus(code);
             resp.setEntity(status.toJson());
             resp.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);
@@ -39,4 +39,3 @@ public class HealthResponseFilter implements ContainerResponseFilter {
     }
 
 }
-

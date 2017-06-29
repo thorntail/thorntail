@@ -18,6 +18,7 @@ package org.wildfly.swarm.monitor.runtime;
 import javax.enterprise.inject.Vetoed;
 
 import org.wildfly.swarm.monitor.HealthMetaData;
+import org.wildfly.swarm.monitor.api.Monitor;
 
 /**
  * @author Heiko Braun

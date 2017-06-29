@@ -26,6 +26,8 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 @DeploymentModule(name = "javax.ws.rs.api")
 @DeploymentModule(name = "org.jboss.dmr")
 @DeploymentModule(name = "org.wildfly.swarm.monitor")
+@DeploymentModule(name = "org.wildfly.swarm.monitor", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
+@DeploymentModule(name = "org.eclipse.microprofile.health")
 public class MonitorFraction implements Fraction<MonitorFraction> {
 
     private Optional<String> securityRealm = Optional.empty();
