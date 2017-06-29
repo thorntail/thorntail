@@ -142,7 +142,7 @@ public class ConfigViewImpl implements ConfigView {
     }
 
     @Override
-    public Set<SimpleKey> simpleSubkeys(ConfigKey prefix) {
+    public List<SimpleKey> simpleSubkeys(ConfigKey prefix) {
         return this.strategy.simpleSubkeysOf(prefix);
     }
 

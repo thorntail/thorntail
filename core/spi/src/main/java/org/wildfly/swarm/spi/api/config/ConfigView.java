@@ -1,7 +1,7 @@
 package org.wildfly.swarm.spi.api.config;
 
+import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.wildfly.swarm.spi.api.StageConfig;
@@ -22,7 +22,7 @@ public interface ConfigView extends StageConfig {
 
     Stream<ConfigKey> allKeysRecursively();
 
-    Set<SimpleKey> simpleSubkeys(ConfigKey prefix);
+    List<SimpleKey> simpleSubkeys(ConfigKey prefix);
 
     boolean hasKeyOrSubkeys(ConfigKey subPrefix);
 

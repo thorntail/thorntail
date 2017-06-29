@@ -175,7 +175,7 @@ public class ConfigurableManager implements AutoCloseable {
     private Converter<Map> mapConverter(ConfigKey key) {
         return (ignored) -> {
             Map<String, Object> map = new HashMap<>();
-            Set<SimpleKey> subKeys = this.configView.simpleSubkeys(key);
+            List<SimpleKey> subKeys = this.configView.simpleSubkeys(key);
 
             for (SimpleKey subKey : subKeys) {
                 map.put(subKey.name(), this.configView.resolve(key.append(subKey)).getValue());
@@ -191,7 +191,7 @@ public class ConfigurableManager implements AutoCloseable {
     private Converter<Properties> propertiesConverter(ConfigKey key) {
         return (ignored) -> {
             Properties props = new Properties();
-            Set<SimpleKey> subKeys = this.configView.simpleSubkeys(key);
+            List<SimpleKey> subKeys = this.configView.simpleSubkeys(key);
 
             for (SimpleKey subKey : subKeys) {
                 props.setProperty(subKey.name(), this.configView.resolve(key.append(subKey)).getValue());
@@ -218,6 +218,11 @@ public class ConfigurableManager implements AutoCloseable {
         }
     }
 
+    public boolean hasConfiguration(Fraction fraction) throws Exception {
+        ConfigKey prefix = nameFor(fraction);
+        return this.configView.hasKeyOrSubkeys(prefix);
+    }
+
     private void scanInternal(Object instance) throws Exception {
         if (instance instanceof Fraction) {
             scanFraction((Fraction) instance);
@@ -225,7 +230,6 @@ public class ConfigurableManager implements AutoCloseable {
             scan(null, instance, false);
         }
     }
-
 
     protected void scanFraction(Fraction fraction) throws Exception {
         ConfigKey prefix = nameFor(fraction);
@@ -289,6 +293,10 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     protected void scan(ConfigKey prefix, Object instance, boolean implicit) throws Exception {
+        if (seen(prefix)) {
+            return;
+        }
+        this.seenObjects.add(prefix);
         scan(prefix, instance, instance.getClass(), implicit);
         if (implicit) {
             scanSubresources(prefix, instance);
@@ -342,7 +350,7 @@ public class ConfigurableManager implements AutoCloseable {
                             }
                         }
                     } else if (method.getParameterCount() == 2) {
-                        Set<SimpleKey> keysWithConfiguration = this.configView.simpleSubkeys(subPrefix);
+                        List<SimpleKey> keysWithConfiguration = this.configView.simpleSubkeys(subPrefix);
                         if (!keysWithConfiguration.isEmpty()) {
                             for (SimpleKey key : keysWithConfiguration) {
                                 ConfigKey itemPrefix = subPrefix.append(key);
@@ -362,12 +370,15 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     private boolean seen(ConfigKey name) {
+        if (name == null) {
+            return false;
+        }
         if (this.deploymentContext.isActive()) {
             // we wish to allow multiple configurables if
             // this is a deployment-activated context.
             return false;
         }
-        return this.configurables.stream().anyMatch(e -> e.key().equals(name));
+        return this.seenObjects.contains(name) || this.configurables.stream().anyMatch(e -> e.key().equals(name));
     }
 
     private boolean isConfigurableType(Class<?> type) {
@@ -508,6 +519,9 @@ public class ConfigurableManager implements AutoCloseable {
             field.setAccessible(true);
             Object value = field.get(subresources);
             ConfigKey subPrefix = prefix.append(nameFor(field));
+            if (seen(subPrefix)) {
+                continue;
+            }
             if (value != null && value instanceof List) {
                 int index = 0;
                 Set<SimpleKey> seenKeys = new HashSet<>();
@@ -524,7 +538,7 @@ public class ConfigurableManager implements AutoCloseable {
                     ++index;
                 }
 
-                Set<SimpleKey> keysWithConfiguration = this.configView.simpleSubkeys(subPrefix);
+                List<SimpleKey> keysWithConfiguration = this.configView.simpleSubkeys(subPrefix);
 
                 keysWithConfiguration.removeAll(seenKeys);
 
@@ -770,9 +784,12 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     public void close() {
+        this.seenObjects.clear();
         this.configurables.clear();
         this.deferred.clear();
     }
+
+    private Set<ConfigKey> seenObjects = new HashSet<>();
 
     private final DeploymentContext deploymentContext;
 

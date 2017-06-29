@@ -1,6 +1,6 @@
 package org.wildfly.swarm.container.runtime;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -25,7 +25,7 @@ public class ArtifactDeployer {
     private Instance<RuntimeDeployer> deployer;
 
     public void deploy() throws Exception {
-        Set<SimpleKey> subkeys = configView.simpleSubkeys(ConfigKey.of("swarm", "deployment"));
+        List<SimpleKey> subkeys = configView.simpleSubkeys(ConfigKey.of("swarm", "deployment"));
 
         for (SimpleKey subkey : subkeys) {
             String spec = subkey.name();

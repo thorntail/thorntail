@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -135,12 +134,13 @@ class ConfigResolutionStrategy {
         return nodes().flatMap(e -> e.allKeysRecursively());
     }
 
-    Set<SimpleKey> simpleSubkeysOf(ConfigKey prefix) {
+    List<SimpleKey> simpleSubkeysOf(ConfigKey prefix) {
         return nodes()
                 .map(e -> e.descendant(prefix))
                 .filter(Objects::nonNull)
                 .flatMap(e -> e.childrenKeys().stream())
-                .collect(Collectors.toSet());
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     boolean hasKeyOrSubkeys(ConfigKey prefix) {
