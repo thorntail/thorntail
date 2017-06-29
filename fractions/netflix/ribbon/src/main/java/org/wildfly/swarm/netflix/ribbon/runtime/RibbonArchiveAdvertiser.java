@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.netflix.ribbon.RibbonArchive;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 
 /**
@@ -12,6 +13,9 @@ import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
  */
 @DeploymentScoped
 public class RibbonArchiveAdvertiser implements DeploymentProcessor {
+
+    @Configurable("swarm.deployment.*.ribbon.advertise")
+    private String advertiseName;
 
     @Inject
     public RibbonArchiveAdvertiser(Archive archive) {
@@ -22,7 +26,11 @@ public class RibbonArchiveAdvertiser implements DeploymentProcessor {
     public void process() {
         // If there hasn't been any services advertised, then advertise a service under the archive name
         if (!archive.as(RibbonArchive.class).hasAdvertised()) {
-            archive.as(RibbonArchive.class).advertise();
+            if (this.advertiseName != null) {
+                archive.as(RibbonArchive.class).advertise(this.advertiseName);
+            } else {
+                archive.as(RibbonArchive.class).advertise();
+            }
         }
     }
 
