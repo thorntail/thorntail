@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.wildfly.swarm.bootstrap.Main;
 
 /**
  * @author Bob McWhirter
@@ -206,6 +207,12 @@ public class SwarmExecutor {
         return this;
     }
 
+    public SwarmExecutor withProcessFile(File processFile) {
+        this.processFile = processFile;
+        withProperty(Main.MAIN_PROCESS_FILE, processFile.getAbsolutePath());
+        return this;
+    }
+
     public SwarmProcess execute() throws IOException {
         if (this.executable == null) {
             throw new RuntimeException("An executable jar or a main-class must be specified");
@@ -243,7 +250,7 @@ public class SwarmExecutor {
         Process process = processBuilder.start();
 
         return new SwarmProcess(
-                process,
+                process, processFile,
                 this.stdout, this.stdoutFile,
                 this.stderr, this.stderrFile);
     }
@@ -294,5 +301,7 @@ public class SwarmExecutor {
     private Path workingDirectory;
 
     private Integer debugPort;
+
+    private File processFile;
 
 }

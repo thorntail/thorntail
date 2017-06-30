@@ -9,12 +9,14 @@ import org.wildfly.swarm.Swarm;
  */
 public class Main {
 
+    private static Swarm swarm;
+
     private Main() {
 
     }
 
     public static void main(String... args) throws Exception {
-        Swarm swarm = new Swarm(args);
+        swarm = new Swarm(args);
         swarm.start();
         Archive<?> deployment = swarm.createDefaultDeployment();
 
@@ -29,5 +31,9 @@ public class Main {
         }
 
         swarm.deploy(deployment);
+    }
+
+    public static void stopMain() throws Exception {
+        swarm.stop();
     }
 }
