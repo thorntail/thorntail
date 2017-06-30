@@ -32,11 +32,13 @@ import org.wildfly.swarm.camel.core.CamelFraction;
  */
 public class Main {
 
+    private static Swarm swarm;
+
     protected Main() {
     }
 
     public static void main(String... args) throws Exception {
-        Swarm swarm = new Swarm(args).fraction(new CamelFraction().addRouteBuilder(new RouteBuilder() {
+        swarm = new Swarm(args).fraction(new CamelFraction().addRouteBuilder(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
@@ -46,4 +48,9 @@ public class Main {
 
         swarm.start().deploy();
     }
+
+    public static void stopMain() throws Exception {
+        swarm.stop();
+    }
+
 }

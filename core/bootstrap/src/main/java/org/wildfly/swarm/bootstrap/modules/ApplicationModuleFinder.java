@@ -35,7 +35,6 @@ import org.jboss.modules.filter.PathFilters;
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 /**
  * Module-finder used only for loading the module <code>swarm.application</code> when run in an fat-jar scenario.
@@ -121,7 +120,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
             name = name.substring(0, dotLoc);
         }
 
-        File tmp = TempFileManager.INSTANCE.newTempFile(name, ext);
+        File tmp = File.createTempFile(name, ext);
 
         try (InputStream artifactIn = getClass().getClassLoader().getResourceAsStream(path)) {
             Files.copy(artifactIn, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -137,6 +136,17 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                                                                                      jarFile,
                                                                                      "WEB-INF/classes");
             builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(warLoader));
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                jarLoader.close();
+                warLoader.close();
+                tmp.delete();
+            }));
+        } else {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                jarLoader.close();
+                tmp.delete();
+            }));
         }
 
     }

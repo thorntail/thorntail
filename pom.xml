@@ -251,6 +251,41 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-enforcer-plugin</artifactId>
+	<version>1.4.1</version>
+	<dependencies>
+	  <dependency>
+	    <groupId>org.wildfly.swarm</groupId>
+	    <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
+	    <version>2017.7.0-SNAPSHOT</version>
+	  </dependency>
+	</dependencies>
+	<executions>
+	  <execution>
+	    <id>enforce</id>
+	    <phase>verify</phase>
+	    <configuration>
+	      <rules>
+		<patternSizeRule implementation="org.wildfly.swarm.plugin.enforcer.patternsize.RequireFilePatternSize">
+		  <requiredFilePatterns>
+		      <requiredFilePattern>
+		        <maxSize>0</maxSize>
+		        <recursive>false</recursive>
+			<directory>${project.build.directory}</directory>
+			<pattern>\S+[0-9]{5,}.\S{5,}</pattern>
+		      </requiredFilePattern>
+		  </requiredFilePatterns>
+		</patternSizeRule>
+	      </rules>
+	    </configuration>
+	    <goals>
+	      <goal>enforce</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -312,6 +347,10 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>build-resources</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
     </dependency>
   </dependencies>
 
@@ -490,6 +529,11 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>build-resources</artifactId>
+        <version>2017.7.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
         <version>2017.7.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -1313,7 +1357,9 @@
   </pluginRepositories>
 
   <modules>
+    <module>plugins/maven-enforcer-pattern-size</module>
     <module>build-resources</module>
+
 
     <module>tools</module>
 
