@@ -17,7 +17,9 @@ package org.wildfly.swarm.container.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -233,9 +235,20 @@ public class RuntimeDeployer implements Deployer {
             }
 
             if (BootstrapProperties.flagIsSet(SwarmProperties.EXPORT_DEPLOYMENT)) {
-                final File out = new File(deployment.getName());
-                DeployerMessages.MESSAGES.exportingDeployment(out.getAbsolutePath());
-                deployment.as(ZipExporter.class).exportTo(out, true);
+                String exportLocation = System.getProperty(SwarmProperties.EXPORT_DEPLOYMENT);
+                if (exportLocation != null) {
+                    Path archivePath = null;
+                    if (exportLocation.toLowerCase().equals("true")) {
+                        archivePath = Paths.get(deployment.getName());
+                    } else {
+                        Path exportDir = Paths.get(exportLocation);
+                        Files.createDirectories(exportDir);
+                        archivePath = exportDir.resolve(deployment.getName());
+                    }
+                    final File out = archivePath.toFile();
+                    DeployerMessages.MESSAGES.exportingDeployment(out.getAbsolutePath());
+                    deployment.as(ZipExporter.class).exportTo(out, true);
+                }
             }
 
             byte[] hash = this.contentRepository.addContent(deployment.as(ZipExporter.class).exportAsInputStream());
