@@ -40,6 +40,19 @@ public class MainInvoker {
         emitReady();
     }
 
+    public void stop() throws Exception {
+        Method stopMethod = null;
+        Class<?> mainClass = mainMethod.getDeclaringClass();
+        try {
+            stopMethod = mainClass.getDeclaredMethod("stopMain");
+        } catch (NoSuchMethodException e) {
+        }
+
+        if (stopMethod != null) {
+            stopMethod.invoke(mainClass, (Object[]) null);
+        }
+    }
+
     protected void emitReady() throws Exception {
         Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
         Class<?> messagesClass = module.getClassLoader().loadClass("org.wildfly.swarm.internal.SwarmMessages");
@@ -104,4 +117,5 @@ public class MainInvoker {
     private final Method mainMethod;
 
     private final String[] args;
+
 }

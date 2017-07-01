@@ -291,6 +291,7 @@ public class StartMojo extends AbstractSwarmMojo {
         }
     }
 
+    @SuppressWarnings("unchecked")
     List<Path> dependencies(final Path archiveContent,
                             final boolean scanDependencies) throws MojoFailureException {
         final List<Path> elements = new ArrayList<>();
@@ -329,6 +330,7 @@ public class StartMojo extends AbstractSwarmMojo {
                         Files.createTempFile("swarm-", "-cp.txt").toFile();
 
                 tmp.deleteOnExit();
+                getPluginContext().put("swarm-cp-file", tmp);
                 declaredDependencies.writeTo(tmp);
                 getLog().debug("dependency info stored at: " + tmp.getAbsolutePath());
                 this.properties.setProperty("swarm.cp.info", tmp.getAbsolutePath());

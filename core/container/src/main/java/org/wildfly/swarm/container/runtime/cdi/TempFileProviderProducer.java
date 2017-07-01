@@ -21,8 +21,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
@@ -61,14 +61,12 @@ public class TempFileProviderProducer {
         return this.tempFileProvider;
     }
 
-    void dispose(@Disposes TempFileProvider provider) {
-        // To ensure we only close the one we produce
-        if (this.tempFileProvider == provider) {
-            try {
-                this.tempFileProvider.close();
-            } catch (IOException e) {
-                SwarmMessages.MESSAGES.errorCleaningUpTempFileProvider(e);
-            }
+    @PreDestroy
+    void close() {
+        try {
+            this.tempFileProvider.close();
+        } catch (IOException e) {
+            SwarmMessages.MESSAGES.errorCleaningUpTempFileProvider(e);
         }
     }
 

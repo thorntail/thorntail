@@ -130,6 +130,8 @@ public class Swarm {
 
     private static final String PROJECT_STAGES_FILE = "project-stages.yml";
 
+    private static Swarm swarm;
+
     private final CommandLine commandLine;
 
     /**
@@ -350,6 +352,7 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public Swarm start() throws Exception {
+
         try (AutoCloseable handle = Performance.time("Swarm.start()")) {
 
             Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
@@ -394,6 +397,7 @@ public class Swarm {
      * @throws Exception If an error occurs.
      */
     public Swarm stop() throws Exception {
+
         if (this.server == null) {
             throw SwarmMessages.MESSAGES.containerNotStarted("stop()");
         }
@@ -618,7 +622,8 @@ public class Swarm {
             System.setProperty(BOOT_MODULE_PROPERTY, "org.wildfly.swarm.bootstrap.modules.BootModuleLoader");
         }
 
-        Swarm swarm = new Swarm(args);
+        swarm = new Swarm(args);
+
         try {
             swarm.start();
             if (System.getProperty("swarm.inhibit.default-deployment") == null) {
@@ -632,6 +637,15 @@ public class Swarm {
             tryToStopAfterStartupError(t, swarm);
             throw t;
         }
+    }
+
+    public static void stopMain() throws Exception {
+       try {
+            if (swarm != null) {
+                swarm.stop();
+            }
+       } catch (Exception e) {
+       }
     }
 
     private static void tryToStopAfterStartupError(final Throwable errorCause, final Swarm swarm) {

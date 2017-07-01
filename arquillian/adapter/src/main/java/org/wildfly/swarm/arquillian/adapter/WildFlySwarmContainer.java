@@ -70,7 +70,6 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
             setTimeout(startupTimeout.value());
         }
 
-
         this.delegateContainer = new UberjarSimpleContainer(this.containerContext.get(), this.deploymentContext.get(), this.testClass);
 
         try {
@@ -113,4 +112,5 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     private SimpleContainer delegateContainer;
 
     private Class<?> testClass;
+
 }

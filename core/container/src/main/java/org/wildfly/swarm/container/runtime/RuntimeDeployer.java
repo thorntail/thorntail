@@ -297,6 +297,10 @@ public class RuntimeDeployer implements Deployer {
     void stop() {
     }
 
+    public void removeAllContent() throws IOException {
+        this.contentRepository.removeAllContent();
+    }
+
     @Inject
     DeploymentContext deploymentContext;
 

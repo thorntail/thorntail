@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.plugin.maven;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -52,6 +53,12 @@ public class StopMojo extends AbstractMojo {
 
         for (SwarmProcess each : value) {
             stop(each);
+        }
+
+        File tmp = (File) getPluginContext().get("swarm-cp-file");
+
+        if (tmp != null && tmp.exists()) {
+            tmp.delete();
         }
     }
 
