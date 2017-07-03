@@ -25,7 +25,7 @@
 
   <properties>
     <version.openjdk.orb>8.0.6.Final</version.openjdk.orb>
-    <version.classmate>1.1</version.classmate>
+    <version.classmate>1.1.0</version.classmate>
     <version.jackson-module-jaxb-annotations>2.5.4</version.jackson-module-jaxb-annotations>
     <version.jcip-annotations>1.0</version.jcip-annotations>
     <version.xnio-api>3.3.6.Final</version.xnio-api>
