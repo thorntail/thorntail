@@ -76,7 +76,6 @@ public class StandaloneXMLParser {
         addDelegate(new QName(Namespace.CURRENT.getUriString(), SERVER), parserDelegate);
         addDelegate(new QName("urn:jboss:domain:4.1", SERVER), parserDelegate);
         addDelegate(new QName("urn:jboss:domain:4.0", SERVER), parserDelegate);
-        // TCK support
         addDelegate(new QName("urn:jboss:domain:2.0", SERVER), parserDelegate);
     }
 
