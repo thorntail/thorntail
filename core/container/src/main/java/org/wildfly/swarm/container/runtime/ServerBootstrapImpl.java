@@ -38,6 +38,7 @@ import org.wildfly.swarm.container.runtime.cdi.DeploymentContextImpl;
 import org.wildfly.swarm.container.runtime.cdi.DeploymentScopedExtension;
 import org.wildfly.swarm.container.runtime.cdi.FractionProducingExtension;
 import org.wildfly.swarm.container.runtime.cdi.ImplicitArchiveExtension;
+import org.wildfly.swarm.container.runtime.cdi.InterfaceExtension;
 import org.wildfly.swarm.container.runtime.cdi.OutboundSocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.SocketBindingExtension;
 import org.wildfly.swarm.container.runtime.cdi.XMLConfigProducingExtension;
@@ -131,6 +132,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                     weld.addExtension(new CommandLineArgsExtension(args));
                     weld.addExtension(configViewProducingExtension);
                     weld.addExtension(new XMLConfigProducingExtension(this.xmlConfigURL));
+                    weld.addExtension(new InterfaceExtension(this.configView));
                     weld.addExtension(new OutboundSocketBindingExtension(this.outboundSocketBindings));
                     weld.addExtension(new SocketBindingExtension(this.socketBindings));
                     weld.addExtension(new DeploymentScopedExtension(deploymentContext));

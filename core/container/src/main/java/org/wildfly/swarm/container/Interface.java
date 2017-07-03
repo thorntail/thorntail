@@ -15,22 +15,27 @@
  */
 package org.wildfly.swarm.container;
 
-/** A network-level interface configured for the container.
+/**
+ * A network-level interface configured for the container.
  *
  * <p>An interface dictates which IP address other sockets are bound to,
  * by way of a {@link org.wildfly.swarm.spi.api.SocketBindingGroup}.</p>
  *
+ * @author Bob McWhirter
  * @see org.wildfly.swarm.spi.api.SocketBindingGroup
  * @see org.wildfly.swarm.spi.api.SocketBinding
  * @see org.wildfly.swarm.spi.api.OutboundSocketBinding
- * @author Bob McWhirter
  */
 public class Interface {
 
-    /** Constant for use with {@link javax.inject.Named} */
+    /**
+     * Constant for use with {@link javax.inject.Named}
+     */
     public static final String PUBLIC = "public-interface";
 
-    /** Constant for use with {@link javax.inject.Named} */
+    /**
+     * Constant for use with {@link javax.inject.Named}
+     */
     public static final String MANAGEMENT = "management-interface";
 
     public Interface(String name, String expression) {
@@ -46,7 +51,11 @@ public class Interface {
         return this.expression;
     }
 
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
     private final String name;
 
-    private final String expression;
+    private String expression;
 }
