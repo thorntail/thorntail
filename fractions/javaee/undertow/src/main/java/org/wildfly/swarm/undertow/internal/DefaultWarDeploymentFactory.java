@@ -90,6 +90,29 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
             });
         }
 
+        // If it a gradle project, the reources are seperated from the class files.
+        final Path resources = fsLayout.resolveBuildResourcesDir();
+        if (!Files.isSameFile(resources, classes) && Files.exists(resources)) {
+            success = true;
+            Files.walkFileTree(resources, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Path simple = resources.relativize(file);
+                    archive.add(new FileAsset(file.toFile()), "WEB-INF/classes/" + convertSeparators(simple));
+                    // If the user's maven output is a jar then they may place
+                    // static content under src/main/resources, in which case
+                    // we need to hoist anything under WEB-INF out of there
+                    // and put it into the root of this archive instead of
+                    // under WEB-INF/classes/WEB-INF/foo
+                    if (simple.toString().contains("WEB-INF")) {
+                        archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
+                    }
+                    return super.visitFile(file, attrs);
+                }
+            });
+        }
+
+
         final Path webapp = fsLayout.resolveSrcWebAppDir();
 
         if (Files.exists(webapp)) {
