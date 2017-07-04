@@ -29,7 +29,7 @@ import io.undertow.util.HttpString;
 import io.undertow.util.Protocols;
 import io.undertow.util.StringReadChannelListener;
 import org.eclipse.microprofile.health.HealthCheckProcedure;
-import org.eclipse.microprofile.health.Status;
+import org.eclipse.microprofile.health.HealthStatus;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.monitor.HealthMetaData;
 import org.wildfly.swarm.monitor.api.Monitor;
@@ -48,6 +48,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
@@ -57,7 +58,10 @@ import java.util.concurrent.CountDownLatch;
  * @author Heiko Braun
  */
 @Vetoed
-class HttpContexts implements HttpHandler {
+public class HttpContexts implements HttpHandler {
+
+    public static final String LCURL = "{";
+    public static final String RCURL = "}";
 
     protected ThreadLocal<CountDownLatch> dispatched = new ThreadLocal<>();
 
@@ -129,11 +133,11 @@ class HttpContexts implements HttpHandler {
         List<org.eclipse.microprofile.health.HealthStatus> responses = new ArrayList<>();
 
         for (Object procedure : procedures) {
-            org.eclipse.microprofile.health.HealthStatus status = ((HealthCheckProcedure)procedure).execute();
+            org.eclipse.microprofile.health.HealthStatus status = ((HealthCheckProcedure)procedure).perform();
             responses.add(status);
         }
 
-        StringBuffer sb = new StringBuffer("{");
+        StringBuffer sb = new StringBuffer(LCURL);
         sb.append("\"checks\": [\n");
 
         int i = 0;
@@ -141,10 +145,10 @@ class HttpContexts implements HttpHandler {
 
         for (org.eclipse.microprofile.health.HealthStatus resp : responses) {
 
-            sb.append(resp.toJson());
+            sb.append(toJson(resp));
 
             if (!failed) {
-                failed = resp.getState() != Status.State.UP;
+                failed = resp.getState() != HealthStatus.State.UP;
             }
 
             if (i < responses.size() - 1) {
@@ -279,13 +283,13 @@ class HttpContexts implements HttpHandler {
                     if ("application/json".equals(mockExchange.getResponseHeaders().getFirst(Headers.CONTENT_TYPE))) {
                         responses.add(new InVMResponse(mockExchange.getStatusCode(), sb.toString()));
                     } else {
-                        StringBuffer json = new StringBuffer("{");
+                        StringBuffer json = new StringBuffer(LCURL);
                         json.append("\"id\"").append(":\"").append(mockExchange.getRelativePath()).append("\",");
                         json.append("\"result\"").append(":\"").append("DOWN").append("\",");
-                            json.append("\"data\"").append(":").append("{");
+                            json.append("\"data\"").append(":").append(LCURL);
                                 json.append("\"status-code\"").append(":").append(mockExchange.getStatusCode());
-                            json.append("}");
-                        json.append("}");
+                            json.append(RCURL);
+                        json.append(RCURL);
 
                         responses.add(new InVMResponse(mockExchange.getStatusCode(), json.toString()));
                     }
@@ -379,6 +383,42 @@ class HttpContexts implements HttpHandler {
         exchange.getResponseSender().send(monitor.threads().toJSONString(false));
     }
 
+    public static String toJson(HealthStatus status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(LCURL);
+        sb.append(QUOTE).append(ID).append("\":\"").append(status.getName()).append("\",");
+        sb.append(QUOTE).append(RESULT).append("\":\"").append(status.getState().name()).append(QUOTE);
+        if (status.getAttributes().isPresent()) {
+            sb.append(",");
+            sb.append(QUOTE).append(DATA).append("\": {");
+            Map<String, Object> atts = status.getAttributes().get();
+            int i = 0;
+            for (String key : atts.keySet()) {
+                sb.append(QUOTE).append(key).append("\":").append(encode(atts.get(key)));
+                if (i < atts.keySet().size() - 1) {
+                    sb.append(",");
+                }
+                i++;
+            }
+            sb.append(RCURL);
+        }
+
+        sb.append(RCURL);
+        return sb.toString();
+    }
+
+    private static String encode(Object o) {
+        String res = null;
+        if (o instanceof String) {
+            res = "\"" + o.toString() + "\"";
+        } else {
+            res = o.toString();
+        }
+
+        return res;
+    }
+
+
     public static List<String> getDefaultContextNames() {
         return Arrays.asList(NODE, HEAP, HEALTH, THREADS);
     }
@@ -401,6 +441,14 @@ class HttpContexts implements HttpHandler {
 
     private XnioWorker worker;
 
+    private static final String ID = "id";
+
+    private static final String RESULT = "result";
+
+    private static final String DATA = "data";
+
+    public static final String QUOTE = "\"";
+
     class InVMResponse {
         private int status;
 
@@ -419,5 +467,4 @@ class HttpContexts implements HttpHandler {
             return payload;
         }
     }
-
 }
