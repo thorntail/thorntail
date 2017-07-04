@@ -16,8 +16,7 @@
 package org.wildfly.swarm.monitor.deployment;
 
 import org.eclipse.microprofile.health.HealthCheckProcedure;
-import org.eclipse.microprofile.health.Status;
-
+import org.eclipse.microprofile.health.HealthStatus;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -28,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Heiko Braun
@@ -35,6 +35,7 @@ import java.util.List;
 @ApplicationScoped
 @Path("/health-delegate")
 public class HttpDelegate {
+
 
     @Inject
     @Any
@@ -51,7 +52,7 @@ public class HttpDelegate {
         List<org.eclipse.microprofile.health.HealthStatus> responses = new ArrayList<>();
 
         for (org.eclipse.microprofile.health.HealthCheckProcedure procedure : procedures) {
-            org.eclipse.microprofile.health.HealthStatus status = procedure.execute();
+            org.eclipse.microprofile.health.HealthStatus status = procedure.perform();
             responses.add(status);
         }
 
@@ -63,10 +64,10 @@ public class HttpDelegate {
 
         for (org.eclipse.microprofile.health.HealthStatus resp : responses) {
 
-            sb.append(resp.toJson());
+            sb.append(toJson(resp));
 
             if (!failed) {
-                failed = resp.getState() != Status.State.UP;
+                failed = resp.getState() != HealthStatus.State.UP;
             }
 
             if (i < responses.size() - 1) {
@@ -83,5 +84,47 @@ public class HttpDelegate {
         return Response.ok(sb.toString()).build();
     }
 
+    private String toJson(HealthStatus status) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append(QUOTE).append(ID).append("\":\"").append(status.getName()).append(QUOTE);
+        sb.append(QUOTE).append(RESULT).append("\":\"").append(status.getState().name()).append(QUOTE);
+        if (status.getAttributes().isPresent()) {
+            sb.append(",");
+            sb.append(QUOTE).append(DATA).append("\": {");
+            Map<String, Object> atts = status.getAttributes().get();
+            int i = 0;
+            for (String key : atts.keySet()) {
+                sb.append(QUOTE).append(key).append("\":").append(encode(atts.get(key)));
+                if (i < atts.keySet().size() - 1) {
+                    sb.append(",");
+                }
+                i++;
+            }
+            sb.append("}");
+        }
+
+        sb.append("}");
+        return sb.toString();
+    }
+
+    private String encode(Object o) {
+        String res = null;
+        if (o instanceof String) {
+            res = "\"" + o.toString() + "\"";
+        } else {
+            res = o.toString();
+        }
+
+        return res;
+    }
+
+    private static final String ID = "id";
+
+    private static final String RESULT = "result";
+
+    private static final String DATA = "data";
+
+    public static final String QUOTE = "\"";
 }
 
