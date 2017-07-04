@@ -72,23 +72,16 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
         if (Files.exists(classes)) {
             success = true;
-            Files.walkFileTree(classes, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Path simple = classes.relativize(file);
-                    archive.add(new FileAsset(file.toFile()), "WEB-INF/classes/" + convertSeparators(simple));
-                    // If the user's maven output is a jar then they may place
-                    // static content under src/main/resources, in which case
-                    // we need to hoist anything under WEB-INF out of there
-                    // and put it into the root of this archive instead of
-                    // under WEB-INF/classes/WEB-INF/foo
-                    if (simple.toString().contains("WEB-INF")) {
-                        archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
-                    }
-                    return super.visitFile(file, attrs);
-                }
-            });
+            addFilesToArchive(classes, archive);
         }
+
+        // If it a gradle project, the reources are seperated from the class files.
+        final Path resources = fsLayout.resolveBuildResourcesDir();
+        if (!Files.isSameFile(resources, classes) && Files.exists(resources)) {
+            success = true;
+            addFilesToArchive(resources, archive);
+        }
+
 
         final Path webapp = fsLayout.resolveSrcWebAppDir();
 
@@ -107,6 +100,25 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
         archive.addAllDependencies();
 
         return success;
+    }
+
+    private void addFilesToArchive(final Path files, final DependenciesContainer<?> archive) throws Exception {
+        Files.walkFileTree(files, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Path simple = files.relativize(file);
+                archive.add(new FileAsset(file.toFile()), "WEB-INF/classes/" + convertSeparators(simple));
+                // If the user's maven output is a jar then they may place
+                // static content under src/main/resources, in which case
+                // we need to hoist anything under WEB-INF out of there
+                // and put it into the root of this archive instead of
+                // under WEB-INF/classes/WEB-INF/foo
+                if (simple.toString().contains("WEB-INF")) {
+                    archive.add(new FileAsset(file.toFile()), convertSeparators(simple));
+                }
+                return super.visitFile(file, attrs);
+            }
+        });
     }
 
     protected static String determineName() {
