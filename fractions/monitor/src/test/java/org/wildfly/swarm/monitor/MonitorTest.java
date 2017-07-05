@@ -88,7 +88,7 @@ public class MonitorTest {
 
     @Test
     public void testJsonEncoding() {
-        org.eclipse.microprofile.health.HealthStatus healthStatus = org.eclipse.microprofile.health.HealthResponse
+        org.eclipse.microprofile.health.Response healthStatus = org.eclipse.microprofile.health.Response
                 .named("test")
                 .withAttribute("a", "b")
                 .withAttribute("c", "d")
