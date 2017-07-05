@@ -28,7 +28,7 @@ import javax.inject.Named;
 
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.NamedLiteral;
-import org.wildfly.swarm.container.Interface;
+import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.cdi.CommonBean;
 import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 import org.wildfly.swarm.spi.api.config.ConfigKey;
@@ -38,49 +38,52 @@ import org.wildfly.swarm.spi.api.config.SimpleKey;
 /**
  * @author Bob McWhirter
  */
-public class InterfaceExtension extends AbstractNetworkExtension<Interface> {
+public class SocketBindingGroupExtension extends AbstractNetworkExtension<SocketBindingGroup> {
 
-    private static ConfigKey ROOT = ConfigKey.of("swarm", "network", "interfaces");
+    private static ConfigKey ROOT = ConfigKey.of("swarm", "network", "socket-binding-groups");
 
-    public InterfaceExtension(ConfigView configView) {
+    public SocketBindingGroupExtension(ConfigView configView) {
         super(configView);
     }
 
     @Override
-    protected void applyConfiguration(Interface instance) {
-        ConfigKey key = ROOT.append(instance.getName().replace("-interface", ""));
-        applyConfiguration(key.append("bind"), (bind) -> {
-            instance.setExpression(bind.toString());
+    protected void applyConfiguration(SocketBindingGroup instance) {
+        ConfigKey key = ROOT.append(instance.name());
+
+        applyConfiguration(key.append("port-offset"), (offset) -> {
+            instance.portOffset(offset.toString());
+        });
+
+        applyConfiguration(key.append("default-interface"), (offset) -> {
+            instance.portOffset(offset.toString());
         });
     }
 
     @SuppressWarnings("unused")
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
 
-        List<SimpleKey> configuredInterfaces = this.configView.simpleSubkeys(ROOT);
-
-        for (SimpleKey interfaceName : configuredInterfaces) {
-
-            Set<Bean<?>> ifaces = beanManager.getBeans(Interface.class, AnyLiteral.INSTANCE);
-
+        List<SimpleKey> configuredGroups = this.configView.simpleSubkeys(ROOT);
+        for (SimpleKey groupName : configuredGroups) {
+            Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
             AtomicBoolean producerRequired = new AtomicBoolean(false);
-
-            if (ifaces
+            if (groups
                     .stream()
                     .noneMatch(e -> e.getQualifiers()
                             .stream()
-                            .anyMatch(anno -> anno instanceof Named && ((Named) anno).value().equals(interfaceName + "-interface")))) {
+                            .anyMatch(anno -> anno instanceof Named && ((Named) anno).value().equals(groupName)))) {
 
-                Interface iface = new Interface(interfaceName.name(), "0.0.0.0");
-                applyConfiguration(iface);
+                SocketBindingGroup group = new SocketBindingGroup(groupName.name(), null, "0");
+
+                applyConfiguration(group);
+
                 if (producerRequired.get()) {
-                    CommonBean<Interface> interfaceBean = CommonBeanBuilder.newBuilder(Interface.class)
-                            .beanClass(InterfaceExtension.class)
+                    CommonBean<SocketBindingGroup> interfaceBean = CommonBeanBuilder.newBuilder(SocketBindingGroup.class)
+                            .beanClass(SocketBindingGroupExtension.class)
                             .scope(ApplicationScoped.class)
                             .addQualifier(AnyLiteral.INSTANCE)
-                            .addQualifier(new NamedLiteral(interfaceName.name() + "-interface"))
-                            .createSupplier(() -> iface)
-                            .addType(Interface.class)
+                            .addQualifier(new NamedLiteral(group.name()))
+                            .createSupplier(() -> group)
+                            .addType(SocketBindingGroup.class)
                             .addType(Object.class)
                             .build();
 
@@ -89,5 +92,4 @@ public class InterfaceExtension extends AbstractNetworkExtension<Interface> {
             }
         }
     }
-
 }
