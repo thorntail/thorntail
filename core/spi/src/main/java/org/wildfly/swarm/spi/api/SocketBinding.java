@@ -15,16 +15,16 @@
  */
 package org.wildfly.swarm.spi.api;
 
-/** An inbound socket-binding.
+/**
+ * An inbound socket-binding.
  *
  * <p>Defines a named inbound normal or multicast socket-binding.</p>
  *
  * <p>Inbound socket-bindings are used to define open ports for functionality
  * such as HTTP listeners, JGroups multicast groups, etc.</p>
  *
- * @see SocketBindingGroup
- *
  * @author Bob McWhirter
+ * @see SocketBindingGroup
  */
 public class SocketBinding {
 
@@ -38,7 +38,8 @@ public class SocketBinding {
 
     private String multicastPortExpression;
 
-    /** Construct a new socket-binding.
+    /**
+     * Construct a new socket-binding.
      *
      * @param name The name of the binding.
      */
@@ -46,7 +47,8 @@ public class SocketBinding {
         this.name = name;
     }
 
-    /** Retrieve the name of the binding.
+    /**
+     * Retrieve the name of the binding.
      *
      * @return the name of the binding.
      */
@@ -54,7 +56,8 @@ public class SocketBinding {
         return this.name;
     }
 
-    /** Set the interface for this binding.
+    /**
+     * Set the interface for this binding.
      *
      * @param iface The name of the interface.
      * @return This binding.
@@ -64,7 +67,8 @@ public class SocketBinding {
         return this;
     }
 
-    /** Retrieve the interface for this binding.
+    /**
+     * Retrieve the interface for this binding.
      *
      * @return The name of the interface.
      */
@@ -72,7 +76,8 @@ public class SocketBinding {
         return this.iface;
     }
 
-    /** Set the port.
+    /**
+     * Set the port.
      *
      * @param port The port.
      * @return this binding.
@@ -82,7 +87,8 @@ public class SocketBinding {
         return this;
     }
 
-    /** Set the port expression
+    /**
+     * Set the port expression
      *
      * @param portExpression The port expression.
      * @return this binding.
@@ -92,7 +98,8 @@ public class SocketBinding {
         return this;
     }
 
-    /** Retrieve the port expression.
+    /**
+     * Retrieve the port expression.
      *
      * @return The port expression.
      */
@@ -100,7 +107,8 @@ public class SocketBinding {
         return this.portExpression;
     }
 
-    /** Set the multicast address or expression.
+    /**
+     * Set the multicast address or expression.
      *
      * @param multicastAddress The multicast address or expression.
      * @return this binding.
@@ -110,7 +118,8 @@ public class SocketBinding {
         return this;
     }
 
-    /** Retrieve the multicast address or expression.
+    /**
+     * Retrieve the multicast address or expression.
      *
      * @return The multicast address or expression.
      */
@@ -118,7 +127,8 @@ public class SocketBinding {
         return this.multicastAddress;
     }
 
-    /** Set the multicast port.
+    /**
+     * Set the multicast port.
      *
      * @param port The multicast port.
      * @return this binding.
@@ -128,7 +138,8 @@ public class SocketBinding {
         return this;
     }
 
-    /** Set the multicast port expression.
+    /**
+     * Set the multicast port expression.
      *
      * @param port The multicast port expression.
      * @return this binding.
@@ -138,7 +149,8 @@ public class SocketBinding {
         return this;
     }
 
-    /** Retrieve the multicast port expression.
+    /**
+     * Retrieve the multicast port expression.
      *
      * @return The multicast port expression.
      */

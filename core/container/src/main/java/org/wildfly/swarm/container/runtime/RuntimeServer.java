@@ -162,6 +162,8 @@ public class RuntimeServer implements Server {
             }
         }
 
+        this.socketBindingGroupConfigurer.configure();
+
         /*
         this.archivePreparers.forEach(e -> {
             // Log it to prevent dead-code elimination.
@@ -283,6 +285,9 @@ public class RuntimeServer implements Server {
 
     @Inject
     private ArtifactDeployer artifactDeployer;
+
+    @Inject
+    private SocketBindingGroupConfigurer socketBindingGroupConfigurer;
 
     private ModelControllerClient client;
 }

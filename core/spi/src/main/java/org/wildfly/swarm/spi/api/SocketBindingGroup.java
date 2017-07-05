@@ -35,9 +35,9 @@ public class SocketBindingGroup {
 
     private final String name;
 
-    private final String defaultInterace;
+    private String defaultInterace;
 
-    private final String portOffsetExpression;
+    private String portOffsetExpression;
 
     private List<SocketBinding> socketBindings = new ArrayList<>();
 
@@ -74,6 +74,11 @@ public class SocketBindingGroup {
         return this.defaultInterace;
     }
 
+    public SocketBindingGroup defaultInterface(String defaultInterface) {
+        this.defaultInterace = defaultInterface;
+        return this;
+    }
+
     /**
      * Retrieve the port-offset expression.
      *
@@ -81,6 +86,16 @@ public class SocketBindingGroup {
      */
     public String portOffsetExpression() {
         return this.portOffsetExpression;
+    }
+
+    public SocketBindingGroup portOffset(String expr) {
+        this.portOffsetExpression = expr;
+        return this;
+    }
+
+    public SocketBindingGroup portOffset(int offset) {
+        this.portOffsetExpression = "" + offset;
+        return this;
     }
 
     /**
