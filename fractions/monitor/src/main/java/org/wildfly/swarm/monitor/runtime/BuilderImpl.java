@@ -91,11 +91,6 @@ public class BuilderImpl extends ResponseBuilder {
     }
 
     @Override
-    public Response.State getState() {
-        return this.state;
-    }
-
-    @Override
     public ResponseBuilder name(String name) {
         this.name = name;
         return this;
@@ -123,10 +118,6 @@ public class BuilderImpl extends ResponseBuilder {
         Map<String, Object> payload = getPayloadWrapper();
         payload.put(key, value);
         return this;
-    }
-
-    public Optional<Map<String, Object>> getAttributes() {
-        return attributes;
     }
 
     private Map<String, Object> getPayloadWrapper() {
