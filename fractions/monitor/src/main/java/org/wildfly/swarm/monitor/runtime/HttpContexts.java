@@ -28,8 +28,8 @@ import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import io.undertow.util.Protocols;
 import io.undertow.util.StringReadChannelListener;
-import org.eclipse.microprofile.health.HealthCheckProcedure;
-import org.eclipse.microprofile.health.HealthStatus;
+import org.eclipse.microprofile.health.HealthCheck;
+import org.eclipse.microprofile.health.Response;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.monitor.HealthMetaData;
 import org.wildfly.swarm.monitor.api.Monitor;
@@ -130,10 +130,10 @@ public class HttpContexts implements HttpHandler {
             noHealthEndpoints(exchange);
         }
 
-        List<org.eclipse.microprofile.health.HealthStatus> responses = new ArrayList<>();
+        List<org.eclipse.microprofile.health.Response> responses = new ArrayList<>();
 
         for (Object procedure : procedures) {
-            org.eclipse.microprofile.health.HealthStatus status = ((HealthCheckProcedure)procedure).perform();
+            org.eclipse.microprofile.health.Response status = ((HealthCheck)procedure).call();
             responses.add(status);
         }
 
@@ -143,12 +143,12 @@ public class HttpContexts implements HttpHandler {
         int i = 0;
         boolean failed = false;
 
-        for (org.eclipse.microprofile.health.HealthStatus resp : responses) {
+        for (org.eclipse.microprofile.health.Response resp : responses) {
 
             sb.append(toJson(resp));
 
             if (!failed) {
-                failed = resp.getState() != HealthStatus.State.UP;
+                failed = resp.getState() != Response.State.UP;
             }
 
             if (i < responses.size() - 1) {
@@ -383,7 +383,7 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseSender().send(monitor.threads().toJSONString(false));
     }
 
-    public static String toJson(HealthStatus status) {
+    public static String toJson(Response status) {
         StringBuilder sb = new StringBuilder();
         sb.append(LCURL);
         sb.append(QUOTE).append(ID).append("\":\"").append(status.getName()).append("\",");

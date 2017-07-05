@@ -7,5 +7,6 @@
     <dependencies>
         <module name="javax.enterprise.api"/>
         <module name="org.wildfly.swarm.undertow" slot="main"/>
+        <module name="org.wildfly.swarm.monitor" slot="main" services="import"/>
     </dependencies>
 </module>

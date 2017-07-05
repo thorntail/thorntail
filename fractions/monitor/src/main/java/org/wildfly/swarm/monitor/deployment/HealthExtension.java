@@ -1,6 +1,7 @@
 package org.wildfly.swarm.monitor.deployment;
 
 
+import org.eclipse.microprofile.health.HealthCheck;
 import org.wildfly.swarm.monitor.api.Monitor;
 
 import javax.enterprise.event.Observes;
@@ -27,7 +28,7 @@ public class HealthExtension implements Extension {
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
         Class<T> javaClass = annotatedType.getJavaClass();
         for (Class<?> intf : javaClass.getInterfaces()) {
-            if (intf.getName().equals("org.eclipse.microprofile.health.HealthCheckProcedure")) {
+            if (intf.getName().equals(HealthCheck.class.getName())) {
                 System.out.println(">> Discovered health check procedure " + javaClass);
 
                 delegates.add(annotatedType);
