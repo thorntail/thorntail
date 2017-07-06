@@ -580,6 +580,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>asciidoctorj</artifactId>
+        <version>2017.8.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>batch-jberet</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
@@ -1499,6 +1505,7 @@
         <module>fractions/javaee/resource-adapters</module>
         <module>fractions/javaee/webservices</module>
 
+        <module>fractions/asciidoctorj</module>
         <module>fractions/camel</module>
         <module>fractions/drools-server</module>
         <module>fractions/fluentd</module>
@@ -1536,6 +1543,7 @@
         <module>standalone-servers/microprofile</module>
         <module>standalone-servers/swagger-ui</module>
 
+        <module>testsuite/testsuite-asciidoctorj</module>
         <module>testsuite/testsuite-batch-jberet</module>
         <module>testsuite/testsuite-camel-cdi</module>
         <module>testsuite/testsuite-camel-core</module>
