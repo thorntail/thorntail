@@ -36,7 +36,6 @@
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
-    <version.maven.aether>3.2.5</version.maven.aether>
     <version.wildfly.config-api>1.1.0.Final</version.wildfly.config-api>
 
     <version.keycloak.config-api>1.1.0.Final</version.keycloak.config-api>
@@ -122,6 +121,7 @@
 
     <version.checkstyle>7.4</version.checkstyle>
 
+    <version.maven.aether>3.2.5</version.maven.aether>
     <maven.min.version>3.2.1</maven.min.version>
 
     <!-- Surefire args -->
@@ -373,20 +373,16 @@
         <scope>import</scope>
       </dependency>
 
-    <!--
-      org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
-  -->
-
-      <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>${version.org.snakeyaml}</version>
-      </dependency>
+      <!--
+        org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
+        Must override with 3.2.5
+    -->
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
         <version>${version.maven.aether}</version>
       </dependency>
+
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-api</artifactId>
@@ -437,6 +433,7 @@
         <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
         <version>${version.org.jboss.shrinkwrap.descriptors}</version>
       </dependency>
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>config-api</artifactId>
@@ -447,22 +444,6 @@
         <artifactId>config-api-runtime</artifactId>
         <version>${version.wildfly.config-api}</version>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>keycloak-server-config-api</artifactId>
-        <version>${version.keycloak.config-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>keycloak-client-config-api</artifactId>
-        <version>${version.keycloak.config-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>teiid-config-api</artifactId>
-        <version>${version.teiid.config-api}</version>
-      </dependency>
-
 
       <dependency>
         <groupId>org.easytesting</groupId>
@@ -557,6 +538,18 @@
         <artifactId>fraction-metadata</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-all</artifactId>
+        <version>${version.org.objectweb.asm}</version>
+      </dependency>
+
+      <!-- Used by SwarmTool -->
+      <dependency>
+        <groupId>net.sf.jopt-simple</groupId>
+        <artifactId>jopt-simple</artifactId>
+        <version>4.9</version>
+      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -601,6 +594,11 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bootstrap</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${version.org.snakeyaml}</version>
       </dependency>
 
       <dependency>
@@ -770,6 +768,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>jaeger</artifactId>
+        <version>2017.7.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>javafx</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
@@ -839,6 +843,12 @@
         <artifactId>jolokia</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>org.jolokia</groupId>
+        <artifactId>jolokia-war</artifactId>
+        <type>war</type>
+        <version>${version.jolokia}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -872,17 +882,14 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak-client-config-api</artifactId>
+        <version>${version.keycloak.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>keycloak</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>keycloak-server</artifactId>
-        <version>2017.8.0-SNAPSHOT</version>
-      </dependency>
-
-
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-adapter-feature-pack</artifactId>
@@ -890,23 +897,9 @@
         <version>${version.keycloak}</version>
         <scope>provided</scope>
       </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-server-feature-pack</artifactId>
-        <type>zip</type>
-        <version>${version.keycloak}</version>
-        <scope>provided</scope>
-      </dependency>
-
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-core</artifactId>
-        <version>${version.keycloak}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-themes</artifactId>
         <version>${version.keycloak}</version>
       </dependency>
       <dependency>
@@ -917,23 +910,38 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak-server-config-api</artifactId>
+        <version>${version.keycloak.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>keycloak-server</artifactId>
+        <version>2017.8.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-server-feature-pack</artifactId>
+        <type>zip</type>
+        <version>${version.keycloak}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-themes</artifactId>
+        <version>${version.keycloak}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>logging</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
-
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>logstash</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>jaeger</artifactId>
-        <version>2017.8.0-SNAPSHOT</version>
-      </dependency>
-
       <dependency>
         <groupId>org.jboss.logmanager</groupId>
         <artifactId>jboss-logmanager-ext</artifactId>
@@ -1053,13 +1061,11 @@
         <artifactId>swagger</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
-
       <dependency>
         <groupId>io.swagger</groupId>
         <artifactId>swagger-jaxrs</artifactId>
         <version>${version.io.swagger}</version>
       </dependency>
-
       <dependency>
         <groupId>io.swagger</groupId>
         <artifactId>swagger-annotations</artifactId>
@@ -1071,12 +1077,76 @@
         <artifactId>swagger-webapp</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
-
       <dependency>
         <groupId>org.webjars</groupId>
         <artifactId>swagger-ui</artifactId>
         <version>${version.org.webjars.swagger-ui}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>teiid-config-api</artifactId>
+        <version>${version.teiid.config-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>teiid</artifactId>
+        <version>2017.7.0-SNAPSHOT</version>
+      </dependency>
+      <!-- Teiid integration feature-pack-->
+      <dependency>
+        <groupId>org.jboss.teiid</groupId>
+        <artifactId>teiid-wildfly-integration-feature-pack</artifactId>
+        <version>${version.teiid.feature-pack}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.teiid</groupId>
+        <artifactId>rest-service-feature-pack</artifactId>
+        <version>${version.teiid.feature-pack}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.teiid.connectors</groupId>
+        <artifactId>feature-pack-swagger</artifactId>
+        <version>${version.teiid.feature-pack}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.teiid</groupId>
+        <artifactId>teiid-client-feature-pack</artifactId>
+        <version>${version.teiid.feature-pack}</version>
+        <type>zip</type>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!--Teiid integration end-->
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -1089,7 +1159,6 @@
         <artifactId>topology-consul</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
-
       <dependency>
         <groupId>com.orbitz.consul</groupId>
         <artifactId>consul-client</artifactId>
@@ -1107,12 +1176,28 @@
         <artifactId>topology-openshift</artifactId>
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
-
       <dependency>
         <groupId>com.openshift</groupId>
         <artifactId>openshift-restclient-java</artifactId>
         <version>${version.openshift.client}</version>
       </dependency>
+      <!-- The following are not used, they are here to make PME align proper versions-->
+      <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>okhttp</artifactId>
+        <version>${version.com.squareup.okhttp}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>okhttp-ws</artifactId>
+        <version>${version.com.squareup.okhttp}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okio</groupId>
+        <artifactId>okio</artifactId>
+        <version>${version.com.squareup.okio}</version>
+      </dependency>
+      <!-- end of unused dependencies -->
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -1171,14 +1256,6 @@
         <version>2017.8.0-SNAPSHOT</version>
       </dependency>
 
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-dependencies</artifactId>
-        <version>${version.vertx}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <!-- Feature Packs -->
       <dependency>
         <groupId>org.wildfly</groupId>
@@ -1223,108 +1300,12 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-all</artifactId>
-        <version>${version.org.objectweb.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>2.4</version>
-      </dependency>
-      <dependency>
-        <groupId>net.sf.jopt-simple</groupId>
-        <artifactId>jopt-simple</artifactId>
-        <version>4.9</version>
-      </dependency>
-      <dependency>
         <groupId>org.jboss.arquillian.graphene</groupId>
         <artifactId>graphene-webdriver</artifactId>
         <version>${version.org.arquillian.graphene}</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
-
-      <dependency>
-        <groupId>org.jolokia</groupId>
-        <artifactId>jolokia-war</artifactId>
-        <type>war</type>
-        <version>${version.jolokia}</version>
-      </dependency>
-
-      <!-- Teiid integration feature-pack-->
-      <dependency>
-        <groupId>org.jboss.teiid</groupId>
-        <artifactId>teiid-wildfly-integration-feature-pack</artifactId>
-        <version>${version.teiid.feature-pack}</version>
-        <type>zip</type>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>*</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.teiid</groupId>
-        <artifactId>rest-service-feature-pack</artifactId>
-        <version>${version.teiid.feature-pack}</version>
-        <type>zip</type>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>*</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.teiid.connectors</groupId>
-        <artifactId>feature-pack-swagger</artifactId>
-        <version>${version.teiid.feature-pack}</version>
-        <type>zip</type>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>*</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.teiid</groupId>
-        <artifactId>teiid-client-feature-pack</artifactId>
-        <version>${version.teiid.feature-pack}</version>
-        <type>zip</type>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>*</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <!--Teiid integration end-->
-
-
-      <!-- The following are not used, they are here to make PME align proper versions-->
-      <dependency>
-        <groupId>com.squareup.okhttp3</groupId>
-        <artifactId>okhttp</artifactId>
-        <version>${version.com.squareup.okhttp}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.squareup.okhttp3</groupId>
-        <artifactId>okhttp-ws</artifactId>
-        <version>${version.com.squareup.okhttp}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.squareup.okio</groupId>
-        <artifactId>okio</artifactId>
-        <version>${version.com.squareup.okio}</version>
-      </dependency>
-      <!-- end of unused dependencies -->
 
     </dependencies>
   </dependencyManagement>
@@ -1360,7 +1341,6 @@
   <modules>
     <module>plugins/maven-enforcer-pattern-size</module>
     <module>build-resources</module>
-
 
     <module>tools</module>
 
@@ -1487,6 +1467,19 @@
       <properties>
         <testCategory.excluded>category.ProductOnly</testCategory.excluded>
       </properties>
+
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-dependencies</artifactId>
+            <version>${version.vertx}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+
       <modules>
         <module>client-apis/jaxrs-client-api</module>
 
