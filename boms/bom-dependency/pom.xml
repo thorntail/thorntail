@@ -19,7 +19,7 @@
 
   <name>Version alignment BOM</name>
   <description>Manages transitive dependency versions in user project builds</description>
-  <version>2017.7.0</version>
+  <version>2017.8.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 
@@ -51,7 +51,7 @@
      <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
      <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
      <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
-     <tag>2017.7.0</tag>
+     <tag>HEAD</tag>
   </scm>
 
    <licenses>
