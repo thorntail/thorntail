@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
-    <version>2017.7.0-SNAPSHOT</version>
+    <version>2017.7.0</version>
     <relativePath>../../</relativePath>
   </parent>
 
@@ -71,12 +71,10 @@
                   </goals>
                   <configuration>
                      <tasks>
-                        <fail
-                           message="Weld SE version ${version.weld-se} does not align with version provided by the WildFly feature pack!">
+                        <fail message="Weld SE version ${version.weld-se} does not align with version provided by the WildFly feature pack!">
                            <condition>
                               <not>
-                                 <equals arg1="${version.weld-se}"
-                                    arg2="${org.jboss.weld:weld-core-impl:jar.version}" />
+                                 <equals arg1="${version.weld-se}" arg2="${org.jboss.weld:weld-core-impl:jar.version}" />
                               </not>
                            </condition>
                         </fail>

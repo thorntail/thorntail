@@ -11,7 +11,7 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>parent</artifactId>
     <version>9</version>
-    <relativePath></relativePath>
+    <relativePath />
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
@@ -19,7 +19,7 @@
 
   <name>Test Suite: JAX-RS Client</name>
   <description>Test Suite: JAX-RS Client</description>
-  <version>2017.7.0-SNAPSHOT</version>
+  <version>2017.7.0</version>
 
   <packaging>war</packaging>
 
@@ -72,4 +72,8 @@
     </plugins>
   </build>
 
+
+  <scm>
+    <tag>2017.7.0</tag>
+  </scm>
 </project>
