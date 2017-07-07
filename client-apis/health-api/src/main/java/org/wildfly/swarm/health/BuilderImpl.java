@@ -78,7 +78,7 @@ public class BuilderImpl extends ResponseBuilder {
 
     public Response down() {
         assertNamed();
-        this.state = Response.State.UP;
+        this.state = Response.State.DOWN;
 
         BuiltResponse response = new BuiltResponse(this.name)
                 .setState(state);
