@@ -15,13 +15,12 @@
  */
 package org.wildfly.swarm.monitor.runtime;
 
-import javax.inject.Inject;
-
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
+
+import javax.inject.Inject;
 
 /**
  * @author Ken Finnigan
@@ -41,8 +40,8 @@ public class InstallMonitorFilter implements DeploymentProcessor {
     public void process() throws Exception {
         try {
             WARArchive warArchive = archive.as(WARArchive.class);
-            warArchive.addDependency("org.wildfly.swarm:health-api:jar:" + SwarmInfo.VERSION);
-            warArchive.addDependency("org.eclipse.microprofile.apis:microprofile-health-api:jar:" + MP_HEALTH_VERSION);
+            /*warArchive.addDependency("org.wildfly.swarm:health-api:jar:" + SwarmInfo.VERSION);
+            warArchive.addDependency("org.eclipse.microprofile.apis:microprofile-health-api:jar:" + MP_HEALTH_VERSION);*/
             warArchive.findWebXmlAsset().setContextParam("resteasy.scan", "true");
         } catch (Exception e) {
             throw new RuntimeException("Failed to install health processor", e);
