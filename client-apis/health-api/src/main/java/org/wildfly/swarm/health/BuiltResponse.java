@@ -20,7 +20,7 @@
  *
  */
 
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health;
 
 import org.eclipse.microprofile.health.Response;
 
@@ -34,7 +34,7 @@ import java.util.Optional;
 class BuiltResponse extends Response {
 
     private String name;
-    private Response.State state;
+    private State state;
     private Optional<Map<String, Object>> attributes = Optional.empty();
 
     BuiltResponse(String name) {
@@ -46,7 +46,7 @@ class BuiltResponse extends Response {
         return this;
     }
 
-    BuiltResponse setState(Response.State state) {
+    BuiltResponse setState(State state) {
         this.state = state;
         return this;
     }
@@ -55,7 +55,7 @@ class BuiltResponse extends Response {
         return name;
     }
 
-    public Response.State getState() {
+    public State getState() {
         return state;
     }
 

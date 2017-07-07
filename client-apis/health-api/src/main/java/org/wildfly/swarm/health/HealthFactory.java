@@ -1,4 +1,4 @@
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health;
 
 import org.eclipse.microprofile.health.ResponseBuilder;
 import org.eclipse.microprofile.health.spi.SPIFactory;

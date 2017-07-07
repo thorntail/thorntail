@@ -42,7 +42,7 @@
  *
  */
 
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health;
 
 import org.eclipse.microprofile.health.Response;
 import org.eclipse.microprofile.health.ResponseBuilder;
