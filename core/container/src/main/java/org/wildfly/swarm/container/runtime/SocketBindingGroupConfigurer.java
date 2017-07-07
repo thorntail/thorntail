@@ -30,8 +30,6 @@ public class SocketBindingGroupConfigurer {
     }
 
     protected void configure(SocketBindingGroup group) {
-        ConfigKey key = ROOT.append(group.name());
-
         fixSocketBindings(group);
         fixOutboundSocketBindings(group);
     }
@@ -48,7 +46,11 @@ public class SocketBindingGroupConfigurer {
                                      .stream()
                                      .filter(e -> e.name().equals(name))
                                      .findFirst()
-                                     .orElseGet(() -> new SocketBinding(name)))
+                                     .orElseGet(() -> {
+                                         SocketBinding binding = new SocketBinding(name);
+                                         group.socketBinding(binding);
+                                         return binding;
+                                     }))
                 .forEach(e -> {
                     applyConfiguration(key, e);
                 });
@@ -66,10 +68,15 @@ public class SocketBindingGroupConfigurer {
                                      .stream()
                                      .filter(e -> e.name().equals(name))
                                      .findFirst()
-                                     .orElseGet(() -> new OutboundSocketBinding(name)))
+                                     .orElseGet(() -> {
+                                         OutboundSocketBinding binding = new OutboundSocketBinding(name);
+                                         group.outboundSocketBinding(binding);
+                                         return binding;
+                                     }))
                 .forEach(e -> {
                     applyConfiguration(key, e);
                 });
+
     }
 
     protected void applyConfiguration(ConfigKey root, SocketBinding binding) {
