@@ -63,22 +63,17 @@ public class BuilderImpl extends ResponseBuilder {
     private Response.State state;
 
     public Response up() {
-        assertNamed();
-        this.state = Response.State.UP;
-
-        BuiltResponse response = new BuiltResponse(this.name)
-                .setState(state);
-
-        if (attributes.isPresent()) {
-            response.withAttributes(attributes.get());
-        }
-
-        return response;
+        return state(true);
     }
 
     public Response down() {
+        return state(false);
+    }
+
+    @Override
+    public Response state(boolean up) {
         assertNamed();
-        this.state = Response.State.DOWN;
+        this.state = up ? Response.State.UP : Response.State.DOWN;
 
         BuiltResponse response = new BuiltResponse(this.name)
                 .setState(state);
