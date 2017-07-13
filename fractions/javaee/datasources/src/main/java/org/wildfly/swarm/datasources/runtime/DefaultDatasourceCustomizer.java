@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jpa.runtime;
+package org.wildfly.swarm.datasources.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.wildfly.swarm.datasources.runtime.DefaultDatasource;
-import org.wildfly.swarm.jpa.JPAFraction;
+import org.wildfly.swarm.config.EE;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
@@ -33,15 +32,16 @@ public class DefaultDatasourceCustomizer implements Customizer {
 
     @Inject
     @DefaultDatasource
-    Instance<String> defaultDatasourceInstance;
+    String defaultDatasource;
 
     @Inject
-    Instance<JPAFraction> jpaFractionInstance;
+    Instance<EE> eeInstance;
 
     @Override
     public void customize() {
-        if (!jpaFractionInstance.isUnsatisfied() && !defaultDatasourceInstance.isUnsatisfied()) {
-            jpaFractionInstance.get().defaultDatasource("jboss/datasources/" + defaultDatasourceInstance.get());
+        if (!eeInstance.isUnsatisfied() && defaultDatasource != null) {
+            eeInstance.get().subresources().defaultBindingsService()
+                    .datasource("java:jboss/datasources/" + defaultDatasource);
         }
     }
 }

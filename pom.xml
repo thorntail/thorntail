@@ -1412,6 +1412,7 @@
     <module>testsuite/testsuite-container</module>
     <module>testsuite/testsuite-datasources</module>
     <module>testsuite/testsuite-datasources-config</module>
+    <module>testsuite/testsuite-datasources-defaultds</module>
     <module>testsuite/testsuite-default-deployment</module>
     <module>testsuite/testsuite-ee</module>
     <module>testsuite/testsuite-ejb</module>
