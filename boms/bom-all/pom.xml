@@ -14,7 +14,6 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>bom-all</artifactId>
 
   <name>BOM:  * : All</name>
