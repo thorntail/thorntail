@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.0" name="org.asciidoctorj">
+   <resources>
+      <artifact name="org.asciidoctor:asciidoctorj:${version.asciidoctorj}" />
+      <artifact name="com.beust:jcommander:1.35" />
+      <artifact name="org.jruby:jruby-complete:1.7.26" />
+   </resources>
+   <dependencies>
+      <module name="sun.jdk" export="true">
+         <imports>
+            <include path="sun/misc/Unsafe" />
+         </imports>
+      </module>
+      <module name="javax.management.j2ee.api" />
+      <module name="javax.api" />
+      <module name="org.slf4j" />
+   </dependencies>
+</module>
