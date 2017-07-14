@@ -8,13 +8,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
-    <artifactId>testsuite</artifactId>
+    <groupId>org.wildfly.swarm.testsuite</groupId>
+    <artifactId>testsuite-parent</artifactId>
     <version>2017.8.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>testsuite-mod_cluster</artifactId>
 
   <name>Test Suite: mod_cluster</name>
@@ -30,7 +29,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>monitor</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -48,15 +46,6 @@
     	<artifactId>httpclient</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-    	<groupId>commons-logging</groupId>
-    	<artifactId>commons-logging</artifactId>
-    	<version>1.2</version>
-      <scope>test</scope>
-    </dependency>
-
-
 
   </dependencies>
 

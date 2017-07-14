@@ -3,7 +3,7 @@
 <!--
 ~ JBoss, Home of Professional Open Source.
 ~
-~ Copyright 2016 Red Hat, Inc., and individual contributors
+~ Copyright 2017 Red Hat, Inc., and individual contributors
 ~ as indicated by the @author tags.
 ~
 ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm</artifactId>
-        <version>2017.8.0-SNAPSHOT</version>
-        <relativePath>../../</relativePath>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>build-parent</artifactId>
+      <version>2017.8.0-SNAPSHOT</version>
+      <relativePath>../../build-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>asciidoctorj</artifactId>

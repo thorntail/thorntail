@@ -14,8 +14,8 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>testsuite</artifactId>
+  <groupId>org.wildfly.swarm.testsuite</groupId>
+  <artifactId>testsuite-parent</artifactId>
 
   <packaging>pom</packaging>
 
@@ -24,7 +24,18 @@
 
   <properties>
     <browser>phantomjs</browser>
-    <version.resteasy>3.0.11.Final</version.resteasy>
+
+    <version.org.jboss.arquillian.drone>2.0.1.Final</version.org.jboss.arquillian.drone>
+    <version.org.arquillian.graphene>2.1.0.Final</version.org.arquillian.graphene>
+
+    <version.h2>1.4.187</version.h2>
+    <version.mysql>5.1.39</version.mysql>
+    <version.postgresql>9.4.1208</version.postgresql>
+
+    <version.resteasy>3.0.19.Final</version.resteasy>
+    <version.remoting>2.0.1.Final</version.remoting>
+    <version.wildfly-controller>2.2.1.Final</version.wildfly-controller>
+    <version.jackson>2.7.4</version.jackson>
     <httpclient.version>4.5</httpclient.version>
     <fluent-hc.version>4.5</fluent-hc.version>
   </properties>
@@ -57,14 +68,27 @@
         <artifactId>maven-surefire-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+        <artifactId>maven-failsafe-plugin</artifactId>
         <executions>
           <execution>
-            <id>process</id>
-            <phase>never-ever</phase>
+            <id>integration-test</id>
+            <phase>integration-test</phase>
             <goals>
-              <goal>process</goal>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <testSourceDirectory>src/it/java</testSourceDirectory>
+              <systemPropertyVariables>
+                <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+                <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <execution>
+            <id>verify-integration-test</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>verify</goal>
             </goals>
           </execution>
         </executions>
@@ -81,6 +105,19 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.jboss.arquillian.graphene</groupId>
+        <artifactId>graphene-webdriver</artifactId>
+        <version>${version.org.arquillian.graphene}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian.extension</groupId>
+        <artifactId>arquillian-drone-bom</artifactId>
+        <version>${version.org.jboss.arquillian.drone}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>${httpclient.version}</version>
@@ -90,6 +127,30 @@
         <artifactId>fluent-hc</artifactId>
         <version>${fluent-hc.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-client</artifactId>
+        <version>${version.resteasy}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.remotingjmx</groupId>
+        <artifactId>remoting-jmx</artifactId>
+        <version>${version.remoting}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.core</groupId>
+        <artifactId>wildfly-controller-client</artifactId>
+        <version>${version.wildfly-controller}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.jackson}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -97,6 +158,7 @@
     <dependency>
       <groupId>org.jboss.arquillian.graphene</groupId>
       <artifactId>graphene-webdriver</artifactId>
+      <version>${version.org.arquillian.graphene}</version>
       <type>pom</type>
       <scope>test</scope>
     </dependency>
