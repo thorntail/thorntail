@@ -41,31 +41,37 @@
         <dependency>
             <groupId>com.orientechnologies</groupId>
             <artifactId>orientdb-core</artifactId>
+            <version>${version.com.orientechnologies}</version>
         </dependency>
 
         <dependency>
             <groupId>com.orientechnologies</groupId>
             <artifactId>orientdb-graphdb</artifactId>
+            <version>${version.com.orientechnologies}</version>
         </dependency>
 
         <dependency>
             <groupId>com.orientechnologies</groupId>
             <artifactId>orientdb-object</artifactId>
+            <version>${version.com.orientechnologies}</version>
         </dependency>
 
         <dependency>
             <groupId>com.orientechnologies</groupId>
             <artifactId>orientdb-client</artifactId>
+            <version>${version.com.orientechnologies}</version>
         </dependency>
 
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
             <artifactId>blueprints-core</artifactId>
+            <version>${version.com.tinkerpop.blueprints}</version>
         </dependency>
 
         <dependency>
             <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
             <artifactId>concurrentlinkedhashmap-lru</artifactId>
+            <version>${version.com.googlecode.concurrentlinkedhashmap}</version>
         </dependency>
 
         <dependency>
@@ -75,10 +81,6 @@
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>management</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson2-provider</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
