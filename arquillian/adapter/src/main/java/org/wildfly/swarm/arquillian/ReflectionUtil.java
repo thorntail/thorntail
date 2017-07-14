@@ -45,7 +45,7 @@ public final class ReflectionUtil {
         List<Method> declaredAccessableMethods = AccessController
                 .doPrivileged((PrivilegedAction<List<Method>>) () -> {
                     List<Method> foundMethods = new ArrayList<>();
-                    for (Method method : source.getDeclaredMethods()) {
+                    for (Method method : source.getMethods()) {
                         if (method.isAnnotationPresent(annotationClass)) {
                             if (!method.isAccessible()) {
                                 method.setAccessible(true);
