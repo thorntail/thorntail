@@ -50,16 +50,8 @@
       <artifactId>jsonp</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.json</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>management</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jackson2-provider</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
