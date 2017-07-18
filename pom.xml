@@ -966,7 +966,6 @@
       </properties>
       <modules>
         <module>boms</module>
-        <module>boms/bom-dependency</module>
         <module>boms/bom-certified</module>
         <module>boms/bom</module>
       </modules>
@@ -984,7 +983,6 @@
       </properties>
       <modules>
         <module>boms</module>
-        <module>boms/bom-dependency</module>
         <module>boms/bom</module>
         <module>boms/bom-deprecated</module>
         <module>boms/bom-experimental</module>
