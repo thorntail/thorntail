@@ -54,7 +54,6 @@
 
   <dependencyManagement>
     <dependencies>
-#{dependencies}
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-bom</artifactId>
@@ -69,13 +68,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>dependency-bom</artifactId>
-        <version>${version.wildfly-swarm}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+      #{dependencies}
     </dependencies>
   </dependencyManagement>
 
