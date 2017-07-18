@@ -31,15 +31,8 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
-import static org.wildfly.swarm.spi.api.Defaultable.bool;
-import static org.wildfly.swarm.spi.api.Defaultable.ifAnyExplicitlySet;
-import static org.wildfly.swarm.spi.api.Defaultable.integer;
-import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_AJP_PORT;
-import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HOST;
-import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTPS_PORT;
-import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTP_LISTENER;
-import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTP_PORT;
-import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_SERVER;
+import static org.wildfly.swarm.spi.api.Defaultable.*;
+import static org.wildfly.swarm.undertow.UndertowProperties.*;
 
 /**
  * @author Bob McWhirter

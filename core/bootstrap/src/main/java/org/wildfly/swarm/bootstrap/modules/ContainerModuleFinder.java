@@ -89,6 +89,40 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         null,
                         ModuleIdentifier.create("javax.enterprise.api"), false));
 
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("org.apache.xalan"), true));
+
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("org.apache.xerces"), false));
+
+        builder.addDependency(
+                DependencySpec.createModuleDependencySpec(
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        PathFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        ClassFilters.acceptAll(),
+                        null,
+                        ModuleIdentifier.create("org.codehaus.woodstox"), false));
+
+
         ApplicationEnvironment environment = ApplicationEnvironment.get();
 
         environment.bootstrapModules()

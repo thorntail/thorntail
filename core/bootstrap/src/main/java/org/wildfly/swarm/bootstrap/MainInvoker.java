@@ -1,5 +1,10 @@
 package org.wildfly.swarm.bootstrap;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleLoadException;
+import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -8,11 +13,6 @@ import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
-import org.jboss.modules.ModuleLoadException;
-import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 
 /**
  * @author Bob McWhirter
