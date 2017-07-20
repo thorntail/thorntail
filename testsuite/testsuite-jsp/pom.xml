@@ -54,6 +54,12 @@
             <version>${project.version}</version>
             <executions>
               <execution>
+                <id>package</id>
+                <goals>
+                  <goal>package</goal>
+                </goals>
+              </execution>
+              <execution>
                 <id>start</id>
                 <phase>pre-integration-test</phase>
                 <goals>
@@ -62,6 +68,7 @@
                 <configuration>
                   <stdoutFile>target/stdout.log</stdoutFile>
                   <stderrFile>target/stderr.log</stderrFile>
+                  <useUberJar>true</useUberJar>
                 </configuration>
               </execution>
               <execution>
