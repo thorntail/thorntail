@@ -8,30 +8,22 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.undertow.WARArchive;
 
 @RunWith(Arquillian.class)
-public class ArquillianTest {
+public class JAXPOverrideTest {
 
     @Deployment
     public static Archive createDeployment() throws Exception {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class, "services.war");
+        deployment.addAsLibraries(Maven.resolver().resolve("saxon:saxon:8.7").withTransitivity().asFile());
         deployment.addClass(ServicesServlet.class);
         deployment.addClass(TransformerServlet.class);
         return deployment;
-    }
-
-    @Test
-    @RunAsClient
-    public void testServices() throws Exception {
-        HttpResponse response = Request.Get("http://localhost:8080/services").execute().returnResponse();
-        String responseBody = EntityUtils.toString(response.getEntity());
-        System.out.println(responseBody);
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        Assert.assertTrue(responseBody.startsWith("No TransformerFactory could be found!"));
     }
 
     @Test
@@ -40,7 +32,7 @@ public class ArquillianTest {
         HttpResponse response = Request.Get("http://localhost:8080/transformer").execute().returnResponse();
         String responseBody = EntityUtils.toString(response.getEntity());
         System.out.println(responseBody);
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        Assert.assertTrue(responseBody.startsWith("org.apache.xalan.xsltc.trax.TransformerFactoryImpl"));
+        Assert.assertTrue(responseBody.startsWith("net.sf.saxon.TransformerFactoryImpl"));
     }
 }
+

@@ -19,6 +19,7 @@ public class TransformerServlet extends HttpServlet {
         if ("__redirected.__TransformerFactory".equals(factory.getClass().getName())) {
             response.getWriter().println(factory.toString());
         } else  {
+            response.setStatus(500);
             response.getWriter().print(factory.getClass().getName());
         }
     }

@@ -22,6 +22,15 @@
   <packaging>war</packaging>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-depchain</artifactId>
+      <version>2.2.6</version>
+      <scope>test</scope>
+      <type>pom</type>
+    </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>undertow</artifactId>
@@ -36,6 +45,7 @@
       <artifactId>fluent-hc</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <profiles>
