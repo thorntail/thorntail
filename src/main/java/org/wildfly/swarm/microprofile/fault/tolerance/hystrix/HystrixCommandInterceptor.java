@@ -36,6 +36,7 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.FallbackHandler;
 import org.eclipse.microprofile.faulttolerance.Timeout;
@@ -56,7 +57,6 @@ public class HystrixCommandInterceptor {
         ExecutionContextWithInvocationContext ctx = new ExecutionContextWithInvocationContext(ic);
 
         // TODO
-        // CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
         // Retry retry = getAnnotation(method, Retry.class);
 
         CommandMetadata metadata = commandMetadataMap.computeIfAbsent(method, (key) -> new CommandMetadata(key));
@@ -104,9 +104,20 @@ public class HystrixCommandInterceptor {
         HystrixCommandProperties.Setter propertiesSetter = HystrixCommandProperties.Setter();
 
         Timeout timeout = getAnnotation(method, Timeout.class);
+        CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
+
         if (timeout != null) {
             // TODO: In theory a user might specify a long value
             propertiesSetter.withExecutionTimeoutInMilliseconds((int) Duration.of(timeout.value(), timeout.unit()).toMillis());
+        }
+
+        if (circuitBreaker != null) {
+            propertiesSetter.withCircuitBreakerEnabled(true)
+                    .withCircuitBreakerRequestVolumeThreshold(circuitBreaker.requestVolumeThreshold())
+                    .withCircuitBreakerErrorThresholdPercentage(new Double(circuitBreaker.failureRatio() * 100).intValue())
+                    .withCircuitBreakerSleepWindowInMilliseconds((int) Duration.of(circuitBreaker.delay(), circuitBreaker.delayUnit()).toMillis());
+        } else {
+            propertiesSetter.withCircuitBreakerEnabled(false);
         }
 
         return Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("DefaultCommandGroup"))
