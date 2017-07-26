@@ -248,10 +248,6 @@
       <artifactId>build-resources</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
-    </dependency>
   </dependencies>
 
   <dependencyManagement>
