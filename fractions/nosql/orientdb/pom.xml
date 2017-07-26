@@ -46,92 +46,92 @@
 
   <dependencies>
 
-      <dependency>
-        <groupId>com.orientechnologies</groupId>
-        <artifactId>orientdb-core</artifactId>
-        <exclusions>
-            <exclusion>
-                <groupId>org.xerial.snappy</groupId>
-                <artifactId>snappy-java</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-                <artifactId>concurrentlinkedhashmap-lru</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna-platform</artifactId>
-            </exclusion>
-        </exclusions>
-      </dependency>
+    <dependency>
+      <groupId>com.orientechnologies</groupId>
+      <artifactId>orientdb-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.xerial.snappy</groupId>
+          <artifactId>snappy-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+          <artifactId>concurrentlinkedhashmap-lru</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>net.java.dev.jna</groupId>
+          <artifactId>jna</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>net.java.dev.jna</groupId>
+          <artifactId>jna-platform</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-      <dependency>
-        <groupId>com.orientechnologies</groupId>
-        <artifactId>orientdb-graphdb</artifactId>
-        <exclusions>
-            <exclusion>
-                <groupId>com.orientechnologies</groupId>
-                <artifactId>orientdb-server</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>com.orientechnologies</groupId>
-                <artifactId>orientdb-tools</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>com.tinkerpop.gremlin</groupId>
-                <artifactId>gremlin-java</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>com.tinkerpop.gremlin</groupId>
-                <artifactId>gremlin-groovy</artifactId>
-            </exclusion>
-            </exclusions>
-      </dependency>
+    <dependency>
+      <groupId>com.orientechnologies</groupId>
+      <artifactId>orientdb-graphdb</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.orientechnologies</groupId>
+          <artifactId>orientdb-server</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.orientechnologies</groupId>
+          <artifactId>orientdb-tools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.tinkerpop.gremlin</groupId>
+          <artifactId>gremlin-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.tinkerpop.gremlin</groupId>
+          <artifactId>gremlin-groovy</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-      <dependency>
-        <groupId>com.orientechnologies</groupId>
-        <artifactId>orientdb-object</artifactId>
-        <exclusions>
-            <exclusion>
-                <groupId>org.hibernate.javax.persistence</groupId>
-                <artifactId>hibernate-jpa-2.0-api</artifactId>
-            </exclusion>
-        </exclusions>
-      </dependency>
+    <dependency>
+      <groupId>com.orientechnologies</groupId>
+      <artifactId>orientdb-object</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hibernate.javax.persistence</groupId>
+          <artifactId>hibernate-jpa-2.0-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-      <dependency>
-        <groupId>com.orientechnologies</groupId>
-        <artifactId>orientdb-client</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>com.orientechnologies</groupId>
+      <artifactId>orientdb-client</artifactId>
+    </dependency>
 
-      <dependency>
-        <groupId>com.tinkerpop.blueprints</groupId>
-        <artifactId>blueprints-core</artifactId>
-        <exclusions>
-            <exclusion>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>com.carrotsearch</groupId>
-                <artifactId>hppc</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>commons-configuration</groupId>
-                <artifactId>commons-configuration</artifactId>
-            </exclusion>
-        </exclusions>
-      </dependency>
+    <dependency>
+      <groupId>com.tinkerpop.blueprints</groupId>
+      <artifactId>blueprints-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.carrotsearch</groupId>
+          <artifactId>hppc</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-configuration</groupId>
+          <artifactId>commons-configuration</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-      <dependency>
-        <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-        <artifactId>concurrentlinkedhashmap-lru</artifactId>
-        <version>${version.com.googlecode.concurrentlinkedhashmap}</version>
-      </dependency>
+    <dependency>
+      <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+      <artifactId>concurrentlinkedhashmap-lru</artifactId>
+      <version>${version.com.googlecode.concurrentlinkedhashmap}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -222,9 +222,9 @@
       </exclusions>
     </dependency>
     <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>orientdb-config-api</artifactId>
-     </dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>orientdb-config-api</artifactId>
+    </dependency>
     <!-- Provided APIs -->
 
   </dependencies>

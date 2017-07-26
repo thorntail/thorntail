@@ -120,7 +120,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>org.wildfly.nosql</groupId>
       <artifactId>wildfly-mongodb-feature-pack</artifactId>
       <version>${version.wildfly.nosql.feature-pack}</version>
@@ -134,19 +134,14 @@
       </exclusions>
     </dependency>
     <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongo-java-driver</artifactId>
-        <version>${version.mongodb.driver}</version>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+      <version>${version.mongodb.driver}</version>
     </dependency>
     <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>mongo-config-api</artifactId>
-     </dependency>
-      <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>spi</artifactId>
-      </dependency>
-      <!-- Provided APIs -->
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>mongo-config-api</artifactId>
+    </dependency>
 
   </dependencies>
 

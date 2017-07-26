@@ -132,15 +132,15 @@
         </exclusion>
       </exclusions>
     </dependency>
-      <dependency>
-            <groupId>org.neo4j.driver</groupId>
-            <artifactId>neo4j-java-driver</artifactId>
-            <version>${version.neo4j.driver}</version>
-        </dependency>
     <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>neo4j-config-api</artifactId>
-     </dependency>
+      <groupId>org.neo4j.driver</groupId>
+      <artifactId>neo4j-java-driver</artifactId>
+      <version>${version.neo4j.driver}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>neo4j-config-api</artifactId>
+    </dependency>
     <!-- Provided APIs -->
 
   </dependencies>
