@@ -42,8 +42,6 @@ public class HttpSecurityPreparer implements DeploymentProcessor {
 
     private static final Logger LOG = Logger.getLogger(HttpSecurityPreparer.class);
 
-    private final String[] SUPPORTED_AUTH_METHODS = new String[]{"BASIC", "DIGEST", "FORM", "KEYCLOAK"};
-
     private final Archive archive;
 
     @Inject
