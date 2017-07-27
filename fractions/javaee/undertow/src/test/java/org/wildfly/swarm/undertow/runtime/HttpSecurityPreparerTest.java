@@ -88,7 +88,7 @@ public class HttpSecurityPreparerTest {
         preparer.process();
 
         WebAppDescriptor webXml = Descriptors.importAs(WebAppDescriptor.class).fromStream(archive.get(WebXmlAsset.NAME).getAsset().openStream());
-        assertThat(webXml.getAllLoginConfig()).isEmpty();
+        assertThat(webXml.getOrCreateLoginConfig().getAuthMethod()).isEqualTo("foobar");
     }
 
     @Test

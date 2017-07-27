@@ -42,8 +42,6 @@ public class HttpSecurityPreparer implements DeploymentProcessor {
 
     private static final Logger LOG = Logger.getLogger(HttpSecurityPreparer.class);
 
-    private final String[] SUPPORTED_AUTH_METHODS = new String[]{"BASIC", "DIGEST", "FORM", "KEYCLOAK"};
-
     private final Archive archive;
 
     @Inject
@@ -79,22 +77,10 @@ public class HttpSecurityPreparer implements DeploymentProcessor {
         WebXmlAsset webXml = war.findWebXmlAsset();
         JBossWebAsset jbossWeb = war.findJbossWebAsset();
 
-        // unsupported auth method
+        // login-config
         Map<String, Object> loginConfig = (Map<String, Object>) deploymentConfig.get("login-config");
         if (loginConfig != null) {
             String authMethod = (String) loginConfig.getOrDefault("auth-method", "NONE");
-            boolean isSupported = false;
-            for (String supported : SUPPORTED_AUTH_METHODS) {
-                if (authMethod.equals(supported)) {
-                    isSupported = true;
-                    break;
-                }
-            }
-
-            if (!isSupported) {
-                LOG.warn("Ignoring unsupported auth-method: " + authMethod);
-                return;
-            }
 
             // Setup login-config
             webXml.setLoginConfig(authMethod, "ignored");
