@@ -19,6 +19,9 @@ public class Main {
         swarm = new Swarm(args);
         swarm.start();
         Archive<?> deployment = swarm.createDefaultDeployment();
+        if (deployment == null) {
+            throw new Error("Couldn't create default deployment");
+        }
 
         Node persistenceXml = deployment.get("WEB-INF/classes/META-INF/persistence.xml");
 
