@@ -25,12 +25,14 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.DependenciesType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.DeploymentType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ExcludeSubsystemsType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ExclusionsType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.FilterType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.JBossDeploymentStructureDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ModuleDependencyType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.ModuleExclusionType;
 import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.PathSpecType;
+import org.jboss.shrinkwrap.descriptor.api.jbossdeployment13.SubsystemType;
 
 import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
 
@@ -76,6 +78,16 @@ public class JBossDeploymentStructureAsset implements Asset {
                                 .collect(Collectors.toList())
                 );
             }
+
+            ExcludeSubsystemsType<DeploymentType<JBossDeploymentStructureDescriptor>> subsystemExclusions = deployment.getOrCreateExcludeSubsystems();
+            if (subsystemExclusions != null) {
+                this.deploymentSubsystemExclusions.addAll(
+                        subsystemExclusions.getAllSubsystem()
+                                .stream()
+                                .map(SubsystemType::getName)
+                                .collect(Collectors.toList())
+                );
+            }
         }
     }
 
@@ -115,6 +127,14 @@ public class JBossDeploymentStructureAsset implements Asset {
         this.deploymentExclusions.add(module);
     }
 
+    public void excludeSubsystem(String name) {
+        if (deploymentSubsystemExclusions.contains(name)) {
+            return;
+        }
+
+        this.deploymentSubsystemExclusions.add(name);
+    }
+
     public List<Module> deploymentModules() {
         return this.deploymentModules;
     }
@@ -123,12 +143,18 @@ public class JBossDeploymentStructureAsset implements Asset {
         return this.deploymentExclusions;
     }
 
+    public List<String> deploymentSubsystemExclusions() {
+        return this.deploymentSubsystemExclusions;
+    }
+
     @Override
     public InputStream openStream() {
         // Add modules
         DeploymentType<JBossDeploymentStructureDescriptor> deployment;
 
-        if (this.deploymentExclusions.size() > 0 || this.deploymentModules.size() > 0) {
+        if (this.deploymentExclusions.size() > 0
+                || this.deploymentModules.size() > 0
+                || this.deploymentSubsystemExclusions.size() > 0) {
             deployment = this.descriptor.getOrCreateDeployment();
 
             for (Module deploymentModule : this.deploymentModules) {
@@ -188,6 +214,12 @@ public class JBossDeploymentStructureAsset implements Asset {
                         .createModule()
                         .name(excludedModule.name())
                         .slot(excludedModule.slot());
+            }
+
+            for (String excludedSubsystem : this.deploymentSubsystemExclusions) {
+                deployment.getOrCreateExcludeSubsystems()
+                        .createSubsystem()
+                        .name(excludedSubsystem);
             }
         }
 
@@ -251,4 +283,6 @@ public class JBossDeploymentStructureAsset implements Asset {
     private List<Module> deploymentModules = new ArrayList<>();
 
     private List<Module> deploymentExclusions = new ArrayList<>();
+
+    private List<String> deploymentSubsystemExclusions = new ArrayList<>();
 }
