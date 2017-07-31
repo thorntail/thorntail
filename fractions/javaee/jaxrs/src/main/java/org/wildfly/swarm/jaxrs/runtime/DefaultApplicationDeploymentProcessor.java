@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.objectweb.asm.ClassReader;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
+import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.jaxrs.JAXRSMessages;
 import org.wildfly.swarm.spi.api.Defaultable;
@@ -39,12 +40,19 @@ public class DefaultApplicationDeploymentProcessor implements DeploymentProcesso
     private final Archive archive;
 
     @Inject
+    DeploymentContext deploymentContext;
+
+    @Inject
     public DefaultApplicationDeploymentProcessor(Archive archive) {
         this.archive = archive;
     }
 
     @Override
     public void process() throws Exception {
+        if (this.deploymentContext != null && this.deploymentContext.isImplicit()) {
+            return;
+        }
+
         if (!archive.getName().endsWith(".war")) {
             return;
         }

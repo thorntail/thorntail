@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
+import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
@@ -55,12 +56,18 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
     private final Archive archive;
 
     @Inject
+    DeploymentContext deploymentContext;
+
+    @Inject
     public SwaggerArchivePreparer(Archive archive) {
         this.archive = archive;
     }
 
     @Override
     public void process() {
+        if (this.deploymentContext != null && this.deploymentContext.isImplicit()) {
+            return;
+        }
         if (archive.getName().endsWith(".war")) {
             // Create a JAX-RS deployment archive
             WARArchive deployment = archive.as(WARArchive.class);
