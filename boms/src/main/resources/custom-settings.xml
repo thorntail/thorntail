@@ -1,0 +1,35 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+   <profiles>
+      <profile>
+         <id>local-m2</id>
+         <repositories>
+            <repository>
+               <id>localCache</id>
+               <url>file://${user.home}/.m2/repository</url>
+            </repository>
+            <repository>
+               <id>jboss</id>
+               <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            </repository>
+         </repositories>
+         <pluginRepositories>
+            <pluginRepository>
+               <id>localCache</id>
+               <url>file://${user.home}/.m2/repository</url>
+            </pluginRepository>
+            <pluginRepository>
+               <id>jboss</id>
+               <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            </pluginRepository>
+         </pluginRepositories>
+      </profile>
+   </profiles>
+
+   <activeProfiles>
+      <activeProfile>local-m2</activeProfile>
+   </activeProfiles>
+</settings>

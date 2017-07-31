@@ -44,20 +44,21 @@
     <!-- OpenTracing related versions. Needed at this level because it's used by testsuite -->
     <version.opentracing>0.30.0</version.opentracing>
 
-    <!-- NoSQL related versions.  Needed at this level because it's used by testsuite --> 
+    <!-- NoSQL related versions.  Needed at this level because it's used by testsuite -->
     <version.mongodb.driver>3.2.2</version.mongodb.driver>
     <version.cassandra.driver>3.0.0</version.cassandra.driver>
     <version.neo4j.driver>1.2.1</version.neo4j.driver>
     <version.com.orientechnologies>2.2.9</version.com.orientechnologies>
     <version.com.googlecode.concurrentlinkedhashmap>1.4.1</version.com.googlecode.concurrentlinkedhashmap>
     <version.com.tinkerpop.blueprints>2.6.0</version.com.tinkerpop.blueprints>
-    
+
     <version.jruby-maven-plugin>1.1.3</version.jruby-maven-plugin>
     <version.maven-plugin-plugin>3.4</version.maven-plugin-plugin>
     <version.maven-shade-plugin>2.4.1</version.maven-shade-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
     <version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
     <version.maven.plugin.api>3.2.5</version.maven.plugin.api>
+    <version.xml-maven-plugin>1.0.1</version.xml-maven-plugin>
 
     <version.checkstyle>7.4</version.checkstyle>
 
