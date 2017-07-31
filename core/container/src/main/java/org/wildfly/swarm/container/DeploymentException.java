@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.Archive;
 public class DeploymentException extends RuntimeException {
 
     public DeploymentException(String message) {
+        super(message);
         this.archive = null;
     }
 

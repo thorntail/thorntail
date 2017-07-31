@@ -93,6 +93,10 @@ public class RuntimeDeployer implements Deployer {
     public void deploy() throws DeploymentException {
         Archive<?> deployment = createDefaultDeployment();
         if (deployment == null) {
+            String deploymentType = determineDeploymentType();
+            if ("war".equals(deploymentType)) {
+                throw DeployerMessages.MESSAGES.unableToCreateDefaultDeploymentWar();
+            }
             throw DeployerMessages.MESSAGES.unableToCreateDefaultDeployment();
         } else {
             deploy(deployment);

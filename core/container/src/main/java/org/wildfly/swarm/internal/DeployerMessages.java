@@ -53,6 +53,8 @@ public interface DeployerMessages extends BasicLogger {
     @Message(id = 5, value = "Exporting deployment to %s")
     void exportingDeployment(String exportLocation);
 
+    @Message(id = 6, value = "Unable to create default deployment of type .war, maybe missing the 'undertow' or 'jaxrs' fraction")
+    DeploymentException unableToCreateDefaultDeploymentWar();
 
 
 }

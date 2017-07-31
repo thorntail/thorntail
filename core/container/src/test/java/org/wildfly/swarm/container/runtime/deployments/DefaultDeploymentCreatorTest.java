@@ -15,13 +15,7 @@ public class DefaultDeploymentCreatorTest {
     public void testNoDeploymentFactories() throws Exception {
         DefaultDeploymentCreator creator = new DefaultDeploymentCreator();
         DefaultDeploymentFactory factory = creator.getFactory("foo");
-        assertThat(factory).isNotNull();
-        assertThat(factory.getType()).isEqualTo("foo");
-
-        Archive archive = factory.create();
-        assertThat(archive).isNotNull();
-        assertThat(archive.getName()).endsWith(".foo");
-        assertThat(archive.getContent().size()).isGreaterThan(0);
+        assertThat(factory).isNull();
     }
 
     @Test
@@ -38,6 +32,9 @@ public class DefaultDeploymentCreatorTest {
         DefaultDeploymentFactory warFactory = creator.getFactory("war");
         assertThat(warFactory).isNotNull();
         assertThat(warFactory.getType()).isEqualTo("war");
+
+        DefaultDeploymentFactory fooFactory = creator.getFactory("foo");
+        assertThat(fooFactory).isNull();
     }
 
     @Test
