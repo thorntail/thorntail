@@ -72,6 +72,18 @@ public interface JBossDeploymentStructureContainer<T extends Archive<T>> extends
         return (T) this;
     }
 
+    /** Exclude a subsystem.
+     *
+     * @param name The name of the subsystem.
+     * @return this archive.
+     */
+    @SuppressWarnings("unchecked")
+    default T excludeSubsystem(String name) {
+        getDescriptorAsset().excludeSubsystem(name);
+
+        return (T) this;
+    }
+
     /** Retrieve the underlying {@code jboss-deployment-structure.xml} descriptor asset.
      *
      * <p>This method will effectively round-trip an existing {@code .xml} file into

@@ -55,6 +55,7 @@ public class TopologyWebAppDeploymentProducer {
 
         if (fraction.exposeTopologyEndpoint()) {
             WARArchive war = ShrinkWrap.create(WARArchive.class, "topology-webapp.war");
+            war.excludeSubsystem("jaxrs");
             war.addAsWebInfResource(new StringAsset(getWebXml(fraction)), "web.xml");
             war.addClass(TopologySSEServlet.class);
             war.addModule("swarm.application");
