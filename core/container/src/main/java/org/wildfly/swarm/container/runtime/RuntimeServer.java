@@ -238,6 +238,8 @@ public class RuntimeServer implements Server {
 
             this.artifactDeployer.deploy();
 
+            deployer.implicitDeploymentsComplete();
+
             return deployer;
         }
     }

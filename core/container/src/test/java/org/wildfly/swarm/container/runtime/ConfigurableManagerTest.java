@@ -34,7 +34,7 @@ public class ConfigurableManagerTest {
 
         Archive archive = ShrinkWrap.create(JavaArchive.class, "myapp.war");
         try {
-            context.activate(archive, archive.getName());
+            context.activate(archive, archive.getName(), false);
             Component component = new Component();
             manager.scan(component);
             assertThat(component.context.get()).isEqualTo("/myapp");
@@ -56,7 +56,7 @@ public class ConfigurableManagerTest {
 
         Archive archive = ShrinkWrap.create(JavaArchive.class, "myapp.war");
         try {
-            context.activate(archive, archive.getName());
+            context.activate(archive, archive.getName(), false);
             Component component = new Component();
             manager.scan(component);
             assertThat(component.context.get()).isEqualTo("/myapp");
@@ -79,7 +79,7 @@ public class ConfigurableManagerTest {
 
         Archive archive = ShrinkWrap.create(JavaArchive.class, "myapp.war");
         try {
-            context.activate(archive, archive.getName());
+            context.activate(archive, archive.getName(), false);
             Component component = new Component();
             manager.scan(component);
             assertThat(component.context.get()).isEqualTo("/my-specific-app");
@@ -89,7 +89,7 @@ public class ConfigurableManagerTest {
 
         Archive archiveToo = ShrinkWrap.create(JavaArchive.class, "otherapp.war");
         try {
-            context.activate(archiveToo, archiveToo.getName());
+            context.activate(archiveToo, archiveToo.getName(), false);
             Component component = new Component();
             manager.scan(component);
             assertThat(component.context.get()).isEqualTo("/my-alias-app");
