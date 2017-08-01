@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>boms</artifactId>
-    <version>2017.8.0-SNAPSHOT</version>
+    <version>2017.8.0</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -111,8 +111,7 @@
                                  <stylesheet>${project.parent.basedir}/src/main/resources/licenses-transform.xsl</stylesheet>
                                  <outputDir>${project.build.directory}</outputDir>
                                  <fileMappers>
-                                    <fileMapper
-                                       implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
                                        <targetExtension>.xml</targetExtension>
                                     </fileMapper>
                                  </fileMappers>
