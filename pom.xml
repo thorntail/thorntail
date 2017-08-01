@@ -317,22 +317,22 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2017.8.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian-daemon</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2017.8.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian-adapter</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2017.8.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>arquillian-resolver</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2017.8.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -756,19 +756,19 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>hystrix</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2017.8.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2017.8.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2017.8.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
