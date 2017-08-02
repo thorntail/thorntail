@@ -115,7 +115,7 @@ public class TopologySSEServlet extends HttpServlet {
                 tags.add(secure ? "https" : "http");
                 while (listIter.hasNext()) {
                     Topology.Entry server = listIter.next();
-                    tags.add(server.getAddress() + ":" + server.getPort());
+                    tags.add(formatMaybeIpv6(server.getAddress()) + ":" + server.getPort());
                 }
                 populateEndpointAndTagsJson(json, proxyContext, tags);
             } else {
@@ -131,7 +131,7 @@ public class TopologySSEServlet extends HttpServlet {
                     }
 
                     String endpoint = (!invalidServerAddress ? (server.getTags().contains("https") ? "https" : "http") + "://" : "")
-                            + server.getAddress() + ":" + server.getPort();
+                            + formatMaybeIpv6(server.getAddress()) + ":" + server.getPort();
                     populateEndpointAndTagsJson(json, endpoint, server.getTags());
                     if (listIter.hasNext()) {
                         json.append(",");
@@ -162,6 +162,18 @@ public class TopologySSEServlet extends HttpServlet {
         }
         json.append("]");
         json.append("}");
+    }
+
+    /** This isn't very precise; org.jboss.as.network.NetworkUtils has better implementation, but that's in a private module. */
+    private String formatMaybeIpv6(String address) {
+        String openBracket = "[";
+        String closeBracket = "]";
+
+        if (address.contains(":") && !address.startsWith(openBracket) && !address.endsWith(closeBracket)) {
+            return openBracket + address + closeBracket;
+        }
+
+        return address;
     }
 
     private Topology topology;
