@@ -940,7 +940,6 @@
 
     <module>fractions/wildfly/hibernate-validator</module>
     <module>fractions/wildfly/io</module>
-    <module>fractions/wildfly/jgroups</module>
     <module>fractions/wildfly/logging</module>
     <module>fractions/wildfly/management</module>
     <module>fractions/wildfly/msc</module>
@@ -1030,7 +1029,6 @@
         <module>testsuite/testsuite-jaxrs-client</module>
         <module>testsuite/testsuite-jaxrs-ejb</module>
         <module>testsuite/testsuite-jca</module>
-        <module>testsuite/testsuite-jgroups</module>
         <module>testsuite/testsuite-jmx</module>
         <module>testsuite/testsuite-jmx-remote-remoting</module>
         <module>testsuite/testsuite-jmx-remote-management</module>
@@ -1125,6 +1123,7 @@
         <module>fractions/wildfly/hibernate-search</module>
         <module>fractions/wildfly/infinispan</module>
         <module>fractions/wildfly/jdr</module>
+        <module>fractions/wildfly/jgroups</module>
         <module>fractions/wildfly/management-console</module>
         <module>fractions/wildfly/mod_cluster</module>
         <module>fractions/wildfly/scanner</module>
@@ -1164,6 +1163,7 @@
         <module>testsuite/testsuite-infinispan</module>
         <module>testsuite/testsuite-javafx</module>
         <module>testsuite/testsuite-jdr</module>
+        <module>testsuite/testsuite-jgroups</module>
         <module>testsuite/testsuite-jolokia</module>
         <module>testsuite/testsuite-jolokia-keycloak</module>
         <module>testsuite/testsuite-keycloak-server</module>
