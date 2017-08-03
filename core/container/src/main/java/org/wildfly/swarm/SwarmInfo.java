@@ -34,7 +34,7 @@ public class SwarmInfo {
     public static final String GROUP_ID;
 
     public static boolean isProduct() {
-        return VERSION.contains("-redhat-");
+        return VERSION.contains("redhat-");
     }
 
     private SwarmInfo() {
