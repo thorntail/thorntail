@@ -124,6 +124,7 @@
         <module>netty4</module>
         <module>ognl</module>
         <module>olingo2</module>
+        <module>opentracing</module>
         <module>optaplanner</module>
         <module>paho</module>
         <module>pdf</module>

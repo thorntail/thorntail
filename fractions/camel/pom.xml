@@ -40,8 +40,8 @@
     <!-- Properties -->
     <properties>
         <!-- keep in sync -->
-        <version.wildfly.camel>4.7.0</version.wildfly.camel>
-        <version.apache.camel>2.19.0</version.apache.camel>
+        <version.wildfly.camel>4.8.0</version.wildfly.camel>
+        <version.apache.camel>2.19.2</version.apache.camel>
     </properties>
 
     <!-- Modules -->
