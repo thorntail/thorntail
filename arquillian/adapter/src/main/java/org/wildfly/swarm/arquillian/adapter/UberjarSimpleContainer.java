@@ -250,6 +250,10 @@ public class UberjarSimpleContainer implements SimpleContainer {
             tool.mainClass(mainClassName.orElse(Swarm.class.getName()));
         }
 
+        if (this.testClass != null) {
+            tool.testClass(this.testClass.getName());
+        }
+
         Archive<?> wrapped = null;
         try {
             wrapped = tool.build();

@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.objectweb.asm.ClassReader;
 import org.wildfly.swarm.fractions.scanner.ClassAndPackageScanner;
 import org.wildfly.swarm.fractions.scanner.FilePresenceScanner;
 import org.wildfly.swarm.fractions.scanner.JarScanner;
@@ -76,6 +77,23 @@ public class FractionUsageAnalyzer {
 
     public FractionUsageAnalyzer logger(final SimpleLogger log) {
         this.log = log;
+        return this;
+    }
+
+    public FractionUsageAnalyzer testClass(String testClass) {
+        this.testClass = testClass;
+
+        try {
+            ClassReader reader = new ClassReader(testClass);
+            ArquillianClientAnnotationSeekingClassVisitor visitor = new ArquillianClientAnnotationSeekingClassVisitor();
+            reader.accept(visitor, 0);
+
+            if (visitor.isClient()) {
+                removeTestClassFromScanning = true;
+            }
+        } catch (Exception e) {
+        }
+
         return this;
     }
 
@@ -176,6 +194,11 @@ public class FractionUsageAnalyzer {
     }
 
     private void scanSource(final PathSource source) {
+        if (this.removeTestClassFromScanning &&
+                transformClassSource(source.getRelativePath()).equals(testClass)) {
+            return;
+        }
+
         final String suffix = suffix(source.getSource().getFileName().toString());
 
         Collection<FractionDetector<?>> validDetectors =
@@ -197,6 +220,11 @@ public class FractionUsageAnalyzer {
     }
 
     private void scanSource(ZipEntry entry, ZipFile source) {
+        if (this.removeTestClassFromScanning &&
+                transformClassSource(entry.getName()).equals(testClass)) {
+            return;
+        }
+
         final String suffix = suffix(entry.getName());
 
         Collection<FractionDetector<?>> validDetectors =
@@ -284,6 +312,13 @@ public class FractionUsageAnalyzer {
         detectorsLoaded = true;
     }
 
+    private String transformClassSource(String entry) {
+        entry = entry.replace("WEB-INF/classes/", "");
+        entry = entry.replace(".class", "");
+        entry = entry.replace("/", ".");
+        return entry;
+    }
+
     private final List<File> sources = new ArrayList<>();
 
     private final FractionList fractionList;
@@ -296,4 +331,8 @@ public class FractionUsageAnalyzer {
 
     private SimpleLogger log = new SimpleLogger() {
     };
+
+    private String testClass;
+
+    private boolean removeTestClassFromScanning;
 }

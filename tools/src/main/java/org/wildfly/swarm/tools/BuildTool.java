@@ -92,6 +92,11 @@ public class BuildTool {
         return this;
     }
 
+    public BuildTool testClass(String testClass) {
+        this.testClass = testClass;
+        return this;
+    }
+
     public BuildTool properties(Properties properties) {
         this.properties.putAll(properties);
         return this;
@@ -314,6 +319,10 @@ public class BuildTool {
         final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer()
                 .logger(log)
                 .source(tmpFile);
+
+        if (testClass != null && !"".equals(testClass)) {
+            analyzer.testClass(testClass);
+        }
 
         final Collection<FractionDescriptor> detectedFractions = analyzer.detectNeededFractions();
 
@@ -578,6 +587,8 @@ public class BuildTool {
     private Path uberjarResourcesDirectory = null;
 
     private String mainClass;
+
+    private String testClass;
 
     private boolean bundleDependencies = true;
 
