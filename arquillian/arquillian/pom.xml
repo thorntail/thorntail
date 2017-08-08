@@ -24,6 +24,7 @@
 
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
+    <swarm.fraction.scope>test</swarm.fraction.scope>
   </properties>
 
   <build>
