@@ -122,6 +122,8 @@ import org.wildfly.swarm.spi.api.config.ConfigView;
 @Vetoed
 public class Swarm {
 
+    public static Swarm INSTANCE = null;
+
     private static final String BOOT_MODULE_PROPERTY = "boot.module.loader";
 
     public static final String APPLICATION_MODULE_NAME = "swarm.application";
@@ -352,6 +354,7 @@ public class Swarm {
      * @throws Exception if an error occurs.
      */
     public Swarm start() throws Exception {
+        INSTANCE = this;
 
         try (AutoCloseable handle = Performance.time("Swarm.start()")) {
 
@@ -640,12 +643,12 @@ public class Swarm {
     }
 
     public static void stopMain() throws Exception {
-       try {
+        try {
             if (swarm != null) {
                 swarm.stop();
             }
-       } catch (Exception e) {
-       }
+        } catch (Exception e) {
+        }
     }
 
     private static void tryToStopAfterStartupError(final Throwable errorCause, final Swarm swarm) {

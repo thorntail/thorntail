@@ -113,14 +113,13 @@ public class SwarmProcess {
                     break;
                 }
             }
-            if (process.isAlive()) {
-                process.destroyForcibly();
-            }
-        } else {
-            this.process.destroy();
-            if (!this.process.waitFor(timeout, timeUnit)) {
-                process.destroyForcibly();
-            }
+        }
+        if (!this.process.isAlive()) {
+            return process.exitValue();
+        }
+        this.process.destroy();
+        if (!this.process.waitFor(timeout, timeUnit)) {
+            process.destroyForcibly();
         }
 
         try {
