@@ -57,17 +57,17 @@ public class GradleFileSystemLayout extends FileSystemLayout {
         return rootPath;
     }
 
-    private static final String BUILD = "build";
+    protected static final String BUILD = "build";
 
-    private static final String CLASSES = "classes";
+    protected static final String CLASSES = "classes";
 
-    private static final String MAIN = "main";
+    protected static final String MAIN = "main";
 
-    private static final String RESOURCES = "resources";
+    protected static final String RESOURCES = "resources";
 
-    private static final String SRC = "src";
+    protected static final String SRC = "src";
 
-    private static final String WEBAPP = "webapp";
+    protected static final String WEBAPP = "webapp";
 
     private final Path rootPath;
 }
