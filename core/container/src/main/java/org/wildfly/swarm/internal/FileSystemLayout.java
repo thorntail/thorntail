@@ -42,7 +42,7 @@ public abstract class FileSystemLayout {
             // Maven
             return path.subpath(path.getNameCount() - 3, path.getNameCount() - 2).toString() + JAR;
         } else if (path.endsWith(BUILD_CLASSES_MAIN) || path.endsWith(BUILD_RESOURCES_MAIN)) {
-            // Gradle
+            // Gradle + Gradle 4+
             return path.subpath(path.getNameCount() - 4, path.getNameCount() - 3).toString() + JAR;
         } else {
             return UUID.randomUUID().toString() + JAR;
@@ -75,7 +75,13 @@ public abstract class FileSystemLayout {
         if (Files.exists(Paths.get(root, POM_XML))) {
             return new MavenFileSystemLayout(root);
         } else if (Files.exists(Paths.get(root, BUILD_GRADLE))) {
-            return new GradleFileSystemLayout(root);
+            // from version 4 gradle uses separate output directories for each jvm language
+
+            if (Files.exists(Paths.get(root, BUILD_CLASSES_JAVA_MAIN))) {
+                return new Gradle4FileSystemLayout(root);
+            } else if (Files.exists(Paths.get(root, BUILD_CLASSES_MAIN))) {
+                return new GradleFileSystemLayout(root);
+            }
         }
 
         throw SwarmMessages.MESSAGES.cannotIdentifyFileSystemLayout(root);
@@ -94,6 +100,8 @@ public abstract class FileSystemLayout {
     private static final String TARGET_CLASSES = "target/classes";
 
     private static final String BUILD_CLASSES_MAIN = "build/classes/main";
+
+    private static final String BUILD_CLASSES_JAVA_MAIN = "build/classes/java/main";
 
     private static final String BUILD_RESOURCES_MAIN = "build/resources/main";
 
