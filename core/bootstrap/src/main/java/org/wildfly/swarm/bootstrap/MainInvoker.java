@@ -50,6 +50,15 @@ public class MainInvoker {
 
         if (stopMethod != null) {
             stopMethod.invoke(mainClass, (Object[]) null);
+        } else {
+            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+            Class<?> swarmClass = module.getClassLoader().loadClass("org.wildfly.swarm.Swarm");
+            Field instanceField = swarmClass.getField("INSTANCE");
+            Object swarmInstance = instanceField.get(null);
+            if (swarmInstance != null) {
+                stopMethod = swarmClass.getMethod("stop");
+                stopMethod.invoke(swarmInstance);
+            }
         }
     }
 

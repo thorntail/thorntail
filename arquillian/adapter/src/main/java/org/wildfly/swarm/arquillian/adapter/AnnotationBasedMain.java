@@ -29,8 +29,6 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 public class AnnotationBasedMain {
     public static final String ANNOTATED_CLASS_NAME = "swarm.arquillian.createswarm.class";
 
-    private static Swarm swarm;
-
     protected AnnotationBasedMain() {
     }
 
@@ -56,13 +54,8 @@ public class AnnotationBasedMain {
             }
 
             boolean startEagerly = anno.startEagerly();
-            swarm = ((Swarm) method.invoke(null));
-            swarm.start().deploy();
+            ((Swarm) method.invoke(null)).start().deploy();
         }
-
     }
 
-    public static void stopMain() throws Exception {
-        swarm.stop();
-    }
 }
