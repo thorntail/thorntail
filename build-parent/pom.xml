@@ -35,7 +35,7 @@
     <version.cassandra.config-api>1.2.0</version.cassandra.config-api>
     <version.neo4j.config-api>1.2.0</version.neo4j.config-api>
     <version.orientdb.config-api>1.2.0</version.orientdb.config-api>
-    <version.wildfly.nosql.feature-pack>1.0.0.Alpha3</version.wildfly.nosql.feature-pack>
+    <version.wildfly.nosql.feature-pack>1.0.0.Alpha4</version.wildfly.nosql.feature-pack>
 
     <version.wildfly>10.1.0.Final</version.wildfly>
     <version.org.wildfly.core>2.2.1.Final</version.org.wildfly.core>
