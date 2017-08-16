@@ -105,6 +105,43 @@ public class GradleResolverTest {
     }
 
     @Test
+    public void testToGradleArtifactPath(){
+        //GIVEN
+        String group = "org.jboss.ws.cxf";
+        String artifact = "jbossws-cxf-resources";
+        String version = "5.1.5.Final";
+        ArtifactCoordinates artifactCoordinates = new ArtifactCoordinates(group, artifact, version);
+
+        //WHEN
+        GradleResolver resolver = new GradleResolver(null);
+        String artifactPath = resolver.toGradleArtifactPath(artifactCoordinates);
+
+        //THEN
+        assertEquals(
+                "org/jboss/ws/cxf/jbossws-cxf-resources/5.1.5.Final/jbossws-cxf-resources-5.1.5.Final",
+                artifactPath);
+    }
+
+    @Test
+    public void testToGradleArtifactPath_withClassifier(){
+        //GIVEN
+        String group = "org.jboss.ws.cxf";
+        String artifact = "jbossws-cxf-resources";
+        String version = "5.1.5.Final";
+        String classifier = "wildfly1000";
+        ArtifactCoordinates artifactCoordinates = new ArtifactCoordinates(group, artifact, version, classifier);
+
+        //WHEN
+        GradleResolver resolver = new GradleResolver(null);
+        String artifactPath = resolver.toGradleArtifactPath(artifactCoordinates);
+
+        //THEN
+        assertEquals(
+                "org/jboss/ws/cxf/jbossws-cxf-resources/5.1.5.Final/jbossws-cxf-resources-5.1.5.Final-wildfly1000",
+                artifactPath);
+    }
+
+    @Test
     public void testResolveArtifact() throws IOException {
         //GIVEN
         File dirFile = TempFileManager.INSTANCE.newTempDirectory("gradle", null);
