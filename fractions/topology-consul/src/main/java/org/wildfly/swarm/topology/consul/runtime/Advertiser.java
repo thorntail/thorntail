@@ -72,19 +72,17 @@ public class Advertiser implements Service<Advertiser>, Runnable {
     public void unadvertise(String name, String address, int port) {
 
         AgentClient client = this.agentClientInjector.getValue();
+        Registration r = new Registration("consul", name, address, port, "");
 
         this.advertisements
                 .stream()
+                .filter(e -> e.equals(r))
                 .forEach(e -> {
                     String serviceId = serviceId(e);
                     log.info("Deregister service " + serviceId);
                     client.deregister(serviceId);
                 });
-
-
-        this.advertisements.removeIf(e -> e.getName().equals(name) && e.getAddress().equals(address) && e.getPort() == port);
-
-
+        this.advertisements.removeIf(e -> e.equals(r));
     }
 
     @Override
