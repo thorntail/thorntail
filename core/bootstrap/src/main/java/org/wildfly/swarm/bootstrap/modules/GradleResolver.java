@@ -97,7 +97,7 @@ public class GradleResolver implements MavenResolver {
      * @return
      */
     File downloadFromRemoteRepository(ArtifactCoordinates artifactCoordinates, String packaging, Path artifactDirectory) {
-        String artifactRelativeHttpPath = artifactCoordinates.relativeArtifactPath('/');
+        String artifactRelativeHttpPath = toGradleArtifactPath(artifactCoordinates);
         String artifactRelativeMetadataHttpPath = artifactCoordinates.relativeMetadataPath('/');
         for (String remoteRepos : remoteRepositories) {
             String artifactAbsoluteHttpPath = remoteRepos + artifactRelativeHttpPath + ".";
@@ -193,6 +193,26 @@ public class GradleResolver implements MavenResolver {
         return sbFileFilter.toString();
     }
 
+    /**
+     * Build the artifact path including the classifier.
+     *
+     * @param artifactCoordinates
+     * @return
+     */
+    String toGradleArtifactPath(ArtifactCoordinates artifactCoordinates) {
+        // e.g.: org/jboss/ws/cxf/jbossws-cxf-resources/5.1.5.Final/jbossws-cxf-resources-5.1.5.Final
+        String pathWithMissingClassifier = artifactCoordinates.relativeArtifactPath('/');
+        StringBuilder sb = new StringBuilder(pathWithMissingClassifier);
+
+        if (artifactCoordinates.getClassifier() != null && artifactCoordinates.getClassifier().length() > 0) {
+            // org/jboss/ws/cxf/jbossws-cxf-resources/5.1.5.Final/jbossws-cxf-resources-5.1.5.Final-wildfly1000
+            sb
+                    .append("-")
+                    .append(artifactCoordinates.getClassifier());
+        }
+
+        return sb.toString();
+    }
 
     /**
      * Compute gradle uuid for artifacts.
