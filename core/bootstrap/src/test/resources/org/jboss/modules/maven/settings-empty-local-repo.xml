@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/settings/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+  <localRepository/>
+  <profiles>
+    <profile>
+      <id>jboss-public-repository</id>
+      <repositories>
+
+
+        <repository>
+          <id>jboss-public-repository-group</id>
+          <name>JBoss Public Maven Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+
+        <repository>
+          <id>jboss-developer-repository-group</id>
+          <name>JBoss Developer Maven Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/developer/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+
+
+    </profile>
+    <profile>
+      <id>eap-repo</id>
+      <repositories>
+        <repository>
+          <id>brew-maven-repo</id>
+          <name>Red Hat Brew repo</name>
+          <url>http://download.lab.bos.redhat.com/brewroot/repos/jb-eap-6-rhel-6-build/latest/maven/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>brew-maven-repo</id>
+          <name>Red Hat Brew repo</name>
+          <url>http://download.lab.bos.redhat.com/brewroot/repos/jb-eap-6-rhel-6-build/latest/maven/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>jboss-public-repository</activeProfile>
+  </activeProfiles>
+</settings>
