@@ -50,4 +50,7 @@ public interface TopologyMessages extends BasicLogger {
     @Message(id = 4, value = "Error stopping advertisement.")
     void errorStoppingAdvertisement(@Cause Throwable cause);
 
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 5, value = "Error sending check for %s.")
+    void errorOnCheck(String clientId, @Cause Throwable cause);
 }
