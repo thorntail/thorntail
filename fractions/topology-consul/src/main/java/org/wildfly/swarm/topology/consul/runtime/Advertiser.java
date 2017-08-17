@@ -113,6 +113,8 @@ public class Advertiser implements Service<Advertiser>, Runnable {
                             client.pass(serviceId(e));
                         } catch (NotRegisteredException ex) {
                             TopologyMessages.MESSAGES.notRegistered(e.toString(), ex);
+                        } catch (Exception ex) {
+                            TopologyMessages.MESSAGES.errorOnCheck(e.toString(), ex);
                         }
                     });
             try {
