@@ -17,6 +17,7 @@ package org.wildfly.swarm.monitor.api;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -48,11 +49,13 @@ public interface Monitor {
 
     void registerHealth(HealthMetaData metaData);
 
-    void registerHealthBean(Object obj);
+    void registerHealthBean(Object healthCheck);
+
+    void unregisterHealthBean(Object healthCheck);
 
     List<HealthMetaData> getHealthURIs();
 
-    List<Object> getHealthDelegates();
+    Set<Object> getHealthDelegates();
 
     Optional<SecurityRealm> getSecurityRealm();
 
@@ -61,4 +64,5 @@ public interface Monitor {
      * @return
      */
     long getProbeTimeoutSeconds();
+
 }

@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -167,9 +169,15 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     }
 
     @Override
-    public void registerHealthBean(Object obj) {
-        LOG.info("Adding health bean: " + obj.getClass().getName());
-        this.beans.add(obj);
+    public void registerHealthBean(Object healthCheck) {
+        LOG.info("Adding health bean: " + healthCheck.getClass().getName());
+        this.beans.add(healthCheck);
+    }
+
+    @Override
+    public void unregisterHealthBean(Object healthCheck) {
+        this.beans.remove(healthCheck);
+        LOG.info("Removed health bean: " + healthCheck.getClass().getName());
     }
 
     @Override
@@ -178,7 +186,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     }
 
     @Override
-    public List<Object> getHealthDelegates() {
+    public Set<Object> getHealthDelegates() {
         return this.beans;
     }
 
@@ -233,5 +241,5 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     private CopyOnWriteArrayList<HealthMetaData> endpoints = new CopyOnWriteArrayList<HealthMetaData>();
 
-    private CopyOnWriteArrayList<Object> beans = new CopyOnWriteArrayList<Object>();
+    private CopyOnWriteArraySet<Object> beans = new CopyOnWriteArraySet<Object>();
 }
