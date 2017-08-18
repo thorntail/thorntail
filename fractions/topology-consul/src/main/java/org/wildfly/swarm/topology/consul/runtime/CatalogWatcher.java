@@ -100,24 +100,28 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
 
         while (true) {
 
-            QueryOptions options = QueryOptions.BLANK;
+            try {
+                QueryOptions options = QueryOptions.BLANK;
 
-            if (index != null) {
-                options = ImmutableQueryOptions.builder()
-                        .wait("60s")
-                        .index(index)
-                        .build();
+                if (index != null) {
+                    options = ImmutableQueryOptions.builder()
+                            .wait("60s")
+                            .index(index)
+                            .build();
+                }
+
+                ConsulResponse<Map<String, List<String>>> services = client.getServices(options);
+
+                index = services.getIndex();
+
+                Map<String, List<String>> response = services.getResponse();
+
+                response.keySet().forEach(e -> {
+                    setupWatcher(e);
+                });
+            } catch (Exception ex) {
+                ConsulTopologyMessages.MESSAGES.errorOnCatalogUpdate(ex);
             }
-
-            ConsulResponse<Map<String, List<String>>> services = client.getServices(options);
-
-            index = services.getIndex();
-
-            Map<String, List<String>> response = services.getResponse();
-
-            response.keySet().forEach(e -> {
-                setupWatcher(e);
-            });
 
             try {
                 Thread.sleep(1000);

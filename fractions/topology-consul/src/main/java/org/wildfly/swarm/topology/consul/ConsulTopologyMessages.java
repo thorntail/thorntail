@@ -42,4 +42,8 @@ public interface ConsulTopologyMessages extends BasicLogger {
     @Message(id = 2, value = "Error stopping catalog watcher for: %s.")
     void errorSettingUpCatalogWatcher(String key, @Cause Throwable t);
 
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 3, value = "Error while querying service data from consul.")
+    void errorOnCatalogUpdate(@Cause Throwable t);
+
 }
