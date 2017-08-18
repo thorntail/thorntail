@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
@@ -124,7 +125,7 @@ public class HttpContexts implements HttpHandler {
 
     private void proxyRequestsCDI(HttpServerExchange exchange) {
 
-        List<Object> procedures = monitor.getHealthDelegates();
+        Set<Object> procedures = monitor.getHealthDelegates();
 
         if (procedures.isEmpty()) {
             noHealthEndpoints(exchange);
