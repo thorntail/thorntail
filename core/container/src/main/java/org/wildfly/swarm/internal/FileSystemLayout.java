@@ -18,6 +18,7 @@ package org.wildfly.swarm.internal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -27,6 +28,8 @@ import java.util.UUID;
  * @since 02/08/16
  */
 public abstract class FileSystemLayout {
+
+    public static final String MAVEN_CMD_LINE_ARGS = "MAVEN_CMD_LINE_ARGS";
 
     public abstract String determinePackagingType();
 
@@ -56,6 +59,7 @@ public abstract class FileSystemLayout {
      * @return a FileSystemLayout instance
      */
     public static FileSystemLayout create() {
+
         String userDir = System.getProperty(USER_DIR);
         if (null == userDir) {
             throw SwarmMessages.MESSAGES.systemPropertyNotFound(USER_DIR);
@@ -72,7 +76,9 @@ public abstract class FileSystemLayout {
      */
     public static FileSystemLayout create(String root) {
 
-        if (Files.exists(Paths.get(root, POM_XML))) {
+        String mavenBuildFile = resolveMavenBuildFileName();
+
+        if (Files.exists(Paths.get(root, mavenBuildFile))) {
             return new MavenFileSystemLayout(root);
         } else if (Files.exists(Paths.get(root, BUILD_GRADLE))) {
             // from version 4 gradle uses separate output directories for each jvm language
@@ -85,6 +91,20 @@ public abstract class FileSystemLayout {
         }
 
         throw SwarmMessages.MESSAGES.cannotIdentifyFileSystemLayout(root);
+    }
+
+    public static String resolveMavenBuildFileName() {
+        String cmdLine = System.getenv(MAVEN_CMD_LINE_ARGS);
+        String buildFileName = POM_XML;
+
+        if (cmdLine != null) {
+            MavenArgsParser args = MavenArgsParser.parse(cmdLine);
+            Optional<String> f_arg = args.get(MavenArgsParser.ARG.F);
+            if (f_arg.isPresent()) {
+                buildFileName = f_arg.get();
+            }
+        }
+        return buildFileName;
     }
 
     public abstract Path getRootPath();

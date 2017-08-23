@@ -15,19 +15,19 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
+import org.wildfly.swarm.internal.FileSystemLayout;
+import org.wildfly.swarm.internal.MavenArgsParser;
 
 /**
  * @author Ken Finnigan
  */
 public final class MavenProfileLoader {
 
-    private static final Pattern profilePattern = Pattern.compile("-P([\\w\\-,]+)");
-
+    public static final String ENV_MAVEN_CMD_LINE_ARGS = "env.MAVEN_CMD_LINE_ARGS";
     private static String[] profiles = new String[0];
 
     private static boolean profilesDiscovered = false;
@@ -36,18 +36,18 @@ public final class MavenProfileLoader {
     }
 
     public static PomEquippedResolveStage loadPom(ConfigurableMavenResolverSystem resolver) {
-        return resolver.loadPomFromFile("pom.xml", determineProfiles());
+        return resolver.loadPomFromFile(FileSystemLayout.resolveMavenBuildFileName(), determineProfiles());
     }
 
     public static String[] determineProfiles() {
         if (!profilesDiscovered) {
-            String mavenArgs = System.getProperty("env.MAVEN_CMD_LINE_ARGS");
+            String commandLine = System.getProperty(ENV_MAVEN_CMD_LINE_ARGS);
 
-            if (mavenArgs != null) {
-                final Matcher matcher = profilePattern.matcher(mavenArgs);
-                if (matcher.find()) {
-                    String activatedProfiles = matcher.group(1);
-                    profiles = activatedProfiles.split(",");
+            if (commandLine != null) {
+                MavenArgsParser args = MavenArgsParser.parse(commandLine);
+                Optional<String> p_arg = args.get(MavenArgsParser.ARG.P);
+                if (p_arg.isPresent()) {
+                    profiles = p_arg.get().split(",");
                 }
                 profilesDiscovered = true;
             }
