@@ -112,6 +112,17 @@
         git push origin master
 
 
+# Update the Reference Guide
+
+In the reference-guide repository (https://github.com/wildfly-swarm/wildfly-swarm-reference-guide)
+run the following:
+
+    rm fractions/*
+    node update.js
+
+And commit the results if any changes have occurred.  It's okay if git tells
+you that nothing has changed.
+
 # Tag the documentation
 
 For each of:
