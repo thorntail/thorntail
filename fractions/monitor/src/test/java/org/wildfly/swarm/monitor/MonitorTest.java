@@ -88,11 +88,12 @@ public class MonitorTest {
 
     @Test
     public void testJsonEncoding() {
-        org.eclipse.microprofile.health.Response healthStatus = org.eclipse.microprofile.health.Response
+        org.eclipse.microprofile.health.HealthCheckResponse healthStatus = org.eclipse.microprofile.health.HealthCheckResponse
                 .named("test")
-                .withAttribute("a", "b")
-                .withAttribute("c", "d")
-                .up();
+                .withData("a", "b")
+                .withData("c", "d")
+                .up()
+                .build();
 
         String s = HttpContexts.toJson(healthStatus);
         System.out.println(s);

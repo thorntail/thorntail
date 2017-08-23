@@ -22,7 +22,7 @@
 
 package org.wildfly.swarm.health;
 
-import org.eclipse.microprofile.health.Response;
+import org.eclipse.microprofile.health.HealthCheckResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.Optional;
 /**
  * A builder to construct a health procedure response
  */
-class BuiltResponse extends Response {
+class BuiltResponse extends HealthCheckResponse {
 
     private String name;
     private State state;
@@ -59,21 +59,21 @@ class BuiltResponse extends Response {
         return state;
     }
 
-    public Optional<Map<String, Object>> getAttributes() {
+    public Optional<Map<String, Object>> getData() {
         return attributes;
     }
 
-    public BuiltResponse withAttribute(String key, String value) {
+    public BuiltResponse withData(String key, String value) {
         getPayloadWrapper().put(key,value);
         return this;
     }
 
-    public BuiltResponse withAttribute(String key, long value) {
+    public BuiltResponse withData(String key, long value) {
         getPayloadWrapper().put(key,value);
         return this;
     }
 
-    public BuiltResponse withAttribute(String key, boolean value) {
+    public BuiltResponse withData(String key, boolean value) {
         getPayloadWrapper().put(key,value);
         return this;
     }

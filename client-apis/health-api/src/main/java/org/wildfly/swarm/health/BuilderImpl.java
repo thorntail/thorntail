@@ -44,8 +44,8 @@
 
 package org.wildfly.swarm.health;
 
-import org.eclipse.microprofile.health.Response;
-import org.eclipse.microprofile.health.ResponseBuilder;
+import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,26 +54,25 @@ import java.util.Optional;
 /**
  * A builder to construct a health procedure response
  */
-public class BuilderImpl extends ResponseBuilder {
+public class BuilderImpl extends HealthCheckResponseBuilder {
 
     private String name;
 
     private Optional<Map<String, Object>> attributes = Optional.empty();
 
-    private Response.State state;
+    private HealthCheckResponse.State state;
 
-    public Response up() {
+    public HealthCheckResponseBuilder up() {
         return state(true);
     }
 
-    public Response down() {
+    public HealthCheckResponseBuilder down() {
         return state(false);
     }
 
     @Override
-    public Response state(boolean up) {
+    public HealthCheckResponse build() {
         assertNamed();
-        this.state = up ? Response.State.UP : Response.State.DOWN;
 
         BuiltResponse response = new BuiltResponse(this.name)
                 .setState(state);
@@ -86,7 +85,13 @@ public class BuilderImpl extends ResponseBuilder {
     }
 
     @Override
-    public ResponseBuilder name(String name) {
+    public HealthCheckResponseBuilder state(boolean up) {
+        this.state = up ? HealthCheckResponse.State.UP : HealthCheckResponse.State.DOWN;
+        return this;
+    }
+
+    @Override
+    public HealthCheckResponseBuilder name(String name) {
         this.name = name;
         return this;
     }
@@ -97,19 +102,19 @@ public class BuilderImpl extends ResponseBuilder {
         }
     }
 
-    public ResponseBuilder withAttribute(String key, String value) {
+    public HealthCheckResponseBuilder withData(String key, String value) {
         Map<String, Object> payload = getPayloadWrapper();
         payload.put(key, value);
         return this;
     }
 
-    public ResponseBuilder withAttribute(String key, long value) {
+    public HealthCheckResponseBuilder withData(String key, long value) {
         Map<String, Object> payload = getPayloadWrapper();
         payload.put(key, value);
         return this;
     }
 
-    public ResponseBuilder withAttribute(String key, boolean value) {
+    public HealthCheckResponseBuilder withData(String key, boolean value) {
         Map<String, Object> payload = getPayloadWrapper();
         payload.put(key, value);
         return this;
