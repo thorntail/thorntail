@@ -29,7 +29,7 @@ import io.undertow.util.HttpString;
 import io.undertow.util.Protocols;
 import io.undertow.util.StringReadChannelListener;
 import org.eclipse.microprofile.health.HealthCheck;
-import org.eclipse.microprofile.health.Response;
+import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.monitor.HealthMetaData;
 import org.wildfly.swarm.monitor.api.Monitor;
@@ -131,10 +131,10 @@ public class HttpContexts implements HttpHandler {
             noHealthEndpoints(exchange);
         }
 
-        List<org.eclipse.microprofile.health.Response> responses = new ArrayList<>();
+        List<org.eclipse.microprofile.health.HealthCheckResponse> responses = new ArrayList<>();
 
         for (Object procedure : procedures) {
-            org.eclipse.microprofile.health.Response status = ((HealthCheck)procedure).call();
+            org.eclipse.microprofile.health.HealthCheckResponse status = ((HealthCheck)procedure).call();
             responses.add(status);
         }
 
@@ -144,12 +144,12 @@ public class HttpContexts implements HttpHandler {
         int i = 0;
         boolean failed = false;
 
-        for (org.eclipse.microprofile.health.Response resp : responses) {
+        for (org.eclipse.microprofile.health.HealthCheckResponse resp : responses) {
 
             sb.append(toJson(resp));
 
             if (!failed) {
-                failed = resp.getState() != Response.State.UP;
+                failed = resp.getState() != HealthCheckResponse.State.UP;
             }
 
             if (i < responses.size() - 1) {
@@ -384,15 +384,15 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseSender().send(monitor.threads().toJSONString(false));
     }
 
-    public static String toJson(Response status) {
+    public static String toJson(HealthCheckResponse status) {
         StringBuilder sb = new StringBuilder();
         sb.append(LCURL);
-        sb.append(QUOTE).append(ID).append("\":\"").append(status.getName()).append("\",");
-        sb.append(QUOTE).append(RESULT).append("\":\"").append(status.getState().name()).append(QUOTE);
-        if (status.getAttributes().isPresent()) {
+        sb.append(QUOTE).append("name").append("\":\"").append(status.getName()).append("\",");
+        sb.append(QUOTE).append("state").append("\":\"").append(status.getState().name()).append(QUOTE);
+        if (status.getData().isPresent()) {
             sb.append(",");
             sb.append(QUOTE).append(DATA).append("\": {");
-            Map<String, Object> atts = status.getAttributes().get();
+            Map<String, Object> atts = status.getData().get();
             int i = 0;
             for (String key : atts.keySet()) {
                 sb.append(QUOTE).append(key).append("\":").append(encode(atts.get(key)));
