@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.monitor.deployment;
 
+import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.wildfly.swarm.monitor.api.Monitor;
 
@@ -26,6 +27,7 @@ import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.Unmanaged;
+import javax.enterprise.inject.spi.WithAnnotations;
 import javax.naming.NamingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +50,7 @@ public class HealthExtension implements Extension {
         }
     }
 
-    public <T> void observeResources(@Observes ProcessAnnotatedType<T> event) {
+    public <T> void observeResources(@Observes @WithAnnotations({Health.class}) ProcessAnnotatedType<T> event) {
 
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
         Class<T> javaClass = annotatedType.getJavaClass();
