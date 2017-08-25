@@ -19,6 +19,9 @@
   <xsl:variable name="lgpl_v30_name" select="'GNU Lesser General Public License, Version 3'"/>
   <xsl:variable name="lgpl_v30_url" select="'http://www.gnu.org/licenses/lgpl-3.0-standalone.html'"/>
 
+  <xsl:variable name="bsd_name" select="'The BSD License'"/>
+  <xsl:variable name="bsd_url" select="'http://repository.jboss.org/licenses/bsd.txt'"/>
+
   <xsl:variable name="bsd_2_name" select="'BSD 2-clause &quot;Simplified&quot; License'"/>
   <xsl:variable name="bsd_2_url" select="'http://www.opensource.org/licenses/BSD-2-Clause'"/>
 
@@ -28,8 +31,8 @@
   <xsl:variable name="mit_name" select="'The MIT License'"/>
   <xsl:variable name="mit_url" select="'http://www.opensource.org/licenses/MIT'"/>
 
-  <xsl:variable name="cddl_name" select="'Common Development and Distribution License 1.1'"/>
-  <xsl:variable name="cddl_url" select="'https://glassfish.java.net/public/CDDL+GPL_1_1.html'"/>
+  <xsl:variable name="cddl_name" select="'Common Development and Distribution License (CDDL) and GNU Public License v.2 w/Classpath Exception'"/>
+  <xsl:variable name="cddl_url" select="'https://netbeans.org/cddl-gplv2.html'"/>
 
   <xsl:variable name="edl_v1_name" select="'Eclipse Distribution License, Version 1.0'"/>
   <xsl:variable name="edl_v1_url" select="'http://www.eclipse.org/org/documents/edl-v10.php'"/>
@@ -49,11 +52,60 @@
     </xsl:copy>
   </xsl:template>
 
+  <xsl:template match="licenses">
+    <xsl:choose>
+      <xsl:when test="contains(comment(), 'No license information available.')">
+        <xsl:choose>
+          <!-- antlr -->
+          <xsl:when test="ancestor::dependency/groupId/text() = 'antlr'">
+            <licenses>
+              <xsl:text>&#10;        </xsl:text>
+              <xsl:call-template name="license">
+                <xsl:with-param name="name" select="$bsd_3_name"/>
+                <xsl:with-param name="url" select="$bsd_3_url"/>
+              </xsl:call-template>
+              <xsl:text>&#10;      </xsl:text>
+            </licenses>
+          </xsl:when>
+
+          <!-- If nothing matches, leave original values -->
+          <xsl:otherwise>
+            <licenses>
+              <xsl:text>&#10;        </xsl:text>
+              <xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+              <xsl:value-of select="current()/comment()"/>
+              <xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+              <xsl:text>&#10;      </xsl:text>
+            </licenses>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+
+      <xsl:otherwise>
+        <xsl:copy>
+          <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template match="license">
     <xsl:choose>
       <!-- General license name/url fixes/alignment -->
       <!-- ASL2 -->
       <xsl:when test="contains(url/text(), 'www.apache.org/licenses/license-2.0') or starts-with(name/text(), 'AL2') or contains(name/text(), 'Apache License, Version 2.0') or contains(name/text(), 'Apache Software License, Version 2.0') or contains(url/text(), 'repository.jboss.org/licenses/apache-2.0') or contains(url/text(), 'www.opensource.org/licenses/apache2.0')">
+        <xsl:call-template name="license">
+          <xsl:with-param name="name" select="$apache_v2_name"/>
+          <xsl:with-param name="url" select="$apache_v2_url"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains(url/text(), '/LICENSE.txt') and contains(name/text(), 'The Apache Software License, Version 2.0')">
+        <xsl:call-template name="license">
+          <xsl:with-param name="name" select="$apache_v2_name"/>
+          <xsl:with-param name="url" select="$apache_v2_url"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains(url/text(), 'http://www.apache.org/licenses/LICENSE-2.0') and contains(name/text(), '')">
         <xsl:call-template name="license">
           <xsl:with-param name="name" select="$apache_v2_name"/>
           <xsl:with-param name="url" select="$apache_v2_url"/>
@@ -86,6 +138,12 @@
         </xsl:call-template>
       </xsl:when>
       <!-- BSD -->
+      <xsl:when test="contains(name/text(), 'BSD')">
+        <xsl:call-template name="license">
+          <xsl:with-param name="name" select="$bsd_name"/>
+          <xsl:with-param name="url" select="$bsd_url"/>
+        </xsl:call-template>
+      </xsl:when>
       <xsl:when test="contains(name/text(), 'The 2-Clause BSD License')">
         <xsl:call-template name="license">
           <xsl:with-param name="name" select="$bsd_2_name"/>
@@ -100,13 +158,19 @@
         </xsl:call-template>
       </xsl:when>
       <!-- CDDL -->
-      <xsl:when test="contains(url/text(), 'glassfish.java.net/public/CDDL+GPL_1_1')">
+      <xsl:when test="contains(name/text(), 'CDDL/GPLv2+CE')">
         <xsl:call-template name="license">
           <xsl:with-param name="name" select="$cddl_name"/>
           <xsl:with-param name="url" select="$cddl_url"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="contains(url/text(), 'glassfish.dev.java.net/nonav/public/CDDL+GPL')">
+      <xsl:when test="contains(name/text(), 'CDDL + GPLv2 with classpath exception')">
+        <xsl:call-template name="license">
+          <xsl:with-param name="name" select="$cddl_name"/>
+          <xsl:with-param name="url" select="$cddl_url"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains(url/text(), 'glassfish.java.net/public/CDDL+GPL') or contains(url/text(), 'glassfish.dev.java.net/nonav/public/CDDL+GPL') or contains(url/text(), 'glassfish.dev.java.net/public/CDDL+GPL')">
         <xsl:call-template name="license">
           <xsl:with-param name="name" select="$cddl_name"/>
           <xsl:with-param name="url" select="$cddl_url"/>
@@ -140,13 +204,6 @@
         <xsl:call-template name="license">
           <xsl:with-param name="name" select="'The Asm BSD License'"/>
           <xsl:with-param name="url" select="'http://asm.ow2.org/license.html'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <!-- antlr -->
-      <xsl:when test="ancestor::dependency/groupId/text() = 'antlr'">
-        <xsl:call-template name="license">
-          <xsl:with-param name="name" select="$bsd_3_name"/>
-          <xsl:with-param name="url" select="$bsd_3_url"/>
         </xsl:call-template>
       </xsl:when>
       <!-- relaxngDatatype -->
@@ -194,10 +251,13 @@
     <xsl:param name="url"/>
     <xsl:param name="origin" select="'Fixed'"/>
     <license>
+      <xsl:text>&#10;          </xsl:text>
       <!-- For debug purposes only -->
       <!-- xsl:comment><xsl:value-of select="$origin"/></xsl:comment-->
       <name><xsl:value-of select="$name"/></name>
+      <xsl:text>&#10;          </xsl:text>
       <url><xsl:value-of select="$url"/></url>
+      <xsl:text>&#10;        </xsl:text>
     </license>
   </xsl:template>
 

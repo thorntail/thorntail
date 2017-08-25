@@ -61,9 +61,6 @@
       <!-- This profile is used to generate and transform/fix licenses.xml file based on the BOM dependencies -->
       <profile>
          <id>licenses</id>
-         <activation>
-            <activeByDefault>false</activeByDefault>
-         </activation>
          <build>
             <plugins>
                <plugin>
@@ -77,12 +74,11 @@
                         </goals>
                         <configuration>
                            <template>${project.parent.build.directory}/generated-project-template.xml</template>
+                           <licensesTemplate>${project.parent.build.directory}/licenses-project-template.xml</licensesTemplate>
                            <downloadSources>true</downloadSources>
                            <downloadPoms>true</downloadPoms>
-                           <removeCommunity>false</removeCommunity>
                            <!-- Use custom settings to point to the local maven repo cache -->
                            <userSettings>${project.parent.build.directory}/custom-settings.xml</userSettings>
-                           <outputDirectory>${project.build.directory}</outputDirectory>
                            <excludes>
                               <exclude>org/codehaus/plexus/plexus/1.0.4/.*</exclude>
                            </excludes>
@@ -90,37 +86,27 @@
                      </execution>
                   </executions>
                </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>xml-maven-plugin</artifactId>
-                  <version>${version.xml-maven-plugin}</version>
-                  <executions>
-                     <execution>
-                        <id>transform-licenses</id>
-                        <goals>
-                           <goal>transform</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                           <transformationSets>
-                              <transformationSet>
-                                 <dir>${project.build.directory}</dir>
-                                 <includes>
-                                    <include>licenses.xml</include>
-                                 </includes>
-                                 <stylesheet>${project.parent.basedir}/src/main/resources/licenses-transform.xsl</stylesheet>
-                                 <outputDir>${project.build.directory}</outputDir>
-                                 <fileMappers>
-                                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                                       <targetExtension>.xml</targetExtension>
-                                    </fileMapper>
-                                 </fileMappers>
-                              </transformationSet>
-                           </transformationSets>
-                        </configuration>
-                     </execution>
-                  </executions>
-               </plugin>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                  <descriptors>
+                    <descriptor>${project.basedir}/assembly.xml</descriptor>
+                  </descriptors>
+                </configuration>
+                <executions>
+                  <execution>
+                    <id>assemble</id>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>single</goal>
+                    </goals>
+                    <configuration>
+                      <tarLongFileMode>gnu</tarLongFileMode>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
             </plugins>
          </build>
       </profile>

@@ -41,6 +41,7 @@
                   <filtering>true</filtering>
                 </resource>
               </resources>
+              <escapeString>\</escapeString>
             </configuration>
           </execution>
         </executions>
