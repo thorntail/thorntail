@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ Copyright 2017 Red Hat, Inc. and/or its affiliates. ~ ~ Licensed under
+   the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.wildfly.swarm</groupId>
+   <artifactId>generate-licence-xml</artifactId>
+   <version>1.0.0</version>
+   <packaging>pom</packaging>
+
+   <properties>
+      <license.directory>\${project.build.directory}/licenses</license.directory>
+   </properties>
+
+   <dependencies>
+      #{dependencies}
+   </dependencies>
+
+   <build>
+      <plugins>
+         <!-- First generate the licenses.xml file -->
+         <plugin>
+            <groupId>org.wildfly.maven.plugins</groupId>
+            <artifactId>licenses-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+               <execution>
+                  <id>update-licenses-xml</id>
+                  <goals>
+                     <goal>insert-versions</goal>
+                  </goals>
+                  <phase>prepare-package</phase>
+                  <configuration>
+                     <sortByGroupIdAndArtifactId>true</sortByGroupIdAndArtifactId>
+                     <licensesOutputDirectory>${license.directory}</licensesOutputDirectory>
+                     <licensesOutputFile>${license.directory}/licenses.xml</licensesOutputFile>
+                     <includeTransitiveDependencies>false</includeTransitiveDependencies>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <!-- Then transform/fix licenses.xml and generate HTML report -->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>xml-maven-plugin</artifactId>
+            <version>${version.xml-maven-plugin}</version>
+            <executions>
+               <execution>
+                  <id>transform-licenses</id>
+                  <goals>
+                     <goal>transform</goal>
+                  </goals>
+                  <phase>prepare-package</phase>
+                  <configuration>
+                     <transformationSets>
+                        <transformationSet>
+                           <dir>${license.directory}</dir>
+                           <includes>
+                              <include>licenses.xml</include>
+                           </includes>
+                           <!-- Stylesheet file is located in boms resources -->
+                           <stylesheet>${project.build.directory}/licenses-transform.xsl</stylesheet>
+                           <outputDir>${license.directory}</outputDir>
+                           <fileMappers>
+                              <fileMapper
+                                 implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                                 <targetExtension>.xml</targetExtension>
+                              </fileMapper>
+                           </fileMappers>
+                        </transformationSet>
+                        <transformationSet>
+                           <dir>${license.directory}</dir>
+                           <includes>
+                              <include>licenses.xml</include>
+                           </includes>
+                           <stylesheet>${project.build.directory}/licenses-html.xsl</stylesheet>
+                           <outputDir>${license.directory}</outputDir>
+                           <fileMappers>
+                              <fileMapper
+                                 implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                                 <targetExtension>.html</targetExtension>
+                              </fileMapper>
+                           </fileMappers>
+                           <parameters>
+                              <parameter>
+                                 <name>product</name>
+                                 <value>WildFly Swarm BOM
+                                    ${project.version}</value>
+                              </parameter>
+                           </parameters>
+                        </transformationSet>
+                     </transformationSets>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <!-- Finally download the licenses files -->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>download-licenses</goal>
+                  </goals>
+                  <phase>prepare-package</phase>
+                  <configuration>
+                     <licensesOutputDirectory>${license.directory}</licensesOutputDirectory>
+                     <licensesConfigFile>${license.directory}/licenses.xml</licensesConfigFile>
+                     <includeTransitiveDependencies>false</includeTransitiveDependencies>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
