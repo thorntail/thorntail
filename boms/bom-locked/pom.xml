@@ -35,16 +35,26 @@
         <executions>
           <execution>
             <id>generate-bom</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>generate-bom</goal>
-            </goals>
+            <phase>initialize</phase>
             <configuration>
               <stabilityIndex>5</stabilityIndex>
-              <template>${project.parent.build.directory}/bom-template.xml</template>
             </configuration>
           </execution>
+          <execution>
+            <id>prep-doc-source</id>
+            <phase>generate-sources</phase>
+          </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>jruby-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
       </plugin>
     </plugins>
 
