@@ -78,7 +78,7 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
                     maven.artifactId(),
                     maven.version(),
                     maven.type(),
-                    null,
+                    maven.classifier(),
                     null
             );
         } catch (IOException e) {
