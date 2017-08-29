@@ -23,6 +23,7 @@
          <plugin>
             <groupId>org.wildfly.maven.plugins</groupId>
             <artifactId>licenses-plugin</artifactId>
+            <version>${version.wildfly-licenses-plugin}</version>
             <inherited>false</inherited>
             <executions>
                <execution>
@@ -99,6 +100,7 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>license-maven-plugin</artifactId>
+            <version>${version.license-maven-plugin}</version>
             <inherited>false</inherited>
             <executions>
                <execution>
