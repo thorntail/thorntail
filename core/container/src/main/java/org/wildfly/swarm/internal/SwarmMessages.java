@@ -162,6 +162,11 @@ public interface SwarmMessages extends BasicLogger {
     // ------------------------------------------------------------------------
 
     @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 88888, value = "%n%n========================================================================%n%n%s%n%n========================================================================%n")
+    void usage(String message);
+
+
+    @LogMessage(level = Logger.Level.INFO)
     @Message(id = 99999, value = "WildFly Swarm is Ready")
     void wildflySwarmIsReady();
 
