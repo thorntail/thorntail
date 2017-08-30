@@ -24,4 +24,5 @@ public interface Server {
 
     Deployer deployer();
 
+    void displayUsage() throws Exception;
 }

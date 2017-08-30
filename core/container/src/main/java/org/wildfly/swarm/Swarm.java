@@ -640,6 +640,8 @@ public class Swarm {
             tryToStopAfterStartupError(t, swarm);
             throw t;
         }
+
+        displayUsage();
     }
 
     public static void stopMain() throws Exception {
@@ -666,6 +668,10 @@ public class Swarm {
                 System.exit(1);
             }
         }
+    }
+
+    private static void displayUsage() throws Exception {
+        swarm.server.displayUsage();
     }
 
     private static ArtifactLookup artifactLookup() {
