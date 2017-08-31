@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.wildfly.swarm.spi.api.ConfigurationFilter;
 import org.wildfly.swarm.spi.api.config.ConfigKey;
 import org.wildfly.swarm.spi.api.config.SimpleKey;
 
@@ -63,6 +64,10 @@ class ConfigResolutionStrategy {
         this.propertiesNode = PropertiesConfigNodeFactory.load(properties.getProperties());
         this.nodes.add(this.propertiesNode);
         this.properties = properties;
+    }
+
+    public void withFilter(ConfigurationFilter filter) {
+        this.filters.add(filter);
     }
 
     void withProperties(Properties properties) {
@@ -142,11 +147,21 @@ class ConfigResolutionStrategy {
         return nodes()
                 .map(e -> e.valueOf(key))
                 .filter(Objects::nonNull)
+                .map(v -> filter(key, v))
+                .filter(Objects::nonNull)
                 .findFirst();
+    }
+
+    Object filter(ConfigKey key, Object value) {
+        for (ConfigurationFilter filter : this.filters) {
+            value = filter.filter(key.propertyName(), value);
+        }
+        return value;
     }
 
     Stream<ConfigKey> allKeysRecursively() {
         return nodes().flatMap(e -> e.allKeysRecursively());
+
     }
 
     List<SimpleKey> simpleSubkeysOf(ConfigKey prefix) {
@@ -175,5 +190,7 @@ class ConfigResolutionStrategy {
     private ConfigNode defaults;
 
     private ConfigNode propertiesNode;
+
+    private List<ConfigurationFilter> filters = new ArrayList<>();
 
 }
