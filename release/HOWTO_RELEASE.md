@@ -2,12 +2,12 @@
 
 * Login to https://ci.wildfly-swarm.io/
 
-* Trigger a build of https://ci.wildfly-swarm.io/view/Release/job/wildfly-swarm-release/build?delay=0sec
+* [ ] Trigger a build of https://ci.wildfly-swarm.io/view/Release/job/wildfly-swarm-release/build?delay=0sec
     * Specifying release and next version (with -SNAPSHOT suffix)
 
-* Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command (Maybe add something to CI job to do this?).
+* [ ] Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command (Maybe add something to CI job to do this?).
 
-* Wait for release to be available in Maven Central before continuing with examples releases
+* [ ] Wait for release to be available in Maven Central before continuing with examples releases
 
 # JIRA Releasing
 
@@ -37,37 +37,37 @@
 
 * Checkout/rebase latest from https://github.com/wildfly-swarm/wildfly-swarm-examples
 
-* Update -examples to just released version, replacing for correct value of `2017.2.0`:
+* [ ] Update -examples to just released version, replacing for correct value of `2017.2.0`:
 
         mvn versions:set -DnewVersion=2017.2.0
 
-* Update `gradle/build.gradle` and `gradle/pom.xml` to new version
+* [ ] Update `gradle/build.gradle` and `gradle/pom.xml` to new version
 
 * Then build both regular and uberjar versions
 
-        mvn clean && mvn install 
+    [ ]    mvn clean && mvn install 
 
-        mvn clean && mvn install -Puberjar
+    [ ]    mvn clean && mvn install -Puberjar
 
 * If successful, commit the version change.
 
-        git commit -a -m 'Prepare for 2017.2.0 release'
+[ ]         git commit -a -m 'Prepare for 2017.2.0 release'
 
 * And tag it
 
-        git tag 2017.2.0
+ [ ]        git tag 2017.2.0
 
 * Then prepare for the next development version:
 
-        mvn versions:set -DnewVersion=2017.3.0-SNAPSHOT
+ [ ]        mvn versions:set -DnewVersion=2017.3.0-SNAPSHOT
 
-* Update `gradle/build.gradle` and `gradle/pom.xml` to next development version
+* [ ] Update `gradle/build.gradle` and `gradle/pom.xml` to next development version
 
 * And commit, and push it all
 
-        git commit -a -m 'Prepare for next development version'
+   [ ]      git commit -a -m 'Prepare for next development version'
 
-        git push origin master --tags
+    [ ]     git push origin master --tags
 
 
 # Tag HowTos
