@@ -6,10 +6,12 @@ swarm:
         jndi-name:  java:jboss/mongodb/test
         id: mongodbtestprofile
         module:  org.mongodb.driver.custom
-        security-domain:  mongoRealm
+# TODO enable security-domain 
+#       security-domain:  mongoRealm
         hosts:
           mongotesthost:
             outbound-socket-binding-ref: mongotesthost
+
   security:
     security-domains:
       mongoRealm:

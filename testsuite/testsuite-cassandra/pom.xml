@@ -65,4 +65,63 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>docker</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+          
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.22.1</version>
+            <configuration>
+              <images>
+                <image>
+                  <name>cassandra:3.0</name>
+                  <run>
+                    <ports>
+                      <port>9042:9042</port>
+                    </ports>
+                    <wait>
+                        <time>120000</time>
+                        <log>Starting listening for CQL clients</log>
+                    </wait>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+              <executions>
+                <execution>
+                  <id>pre-integration-test</id>
+                  <phase>pre-integration-test</phase>
+                  <goals>
+                    <goal>start</goal>
+                  </goals>
+                </execution>                        
+                <execution>
+                  <id>post-integration-test</id>
+                  <phase>post-integration-test</phase>
+                  <goals>
+                    <goal>stop</goal>
+                  </goals>
+                </execution>
+              </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
