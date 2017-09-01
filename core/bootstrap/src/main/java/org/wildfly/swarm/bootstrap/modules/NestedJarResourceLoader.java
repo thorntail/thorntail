@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -54,6 +56,9 @@ public class NestedJarResourceLoader {
                 int endLoc = urlString.indexOf(JAR_SUFFIX);
                 if (endLoc > 0) {
                     String jarPath = urlString.substring(9, endLoc + 4);
+                    //if it has spaces or other characters that would be URL encoded we need to decode them
+                    jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8.name());
+
                     File exp = exploded.get(jarPath);
                     if (exp != null) {
                         return true;
@@ -92,6 +97,9 @@ public class NestedJarResourceLoader {
                 int endLoc = urlString.indexOf(JAR_SUFFIX);
                 if (endLoc > 0) {
                     String jarPath = urlString.substring(9, endLoc + 4);
+                    //if it has spaces or other characters that would be URL encoded we need to decode them
+                    jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8.name());
+
                     File exp = exploded.get(jarPath);
                     if (exp == null) {
                         try (AutoCloseable explodingHandle = Performance.accumulate("Exploding JAR")) {
