@@ -182,16 +182,28 @@ var topology = (function() {
       return o;
     }
 
+    var initialTopologyObtained = false;
+    var result = deferred();
 
     var sse = new EventSource( options.context + "/system/stream" );
     sse.addEventListener('topologyChange', function(message) {
       console.log('topology.js: topology changed: ', message.data);
       topology = JSON.parse(message.data);
       scheduler = schedule(topology);
+
+      if (!initialTopologyObtained) {
+        initialTopologyObtained = true;
+        result.resolve(_topology);
+      }
     });
 
     sse.onerror = function(e) {
       console.log( "topology.js: topology SSE error", e );
+
+      if (!initialTopologyObtained) {
+        initialTopologyObtained = true;
+        result.reject(_topology);
+      }
     };
 
     function onTopologyChange(f) {
@@ -213,7 +225,8 @@ var topology = (function() {
       enumerable: true
     });
     Object.freeze(_topology);
-    return _topology;
+
+    return result.promise;
   }
 
   function merge(defaults, provided) {
