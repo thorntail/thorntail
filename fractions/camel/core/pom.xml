@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>camel</artifactId>
-    <version>2017.9.2</version>
+    <version>2017.10.0-SNAPSHOT</version>
   </parent>
 
   <name>Camel Core</name>
