@@ -82,6 +82,10 @@ public abstract class DriverInfo {
         // no-op, but overridable
     }
 
+    protected void addModuleDependencies(ModuleSpec.Builder builder) {
+        // no-op, but overridable
+    }
+
     protected abstract void configureDefaultDS(DataSource datasource);
 
     public boolean detect(DatasourcesFraction fraction) {
@@ -124,6 +128,7 @@ public abstract class DriverInfo {
                 builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.api")));
                 builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.transactions.api"), false, true));
                 builder.addDependency(DependencySpec.createLocalDependencySpec());
+                addModuleDependencies(builder);
 
                 return builder.create();
             });
