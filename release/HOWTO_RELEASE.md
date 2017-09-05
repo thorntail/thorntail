@@ -7,6 +7,12 @@
 
 * Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command (Maybe add something to CI job to do this?).
 
+* Update next development version in:
+	* testsuite/testsuite-cassandra/pom.xml
+	* testsuite/testsuite-mongodb/pom.xml
+	* testsuite/testsuite-neo4j/pom.xml
+	*  testsuite/testsuite-orientdb/pom.xml
+
 * Wait for release to be available in Maven Central before continuing with examples releases
 
 # JIRA Releasing
