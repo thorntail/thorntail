@@ -27,6 +27,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.util.EnumSet;
+import java.util.regex.Pattern;
 
 /**
  * @author Juraci Paixão Kröhling
@@ -38,6 +39,11 @@ public class OpenTracingInitializer implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
+
+        String skipPatternAttribute = servletContext.getInitParameter(TracingFilter.SKIP_PATTERN);
+        if (null != skipPatternAttribute && !skipPatternAttribute.isEmpty()) {
+            servletContext.setAttribute(TracingFilter.SKIP_PATTERN, Pattern.compile(skipPatternAttribute));
+        }
 
         logger.info("Registering Tracing Filter");
         servletContext
