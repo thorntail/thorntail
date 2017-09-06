@@ -948,6 +948,7 @@
 
     <module>fractions/keycloak</module>
     <module>fractions/microprofile</module>
+    <module>fractions/microprofile-jwt</module>
     <module>fractions/monitor</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>
