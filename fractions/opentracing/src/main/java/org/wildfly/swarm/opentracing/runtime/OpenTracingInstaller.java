@@ -9,7 +9,6 @@ import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 /**
@@ -21,7 +20,7 @@ public class OpenTracingInstaller implements DeploymentProcessor {
     private final Archive<?> archive;
 
     @Inject
-    private Instance<OpenTracingFraction> openTracingFraction;
+    private OpenTracingFraction fraction;
 
     @Inject
     public OpenTracingInstaller(Archive archive) {
@@ -30,8 +29,6 @@ public class OpenTracingInstaller implements DeploymentProcessor {
 
     @Override
     public void process() throws Exception {
-        OpenTracingFraction fraction = openTracingFraction.get();
-
         logger.info("Determining whether to install OpenTracing integration or not.");
         if (archive.getName().endsWith(".war")) {
             logger.logf(Logger.Level.INFO, "Installing the OpenTracing integration for the deployment %s", archive.getName());

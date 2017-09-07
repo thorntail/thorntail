@@ -16,13 +16,11 @@
 package org.wildfly.swarm.opentracing;
 
 import io.opentracing.contrib.tracerresolver.TracerResolver;
-import io.opentracing.contrib.web.servlet.filter.TracingFilter;
 import io.opentracing.mock.MockTracer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
@@ -42,7 +40,7 @@ import static org.junit.Assert.assertEquals;
  * @author Juraci Paixão Kröhling
  */
 @RunWith(Arquillian.class)
-public class OpenTracingWithSkipPatternTest {
+public class SkipPatternTest {
 
     @Deployment
     public static Archive createDeployment() throws Exception {
@@ -56,17 +54,14 @@ public class OpenTracingWithSkipPatternTest {
         // this is a simple servlet, that we can hit with our tests
         deployment.addClass(SimpleServlet.class);
         deployment.addClass(HealthServlet.class);
+        deployment.addAsResource("project-skip-pattern.yml");
 
         return deployment;
     }
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        Swarm swarm = new Swarm();
-        OpenTracingFraction fraction = new OpenTracingFraction();
-        fraction.setServletSkipPattern("/_opentracing/health");
-        swarm.fraction(fraction);
-        return swarm;
+        return new Swarm().withProfile("skip-pattern").fraction(new OpenTracingFraction());
     }
 
     @Test

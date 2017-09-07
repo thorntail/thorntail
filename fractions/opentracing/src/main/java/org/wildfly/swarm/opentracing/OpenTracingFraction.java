@@ -16,14 +16,11 @@ import java.util.Optional;
 @Configurable("swarm.opentracing")
 public class OpenTracingFraction implements Fraction<OpenTracingFraction> {
     @AttributeDocumentation("The servlet skip pattern as a Java compilable Pattern. Optional. Ex.: `/health-check`")
+    @Configurable("swarm.opentracing.servlet.skipPattern")
     private Defaultable<String> servletSkipPattern = Defaultable.string(getDefault(TracingFilter.SKIP_PATTERN));
 
     public String getServletSkipPattern() {
         return servletSkipPattern.get();
-    }
-
-    public void setServletSkipPattern(String skipPattern) {
-        servletSkipPattern.set(skipPattern);
     }
 
     private static String getDefault(String key) {
