@@ -74,4 +74,11 @@ public class FileSystemUtilsTest {
         Assert.assertEquals("myProfile", p_arg.get());
     }
 
+    @Test
+    public void faeMavenCommandLine() {
+        String cmd = "clean install -fae";
+        MavenArgsParser args = MavenArgsParser.parse(cmd);
+        Optional<String> f_arg = args.get(MavenArgsParser.ARG.F);
+        Assert.assertFalse("Should not have found a value for -f command line argument", f_arg.isPresent());
+    }
 }
