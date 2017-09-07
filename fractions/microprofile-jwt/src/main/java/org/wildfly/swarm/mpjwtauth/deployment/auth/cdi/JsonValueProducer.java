@@ -1,6 +1,7 @@
 package org.wildfly.swarm.mpjwtauth.deployment.auth.cdi;
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -26,8 +27,20 @@ public class JsonValueProducer {
 
     @Produces
     @Claim("")
+    public Optional<JsonString> getOptionalJsonString(InjectionPoint ip) {
+        return getOptionalValue(ip);
+    }
+
+    @Produces
+    @Claim("")
     public JsonNumber getJsonNumber(InjectionPoint ip) {
         return getValue(ip);
+    }
+
+    @Produces
+    @Claim("")
+    public Optional<JsonNumber> getOptionalJsonNumber(InjectionPoint ip) {
+        return getOptionalValue(ip);
     }
 
     @Produces
@@ -35,11 +48,21 @@ public class JsonValueProducer {
     public JsonArray getJsonArray(InjectionPoint ip) {
         return getValue(ip);
     }
+    @Produces
+    @Claim("")
+    public Optional<JsonArray> getOptionalJsonArray(InjectionPoint ip) {
+        return getOptionalValue(ip);
+    }
 
     @Produces
     @Claim("")
     public JsonObject getJsonObject(InjectionPoint ip) {
         return getValue(ip);
+    }
+    @Produces
+    @Claim("")
+    public Optional<JsonObject> getOptionalJsonObject(InjectionPoint ip) {
+        return getOptionalValue(ip);
     }
 
     public <T extends JsonValue> T getValue(InjectionPoint ip) {
@@ -47,6 +70,12 @@ public class JsonValueProducer {
         String name = getName(ip);
         T jsonValue = (T) MPJWTProducer.generalJsonValueProducer(name);
         return jsonValue;
+    }
+    public <T extends JsonValue> Optional<T> getOptionalValue(InjectionPoint ip) {
+        System.out.printf("JsonValueProducer(%s).produce\n", ip);
+        String name = getName(ip);
+        T jsonValue = (T) MPJWTProducer.generalJsonValueProducer(name);
+        return Optional.ofNullable(jsonValue);
     }
 
     String getName(InjectionPoint ip) {

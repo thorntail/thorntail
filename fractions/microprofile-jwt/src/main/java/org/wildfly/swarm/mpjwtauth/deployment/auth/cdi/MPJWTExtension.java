@@ -143,8 +143,12 @@ public class MPJWTExtension implements Extension {
             if (!optionalOrJsonValue(actualType)) {
                 rawTypes.add(actualType);
             } else if (!actualType.getTypeName().startsWith("javax.json.Json")) {
-                providerOptionalTypes.add(actualType);
-                providerQualifiers.add(claim);
+                // Validate that this is not an Optional<JsonValue>
+                Type innerType = ((ParameterizedType) actualType).getActualTypeArguments()[0];
+                if (!innerType.getTypeName().startsWith("javax.json.Json")) {
+                    providerOptionalTypes.add(actualType);
+                    providerQualifiers.add(claim);
+                }
             }
             rawTypeQualifiers.add(claim);
             ClaimIPType key = new ClaimIPType(claimName, actualType);

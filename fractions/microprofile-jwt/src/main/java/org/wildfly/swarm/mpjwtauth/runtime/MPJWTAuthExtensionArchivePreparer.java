@@ -34,6 +34,8 @@ import org.wildfly.swarm.mpjwtauth.MicroProfileJWTAuthFraction;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
+import org.wildfly.swarm.undertow.descriptors.JBossWebAsset;
+import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 /**
  * A DeploymentProcessor implementation for the MP-JWT custom authentication mechanism that adds support
@@ -71,8 +73,15 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         Collection<AnnotationInstance> lcAnnotations = index.getAnnotations(LOGIN_CONFIG);
         for (AnnotationInstance lc : lcAnnotations) {
             AnnotationValue authMethod = lc.value("authMethod");
+            AnnotationValue realmName = lc.value("realmName");
+            String realm = realmName != null ? realmName.asString() : "";
             if (authMethod != null) {
-                log.infof("Found LoginConfig(%s)", authMethod.asString());
+                WebXmlAsset webXml = war.findWebXmlAsset();
+                webXml.setLoginConfig(authMethod.asString(), realm);
+            }
+            if (realm.length() > 0) {
+                JBossWebAsset jBossWeb = war.findJbossWebAsset();
+                jBossWeb.setSecurityDomain(realmName.asString());
             }
         }
 
