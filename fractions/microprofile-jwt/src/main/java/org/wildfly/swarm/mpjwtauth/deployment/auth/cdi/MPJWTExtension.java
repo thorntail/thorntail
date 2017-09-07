@@ -125,7 +125,7 @@ public class MPJWTExtension implements Extension {
      *
      * @param pip - the injection point event information
      */
-    void processClaimProviderInjections(@Observes ProcessInjectionPoint<?, Provider> pip) {
+    void processClaimProviderInjections(@Observes ProcessInjectionPoint<?, ? extends Provider> pip) {
         System.out.printf("pip: %s\n", pip.getInjectionPoint());
         final InjectionPoint ip = pip.getInjectionPoint();
         if (ip.getAnnotated().isAnnotationPresent(Claim.class)) {
