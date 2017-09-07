@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import javax.enterprise.inject.Vetoed;
 
+import org.wildfly.swarm.spi.api.ConfigurationFilter;
 import org.wildfly.swarm.spi.api.config.Builder;
 import org.wildfly.swarm.spi.api.config.ConfigKey;
 import org.wildfly.swarm.spi.api.config.ConfigView;
@@ -125,6 +126,10 @@ public class ConfigViewImpl implements ConfigView {
      */
     public Object valueOf(ConfigKey key) {
         return this.strategy.valueOf(key);
+    }
+
+    public void withFilter(ConfigurationFilter filter) {
+        this.strategy.withFilter(filter);
     }
 
     void withProfile(String... names) {

@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -765,7 +766,7 @@ public class ConfigurableManager implements AutoCloseable {
 
         List<ConfigurableHandle> sorted = this.configurables
                 .stream()
-                .sorted((l, r) -> l.key().name().compareTo(r.key().name()))
+                .sorted(Comparator.comparing(l -> l.key().name()))
                 .collect(Collectors.toList());
 
         boolean first = true;

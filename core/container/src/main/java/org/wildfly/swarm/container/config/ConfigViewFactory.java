@@ -27,6 +27,7 @@ import java.util.Properties;
 import javax.enterprise.inject.Vetoed;
 
 import org.jboss.modules.ModuleLoadException;
+import org.wildfly.swarm.spi.api.ConfigurationFilter;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -212,6 +213,11 @@ public class ConfigViewFactory {
     public void withProperty(String name, String value) {
         this.configView.withProperty(name, value);
     }
+
+    public void withFilter(ConfigurationFilter filter) {
+        this.configView.withFilter(filter);
+    }
+
 
     private List<ConfigLocator> locators = new ArrayList<>();
 
