@@ -21,6 +21,9 @@
   <description>Health API</description>
 
   <packaging>jar</packaging>
+  <properties>
+    <version.mp.health>1.0.0-RC2</version.mp.health>
+  </properties>
 
   <build>
     <resources>
@@ -46,7 +49,7 @@
     <dependency>
        <groupId>org.eclipse.microprofile.health</groupId>
        <artifactId>microprofile-health-api</artifactId>
-       <version>1.0-SNAPSHOT</version>
+       <version>${version.mp.health}</version>
       <scope>provided</scope>
      </dependency>
 
