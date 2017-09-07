@@ -23,6 +23,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.SocketBinding;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
@@ -34,19 +35,56 @@ import org.wildfly.swarm.spi.api.config.SimpleKey;
  * Created by bob on 7/5/17.
  */
 @ApplicationScoped
-public class SocketBindingGroupConfigurer {
+public class NetworkConfigurer {
 
-    private static ConfigKey ROOT = ConfigKey.of("swarm", "network", "socket-binding-groups");
+    private static final ConfigKey SWARM = ConfigKey.of("swarm");
+
+    private static ConfigKey ROOT = SWARM.append("network", "socket-binding-groups");
 
     public void configure() {
+        for (Interface each : this.interfaces) {
+            configure(each);
+        }
         for (SocketBindingGroup each : this.socketBindingGroups) {
             configure(each);
         }
     }
 
+    protected void configure(Interface iface) {
+        fixInterface(iface);
+    }
+
+    protected void fixInterface(Interface iface) {
+        if (iface.getName().equals("public")) {
+            String bind = (String) this.configView.valueOf(SWARM.append("bind", "address"));
+            if (bind != null) {
+                iface.setExpression(bind);
+            }
+        } else {
+            String bind = (String) this.configView.valueOf(SWARM.append("bind", iface.getName(), "address"));
+            if (bind != null) {
+                iface.setExpression(bind);
+            }
+        }
+    }
+
     protected void configure(SocketBindingGroup group) {
+        fixGroup(group);
         fixSocketBindings(group);
         fixOutboundSocketBindings(group);
+    }
+
+    protected void fixGroup(SocketBindingGroup group) {
+        ConfigKey key = ROOT.append(group.name());
+
+        int offset = this.configView.resolve(SWARM.append("port", "offset")).as(Integer.class).withDefault(0).getValue();
+
+        group.portOffset(offset);
+
+        applyConfiguration(key.append("port-offset"), (portOffset) -> {
+            group.portOffset(portOffset.toString());
+        });
+
     }
 
     protected void fixSocketBindings(SocketBindingGroup group) {
@@ -136,6 +174,10 @@ public class SocketBindingGroupConfigurer {
 
     @Inject
     private ConfigView configView;
+
+    @Inject
+    @Any
+    private Instance<Interface> interfaces;
 
     @Inject
     @Any
