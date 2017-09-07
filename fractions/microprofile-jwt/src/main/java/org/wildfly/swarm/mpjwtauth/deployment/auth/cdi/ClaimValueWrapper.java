@@ -13,7 +13,6 @@ public class ClaimValueWrapper<T> implements ClaimValue<T> {
     private T value;
 
     public ClaimValueWrapper(String name) {
-        System.err.printf("ClaimValueWrapper[@%s](%s)\n", Integer.toHexString(hashCode()), name);
         this.name = name;
     }
 

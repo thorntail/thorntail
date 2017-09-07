@@ -21,6 +21,7 @@ import javax.json.JsonValue;
 
 import org.eclipse.microprofile.jwt.ClaimValue;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jboss.logging.Logger;
 
 /**
  * A class that tracks the current validated MP-JWT and associated JsonWebToken via a thread
@@ -30,6 +31,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
  */
 @ApplicationScoped
 public class MPJWTProducer {
+    private static Logger log = Logger.getLogger(MPJWTProducer.class);
     private static final String TMP = "tmp";
     private static ThreadLocal<JsonWebToken> currentPrincipal = new ThreadLocal<>();
 
@@ -43,15 +45,15 @@ public class MPJWTProducer {
 
     @PostConstruct
     void init() {
-        System.err.println("MPJWTProducer initialized");
+        log.debug("MPJWTProducer initialized");
     }
 
     void observeRequestInitialized(@Observes @Initialized(RequestScoped.class) Object event) {
-        System.err.printf("observeRequestInitialized, event=%s\n", event);
+        log.tracef("observeRequestInitialized, event=%s", event);
     }
 
     void observeRequestDestroyed(@Observes @Destroyed(RequestScoped.class) Object event) {
-        System.err.printf("observeRequestDestroyed, event=%s\n", event);
+        log.tracef("observeRequestDestroyed, event=%s", event);
     }
 
     /**
@@ -95,15 +97,15 @@ public class MPJWTProducer {
     public static <T> T getValue(String name, boolean isOptional) {
         JsonWebToken jwt = getJWTPrincpal();
         if (jwt == null) {
-            System.out.printf("getValue(%s), null JsonWebToken\n", name);
+            log.debugf("getValue(%s), null JsonWebToken", name);
             return null;
         }
 
         Optional<T> claimValue = jwt.claim(name);
         if (!isOptional && !claimValue.isPresent()) {
-            System.err.printf("Failed to find Claim for: %s\n", name);
+            log.debugf("Failed to find Claim for: %s", name);
         }
-        System.out.printf("getValue(%s), isOptional=%s, claimValue=%s\n", name, isOptional, claimValue);
+        log.debugf("getValue(%s), isOptional=%s, claimValue=%s", name, isOptional, claimValue);
         return claimValue.orElse(null);
     }
 

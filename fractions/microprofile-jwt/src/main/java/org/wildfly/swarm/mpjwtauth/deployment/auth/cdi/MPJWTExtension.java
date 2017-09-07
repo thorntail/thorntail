@@ -27,6 +27,7 @@ import javax.inject.Provider;
 
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
+import org.jboss.logging.Logger;
 import org.wildfly.swarm.mpjwtauth.deployment.auth.JWTAuthMechanism;
 
 /**
@@ -44,6 +45,8 @@ import org.wildfly.swarm.mpjwtauth.deployment.auth.JWTAuthMechanism;
  * @see JWTAuthMechanism
  */
 public class MPJWTExtension implements Extension {
+    private static Logger log = Logger.getLogger(MPJWTExtension.class);
+
     /**
      * Register the MPJWTProducer JsonWebToken producer bean
      *
@@ -51,9 +54,8 @@ public class MPJWTExtension implements Extension {
      * @param beanManager cdi bean manager
      */
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager beanManager) {
-        System.out.printf("MPJWTExtension(1.0.2), added JWTPrincipalProducer\n");
+        log.debugf("MPJWTExtension(), added JWTPrincipalProducer");
         bbd.addAnnotatedType(beanManager.createAnnotatedType(MPJWTProducer.class));
-        //bbd.addAnnotatedType(beanManager.createAnnotatedType(CustomClaimProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(RawClaimTypeProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(ClaimValueProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(JsonValueProducer.class));
@@ -67,11 +69,10 @@ public class MPJWTExtension implements Extension {
      * @see ClaimProviderBeanAttributes
      */
     public void addTypeToClaimProducer(@Observes ProcessBeanAttributes pba) {
-        //System.out.printf("addTypeToClaimProducer, checking: %s\n", pba.getAnnotated());
         if (pba.getAnnotated().isAnnotationPresent(Claim.class)) {
             Claim claim = pba.getAnnotated().getAnnotation(Claim.class);
             if (claim.value().length() == 0 && claim.standard() == Claims.UNKNOWN) {
-                System.out.printf("addTypeToClaimProducer: %s\n", pba.getAnnotated());
+                log.debugf("addTypeToClaimProducer: %s\n", pba.getAnnotated());
                 BeanAttributes delegate = pba.getBeanAttributes();
                 String name = delegate.getName();
                 if (delegate.getTypes().contains(Optional.class)) {
@@ -84,22 +85,20 @@ public class MPJWTExtension implements Extension {
                         rawTypes.add(Object.class);
                     }
                     pba.setBeanAttributes(new ClaimProviderBeanAttributes(delegate, rawTypes, rawTypeQualifiers));
-                    System.out.printf("Setup RawClaimTypeProducer BeanAttributes\n");
+                    log.debugf("Setup RawClaimTypeProducer BeanAttributes");
                 }
             }
         }
     }
 
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
-        System.err.println("afterDeploymentValidation");
     }
 
     void doProcessProducers(@Observes ProcessProducer pp) {
-        System.out.printf("pp: %s, %s\n", pp.getAnnotatedMember(), pp.getProducer());
     }
 
     void processClaimValueInjections(@Observes ProcessInjectionPoint pip) {
-        System.out.printf("pipRaw: %s\n", pip.getInjectionPoint());
+        log.debugf("pipRaw: %s", pip.getInjectionPoint());
         InjectionPoint ip = pip.getInjectionPoint();
         if (ip.getAnnotated().isAnnotationPresent(Claim.class) && ip.getType() instanceof Class) {
             Class rawClass = (Class) ip.getType();
@@ -107,7 +106,7 @@ public class MPJWTExtension implements Extension {
                 Claim claim = ip.getAnnotated().getAnnotation(Claim.class);
                 rawTypes.add(ip.getType());
                 rawTypeQualifiers.add(claim);
-                System.out.printf("+++ Added Claim raw type: %s\n", ip.getType());
+                log.debugf("+++ Added Claim raw type: %s", ip.getType());
                 Class declaringClass = ip.getMember().getDeclaringClass();
                 Annotation[] appScoped = declaringClass.getAnnotationsByType(ApplicationScoped.class);
                 Annotation[] sessionScoped = declaringClass.getAnnotationsByType(SessionScoped.class);
@@ -126,7 +125,7 @@ public class MPJWTExtension implements Extension {
      * @param pip - the injection point event information
      */
     void processClaimProviderInjections(@Observes ProcessInjectionPoint<?, ? extends Provider> pip) {
-        System.out.printf("pip: %s\n", pip.getInjectionPoint());
+        log.debugf("pip: %s", pip.getInjectionPoint());
         final InjectionPoint ip = pip.getInjectionPoint();
         if (ip.getAnnotated().isAnnotationPresent(Claim.class)) {
             Claim claim = ip.getAnnotated().getAnnotation(Claim.class);
@@ -135,7 +134,7 @@ public class MPJWTExtension implements Extension {
             }
             boolean usesEnum = claim.standard() != Claims.UNKNOWN;
             final String claimName = usesEnum ? claim.standard().name() : claim.value();
-            System.out.printf("Checking Provider Claim(%s), ip: %s\n", claimName, ip);
+            log.debugf("Checking Provider Claim(%s), ip: %s", claimName, ip);
             ClaimIP claimIP = claims.get(claimName);
             Type matchType = ip.getType();
             Type actualType = ((ParameterizedType) matchType).getActualTypeArguments()[0];
@@ -158,7 +157,7 @@ public class MPJWTExtension implements Extension {
                 claims.put(key, claimIP);
             }
             claimIP.getInjectionPoints().add(ip);
-            System.out.printf("+++ Added Provider Claim(%s) ip: %s\n", claimName, ip);
+            log.debugf("+++ Added Provider Claim(%s) ip: %s", claimName, ip);
 
         }
     }
@@ -170,7 +169,7 @@ public class MPJWTExtension implements Extension {
      * @param beanManager - CDI bean manager
      */
     void observesAfterBeanDiscovery(@Observes final AfterBeanDiscovery event, final BeanManager beanManager) {
-        System.out.printf("handleClaimInjections, %s\n", claims);
+        log.debugf("observesAfterBeanDiscovery, %s", claims);
         installClaimValueProducerMethodsViaSyntheticBeans(event, beanManager);
 
         //installClaimValueProducesViaTemplateType(event, beanManager);

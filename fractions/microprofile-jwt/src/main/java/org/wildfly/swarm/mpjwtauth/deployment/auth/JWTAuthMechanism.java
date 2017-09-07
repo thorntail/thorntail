@@ -98,7 +98,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
                             jbSC.getUtil().createSubjectInfo(jwtPrincipal, bearerToken, subject);
                             RoleGroup roles = extract(subject);
                             jbSC.getUtil().setRoles(roles);
-                            UndertowLogger.SECURITY_LOGGER.infof("Authenticated caller(%s) for path(%s) with roles: %s",
+                            UndertowLogger.SECURITY_LOGGER.debugf("Authenticated caller(%s) for path(%s) with roles: %s",
                                     credential.getName(), exchange.getRequestPath(), account.getRoles());
                             return AuthenticationMechanismOutcome.AUTHENTICATED;
                         } else {

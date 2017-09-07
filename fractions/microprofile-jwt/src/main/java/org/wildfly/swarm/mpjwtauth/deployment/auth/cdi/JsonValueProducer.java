@@ -13,11 +13,13 @@ import javax.json.JsonValue;
 
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
+import org.jboss.logging.Logger;
 
 /**
  * A producer for JsonValue injection types
  */
 public class JsonValueProducer {
+    private static Logger log = Logger.getLogger(JsonValueProducer.class);
 
     @Produces
     @Claim("")
@@ -66,13 +68,13 @@ public class JsonValueProducer {
     }
 
     public <T extends JsonValue> T getValue(InjectionPoint ip) {
-        System.out.printf("JsonValueProducer(%s).produce\n", ip);
+        log.debugf("JsonValueProducer(%s).produce", ip);
         String name = getName(ip);
         T jsonValue = (T) MPJWTProducer.generalJsonValueProducer(name);
         return jsonValue;
     }
     public <T extends JsonValue> Optional<T> getOptionalValue(InjectionPoint ip) {
-        System.out.printf("JsonValueProducer(%s).produce\n", ip);
+        log.debugf("JsonValueProducer(%s).produce", ip);
         String name = getName(ip);
         T jsonValue = (T) MPJWTProducer.generalJsonValueProducer(name);
         return Optional.ofNullable(jsonValue);

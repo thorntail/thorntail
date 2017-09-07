@@ -24,10 +24,13 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ServiceLoader;
 
+import org.jboss.logging.Logger;
+
 /**
  * The factory class that provides the token string to JWTCallerPrincipal parsing for a given implementation.
  */
 public abstract class JWTCallerPrincipalFactory {
+    private static Logger log = Logger.getLogger(JWTCallerPrincipalFactory.class);
     private static JWTCallerPrincipalFactory instance;
 
     /**
@@ -82,7 +85,7 @@ public abstract class JWTCallerPrincipalFactory {
         if (instance == null) {
             ServiceLoader<JWTCallerPrincipalFactory> sl = ServiceLoader.load(JWTCallerPrincipalFactory.class, cl);
             URL u = cl.getResource("/META-INF/services/org.eclipse.microprofile.jwt.principal.JWTCallerPrincipalFactory");
-            System.out.printf("JWTCallerPrincipalFactory, cl=%s, u=%s, sl=%s\n", cl, u, sl);
+            log.debugf("loadSpi, cl=%s, u=%s, sl=%s", cl, u, sl);
             try {
                 for (JWTCallerPrincipalFactory spi : sl) {
                     if (instance != null) {
@@ -91,12 +94,12 @@ public abstract class JWTCallerPrincipalFactory {
                                         + spi.getClass().getName() + " and "
                                         + instance.getClass().getName());
                     } else {
-                        System.out.printf("sl=%s, loaded=%s\n", sl, spi);
+                        log.debugf("sl=%s, loaded=%s", sl, spi);
                         instance = spi;
                     }
                 }
             } catch (Throwable e) {
-                System.err.printf("Warning: %s\n", e.getMessage());
+                log.warn("Failed to locate JWTCallerPrincipalFactory provider", e);
             }
         }
         return instance;

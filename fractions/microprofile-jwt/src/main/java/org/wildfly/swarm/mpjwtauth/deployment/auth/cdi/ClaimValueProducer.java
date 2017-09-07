@@ -20,7 +20,6 @@ public class ClaimValueProducer<T> {
     @Produces
     @Claim("")
     ClaimValue<T> produce(InjectionPoint ip) {
-        System.out.printf("ClaimValueProducer(%s).produce\n", ip);
         String name = getName(ip);
         ClaimValue<Optional<T>> cv = MPJWTProducer.generalClaimValueProducer(name);
         ClaimValue<T> returnValue = (ClaimValue<T>) cv;

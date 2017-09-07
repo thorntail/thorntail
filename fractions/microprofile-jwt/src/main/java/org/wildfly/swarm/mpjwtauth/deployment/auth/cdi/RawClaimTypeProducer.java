@@ -10,13 +10,15 @@ import javax.inject.Named;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.ClaimValue;
 import org.eclipse.microprofile.jwt.Claims;
+import org.jboss.logging.Logger;
 
 public class RawClaimTypeProducer {
+    private static Logger log = Logger.getLogger(RawClaimTypeProducer.class);
     @Produces
     @Claim("")
     @Named("RawClaimTypeProducer#getValue")
     public Object getValue(InjectionPoint ip) {
-        System.out.printf("RawClaimTypeProducer(%s).getValue\n", ip);
+        log.debugf("getValue(%s)", ip);
         String name = getName(ip);
         ClaimValue<Optional<Object>> cv = MPJWTProducer.generalClaimValueProducer(name);
         Optional<Object> value = cv.getValue();
@@ -28,7 +30,7 @@ public class RawClaimTypeProducer {
     @Claim("")
     @Named("RawClaimTypeProducer#getOptionalValue")
     public Optional getOptionalValue(InjectionPoint ip) {
-        System.out.printf("RawClaimTypeProducer(%s).getOptionalValue\n", ip);
+        log.debugf("getOptionalValue(%s)", ip);
         String name = getName(ip);
         ClaimValue<Optional<Object>> cv = MPJWTProducer.generalClaimValueProducer(name);
         Optional<Object> value = cv.getValue();
