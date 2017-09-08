@@ -19,8 +19,14 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.wildfly.swarm.container.Interface;
+import org.wildfly.swarm.spi.api.SocketBindingGroup;
 
 /**
  * Created by bob on 8/30/17.
@@ -28,7 +34,14 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class UsageCreator {
 
-    @Inject
+    public UsageCreator() {
+    }
+
+    @PostConstruct
+    public void setupDelegateSupplier() {
+        this.supplier = new NetworkVariableSupplier(this.interfaces, this.socketBindingGroups, this.supplier);
+    }
+
     public UsageCreator(UsageProvider provider, UsageVariableSupplier supplier) {
         this.provider = provider;
         this.supplier = supplier;
@@ -74,8 +87,19 @@ public class UsageCreator {
 
     private static final Pattern PATTERN = Pattern.compile("[^\\\\]?(\\$\\{([^}]+)\\})");
 
-    private final UsageProvider provider;
+    @Inject
+    private UsageProvider provider;
 
-    private final UsageVariableSupplier supplier;
+    @Inject
+    private UsageVariableSupplier supplier;
+
+    @Inject
+    @Any
+    private Instance<SocketBindingGroup> socketBindingGroups;
+
+    @Inject
+    @Any
+    private Instance<Interface> interfaces;
+
 
 }
