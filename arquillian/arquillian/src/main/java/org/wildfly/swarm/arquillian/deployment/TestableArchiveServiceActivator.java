@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.Services;
+import org.jboss.msc.service.AbstractServiceListener;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceActivatorContext;
+import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
+import org.jboss.msc.service.StartException;
 import org.wildfly.swarm.arquillian.daemon.server.Server;
 
 /**
@@ -31,6 +34,18 @@ public class TestableArchiveServiceActivator implements ServiceActivator {
             String archiveName = String.join("", lines).trim();
 
             TestableArchiveService testableArchiveService = new TestableArchiveService(archiveName);
+
+            context.getServiceTarget().addListener(new AbstractServiceListener<Object>() {
+                @Override
+                public void transition(ServiceController<?> controller, ServiceController.Transition transition) {
+                    if (transition.enters(ServiceController.State.START_FAILED)) {
+                        StartException exception = controller.getStartException();
+                        Throwable cause = exception.getCause();
+                        testableArchiveService.setError(cause);
+                    }
+                }
+            });
+
             context.getServiceTarget()
                     .addService(TestableArchiveService.NAME, testableArchiveService)
                     .addDependency(ServiceName.of("wildfly", "swarm", "arquillian", "daemon"), Server.class, testableArchiveService.serverInjector)
