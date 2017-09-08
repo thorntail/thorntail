@@ -165,7 +165,6 @@ public class Server {
             @Override
             public void publish(final LogRecord record) {
                 System.out.println(PREFIX + record.getMessage());
-
             }
 
             @Override
@@ -242,8 +241,17 @@ public class Server {
         this.deploymentUnit = deploymentUnit;
     }
 
+    public void setError(Throwable error) {
+        this.error = error;
+    }
+
+
     protected final Serializable executeTest(final String testClassName, final String methodName) {
         return new TestRunner(deploymentUnit).executeTest(testClassName, methodName);
+    }
+
+    protected Serializable checkDeployment() {
+        return this.error;
     }
 
     /**
@@ -285,6 +293,8 @@ public class Server {
 
     private boolean running;
 
+    private Throwable error;
+
     /**
      * Handler for all {@link String}-based commands to the server as specified in {@link WireProtocol}
      *
@@ -323,7 +333,15 @@ public class Server {
             // We want to catch any and all errors to to write out a proper response to the client
             try {
                 // Stop
-                if (WireProtocol.COMMAND_STOP.equals(message)) {
+                if (WireProtocol.COMMAND_CHECK_DEPLOYMENT.equals(message)) {
+                    Serializable error = Server.this.checkDeployment();
+                    ObjectOutputStream objectOutstream = null;
+                    ByteBuf out = ctx.alloc().buffer();
+                    objectOutstream = new ObjectOutputStream(new ByteBufOutputStream(out));
+                    objectOutstream.writeObject(error);
+                    objectOutstream.flush();
+                    ctx.writeAndFlush(out);
+                } else if (WireProtocol.COMMAND_STOP.equals(message)) {
 
                     // Set the response to tell the client OK
                     Server.sendResponse(ctx, WireProtocol.RESPONSE_OK_PREFIX + message)

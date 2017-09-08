@@ -39,6 +39,10 @@ public class TestableArchiveService implements Service<Void> {
         return null;
     }
 
+    public void setError(Throwable cause) {
+        this.serverInjector.getValue().setError(cause);
+    }
+
     private String archiveName;
 
     public final InjectedValue<Server> serverInjector = new InjectedValue<>();

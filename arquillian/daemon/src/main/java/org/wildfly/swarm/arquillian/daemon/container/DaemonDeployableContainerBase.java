@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -107,6 +108,25 @@ public abstract class DaemonDeployableContainerBase<CONFIGTYPE extends DaemonCon
             this.socketInstream = socketInstream;
             final BufferedReader reader = new BufferedReader(new InputStreamReader(socketInstream));
             this.reader = reader;
+
+            final StringBuilder builder = new StringBuilder();
+            builder.append(WireProtocol.COMMAND_CHECK_DEPLOYMENT);
+            builder.append(WireProtocol.COMMAND_EOF_DELIMITER);
+            final String checkCommand = builder.toString();
+            // Request
+            writer.write(checkCommand);
+            writer.flush();
+
+            Throwable error = null;
+            try {
+                final ObjectInputStream response = new ObjectInputStream(socketInstream);
+                error = (Throwable) response.readObject();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            if (error != null) {
+                throw new LifecycleException(error.getMessage(), error);
+            }
         } catch (final IOException ioe) {
             this.closeRemoteResources();
             throw new LifecycleException("Could not open connection to remote process", ioe);
