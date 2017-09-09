@@ -22,9 +22,9 @@
   <packaging>pom</packaging>
 
   <scm>
-    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
-    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
-    <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
+    <connection>scm:git:git@github.com:MicroProfileJWT/wildfly-swarm-mp1.2.git</connection>
+    <developerConnection>scm:git:git@github.com:MicroProfileJWT/wildfly-swarm-mp1.2.git</developerConnection>
+    <url>https://github.com/MicroProfileJWT/wildfly-swarm-mp1.2</url>
     <tag>HEAD</tag>
   </scm>
 
