@@ -154,7 +154,6 @@ public class NestedJarResourceLoader {
                     BootstrapUtil.explodeJar(jarFile, tmpDir.getAbsolutePath());
 
                     jarFile.close();
-                    file.delete();
 
                     return ResourceLoaders.createFileResourceLoader(loaderName, tmpDir);
                 } else {
@@ -171,7 +170,6 @@ public class NestedJarResourceLoader {
                 BootstrapUtil.explodeJar(jarFile, tmpDir.getAbsolutePath());
 
                 jarFile.close();
-                file.delete();
 
                 return ResourceLoaders.createFileResourceLoader(loaderName, tmpDir);
             }
