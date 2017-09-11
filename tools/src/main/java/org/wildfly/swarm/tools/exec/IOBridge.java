@@ -84,6 +84,9 @@ public class IOBridge implements Runnable, Closeable {
         if (line.contains("WFSWARM99999")) {
             this.latch.countDown();
         }
+        if (line.contains("MSC000001: Failed to start service jboss.deployment.unit.")) {
+            this.latch.countDown();
+        }
     }
 
     private final InputStream in;

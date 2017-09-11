@@ -64,7 +64,7 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
     }
 
     @Override
-    public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
+    public synchronized ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
         StartupTimeout startupTimeout = this.testClass.getAnnotation(StartupTimeout.class);
         if (startupTimeout != null) {
             setTimeout(startupTimeout.value());
@@ -85,13 +85,16 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
             metaData.addContext(createDeploymentContext(archive.getId()));
 
             return metaData;
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            if (e instanceof LifecycleException) {
+                e = e.getCause();
+            }
             throw new DeploymentException(e.getMessage(), e);
         }
     }
 
     @Override
-    public void undeploy(Archive<?> archive) throws DeploymentException {
+    public synchronized void undeploy(Archive<?> archive) throws DeploymentException {
         try {
             this.delegateContainer.stop();
         } catch (Exception e) {

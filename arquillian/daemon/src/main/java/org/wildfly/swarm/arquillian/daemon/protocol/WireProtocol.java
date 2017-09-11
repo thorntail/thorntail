@@ -35,6 +35,8 @@ public interface WireProtocol {
 
     String PREFIX_STRING_COMMAND = "CMD ";
 
+    String COMMAND_CHECK_DEPLOYMENT = PREFIX_STRING_COMMAND + "checkdeployment";
+
     String COMMAND_STOP = PREFIX_STRING_COMMAND + "stop";
 
     /**
