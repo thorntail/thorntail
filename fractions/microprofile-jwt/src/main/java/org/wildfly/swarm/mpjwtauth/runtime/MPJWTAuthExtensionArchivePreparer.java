@@ -15,16 +15,24 @@
  */
 package org.wildfly.swarm.mpjwtauth.runtime;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import io.undertow.servlet.ServletExtension;
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationValue;
+import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
+import org.jboss.jandex.MethodInfo;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -35,6 +43,7 @@ import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.JBossWebAsset;
+import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 /**
@@ -45,11 +54,19 @@ import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
     private static Logger log = Logger.getLogger(MPJWTAuthExtensionArchivePreparer.class);
 
-    public static final DotName LOGIN_CONFIG = DotName.createSimple("org.eclipse.microprofile.auth.LoginConfig");
+    static final DotName LOGIN_CONFIG = DotName.createSimple("org.eclipse.microprofile.auth.LoginConfig");
+    static final DotName ROLES_ALLOWED = DotName.createSimple("javax.annotation.security.RolesAllowed");
+    static final DotName DENY_ALL = DotName.createSimple("javax.annotation.security.DenyAll");
+    static final DotName PERMIT_ALL = DotName.createSimple("javax.annotation.security.PermitAll");
+
+    public static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
+
+    public static final DotName APP_PATH = DotName.createSimple("javax.ws.rs.ApplicationPath");
 
     private final Archive archive;
 
     private final IndexView index;
+    private HashSet<DotName> scannedClasses = new HashSet<>();
 
     @Inject
     private MicroProfileJWTAuthFraction fraction;
@@ -84,6 +101,33 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 jBossWeb.setSecurityDomain(realmName.asString());
             }
         }
+        WebXmlAsset webXml = war.findWebXmlAsset();
+        String appPath = "/";
+        Collection<AnnotationInstance> appPaths = index.getAnnotations(APP_PATH);
+        if (!appPaths.isEmpty()) {
+            appPath = appPaths.iterator().next().value().asString();
+        }
+
+        Collection<AnnotationInstance> rolesAnnotations = index.getAnnotations(ROLES_ALLOWED);
+        for (AnnotationInstance annotation : rolesAnnotations) {
+            if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
+                String[] roles = annotation.value().asStringArray();
+                ClassInfo classInfo = annotation.target().asClass();
+                List<AnnotationInstance> path = classInfo.annotations().get(PATH);
+                log.infof("+++ Class(%s).RolesAllowed: %s, appPath=%s, path=%s", classInfo.name(), Arrays.asList(roles), appPath, path);
+                if (!scannedClasses.contains(classInfo.name())) {
+                    generateSecurityConstraints(webXml, classInfo, roles, appPath);
+                }
+            } else if (annotation.target().kind() == AnnotationTarget.Kind.METHOD) {
+                MethodInfo methodInfo = annotation.target().asMethod();
+                ClassInfo classInfo = methodInfo.declaringClass();
+                if (!scannedClasses.contains(classInfo.name()) && !classInfo.classAnnotations().contains(ROLES_ALLOWED)) {
+                    String[] roles = {};
+                    generateSecurityConstraints(webXml, classInfo, roles, appPath);
+                }
+            }
+
+        }
 
         if (fraction.getTokenIssuer().isPresent()) {
             log.debugf("Issuer: %s", fraction.getTokenIssuer().get());
@@ -97,5 +141,52 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             log.info("jar: " + jwtAuthJar.toString(true));
             log.info("war: " + war.toString(true));
         }
+    }
+
+    private void generateSecurityConstraints(WebXmlAsset webXml, ClassInfo classInfo, String[] roles, String appPath) {
+        if (appPath.equals("/")) {
+            appPath = "";
+        }
+        HashSet<String> allRoles = new HashSet<>();
+        allRoles.addAll(Arrays.asList(roles));
+        List<AnnotationInstance> paths = classInfo.annotations().get(PATH);
+        if (paths == null || paths.size() == 0) {
+            // Not a resource root
+            return;
+        }
+
+        HashMap<String, HashSet<String>> subpaths = new HashMap<>();
+        for (AnnotationInstance path : paths) {
+            if (path.target() == classInfo) {
+                appPath = appPath + path.value().asString();
+                System.out.printf("Updated appPath to: %s\n", appPath);
+            } else if (path.target().kind() == AnnotationTarget.Kind.METHOD) {
+                path.target().asMethod();
+                String subpath = path.value().asString();
+                MethodInfo methodInfo = path.target().asMethod();
+                AnnotationInstance methodRoles = methodInfo.annotation(ROLES_ALLOWED);
+                HashSet<String> localRoles = new HashSet<>(allRoles);
+                if (methodRoles != null) {
+                    localRoles.addAll(Arrays.asList(methodRoles.value().asStringArray()));
+                }
+                AnnotationInstance permitAll = methodInfo.annotation(PERMIT_ALL);
+                if (permitAll != null) {
+                    localRoles.clear();
+                }
+                subpaths.put(subpath, localRoles);
+            }
+        }
+        for (Map.Entry<String, HashSet<String>> entry : subpaths.entrySet()) {
+            String subpath = appPath + entry.getKey();
+            SecurityConstraint sc = webXml.protect(subpath);
+            HashSet<String> entryRoles = entry.getValue();
+            if (entryRoles.isEmpty()) {
+                sc.permitAll();
+            } else {
+                entryRoles.forEach(role -> sc.withRole(role));
+            }
+            System.out.printf("SecurityConstraint(%s), roles=%s\n", subpath, entry.getValue());
+        }
+        scannedClasses.add(classInfo.name());
     }
 }

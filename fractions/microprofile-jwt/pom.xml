@@ -14,7 +14,6 @@
     <relativePath>../../build-parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
   <artifactId>microprofile-jwt</artifactId>
 
   <name>MicroProfile JWT RBAC Auth Fraction</name>
@@ -25,12 +24,10 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.wildfly>10.1.0.Final</version.wildfly>
-    <version.wildfly.swarm>2017.7.0</version.wildfly.swarm>
-    <version.swarm.mpjwtauth>1.0-RC10</version.swarm.mpjwtauth>
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>MicroProfile,JWT,Security,Web</swarm.fraction.tags>
     <arquillian.version>1.1.13.Final</arquillian.version>
+    <!-- The MicroProfile JWT Auth API version -->
     <mpjwt.auth.version>1.0-RC10</mpjwt.auth.version>
   </properties>
 

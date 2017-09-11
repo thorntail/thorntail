@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
  * @author Juraci Paixão Kröhling
  */
 @RunWith(Arquillian.class)
-public class OpenTracingWithoutTraceResolverOnDeploymentTest {
+public class TraceResolverAbsentTest {
 
     @Deployment
     public static Archive createDeployment() {

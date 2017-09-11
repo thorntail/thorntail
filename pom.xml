@@ -59,6 +59,8 @@
     <version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
     <version.maven.plugin.api>3.2.5</version.maven.plugin.api>
     <version.xml-maven-plugin>1.0.1</version.xml-maven-plugin>
+    <version.license-maven-plugin>1.13</version.license-maven-plugin>
+    <version.wildfly-licenses-plugin>1.0.1</version.wildfly-licenses-plugin>
 
     <version.checkstyle>7.4</version.checkstyle>
 

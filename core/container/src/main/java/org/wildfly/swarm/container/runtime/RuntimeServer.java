@@ -142,6 +142,8 @@ public class RuntimeServer implements Server {
             throw new RuntimeException(e);
         }
 
+        this.networkConfigurer.configure();
+
         List<ModelNode> bootstrapOperations = new ArrayList<>();
         BootstrapConfiguration bootstrapConfiguration = () -> bootstrapOperations;
 
@@ -166,7 +168,7 @@ public class RuntimeServer implements Server {
             }
         }
 
-        this.socketBindingGroupConfigurer.configure();
+        this.networkConfigurer.configure();
 
         /*
         this.archivePreparers.forEach(e -> {
@@ -302,7 +304,7 @@ public class RuntimeServer implements Server {
     private ArtifactDeployer artifactDeployer;
 
     @Inject
-    private SocketBindingGroupConfigurer socketBindingGroupConfigurer;
+    private NetworkConfigurer networkConfigurer;
 
     private ModelControllerClient client;
 }

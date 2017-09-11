@@ -21,13 +21,14 @@ import java.util.Optional;
 import java.util.StringTokenizer;
 
 /**
- * Created by hbraun on 22.08.17.
+ * @author hbraun on 22.08.17.
+ * @author Ken Finnigan
  */
 public class MavenArgsParser {
 
     public enum ARG {
-            F("-f", "--file"),
-            P("-P", "--activate-profiles");
+        F("-f", "--file", ".xml"),
+        P("-P", "--activate-profiles", null);
 
         // the flag is the short form
         private final String flag;
@@ -35,14 +36,19 @@ public class MavenArgsParser {
         // the alt flag is the long form (different syntax applies)
         private final String altFlag;
 
-        ARG(String flag, String altFlag) {
+        // If there is an expected suffix to the argument value, such as .xml
+        private final String suffix;
+
+        ARG(String flag, String altFlag, String suffix) {
             this.flag = flag;
             this.altFlag = altFlag;
+            this.suffix = suffix;
         }
 
         public String getFlag() {
             return flag;
         }
+
         public String getAltFlag() {
             return altFlag;
         }
@@ -76,15 +82,15 @@ public class MavenArgsParser {
     }
 
     private Optional<String> parseIrregularSyntax(ARG arg, String token) {
-        return extract(arg.flag, token); // irregular syntax only applies to the short form of flags
-    }
-
-    private static Optional<String> extract(String flag, String token) {
-
         Optional<String> result = Optional.empty();
 
-        if (token.startsWith(flag) && token.length() > flag.length()) {
-            result = Optional.of(token.substring(token.indexOf(flag) + flag.length()));
+        if (token.startsWith(arg.flag) && token.length() > arg.flag.length()) {
+            if (arg.suffix != null && !token.endsWith(arg.suffix)) {
+                // Short circuit the result if the required suffix is not present
+                return result;
+            }
+
+            result = Optional.of(token.substring(token.indexOf(arg.flag) + arg.flag.length()));
         }
 
         return result;
