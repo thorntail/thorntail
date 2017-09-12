@@ -92,6 +92,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             AnnotationValue authMethod = lc.value("authMethod");
             AnnotationValue realmName = lc.value("realmName");
             String realm = realmName != null ? realmName.asString() : "";
+            // Set the web.xml login-config auth-method and jboss-web.xml security domain
             if (authMethod != null) {
                 WebXmlAsset webXml = war.findWebXmlAsset();
                 webXml.setLoginConfig(authMethod.asString(), realm);
@@ -101,6 +102,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 jBossWeb.setSecurityDomain(realmName.asString());
             }
         }
+        // Get the @ApplicationPath setting
         WebXmlAsset webXml = war.findWebXmlAsset();
         String appPath = "/";
         Collection<AnnotationInstance> appPaths = index.getAnnotations(APP_PATH);
@@ -108,6 +110,8 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             appPath = appPaths.iterator().next().value().asString();
         }
 
+        // Process the @RolesAllowed and @PermitAll annotations
+        // TODO: @DenyAll
         Collection<AnnotationInstance> rolesAnnotations = index.getAnnotations(ROLES_ALLOWED);
         for (AnnotationInstance annotation : rolesAnnotations) {
             if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
@@ -143,6 +147,15 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         }
     }
 
+    /**
+     * Generate security constraints for a resource root class.
+     *
+     * TODO:
+     * @param webXml
+     * @param classInfo
+     * @param roles
+     * @param appPath
+     */
     private void generateSecurityConstraints(WebXmlAsset webXml, ClassInfo classInfo, String[] roles, String appPath) {
         if (appPath.equals("/")) {
             appPath = "";
@@ -155,6 +168,28 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             return;
         }
 
+        // Check for a class level @DenyAll
+        boolean classIsDenyAll = false;
+        boolean classIsPermitAll = false;
+        List<AnnotationInstance> classDenyAll = classInfo.annotations().get(DENY_ALL);
+        if (classDenyAll != null) {
+            for (AnnotationInstance path : classDenyAll) {
+                if (path.target() == classInfo) {
+                    SecurityConstraint sc = webXml.protect(appPath + "/*").withRole("");
+                    classIsDenyAll = true;
+                }
+            }
+        }
+        List<AnnotationInstance> classPermitAll = classInfo.annotations().get(PERMIT_ALL);
+        if (classPermitAll != null) {
+            for (AnnotationInstance path : classPermitAll) {
+                if (path.target() == classInfo) {
+                    SecurityConstraint sc = webXml.protect(appPath + "/*").permitAll();
+                    classIsPermitAll = true;
+                }
+            }
+        }
+
         HashMap<String, HashSet<String>> subpaths = new HashMap<>();
         for (AnnotationInstance path : paths) {
             if (path.target() == classInfo) {
@@ -163,30 +198,43 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             } else if (path.target().kind() == AnnotationTarget.Kind.METHOD) {
                 path.target().asMethod();
                 String subpath = path.value().asString();
+                if (!(subpath.charAt(0) == '/')) {
+                    subpath = "/" + subpath;
+                }
                 MethodInfo methodInfo = path.target().asMethod();
                 AnnotationInstance methodRoles = methodInfo.annotation(ROLES_ALLOWED);
-                HashSet<String> localRoles = new HashSet<>(allRoles);
-                if (methodRoles != null) {
-                    localRoles.addAll(Arrays.asList(methodRoles.value().asStringArray()));
-                }
+                AnnotationInstance denyAll = methodInfo.annotation(DENY_ALL);
                 AnnotationInstance permitAll = methodInfo.annotation(PERMIT_ALL);
-                if (permitAll != null) {
+                HashSet<String> localRoles = new HashSet<>(allRoles);
+                if (denyAll != null) {
+                    localRoles = null;
+                } else if (permitAll != null) {
+                    localRoles.clear();
+                } else if (methodRoles != null) {
+                    localRoles.addAll(Arrays.asList(methodRoles.value().asStringArray()));
+                } else if (classIsDenyAll) {
+                    localRoles = null;
+                } else if (classIsPermitAll) {
                     localRoles.clear();
                 }
                 subpaths.put(subpath, localRoles);
             }
         }
+
         for (Map.Entry<String, HashSet<String>> entry : subpaths.entrySet()) {
             String subpath = appPath + entry.getKey();
             SecurityConstraint sc = webXml.protect(subpath);
             HashSet<String> entryRoles = entry.getValue();
-            if (entryRoles.isEmpty()) {
+            if (entryRoles == null) {
+                // No roles == @DenyAll
+                sc.withRole("");
+            } else if (entryRoles.isEmpty()) {
                 sc.permitAll();
             } else {
                 entryRoles.forEach(role -> sc.withRole(role));
             }
-            System.out.printf("SecurityConstraint(%s), roles=%s\n", subpath, entry.getValue());
         }
+        webXml.allConstraints().forEach(sc -> System.out.printf("SecurityConstraint(%s), roles=%s, isPermitAll=%s\n", sc.urlPattern(), sc.roles(), sc.isPermitAll()));
         scannedClasses.add(classInfo.name());
     }
 }
