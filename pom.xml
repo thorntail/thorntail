@@ -691,6 +691,13 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-metrics</artifactId>
+        <version>2017.10.0-SNAPSHOT</version>
+      </dependency>
+
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>mod_cluster</artifactId>
         <version>2017.10.0-SNAPSHOT</version>
       </dependency>
@@ -917,6 +924,7 @@
     <module>plugins/maven</module>
 
     <module>client-apis/health-api</module>
+    <module>client-apis/mp_metrics_cdi_extension</module>
 
     <module>fractions/javaee/bean-validation</module>
     <module>fractions/javaee/cdi</module>
@@ -950,6 +958,7 @@
 
     <module>fractions/keycloak</module>
     <module>fractions/microprofile</module>
+    <module>fractions/microprofile-metrics</module>
     <module>fractions/monitor</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>
@@ -1044,6 +1053,7 @@
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
         <module>testsuite/testsuite-management</module>
+        <module>testsuite/testsuite-microprofile-metrics</module>
         <module>testsuite/testsuite-modules</module>
         <module>testsuite/testsuite-monitor</module>
         <module>testsuite/testsuite-msc</module>
@@ -1079,6 +1089,7 @@
 
       <modules>
         <module>client-apis/jaxrs-client-api</module>
+        <module>client-apis/mp_metrics_cdi_extension</module>
 
         <module>swarmtool</module>
         <module>cli</module>
