@@ -51,7 +51,7 @@ public class MetricsHttpHandler implements HttpHandler {
   public void handleRequest(HttpServerExchange exchange) throws Exception {
 
     String requestPath = exchange.getRequestPath();
-    LOG.warn(requestPath +" on "+Thread.currentThread());
+    LOG.warn(requestPath + " on " + Thread.currentThread());
 
     if (dispatched.get() != null && dispatched.get().getCount() == 1) {
         next.handleRequest(exchange);
@@ -70,25 +70,25 @@ public class MetricsHttpHandler implements HttpHandler {
     LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName());
 
     if (scopePath.startsWith("/")) {
-      scopePath=scopePath.substring(1);
+      scopePath = scopePath.substring(1);
     }
 
-    StringBuilder sb ;
+    StringBuilder sb;
 
     if (scopePath.isEmpty()) {
       Map<MetricRegistry.Type,Map<String,Double>> metricValuesMap = new HashMap<>();
-      for (MetricRegistry.Type scope  :  MetricRegistry.Type.values() ) {
+      for (MetricRegistry.Type scope  :  MetricRegistry.Type.values()) {
         Map<String, Double> map = getMetricsMapForScope(scope);
-        metricValuesMap.put(scope,map);
+        metricValuesMap.put(scope, map);
       }
       sb = exporter.exportAllScopes(metricValuesMap);
-    }
-    else if (scopePath.contains("/")) {
+
+    } else if (scopePath.contains("/")) {
       // One metric in a scope
 
-      String attribute = scopePath.substring(scopePath.indexOf('/')+1);
+      String attribute = scopePath.substring(scopePath.indexOf('/') + 1);
 
-      MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath.substring(0,scopePath.indexOf('/')));
+      MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath.substring(0, scopePath.indexOf('/')));
       Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
 
       Map<String,Double> oneMetric = new HashMap<>(1);
@@ -101,7 +101,9 @@ public class MetricsHttpHandler implements HttpHandler {
       // A single scope
 
       MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath);
-      if (scope == null) return;
+      if (scope == null) {
+        return;
+      }
 
 
       Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
@@ -139,9 +141,9 @@ public class MetricsHttpHandler implements HttpHandler {
 
   private Exporter obtainExporter(HttpServerExchange exchange) {
     HeaderValues acceptHeaders = exchange.getRequestHeaders().get(Headers.ACCEPT);
-    Exporter exporter ;
+    Exporter exporter;
 
-    if (acceptHeaders==null) {
+    if (acceptHeaders == null) {
       exporter = new PrometheusExporter();
     } else {
       if (acceptHeaders.getFirst() != null && acceptHeaders.getFirst().equals("application/json")) {

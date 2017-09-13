@@ -38,7 +38,7 @@ public class BaseMetricWorker {
   private static final String SELECT = "select";
 
 
-  private BaseMetricWorker() { /* Singleton */}
+  private BaseMetricWorker() { /* Singleton */ }
 
   public static BaseMetricWorker get(ModelControllerClient controllerClient) {
 
@@ -48,7 +48,7 @@ public class BaseMetricWorker {
   }
 
   public static BaseMetricWorker instance() {
-    if (worker==null ) {
+    if (worker == null) {
       throw new IllegalStateException("You must first create a worker via get()");
     }
     return worker;

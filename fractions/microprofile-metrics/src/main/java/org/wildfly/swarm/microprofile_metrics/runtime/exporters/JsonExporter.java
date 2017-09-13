@@ -82,7 +82,7 @@ public class JsonExporter implements Exporter {
         getMetricsForAScope(scopeValuesMap.get(scope), sb);
         sb.append("\n");
         scopes++;
-        if (scopes<totalNonEmptyScopes) {
+        if (scopes < totalNonEmptyScopes) {
           sb.append(',');
         }
       }

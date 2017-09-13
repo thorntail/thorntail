@@ -24,7 +24,7 @@ import org.eclipse.microprofile.metrics.MetricUnits;
 public class PrometheusUnit {
 
 
-
+  private PrometheusUnit() { }
 
 
   public static String getBaseUnitAsPrometheusString(String unit) {

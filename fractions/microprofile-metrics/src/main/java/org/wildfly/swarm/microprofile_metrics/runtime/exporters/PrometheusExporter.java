@@ -29,7 +29,7 @@ import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
 public class PrometheusExporter implements Exporter {
 
 
-  public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String,Double>values) {
+  public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String,Double> values) {
 
     StringBuilder sb = new StringBuilder();
     getEntriesForScope(scope, values, sb);
