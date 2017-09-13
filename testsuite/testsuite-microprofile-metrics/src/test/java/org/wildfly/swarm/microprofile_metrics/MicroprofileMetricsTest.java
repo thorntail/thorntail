@@ -17,8 +17,10 @@
 package org.wildfly.swarm.microprofile_metrics;
 
 import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.containsString;
 
+import com.jayway.restassured.response.Header;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -61,4 +63,31 @@ public class MicroprofileMetricsTest {
  	        .and()
  	        .body(containsString("# TYPE base:thread_max_count"),
  	              containsString("base:thread_max_count"));
- 	}}
+ 	}
+
+	@Test
+  @RunAsClient
+  @InSequence(1)
+  public void testApplicationJsonResponseContentType() {
+      Header acceptHeader = new Header("Accept", APPLICATION_JSON);
+
+      given().header(acceptHeader).when().get("/metrics").then().statusCode(200).and().contentType(APPLICATION_JSON);
+
+  }
+
+  @Test
+  @RunAsClient
+  @InSequence(2)
+  public void testTextPlainResponseContentType() {
+      Header acceptHeader = new Header("Accept", TEXT_PLAIN);
+
+      given().header(acceptHeader).when().get("/metrics").then().statusCode(200).and().contentType(TEXT_PLAIN);
+  }
+
+  @Test
+  @RunAsClient
+  @InSequence(3)
+  public void testBadSubTreeWillReturn404() {
+      when().get("/metrics/bad-tree").then().statusCode(404);
+  }
+}

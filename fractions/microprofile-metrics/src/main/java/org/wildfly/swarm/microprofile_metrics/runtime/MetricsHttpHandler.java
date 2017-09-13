@@ -18,12 +18,16 @@ package org.wildfly.swarm.microprofile_metrics.runtime;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.jboss.logging.Logger;
+import org.wildfly.swarm.microprofile_metrics.runtime.exporters.Exporter;
+import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonExporter;
+import org.wildfly.swarm.microprofile_metrics.runtime.exporters.PrometheusExporter;
 
 /**
  * @author hrupp
@@ -46,7 +50,8 @@ public class MetricsHttpHandler implements HttpHandler {
   @Override
   public void handleRequest(HttpServerExchange exchange) throws Exception {
 
-    LOG.warn(exchange.getRequestPath() +" on "+Thread.currentThread());
+    String requestPath = exchange.getRequestPath();
+    LOG.warn(requestPath +" on "+Thread.currentThread());
 
     if (dispatched.get() != null && dispatched.get().getCount() == 1) {
         next.handleRequest(exchange);
@@ -54,35 +59,80 @@ public class MetricsHttpHandler implements HttpHandler {
         return;
     }
 
-    if (!exchange.getRequestPath().startsWith("/metrics")) {
+    if (!requestPath.startsWith("/metrics")) {
       next.handleRequest(exchange);
       return;
     }
 
-    if (exchange.getRequestPath().startsWith("/metrics/base")) {
-      StringBuilder sb = new StringBuilder();
+    String scopePath = requestPath.substring(8);
+    LOG.warn("scope path >" + scopePath + "<");
 
-      Map<String,Double> baseMetricsMap = BaseMetricWorker.instance().getBaseMetrics();
-      MetricRegistry baseRegistry = MetricRegistryFactory.getBaseRegistry();
+    Exporter exporter = obtainExporter(exchange);
 
-      for (Map.Entry<String,Double> entry: baseMetricsMap.entrySet()) {
-        String key = entry.getKey();
-        Metadata md = baseRegistry.getMetadata().get(key);
+    if (scopePath.startsWith("/")) {
+      scopePath=scopePath.substring(1);
+    }
 
-        key = key.replace('-', '_').replace('.', '_').replace(' ','_');
-        sb.append("# TYPE ").append("base:").append(key).append(" ").append(md.getType()).append("\n");
-        sb.append("base:").append(key).append(" ").append(entry.getValue()).append("\n");
+    StringBuilder sb ;
+
+    if (scopePath.isEmpty()) {
+      Map<MetricRegistry.Type,Map<String,Double>> metricValuesMap = new HashMap<>();
+      for (MetricRegistry.Type scope  :  MetricRegistry.Type.values() ) {
+        Map<String,Double> map;
+        if (scope.equals(MetricRegistry.Type.BASE)) {
+          map = BaseMetricWorker.instance().getBaseMetrics();
+        } else {
+          map = new HashMap<>(); // TODO
+        }
+        metricValuesMap.put(scope,map);
+      }
+      sb = exporter.exportAllScopes(metricValuesMap);
+    }
+    else if (scopePath.contains("/")) {
+      // TODO exportOneScope single metric
+      sb = new StringBuilder("TODO");
+    } else {
+
+      MetricRegistry.Type scope;
+      try {
+        scope = MetricRegistry.Type.valueOf(scopePath.toUpperCase());
+      } catch (IllegalArgumentException iae) {
+        exchange.setStatusCode(404);
+        exchange.setReasonPhrase("Bad scope requested: " + scopePath);
+        return;
       }
 
 
-      exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-      exchange.getResponseSender().send(sb.toString());
-    }
-    else {
-      exchange.setStatusCode(404);
-      exchange.setReasonPhrase("Only base metrics are supported at the moment");
-    }
+      Map<String, Double> metricValuesMap;
+      if (scope.equals(MetricRegistry.Type.BASE)) {
+        metricValuesMap = BaseMetricWorker.instance().getBaseMetrics();
+      } else {
+        metricValuesMap = new HashMap<>(); // TODO
+      }
 
+      sb = exporter.exportOneScope(scope, metricValuesMap);
+    }
+    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, exporter.getContentType());
+    exchange.getResponseSender().send(sb.toString());
 
   }
+
+  private Exporter obtainExporter(HttpServerExchange exchange) {
+    HeaderValues acceptHeaders = exchange.getRequestHeaders().get(Headers.ACCEPT);
+    Exporter exporter ;
+
+    if (acceptHeaders==null) {
+      exporter = new PrometheusExporter();
+    } else {
+      if (acceptHeaders.getFirst() != null && acceptHeaders.getFirst().equals("application/json")) {
+        exporter = new JsonExporter();
+      } else {
+        // This is the fallback
+        exporter = new PrometheusExporter();
+      }
+    }
+    return exporter;
+  }
+
+
 }

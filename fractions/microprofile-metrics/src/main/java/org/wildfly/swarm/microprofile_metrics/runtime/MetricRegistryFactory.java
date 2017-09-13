@@ -26,7 +26,7 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 /**
  * @author hrupp
  */
-class MetricRegistryFactory {
+public class MetricRegistryFactory {
 
   private static Map<MetricRegistry.Type,MetricRegistry> registries = new HashMap<>();
 
@@ -51,7 +51,7 @@ class MetricRegistryFactory {
     return get(MetricRegistry.Type.VENDOR);
   }
 
-  static MetricRegistry get(MetricRegistry.Type type) {
+  public static MetricRegistry get(MetricRegistry.Type type) {
 
     synchronized (registries) {
       if (registries.get(type) == null) {
