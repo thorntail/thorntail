@@ -19,6 +19,8 @@
 
 * Go to https://issues.jboss.org/projects/SWARM?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased and select `...` under Actions for the row matching the release we are performing.
 
+* Select `Release` from the drop down.
+
 * Set the current date, which is the date of the release and then click `Release`.
 
 * Open https://issues.jboss.org/issues/?jql=project%20%3D%20SWARM%20AND%20status%20%3D%20Resolved%20AND%20fixVersion%20%3D%20EMPTY%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC to find all issues that have been resolved without a fixVersion set.
