@@ -32,6 +32,28 @@ public class PrometheusExporter implements Exporter {
   public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String,Double>values) {
 
     StringBuilder sb = new StringBuilder();
+    getEntriesForScope(scope, values, sb);
+
+    return sb;
+  }
+
+  @Override
+  public StringBuilder exportAllScopes(Map<MetricRegistry.Type, Map<String, Double>> scopeValuesMap) {
+    StringBuilder sb = new StringBuilder();
+
+    for (MetricRegistry.Type scope : MetricRegistry.Type.values()) {
+      getEntriesForScope(scope, scopeValuesMap.get(scope),sb);
+    }
+
+    return sb;
+  }
+
+  @Override
+  public String getContentType() {
+    return "text/plain";
+  }
+
+  private void getEntriesForScope(MetricRegistry.Type scope, Map<String, Double> values, StringBuilder sb) {
     MetricRegistry registry = MetricRegistryFactory.get(scope);
 
     for (Map.Entry<String,Double> entry: values.entrySet()) {
@@ -40,20 +62,8 @@ public class PrometheusExporter implements Exporter {
 
       key = getPrometheusMetricName(md,key);
       sb.append("# TYPE ").append("base:").append(key).append(" ").append(md.getType()).append("\n");
-      sb.append("base:").append(key).append(" ").append(entry.getValue()).append("\n");
+      sb.append(scope.getName().toLowerCase()).append(":").append(key).append(" ").append(entry.getValue()).append("\n");
     }
-
-    return sb;
-  }
-
-  @Override
-  public StringBuilder exportAllScopes(Map<MetricRegistry.Type, Map<String, Double>> scopeValuesMap) {
-    return new StringBuilder();
-  }
-
-  @Override
-  public String getContentType() {
-    return "text/plain";
   }
 
   private String getPrometheusMetricName(Metadata entry, String name) {

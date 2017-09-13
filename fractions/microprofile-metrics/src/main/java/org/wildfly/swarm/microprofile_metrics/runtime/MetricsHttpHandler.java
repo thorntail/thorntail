@@ -34,7 +34,7 @@ import org.wildfly.swarm.microprofile_metrics.runtime.exporters.PrometheusExport
  */
 public class MetricsHttpHandler implements HttpHandler {
 
-  private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.health");
+  private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
   protected ThreadLocal<CountDownLatch> dispatched = new ThreadLocal<>();
 
 
@@ -65,9 +65,9 @@ public class MetricsHttpHandler implements HttpHandler {
     }
 
     String scopePath = requestPath.substring(8);
-    LOG.warn("scope path >" + scopePath + "<");
 
     Exporter exporter = obtainExporter(exchange);
+    LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName());
 
     if (scopePath.startsWith("/")) {
       scopePath=scopePath.substring(1);
@@ -78,43 +78,63 @@ public class MetricsHttpHandler implements HttpHandler {
     if (scopePath.isEmpty()) {
       Map<MetricRegistry.Type,Map<String,Double>> metricValuesMap = new HashMap<>();
       for (MetricRegistry.Type scope  :  MetricRegistry.Type.values() ) {
-        Map<String,Double> map;
-        if (scope.equals(MetricRegistry.Type.BASE)) {
-          map = BaseMetricWorker.instance().getBaseMetrics();
-        } else {
-          map = new HashMap<>(); // TODO
-        }
+        Map<String, Double> map = getMetricsMapForScope(scope);
         metricValuesMap.put(scope,map);
       }
       sb = exporter.exportAllScopes(metricValuesMap);
     }
     else if (scopePath.contains("/")) {
-      // TODO exportOneScope single metric
-      sb = new StringBuilder("TODO");
+      // One metric in a scope
+
+      String attribute = scopePath.substring(scopePath.indexOf('/')+1);
+
+      MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath.substring(0,scopePath.indexOf('/')));
+      Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
+
+      Map<String,Double> oneMetric = new HashMap<>(1);
+      oneMetric.put(attribute, metricValuesMap.get(attribute));
+
+      sb = exporter.exportOneScope(scope,oneMetric);
+
+
     } else {
+      // A single scope
 
-      MetricRegistry.Type scope;
-      try {
-        scope = MetricRegistry.Type.valueOf(scopePath.toUpperCase());
-      } catch (IllegalArgumentException iae) {
-        exchange.setStatusCode(404);
-        exchange.setReasonPhrase("Bad scope requested: " + scopePath);
-        return;
-      }
+      MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath);
+      if (scope == null) return;
 
 
-      Map<String, Double> metricValuesMap;
-      if (scope.equals(MetricRegistry.Type.BASE)) {
-        metricValuesMap = BaseMetricWorker.instance().getBaseMetrics();
-      } else {
-        metricValuesMap = new HashMap<>(); // TODO
-      }
+      Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
 
       sb = exporter.exportOneScope(scope, metricValuesMap);
     }
+
+    LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, exporter.getContentType());
     exchange.getResponseSender().send(sb.toString());
 
+  }
+
+  private MetricRegistry.Type getScopeFromPath(HttpServerExchange exchange, String scopePath) {
+    MetricRegistry.Type scope;
+    try {
+      scope = MetricRegistry.Type.valueOf(scopePath.toUpperCase());
+    } catch (IllegalArgumentException iae) {
+      exchange.setStatusCode(404);
+      exchange.setReasonPhrase("Bad scope requested: " + scopePath);
+      return null;
+    }
+    return scope;
+  }
+
+  private Map<String, Double> getMetricsMapForScope(MetricRegistry.Type scope) {
+    Map<String, Double> metricValuesMap;
+    if (scope.equals(MetricRegistry.Type.BASE)) {
+      metricValuesMap = BaseMetricWorker.instance().getBaseMetrics();
+    } else {
+      metricValuesMap = new HashMap<>(); // TODO
+    }
+    return metricValuesMap;
   }
 
   private Exporter obtainExporter(HttpServerExchange exchange) {
