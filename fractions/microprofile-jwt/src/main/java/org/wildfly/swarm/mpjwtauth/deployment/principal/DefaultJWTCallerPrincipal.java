@@ -71,15 +71,17 @@ public class DefaultJWTCallerPrincipal extends JWTCallerPrincipal {
 
     @Override
     public Set<String> getAudience() {
-        Set<String> audSet = new HashSet<>();
+        Set<String> audSet = null;
         try {
-            List<String> audList = claimsSet.getStringListClaimValue("aud");
-            if (audList != null) {
-                audSet.addAll(audList);
+            if (claimsSet.hasClaim(Claims.aud.name())) {
+                List<String> audList = claimsSet.getStringListClaimValue("aud");
+                audSet = new HashSet<>(audList);
             }
         } catch (MalformedClaimException e) {
             try {
+                // Not sent as an array, try a single value
                 String aud = claimsSet.getStringClaimValue("aud");
+                audSet = new HashSet<>();
                 audSet.add(aud);
             } catch (MalformedClaimException e1) {
             }
