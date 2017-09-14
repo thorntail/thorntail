@@ -17,14 +17,23 @@
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OUTCOME;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RECURSIVE;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RECURSIVE_DEPTH;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUCCESS;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.MetricUnits;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 
@@ -45,7 +54,7 @@ public class BaseMetricWorker {
 
   private BaseMetricWorker() { /* Singleton */ }
 
-  public static BaseMetricWorker get(ModelControllerClient controllerClient) {
+  public static BaseMetricWorker create(ModelControllerClient controllerClient) {
 
     worker = new BaseMetricWorker();
     worker.controllerClient = controllerClient;
@@ -54,7 +63,7 @@ public class BaseMetricWorker {
 
   public static BaseMetricWorker instance() {
     if (worker == null) {
-      throw new IllegalStateException("You must first create a worker via get()");
+      throw new IllegalStateException("You must first create a worker via create()");
     }
     return worker;
   }
@@ -157,8 +166,37 @@ public class BaseMetricWorker {
          throw new RuntimeException(e); // TODO return some 500 message or such
      }
 
+     // Get garbage collector info. This is a bit special, as there can be multiple
+     // Garbage collectors.
+     op = new ModelNode();
+     op.get(ADDRESS).add(CORE_SERVICE, PLATFORM_MBEAN);
+     op.get(ADDRESS).add(TYPE, "garbage-collector");
+     op.get(OP).set(READ_RESOURCE_OPERATION);
+     op.get(INCLUDE_RUNTIME).set(true);
+     op.get(RECURSIVE).set(true);
+     op.get(RECURSIVE_DEPTH).set(2); // If we don't set this, depth=0
+
+     try {
+       ModelNode response = controllerClient.execute(op);
+       ModelNode result = unwrap(response);
+
+
+       List<ModelNode> collectors = result.get("name").asList();
+
+       for (ModelNode node : collectors) {
+         String collectorName = node.asProperty().getName();
+         String baseName = "gc." + collectorName;
+
+         outcome.put(baseName + ".count", node.asProperty().getValue().get("collection-count").asDouble());
+         outcome.put(baseName + ".time", node.asProperty().getValue().get("collection-time").asDouble());
+
+       }
+     } catch (IOException e) {
+       throw new RuntimeException(e); // TODO return some 500 message or such
+     }
+
      return outcome;
-  }
+   }
 
 
   private static ModelNode unwrap(ModelNode response) {
@@ -169,4 +207,33 @@ public class BaseMetricWorker {
       }
   }
 
+  public List<Metadata> findGarbageCollectors() {
+
+    ModelNode op = new ModelNode();
+    op.get(ADDRESS).add(CORE_SERVICE, PLATFORM_MBEAN);
+    op.get(ADDRESS).add(TYPE, "garbage-collector");
+    op.get(OP).set(QUERY);
+
+    try {
+        ModelNode response = controllerClient.execute(op);
+        ModelNode result = unwrap(response);
+
+        List<ModelNode> collectors = result.get("name").asList();
+        List<Metadata> output = new ArrayList<>(2 * collectors.size());
+        for (ModelNode node : collectors) {
+          String collectorName = node.asProperty().getName();
+          String baseName = "gc." + collectorName;
+          Metadata m = new Metadata(baseName + ".time", MetricType.GAUGE, MetricUnits.MILLISECONDS);
+          output.add(m);
+          m = new Metadata(baseName + ".count", MetricType.COUNTER);
+          output.add(m);
+        }
+
+        return output;
+
+    } catch (IOException e) {
+        throw new RuntimeException(e); // TODO return some 500 message or such
+    }
+
+  }
 }

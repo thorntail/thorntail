@@ -16,6 +16,7 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,9 +58,10 @@ public class MetricsService implements Service<MetricsService> {
     executorService = Executors.newSingleThreadExecutor();
     controllerClient = modelControllerValue.getValue().createClient(executorService);
 
-    BaseMetricWorker baseMetricWorker = BaseMetricWorker.get(controllerClient);
+    BaseMetricWorker baseMetricWorker = BaseMetricWorker.create(controllerClient);
 
     registerBaseMetrics();
+    registerGarbageCollectors(baseMetricWorker);
     LOG.info("MicroProfile-Metrics started");
   }
 
@@ -103,8 +105,12 @@ public class MetricsService implements Service<MetricsService> {
 
   }
 
-
-
+  private void registerGarbageCollectors(BaseMetricWorker baseMetricWorker) {
+    List<Metadata> entries = baseMetricWorker.findGarbageCollectors();
+    for (Metadata entry : entries) {
+      baseRegistry.getMetadata().put(entry.getName(), entry);
+    }
+  }
 
 
   public Injector<ServerEnvironment> getServerEnvironmentInjector() {
