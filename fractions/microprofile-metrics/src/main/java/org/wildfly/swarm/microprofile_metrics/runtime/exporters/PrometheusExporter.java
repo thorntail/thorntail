@@ -16,17 +16,19 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
+import java.util.Iterator;
 import java.util.Map;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
+import org.wildfly.swarm.microprofile_metrics.runtime.Tag;
 
 /**
  * Export data in Prometheus text format
  * @author Heiko W. Rupp
  */
-public class PrometheusExporter implements Exporter {
+public class PrometheusExporter extends AbstractExporter implements Exporter {
 
 
   public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String,Double> values) {
@@ -62,13 +64,25 @@ public class PrometheusExporter implements Exporter {
 
       key = getPrometheusMetricName(md,key);
       sb.append("# TYPE ").append("base:").append(key).append(" ").append(md.getType()).append("\n");
-      sb.append(scope.getName().toLowerCase()).append(":").append(key).append(" ").append(entry.getValue()).append("\n");
+      sb.append(scope.getName().toLowerCase()).append(":").append(key);
+      String tags = getTagsAsString(); // TODO we need to add the tags from metadata
+      if (tags != null && !tags.isEmpty()) {
+        sb.append('{').append(tags).append('}');
+      }
+
+      sb.append(" ").append(entry.getValue()).append("\n");
     }
   }
 
   private String getPrometheusMetricName(Metadata entry, String name) {
       String out = name.replace('-', '_').replace('.', '_').replace(' ','_');
       out = decamelize(out);
+      if (entry == null) {
+        throw new IllegalStateException("No entry for " + name + "found");
+      }
+      if (entry.getUnit() == null) {
+        throw new IllegalStateException("Entry " + entry + "has no unit ");
+      }
       if (!entry.getUnit().equals(MetricUnits.NONE)) {
           out = out + "_" + PrometheusUnit.getBaseUnitAsPrometheusString(entry.getUnit());
       }
@@ -82,5 +96,19 @@ public class PrometheusExporter implements Exporter {
       return in.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
   }
 
+
+  public String getTagsAsString() {
+    StringBuilder result = new StringBuilder();
+
+    Iterator<Tag> iterator = getTags().iterator();
+    while (iterator.hasNext()) {
+      Tag aTag = iterator.next();
+      result.append(aTag.getKey()).append("=\"").append(aTag.getValue()).append("\"");
+      if (iterator.hasNext()) {
+        result.append(",");
+      }
+    }
+    return result.toString();
+  }
 
 }

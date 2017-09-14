@@ -16,19 +16,34 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
-import java.util.Map;
-import org.eclipse.microprofile.metrics.MetricRegistry;
+import java.util.ArrayList;
+import java.util.List;
+import org.wildfly.swarm.microprofile_metrics.runtime.Tag;
 
 /**
  * @author hrupp
  */
-public interface Exporter {
+public abstract class AbstractExporter implements Exporter {
 
-  void setGlobalTags(String tags);
+  private List<Tag> tags = new ArrayList<>();
 
-  StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String,Double> values);
+  @Override
+  public void setGlobalTags(String tagsString) {
 
-  StringBuilder exportAllScopes(Map<MetricRegistry.Type,Map<String,Double>> scopeValuesMap);
+    String[] singleTags = tagsString.split(",");
+        for (String singleTag : singleTags) {
+          addTag(singleTag.trim());
+        }
+  }
 
-  String getContentType();
+  public void addTag(String kvString) {
+     if (kvString == null || kvString.isEmpty() || !kvString.contains("=")) {
+       return;
+     }
+     tags.add(new Tag(kvString));
+   }
+
+  public List<Tag> getTags() {
+    return tags;
+  }
 }

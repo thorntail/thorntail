@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.MetricUnits;
 import org.jboss.as.controller.ModelController;
 
 import org.jboss.as.controller.client.ModelControllerClient;
@@ -74,9 +75,32 @@ public class MetricsService implements Service<MetricsService> {
     return this;
   }
 
+  /**
+   * Register the metrics of the base scope with the system.
+   */
   private void registerBaseMetrics() {
-    baseRegistry.getMetadata().put("thread.count",new Metadata("thread.count", MetricType.GAUGE));
-    baseRegistry.getMetadata().put("thread.max.count",new Metadata("thread.max.count", MetricType.GAUGE));
+    baseRegistry.getMetadata().put("thread.count", new Metadata("thread.count", MetricType.GAUGE));
+    baseRegistry.getMetadata().put("thread.daemon.count", new Metadata("thread.count", MetricType.GAUGE));
+    baseRegistry.getMetadata().put("thread.max.count", new Metadata("thread.max.count", MetricType.GAUGE));
+
+    baseRegistry.getMetadata().put("memory.maxHeap", new Metadata("memory.maxHeap", MetricType.GAUGE, "bytes"));
+    baseRegistry.getMetadata().put("memory.usedHeap", new Metadata("memory.usedHeap", MetricType.GAUGE, "bytes"));
+    baseRegistry.getMetadata().put("memory.committedHeap", new Metadata("memory.committedHeap", MetricType.GAUGE, "bytes"));
+
+    baseRegistry.getMetadata().put("classloader.currentLoadedClass.count",
+                                   new Metadata("classloader.currentLoadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
+    baseRegistry.getMetadata().put("classloader.totalLoadedClass.count",
+                                   new Metadata("classloader.totalLoadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
+    baseRegistry.getMetadata().put("classloader.totalUnloadedClass.count",
+                                   new Metadata("classloader.totalUnloadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
+
+    baseRegistry.getMetadata().put("cpu.availableProcessors",
+                                   new Metadata("cpu.availableProcessors", MetricType.GAUGE, MetricUnits.NONE));
+    baseRegistry.getMetadata().put("cpu.systemLoadAverage",
+                                   new Metadata("cpu.systemLoadAverage", MetricType.GAUGE, MetricUnits.NONE));
+    baseRegistry.getMetadata().put("jvm.uptime",
+                                   new Metadata("jvm.uptime", MetricType.GAUGE, MetricUnits.MILLISECONDS));
+
   }
 
 

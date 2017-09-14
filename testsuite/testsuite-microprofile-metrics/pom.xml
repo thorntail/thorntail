@@ -56,10 +56,20 @@
         <version>${version.rest-assured}</version>
         <scope>test</scope>
     </dependency>
-
-
-
-
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <environmentVariables>
+            <MP_METRICS_TAGS>tier=integration</MP_METRICS_TAGS>
+          </environmentVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

@@ -143,7 +143,7 @@ public class MicroprofileMetricsTest {
               .contentType(APPLICATION_JSON).and().body(containsString("thread.max.count"));
   }
 
-//  @Test
+  @Test
   @RunAsClient
   @InSequence(8)
   public void testBaseSingularMetricsPresent() {

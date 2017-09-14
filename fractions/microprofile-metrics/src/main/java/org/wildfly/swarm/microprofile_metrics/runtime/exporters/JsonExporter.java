@@ -24,7 +24,7 @@ import org.jboss.logging.Logger;
 /**
  * @author hrupp
  */
-public class JsonExporter implements Exporter {
+public class JsonExporter extends AbstractExporter implements Exporter {
 
   private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
 

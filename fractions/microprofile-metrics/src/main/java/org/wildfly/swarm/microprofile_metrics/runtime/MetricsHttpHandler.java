@@ -64,10 +64,13 @@ public class MetricsHttpHandler implements HttpHandler {
       return;
     }
 
+    String globalTagsFromEnv = System.getenv("MP_METRICS_TAGS");
+
     String scopePath = requestPath.substring(8);
 
     Exporter exporter = obtainExporter(exchange);
-    LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName());
+    exporter.setGlobalTags(globalTagsFromEnv);
+    LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName() + " and tags " + globalTagsFromEnv);
 
     if (scopePath.startsWith("/")) {
       scopePath = scopePath.substring(1);
