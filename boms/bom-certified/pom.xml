@@ -41,7 +41,7 @@
         </dependencies>
         <executions>
           <execution>
-            <id>generate-bom</id>
+            <id>generate-certified-bom</id>
             <phase>prepare-package</phase>
             <goals>
               <goal>generate-certified-bom</goal>
@@ -49,6 +49,13 @@
             <configuration>
               <template>${project.basedir}/../target/bom-template.xml</template>
             </configuration>
+          </execution>
+          <execution>
+            <id>generate-bom</id>
+            <phase>none</phase>
+            <goals>
+              <goal>generate-bom</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
