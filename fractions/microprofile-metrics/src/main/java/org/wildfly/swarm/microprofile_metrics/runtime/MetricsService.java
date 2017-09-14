@@ -81,9 +81,9 @@ public class MetricsService implements Service<MetricsService> {
    * Register the metrics of the base scope with the system.
    */
   private void registerBaseMetrics() {
-    baseRegistry.getMetadata().put("thread.count", new Metadata("thread.count", MetricType.GAUGE));
-    baseRegistry.getMetadata().put("thread.daemon.count", new Metadata("thread.count", MetricType.GAUGE));
-    baseRegistry.getMetadata().put("thread.max.count", new Metadata("thread.max.count", MetricType.GAUGE));
+    baseRegistry.getMetadata().put("thread.count", new Metadata("thread.count", MetricType.COUNTER));
+    baseRegistry.getMetadata().put("thread.daemon.count", new Metadata("thread.daemon.count", MetricType.COUNTER));
+    baseRegistry.getMetadata().put("thread.max.count", new Metadata("thread.max.count", MetricType.COUNTER));
 
     baseRegistry.getMetadata().put("memory.maxHeap", new Metadata("memory.maxHeap", MetricType.GAUGE, "bytes"));
     baseRegistry.getMetadata().put("memory.usedHeap", new Metadata("memory.usedHeap", MetricType.GAUGE, "bytes"));

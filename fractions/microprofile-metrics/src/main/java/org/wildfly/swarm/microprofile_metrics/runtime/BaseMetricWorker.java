@@ -174,7 +174,7 @@ public class BaseMetricWorker {
      op.get(OP).set(READ_RESOURCE_OPERATION);
      op.get(INCLUDE_RUNTIME).set(true);
      op.get(RECURSIVE).set(true);
-     op.get(RECURSIVE_DEPTH).set(2); // If we don't set this, depth=0
+     op.get(RECURSIVE_DEPTH).set(1); // If we don't set this, depth=0
 
      try {
        ModelNode response = controllerClient.execute(op);

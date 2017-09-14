@@ -27,6 +27,7 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.Exporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonExporter;
+import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonMetadataExporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.PrometheusExporter;
 
 /**
@@ -108,6 +109,11 @@ public class MetricsHttpHandler implements HttpHandler {
         return;
       }
 
+      MetricRegistry reg = MetricRegistryFactory.get(scope);
+      if (reg.getMetadata().size() == 0) {
+        exchange.setStatusCode(204);
+        exchange.setReasonPhrase("No data in scope " + scopePath);
+      }
 
       Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
 
@@ -150,7 +156,15 @@ public class MetricsHttpHandler implements HttpHandler {
       exporter = new PrometheusExporter();
     } else {
       if (acceptHeaders.getFirst() != null && acceptHeaders.getFirst().equals("application/json")) {
-        exporter = new JsonExporter();
+
+        String method = exchange.getRequestMethod().toString();
+        if (method.equals("GET")) {
+          exporter = new JsonExporter();
+        } else if (method.equals("OPTIONS")) {
+          exporter = new JsonMetadataExporter();
+        } else {
+          throw new IllegalStateException("Unsupported method");
+        }
       } else {
         // This is the fallback
         exporter = new PrometheusExporter();

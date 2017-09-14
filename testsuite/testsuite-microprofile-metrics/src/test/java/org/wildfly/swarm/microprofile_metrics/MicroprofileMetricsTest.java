@@ -65,8 +65,7 @@ public class MicroprofileMetricsTest {
       return deployment;
   }
 
-
-	@Test
+  @Test
   @RunAsClient
   @InSequence(1)
   public void testApplicationJsonResponseContentType() {
@@ -104,8 +103,13 @@ public class MicroprofileMetricsTest {
       assert response.containsKey("base");
 
       // these should not be in the response since they have no metrics yet
-      assert !response.containsKey("vendor");
       assert !response.containsKey("application");
+
+    // There may be vendor metrics, so check if the key exists and bail if it has no data
+    if (response.containsKey("vendor")) {
+      Map vendorData = (Map) response.get("vendor");
+      assert vendorData.size()>0;
+    }
   }
 
   @Test
@@ -177,6 +181,156 @@ public class MicroprofileMetricsTest {
   }
 
 
+  @Test
+  @RunAsClient
+  @InSequence(10)
+  public void testBaseMetadata() {
+      Header wantJson = new Header("Accept", APPLICATION_JSON);
+
+      given().header(wantJson).options("/metrics/base").then().statusCode(200).and()
+              .contentType(APPLICATION_JSON);
+
+  }
+
+  @Test
+  @RunAsClient
+  @InSequence(11)
+  public void testBaseMetadataSingluarItems() {
+      Header wantJson = new Header("Accept", APPLICATION_JSON);
+
+      JsonPath jsonPath = given().header(wantJson).options("/metrics/base").jsonPath();
+
+      Map<String, Object> elements = jsonPath.getMap(".");
+      List<String> missing = new ArrayList<>();
+
+      Map<String, MiniMeta> baseNames = getBaseMetrics();
+      for (String item : baseNames.keySet()) {
+          if (item.startsWith("gc.")) {
+              continue;
+          }
+          if (!elements.containsKey(item)) {
+              missing.add(item);
+          }
+      }
+
+      assert missing.isEmpty() : "Following base items are missing: " + Arrays.toString(missing.toArray());
+  }
+
+  @Test
+  @RunAsClient
+  @InSequence(12)
+  public void testBaseMetadataTypeAndUnit() {
+      Header wantJson = new Header("Accept", APPLICATION_JSON);
+
+      JsonPath jsonPath = given().header(wantJson).options("/metrics/base").jsonPath();
+
+      Map<String, Map<String, Object>> elements = jsonPath.getMap(".");
+
+      Map<String, MiniMeta> expectedMetadata = getBaseMetrics();
+      for (Map.Entry<String, MiniMeta> entry : expectedMetadata.entrySet()) {
+          MiniMeta item = entry.getValue();
+          if (item.name.startsWith("gc.")) {
+              continue; // We don't deal with them here
+          }
+          Map<String, Object> fromServer = (Map<String, Object>) elements.get(item.name);
+          assert item.type.equals(fromServer.get("type")) : "expected " + item.type + " but got "
+                  + fromServer.get("type") + " for " + item.name;
+          assert item.unit.equals(fromServer.get("unit")) : "expected " + item.unit + " but got "
+                  + fromServer.get("unit") + " for " + item.name;
+      }
+
+  }
+
+  @Test
+  @RunAsClient
+  @InSequence(13)
+  public void testPrometheusFormatNoBadChars() throws Exception {
+      Header wantPrometheusFormat = new Header("Accept", TEXT_PLAIN);
+
+      String data = given().header(wantPrometheusFormat).get("/metrics/base").asString();
+
+      String[] lines = data.split("\n");
+      for (String line : lines) {
+          if (line.startsWith("#")) {
+              continue;
+          }
+          String[] tmp = line.split(" ");
+          assert tmp.length == 2;
+          assert !tmp[0].matches("[-.]") : "Line has illegal chars " + line;
+          assert !tmp[0].matches("__") : "Found __ in " + line;
+      }
+  }
+
+  /*
+   * Technically Prometheus has no metadata call and this is included inline
+   * in the response.
+   */
+  @Test
+  @RunAsClient
+  @InSequence(14)
+  public void testBaseMetadataSingluarItemsPrometheus() {
+      Header wantPrometheusFormat = new Header("Accept", TEXT_PLAIN);
+
+      String data = given().header(wantPrometheusFormat).get("/metrics/base").asString();
+
+      String[] lines = data.split("\n");
+
+      Map<String, MiniMeta> expectedMetadata = getBaseMetrics();
+      for (String line : lines) {
+          if (!line.startsWith("# TYPE base:")) {
+              continue;
+          }
+          String fullLine = line;
+          int c = line.indexOf(":");
+          line = line.substring(c + 1);
+          if (line.startsWith("gc_")) {
+              continue;
+          }
+          boolean found = false;
+          for (MiniMeta mm : expectedMetadata.values()) {
+              String promName = mm.toPromString();
+              String[] tmp = line.split(" ");
+              assert tmp.length == 2;
+              if (tmp[0].startsWith(promName)) {
+                  found = true;
+                  assert tmp[1].equals(mm.type) : "Expected [" + mm.toString() + "] got [" + fullLine + "]";
+              }
+          }
+          assert found : "Not found [" + fullLine + "]";
+
+      }
+  }
+
+  @Test
+  @RunAsClient
+  @InSequence(15)
+  public void testBaseMetadataGarbageCollection() throws Exception {
+      Header wantJson = new Header("Accept", APPLICATION_JSON);
+
+      JsonPath jsonPath = given().header(wantJson).options("/metrics/base").jsonPath();
+
+      int count = 0;
+      Map<String, Object> elements = jsonPath.getMap(".");
+      for (String name : elements.keySet()) {
+          if (name.startsWith("gc.")) {
+              assert name.endsWith(".count") || name.endsWith(".time");
+              count++;
+          }
+      }
+      assert count > 0;
+  }
+
+  @Test
+  @RunAsClient
+  @InSequence(16)
+  public void testApplicationMetadataOkJson() {
+      Header wantJson = new Header("Accept", APPLICATION_JSON);
+
+      given().header(wantJson).options("/metrics/application").then().statusCode(204);
+  }
+
+
+
 
   private Map<String, MiniMeta> getBaseMetrics() {
       ClassLoader cl = this.getClass().getClassLoader();
@@ -186,15 +340,13 @@ public class MicroprofileMetricsTest {
       DocumentBuilder builder = null;
       try {
           builder = fac.newDocumentBuilder();
-      }
-      catch (ParserConfigurationException e) {
+      } catch (ParserConfigurationException e) {
           e.printStackTrace(); // TODO: Customise this generated block
       }
       Document document = null;
       try {
           document = builder.parse(is);
-      }
-      catch (SAXException | IOException e) {
+      } catch (SAXException | IOException e) {
           throw new RuntimeException(e);
       }
 
