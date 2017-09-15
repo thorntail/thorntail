@@ -28,7 +28,7 @@
     <swarm.fraction.tags>MicroProfile,JWT,Security,Web</swarm.fraction.tags>
     <arquillian.version>1.1.13.Final</arquillian.version>
     <!-- The MicroProfile JWT Auth API version -->
-    <mpjwt.auth.version>1.0-RC10</mpjwt.auth.version>
+    <mpjwt.auth.version>1.0</mpjwt.auth.version>
   </properties>
 
   <build>
@@ -39,14 +39,6 @@
       </resource>
     </resources>
   </build>
-
-  <repositories>
-    <repository>
-      <id>repo.eclipse.org</id>
-      <name>Eclipse MicroProfile Repository - Releases</name>
-      <url>https://repo.eclipse.org/content/repositories/microprofile-releases/</url>
-    </repository>
-  </repositories>
 
   <dependencyManagement>
     <dependencies>
