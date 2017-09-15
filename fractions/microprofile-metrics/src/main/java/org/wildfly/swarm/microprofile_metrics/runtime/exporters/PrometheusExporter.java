@@ -66,13 +66,15 @@ public class PrometheusExporter extends AbstractExporter implements Exporter {
       sb.append("# TYPE ");
       sb.append(scope.getName().toLowerCase());
       sb.append(':').append(key).append(" ").append(md.getType()).append("\n");
+      // value line
       sb.append(scope.getName().toLowerCase()).append(":").append(key);
       String tags = getTagsAsString(); // TODO we need to add the tags from metadata
       if (tags != null && !tags.isEmpty()) {
         sb.append('{').append(tags).append('}');
       }
 
-      sb.append(" ").append(entry.getValue()).append("\n");
+      Double value = PrometheusUnit.scaleToBase(md.getUnit(),entry.getValue());
+      sb.append(" ").append(value).append("\n");
     }
   }
 

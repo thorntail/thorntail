@@ -78,4 +78,71 @@ public class PrometheusUnit {
     }
     return out;
   }
+
+  public static Double scaleToBase(String unit, Double value) {
+
+    Double out;
+
+    switch (unit) {
+
+      case MetricUnits.BITS:
+        out = value / 8;
+        break;
+      case MetricUnits.KILOBITS:
+        out = value * 1_000 / 8;
+        break;
+      case MetricUnits.MEGABITS:
+        out = value * 1_000_000 / 8;
+        break;
+      case MetricUnits.GIGABITS:
+        out = value * 1_000_000_000 / 8;
+        break;
+      /* 1024 {@link #BITS} */
+      case MetricUnits.KIBIBITS:
+        out = value * 128;
+        break;
+      case MetricUnits.MEBIBITS:
+        out = value * 1_024 * 128;
+        break;
+      case MetricUnits.GIBIBITS:
+        out = value * 1_024 * 1_024 * 128;
+        break;
+      case MetricUnits.BYTES:
+        out = value;
+        break;
+      case MetricUnits.KILOBYTES:
+        out = value * 1_000;
+        break;
+      case MetricUnits.MEGABYTES:
+        out = value * 1_000_000;
+        break;
+      case MetricUnits.GIGABYTES:
+        out = value * 1_000_000_000;
+        break;
+      case MetricUnits.NANOSECONDS:
+        out = value / 1_000_000_000;
+        break;
+      case MetricUnits.MICROSECONDS:
+        out = value / 1_000_000;
+        break;
+      case MetricUnits.MILLISECONDS:
+        out = value / 1000;
+        break;
+      case MetricUnits.SECONDS:
+        out = value;
+        break;
+      case MetricUnits.MINUTES:
+        out = value * 60;
+        break;
+      case MetricUnits.HOURS:
+        out = value * 3600;
+        break;
+      case MetricUnits.DAYS:
+        out = value * 24 * 3600;
+        break;
+      default:
+        out = value;
+    }
+    return out;
+  }
 }

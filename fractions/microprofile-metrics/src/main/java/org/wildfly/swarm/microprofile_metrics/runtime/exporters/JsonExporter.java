@@ -31,8 +31,6 @@ public class JsonExporter extends AbstractExporter implements Exporter {
   @Override
   public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String, Double> values) {
 
-    LOG.info("Scope : " + scope.getName() + " , # entries = " + values.size());
-
     StringBuilder sb = new StringBuilder();
 
     getMetricsForAScope(values, sb);

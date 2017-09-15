@@ -165,6 +165,21 @@ public class MicroprofileMetricsTest {
  	              containsString("vendor:memory_pool_"));
  	}
 
+  @Test
+ 	@RunAsClient
+ 	public void testPrometheusScaling() {
+ 	    String data = given()
+ 	        .header("Accept",TEXT_PLAIN)
+          .then()
+ 	        .get("/metrics/base/jvm.uptime")
+          .asString();
+
+ 	    String[] tmp = data.split("\n");
+ 	    String value = tmp[1].split(" ")[1];
+ 	    double val = Double.valueOf(value);
+ 	    assert val < 300 : "value was " + val;  // Should report in seconds
+ 	}
+
 
   @Test
   @RunAsClient
