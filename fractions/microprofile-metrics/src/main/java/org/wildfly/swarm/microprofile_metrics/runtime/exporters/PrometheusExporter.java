@@ -63,7 +63,9 @@ public class PrometheusExporter extends AbstractExporter implements Exporter {
       Metadata md = registry.getMetadata().get(key);
 
       key = getPrometheusMetricName(md,key);
-      sb.append("# TYPE ").append("base:").append(key).append(" ").append(md.getType()).append("\n");
+      sb.append("# TYPE ");
+      sb.append(scope.getName().toLowerCase());
+      sb.append(':').append(key).append(" ").append(md.getType()).append("\n");
       sb.append(scope.getName().toLowerCase()).append(":").append(key);
       String tags = getTagsAsString(); // TODO we need to add the tags from metadata
       if (tags != null && !tags.isEmpty()) {

@@ -16,14 +16,9 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricType;
-import org.eclipse.microprofile.metrics.MetricUnits;
 import org.jboss.as.controller.ModelController;
 
 import org.jboss.as.controller.client.ModelControllerClient;
@@ -51,7 +46,7 @@ public class MetricsService implements Service<MetricsService> {
   private final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
   private final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
 
-  MetricRegistry baseRegistry = MetricRegistryFactory.get(MetricRegistry.Type.BASE);
+
 
   @Override
   public void start(StartContext context) throws StartException {
@@ -59,9 +54,10 @@ public class MetricsService implements Service<MetricsService> {
     controllerClient = modelControllerValue.getValue().createClient(executorService);
 
     BaseMetricWorker baseMetricWorker = BaseMetricWorker.create(controllerClient);
+    baseMetricWorker.registerBaseMetrics();
 
-    registerBaseMetrics();
-    registerGarbageCollectors(baseMetricWorker);
+    VendorMetricWorker vendorMetricWorker = VendorMetricWorker.create(controllerClient);
+    vendorMetricWorker.registerVendorMetrics();
     LOG.info("MicroProfile-Metrics started");
   }
 
@@ -80,37 +76,8 @@ public class MetricsService implements Service<MetricsService> {
   /**
    * Register the metrics of the base scope with the system.
    */
-  private void registerBaseMetrics() {
-    baseRegistry.getMetadata().put("thread.count", new Metadata("thread.count", MetricType.COUNTER));
-    baseRegistry.getMetadata().put("thread.daemon.count", new Metadata("thread.daemon.count", MetricType.COUNTER));
-    baseRegistry.getMetadata().put("thread.max.count", new Metadata("thread.max.count", MetricType.COUNTER));
 
-    baseRegistry.getMetadata().put("memory.maxHeap", new Metadata("memory.maxHeap", MetricType.GAUGE, "bytes"));
-    baseRegistry.getMetadata().put("memory.usedHeap", new Metadata("memory.usedHeap", MetricType.GAUGE, "bytes"));
-    baseRegistry.getMetadata().put("memory.committedHeap", new Metadata("memory.committedHeap", MetricType.GAUGE, "bytes"));
 
-    baseRegistry.getMetadata().put("classloader.currentLoadedClass.count",
-                                   new Metadata("classloader.currentLoadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
-    baseRegistry.getMetadata().put("classloader.totalLoadedClass.count",
-                                   new Metadata("classloader.totalLoadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
-    baseRegistry.getMetadata().put("classloader.totalUnloadedClass.count",
-                                   new Metadata("classloader.totalUnloadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
-
-    baseRegistry.getMetadata().put("cpu.availableProcessors",
-                                   new Metadata("cpu.availableProcessors", MetricType.GAUGE, MetricUnits.NONE));
-    baseRegistry.getMetadata().put("cpu.systemLoadAverage",
-                                   new Metadata("cpu.systemLoadAverage", MetricType.GAUGE, MetricUnits.NONE));
-    baseRegistry.getMetadata().put("jvm.uptime",
-                                   new Metadata("jvm.uptime", MetricType.GAUGE, MetricUnits.MILLISECONDS));
-
-  }
-
-  private void registerGarbageCollectors(BaseMetricWorker baseMetricWorker) {
-    List<Metadata> entries = baseMetricWorker.findGarbageCollectors();
-    for (Metadata entry : entries) {
-      baseRegistry.getMetadata().put(entry.getName(), entry);
-    }
-  }
 
 
   public Injector<ServerEnvironment> getServerEnvironmentInjector() {

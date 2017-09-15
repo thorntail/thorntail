@@ -19,6 +19,7 @@ package org.wildfly.swarm.microprofile_metrics;
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Header;
@@ -120,6 +121,20 @@ public class MicroprofileMetricsTest {
               .contentType(APPLICATION_JSON).and().body(containsString("thread.max.count"));
   }
 
+  @Test
+  @RunAsClient
+  public void testVendor() {
+      given().header("Accept", APPLICATION_JSON).when().get("/metrics/vendor").then().statusCode(200).and()
+              .contentType(APPLICATION_JSON).and().body(containsString("memoryPool.")); // TODO better test
+  }
+
+  @Test
+  @RunAsClient
+  public void testBaseNonVendor() {
+      given().header("Accept", APPLICATION_JSON).when().get("/metrics/base").then().statusCode(200).and()
+              .contentType(APPLICATION_JSON).and().body(not(containsString("memoryPool.")));
+  }
+
 
   @Test
  	@RunAsClient
@@ -134,6 +149,20 @@ public class MicroprofileMetricsTest {
  	        .and()
  	        .body(containsString("# TYPE base:thread_max_count"),
  	              containsString("base:thread_max_count"));
+ 	}
+
+  @Test
+ 	@RunAsClient
+ 	public void testVendorPrometheus() {
+ 	    given()
+ 	        .header("Accept",TEXT_PLAIN)
+ 	        .when().get("/metrics/vendor")
+ 	        .then()
+ 	        .statusCode(200)
+ 	        .and().contentType(TEXT_PLAIN)
+ 	        .and()
+ 	        .body(containsString("# TYPE vendor:memory_pool_"),
+ 	              containsString("vendor:memory_pool_"));
  	}
 
 
@@ -276,18 +305,20 @@ public class MicroprofileMetricsTest {
       String[] lines = data.split("\n");
 
       Map<String, MiniMeta> expectedMetadata = getBaseMetrics();
-      for (String line : lines) {
-          if (!line.startsWith("# TYPE base:")) {
-              continue;
-          }
-          String fullLine = line;
-          int c = line.indexOf(":");
-          line = line.substring(c + 1);
-          if (line.startsWith("gc_")) {
-              continue;
-          }
+      for (MiniMeta mm : expectedMetadata.values()) {
+
           boolean found = false;
-          for (MiniMeta mm : expectedMetadata.values()) {
+          // Skip GC
+          if (mm.name.startsWith("gc.")) {
+              continue;
+          }
+          for (String line : lines) {
+              if (!line.startsWith("# TYPE base:")) {
+                  continue;
+              }
+              String fullLine = line;
+              int c = line.indexOf(":");
+              line = line.substring(c + 1);
               String promName = mm.toPromString();
               String[] tmp = line.split(" ");
               assert tmp.length == 2;
@@ -296,7 +327,7 @@ public class MicroprofileMetricsTest {
                   assert tmp[1].equals(mm.type) : "Expected [" + mm.toString() + "] got [" + fullLine + "]";
               }
           }
-          assert found : "Not found [" + fullLine + "]";
+          assert found : "Not found [" + mm.toString() + "]";
 
       }
   }

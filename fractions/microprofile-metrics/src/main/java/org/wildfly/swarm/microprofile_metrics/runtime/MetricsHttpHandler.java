@@ -142,6 +142,8 @@ public class MetricsHttpHandler implements HttpHandler {
     Map<String, Double> metricValuesMap;
     if (scope.equals(MetricRegistry.Type.BASE)) {
       metricValuesMap = BaseMetricWorker.instance().getBaseMetrics();
+    } else if (scope.equals(MetricRegistry.Type.VENDOR)) {
+      metricValuesMap = VendorMetricWorker.instance().getVendorMetrics();
     } else {
       metricValuesMap = new HashMap<>(); // TODO
     }

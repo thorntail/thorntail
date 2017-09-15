@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.jboss.as.controller.client.ModelControllerClient;
@@ -207,7 +208,41 @@ public class BaseMetricWorker {
       }
   }
 
-  public List<Metadata> findGarbageCollectors() {
+  void registerBaseMetrics() {
+
+    MetricRegistry baseRegistry = MetricRegistryFactory.get(MetricRegistry.Type.BASE);
+
+    baseRegistry.getMetadata().put("thread.count", new Metadata("thread.count", MetricType.COUNTER));
+    baseRegistry.getMetadata().put("thread.daemon.count", new Metadata("thread.daemon.count", MetricType.COUNTER));
+    baseRegistry.getMetadata().put("thread.max.count", new Metadata("thread.max.count", MetricType.COUNTER));
+
+    baseRegistry.getMetadata().put("memory.maxHeap", new Metadata("memory.maxHeap", MetricType.GAUGE, "bytes"));
+    baseRegistry.getMetadata().put("memory.usedHeap", new Metadata("memory.usedHeap", MetricType.GAUGE, "bytes"));
+    baseRegistry.getMetadata().put("memory.committedHeap", new Metadata("memory.committedHeap", MetricType.GAUGE, "bytes"));
+
+    baseRegistry.getMetadata().put("classloader.currentLoadedClass.count",
+                                   new Metadata("classloader.currentLoadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
+    baseRegistry.getMetadata().put("classloader.totalLoadedClass.count",
+                                   new Metadata("classloader.totalLoadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
+    baseRegistry.getMetadata().put("classloader.totalUnloadedClass.count",
+                                   new Metadata("classloader.totalUnloadedClass.count", MetricType.COUNTER, MetricUnits.NONE));
+
+    baseRegistry.getMetadata().put("cpu.availableProcessors",
+                                   new Metadata("cpu.availableProcessors", MetricType.GAUGE, MetricUnits.NONE));
+    baseRegistry.getMetadata().put("cpu.systemLoadAverage",
+                                   new Metadata("cpu.systemLoadAverage", MetricType.GAUGE, MetricUnits.NONE));
+    baseRegistry.getMetadata().put("jvm.uptime",
+                                   new Metadata("jvm.uptime", MetricType.GAUGE, MetricUnits.MILLISECONDS));
+
+
+    List<Metadata> entries = findGarbageCollectors();
+    for (Metadata entry : entries) {
+      baseRegistry.getMetadata().put(entry.getName(), entry);
+    }
+
+  }
+
+  private List<Metadata> findGarbageCollectors() {
 
     ModelNode op = new ModelNode();
     op.get(ADDRESS).add(CORE_SERVICE, PLATFORM_MBEAN);
@@ -215,24 +250,24 @@ public class BaseMetricWorker {
     op.get(OP).set(QUERY);
 
     try {
-        ModelNode response = controllerClient.execute(op);
-        ModelNode result = unwrap(response);
+      ModelNode response = controllerClient.execute(op);
+      ModelNode result = unwrap(response);
 
-        List<ModelNode> collectors = result.get("name").asList();
-        List<Metadata> output = new ArrayList<>(2 * collectors.size());
-        for (ModelNode node : collectors) {
-          String collectorName = node.asProperty().getName();
-          String baseName = "gc." + collectorName;
-          Metadata m = new Metadata(baseName + ".time", MetricType.GAUGE, MetricUnits.MILLISECONDS);
-          output.add(m);
-          m = new Metadata(baseName + ".count", MetricType.COUNTER);
-          output.add(m);
-        }
+      List<ModelNode> collectors = result.get("name").asList();
+      List<Metadata> output = new ArrayList<>(2 * collectors.size());
+      for (ModelNode node : collectors) {
+        String collectorName = node.asProperty().getName();
+        String baseName = "gc." + collectorName;
+        Metadata m = new Metadata(baseName + ".time", MetricType.GAUGE, MetricUnits.MILLISECONDS);
+        output.add(m);
+        m = new Metadata(baseName + ".count", MetricType.COUNTER);
+        output.add(m);
+      }
 
-        return output;
+      return output;
 
     } catch (IOException e) {
-        throw new RuntimeException(e); // TODO return some 500 message or such
+      throw new RuntimeException(e); // TODO return some 500 message or such
     }
 
   }
