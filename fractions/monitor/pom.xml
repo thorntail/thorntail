@@ -25,7 +25,7 @@
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Management</swarm.fraction.tags>
-    <version.mp.health>1.0.0-RC2</version.mp.health>
+    <version.mp.health>1.0</version.mp.health>
   </properties>
 
   <repositories>
