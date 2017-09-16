@@ -57,7 +57,11 @@
     <dependency>
        <groupId>org.eclipse.microprofile.health</groupId>
        <artifactId>microprofile-health-api</artifactId>
+<<<<<<< HEAD
        <version>${version.mp.health}</version>
+=======
+       <version>1.0-SNAPSHOT</version>
+>>>>>>> a8aaadf16b38541786026324be24eeab9e0fd87c
       <scope>provided</scope>
      </dependency>
 

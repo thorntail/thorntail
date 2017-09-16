@@ -11,6 +11,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
@@ -21,6 +22,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
  * @author Ken Finnigan
  */
 @RunWith(Arquillian.class)
+@Ignore
 public class MonitorArquillianTest {
 
     @Deployment(testable = false)

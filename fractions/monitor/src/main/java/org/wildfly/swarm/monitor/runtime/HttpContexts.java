@@ -129,6 +129,7 @@ public class HttpContexts implements HttpHandler {
 
         if (procedures.isEmpty()) {
             noHealthEndpoints(exchange);
+            return;
         }
 
         List<org.eclipse.microprofile.health.HealthCheckResponse> responses = new ArrayList<>();
@@ -368,8 +369,10 @@ public class HttpContexts implements HttpHandler {
     }
 
     private void noHealthEndpoints(HttpServerExchange exchange) {
-        exchange.setStatusCode(204);
-        exchange.setReasonPhrase("No health endpoints configured!");
+        exchange.setStatusCode(200);
+        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+        exchange.getResponseSender().send("{\"outcome\":\"UP\", \"checks\":[]}");
+        exchange.endExchange();
     }
 
     private void nodeInfo(HttpServerExchange exchange) {
