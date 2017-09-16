@@ -140,10 +140,14 @@ public class MetricsHttpHandler implements HttpHandler {
 
   private Map<String, Double> getMetricsMapForScope(MetricRegistry.Type scope) {
     Map<String, Double> metricValuesMap;
+/*
     if (scope.equals(MetricRegistry.Type.BASE)) {
       metricValuesMap = BaseMetricWorker.instance().getBaseMetrics();
     } else if (scope.equals(MetricRegistry.Type.VENDOR)) {
       metricValuesMap = VendorMetricWorker.instance().getVendorMetrics();
+*/
+    if (scope.equals(MetricRegistry.Type.BASE) || scope.equals(MetricRegistry.Type.VENDOR)) {
+      metricValuesMap = JmxWorker.instance().getMetrics(scope);
     } else {
       metricValuesMap = new HashMap<>(); // TODO
     }

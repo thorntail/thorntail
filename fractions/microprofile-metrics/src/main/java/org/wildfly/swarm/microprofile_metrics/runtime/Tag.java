@@ -98,4 +98,12 @@ public class Tag {
     sb.append('}');
     return sb.toString();
   }
+
+  public String toKVString() {
+    final StringBuilder sb = new StringBuilder(key);
+    sb.append('=');
+    sb.append(value);
+
+    return sb.toString();
+  }
 }

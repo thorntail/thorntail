@@ -16,12 +16,8 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import java.io.InputStream;
 import org.jboss.as.controller.ModelController;
-
-import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.server.ServerEnvironment;
 import org.jboss.logging.Logger;
 import org.jboss.msc.inject.Injector;
@@ -38,8 +34,6 @@ import org.jboss.msc.value.InjectedValue;
 public class MetricsService implements Service<MetricsService> {
 
   private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile_metrics");
-  private ExecutorService executorService;
-  private ModelControllerClient controllerClient;
 
   public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "mp-metrics");
 
@@ -47,25 +41,43 @@ public class MetricsService implements Service<MetricsService> {
   private final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
 
 
-
   @Override
   public void start(StartContext context) throws StartException {
-    executorService = Executors.newSingleThreadExecutor();
-    controllerClient = modelControllerValue.getValue().createClient(executorService);
+    initBaseAndVendorConfiguration();
 
-    BaseMetricWorker baseMetricWorker = BaseMetricWorker.create(controllerClient);
-    baseMetricWorker.registerBaseMetrics();
 
-    VendorMetricWorker vendorMetricWorker = VendorMetricWorker.create(controllerClient);
-    vendorMetricWorker.registerVendorMetrics();
     LOG.info("MicroProfile-Metrics started");
+  }
+
+  /**
+   * Read a list of mappings that contains the base and vendor metrics
+   * along with their metadata.
+   */
+  private void initBaseAndVendorConfiguration() {
+    InputStream is  = getClass().getResourceAsStream("mapping.yml");
+    LOG.warn("IS is " + is);
+
+    if (is != null) {
+      ConfigReader cr = new ConfigReader();
+      MetadataList ml = cr.readConfig(is);
+
+      // Turn the multi-entry query expressions into concrete entries.
+      JmxWorker.instance().expandMultiValueEntries(ml.getBase());
+      JmxWorker.instance().expandMultiValueEntries(ml.getVendor());
+
+      for (ExtendedMetadata em : ml.getBase()) {
+        MetricRegistryFactory.getBaseRegistry().getMetadata().put(em.getName(), em);
+      }
+      for (ExtendedMetadata em : ml.getVendor()) {
+        MetricRegistryFactory.getVendorRegistry().getMetadata().put(em.getName(),em);
+      }
+    } else {
+      throw new IllegalStateException("Was not able to find the mapping file 'mapping.yml'");
+    }
   }
 
   @Override
   public void stop(StopContext context) {
-    if (executorService != null) {
-      executorService.shutdown();
-    }
   }
 
   @Override
