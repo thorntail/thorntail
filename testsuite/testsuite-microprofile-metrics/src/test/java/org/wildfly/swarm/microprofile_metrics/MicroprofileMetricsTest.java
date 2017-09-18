@@ -224,6 +224,22 @@ public class MicroprofileMetricsTest {
                       containsString("base:thread_max_count{tier=\"integration\"}"));
   }
 
+  @Test
+  @RunAsClient
+  public void testAllLabelsPrometheus() {
+      given().header("Accept", TEXT_PLAIN).when().get("/metrics/vendor/test").then().statusCode(200).and()
+              .contentType(TEXT_PLAIN).and().body(containsString("# TYPE vendor:test"),
+                      containsString("vendor:test{tier=\"integration\",domain=\"test\"}"));
+  }
+
+  @Test
+  @RunAsClient
+  public void testAllLabelsJson() {
+      given().header("Accept", APPLICATION_JSON).when().options("/metrics/vendor/test").then().statusCode(200).and()
+              .contentType(APPLICATION_JSON).and().body(
+                      containsString("\"tags\": \"tier=integration,domain=test\""));
+  }
+
 
   @Test
   @RunAsClient

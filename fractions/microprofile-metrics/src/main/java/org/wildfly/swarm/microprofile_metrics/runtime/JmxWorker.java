@@ -156,7 +156,6 @@ public class JmxWorker {
                       String newDescription = entry.getDescription().replace(PLACEHOLDER, keyValue);
                       ExtendedMetadata newEntry = new ExtendedMetadata(newName, newDisplayName, newDescription,
                                                                  entry.getTypeRaw(), entry.getUnit());
-//                      newEntry.setTags(entry.getTagsForEntryOnly());  // TODO tag handling
                       String newObjectName = oName.getCanonicalName() + "/" + attName;
                       newEntry.setMbean(newObjectName);
                       result.add(newEntry);

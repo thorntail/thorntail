@@ -26,36 +26,60 @@ import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
  * @author hrupp
  */
 public class JsonMetadataExporter extends AbstractExporter implements Exporter {
+
+  private static final String QUOTE_COMMA_LF = "\",\n";
+
   @Override
   public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String, Double> values) {
 
+    StringBuilder sb = new StringBuilder();
+
+    getDataForOneScope(scope, sb);
+
+    return sb;
+  }
+
+  private void getDataForOneScope(MetricRegistry.Type scope, StringBuilder sb) {
     MetricRegistry registry = MetricRegistryFactory.get(scope);
     Map<String,Metadata> theMetadata = registry.getMetadata();
 
-    StringBuilder sb = new StringBuilder();
     sb.append("{");
-      Iterator<Map.Entry<String,Metadata>> iter = theMetadata.entrySet().iterator();
-      while (iter.hasNext()) {
-        Metadata entry = iter.next().getValue();
-        sb.append('"').append(entry.getName()).append('"').append(": {\n");
-        sb.append("  \"unit\": \"").append(entry.getUnit()).append("\",\n");
-        sb.append("  \"type\": \"").append(entry.getType()).append("\",\n");
-        sb.append("  \"description\": \"").append(entry.getDescription()).append("\",\n");
-        // TODO add tags
-        sb.append("  \"displayName\": \"").append(entry.getDisplayName()).append("\"\n");
-        if (iter.hasNext()) {
-          sb.append("},\n");
-        } else {
-          sb.append("}\n");
-        }
+    Iterator<Map.Entry<String,Metadata>> iter = theMetadata.entrySet().iterator();
+    while (iter.hasNext()) {
+      Metadata entry = iter.next().getValue();
+      sb.append('"').append(entry.getName()).append('"').append(": {\n");
+      sb.append("  \"unit\": \"").append(entry.getUnit()).append(QUOTE_COMMA_LF);
+      sb.append("  \"type\": \"").append(entry.getType()).append(QUOTE_COMMA_LF);
+      sb.append("  \"description\": \"").append(entry.getDescription()).append(QUOTE_COMMA_LF);
+      if (!entry.getTags().isEmpty()) {
+        sb.append("  \"tags\": \"");
+        sb.append(getTagsAsString(entry.getTags()));
+        sb.append(QUOTE_COMMA_LF);
       }
+      sb.append("  \"displayName\": \"").append(entry.getDisplayName()).append("\"\n");
+      if (iter.hasNext()) {
+        sb.append("},\n");
+      } else {
+        sb.append("}\n");
+      }
+    }
     sb.append("}");
+  }
 
-      return sb;
+  private String getTagsAsString(Map<String, String> tags) {
+    StringBuilder result = new StringBuilder();
+    Iterator<Map.Entry<String, String>> iterator = tags.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Map.Entry<String, String> pair = iterator.next();
+      result.append(pair.getKey()).append("=").append(pair.getValue());
+      if (iterator.hasNext()) {
+        result.append(",");
+      }
+     }
+     return result.toString();
   }
 
   /*
-
   {
     "fooVal": {
       "unit": "milliseconds",
@@ -75,7 +99,36 @@ public class JsonMetadataExporter extends AbstractExporter implements Exporter {
 
   @Override
   public StringBuilder exportAllScopes(Map<MetricRegistry.Type, Map<String, Double>> scopeValuesMap) {
-    return null;  // TODO: Customise this generated block
+    StringBuilder sb = new StringBuilder();
+    sb.append("{");
+
+    MetricRegistry.Type[] values = MetricRegistry.Type.values();
+    int totalNonEmptyScopes = 0;
+    for (int i = 0; i < values.length; i++) {
+      MetricRegistry.Type scope = values[i];
+      if (scopeValuesMap.get(scope).size() > 0) {
+        totalNonEmptyScopes++;
+      }
+    }
+
+    int scopes = 0;
+    for (int i = 0; i < values.length; i++) {
+      MetricRegistry.Type scope = values[i];
+
+      if (scopeValuesMap.get(scope).size() > 0) {
+        sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
+        getDataForOneScope(scope,sb);
+        sb.append("\n");
+        scopes++;
+        if (scopes < totalNonEmptyScopes) {
+          sb.append(',');
+        }
+      }
+    }
+
+    sb.append("}");
+    return sb;
+
   }
 
   @Override

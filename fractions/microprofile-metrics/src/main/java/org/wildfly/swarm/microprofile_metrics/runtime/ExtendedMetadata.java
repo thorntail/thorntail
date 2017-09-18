@@ -73,7 +73,12 @@ public class ExtendedMetadata extends Metadata {
     return out;
   }
 
-  public Metadata extractMetadata() {
-    return (Metadata) this;
+  public void processTags(List<Tag> globalTags) {
+
+    List<Tag> tags = new ArrayList<>(globalTags);
+    tags.addAll(getLabels());
+    for (Tag tag : tags) {
+      getTags().put(tag.key,tag.value);
+    }
   }
 }

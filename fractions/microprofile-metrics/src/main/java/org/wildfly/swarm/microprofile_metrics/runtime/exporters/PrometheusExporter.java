@@ -16,13 +16,11 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
-import java.util.Iterator;
 import java.util.Map;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
-import org.wildfly.swarm.microprofile_metrics.runtime.Tag;
 
 /**
  * Export data in Prometheus text format
@@ -68,7 +66,7 @@ public class PrometheusExporter extends AbstractExporter implements Exporter {
       sb.append(':').append(key).append(" ").append(md.getType()).append("\n");
       // value line
       sb.append(scope.getName().toLowerCase()).append(":").append(key);
-      String tags = getTagsAsString(); // TODO we need to add the tags from metadata
+      String tags = md.getTagsAsString();
       if (tags != null && !tags.isEmpty()) {
         sb.append('{').append(tags).append('}');
       }
@@ -98,21 +96,6 @@ public class PrometheusExporter extends AbstractExporter implements Exporter {
 
   private String decamelize(String in) {
       return in.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
-  }
-
-
-  public String getTagsAsString() {
-    StringBuilder result = new StringBuilder();
-
-    Iterator<Tag> iterator = getTags().iterator();
-    while (iterator.hasNext()) {
-      Tag aTag = iterator.next();
-      result.append(aTag.getKey()).append("=\"").append(aTag.getValue()).append("\"");
-      if (iterator.hasNext()) {
-        result.append(",");
-      }
-    }
-    return result.toString();
   }
 
 }

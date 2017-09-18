@@ -16,34 +16,9 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.wildfly.swarm.microprofile_metrics.runtime.Tag;
-
 /**
  * @author hrupp
  */
 public abstract class AbstractExporter implements Exporter {
 
-  private List<Tag> tags = new ArrayList<>();
-
-  @Override
-  public void setGlobalTags(String tagsString) {
-
-    String[] singleTags = tagsString.split(",");
-        for (String singleTag : singleTags) {
-          addTag(singleTag.trim());
-        }
-  }
-
-  public void addTag(String kvString) {
-     if (kvString == null || kvString.isEmpty() || !kvString.contains("=")) {
-       return;
-     }
-     tags.add(new Tag(kvString));
-   }
-
-  public List<Tag> getTags() {
-    return tags;
-  }
 }

@@ -17,6 +17,8 @@
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.server.ServerEnvironment;
 import org.jboss.logging.Logger;
@@ -61,19 +63,33 @@ public class MetricsService implements Service<MetricsService> {
       ConfigReader cr = new ConfigReader();
       MetadataList ml = cr.readConfig(is);
 
+      String globalTagsFromEnv = System.getenv("MP_METRICS_TAGS");
+      List<Tag> globalTags = convertToTags(globalTagsFromEnv);
+
       // Turn the multi-entry query expressions into concrete entries.
       JmxWorker.instance().expandMultiValueEntries(ml.getBase());
       JmxWorker.instance().expandMultiValueEntries(ml.getVendor());
 
       for (ExtendedMetadata em : ml.getBase()) {
+        em.processTags(globalTags);
         MetricRegistryFactory.getBaseRegistry().getMetadata().put(em.getName(), em);
       }
       for (ExtendedMetadata em : ml.getVendor()) {
+        em.processTags(globalTags);
         MetricRegistryFactory.getVendorRegistry().getMetadata().put(em.getName(),em);
       }
     } else {
       throw new IllegalStateException("Was not able to find the mapping file 'mapping.yml'");
     }
+  }
+
+  private List<Tag> convertToTags(String globalTagsString) {
+    List<Tag> tags = new ArrayList<>();
+    String[] singleTags = globalTagsString.split(",");
+        for (String singleTag : singleTags) {
+          tags.add(new Tag(singleTag.trim()));
+        }
+    return tags;
   }
 
   @Override

@@ -24,8 +24,6 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
  */
 public interface Exporter {
 
-  void setGlobalTags(String tags);
-
   StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String,Double> values);
 
   StringBuilder exportAllScopes(Map<MetricRegistry.Type,Map<String,Double>> scopeValuesMap);
