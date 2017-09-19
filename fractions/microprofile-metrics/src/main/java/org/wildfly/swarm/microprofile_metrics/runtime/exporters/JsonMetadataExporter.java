@@ -25,7 +25,7 @@ import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
 /**
  * @author hrupp
  */
-public class JsonMetadataExporter extends AbstractExporter implements Exporter {
+public class JsonMetadataExporter implements Exporter {
 
   private static final String QUOTE_COMMA_LF = "\",\n";
 

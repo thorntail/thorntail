@@ -26,7 +26,7 @@ import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
  * Export data in Prometheus text format
  * @author Heiko W. Rupp
  */
-public class PrometheusExporter extends AbstractExporter implements Exporter {
+public class PrometheusExporter implements Exporter {
 
 
   public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String,Double> values) {
