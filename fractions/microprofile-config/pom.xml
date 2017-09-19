@@ -8,9 +8,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-microprofile-config</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>build-parent</artifactId>
+        <version>2017.10.0-SNAPSHOT</version>
+        <relativePath>../../build-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>org.wildfly.swarm</groupId>
@@ -22,8 +23,12 @@
 
     <properties>
         <swarm.fraction.internal>false</swarm.fraction.internal>
-        <swarm.fraction.stability>unstable</swarm.fraction.stability>
+        <swarm.fraction.stability>experimental</swarm.fraction.stability>
         <swarm.fraction.tags>EclipseMicroProfile,MicroServices,Config</swarm.fraction.tags>
+        <!-- The MicroProfile Config API version -->
+        <mpconfig.api.version>1.1</mpconfig.api.version>
+        <!-- The Wildfly Extras Version -->
+        <mpconfig.wildfly.version>1.1.1.CR1</mpconfig.wildfly.version>
     </properties>
 
     <build>
@@ -75,6 +80,7 @@
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>microprofile-config-api</artifactId>
+            <version>${mpconfig.wildfly.version}</version>
         </dependency>
         <!-- CDI fraction is required to be able to inject Config -->
         <dependency>
@@ -85,10 +91,12 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
+            <version>${mpconfig.api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-microprofile-config-feature-pack</artifactId>
+            <version>${mpconfig.wildfly.version}</version>
             <type>zip</type>
             <scope>provided</scope>
             <exclusions>
