@@ -43,6 +43,10 @@ public class ExecutionContextWithInvocationContext implements ExecutionContext {
         return ic.getParameters();
     }
 
+    public Object getTarget() {
+        return ic.getTarget();
+    }
+
     public Object proceed() {
         try {
             return ic.proceed();

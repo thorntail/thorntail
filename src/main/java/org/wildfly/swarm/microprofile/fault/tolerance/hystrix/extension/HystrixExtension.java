@@ -20,8 +20,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -29,13 +31,25 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.WithAnnotations;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.HystrixCommandBinding;
+import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.BulkheadConfig;
+import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.CircuitBreakerConfig;
+import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.FallbackConfig;
+import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.RetryContext;
+import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.TimeoutConfig;
+
+/**
+ * @author Antoine Sabot-Durand
+ */
 
 /**
  * @author Antoine Sabot-Durand
@@ -49,26 +63,43 @@ public class HystrixExtension implements Extension {
         bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(Timeout.class)));
         bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(Asynchronous.class)));
         bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(Fallback.class)));
+        bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(Bulkhead.class)));
     }
 
-    /*void registerAllAsynchronousMethod(@Observes @WithAnnotations(Asynchronous.class) ProcessAnnotatedType<?> pat) {
 
-        if (pat.getAnnotatedType().isAnnotationPresent(Asynchronous.class)) {
-            asyncMethods = pat.getAnnotatedType().getMethods().stream()
-                    .map(AnnotatedMethod::getJavaMember).collect(Collectors.toSet());
-        } else {
-            asyncMethods = pat.getAnnotatedType().getMethods().stream()
-                    .filter(m -> m.isAnnotationPresent(Asynchronous.class))
-                    .map(AnnotatedMethod::getJavaMember).collect(Collectors.toSet());
+
+    void validateTimeout(@Observes @WithAnnotations(Timeout.class) ProcessAnnotatedType<?> pat) {
+        validate(pat, m -> new TimeoutConfig(m).validate(), Timeout.class);
+    }
+
+    void validateRetry(@Observes @WithAnnotations(Retry.class) ProcessAnnotatedType<?> pat) {
+        validate(pat, m -> new RetryContext(m).validate(), Retry.class);
+    }
+
+    void validateCircuitBreaker(@Observes @WithAnnotations(CircuitBreaker.class) ProcessAnnotatedType<?> pat) {
+        validate(pat, m -> new CircuitBreakerConfig(m).validate(), CircuitBreaker.class);
+    }
+
+    void validateBulkhead(@Observes @WithAnnotations(Bulkhead.class) ProcessAnnotatedType<?> pat) {
+        validate(pat, m -> new BulkheadConfig(m).validate(), Bulkhead.class);
+    }
+
+    void validateFallback(@Observes @WithAnnotations(Fallback.class) ProcessAnnotatedType<?> pat) {
+        validate(pat, m -> new FallbackConfig(m).validate(), Fallback.class);
+    }
+
+    private void validate(ProcessAnnotatedType<?> pat, Consumer<Annotated> validator, Class<? extends Annotation> annotationType) {
+        AnnotatedType<?> at =pat.getAnnotatedType();
+
+        if (at.isAnnotationPresent(annotationType)) {
+            validator.accept(at);
         }
+
+        at.getMethods().stream()
+                .filter(m -> m.isAnnotationPresent(annotationType))
+                .forEach(validator);
     }
 
-    private Set<Method> asyncMethods = new HashSet<>();*/
-
-
-    /**
-     * @author Antoine Sabot-Durand
-     */
     public static class HystrixInterceptorBindingAnnotatedType<T extends Annotation> implements AnnotatedType<T> {
 
         public HystrixInterceptorBindingAnnotatedType(AnnotatedType<T> delegate) {
@@ -120,4 +151,7 @@ public class HystrixExtension implements Extension {
 
         private Set<Annotation> annotations;
     }
+
+
 }
+
