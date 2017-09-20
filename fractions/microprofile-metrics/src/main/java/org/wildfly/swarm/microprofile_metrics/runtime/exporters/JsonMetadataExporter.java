@@ -20,6 +20,7 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class JsonMetadataExporter implements Exporter {
   private static final String QUOTE_COMMA_LF = "\",\n";
 
   @Override
-  public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String, Double> values) {
+  public StringBuilder exportOneScope(MetricRegistry.Type scope) {
 
     StringBuilder sb = new StringBuilder();
 
@@ -45,6 +46,11 @@ public class JsonMetadataExporter implements Exporter {
     Map<String,Metadata> theMetadata = registry.getMetadata();
 
     sb.append("{");
+    writeMetadataForMap(sb, theMetadata);
+    sb.append("}");
+  }
+
+  private void writeMetadataForMap(StringBuilder sb, Map<String, Metadata> theMetadata) {
     Iterator<Map.Entry<String,Metadata>> iter = theMetadata.entrySet().iterator();
     while (iter.hasNext()) {
       Metadata entry = iter.next().getValue();
@@ -66,7 +72,6 @@ public class JsonMetadataExporter implements Exporter {
         sb.append("}\n");
       }
     }
-    sb.append("}");
   }
 
   private String getTagsAsString(Map<String, String> tags) {
@@ -82,43 +87,21 @@ public class JsonMetadataExporter implements Exporter {
      return result.toString();
   }
 
-  /*
-  {
-    "fooVal": {
-      "unit": "milliseconds",
-      "type": "gauge",
-      "description": "The average duration of foo requests during last 5 minutes",
-      "displayName": "Duration of foo",
-      "tags": "app=webshop"
-    },
-    "barVal": {
-      "unit": "megabytes",
-      "type": "gauge",
-      "tags": "component=backend,app=webshop"
-    }
-  }
-
-   */
 
   @Override
-  public StringBuilder exportAllScopes(Map<MetricRegistry.Type, Map<String, Double>> scopeValuesMap) {
+  public StringBuilder exportAllScopes() {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
 
     MetricRegistry.Type[] values = MetricRegistry.Type.values();
-    int totalNonEmptyScopes = 0;
-    for (int i = 0; i < values.length; i++) {
-      MetricRegistry.Type scope = values[i];
-      if (scopeValuesMap.get(scope).size() > 0) {
-        totalNonEmptyScopes++;
-      }
-    }
+    int totalNonEmptyScopes = Helper.countNonEmptyScopes();
 
     int scopes = 0;
     for (int i = 0; i < values.length; i++) {
       MetricRegistry.Type scope = values[i];
+      MetricRegistry registry = MetricRegistryFactory.get(scope);
 
-      if (scopeValuesMap.get(scope).size() > 0) {
+      if (registry.getNames().size() > 0) {
         sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
         getDataForOneScope(scope,sb);
         sb.append("\n");
@@ -132,6 +115,24 @@ public class JsonMetadataExporter implements Exporter {
     sb.append("}");
     return sb;
 
+  }
+
+  @Override
+  public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
+    MetricRegistry registry = MetricRegistryFactory.get(scope);
+    Map<String,Metadata> metadataMap = registry.getMetadata();
+
+    Metadata m = metadataMap.get(metricName);
+
+    Map<String,Metadata> outMap = new HashMap<>(1);
+    outMap.put(metricName,m);
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("{");
+    writeMetadataForMap(sb,outMap);
+    sb.append("\n");
+
+    return sb;
   }
 
   @Override

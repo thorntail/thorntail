@@ -14,37 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile_metrics.runtime.mp;
+package org.wildfly.swarm.microprofile_metrics.runtime.app;
+
+import org.eclipse.microprofile.metrics.Gauge;
 
 /**
  * @author hrupp
  */
-public class MeterImpl implements org.eclipse.microprofile.metrics.Metered {
-
-  private long count;
-
+public class GaugeImpl implements Gauge {
   @Override
-  public long getCount() {
-    return count;
-  }
-
-  @Override
-  public double getFifteenMinuteRate() {
-    return 0;  // TODO: Customise this generated block
-  }
-
-  @Override
-  public double getFiveMinuteRate() {
-    return 0;  // TODO: Customise this generated block
-  }
-
-  @Override
-  public double getMeanRate() {
-    return 0;  // TODO: Customise this generated block
-  }
-
-  @Override
-  public double getOneMinuteRate() {
-    return 0;  // TODO: Customise this generated block
+  public Object getValue() {
+    return null;  // TODO: Customise this generated block
   }
 }

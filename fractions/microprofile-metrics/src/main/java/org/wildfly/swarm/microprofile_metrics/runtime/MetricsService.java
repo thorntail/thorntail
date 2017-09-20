@@ -16,9 +16,7 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.microprofile.metrics.Metric;
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.server.ServerEnvironment;
 import org.jboss.logging.Logger;
@@ -29,6 +27,12 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
+import org.wildfly.swarm.microprofile_metrics.runtime.mbean.MCounterImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.mbean.MGaugeImpl;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Heiko W. Rupp
@@ -72,15 +76,33 @@ public class MetricsService implements Service<MetricsService> {
 
       for (ExtendedMetadata em : ml.getBase()) {
         em.processTags(globalTags);
-        MetricRegistryFactory.getBaseRegistry().getMetadata().put(em.getName(), em);
+        Metric type = getType(em);
+        LOG.info("+++ registering " + em);
+        MetricRegistryFactory.getBaseRegistry().register(em.getName(),type,em);
       }
       for (ExtendedMetadata em : ml.getVendor()) {
         em.processTags(globalTags);
-        MetricRegistryFactory.getVendorRegistry().getMetadata().put(em.getName(),em);
+        Metric type = getType(em);
+        MetricRegistryFactory.getVendorRegistry().register(em.getName(),type,em);
       }
     } else {
       throw new IllegalStateException("Was not able to find the mapping file 'mapping.yml'");
     }
+  }
+
+  private Metric getType(ExtendedMetadata em) {
+    Metric out;
+    switch (em.getTypeRaw()) {
+      case GAUGE:
+        out = new MGaugeImpl(em.getMbean());
+        break;
+      case COUNTER:
+        out = new MCounterImpl(em.getMbean());
+        break;
+      default:
+        throw new IllegalStateException("Not yet supported: " + em);
+    }
+    return out;
   }
 
   private List<Tag> convertToTags(String globalTagsString) {

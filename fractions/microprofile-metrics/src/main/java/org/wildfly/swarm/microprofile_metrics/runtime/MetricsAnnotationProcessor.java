@@ -33,10 +33,10 @@ import org.jboss.jandex.MethodInfo;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.microprofile_metrics.MicroprofileMetricsFraction;
-import org.wildfly.swarm.microprofile_metrics.runtime.mp.CounterImpl;
-import org.wildfly.swarm.microprofile_metrics.runtime.mp.GaugeImpl;
-import org.wildfly.swarm.microprofile_metrics.runtime.mp.MeterImpl;
-import org.wildfly.swarm.microprofile_metrics.runtime.mp.TimerImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.CounterImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.GaugeImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.MeterImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.TimerImpl;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 

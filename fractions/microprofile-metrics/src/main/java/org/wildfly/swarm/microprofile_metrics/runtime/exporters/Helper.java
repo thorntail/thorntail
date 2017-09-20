@@ -14,16 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile_metrics.runtime.mp;
+package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
-import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
 
 /**
  * @author hrupp
  */
-public class GaugeImpl implements Gauge {
-  @Override
-  public Object getValue() {
-    return null;  // TODO: Customise this generated block
-  }
+class Helper {
+
+    private Helper() {
+    }
+
+    static int countNonEmptyScopes() {
+        MetricRegistry.Type[] values = MetricRegistry.Type.values();
+        int totalNonEmptyScopes = 0;
+        for (MetricRegistry.Type scope : values) {
+            MetricRegistry registry = MetricRegistryFactory.get(scope);
+            if (registry.getNames().size() > 0) {
+                totalNonEmptyScopes++;
+            }
+        }
+        return totalNonEmptyScopes;
+    }
 }

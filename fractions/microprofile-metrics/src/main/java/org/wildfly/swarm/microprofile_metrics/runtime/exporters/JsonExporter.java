@@ -16,68 +16,93 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
+
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.jboss.logging.Logger;
 
 /**
  * @author hrupp
  */
 public class JsonExporter implements Exporter {
 
-  private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
-
   @Override
-  public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String, Double> values) {
+  public StringBuilder exportOneScope(MetricRegistry.Type scope) {
 
     StringBuilder sb = new StringBuilder();
 
-    getMetricsForAScope(values, sb);
+    getMetricsForAScope(sb,scope);
 
     return sb;
   }
 
-  private void getMetricsForAScope(Map<String, Double> values, StringBuilder sb) {
+  private void getMetricsForAScope(StringBuilder sb, MetricRegistry.Type scope) {
 
+    MetricRegistry registry = MetricRegistryFactory.get(scope);
+    Map<String,Metric> metricMap = registry.getMetrics();
 
     sb.append("{\n");
 
-    for (Iterator<Map.Entry<String, Double>> iterator = values.entrySet().iterator(); iterator.hasNext(); ) {
-      Map.Entry<String, Double> entry = iterator.next();
+    writeMetricsForMap(sb, metricMap);
+
+    sb.append("}");
+  }
+
+  private void writeMetricsForMap(StringBuilder sb, Map<String, Metric> metricMap) {
+    for (Iterator<Map.Entry<String, Metric>> iterator = metricMap.entrySet().iterator(); iterator.hasNext(); ) {
+      Map.Entry<String, Metric> entry = iterator.next();
       String key = entry.getKey();
 
-      sb.append("  ").append('"').append(key).append('"').append(" : ").append(entry.getValue());
+      Metric value = entry.getValue();
+      double val = getValueFromMetric(value);
+      sb.append("  ").append('"').append(key).append('"').append(" : ").append(val);
       if (iterator.hasNext()) {
         sb.append(',');
       }
       sb.append("\n");
     }
+  }
 
-    sb.append("}");
+  private double getValueFromMetric(Metric value) {
+    if (value instanceof Gauge) {
+      Number value1 = (Number) ((Gauge) value).getValue();
+      double v;
+      if (value1 != null) {
+        v = value1.doubleValue();
+      }
+      else {
+        return -142.142; // TODO
+      }
+      return v;
+    } else if (value instanceof Counter) {
+      return ((Counter) value).getCount();
+    } else {
+      System.err.println("Not yet supported : " + value);
+      return -42.42;
+    }
   }
 
   @Override
-  public StringBuilder exportAllScopes(Map<MetricRegistry.Type, Map<String, Double>> scopeValuesMap) {
+  public StringBuilder exportAllScopes() {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
 
     MetricRegistry.Type[] values = MetricRegistry.Type.values();
-    int totalNonEmptyScopes = 0;
-    for (int i = 0; i < values.length; i++) {
-      MetricRegistry.Type scope = values[i];
-      if (scopeValuesMap.get(scope).size() > 0) {
-        totalNonEmptyScopes++;
-      }
-    }
+    int totalNonEmptyScopes = Helper.countNonEmptyScopes();
 
     int scopes = 0;
     for (int i = 0; i < values.length; i++) {
       MetricRegistry.Type scope = values[i];
+      MetricRegistry registry = MetricRegistryFactory.get(scope);
 
-      if (scopeValuesMap.get(scope).size() > 0) {
+      if (registry.getNames().size() > 0) {
         sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
-        getMetricsForAScope(scopeValuesMap.get(scope), sb);
+        getMetricsForAScope(sb,scope);
         sb.append("\n");
         scopes++;
         if (scopes < totalNonEmptyScopes) {
@@ -87,6 +112,24 @@ public class JsonExporter implements Exporter {
     }
 
     sb.append("}");
+    return sb;
+  }
+
+  @Override
+  public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
+    MetricRegistry registry = MetricRegistryFactory.get(scope);
+    Map<String,Metric> metricMap = registry.getMetrics();
+
+    Metric m = metricMap.get(metricName);
+
+    Map<String,Metric> outMap = new HashMap<>(1);
+    outMap.put(metricName,m);
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("{");
+    writeMetricsForMap(sb,outMap);
+    sb.append("\n");
+
     return sb;
   }
 

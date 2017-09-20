@@ -20,15 +20,16 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.Exporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonExporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonMetadataExporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.PrometheusExporter;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author hrupp
@@ -84,7 +85,7 @@ public class MetricsHttpHandler implements HttpHandler {
         Map<String, Double> map = getMetricsMapForScope(scope);
         metricValuesMap.put(scope, map);
       }
-      sb = exporter.exportAllScopes(metricValuesMap);
+      sb = exporter.exportAllScopes();
 
     } else if (scopePath.contains("/")) {
       // One metric in a scope
@@ -97,7 +98,7 @@ public class MetricsHttpHandler implements HttpHandler {
       Map<String,Double> oneMetric = new HashMap<>(1);
       oneMetric.put(attribute, metricValuesMap.get(attribute));
 
-      sb = exporter.exportOneScope(scope,oneMetric);
+      sb = exporter.exportOneMetric(scope,attribute);
 
 
     } else {
@@ -116,7 +117,7 @@ public class MetricsHttpHandler implements HttpHandler {
 
       Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
 
-      sb = exporter.exportOneScope(scope, metricValuesMap);
+      sb = exporter.exportOneScope(scope);
     }
 
     LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");

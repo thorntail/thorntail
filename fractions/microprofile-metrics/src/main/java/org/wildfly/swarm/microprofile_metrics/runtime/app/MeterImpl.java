@@ -14,39 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile_metrics.runtime.mp;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import org.eclipse.microprofile.metrics.Snapshot;
+package org.wildfly.swarm.microprofile_metrics.runtime.app;
 
 /**
  * @author hrupp
  */
-public class TimerImpl implements org.eclipse.microprofile.metrics.Timer {
-  @Override
-  public void update(long duration, TimeUnit unit) {
-    // TODO: Customise this generated block
-  }
+public class MeterImpl implements org.eclipse.microprofile.metrics.Metered {
 
-  @Override
-  public <T> T time(Callable<T> event) throws Exception {
-    return null;  // TODO: Customise this generated block
-  }
-
-  @Override
-  public void time(Runnable event) {
-    // TODO: Customise this generated block
-  }
-
-  @Override
-  public Context time() {
-    return null;  // TODO: Customise this generated block
-  }
+  private long count;
 
   @Override
   public long getCount() {
-    return 0;  // TODO: Customise this generated block
+    return count;
   }
 
   @Override
@@ -67,10 +46,5 @@ public class TimerImpl implements org.eclipse.microprofile.metrics.Timer {
   @Override
   public double getOneMinuteRate() {
     return 0;  // TODO: Customise this generated block
-  }
-
-  @Override
-  public Snapshot getSnapshot() {
-    return null;  // TODO: Customise this generated block
   }
 }

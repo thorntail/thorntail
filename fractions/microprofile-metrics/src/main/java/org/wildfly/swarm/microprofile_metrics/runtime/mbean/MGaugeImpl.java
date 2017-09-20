@@ -14,39 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile_metrics.runtime.mp;
+package org.wildfly.swarm.microprofile_metrics.runtime.mbean;
 
-import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.wildfly.swarm.microprofile_metrics.runtime.JmxWorker;
 
 /**
  * @author hrupp
  */
-public class CounterImpl implements Counter {
+public class MGaugeImpl implements Gauge {
 
-  private long count = 0;
 
-  @Override
-  public void inc() {
-    count++;
-  }
+    private String mBeanExpression;
 
-  @Override
-  public void inc(long n) {
-    count += n;
-  }
+    public MGaugeImpl(String mBeanExpression) {
 
-  @Override
-  public void dec() {
-    count--;
-  }
+        this.mBeanExpression = mBeanExpression;
+    }
 
-  @Override
-  public void dec(long n) {
-    count -= n;
-  }
-
-  @Override
-  public long getCount() {
-    return count;
-  }
+    @Override
+    public Number getValue() {
+        return JmxWorker.instance().getValue(mBeanExpression);
+    }
 }
