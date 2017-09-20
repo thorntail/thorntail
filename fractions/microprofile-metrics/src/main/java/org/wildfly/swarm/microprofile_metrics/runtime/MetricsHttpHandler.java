@@ -33,6 +33,7 @@ import org.wildfly.swarm.microprofile_metrics.runtime.exporters.PrometheusExport
 /**
  * @author hrupp
  */
+@SuppressWarnings("unused")
 public class MetricsHttpHandler implements HttpHandler {
 
   private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
@@ -45,14 +46,13 @@ public class MetricsHttpHandler implements HttpHandler {
   public MetricsHttpHandler(HttpHandler next) {
 
     this.next = next;
-    LOG.warn("MetricsHttpHandler()");
   }
 
   @Override
   public void handleRequest(HttpServerExchange exchange) throws Exception {
 
     String requestPath = exchange.getRequestPath();
-    LOG.warn(requestPath + " on " + Thread.currentThread());
+//    LOG.warn(requestPath + " on " + Thread.currentThread());
 
     if (dispatched.get() != null && dispatched.get().getCount() == 1) {
         next.handleRequest(exchange);

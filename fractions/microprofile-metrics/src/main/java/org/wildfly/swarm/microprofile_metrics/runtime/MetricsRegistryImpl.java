@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -28,6 +29,7 @@ import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricFilter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
 
 /**
@@ -36,15 +38,33 @@ import org.eclipse.microprofile.metrics.Timer;
 public class MetricsRegistryImpl extends MetricRegistry {
 
   private Map<String,Metadata> metadataMap = new HashMap<>();
+  private Map<String,Metric> metricMap = new ConcurrentHashMap<>();
 
   @Override
-  public <T extends Metric> T register(String s, T t) throws IllegalArgumentException {
-    return null;  // TODO: Customise this generated block
+  public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
+
+    if (metricMap.keySet().contains(name)) {
+      throw new IllegalArgumentException("A metric with name " + name + " already exists");
+    }
+
+    Metadata m = new Metadata(name, MetricType.from(metric.getClass()));
+    metricMap.put(name,metric);
+
+    metadataMap.put(name,m);
+    return metric;
   }
 
   @Override
-  public <T extends Metric> T register(String s, T t, Metadata metadata) throws IllegalArgumentException {
-    return null;  // TODO: Customise this generated block
+  public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
+
+    if (metricMap.keySet().contains(name)) {
+      throw new IllegalArgumentException("A metric with name " + name + " already exists");
+    }
+
+    metricMap.put(name,metric);
+    metadataMap.put(name,metadata);
+
+    return metric;
   }
 
   @Override

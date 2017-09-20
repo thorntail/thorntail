@@ -16,38 +16,34 @@
  */
 package org.wildfly.swarm.microprofile_metrics;
 
-import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.when;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Header;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+
+import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.RestAssured.when;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.hasKey;
 
 /**
  * @author Heiko W. Rupp
@@ -59,12 +55,15 @@ public class MicroprofileMetricsTest {
  	private static final String TEXT_PLAIN = "text/plain";
 
 
-  @Deployment(testable = false)
-  public static Archive deployment() {
-      JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-      deployment.add(EmptyAsset.INSTANCE, "nothing");
-      return deployment;
+  @Deployment
+  public static JavaArchive createDeployment() {
+      JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addClass(MetricAppBean.class)
+              .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+
+      System.out.println(jar.toString(true));
+      return jar;
   }
+
 
   @Test
   @RunAsClient
@@ -202,7 +201,7 @@ public class MicroprofileMetricsTest {
       Map<String, Object> elements = jsonPath.getMap(".");
       List<String> missing = new ArrayList<>();
 
-      Map<String, MiniMeta> baseNames = getBaseMetrics();
+      Map<String, MiniMeta> baseNames = getExpectedMetadataFromXmlFile(MetricRegistry.Type.BASE);
       for (String item : baseNames.keySet()) {
           if (item.startsWith("gc.")) {
               continue;
@@ -263,7 +262,7 @@ public class MicroprofileMetricsTest {
       Map<String, Object> elements = jsonPath.getMap(".");
       List<String> missing = new ArrayList<>();
 
-      Map<String, MiniMeta> baseNames = getBaseMetrics();
+      Map<String, MiniMeta> baseNames = getExpectedMetadataFromXmlFile(MetricRegistry.Type.BASE);
       for (String item : baseNames.keySet()) {
           if (item.startsWith("gc.")) {
               continue;
@@ -286,22 +285,26 @@ public class MicroprofileMetricsTest {
 
       Map<String, Map<String, Object>> elements = jsonPath.getMap(".");
 
-      Map<String, MiniMeta> expectedMetadata = getBaseMetrics();
-      for (Map.Entry<String, MiniMeta> entry : expectedMetadata.entrySet()) {
-          MiniMeta item = entry.getValue();
-          if (item.name.startsWith("gc.")) {
-              continue; // We don't deal with them here
-          }
-          Map<String, Object> fromServer = (Map<String, Object>) elements.get(item.name);
-          assert item.type.equals(fromServer.get("type")) : "expected " + item.type + " but got "
-                  + fromServer.get("type") + " for " + item.name;
-          assert item.unit.equals(fromServer.get("unit")) : "expected " + item.unit + " but got "
-                  + fromServer.get("unit") + " for " + item.name;
-      }
+      Map<String, MiniMeta> expectedMetadata = getExpectedMetadataFromXmlFile(MetricRegistry.Type.BASE);
+      checkMetadataPresent(elements, expectedMetadata);
 
   }
 
-  @Test
+    private void checkMetadataPresent(Map<String, Map<String, Object>> elements, Map<String, MiniMeta> expectedMetadata) {
+        for (Map.Entry<String, MiniMeta> entry : expectedMetadata.entrySet()) {
+            MiniMeta item = entry.getValue();
+            if (item.name.startsWith("gc.")) {
+                continue; // We don't deal with them here
+            }
+            Map<String, Object> fromServer = elements.get(item.name);
+            assert item.type.equals(fromServer.get("type")) : "expected " + item.type + " but got "
+                    + fromServer.get("type") + " for " + item.name;
+            assert item.unit.equals(fromServer.get("unit")) : "expected " + item.unit + " but got "
+                    + fromServer.get("unit") + " for " + item.name;
+        }
+    }
+
+    @Test
   @RunAsClient
   @InSequence(13)
   public void testPrometheusFormatNoBadChars() throws Exception {
@@ -335,7 +338,7 @@ public class MicroprofileMetricsTest {
 
       String[] lines = data.split("\n");
 
-      Map<String, MiniMeta> expectedMetadata = getBaseMetrics();
+      Map<String, MiniMeta> expectedMetadata = getExpectedMetadataFromXmlFile(MetricRegistry.Type.BASE);
       for (MiniMeta mm : expectedMetadata.values()) {
 
           boolean found = false;
@@ -388,27 +391,144 @@ public class MicroprofileMetricsTest {
   public void testApplicationMetadataOkJson() {
       Header wantJson = new Header("Accept", APPLICATION_JSON);
 
-      given().header(wantJson).options("/metrics/application").then().statusCode(204);
+      given().header(wantJson).options("/metrics/application").then().statusCode(200);
   }
 
 
+    @Test
+    @RunAsClient
+    @InSequence(18)
+    public void testApplicationMetricsJSON() {
+        Header wantJson = new Header("Accept", APPLICATION_JSON);
+
+        given().header(wantJson).get("/metrics/application").then().statusCode(200)
+
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.redCount'", equalTo(0))
+
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.blue'", equalTo(0))
+
+                .body("greenCount", equalTo(0))
+
+                .body("purple", equalTo(0))
+
+                .body("'metricTest.test1.count'", equalTo(1))
+
+                .body("'metricTest.test1.countMeA'", equalTo(1))
+
+                .body("'metricTest.test1.gauge'", equalTo(19))
+
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.gaugeMeA'", equalTo(1000))
+
+                .body("'metricTest.test1.histogram'.count", equalTo(1000))
+                .body("'metricTest.test1.histogram'.max", equalTo(999))
+                .body("'metricTest.test1.histogram'.mean", equalTo((float) 499.5))
+                .body("'metricTest.test1.histogram'.min", equalTo(0))
+                .body("'metricTest.test1.histogram'.p50", equalTo((float) 499.0))
+                .body("'metricTest.test1.histogram'.p75", equalTo((float) 749))
+                .body("'metricTest.test1.histogram'.p95", equalTo((float) 949))
+                .body("'metricTest.test1.histogram'.p98", equalTo((float) 979))
+                .body("'metricTest.test1.histogram'.p99", equalTo((float) 989))
+                .body("'metricTest.test1.histogram'.p999", equalTo((float) 998))
+                .body("'metricTest.test1.histogram'", hasKey("stddev"))
+
+                .body("'metricTest.test1.meter'.count", equalTo(1))
+                .body("'metricTest.test1.meter'", hasKey("fifteenMinRate"))
+                .body("'metricTest.test1.meter'", hasKey("fiveMinRate"))
+                .body("'metricTest.test1.meter'", hasKey("meanRate"))
+                .body("'metricTest.test1.meter'", hasKey("oneMinRate"))
+
+                .body("meterMeA.count", equalTo(1)).body("meterMeA", hasKey("fifteenMinRate"))
+                .body("meterMeA", hasKey("fiveMinRate")).body("meterMeA", hasKey("meanRate"))
+                .body("meterMeA", hasKey("oneMinRate"))
+
+                .body("'metricTest.test1.timer'.count", equalTo(1))
+                .body("'metricTest.test1.timer'", hasKey("fifteenMinRate"))
+                .body("'metricTest.test1.timer'", hasKey("fiveMinRate"))
+                .body("'metricTest.test1.timer'", hasKey("meanRate"))
+                .body("'metricTest.test1.timer'", hasKey("oneMinRate")).body("'metricTest.test1.timer'", hasKey("max"))
+                .body("'metricTest.test1.timer'", hasKey("mean")).body("'metricTest.test1.timer'", hasKey("min"))
+                .body("'metricTest.test1.timer'", hasKey("p50")).body("'metricTest.test1.timer'", hasKey("p75"))
+                .body("'metricTest.test1.timer'", hasKey("p95")).body("'metricTest.test1.timer'", hasKey("p98"))
+                .body("'metricTest.test1.timer'", hasKey("p99")).body("'metricTest.test1.timer'", hasKey("p999"))
+                .body("'metricTest.test1.timer'", hasKey("stddev"))
+
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'.count", equalTo(1))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("fifteenMinRate"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("fiveMinRate"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("meanRate"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("oneMinRate"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("max"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("mean"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("min"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p50"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p75"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p95"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p98"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p99"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p999"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("stddev"));
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(19)
+    public void testApplicationMetadataItems() {
+        Header wantJson = new Header("Accept", APPLICATION_JSON);
+
+        JsonPath jsonPath = given().header(wantJson).options("/metrics/application").jsonPath();
+
+        Map<String, Object> elements = jsonPath.getMap(".");
+        List<String> missing = new ArrayList<>();
+
+        Map<String, MiniMeta> names = getExpectedMetadataFromXmlFile(MetricRegistry.Type.APPLICATION);
+        for (String item : names.keySet()) {
+            if (!elements.containsKey(item)) {
+                missing.add(item);
+            }
+        }
+
+        assert missing.isEmpty() : "Following application items are missing: " + Arrays.toString(missing.toArray());
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(20)
+    public void testApplicationMetadataTypeAndUnit() {
+        Header wantJson = new Header("Accept", APPLICATION_JSON);
+
+        JsonPath jsonPath = given().header(wantJson).options("/metrics/application").jsonPath();
+
+        Map<String, Map<String, Object>> elements = jsonPath.getMap(".");
+
+        Map<String, MiniMeta> expectedMetadata = getExpectedMetadataFromXmlFile(MetricRegistry.Type.APPLICATION);
+        checkMetadataPresent(elements, expectedMetadata);
+
+    }
 
 
-  private Map<String, MiniMeta> getBaseMetrics() {
+
+    private Map<String, MiniMeta> getExpectedMetadataFromXmlFile(MetricRegistry.Type scope) {
       ClassLoader cl = this.getClass().getClassLoader();
-      InputStream is = cl.getResourceAsStream("base_metrics.xml");
+      String fileName;
+      switch (scope) {
+          case BASE:
+              fileName = "base_metrics.xml";
+              break;
+          case APPLICATION:
+              fileName = "application_metrics.xml";
+              break;
+          default:
+              throw new IllegalArgumentException("No definitions for " + scope.getName() + " supported");
+      }
+      InputStream is = cl.getResourceAsStream(fileName);
 
       DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-      DocumentBuilder builder = null;
+      DocumentBuilder builder;
+      Document document;
       try {
           builder = fac.newDocumentBuilder();
-      } catch (ParserConfigurationException e) {
-          e.printStackTrace(); // TODO: Customise this generated block
-      }
-      Document document = null;
-      try {
           document = builder.parse(is);
-      } catch (SAXException | IOException e) {
+      } catch (ParserConfigurationException | SAXException | IOException e) {
           throw new RuntimeException(e);
       }
 

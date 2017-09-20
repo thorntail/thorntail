@@ -16,11 +16,12 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
-import java.util.Iterator;
-import java.util.Map;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author hrupp
@@ -50,7 +51,9 @@ public class JsonMetadataExporter implements Exporter {
       sb.append('"').append(entry.getName()).append('"').append(": {\n");
       sb.append("  \"unit\": \"").append(entry.getUnit()).append(QUOTE_COMMA_LF);
       sb.append("  \"type\": \"").append(entry.getType()).append(QUOTE_COMMA_LF);
-      sb.append("  \"description\": \"").append(entry.getDescription()).append(QUOTE_COMMA_LF);
+      if (entry.getDescription() != null) {
+        sb.append("  \"description\": \"").append(entry.getDescription()).append(QUOTE_COMMA_LF);
+      }
       if (!entry.getTags().isEmpty()) {
         sb.append("  \"tags\": \"");
         sb.append(getTagsAsString(entry.getTags()));
