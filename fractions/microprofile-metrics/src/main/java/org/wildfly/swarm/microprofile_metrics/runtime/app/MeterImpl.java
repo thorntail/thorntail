@@ -19,9 +19,19 @@ package org.wildfly.swarm.microprofile_metrics.runtime.app;
 /**
  * @author hrupp
  */
-public class MeterImpl implements org.eclipse.microprofile.metrics.Metered {
+public class MeterImpl implements org.eclipse.microprofile.metrics.Meter {
 
   private long count;
+
+  @Override
+  public void mark() {
+    count++;
+  }
+
+  @Override
+  public void mark(long n) {
+    count += n;
+  }
 
   @Override
   public long getCount() {

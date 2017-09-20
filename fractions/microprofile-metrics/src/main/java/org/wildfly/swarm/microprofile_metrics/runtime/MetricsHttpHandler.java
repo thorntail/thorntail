@@ -120,7 +120,9 @@ public class MetricsHttpHandler implements HttpHandler {
       sb = exporter.exportOneScope(scope);
     }
 
-    LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
+    if (requestPath.contains("app") && exchange.getRequestMethod().toString().equals("GET")) {
+      LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
+    }
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, exporter.getContentType());
     exchange.getResponseSender().send(sb.toString());
 

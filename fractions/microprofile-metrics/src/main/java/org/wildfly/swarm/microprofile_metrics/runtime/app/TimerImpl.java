@@ -16,14 +16,23 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime.app;
 
+import org.eclipse.microprofile.metrics.Meter;
+import org.eclipse.microprofile.metrics.Snapshot;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.microprofile.metrics.Snapshot;
 
 /**
  * @author hrupp
  */
 public class TimerImpl implements org.eclipse.microprofile.metrics.Timer {
+
+  private final Meter meter;
+
+  public TimerImpl() {
+    this.meter = new MeterImpl();
+  }
+
   @Override
   public void update(long duration, TimeUnit unit) {
     // TODO: Customise this generated block
@@ -72,5 +81,9 @@ public class TimerImpl implements org.eclipse.microprofile.metrics.Timer {
   @Override
   public Snapshot getSnapshot() {
     return null;  // TODO: Customise this generated block
+  }
+
+  public Meter getMeter() {
+    return meter;
   }
 }
