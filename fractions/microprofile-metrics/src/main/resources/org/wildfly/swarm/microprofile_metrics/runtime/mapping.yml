@@ -5,11 +5,6 @@ base:
     unit: none
     type: counter
     displayName: "Current Thread count"
-  - name: "thread.max.count"
-    mbean: "java.lang:type=Threading/TotalStartedThreadCount"
-    description: "Number of threads started for this server"
-    unit: "none"
-    type: "counter"
   - name: "memory.maxHeap"
     mbean: "java.lang:type=Memory/HeapMemoryUsage#max"
     description: "Number of threads started for this server"

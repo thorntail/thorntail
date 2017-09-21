@@ -14,20 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
+package org.wildfly.swarm.microprofile_metrics.runtime.app;
 
-import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.Gauge;
 
 /**
  * @author hrupp
  */
-public interface Exporter {
-
-  StringBuilder exportOneScope(MetricRegistry.Type scope);
-
-  StringBuilder exportAllScopes();
-
-  String getContentType();
-
-  StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName);
+public class GaugeImpl implements Gauge {
+  @Override
+  public Object getValue() {
+    return null;  // TODO: Customise this generated block
+  }
 }

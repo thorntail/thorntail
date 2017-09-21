@@ -14,20 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
+package org.wildfly.swarm.microprofile_metrics.runtime.app;
 
-import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.Counter;
 
 /**
  * @author hrupp
  */
-public interface Exporter {
+public class CounterImpl implements Counter {
 
-  StringBuilder exportOneScope(MetricRegistry.Type scope);
+  private long count = 0;
 
-  StringBuilder exportAllScopes();
+  @Override
+  public void inc() {
+    count++;
+  }
 
-  String getContentType();
+  @Override
+  public void inc(long n) {
+    count += n;
+  }
 
-  StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName);
+  @Override
+  public void dec() {
+    count--;
+  }
+
+  @Override
+  public void dec(long n) {
+    count -= n;
+  }
+
+  @Override
+  public long getCount() {
+    return count;
+  }
 }

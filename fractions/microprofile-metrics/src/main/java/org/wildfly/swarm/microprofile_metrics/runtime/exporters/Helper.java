@@ -17,17 +17,25 @@
 package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
 
 /**
  * @author hrupp
  */
-public interface Exporter {
+class Helper {
 
-  StringBuilder exportOneScope(MetricRegistry.Type scope);
+    private Helper() {
+    }
 
-  StringBuilder exportAllScopes();
-
-  String getContentType();
-
-  StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName);
+    static int countNonEmptyScopes() {
+        MetricRegistry.Type[] values = MetricRegistry.Type.values();
+        int totalNonEmptyScopes = 0;
+        for (MetricRegistry.Type scope : values) {
+            MetricRegistry registry = MetricRegistryFactory.get(scope);
+            if (registry.getNames().size() > 0) {
+                totalNonEmptyScopes++;
+            }
+        }
+        return totalNonEmptyScopes;
+    }
 }

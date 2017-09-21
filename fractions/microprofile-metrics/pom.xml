@@ -26,6 +26,7 @@
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>Microprofile, Metrics, Monitoring</swarm.fraction.tags>
     <version.microprofile.metrics.api>1.0</version.microprofile.metrics.api>
+    <version.astefanutti.metrics.cdi>1.4.0</version.astefanutti.metrics.cdi>
   </properties>
 
   <build>
@@ -111,6 +112,12 @@
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
       <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.astefanutti.metrics.cdi</groupId>
+      <artifactId>metrics-cdi</artifactId>
+      <version>${version.astefanutti.metrics.cdi}</version>
     </dependency>
 
     <dependency>

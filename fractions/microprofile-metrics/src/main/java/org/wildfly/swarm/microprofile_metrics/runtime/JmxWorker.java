@@ -16,6 +16,14 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.jboss.logging.Logger;
+
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.openmbean.CompositeData;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,13 +31,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.openmbean.CompositeData;
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.jboss.logging.Logger;
 
 /**
  * @author hrupp
@@ -76,7 +77,7 @@ public class JmxWorker {
    * @param mbeanExpression The expression to look for
    * @return The value of the Mbean attribute
    */
-  private Number getValue(String mbeanExpression) {
+  public Number getValue(String mbeanExpression) {
 
     if (mbeanExpression == null) {
       throw new IllegalArgumentException("MBean Expression is null");

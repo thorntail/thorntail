@@ -14,11 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
+package org.wildfly.swarm.microprofile_metrics.runtime.mbean;
+
+import org.eclipse.microprofile.metrics.Gauge;
+import org.wildfly.swarm.microprofile_metrics.runtime.JmxWorker;
 
 /**
  * @author hrupp
  */
-public abstract class AbstractExporter implements Exporter {
+public class MGaugeImpl implements Gauge {
 
+
+    private String mBeanExpression;
+
+    public MGaugeImpl(String mBeanExpression) {
+
+        this.mBeanExpression = mBeanExpression;
+    }
+
+    @Override
+    public Number getValue() {
+        return JmxWorker.instance().getValue(mBeanExpression);
+    }
 }

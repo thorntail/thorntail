@@ -20,9 +20,6 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.Exporter;
@@ -30,9 +27,14 @@ import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonExporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonMetadataExporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.PrometheusExporter;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+
 /**
  * @author hrupp
  */
+@SuppressWarnings("unused")
 public class MetricsHttpHandler implements HttpHandler {
 
   private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
@@ -45,14 +47,13 @@ public class MetricsHttpHandler implements HttpHandler {
   public MetricsHttpHandler(HttpHandler next) {
 
     this.next = next;
-    LOG.warn("MetricsHttpHandler()");
   }
 
   @Override
   public void handleRequest(HttpServerExchange exchange) throws Exception {
 
     String requestPath = exchange.getRequestPath();
-    LOG.warn(requestPath + " on " + Thread.currentThread());
+//    LOG.warn(requestPath + " on " + Thread.currentThread());
 
     if (dispatched.get() != null && dispatched.get().getCount() == 1) {
         next.handleRequest(exchange);
@@ -70,7 +71,7 @@ public class MetricsHttpHandler implements HttpHandler {
     String scopePath = requestPath.substring(8);
 
     Exporter exporter = obtainExporter(exchange);
-    LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName());
+//    LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName());
 
     if (scopePath.startsWith("/")) {
       scopePath = scopePath.substring(1);
@@ -84,7 +85,7 @@ public class MetricsHttpHandler implements HttpHandler {
         Map<String, Double> map = getMetricsMapForScope(scope);
         metricValuesMap.put(scope, map);
       }
-      sb = exporter.exportAllScopes(metricValuesMap);
+      sb = exporter.exportAllScopes();
 
     } else if (scopePath.contains("/")) {
       // One metric in a scope
@@ -97,7 +98,7 @@ public class MetricsHttpHandler implements HttpHandler {
       Map<String,Double> oneMetric = new HashMap<>(1);
       oneMetric.put(attribute, metricValuesMap.get(attribute));
 
-      sb = exporter.exportOneScope(scope,oneMetric);
+      sb = exporter.exportOneMetric(scope,attribute);
 
 
     } else {
@@ -116,10 +117,12 @@ public class MetricsHttpHandler implements HttpHandler {
 
       Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
 
-      sb = exporter.exportOneScope(scope, metricValuesMap);
+      sb = exporter.exportOneScope(scope);
     }
 
-    LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
+    if (requestPath.contains("app") && exchange.getRequestMethod().toString().equals("GET")) {
+      LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
+    }
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, exporter.getContentType());
     exchange.getResponseSender().send(sb.toString());
 

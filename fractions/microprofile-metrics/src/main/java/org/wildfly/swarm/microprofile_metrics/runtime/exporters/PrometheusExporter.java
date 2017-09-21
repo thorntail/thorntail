@@ -16,33 +16,39 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 
-import java.util.Map;
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Export data in Prometheus text format
  * @author Heiko W. Rupp
  */
-public class PrometheusExporter extends AbstractExporter implements Exporter {
+public class PrometheusExporter implements Exporter {
 
 
-  public StringBuilder exportOneScope(MetricRegistry.Type scope, Map<String,Double> values) {
+  public StringBuilder exportOneScope(MetricRegistry.Type scope) {
 
     StringBuilder sb = new StringBuilder();
-    getEntriesForScope(scope, values, sb);
+    getEntriesForScope(scope, sb);
 
     return sb;
   }
 
   @Override
-  public StringBuilder exportAllScopes(Map<MetricRegistry.Type, Map<String, Double>> scopeValuesMap) {
+  public StringBuilder exportAllScopes() {
     StringBuilder sb = new StringBuilder();
 
     for (MetricRegistry.Type scope : MetricRegistry.Type.values()) {
-      getEntriesForScope(scope, scopeValuesMap.get(scope),sb);
+      getEntriesForScope(scope, sb);
     }
 
     return sb;
@@ -53,30 +59,82 @@ public class PrometheusExporter extends AbstractExporter implements Exporter {
     return "text/plain";
   }
 
-  private void getEntriesForScope(MetricRegistry.Type scope, Map<String, Double> values, StringBuilder sb) {
+  private void getEntriesForScope(MetricRegistry.Type scope, StringBuilder sb) {
     MetricRegistry registry = MetricRegistryFactory.get(scope);
+      Map<String,Metric> metricMap = registry.getMetrics();
 
-    for (Map.Entry<String,Double> entry: values.entrySet()) {
+    for (Map.Entry<String,Metric> entry: metricMap.entrySet()) {
       String key = entry.getKey();
       Metadata md = registry.getMetadata().get(key);
 
       key = getPrometheusMetricName(md,key);
-      sb.append("# TYPE ");
-      sb.append(scope.getName().toLowerCase());
-      sb.append(':').append(key).append(" ").append(md.getType()).append("\n");
-      // value line
-      sb.append(scope.getName().toLowerCase()).append(":").append(key);
-      String tags = md.getTagsAsString();
-      if (tags != null && !tags.isEmpty()) {
-        sb.append('{').append(tags).append('}');
-      }
+        writeTypeLine(scope, sb, key, md);
 
-      Double value = PrometheusUnit.scaleToBase(md.getUnit(),entry.getValue());
-      sb.append(" ").append(value).append("\n");
+      switch (md.getTypeRaw()) {
+          case GAUGE:
+          case COUNTER:
+              createSimpleValueLine(sb,scope,key,md,entry);
+              break;
+          default:
+              System.err.println("Not yet supported: " + key);
+              continue;
+
+      }
     }
   }
 
-  private String getPrometheusMetricName(Metadata entry, String name) {
+    private void writeTypeLine(MetricRegistry.Type scope, StringBuilder sb, String key, Metadata md) {
+        sb.append("# TYPE ");
+        sb.append(scope.getName().toLowerCase());
+        sb.append(':').append(key).append(" ").append(md.getType()).append("\n");
+    }
+
+    private void createSimpleValueLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, Map.Entry<String, Metric> entry) {
+
+        // value line
+        sb.append(scope.getName().toLowerCase()).append(":").append(key);
+        String tags = md.getTagsAsString();
+        if (tags != null && !tags.isEmpty()) {
+          sb.append('{').append(tags).append('}');
+        }
+
+        Double valIn;
+        if (md.getTypeRaw().equals(MetricType.GAUGE)) {
+            Number value1 = (Number) ((Gauge) entry.getValue()).getValue();
+            if (value1 != null) {
+                valIn = value1.doubleValue();
+            } else {
+                valIn = -42.242; // TODO
+            }
+        } else {
+            valIn = (double) ((Counter) entry.getValue()).getCount();
+        }
+
+        Double value = PrometheusUnit.scaleToBase(md.getUnit(),valIn);
+        sb.append(" ").append(value).append("\n");
+
+    }
+
+    @Override
+    public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
+        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        Map<String,Metric> metricMap = registry.getMetrics();
+
+        Metric m = metricMap.get(metricName);
+        Metadata metadata = registry.getMetadata().get(metricName);
+
+        Map<String,Metric> outMap = new HashMap<>(1);
+        outMap.put(metricName,m);
+
+        String key = getPrometheusMetricName(metadata,metricName);
+
+        StringBuilder sb = new StringBuilder();
+        writeTypeLine(scope,sb,key,metadata);
+        createSimpleValueLine(sb,scope,key,metadata,outMap.entrySet().iterator().next());
+        return sb;
+    }
+
+    private String getPrometheusMetricName(Metadata entry, String name) {
       String out = name.replace('-', '_').replace('.', '_').replace(' ','_');
       out = decamelize(out);
       if (entry == null) {
