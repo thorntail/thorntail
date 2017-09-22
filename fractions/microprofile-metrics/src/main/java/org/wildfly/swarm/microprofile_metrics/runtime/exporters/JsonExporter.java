@@ -19,11 +19,12 @@ package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.Meter;
+import org.eclipse.microprofile.metrics.Metered;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.Timer;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.MeterImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.TimerImpl;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import java.util.Map;
 public class JsonExporter implements Exporter {
 
   private static final String COMMA_LF = ",\n";
+  private static final String LF = "\n";
 
   @Override
   public StringBuilder exportOneScope(MetricRegistry.Type scope) {
@@ -71,26 +73,24 @@ public class JsonExporter implements Exporter {
       switch (metadata.getTypeRaw()) {
         case GAUGE:
         case COUNTER:
-          Number val = getValueFromMetric(value);
+          Number val = getValueFromMetric(value, key);
           sb.append("  ").append('"').append(key).append('"').append(" : ").append(val);
           break;
         case METERED:
-          Meter meter = (Meter) value;
+          MeterImpl meter = (MeterImpl) value;
           sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
           writeMeterValues(sb, meter);
           sb.append("  }");
           break;
         case TIMER:
-          Timer timer = (Timer) value;
+          TimerImpl timer = (TimerImpl) value;
           sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
           writeTimerValues(sb, timer);
           sb.append("  }");
-
-
           break;
         case HISTOGRAM:
           default:
-            System.err.println("Not yet supported " + metadata);
+            System.err.println("Not yet supported histogram" + metadata);
 
       }
 
@@ -98,61 +98,48 @@ public class JsonExporter implements Exporter {
       if (iterator.hasNext()) {
         sb.append(',');
       }
-      sb.append("\n");
+      sb.append(LF);
     }
   }
 
-  private void writeMeterValues(StringBuilder sb, Meter meter) {
+  private void writeMeterValues(StringBuilder sb, Metered meter) {
     sb.append("    \"count\": ").append(meter.getCount()).append(COMMA_LF);
     sb.append("    \"meanRate\": ").append(meter.getMeanRate()).append(COMMA_LF);
     sb.append("    \"oneMinRate\": ").append(meter.getOneMinuteRate()).append(COMMA_LF);
     sb.append("    \"fiveMinRate\": ").append(meter.getFiveMinuteRate()).append(COMMA_LF);
-    sb.append("    \"fifteenMinRate\": ").append(meter.getFifteenMinuteRate()).append("\n");
+    sb.append("    \"fifteenMinRate\": ").append(meter.getFifteenMinuteRate()).append(LF);
   }
 
-  private void writeTimerValues(StringBuilder sb, Timer timer) {
-    sb.append("    \"count\": ").append(timer.getCount()).append(COMMA_LF);
-    sb.append("    \"meanRate\": ").append(timer.getMeanRate()).append(COMMA_LF);
-    sb.append("    \"oneMinRate\": ").append(timer.getOneMinuteRate()).append(COMMA_LF);
-    sb.append("    \"fiveMinRate\": ").append(timer.getFiveMinuteRate()).append(COMMA_LF);
-    sb.append("    \"fifteenMinRate\": ").append(timer.getFifteenMinuteRate()).append("\n");
-    // TODO remaining fields
-    /*
-       "responseTime": {
-       "count": 29382,
-       "meanRate":12.185627192860734,
-       "oneMinRate": 12.563,
-       "fiveMinRate": 12.364,
-       "fifteenMinRate": 12.126,
-       "min":169916,
-       "max":5608694,
-       "mean":415041.00024926325,
-       "stddev":652907.9633011606,
-       "p50":293324.0,
-       "p75":344914.0,
-       "p95":543647.0,
-       "p98":2706543.0,
-       "p99":5608694.0,
-       "p999":5608694.0
-     }
-*/
+  private void writeTimerValues(StringBuilder sb, TimerImpl timer) {
+    sb.append("    \"p50\": ").append(timer.getSnapshot().getMedian()).append(COMMA_LF);
+    sb.append("    \"p75\": ").append(timer.getSnapshot().get75thPercentile()).append(COMMA_LF);
+    sb.append("    \"p95\": ").append(timer.getSnapshot().get95thPercentile()).append(COMMA_LF);
+    sb.append("    \"p98\": ").append(timer.getSnapshot().get98thPercentile()).append(COMMA_LF);
+    sb.append("    \"p99\": ").append(timer.getSnapshot().get99thPercentile()).append(COMMA_LF);
+    sb.append("    \"p999\": ").append(timer.getSnapshot().get999thPercentile()).append(COMMA_LF);
+    sb.append("    \"min\": ").append(timer.getSnapshot().getMin()).append(COMMA_LF);
+    sb.append("    \"mean\": ").append(timer.getSnapshot().getMean()).append(COMMA_LF);
+    sb.append("    \"max\": ").append(timer.getSnapshot().getMax()).append(COMMA_LF);
+    sb.append("    \"stddev\": ").append(timer.getSnapshot().getStdDev()).append(COMMA_LF);
+    writeMeterValues(sb, timer.getMeter());
   }
 
 
-  private Number getValueFromMetric(Metric value) {
+  private Number getValueFromMetric(Metric value, String name) {
     if (value instanceof Gauge) {
       Number value1 = (Number) ((Gauge) value).getValue();
       double v;
       if (value1 != null) {
         v = value1.doubleValue();
       } else {
+        System.out.println("Value is null for " + name);
         return -142.142; // TODO
       }
       return v;
     } else if (value instanceof Counter) {
       return ((Counter) value).getCount();
     } else {
-      System.err.println("Not yet supported : " + value.getClass().getName());
+      System.err.println("Not yet supported metric: " + value.getClass().getName());
       return -42.42;
     }
   }

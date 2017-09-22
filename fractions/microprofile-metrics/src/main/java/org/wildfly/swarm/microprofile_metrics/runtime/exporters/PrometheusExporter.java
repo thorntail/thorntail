@@ -19,11 +19,15 @@ package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.Metered;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.Snapshot;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.MeterImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.TimerImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +38,10 @@ import java.util.Map;
  */
 public class PrometheusExporter implements Exporter {
 
+    public static final byte LF = '\n';
+    private static final String SPACE_GAUGE = " gauge";
 
-  public StringBuilder exportOneScope(MetricRegistry.Type scope) {
+    public StringBuilder exportOneScope(MetricRegistry.Type scope) {
 
     StringBuilder sb = new StringBuilder();
     getEntriesForScope(scope, sb);
@@ -70,12 +76,22 @@ public class PrometheusExporter implements Exporter {
       key = getPrometheusMetricName(md,key);
         writeTypeLine(scope, sb, key, md);
 
-      switch (md.getTypeRaw()) {
+        Metric metric = entry.getValue();
+
+        switch (md.getTypeRaw()) {
           case GAUGE:
           case COUNTER:
-              createSimpleValueLine(sb,scope,key,md,entry);
+              createSimpleValueLine(sb,scope,key,md, metric);
               break;
-          default:
+          case METERED:
+              MeterImpl meter = (MeterImpl) metric;
+              writeMeterValues(sb,scope, meter, md, key);
+              break;
+            case TIMER:
+                TimerImpl timer = (TimerImpl) metric;
+                writeTimerValues(sb,scope, timer, md, key);
+                break;
+            default:
               System.err.println("Not yet supported: " + key);
               continue;
 
@@ -83,16 +99,61 @@ public class PrometheusExporter implements Exporter {
     }
   }
 
+    private void writeTimerValues(StringBuilder sb, MetricRegistry.Type scope, TimerImpl timer, Metadata md, String key) {
+        writeMeterValues(sb,scope,timer.getMeter(),md,key);
+        Snapshot snapshot = timer.getSnapshot();
+        fillBaseName(sb, scope, key).append("_min_seconds ").append(snapshot.getMin()).append(LF);
+        fillBaseName(sb, scope, key).append("_max_seconds ").append(snapshot.getMax()).append(LF);
+        fillBaseName(sb, scope, key).append("_mean_seconds ").append(snapshot.getMean()).append(LF);
+        fillBaseName(sb, scope, key).append("_stddev_seconds ").append(snapshot.getStdDev()).append(LF);
+
+/*
+
+| `rate_per_second`               | Gauge   | `getMeanRate()`                     | PER_SECOND
+| `one_min_rate_per_second`       | Gauge   | `getOneMinuteRate()`                | PER_SECOND
+| `five_min_rate_per_second`      | Gauge   | `getFiveMinuteRate()`               | PER_SECOND
+| `fifteen_min_rate_per_second`   | Gauge   | `getFifteenMinuteRate()`            | PER_SECOND
+| `min_seconds`                   | Gauge   | `getSnapshot().getMin()`            | SECONDS^1^
+| `max_seconds`                   | Gauge   | `getSnapshot().getMax()`            | SECONDS^1^
+| `mean_seconds`                  | Gauge   | `getSnapshot().getMean()`           | SECONDS^1^
+| `stddev_seconds`                | Gauge   | `getSnapshot().getStdDev()`         | SECONDS^1^
+| `seconds_count`^2^              | Summary | `getCount()`                        | N/A
+| `seconds{quantile="0.5"}`^2^    | Summary | `getSnapshot().getMedian()`         | SECONDS^1^
+| `seconds{quantile="0.75"}`^2^   | Summary | `getSnapshot().get75thPercentile()` | SECONDS^1^
+| `seconds{quantile="0.95"}`^2^   | Summary | `getSnapshot().get95thPercentile()` | SECONDS^1^
+| `seconds{quantile="0.98"}`^2^   | Summary | `getSnapshot().get98thPercentile()` | SECONDS^1^
+| `seconds{quantile="0.99"}`^2^   | Summary | `getSnapshot().get99thPercentile()` | SECONDS^1^
+| `seconds{quantile="0.999"}`^2^  | Summary | `getSnapshot().get999thPercentile()`| SECONDS^1^
+ */
+// TODO scale values
+// TODO is value always _per_second?
+// TODO remaining values
+    }
+
+    private void writeMeterValues(StringBuilder sb, MetricRegistry.Type scope, Metered metric, Metadata md, String key) {
+// TODO scale values
+// TODO is value always _per_second?
+        fillBaseName(sb, scope, key).append("_total ").append(metric.getCount()).append(LF);
+        fillBaseName(sb, scope, key).append("_rate_per_second ").append(metric.getMeanRate()).append(SPACE_GAUGE).append(LF);
+        fillBaseName(sb, scope, key).append("_one_min_rate_per_second ").append(metric.getOneMinuteRate()).append(SPACE_GAUGE).append(LF);
+        fillBaseName(sb, scope, key).append("_five_min_rate_per_second ").append(metric.getFiveMinuteRate()).append(SPACE_GAUGE).append(LF);
+        fillBaseName(sb, scope, key).append("_fifteen_min_rate_per_second ").append(metric.getFifteenMinuteRate()).append(SPACE_GAUGE).append(LF);
+    }
+
+    private StringBuilder fillBaseName(StringBuilder sb, MetricRegistry.Type scope, String key) {
+        return sb.append(scope.getName().toLowerCase()).append(":").append(key);
+    }
+
     private void writeTypeLine(MetricRegistry.Type scope, StringBuilder sb, String key, Metadata md) {
         sb.append("# TYPE ");
         sb.append(scope.getName().toLowerCase());
         sb.append(':').append(key).append(" ").append(md.getType()).append("\n");
     }
 
-    private void createSimpleValueLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, Map.Entry<String, Metric> entry) {
+    private void createSimpleValueLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, Metric metric) {
 
         // value line
-        sb.append(scope.getName().toLowerCase()).append(":").append(key);
+        fillBaseName(sb, scope, key);
         String tags = md.getTagsAsString();
         if (tags != null && !tags.isEmpty()) {
           sb.append('{').append(tags).append('}');
@@ -100,14 +161,16 @@ public class PrometheusExporter implements Exporter {
 
         Double valIn;
         if (md.getTypeRaw().equals(MetricType.GAUGE)) {
-            Number value1 = (Number) ((Gauge) entry.getValue()).getValue();
+            Number value1 = (Number) ((Gauge) metric).getValue();
             if (value1 != null) {
                 valIn = value1.doubleValue();
             } else {
-                valIn = -42.242; // TODO
+                valIn = -42.142;
+                System.out.println("Value is null for " + key);
+                //throw new IllegalStateException("Value must not be null for " + key); TODO enable later
             }
         } else {
-            valIn = (double) ((Counter) entry.getValue()).getCount();
+            valIn = (double) ((Counter) metric).getCount();
         }
 
         Double value = PrometheusUnit.scaleToBase(md.getUnit(),valIn);
@@ -130,7 +193,7 @@ public class PrometheusExporter implements Exporter {
 
         StringBuilder sb = new StringBuilder();
         writeTypeLine(scope,sb,key,metadata);
-        createSimpleValueLine(sb,scope,key,metadata,outMap.entrySet().iterator().next());
+        createSimpleValueLine(sb,scope,key,metadata,outMap.entrySet().iterator().next().getValue());
         return sb;
     }
 
