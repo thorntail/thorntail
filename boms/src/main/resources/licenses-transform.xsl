@@ -35,7 +35,7 @@
   <xsl:variable name="cddl_url" select="'https://netbeans.org/cddl-gplv2.html'"/>
 
   <xsl:variable name="edl_v1_name" select="'Eclipse Distribution License, Version 1.0'"/>
-  <xsl:variable name="edl_v1_url" select="'http://www.eclipse.org/org/documents/edl-v10.php'"/>
+  <xsl:variable name="edl_v1_url" select="'https://eclipse.org/org/documents/edl-v10.html'"/>
 
   <xsl:variable name="cca_name" select="'Creative Commons Attribution 2.5'"/>
   <xsl:variable name="cca_url" select="'http://creativecommons.org/licenses/by/2.5/'"/>
@@ -99,7 +99,7 @@
           <xsl:with-param name="url" select="$apache_v2_url"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="contains(url/text(), '/LICENSE.txt') and contains(name/text(), 'The Apache Software License, Version 2.0')">
+      <xsl:when test="contains(url/text(), 'LICENSE.txt') and (contains(name/text(), 'The Apache Software License, Version 2.0') or contains(name/text(), 'Apache License Version 2.0'))">
         <xsl:call-template name="license">
           <xsl:with-param name="name" select="$apache_v2_name"/>
           <xsl:with-param name="url" select="$apache_v2_url"/>
@@ -232,6 +232,13 @@
         <xsl:call-template name="license">
           <xsl:with-param name="name" select="'The Jaxen License'"/>
           <xsl:with-param name="url" select="'http://www.jaxen.org/license.html'"/>
+        </xsl:call-template>
+      </xsl:when>
+      <!-- javassist -->
+      <xsl:when test="ancestor::dependency/groupId/text() = 'org.javassist' and ancestor::dependency/artifactId/text() = 'javassist' and name/text() = 'Apache License 2.0'">
+        <xsl:call-template name="license">
+          <xsl:with-param name="name" select="$apache_v2_name"/>
+          <xsl:with-param name="url" select="$apache_v2_url"/>
         </xsl:call-template>
       </xsl:when>
 
