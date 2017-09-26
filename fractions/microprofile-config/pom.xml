@@ -82,6 +82,11 @@
             <artifactId>microprofile-config-api</artifactId>
             <version>${mpconfig.wildfly.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-microprofile-config-implementation</artifactId>
+            <version>${mpconfig.wildfly.version}</version>
+        </dependency>
         <!-- CDI fraction is required to be able to inject Config -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
