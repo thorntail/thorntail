@@ -29,6 +29,7 @@ import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.mpjwtauth.deployment.auth.JWTAuthMechanism;
+import org.wildfly.swarm.mpjwtauth.deployment.auth.config.JWTAuthContextInfoProvider;
 
 /**
  * A CDI extension that provides a producer for the current authenticated JsonWebToken based on a thread
@@ -55,6 +56,7 @@ public class MPJWTExtension implements Extension {
      */
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager beanManager) {
         log.debugf("MPJWTExtension(), added JWTPrincipalProducer");
+        bbd.addAnnotatedType(beanManager.createAnnotatedType(JWTAuthContextInfoProvider.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(MPJWTProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(RawClaimTypeProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(ClaimValueProducer.class));
