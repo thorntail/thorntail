@@ -32,6 +32,8 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 @DeploymentModule(name = "org.glassfish.javax.json")
 @DeploymentModule(name = "org.jboss.weld.core")
 @DeploymentModule(name = "org.jboss.weld.spi")
+@DeploymentModule(name = "org.eclipse.microprofile.config.api", export = true)
+@DeploymentModule(name = "org.wildfly.extension.microprofile.config", export = true)
 @DeploymentModule(name = "org.wildfly.swarm.mpjwtauth", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuthFraction> {
 
