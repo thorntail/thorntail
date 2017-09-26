@@ -100,6 +100,9 @@ public class ClasspathModuleFinder implements ModuleFinder {
                         throw new ModuleLoadException(e);
                     }
                 }
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Loaded ModuleSpec: " + moduleSpec.getModuleIdentifier());
+                }
                 return moduleSpec;
             } catch (IOException e) {
                 throw new ModuleLoadException(e);
