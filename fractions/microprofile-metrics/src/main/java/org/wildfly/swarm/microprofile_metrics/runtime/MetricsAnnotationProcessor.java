@@ -17,9 +17,6 @@
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
 
-import java.util.Collection;
-import javax.inject.Inject;
-import javax.naming.NamingException;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricType;
@@ -39,6 +36,10 @@ import org.wildfly.swarm.microprofile_metrics.runtime.app.MeterImpl;
 import org.wildfly.swarm.microprofile_metrics.runtime.app.TimerImpl;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
+
+import javax.inject.Inject;
+import javax.naming.NamingException;
+import java.util.Collection;
 
 /**
  * @author hrupp
@@ -134,7 +135,7 @@ public class MetricsAnnotationProcessor implements DeploymentProcessor {
         metadata = new Metadata(name,getMetricType(type));
       }
 
-      LOG.info("+++ registered " + name + " of type " + type);
+      LOG.info("+++ registered " + name + " of type " + metadata.getType());
 
 
       if (unit != null) {

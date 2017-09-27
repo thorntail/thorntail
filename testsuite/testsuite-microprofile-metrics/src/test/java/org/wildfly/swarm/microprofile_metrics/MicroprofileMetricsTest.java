@@ -24,8 +24,7 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.w3c.dom.Document;
@@ -33,16 +32,23 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.hasKey;
 
 /**
@@ -54,12 +60,16 @@ public class MicroprofileMetricsTest {
   private static final String APPLICATION_JSON = "application/json";
  	private static final String TEXT_PLAIN = "text/plain";
 
+    @Inject
+    private MetricAppBean metricAppBean;
+
 
   @Deployment
-  public static JavaArchive createDeployment() {
-      JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addClass(MetricAppBean.class)
-              .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+  public static WebArchive createDeployment() {
+//      JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addClass(MetricAppBean.class)
+//              .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
+      WebArchive jar = ShrinkWrap.create(WebArchive.class).addClass(MetricAppBean.class);
       System.out.println(jar.toString(true));
       return jar;
   }
@@ -393,6 +403,27 @@ public class MicroprofileMetricsTest {
 
       given().header(wantJson).options("/metrics/application").then().statusCode(200);
   }
+
+
+    @Test
+    @InSequence(17)
+    public void testSetupApplicationMetrics() {
+
+        metricAppBean.countMe();
+        metricAppBean.countMeA();
+
+        metricAppBean.gaugeMe();
+        metricAppBean.gaugeMeA();
+
+        metricAppBean.histogramMe();
+
+        metricAppBean.meterMe();
+        metricAppBean.meterMeA();
+
+        metricAppBean.timeMe();
+        metricAppBean.timeMeA();
+
+    }
 
 
     @Test

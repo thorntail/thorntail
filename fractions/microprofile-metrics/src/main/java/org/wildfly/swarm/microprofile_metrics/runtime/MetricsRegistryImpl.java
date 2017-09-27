@@ -18,20 +18,33 @@ package org.wildfly.swarm.microprofile_metrics.runtime;
 
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricFilter;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
 import org.wildfly.swarm.microprofile_metrics.runtime.app.CounterImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.ExponentiallyDecayingReservoir;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.GaugeImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.HistogramImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.MeterImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.TimerImpl;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author hrupp
  */
-public class MetricsRegistryImpl extends org.eclipse.microprofile.metrics.MetricRegistry {
+public class MetricsRegistryImpl extends MetricRegistry {
 
   private Map<String, Metadata> metadataMap = new java.util.HashMap<>();
   private Map<String, Metric> metricMap = new ConcurrentHashMap<>();
@@ -43,7 +56,17 @@ public class MetricsRegistryImpl extends org.eclipse.microprofile.metrics.Metric
       throw new IllegalArgumentException("A metric with name " + name + " already exists");
     }
 
-    Metadata m = new Metadata(name, org.eclipse.microprofile.metrics.MetricType.from(metric.getClass()));
+    MetricType type;
+    if (metric.getClass().getName().contains("Lambda")) {
+      String tname = metric.getClass().getGenericInterfaces()[0].getTypeName(); // TODO [0] is brittle
+      tname = tname.substring(tname.lastIndexOf('.') + 1);
+      tname = tname.toLowerCase();
+      type = MetricType.from(tname);
+    } else {
+      type = MetricType.from(metric.getClass());
+    }
+
+    Metadata m = new Metadata(name, type);
     metricMap.put(name,metric);
 
     metadataMap.put(name,m);
@@ -64,46 +87,69 @@ public class MetricsRegistryImpl extends org.eclipse.microprofile.metrics.Metric
   }
 
   @Override
-  public org.eclipse.microprofile.metrics.Counter counter(String counterName) {
-    if (!metadataMap.containsKey(counterName)) {
-      register(counterName,new CounterImpl());
-    }
-    return (org.eclipse.microprofile.metrics.Counter) metricMap.get(counterName);
+  public Counter counter(String name) {
+    return counter(new Metadata(name, MetricType.COUNTER));
   }
 
   @Override
   public org.eclipse.microprofile.metrics.Counter counter(Metadata metadata) {
-    return null;  // TODO: Customise this generated block
+    return get(metadata, MetricType.COUNTER);
   }
 
   @Override
-  public org.eclipse.microprofile.metrics.Histogram histogram(String s) {
-    return null;  // TODO: Customise this generated block
+  public Histogram histogram(String name) {
+    return histogram(new Metadata(name, MetricType.HISTOGRAM));
   }
 
   @Override
-  public org.eclipse.microprofile.metrics.Histogram histogram(Metadata metadata) {
-    return null;  // TODO: Customise this generated block
+  public Histogram histogram(Metadata metadata) {
+    return get(metadata, MetricType.HISTOGRAM);
   }
 
   @Override
-  public org.eclipse.microprofile.metrics.Meter meter(String s) {
-    return null;  // TODO: Customise this generated block
+  public Meter meter(String s) {
+    return meter(new Metadata(s, MetricType.METERED));
   }
 
   @Override
-  public org.eclipse.microprofile.metrics.Meter meter(Metadata metadata) {
-    return null;  // TODO: Customise this generated block
+  public Meter meter(Metadata metadata) {
+    return get(metadata, MetricType.METERED);
+  }
+
+  private <T extends Metric> T get(Metadata metadata, MetricType type) {
+    String name = metadata.getName();
+     if (!metadataMap.containsKey(name)) {
+       System.err.println("+++ " + name + " was not yet registered");
+       Metric m;
+       switch (type) {
+
+         case COUNTER: m = new CounterImpl();
+           break;
+         case GAUGE: m = new GaugeImpl();
+           break;
+         case METERED: m = new MeterImpl();
+           break;
+         case HISTOGRAM: m = new HistogramImpl(new ExponentiallyDecayingReservoir());
+           break;
+         case TIMER: m = new TimerImpl(new ExponentiallyDecayingReservoir());
+           break;
+         case INVALID:
+         default:
+           throw new  IllegalStateException("Must not happen");
+       }
+       register(name,m, metadata);
+     }
+     return (T) metricMap.get(name);
   }
 
   @Override
   public Timer timer(String s) {
-    return null;  // TODO: Customise this generated block
+    return timer(new Metadata(s, MetricType.TIMER));
   }
 
   @Override
   public Timer timer(Metadata metadata) {
-    return null;  // TODO: Customise this generated block
+    return get(metadata, MetricType.TIMER);
   }
 
   @Override
@@ -112,7 +158,7 @@ public class MetricsRegistryImpl extends org.eclipse.microprofile.metrics.Metric
   }
 
   @Override
-  public void removeMatching(org.eclipse.microprofile.metrics.MetricFilter metricFilter) {
+  public void removeMatching(MetricFilter metricFilter) {
     // TODO: Customise this generated block
   }
 
@@ -123,52 +169,52 @@ public class MetricsRegistryImpl extends org.eclipse.microprofile.metrics.Metric
 
   @Override
   public SortedMap<String, Gauge> getGauges() {
-    return null;  // TODO: Customise this generated block
+    return getGauges(MetricFilter.ALL);
   }
 
   @Override
-  public SortedMap<String, Gauge> getGauges(org.eclipse.microprofile.metrics.MetricFilter metricFilter) {
-    return null;  // TODO: Customise this generated block
+  public SortedMap<String, Gauge> getGauges(MetricFilter metricFilter) {
+    return getMetrics(MetricType.GAUGE, metricFilter);
   }
 
   @Override
   public SortedMap<String, Counter> getCounters() {
-    return null;  // TODO: Customise this generated block
+    return getCounters(MetricFilter.ALL);
   }
 
   @Override
-  public SortedMap<String, Counter> getCounters(org.eclipse.microprofile.metrics.MetricFilter metricFilter) {
-    return null;  // TODO: Customise this generated block
+  public SortedMap<String, Counter> getCounters(MetricFilter metricFilter) {
+    return getMetrics(MetricType.COUNTER,metricFilter);
   }
 
   @Override
-  public java.util.SortedMap<String, org.eclipse.microprofile.metrics.Histogram> getHistograms() {
-    return null;  // TODO: Customise this generated block
+  public java.util.SortedMap<String, Histogram> getHistograms() {
+    return getHistograms(MetricFilter.ALL);
   }
 
   @Override
-  public java.util.SortedMap<String, org.eclipse.microprofile.metrics.Histogram> getHistograms(org.eclipse.microprofile.metrics.MetricFilter metricFilter) {
-    return null;  // TODO: Customise this generated block
+  public java.util.SortedMap<String, Histogram> getHistograms(MetricFilter metricFilter) {
+    return getMetrics(MetricType.HISTOGRAM,metricFilter);
   }
 
   @Override
-  public java.util.SortedMap<String, org.eclipse.microprofile.metrics.Meter> getMeters() {
-    return null;  // TODO: Customise this generated block
+  public java.util.SortedMap<String, Meter> getMeters() {
+    return getMeters(MetricFilter.ALL);
   }
 
   @Override
-  public java.util.SortedMap<String, org.eclipse.microprofile.metrics.Meter> getMeters(org.eclipse.microprofile.metrics.MetricFilter metricFilter) {
-    return null;  // TODO: Customise this generated block
+  public java.util.SortedMap<String, Meter> getMeters(MetricFilter metricFilter) {
+    return getMetrics(MetricType.METERED, metricFilter);
   }
 
   @Override
-  public java.util.SortedMap<String, org.eclipse.microprofile.metrics.Timer> getTimers() {
-    return null;  // TODO: Customise this generated block
+  public java.util.SortedMap<String, Timer> getTimers() {
+    return getTimers(MetricFilter.ALL);
   }
 
   @Override
-  public java.util.SortedMap<String, org.eclipse.microprofile.metrics.Timer> getTimers(org.eclipse.microprofile.metrics.MetricFilter metricFilter) {
-    return null;  // TODO: Customise this generated block
+  public java.util.SortedMap<String, Timer> getTimers(MetricFilter metricFilter) {
+    return getMetrics(MetricType.TIMER,metricFilter);
   }
 
   @Override
@@ -176,6 +222,24 @@ public class MetricsRegistryImpl extends org.eclipse.microprofile.metrics.Metric
     Map<String, Metric> out = new HashMap<>(metricMap);
 
     return out;
+  }
+
+  private <T extends Metric> SortedMap<String, T> getMetrics(MetricType type, MetricFilter filter) {
+    Set<String> names = new HashSet<>();
+    for (Metadata metadata : getMetadata().values()) {
+      if (!metadata.getTypeRaw().equals(type)) {
+        continue;
+      }
+      // TODO add filter
+      names.add(metadata.getName());
+    }
+
+    SortedMap<String, T> metrics = new TreeMap<String, T>();
+    for (String name : names) {
+      metrics.put(name, (T) this.metricMap.get(name));
+    }
+
+    return metrics;
   }
 
   @Override

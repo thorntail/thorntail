@@ -16,37 +16,38 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
+import org.eclipse.microprofile.metrics.MetricRegistry;
+
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import org.eclipse.microprofile.metrics.MetricRegistry;
 
 /**
  * @author hrupp
  */
 public class MetricRegistryFactory {
 
-  private static Map<MetricRegistry.Type,MetricRegistry> registries = new HashMap<>();
+  private static final Map<MetricRegistry.Type,MetricRegistry> registries = new HashMap<>();
 
   private MetricRegistryFactory() { /* Singleton */ }
 
-  @Produces
-  @Default
-  @ApplicationScoped
+//  @Produces
+//  @Default
+//  @RegistryType(type = MetricRegistry.Type.APPLICATION)
+//  @ApplicationScoped
   public static MetricRegistry getApplicationRegistry() {
     return get(MetricRegistry.Type.APPLICATION);
   }
 
-  @Produces
-  @ApplicationScoped
+//  @Produces
+//  @ApplicationScoped
+//  @RegistryType(type = MetricRegistry.Type.BASE)
   public static MetricRegistry getBaseRegistry() {
     return get(MetricRegistry.Type.BASE);
   }
 
-  @Produces
-  @ApplicationScoped
+//  @Produces
+//  @ApplicationScoped
+//  @RegistryType(type = MetricRegistry.Type.VENDOR)
   public static MetricRegistry getVendorRegistry() {
     return get(MetricRegistry.Type.VENDOR);
   }

@@ -1,8 +1,7 @@
 package org.wildfly.swarm.microprofile_metrics.runtime.app;
 
-import org.eclipse.microprofile.metrics.Metered;
-import org.eclipse.microprofile.metrics.Sampling;
 import org.eclipse.microprofile.metrics.Snapshot;
+import org.eclipse.microprofile.metrics.Timer;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * A timer metric which aggregates timing durations and provides duration statistics, plus
  * throughput statistics via {@link MeterImpl}.
  */
-public class TimerImpl implements Metered, Sampling {
+public class TimerImpl implements Timer {
 
     private final MeterImpl meter;
     private final HistogramImpl histogram;
@@ -98,7 +97,7 @@ public class TimerImpl implements Metered, Sampling {
      * @see Context
      */
     public Context time() {
-        return new Context(this, clock);
+        return new TimerImpl.Context(this, clock);
     }
 
     @Override
@@ -146,7 +145,7 @@ public class TimerImpl implements Metered, Sampling {
      *
      * @see TimerImpl#time()
      */
-    public static class Context implements AutoCloseable {
+    public static class Context implements Timer.Context {
         private final TimerImpl timer;
         private final Clock clock;
         private final long startTime;

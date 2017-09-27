@@ -22,7 +22,9 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metered;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.Snapshot;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.HistogramImpl;
 import org.wildfly.swarm.microprofile_metrics.runtime.app.MeterImpl;
 import org.wildfly.swarm.microprofile_metrics.runtime.app.TimerImpl;
 
@@ -78,28 +80,40 @@ public class JsonExporter implements Exporter {
           break;
         case METERED:
           MeterImpl meter = (MeterImpl) value;
-          sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
+          writeStartLine(sb, key);
           writeMeterValues(sb, meter);
-          sb.append("  }");
+          writeEndLine(sb);
           break;
         case TIMER:
           TimerImpl timer = (TimerImpl) value;
-          sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
+          writeStartLine(sb, key);
           writeTimerValues(sb, timer);
-          sb.append("  }");
+          writeEndLine(sb);
           break;
         case HISTOGRAM:
-          default:
-            System.err.println("Not yet supported histogram" + metadata);
+          HistogramImpl hist = (HistogramImpl) value;
+          writeStartLine(sb, key);
+          sb.append("    \"count\": ").append(hist.getCount()).append(COMMA_LF);
+          writeSnapshotValues(sb,hist.getSnapshot());
+          writeEndLine(sb);
+          break;
+        default:
+          System.err.println("JSE, Not yet supported: " + metadata);
 
       }
-
-
       if (iterator.hasNext()) {
         sb.append(',');
       }
       sb.append(LF);
     }
+  }
+
+  private void writeEndLine(StringBuilder sb) {
+    sb.append("  }");
+  }
+
+  private void writeStartLine(StringBuilder sb, String key) {
+    sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
   }
 
   private void writeMeterValues(StringBuilder sb, Metered meter) {
@@ -111,17 +125,22 @@ public class JsonExporter implements Exporter {
   }
 
   private void writeTimerValues(StringBuilder sb, TimerImpl timer) {
-    sb.append("    \"p50\": ").append(timer.getSnapshot().getMedian()).append(COMMA_LF);
-    sb.append("    \"p75\": ").append(timer.getSnapshot().get75thPercentile()).append(COMMA_LF);
-    sb.append("    \"p95\": ").append(timer.getSnapshot().get95thPercentile()).append(COMMA_LF);
-    sb.append("    \"p98\": ").append(timer.getSnapshot().get98thPercentile()).append(COMMA_LF);
-    sb.append("    \"p99\": ").append(timer.getSnapshot().get99thPercentile()).append(COMMA_LF);
-    sb.append("    \"p999\": ").append(timer.getSnapshot().get999thPercentile()).append(COMMA_LF);
-    sb.append("    \"min\": ").append(timer.getSnapshot().getMin()).append(COMMA_LF);
-    sb.append("    \"mean\": ").append(timer.getSnapshot().getMean()).append(COMMA_LF);
-    sb.append("    \"max\": ").append(timer.getSnapshot().getMax()).append(COMMA_LF);
-    sb.append("    \"stddev\": ").append(timer.getSnapshot().getStdDev()).append(COMMA_LF);
+    writeSnapshotValues(sb,timer.getSnapshot());
     writeMeterValues(sb, timer.getMeter());
+  }
+
+  private void writeSnapshotValues(StringBuilder sb, Snapshot snapshot) {
+    sb.append("    \"p50\": ").append(snapshot.getMedian()).append(COMMA_LF);
+    sb.append("    \"p75\": ").append(snapshot.get75thPercentile()).append(COMMA_LF);
+    sb.append("    \"p95\": ").append(snapshot.get95thPercentile()).append(COMMA_LF);
+    sb.append("    \"p98\": ").append(snapshot.get98thPercentile()).append(COMMA_LF);
+    sb.append("    \"p99\": ").append(snapshot.get99thPercentile()).append(COMMA_LF);
+    sb.append("    \"p999\": ").append(snapshot.get999thPercentile()).append(COMMA_LF);
+    sb.append("    \"min\": ").append(snapshot.getMin()).append(COMMA_LF);
+    sb.append("    \"mean\": ").append(snapshot.getMean()).append(COMMA_LF);
+    sb.append("    \"max\": ").append(snapshot.getMax()).append(COMMA_LF);
+    sb.append("    \"stddev\": ").append(snapshot.getStdDev()).append(COMMA_LF);
+
   }
 
 

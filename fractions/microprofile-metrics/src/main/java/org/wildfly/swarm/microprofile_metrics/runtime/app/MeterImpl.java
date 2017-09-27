@@ -1,6 +1,6 @@
 package org.wildfly.swarm.microprofile_metrics.runtime.app;
 
-import org.eclipse.microprofile.metrics.Metered;
+import org.eclipse.microprofile.metrics.Meter;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.LongAdder;
  *
  * @see EWMA
  */
-public class MeterImpl implements Metered {
+public class MeterImpl implements Meter {
     private static final long TICK_INTERVAL = TimeUnit.SECONDS.toNanos(5);
 
     private final EWMA m1Rate = EWMA.oneMinuteEWMA();

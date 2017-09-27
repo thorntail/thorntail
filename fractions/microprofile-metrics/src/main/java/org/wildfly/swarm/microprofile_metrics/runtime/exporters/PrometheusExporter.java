@@ -201,10 +201,10 @@ public class PrometheusExporter implements Exporter {
       String out = name.replace('-', '_').replace('.', '_').replace(' ','_');
       out = decamelize(out);
       if (entry == null) {
-        throw new IllegalStateException("No entry for " + name + "found");
+        throw new IllegalStateException("No entry for " + name + " found");
       }
       if (entry.getUnit() == null) {
-        throw new IllegalStateException("Entry " + entry + "has no unit ");
+        throw new IllegalStateException("Entry " + entry + " has no unit ");
       }
       if (!entry.getUnit().equals(MetricUnits.NONE)) {
           out = out + "_" + PrometheusUnit.getBaseUnitAsPrometheusString(entry.getUnit());

@@ -51,7 +51,6 @@ public class MetricsService implements Service<MetricsService> {
   public void start(StartContext context) throws StartException {
     initBaseAndVendorConfiguration();
 
-
     LOG.info("MicroProfile-Metrics started");
   }
 

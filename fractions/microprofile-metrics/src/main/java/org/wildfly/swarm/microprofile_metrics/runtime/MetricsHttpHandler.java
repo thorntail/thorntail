@@ -71,7 +71,7 @@ public class MetricsHttpHandler implements HttpHandler {
     String scopePath = requestPath.substring(8);
 
     Exporter exporter = obtainExporter(exchange);
-    LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName());
+//    LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName());
 
     if (scopePath.startsWith("/")) {
       scopePath = scopePath.substring(1);

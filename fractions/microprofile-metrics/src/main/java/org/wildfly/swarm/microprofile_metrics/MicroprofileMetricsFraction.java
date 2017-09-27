@@ -23,9 +23,9 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 /**
  * @author Heiko W. Rupp
  */
-@DeploymentModule(name = "javax.ws.rs.api")
-@DeploymentModule(name = "org.jboss.dmr")
 @DeploymentModule(name = "org.wildfly.swarm.microprofile_metrics")
+@DeploymentModule(name = "org.jboss.weld.core")
+@DeploymentModule(name = "org.jboss.weld.spi")
 @Configurable("swarm.microprofile.metrics")
 public class MicroprofileMetricsFraction implements Fraction<MicroprofileMetricsFraction> {
 }

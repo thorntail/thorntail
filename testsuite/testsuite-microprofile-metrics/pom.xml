@@ -32,6 +32,11 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>mp_metrics_cdi_extension</artifactId>
+      <version>2017.10.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
