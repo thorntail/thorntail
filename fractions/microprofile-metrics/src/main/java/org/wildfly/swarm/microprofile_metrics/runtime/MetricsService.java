@@ -105,10 +105,12 @@ public class MetricsService implements Service<MetricsService> {
 
   private List<Tag> convertToTags(String globalTagsString) {
     List<Tag> tags = new ArrayList<>();
-    String[] singleTags = globalTagsString.split(",");
-        for (String singleTag : singleTags) {
-          tags.add(new Tag(singleTag.trim()));
-        }
+    if (globalTagsString != null) {
+      String[] singleTags = globalTagsString.split(",");
+      for (String singleTag : singleTags) {
+        tags.add(new Tag(singleTag.trim()));
+      }
+    }
     return tags;
   }
 
