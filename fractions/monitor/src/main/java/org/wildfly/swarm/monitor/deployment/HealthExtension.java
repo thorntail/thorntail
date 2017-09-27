@@ -17,10 +17,11 @@ package org.wildfly.swarm.monitor.deployment;
 
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
+import org.jboss.logging.Logger;
 import org.wildfly.swarm.monitor.api.Monitor;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeShutdown;
@@ -36,6 +37,7 @@ import java.util.Collection;
  * Created by hbraun on 28.06.17.
  */
 public class HealthExtension implements Extension {
+    private static Logger log = Logger.getLogger(HealthExtension.class);
 
     private final Monitor monitor;
     private Collection<AnnotatedType> delegates = new ArrayList<>();
@@ -56,7 +58,7 @@ public class HealthExtension implements Extension {
         Class<T> javaClass = annotatedType.getJavaClass();
         for (Class<?> intf : javaClass.getInterfaces()) {
             if (intf.getName().equals(HealthCheck.class.getName())) {
-                System.out.println(">> Discovered health check procedure " + javaClass);
+                log.info(">> Discovered health check procedure " + javaClass);
                 delegates.add(annotatedType);
             }
         }
@@ -67,7 +69,7 @@ public class HealthExtension implements Extension {
      * handle manually their CDI creation lifecycle.
      * Add them to the {@link Monitor}.
      */
-    private void afterBeanDiscovery(@Observes final AfterBeanDiscovery abd, BeanManager beanManager) {
+    private void afterDeploymentValidation(@Observes final AfterDeploymentValidation abd, BeanManager beanManager) {
         try {
             for (AnnotatedType delegate : delegates) {
                 Unmanaged<HealthCheck> unmanagedHealthCheck = new Unmanaged<HealthCheck>(beanManager, delegate.getJavaClass());
@@ -78,7 +80,7 @@ public class HealthExtension implements Extension {
 
                 monitor.registerHealthBean(healthCheck);
 
-                System.out.println(">> Added health bean impl " + healthCheck);
+                log.info(">> Added health bean impl " + healthCheck);
             }
 
             // we don't need the references anymore
