@@ -76,7 +76,7 @@ public class MetricsService implements Service<MetricsService> {
       for (ExtendedMetadata em : ml.getBase()) {
         em.processTags(globalTags);
         Metric type = getType(em);
-        LOG.info("+++ registering " + em);
+        LOG.debug("+++ registering " + em);
         MetricRegistryFactory.getBaseRegistry().register(em.getName(),type,em);
       }
       for (ExtendedMetadata em : ml.getVendor()) {

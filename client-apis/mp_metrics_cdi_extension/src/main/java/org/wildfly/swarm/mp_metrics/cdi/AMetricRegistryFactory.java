@@ -18,9 +18,12 @@
 package org.wildfly.swarm.mp_metrics.cdi;
 
 import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
@@ -44,6 +47,7 @@ import java.util.Set;
 public class AMetricRegistryFactory {
 
   private static final Map<MetricRegistry.Type,MetricRegistry> registries = new HashMap<>();
+  private static final String DOT = ".";
 
   private AMetricRegistryFactory() { /* Singleton */ }
 
@@ -58,11 +62,11 @@ public class AMetricRegistryFactory {
   @Produces
   public static Counter getCounter(InjectionPoint ip) {
     System.out.println("### get counter >> " + ip.toString());
-    String beanName = ip.getBean().getBeanClass().getName();
+    String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
     Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
 
     String fieldName = ip.getMember().getName();
-    String name = beanName + "." + fieldName;
+    String name = beanName + DOT + fieldName;
 
     for (Annotation a : annotations) {
       if (a.annotationType().equals(Metric.class)) {
@@ -71,7 +75,7 @@ public class AMetricRegistryFactory {
           fieldName = m.name();
         }
         if (!m.absolute()) {
-          name = beanName + "." + fieldName;
+          name = beanName + DOT + fieldName;
         } else {
           name = fieldName;
         }
@@ -92,6 +96,57 @@ public class AMetricRegistryFactory {
     return getApplicationRegistry().counter(name);
   }
 
+
+  @Produces
+  public static Histogram getHistogram(InjectionPoint ip) {
+
+
+    String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
+    Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
+
+    String fieldName = ip.getMember().getName();
+    String name = beanName + DOT + fieldName;
+
+    // TODO annotation processing
+
+    System.err.println("### get histogram >> " + ip.toString() + name);
+
+    return getApplicationRegistry().histogram(name);
+  }
+
+  @Produces
+  public static Meter getMeter(InjectionPoint ip) {
+
+    String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
+    Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
+
+    String fieldName = ip.getMember().getName();
+    String name = beanName + DOT + fieldName;
+
+    // TODO annotation processing
+
+    System.err.println("### get meter >> " + ip.toString() + name);
+
+    return getApplicationRegistry().meter(name);
+
+  }
+
+  @Produces
+  public static Timer getTimer(InjectionPoint ip) {
+
+    String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
+    Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
+
+    String fieldName = ip.getMember().getName();
+    String name = beanName + DOT + fieldName;
+
+    // TODO annotation processing
+
+    System.err.println("### get timer >> " + ip.toString() + name);
+
+    return getApplicationRegistry().timer(name);
+
+  }
 /*
   @Produces
   @RegistryType(type = MetricRegistry.Type.BASE)

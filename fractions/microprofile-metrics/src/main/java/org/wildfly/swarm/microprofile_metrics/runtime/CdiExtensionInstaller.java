@@ -18,6 +18,7 @@
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.microprofile_metrics.MicroprofileMetricsFraction;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 /**
  * @author hrupp
  */
+@SuppressWarnings("unused")
 @DeploymentScoped
 public class CdiExtensionInstaller implements DeploymentProcessor {
 
@@ -46,14 +48,12 @@ public class CdiExtensionInstaller implements DeploymentProcessor {
     public void process() throws Exception {
 
 
-        System.out.println("   archive " + archive.getName());
-
         if (archive.getName().endsWith(".war")) {
-
             WARArchive war = archive.as(WARArchive.class);
             war.addDependency("org.wildfly.swarm:mp_metrics_cdi_extension:jar:" + SwarmInfo.VERSION);
         } else if (archive.getName().endsWith(".jar")) {
-            System.err.println("Jar archive not yet supported");
+            JavaArchive jar = archive.as(JavaArchive.class);
+            jar.addPackage("org.wildfly.swarm.mp_metrics.cdi");
         } else {
             System.err.println("Archive " + archive.getName() + " not yet supported");
         }

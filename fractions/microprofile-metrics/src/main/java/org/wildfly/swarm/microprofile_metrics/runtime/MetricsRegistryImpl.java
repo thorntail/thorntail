@@ -63,7 +63,12 @@ public class MetricsRegistryImpl extends MetricRegistry {
       tname = tname.toLowerCase();
       type = MetricType.from(tname);
     } else {
-      type = MetricType.from(metric.getClass());
+      if (!metric.getClass().isInterface()) {
+        // [0] is ok, as all our Impl classes implement exactly the one matching interface
+        type = MetricType.from(metric.getClass().getInterfaces()[0]);
+      } else {
+        type = MetricType.from(metric.getClass());
+      }
     }
 
     Metadata m = new Metadata(name, type);
