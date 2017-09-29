@@ -23,7 +23,6 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 /**
  * @author Heiko W. Rupp
  */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile_metrics")
 @DeploymentModule(name = "org.jboss.weld.core")
 @DeploymentModule(name = "org.jboss.weld.spi")
 @Configurable("swarm.microprofile.metrics")

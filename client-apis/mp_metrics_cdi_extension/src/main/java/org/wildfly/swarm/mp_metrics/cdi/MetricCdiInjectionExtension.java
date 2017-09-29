@@ -17,24 +17,39 @@
  */
 package org.wildfly.swarm.mp_metrics.cdi;
 
+import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import javax.enterprise.inject.spi.ProcessProducerField;
+import javax.enterprise.inject.spi.WithAnnotations;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
+import javax.inject.Inject;
 import javax.interceptor.InterceptorBinding;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author hrupp
@@ -44,16 +59,24 @@ public class MetricCdiInjectionExtension implements Extension {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
 
+    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() { };
+    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() { };
+    private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() { };
+
+    private final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
+
+    @Inject
+    MetricRegistry registry;
 
     public MetricCdiInjectionExtension() {
 
         LOG.warn("+++ Constructor ");
-        System.err.println("+++ Constructor ");
 
         try {
             InitialContext context = new InitialContext();
             Object o =   context.lookup("jboss/swarm/mp_metrics");
-            System.out.println("Got a " + o.getClass().getName());
+            System.out.println("Got a " + o.getClass().getName() + " with CL " + o.getClass().getClassLoader().toString());
+            System.out.println("    Our CL : " + this.getClass().getClassLoader().toString());
         } catch (NamingException e) {
             e.printStackTrace();  // TODO: Customise this generated block
         }
@@ -62,29 +85,41 @@ public class MetricCdiInjectionExtension implements Extension {
     }
 
     private void addInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
-        LOG.warn("+++ addInterceptorBindings ");
-        System.err.println("+++ addInterceptorBindings ");
-        bbd.addAnnotatedType(manager.createAnnotatedType(Gauge.class));
-        bbd.addAnnotatedType(manager.createAnnotatedType(Counted.class));
-        bbd.addAnnotatedType(manager.createAnnotatedType(Metered.class));
-        bbd.addAnnotatedType(manager.createAnnotatedType(Timed.class));
-//        bbd.addAnnotatedType(manager.createAnnotatedType(RegistryType.class));
+        declareAsInterceptorBinding(Counted.class,manager,bbd);
+        declareAsInterceptorBinding(Gauge.class,manager,bbd);
+        declareAsInterceptorBinding(Timed.class,manager,bbd);
+        declareAsInterceptorBinding(Metered.class,manager,bbd);
     }
+
+    private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class,  Gauge.class, Metered.class, Timed.class}) ProcessAnnotatedType<X> pat) {
+        pat.setAnnotatedType(new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING));
+    }
+
+    private void metricProducerField(@Observes ProcessProducerField<? extends Metric, ?> ppf) {
+        metrics.put(ppf.getBean(), ppf.getAnnotatedProducerField());
+    }
+
+/*
+    private void metricProducerMethod(@Observes ProcessProducerMethod<? extends Metric, ?> ppm) {
+        // Skip the Metrics CDI alternatives
+        if (!ppm.getBean().getBeanClass().equals(MetricProducer.class))
+            metrics.put(ppm.getBean(), ppm.getAnnotatedProducerMethod());
+    }
+*/
+
 
     public <T> void initializePropertyLoading(final @Observes ProcessInjectionTarget<T> pit) {
 
-        LOG.warn("+++ PIT: " + pit.getInjectionTarget().toString());
+//        LOG.warn("+++ PIT: " + pit.getInjectionTarget().toString());
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {
 
-        LOG.warn("+++ AfterBeanDiscovery");
+//        LOG.warn("+++ AfterBeanDiscovery");
     }
 
-    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() { };
-    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() { };
 
-/*
+
     private static <T extends Annotation> void declareAsInterceptorBinding(Class<T> annotation, BeanManager manager, BeforeBeanDiscovery bbd) {
           AnnotatedType<T> annotated = manager.createAnnotatedType(annotation);
           Set<AnnotatedMethod<? super T>> methods = new HashSet<>();
@@ -94,6 +129,5 @@ public class MetricCdiInjectionExtension implements Extension {
 
           bbd.addInterceptorBinding(new AnnotatedTypeDecorator<>(annotated, INTERCEPTOR_BINDING, methods));
       }
-*/
 }
 

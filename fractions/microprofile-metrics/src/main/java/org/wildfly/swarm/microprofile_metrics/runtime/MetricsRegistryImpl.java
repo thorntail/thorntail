@@ -154,7 +154,12 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
   @Override
   public boolean remove(String s) {
-    return false;  // TODO: Customise this generated block
+    if (metricMap.containsKey(s)) {
+      metricMap.remove(s);
+      metadataMap.remove(s); // TODO really?
+      return true;
+    }
+    return false;
   }
 
   @Override

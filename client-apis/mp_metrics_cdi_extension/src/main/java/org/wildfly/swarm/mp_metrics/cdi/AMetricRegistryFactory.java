@@ -41,11 +41,11 @@ import java.util.Set;
  */
 @ApplicationScoped
 @Named("My Factory")
-public class MetricRegistryFactory {
+public class AMetricRegistryFactory {
 
   private static final Map<MetricRegistry.Type,MetricRegistry> registries = new HashMap<>();
 
-  private MetricRegistryFactory() { /* Singleton */ }
+  private AMetricRegistryFactory() { /* Singleton */ }
 
   @Default
   @Produces
@@ -114,7 +114,10 @@ public class MetricRegistryFactory {
 
         try {
           InitialContext context = new InitialContext();
-          RegistryFactory factory = (RegistryFactory) context.lookup("jboss/swarm/mp_metrics");
+          Object o = context.lookup("jboss/swarm/mp_metrics");
+          System.out.println("+++ with OCL " + o.getClass().getClassLoader().toString());
+
+          RegistryFactory factory = (RegistryFactory) o;
           MetricRegistry result = factory.get(type);
           registries.put(type, result);
         } catch (NamingException e) {
