@@ -66,6 +66,8 @@
 
     <maven.min.version>3.2.1</maven.min.version>
 
+    <m2repo.include.pattern>**/*</m2repo.include.pattern>
+
     <!-- Surefire args -->
     <surefire.jpda.args />
     <surefire.system.args>-da ${surefire.jpda.args}</surefire.system.args>
@@ -968,6 +970,7 @@
       </activation>
       <properties>
         <version.wildfly.swarm>${version.certified-community}</version.wildfly.swarm>
+        <m2repo.include.pattern>**/*redhat-*/**/*</m2repo.include.pattern>
       </properties>
       <modules>
         <module>boms</module>

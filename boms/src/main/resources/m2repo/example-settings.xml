@@ -1,0 +1,38 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <profiles>
+        <!-- Configure the WildFly Swarm Maven repository -->
+        <profile>
+            <id>swarm-repository</id>
+            <repositories>
+                <repository>
+                    <id>swarm-repository</id>
+                    <url>file:///path/to/repo/${repositoryName}/maven-repository</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>swarm-repository</id>
+                    <url>file:///path/to/repo/${repositoryName}/maven-repository</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <!-- Optionally, make the repository active by default -->
+        <activeProfile>swarm-repository</activeProfile>
+    </activeProfiles>
+</settings>
