@@ -144,21 +144,20 @@ public class JsonExporter implements Exporter {
   }
 
 
-  private Number getValueFromMetric(Metric value, String name) {
-    if (value instanceof Gauge) {
-      Number value1 = (Number) ((Gauge) value).getValue();
+  private Number getValueFromMetric(Metric theMetric, String name) {
+    if (theMetric instanceof Gauge) {
+      Number value = (Number) ((Gauge) theMetric).getValue();
       double v;
-      if (value1 != null) {
-        v = value1.doubleValue();
+      if (value != null) {
+        return value;
       } else {
         System.out.println("Value is null for " + name);
         return -142.142; // TODO
       }
-      return v;
-    } else if (value instanceof Counter) {
-      return ((Counter) value).getCount();
+    } else if (theMetric instanceof Counter) {
+      return ((Counter) theMetric).getCount();
     } else {
-      System.err.println("Not yet supported metric: " + value.getClass().getName());
+      System.err.println("Not yet supported metric: " + theMetric.getClass().getName());
       return -42.42;
     }
   }
