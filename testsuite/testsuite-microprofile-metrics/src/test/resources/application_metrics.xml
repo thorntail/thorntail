@@ -19,12 +19,12 @@
     SPDX-License-Identifier: Apache-2.0
 -->
 <config>
-  <metric multi="false" name="org.wildfly.swarm.microprofile_metrics.MetricAppBean.redCount" type="counter" unit="none"/>
-  <metric multi="false" name="org.wildfly.swarm.microprofile_metrics.MetricAppBean.blue" type="counter" unit="none"/>
+  <metric multi="false" name="org.eclipse.microprofile.metrics.test.MetricAppBean.redCount" type="counter" unit="none"/>
+  <metric multi="false" name="org.eclipse.microprofile.metrics.test.MetricAppBean.blue" type="counter" unit="none"/>
   <metric multi="false" name="greenCount" type="counter" unit="none"/>
   <metric multi="false" name="purple" type="counter" unit="none"/>
   <metric multi="false" name="metricTest.test1.countMeA" type="counter" unit="none"/>
-  <metric multi="false" name="org.wildfly.swarm.microprofile_metrics.MetricAppBean.gaugeMeA" type="gauge" unit="kibibits"/>
+  <metric multi="false" name="org.eclipse.microprofile.metrics.test.MetricAppBean.gaugeMeA" type="gauge" unit="kibibits"/>
   <metric multi="false" name="meterMeA" type="meter" unit="per_second"/>
-  <metric multi="false" name="org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA" type="timer" unit="nanoseconds"/>
+  <metric multi="false" name="org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA" type="timer" unit="nanoseconds"/>
 </config>
