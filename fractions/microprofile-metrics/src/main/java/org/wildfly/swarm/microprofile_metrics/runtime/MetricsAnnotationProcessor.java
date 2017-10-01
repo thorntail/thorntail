@@ -17,9 +17,6 @@
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
 
-import java.util.Collection;
-import javax.inject.Inject;
-import javax.naming.NamingException;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricType;
@@ -40,13 +37,17 @@ import org.wildfly.swarm.microprofile_metrics.runtime.app.TimerImpl;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 
+import javax.inject.Inject;
+import javax.naming.NamingException;
+import java.util.Collection;
+
 /**
  * @author hrupp
  */
 @DeploymentScoped
 public class MetricsAnnotationProcessor implements DeploymentProcessor {
 
-  private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
+  private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile");
 
   private static final String ANNOTATION_BASE_PACKAGE = "org.eclipse.microprofile.metrics.annotation.";
   private String[] annotations = {"Gauge", "Counted", "Metered", "Metric", "Timed"};
@@ -64,10 +65,13 @@ public class MetricsAnnotationProcessor implements DeploymentProcessor {
   public MetricsAnnotationProcessor(Archive archive, IndexView index) {
     this.archive = archive;
     this.index = index;
+    LOG.warn("+++ Deployment processor +++");
   }
 
   @Override
   public void process() throws NamingException {
+
+    LOG.warn("+++ found archive " + archive.getName());
 
     for (String annotation : annotations) {
       processAnnotations(annotation);
@@ -130,6 +134,9 @@ public class MetricsAnnotationProcessor implements DeploymentProcessor {
         m = getMetricInstanceFromType(type);
         metadata = new Metadata(name,getMetricType(type));
       }
+
+      LOG.info("+++ registered " + name + " of type " + metadata.getType());
+
 
       if (unit != null) {
         metadata.setUnit(unit);

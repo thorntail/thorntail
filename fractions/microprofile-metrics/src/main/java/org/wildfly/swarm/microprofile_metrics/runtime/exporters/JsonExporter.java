@@ -19,11 +19,14 @@ package org.wildfly.swarm.microprofile_metrics.runtime.exporters;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.Meter;
+import org.eclipse.microprofile.metrics.Metered;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.Timer;
+import org.eclipse.microprofile.metrics.Snapshot;
 import org.wildfly.swarm.microprofile_metrics.runtime.MetricRegistryFactory;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.HistogramImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.MeterImpl;
+import org.wildfly.swarm.microprofile_metrics.runtime.app.TimerImpl;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,30 +75,32 @@ public class JsonExporter implements Exporter {
       switch (metadata.getTypeRaw()) {
         case GAUGE:
         case COUNTER:
-          Number val = getValueFromMetric(value);
+          Number val = getValueFromMetric(value, key);
           sb.append("  ").append('"').append(key).append('"').append(" : ").append(val);
           break;
         case METERED:
-          Meter meter = (Meter) value;
-          sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
+          MeterImpl meter = (MeterImpl) value;
+          writeStartLine(sb, key);
           writeMeterValues(sb, meter);
-          sb.append("  }");
+          writeEndLine(sb);
           break;
         case TIMER:
-          Timer timer = (Timer) value;
-          sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
+          TimerImpl timer = (TimerImpl) value;
+          writeStartLine(sb, key);
           writeTimerValues(sb, timer);
-          sb.append("  }");
-
-
+          writeEndLine(sb);
           break;
         case HISTOGRAM:
-          default:
-            System.err.println("Not yet supported " + metadata);
+          HistogramImpl hist = (HistogramImpl) value;
+          writeStartLine(sb, key);
+          sb.append("    \"count\": ").append(hist.getCount()).append(COMMA_LF);
+          writeSnapshotValues(sb,hist.getSnapshot());
+          writeEndLine(sb);
+          break;
+        default:
+          System.err.println("JSE, Not yet supported: " + metadata);
 
       }
-
-
       if (iterator.hasNext()) {
         sb.append(',');
       }
@@ -103,7 +108,15 @@ public class JsonExporter implements Exporter {
     }
   }
 
-  private void writeMeterValues(StringBuilder sb, Meter meter) {
+  private void writeEndLine(StringBuilder sb) {
+    sb.append("  }");
+  }
+
+  private void writeStartLine(StringBuilder sb, String key) {
+    sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
+  }
+
+  private void writeMeterValues(StringBuilder sb, Metered meter) {
     sb.append("    \"count\": ").append(meter.getCount()).append(COMMA_LF);
     sb.append("    \"meanRate\": ").append(meter.getMeanRate()).append(COMMA_LF);
     sb.append("    \"oneMinRate\": ").append(meter.getOneMinuteRate()).append(COMMA_LF);
@@ -111,49 +124,40 @@ public class JsonExporter implements Exporter {
     sb.append("    \"fifteenMinRate\": ").append(meter.getFifteenMinuteRate()).append(LF);
   }
 
-  private void writeTimerValues(StringBuilder sb, Timer timer) {
-    sb.append("    \"count\": ").append(timer.getCount()).append(COMMA_LF);
-    sb.append("    \"meanRate\": ").append(timer.getMeanRate()).append(COMMA_LF);
-    sb.append("    \"oneMinRate\": ").append(timer.getOneMinuteRate()).append(COMMA_LF);
-    sb.append("    \"fiveMinRate\": ").append(timer.getFiveMinuteRate()).append(COMMA_LF);
-    sb.append("    \"fifteenMinRate\": ").append(timer.getFifteenMinuteRate()).append(LF);
-    // TODO remaining fields
-    /*
-       "responseTime": {
-       "count": 29382,
-       "meanRate":12.185627192860734,
-       "oneMinRate": 12.563,
-       "fiveMinRate": 12.364,
-       "fifteenMinRate": 12.126,
-       "min":169916,
-       "max":5608694,
-       "mean":415041.00024926325,
-       "stddev":652907.9633011606,
-       "p50":293324.0,
-       "p75":344914.0,
-       "p95":543647.0,
-       "p98":2706543.0,
-       "p99":5608694.0,
-       "p999":5608694.0
-     }
-*/
+  private void writeTimerValues(StringBuilder sb, TimerImpl timer) {
+    writeSnapshotValues(sb,timer.getSnapshot());
+    writeMeterValues(sb, timer.getMeter());
+  }
+
+  private void writeSnapshotValues(StringBuilder sb, Snapshot snapshot) {
+    sb.append("    \"p50\": ").append(snapshot.getMedian()).append(COMMA_LF);
+    sb.append("    \"p75\": ").append(snapshot.get75thPercentile()).append(COMMA_LF);
+    sb.append("    \"p95\": ").append(snapshot.get95thPercentile()).append(COMMA_LF);
+    sb.append("    \"p98\": ").append(snapshot.get98thPercentile()).append(COMMA_LF);
+    sb.append("    \"p99\": ").append(snapshot.get99thPercentile()).append(COMMA_LF);
+    sb.append("    \"p999\": ").append(snapshot.get999thPercentile()).append(COMMA_LF);
+    sb.append("    \"min\": ").append(snapshot.getMin()).append(COMMA_LF);
+    sb.append("    \"mean\": ").append(snapshot.getMean()).append(COMMA_LF);
+    sb.append("    \"max\": ").append(snapshot.getMax()).append(COMMA_LF);
+    sb.append("    \"stddev\": ").append(snapshot.getStdDev()).append(COMMA_LF);
+
   }
 
 
-  private Number getValueFromMetric(Metric value) {
-    if (value instanceof Gauge) {
-      Number value1 = (Number) ((Gauge) value).getValue();
+  private Number getValueFromMetric(Metric theMetric, String name) {
+    if (theMetric instanceof Gauge) {
+      Number value = (Number) ((Gauge) theMetric).getValue();
       double v;
-      if (value1 != null) {
-        v = value1.doubleValue();
+      if (value != null) {
+        return value;
       } else {
+        System.out.println("Value is null for " + name);
         return -142.142; // TODO
       }
-      return v;
-    } else if (value instanceof Counter) {
-      return ((Counter) value).getCount();
+    } else if (theMetric instanceof Counter) {
+      return ((Counter) theMetric).getCount();
     } else {
-      System.err.println("Not yet supported : " + value.getClass().getName());
+      System.err.println("Not yet supported metric: " + theMetric.getClass().getName());
       return -42.42;
     }
   }
@@ -174,7 +178,7 @@ public class JsonExporter implements Exporter {
       if (registry.getNames().size() > 0) {
         sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
         getMetricsForAScope(sb,scope);
-        sb.append(LF);
+        sb.append("\n");
         scopes++;
         if (scopes < totalNonEmptyScopes) {
           sb.append(',');
@@ -201,7 +205,7 @@ public class JsonExporter implements Exporter {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
     writeMetricsForMap(sb,outMap, metadataMap);
-    sb.append(LF);
+    sb.append("\n");
 
     return sb;
   }

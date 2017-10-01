@@ -16,13 +16,14 @@
  */
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
+import org.jboss.logging.Logger;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.parser.ParserException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import org.jboss.logging.Logger;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.parser.ParserException;
 
 /**
  * @author hrupp

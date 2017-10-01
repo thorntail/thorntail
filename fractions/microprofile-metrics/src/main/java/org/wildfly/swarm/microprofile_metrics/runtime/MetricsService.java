@@ -51,7 +51,6 @@ public class MetricsService implements Service<MetricsService> {
   public void start(StartContext context) throws StartException {
     initBaseAndVendorConfiguration();
 
-
     LOG.info("MicroProfile-Metrics started");
   }
 
@@ -61,6 +60,7 @@ public class MetricsService implements Service<MetricsService> {
    */
   private void initBaseAndVendorConfiguration() {
     InputStream is  = getClass().getResourceAsStream("mapping.yml");
+    LOG.warn("IS is " + is);
 
     if (is != null) {
       ConfigReader cr = new ConfigReader();
@@ -76,6 +76,7 @@ public class MetricsService implements Service<MetricsService> {
       for (ExtendedMetadata em : ml.getBase()) {
         em.processTags(globalTags);
         Metric type = getType(em);
+        LOG.debug("+++ registering " + em);
         MetricRegistryFactory.getBaseRegistry().register(em.getName(),type,em);
       }
       for (ExtendedMetadata em : ml.getVendor()) {
@@ -105,7 +106,7 @@ public class MetricsService implements Service<MetricsService> {
 
   private List<Tag> convertToTags(String globalTagsString) {
     List<Tag> tags = new ArrayList<>();
-    if (globalTagsString != null) {
+    if  (globalTagsString != null) {
       String[] singleTags = globalTagsString.split(",");
       for (String singleTag : singleTags) {
         tags.add(new Tag(singleTag.trim()));

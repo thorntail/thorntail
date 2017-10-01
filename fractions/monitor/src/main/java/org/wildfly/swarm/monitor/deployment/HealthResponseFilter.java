@@ -37,6 +37,11 @@ public class HealthResponseFilter implements ContainerResponseFilter {
             resp.setStatus(code);
             resp.setEntity(status.toJson());
             resp.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);
+            resp.getHeaders().add("Access-Control-Allow-Origin", "*");
+            resp.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+            resp.getHeaders().add("Access-Control-Allow-Credentials", "true");
+            resp.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+            resp.getHeaders().add("Access-Control-Max-Age", "1209600");
         }
     }
 

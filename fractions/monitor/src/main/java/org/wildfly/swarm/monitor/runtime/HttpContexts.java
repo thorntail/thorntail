@@ -170,6 +170,11 @@ public class HttpContexts implements HttpHandler {
         }
 
         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "*");
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Headers"), "origin, content-type, accept, authorization");
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Credentials"), "true");
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Methods"), "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");
         exchange.getResponseSender().send(sb.toString());
 
         exchange.endExchange();

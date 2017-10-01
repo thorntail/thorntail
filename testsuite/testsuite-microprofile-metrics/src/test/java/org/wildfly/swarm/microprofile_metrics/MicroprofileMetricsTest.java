@@ -19,13 +19,13 @@ package org.wildfly.swarm.microprofile_metrics;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Header;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.test.MetricAppBean;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.w3c.dom.Document;
@@ -33,16 +33,23 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.hasKey;
 
 /**
@@ -54,12 +61,16 @@ public class MicroprofileMetricsTest {
   private static final String APPLICATION_JSON = "application/json";
  	private static final String TEXT_PLAIN = "text/plain";
 
+    @Inject
+    private MetricAppBean metricAppBean;
+
 
   @Deployment
-  public static JavaArchive createDeployment() {
-      JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addClass(MetricAppBean.class)
-              .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+  public static WebArchive createDeployment() {
+//      JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addClass(MetricAppBean.class)
+//              .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
+      WebArchive jar = ShrinkWrap.create(WebArchive.class).addClass(MetricAppBean.class);
       System.out.println(jar.toString(true));
       return jar;
   }
@@ -103,7 +114,7 @@ public class MicroprofileMetricsTest {
       assert response.containsKey("base");
 
       // these should not be in the response since they have no metrics yet
-//      assert !response.containsKey("application"); TODO
+//      assert !response.containsKey("application");
 
     // There may be vendor metrics, so check if the key exists and bail if it has no data
     if (response.containsKey("vendor")) {
@@ -396,6 +407,27 @@ public class MicroprofileMetricsTest {
 
 
     @Test
+    @InSequence(17)
+    public void testSetupApplicationMetrics() {
+
+        metricAppBean.countMe();
+        metricAppBean.countMeA();
+
+        metricAppBean.gaugeMe();
+        metricAppBean.gaugeMeA();
+
+        metricAppBean.histogramMe();
+
+        metricAppBean.meterMe();
+        metricAppBean.meterMeA();
+
+        metricAppBean.timeMe();
+        metricAppBean.timeMeA();
+
+    }
+
+
+    @Test
     @RunAsClient
     @InSequence(18)
     public void testApplicationMetricsJSON() {
@@ -403,9 +435,9 @@ public class MicroprofileMetricsTest {
 
         given().header(wantJson).get("/metrics/application").then().statusCode(200)
 
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.redCount'", equalTo(0))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.redCount'", equalTo(0))
 
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.blue'", equalTo(0))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.blue'", equalTo(0))
 
                 .body("greenCount", equalTo(0))
 
@@ -417,7 +449,7 @@ public class MicroprofileMetricsTest {
 
                 .body("'metricTest.test1.gauge'", equalTo(19))
 
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.gaugeMeA'", equalTo(1000))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.gaugeMeA'", equalTo(1000))
 
                 .body("'metricTest.test1.histogram'.count", equalTo(1000))
                 .body("'metricTest.test1.histogram'.max", equalTo(999))
@@ -452,21 +484,21 @@ public class MicroprofileMetricsTest {
                 .body("'metricTest.test1.timer'", hasKey("p99")).body("'metricTest.test1.timer'", hasKey("p999"))
                 .body("'metricTest.test1.timer'", hasKey("stddev"))
 
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'.count", equalTo(1))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("fifteenMinRate"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("fiveMinRate"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("meanRate"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("oneMinRate"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("max"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("mean"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("min"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("p50"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("p75"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("p95"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("p98"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("p99"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("p999"))
-                .body("'org.wildfly.swarm.microprofile_metrics.MetricAppBean.timeMeA'", hasKey("stddev"));
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'.count", equalTo(1))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("fifteenMinRate"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("fiveMinRate"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("meanRate"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("oneMinRate"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("max"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("mean"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("min"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p50"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p75"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p95"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p98"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p99"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("p999"))
+                .body("'org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA'", hasKey("stddev"));
     }
 
     @Test
