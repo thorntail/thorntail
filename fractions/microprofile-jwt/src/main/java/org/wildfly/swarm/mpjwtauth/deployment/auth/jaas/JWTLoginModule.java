@@ -35,13 +35,25 @@ import org.jboss.security.SimplePrincipal;
 import org.jboss.security.auth.callback.SecurityAssociationCallback;
 import org.jboss.security.auth.spi.RoleMappingLoginModule;
 
+/**
+ *
+ */
 public class JWTLoginModule extends RoleMappingLoginModule {
+    private static final String LOG_EXCEPTIONS = "logExceptions";
+    private static final String[] ALL_VALID_OPTIONS = {
+            LOG_EXCEPTIONS
+    };
+
     private JsonWebToken jwtPrincipal;
+    private boolean logExceptions = false;
 
     @Override
     public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
+        addValidOptions(ALL_VALID_OPTIONS);
         super.initialize(subject, callbackHandler, sharedState, options);
-
+        if (options.containsKey("logExceptions")) {
+            logExceptions = Boolean.valueOf(options.get("logExceptions").toString());
+        }
     }
 
     @Override
@@ -53,7 +65,10 @@ public class JWTLoginModule extends RoleMappingLoginModule {
             // Validate the credential by
             jwtPrincipal = validate(jwtCredential);
         } catch (Exception e) {
-            LoginException ex = new LoginException("Failed to obtain JWTCredential from SecurityAssociationCallback");
+            if (logExceptions) {
+                log.infof(e, "Failed to validate token");
+            }
+            LoginException ex = new LoginException("Failed to validate token");
             ex.initCause(e);
             throw ex;
         }

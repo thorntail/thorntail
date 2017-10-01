@@ -106,7 +106,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
                             return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
                         }
                     } catch (Exception e) {
-                        UndertowLogger.SECURITY_LOGGER.debugf(e, "Failed to validate JWT bearer token");
+                        UndertowLogger.SECURITY_LOGGER.infof(e, "Failed to validate JWT bearer token");
                         return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
                     }
                 }
