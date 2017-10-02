@@ -126,6 +126,9 @@ public class JsonExporter implements Exporter {
 
   private void writeTimerValues(StringBuilder sb, TimerImpl timer) {
     writeSnapshotValues(sb,timer.getSnapshot());
+    // Backup and write COMMA_LF
+    sb.setLength(sb.length() - 1);
+    sb.append(COMMA_LF);
     writeMeterValues(sb, timer.getMeter());
   }
 
@@ -139,7 +142,8 @@ public class JsonExporter implements Exporter {
     sb.append("    \"min\": ").append(snapshot.getMin()).append(COMMA_LF);
     sb.append("    \"mean\": ").append(snapshot.getMean()).append(COMMA_LF);
     sb.append("    \"max\": ").append(snapshot.getMax()).append(COMMA_LF);
-    sb.append("    \"stddev\": ").append(snapshot.getStdDev()).append(COMMA_LF);
+    // Can't be COMMA_LF has there may not be anything following as is the case for a Histogram
+    sb.append("    \"stddev\": ").append(snapshot.getStdDev()).append(LF);
 
   }
 

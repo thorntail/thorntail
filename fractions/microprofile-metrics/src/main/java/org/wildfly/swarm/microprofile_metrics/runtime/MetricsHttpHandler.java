@@ -20,6 +20,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
+import io.undertow.util.HttpString;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.Exporter;
@@ -124,6 +125,11 @@ public class MetricsHttpHandler implements HttpHandler {
       LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
     }
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, exporter.getContentType());
+    exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "*");
+    exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Headers"), "origin, content-type, accept, authorization");
+    exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Credentials"), "true");
+    exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Methods"), "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+    exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");
     exchange.getResponseSender().send(sb.toString());
 
   }
@@ -163,7 +169,8 @@ public class MetricsHttpHandler implements HttpHandler {
     if (acceptHeaders == null) {
       exporter = new PrometheusExporter();
     } else {
-      if (acceptHeaders.getFirst() != null && acceptHeaders.getFirst().equals("application/json")) {
+      // Header can look like "application/json, text/plain, */*"
+      if (acceptHeaders.getFirst() != null && acceptHeaders.getFirst().startsWith("application/json")) {
 
         String method = exchange.getRequestMethod().toString();
         if (method.equals("GET")) {
