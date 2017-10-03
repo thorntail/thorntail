@@ -48,7 +48,6 @@ import java.lang.reflect.Member;
 
     @Inject
     private CountedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry) { //}, MetricResolver resolver) {
-        System.err.println("+++ counted interceptor");
         this.bean = bean;
         this.registry = registry;
 //        this.resolver = resolver;
@@ -80,19 +79,19 @@ import java.lang.reflect.Member;
         String name = beanName + "." + fieldName;
 
         for (Annotation a : annotations) {
-              if (a.annotationType().equals(Counted.class)) {
-                Counted m = (Counted)a;
+            if (a.annotationType().equals(Counted.class)) {
+                Counted m = (Counted) a;
                 if (!m.name().isEmpty()) {
-                  fieldName = m.name();
+                    fieldName = m.name();
                 }
                 if (!m.absolute()) {
-                  name = beanName + "." + fieldName;
+                    name = beanName + "." + fieldName;
                 } else {
-                  name = fieldName;
+                    name = fieldName;
                 }
                 break;
-              }
             }
+        }
 
 
         Counter counter = (Counter) registry.counter(name);

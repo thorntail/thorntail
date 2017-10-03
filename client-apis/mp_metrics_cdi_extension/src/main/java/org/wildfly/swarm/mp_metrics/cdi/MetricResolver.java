@@ -33,7 +33,6 @@ import java.util.Collections;
 /* package-private */ class MetricResolver {
 
 
-
     private MetricName metricName = new SeMetricName(Collections.emptySet());
 
 

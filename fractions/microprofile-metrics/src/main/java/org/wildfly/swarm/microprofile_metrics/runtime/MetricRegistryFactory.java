@@ -27,42 +27,42 @@ import java.util.Map;
  */
 public class MetricRegistryFactory {
 
-  private static final Map<MetricRegistry.Type,MetricRegistry> registries = new HashMap<>();
+    private static final Map<MetricRegistry.Type, MetricRegistry> registries = new HashMap<>();
 
-  private MetricRegistryFactory() { /* Singleton */ }
+    private MetricRegistryFactory() { /* Singleton */ }
 
-//  @Produces
+    //  @Produces
 //  @Default
 //  @RegistryType(type = MetricRegistry.Type.APPLICATION)
 //  @ApplicationScoped
-  public static MetricRegistry getApplicationRegistry() {
-    return get(MetricRegistry.Type.APPLICATION);
-  }
-
-//  @Produces
-//  @ApplicationScoped
-//  @RegistryType(type = MetricRegistry.Type.BASE)
-  public static MetricRegistry getBaseRegistry() {
-    return get(MetricRegistry.Type.BASE);
-  }
-
-//  @Produces
-//  @ApplicationScoped
-//  @RegistryType(type = MetricRegistry.Type.VENDOR)
-  public static MetricRegistry getVendorRegistry() {
-    return get(MetricRegistry.Type.VENDOR);
-  }
-
-  public static MetricRegistry get(MetricRegistry.Type type) {
-
-    synchronized (registries) {
-      if (registries.get(type) == null) {
-
-        MetricRegistry result = new MetricsRegistryImpl();
-        registries.put(type, result);
-      }
+    public static MetricRegistry getApplicationRegistry() {
+        return get(MetricRegistry.Type.APPLICATION);
     }
 
-    return registries.get(type);
-  }
+    //  @Produces
+//  @ApplicationScoped
+//  @RegistryType(type = MetricRegistry.Type.BASE)
+    public static MetricRegistry getBaseRegistry() {
+        return get(MetricRegistry.Type.BASE);
+    }
+
+    //  @Produces
+//  @ApplicationScoped
+//  @RegistryType(type = MetricRegistry.Type.VENDOR)
+    public static MetricRegistry getVendorRegistry() {
+        return get(MetricRegistry.Type.VENDOR);
+    }
+
+    public static MetricRegistry get(MetricRegistry.Type type) {
+
+        synchronized (registries) {
+            if (registries.get(type) == null) {
+
+                MetricRegistry result = new MetricsRegistryImpl();
+                registries.put(type, result);
+            }
+        }
+
+        return registries.get(type);
+    }
 }

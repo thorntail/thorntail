@@ -29,114 +29,114 @@ import java.util.Map;
  */
 public class JsonMetadataExporter implements Exporter {
 
-  private static final String QUOTE_COMMA_LF = "\",\n";
+    private static final String QUOTE_COMMA_LF = "\",\n";
 
-  @Override
-  public StringBuilder exportOneScope(MetricRegistry.Type scope) {
+    @Override
+    public StringBuilder exportOneScope(MetricRegistry.Type scope) {
 
-    StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-    getDataForOneScope(scope, sb);
+        getDataForOneScope(scope, sb);
 
-    return sb;
-  }
-
-  private void getDataForOneScope(MetricRegistry.Type scope, StringBuilder sb) {
-    MetricRegistry registry = MetricRegistryFactory.get(scope);
-    Map<String,Metadata> theMetadata = registry.getMetadata();
-
-    sb.append("{");
-    writeMetadataForMap(sb, theMetadata);
-    sb.append("}");
-  }
-
-  private void writeMetadataForMap(StringBuilder sb, Map<String, Metadata> theMetadata) {
-    Iterator<Map.Entry<String,Metadata>> iter = theMetadata.entrySet().iterator();
-    while (iter.hasNext()) {
-      Metadata entry = iter.next().getValue();
-      sb.append('"').append(entry.getName()).append('"').append(": {\n");
-      sb.append("  \"unit\": \"").append(entry.getUnit()).append(QUOTE_COMMA_LF);
-      sb.append("  \"type\": \"").append(entry.getType()).append(QUOTE_COMMA_LF);
-      if (entry.getDescription() != null) {
-        sb.append("  \"description\": \"").append(entry.getDescription()).append(QUOTE_COMMA_LF);
-      }
-      if (!entry.getTags().isEmpty()) {
-        sb.append("  \"tags\": \"");
-        sb.append(getTagsAsString(entry.getTags()));
-        sb.append(QUOTE_COMMA_LF);
-      }
-      sb.append("  \"displayName\": \"").append(entry.getDisplayName()).append("\"\n");
-      if (iter.hasNext()) {
-        sb.append("},\n");
-      } else {
-        sb.append("}\n");
-      }
+        return sb;
     }
-  }
 
-  private String getTagsAsString(Map<String, String> tags) {
-    StringBuilder result = new StringBuilder();
-    Iterator<Map.Entry<String, String>> iterator = tags.entrySet().iterator();
-    while (iterator.hasNext()) {
-      Map.Entry<String, String> pair = iterator.next();
-      result.append(pair.getKey()).append("=").append(pair.getValue());
-      if (iterator.hasNext()) {
-        result.append(",");
-      }
-     }
-     return result.toString();
-  }
+    private void getDataForOneScope(MetricRegistry.Type scope, StringBuilder sb) {
+        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        Map<String, Metadata> theMetadata = registry.getMetadata();
 
+        sb.append("{");
+        writeMetadataForMap(sb, theMetadata);
+        sb.append("}");
+    }
 
-  @Override
-  public StringBuilder exportAllScopes() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("{");
-
-    MetricRegistry.Type[] values = MetricRegistry.Type.values();
-    int totalNonEmptyScopes = Helper.countNonEmptyScopes();
-
-    int scopes = 0;
-    for (int i = 0; i < values.length; i++) {
-      MetricRegistry.Type scope = values[i];
-      MetricRegistry registry = MetricRegistryFactory.get(scope);
-
-      if (registry.getNames().size() > 0) {
-        sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
-        getDataForOneScope(scope,sb);
-        sb.append("\n");
-        scopes++;
-        if (scopes < totalNonEmptyScopes) {
-          sb.append(',');
+    private void writeMetadataForMap(StringBuilder sb, Map<String, Metadata> theMetadata) {
+        Iterator<Map.Entry<String, Metadata>> iter = theMetadata.entrySet().iterator();
+        while (iter.hasNext()) {
+            Metadata entry = iter.next().getValue();
+            sb.append('"').append(entry.getName()).append('"').append(": {\n");
+            sb.append("  \"unit\": \"").append(entry.getUnit()).append(QUOTE_COMMA_LF);
+            sb.append("  \"type\": \"").append(entry.getType()).append(QUOTE_COMMA_LF);
+            if (entry.getDescription() != null) {
+                sb.append("  \"description\": \"").append(entry.getDescription()).append(QUOTE_COMMA_LF);
+            }
+            if (!entry.getTags().isEmpty()) {
+                sb.append("  \"tags\": \"");
+                sb.append(getTagsAsString(entry.getTags()));
+                sb.append(QUOTE_COMMA_LF);
+            }
+            sb.append("  \"displayName\": \"").append(entry.getDisplayName()).append("\"\n");
+            if (iter.hasNext()) {
+                sb.append("},\n");
+            } else {
+                sb.append("}\n");
+            }
         }
-      }
     }
 
-    sb.append("}");
-    return sb;
+    private String getTagsAsString(Map<String, String> tags) {
+        StringBuilder result = new StringBuilder();
+        Iterator<Map.Entry<String, String>> iterator = tags.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> pair = iterator.next();
+            result.append(pair.getKey()).append("=").append(pair.getValue());
+            if (iterator.hasNext()) {
+                result.append(",");
+            }
+        }
+        return result.toString();
+    }
 
-  }
 
-  @Override
-  public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
-    MetricRegistry registry = MetricRegistryFactory.get(scope);
-    Map<String,Metadata> metadataMap = registry.getMetadata();
+    @Override
+    public StringBuilder exportAllScopes() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
 
-    Metadata m = metadataMap.get(metricName);
+        MetricRegistry.Type[] values = MetricRegistry.Type.values();
+        int totalNonEmptyScopes = Helper.countNonEmptyScopes();
 
-    Map<String,Metadata> outMap = new HashMap<>(1);
-    outMap.put(metricName,m);
+        int scopes = 0;
+        for (int i = 0; i < values.length; i++) {
+            MetricRegistry.Type scope = values[i];
+            MetricRegistry registry = MetricRegistryFactory.get(scope);
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("{");
-    writeMetadataForMap(sb,outMap);
-    sb.append("\n");
+            if (registry.getNames().size() > 0) {
+                sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
+                getDataForOneScope(scope, sb);
+                sb.append("\n");
+                scopes++;
+                if (scopes < totalNonEmptyScopes) {
+                    sb.append(',');
+                }
+            }
+        }
 
-    return sb;
-  }
+        sb.append("}");
+        return sb;
 
-  @Override
-  public String getContentType() {
-    return "application/json";
-  }
+    }
+
+    @Override
+    public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
+        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        Map<String, Metadata> metadataMap = registry.getMetadata();
+
+        Metadata m = metadataMap.get(metricName);
+
+        Map<String, Metadata> outMap = new HashMap<>(1);
+        outMap.put(metricName, m);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        writeMetadataForMap(sb, outMap);
+        sb.append("\n");
+
+        return sb;
+    }
+
+    @Override
+    public String getContentType() {
+        return "application/json";
+    }
 }

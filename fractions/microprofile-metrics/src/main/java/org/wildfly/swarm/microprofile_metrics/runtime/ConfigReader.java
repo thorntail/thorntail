@@ -29,34 +29,34 @@ import java.io.InputStream;
  * @author hrupp
  */
 public class ConfigReader {
-  Logger log = Logger.getLogger(this.getClass().getName());
+    Logger log = Logger.getLogger(this.getClass().getName());
 
 
-  public MetadataList readConfig(String mappingFile) {
-    try {
+    public MetadataList readConfig(String mappingFile) {
+        try {
 
 
-      File file = new File(mappingFile);
-      log.info("Loading mapping file from " + file.getAbsolutePath());
-      InputStream configStream = new FileInputStream(file);
+            File file = new File(mappingFile);
+            log.info("Loading mapping file from " + file.getAbsolutePath());
+            InputStream configStream = new FileInputStream(file);
 
-      return readConfig(configStream);
-    } catch (FileNotFoundException e) {
-      log.warn("No configuration found");
-    } catch (ParserException pe) {
-      log.error(pe);
+            return readConfig(configStream);
+        } catch (FileNotFoundException e) {
+            log.warn("No configuration found");
+        } catch (ParserException pe) {
+            log.error(pe);
+        }
+        return null;
     }
-    return null;
-  }
 
-  public MetadataList readConfig(InputStream configStream) {
+    public MetadataList readConfig(InputStream configStream) {
 
-    Yaml yaml = new Yaml();
+        Yaml yaml = new Yaml();
 
-    MetadataList config = yaml.loadAs(configStream,MetadataList.class);
-    log.info("Loaded config");
-    return config;
-  }
+        MetadataList config = yaml.loadAs(configStream, MetadataList.class);
+        log.info("Loaded config");
+        return config;
+    }
 
 
 }

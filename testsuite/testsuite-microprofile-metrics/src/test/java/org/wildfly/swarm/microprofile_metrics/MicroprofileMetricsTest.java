@@ -234,6 +234,7 @@ public class MicroprofileMetricsTest {
                       containsString("base:thread_max_count{tier=\"integration\"}"));
   }
 
+  // Depend on a vendor metric test being defined in mapping.yml - we may need to remove this
   @Test
   @RunAsClient
   public void testAllLabelsPrometheus() {
@@ -242,6 +243,7 @@ public class MicroprofileMetricsTest {
                       containsString("vendor:test{tier=\"integration\",domain=\"test\"}"));
   }
 
+  // Depend on a vendor metric test being defined in mapping.yml - we may need to remove this
   @Test
   @RunAsClient
   public void testAllLabelsJson() {
@@ -342,7 +344,7 @@ public class MicroprofileMetricsTest {
   @Test
   @RunAsClient
   @InSequence(14)
-  public void testBaseMetadataSingluarItemsPrometheus() {
+  public void testBaseMetadataSingularItemsPrometheus() {
       Header wantPrometheusFormat = new Header("Accept", TEXT_PLAIN);
 
       String data = given().header(wantPrometheusFormat).get("/metrics/base").asString();
@@ -402,7 +404,7 @@ public class MicroprofileMetricsTest {
   public void testApplicationMetadataOkJson() {
       Header wantJson = new Header("Accept", APPLICATION_JSON);
 
-      given().header(wantJson).options("/metrics/application").then().statusCode(200);
+      given().header(wantJson).options("/metrics/application").then().statusCode(204);
   }
 
 

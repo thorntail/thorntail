@@ -20,6 +20,8 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
+import io.undertow.util.HttpString;
+import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.Exporter;
@@ -27,7 +29,6 @@ import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonExporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.JsonMetadataExporter;
 import org.wildfly.swarm.microprofile_metrics.runtime.exporters.PrometheusExporter;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -37,149 +38,147 @@ import java.util.concurrent.CountDownLatch;
 @SuppressWarnings("unused")
 public class MetricsHttpHandler implements HttpHandler {
 
-  private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
-  protected ThreadLocal<CountDownLatch> dispatched = new ThreadLocal<>();
+    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
+    private ThreadLocal<CountDownLatch> dispatched = new ThreadLocal<>();
 
+    private HttpHandler next;
 
+    public MetricsHttpHandler(HttpHandler next) {
 
-  private HttpHandler next;
-
-  public MetricsHttpHandler(HttpHandler next) {
-
-    this.next = next;
-  }
-
-  @Override
-  public void handleRequest(HttpServerExchange exchange) throws Exception {
-
-    String requestPath = exchange.getRequestPath();
-//    LOG.warn(requestPath + " on " + Thread.currentThread());
-
-    if (dispatched.get() != null && dispatched.get().getCount() == 1) {
-        next.handleRequest(exchange);
-        dispatched.set(null);
-        return;
+        this.next = next;
     }
 
-    if (!requestPath.startsWith("/metrics")) {
-      next.handleRequest(exchange);
-      return;
-    }
+    @Override
+    public void handleRequest(HttpServerExchange exchange) throws Exception {
 
+        String requestPath = exchange.getRequestPath();
 
-
-    String scopePath = requestPath.substring(8);
-
-    Exporter exporter = obtainExporter(exchange);
-//    LOG.warn("scope path >" + scopePath + "< and exporter " + exporter.getClass().getName());
-
-    if (scopePath.startsWith("/")) {
-      scopePath = scopePath.substring(1);
-    }
-
-    StringBuilder sb;
-
-    if (scopePath.isEmpty()) {
-      Map<MetricRegistry.Type,Map<String,Double>> metricValuesMap = new HashMap<>();
-      for (MetricRegistry.Type scope  :  MetricRegistry.Type.values()) {
-        Map<String, Double> map = getMetricsMapForScope(scope);
-        metricValuesMap.put(scope, map);
-      }
-      sb = exporter.exportAllScopes();
-
-    } else if (scopePath.contains("/")) {
-      // One metric in a scope
-
-      String attribute = scopePath.substring(scopePath.indexOf('/') + 1);
-
-      MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath.substring(0, scopePath.indexOf('/')));
-      Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
-
-      Map<String,Double> oneMetric = new HashMap<>(1);
-      oneMetric.put(attribute, metricValuesMap.get(attribute));
-
-      sb = exporter.exportOneMetric(scope,attribute);
-
-
-    } else {
-      // A single scope
-
-      MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath);
-      if (scope == null) {
-        return;
-      }
-
-      MetricRegistry reg = MetricRegistryFactory.get(scope);
-      if (reg.getMetadata().size() == 0) {
-        exchange.setStatusCode(204);
-        exchange.setReasonPhrase("No data in scope " + scopePath);
-      }
-
-      Map<String, Double> metricValuesMap = getMetricsMapForScope(scope);
-
-      sb = exporter.exportOneScope(scope);
-    }
-
-    if (requestPath.contains("app") && exchange.getRequestMethod().toString().equals("GET")) {
-      LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
-    }
-    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, exporter.getContentType());
-    exchange.getResponseSender().send(sb.toString());
-
-  }
-
-  private MetricRegistry.Type getScopeFromPath(HttpServerExchange exchange, String scopePath) {
-    MetricRegistry.Type scope;
-    try {
-      scope = MetricRegistry.Type.valueOf(scopePath.toUpperCase());
-    } catch (IllegalArgumentException iae) {
-      exchange.setStatusCode(404);
-      exchange.setReasonPhrase("Bad scope requested: " + scopePath);
-      return null;
-    }
-    return scope;
-  }
-
-  private Map<String, Double> getMetricsMapForScope(MetricRegistry.Type scope) {
-    Map<String, Double> metricValuesMap;
-/*
-    if (scope.equals(MetricRegistry.Type.BASE)) {
-      metricValuesMap = BaseMetricWorker.instance().getBaseMetrics();
-    } else if (scope.equals(MetricRegistry.Type.VENDOR)) {
-      metricValuesMap = VendorMetricWorker.instance().getVendorMetrics();
-*/
-    if (scope.equals(MetricRegistry.Type.BASE) || scope.equals(MetricRegistry.Type.VENDOR)) {
-      metricValuesMap = JmxWorker.instance().getMetrics(scope);
-    } else {
-      metricValuesMap = new HashMap<>(); // TODO
-    }
-    return metricValuesMap;
-  }
-
-  private Exporter obtainExporter(HttpServerExchange exchange) {
-    HeaderValues acceptHeaders = exchange.getRequestHeaders().get(Headers.ACCEPT);
-    Exporter exporter;
-
-    if (acceptHeaders == null) {
-      exporter = new PrometheusExporter();
-    } else {
-      if (acceptHeaders.getFirst() != null && acceptHeaders.getFirst().equals("application/json")) {
-
-        String method = exchange.getRequestMethod().toString();
-        if (method.equals("GET")) {
-          exporter = new JsonExporter();
-        } else if (method.equals("OPTIONS")) {
-          exporter = new JsonMetadataExporter();
-        } else {
-          throw new IllegalStateException("Unsupported method");
+        if (dispatched.get() != null && dispatched.get().getCount() == 1) {
+            next.handleRequest(exchange);
+            dispatched.set(null);
+            return;
         }
-      } else {
-        // This is the fallback
-        exporter = new PrometheusExporter();
-      }
+
+        if (!requestPath.startsWith("/metrics")) {
+            next.handleRequest(exchange);
+            return;
+        }
+
+        // request is for us, so let's handle it
+
+        Exporter exporter = obtainExporter(exchange);
+
+        String scopePath = requestPath.substring(8);
+        if (scopePath.startsWith("/")) {
+            scopePath = scopePath.substring(1);
+        }
+        if (scopePath.endsWith("/")) {
+            scopePath = scopePath.substring(0, scopePath.length() - 1);
+        }
+
+        StringBuilder sb;
+
+        if (scopePath.isEmpty()) {
+            // All metrics
+
+            sb = exporter.exportAllScopes();
+
+        } else if (scopePath.contains("/")) {
+            // One metric in a scope
+
+            String attribute = scopePath.substring(scopePath.indexOf('/') + 1);
+
+            MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath.substring(0, scopePath.indexOf('/')));
+            if (scope == null) {
+                exchange.setStatusCode(404);
+                exchange.setReasonPhrase("Scope " + scopePath + " not found");
+                return;
+            }
+
+            MetricRegistry registry = MetricRegistryFactory.get(scope);
+            Map<String, Metric> metricValuesMap = registry.getMetrics();
+
+            if (metricValuesMap.containsKey(attribute)) {
+                sb = exporter.exportOneMetric(scope, attribute);
+            } else {
+                exchange.setStatusCode(404);
+                exchange.setReasonPhrase("Metric " + scopePath + " not found");
+                return;
+            }
+        } else {
+            // A single scope
+
+            MetricRegistry.Type scope = getScopeFromPath(exchange, scopePath);
+            if (scope == null) {
+                exchange.setStatusCode(404);
+                exchange.setReasonPhrase("Scope " + scopePath + " not found");
+                return;
+            }
+
+            MetricRegistry reg = MetricRegistryFactory.get(scope);
+            if (reg.getMetadata().size() == 0) {
+                exchange.setStatusCode(204);
+                exchange.setReasonPhrase("No data in scope " + scopePath);
+            }
+
+            sb = exporter.exportOneScope(scope);
+        }
+
+        if (requestPath.contains("app") && exchange.getRequestMethod().toString().equals("GET")) {
+            LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
+        }
+        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, exporter.getContentType());
+        provideCorsHeaders(exchange);
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");
+        exchange.getResponseSender().send(sb.toString());
+
     }
-    return exporter;
-  }
+
+    private void provideCorsHeaders(HttpServerExchange exchange) {
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "*");
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Headers"), "origin, content-type, accept, authorization");
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Credentials"), "true");
+        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Methods"), "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+    }
+
+    private MetricRegistry.Type getScopeFromPath(HttpServerExchange exchange, String scopePath) {
+        MetricRegistry.Type scope;
+        try {
+            scope = MetricRegistry.Type.valueOf(scopePath.toUpperCase());
+        } catch (IllegalArgumentException iae) {
+            exchange.setStatusCode(404);
+            exchange.setReasonPhrase("Bad scope requested: " + scopePath);
+            return null;
+        }
+        return scope;
+    }
+
+
+    private Exporter obtainExporter(HttpServerExchange exchange) {
+        HeaderValues acceptHeaders = exchange.getRequestHeaders().get(Headers.ACCEPT);
+        Exporter exporter;
+
+        if (acceptHeaders == null) {
+            exporter = new PrometheusExporter();
+        } else {
+            // Header can look like "application/json, text/plain, */*"
+            if (acceptHeaders.getFirst() != null && acceptHeaders.getFirst().startsWith("application/json")) {
+
+                String method = exchange.getRequestMethod().toString();
+                if (method.equals("GET")) {
+                    exporter = new JsonExporter();
+                } else if (method.equals("OPTIONS")) {
+                    exporter = new JsonMetadataExporter();
+                } else {
+                    throw new IllegalStateException("Unsupported method");
+                }
+            } else {
+                // This is the fallback
+                exporter = new PrometheusExporter();
+            }
+        }
+        return exporter;
+    }
 
 
 }

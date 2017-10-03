@@ -18,6 +18,7 @@
 package org.wildfly.swarm.microprofile_metrics.runtime;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.microprofile_metrics.MicroprofileMetricsFraction;
@@ -54,9 +55,9 @@ public class CdiExtensionInstaller implements DeploymentProcessor {
         } else if (archive.getName().endsWith(".jar")) {
             JavaArchive jar = archive.as(JavaArchive.class);
             jar.addPackage("org.wildfly.swarm.mp_metrics.cdi");
+            jar.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
         } else {
             System.err.println("Archive " + archive.getName() + " not yet supported");
         }
-
     }
 }

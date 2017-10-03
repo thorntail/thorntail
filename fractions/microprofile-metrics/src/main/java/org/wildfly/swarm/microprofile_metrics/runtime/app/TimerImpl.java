@@ -17,7 +17,6 @@ public class TimerImpl implements Timer {
     private final Clock clock;
 
 
-
     /**
      * Creates a new {@link TimerImpl} using an {@link ExponentiallyDecayingReservoir} and the default
      * {@link Clock}.
@@ -140,6 +139,7 @@ public class TimerImpl implements Timer {
     public org.eclipse.microprofile.metrics.Metered getMeter() {
         return meter;
     }
+
     /**
      * A timing context.
      *

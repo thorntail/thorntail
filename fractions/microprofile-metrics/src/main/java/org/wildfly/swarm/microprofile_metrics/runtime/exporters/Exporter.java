@@ -23,11 +23,11 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
  */
 public interface Exporter {
 
-  StringBuilder exportOneScope(MetricRegistry.Type scope);
+    StringBuilder exportOneScope(MetricRegistry.Type scope);
 
-  StringBuilder exportAllScopes();
+    StringBuilder exportAllScopes();
 
-  String getContentType();
+    String getContentType();
 
-  StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName);
+    StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName);
 }
