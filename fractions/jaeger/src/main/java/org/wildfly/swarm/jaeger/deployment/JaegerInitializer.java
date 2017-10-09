@@ -19,6 +19,9 @@ import com.uber.jaeger.Configuration;
 import io.opentracing.util.GlobalTracer;
 import org.jboss.logging.Logger;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -47,7 +50,7 @@ public class JaegerInitializer implements ServletContextListener {
                 getProperty(sc, JAEGER_SERVICE_NAME),
                 new Configuration.SamplerConfiguration(
                         getProperty(sc, JAEGER_SAMPLER_TYPE),
-                        getPropertyAsInt(sc, JAEGER_SAMPLER_PARAM),
+                        getPropertyAsNumber(sc, JAEGER_SAMPLER_PARAM),
                         getProperty(sc, JAEGER_SAMPLER_MANAGER_HOST_PORT)),
                 new ReporterConfiguration(
                         getPropertyAsBoolean(sc, JAEGER_REPORTER_LOG_SPANS),
@@ -88,4 +91,15 @@ public class JaegerInitializer implements ServletContextListener {
         return null;
     }
 
+    private static Number getPropertyAsNumber(ServletContext sc, String name) {
+        String value = getProperty(sc, name);
+        if (value != null && !value.isEmpty()) {
+            try {
+                return NumberFormat.getInstance().parse(value);
+            } catch (ParseException e) {
+                logger.error("Failed to parse number for property '" + name + "' with value '" + value + "'", e);
+            }
+        }
+        return null;
+    }
 }
