@@ -1,0 +1,89 @@
+## How to create a datasource
+
+When working with Java applications, a datasource has
+two components, both equally important:
+
+. JDBC Driver
+. Datasource Definition
+
+The JDBC driver is responsible to knowing how to communicate
+with the database, while providing a constant API to application
+developers. An application must bring their own JDBC driver,
+since the range of available databases and versions of each driver
+is rather large.  Usually the application will not directly interact
+with the JDBC driver.  Instead, the underlying runtime will manage
+creating a _datasource_ which provides an efficient way to share
+and manage a discrete connection (or pool of connections) to a
+particular database using the driver.
+
+### JDBC Drivers
+
+#### Auto-detection
+
+WildFly Swarm has the capability to detect, install and register
+a variety of JDBC drivers based on their inclusion as a dependency
+to your application.
+
+The currently detectable drivers include:
+
+* H2
+* MySQL
+* PostgreSQL
+* EnterpriseDB
+* SQLServer
+* Oracle
+* Sybase
+* DB2
+
+Simply add the appropriate dependency (with the default `<scope>compile</scope>`
+scope) to your application:
+
+[source,xml]
+----
+<dependencies>
+include::pom.xml[tag=dependencies,indent=2]
+</dependencies>
+----
+
+#### Explicit JDBC Driver Configuration
+
+In the event you need to provide customized driver configuration instead
+of relying on the auto-detection, you can use `project-defaults.yml` to define
+the driver information.  This presumes you've followed the normal WildFly
+instructions for creating an appropriate `module.xml` to expose the 
+driver through _JBoss Modules_.  This is completely unnecessary if you
+rely upon the auto-detection mentioned above.
+
+Underneath the tree of `swarm` -> `datasources` -> `jdbc-drivers`, you
+can define the driver by key, which will be used later for connecting it
+to a datasource.  
+
+[source,yaml]
+----
+swarm:
+  datasources:
+    jdbc-drivers:
+include::src/main/resources/project-defaults.yml[tag=driver,indent=6]
+----
+
+### Datasources
+
+Once a driver has been configured, through either auto-detection or
+explicit configuration, you can use `project-defaults.yml` to configure
+one or more datasources using that driver, under `swarm` -> `datasources` -> `data-sources`:
+
+[source,yaml]
+----
+swarm:
+  datasources:
+    data-sources:
+include::src/main/resources/project-defaults.yml[tag=datasource,indent=6]
+----
+
+## Full `project-defaults.yml`
+
+[source,yaml]
+----
+include::src/main/resources/project-defaults.yml[tag=all]
+----
+
