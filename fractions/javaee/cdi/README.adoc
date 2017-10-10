@@ -1,3 +1,3 @@
 # CDI
 
-The CDI fraction provides support for CDI (JSR-299).
+Provides context and dependency-injection support according to JSR-299.
