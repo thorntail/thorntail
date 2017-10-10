@@ -35,27 +35,27 @@
 
   <build>
     <pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
-        <version>1.5.5</version>
-        <configuration>
-          <sourceDirectory>.</sourceDirectory>
-          <backend>html</backend>
-          <preserveDirectories>true</preserveDirectories>
-        </configuration>
-        <executions>
-          <execution>
-            <id>output-html</id>
-            <phase>generate-resources</phase>
-            <goals>
-                <goal>process-asciidoc</goal>
-            </goals>
-        </execution>
-    </executions>
-      </plugin>
-    </plugins>
+      <plugins>
+        <plugin>
+          <groupId>org.asciidoctor</groupId>
+          <artifactId>asciidoctor-maven-plugin</artifactId>
+          <version>1.5.5</version>
+          <configuration>
+            <sourceDirectory>.</sourceDirectory>
+            <backend>html</backend>
+            <preserveDirectories>true</preserveDirectories>
+          </configuration>
+          <executions>
+            <execution>
+              <id>output-html</id>
+              <phase>generate-resources</phase>
+              <goals>
+                  <goal>process-asciidoc</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
     </pluginManagement>
   </build>
 
