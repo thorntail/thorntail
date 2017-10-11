@@ -80,17 +80,8 @@ import java.lang.reflect.Modifier;
             for (Method method : type.getDeclaredMethods()) {
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
                 if (gauge.isPresent()) {
-                    Metadata metadata = new Metadata(gauge.metricName(), MetricType.GAUGE);
-                    Gauge gAnno = gauge.metricAnnotation();
-                    if (!gAnno.description().isEmpty()) {
-                        metadata.setDescription(gAnno.description());
-                    }
-                    if (!gAnno.displayName().isEmpty()) {
-                        metadata.setDisplayName(gAnno.displayName());
-                    }
-                    if (!gAnno.unit().isEmpty()) {
-                        metadata.setUnit(gAnno.unit());
-                    }
+                    Gauge g = gauge.metricAnnotation();
+                    Metadata metadata = getMetadata(gauge.metricName(), g.unit(), g.description(), g.displayName(), MetricType.GAUGE, g.tags());
                     registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()), metadata);
                 }
             }
@@ -103,20 +94,48 @@ import java.lang.reflect.Modifier;
     private <E extends Member & AnnotatedElement> void registerMetrics(Class<?> bean, E element) {
         MetricResolver.Of<Counted> counted = resolver.counted(bean, element);
         if (counted.isPresent()) {
+            Counted t = counted.metricAnnotation();
+            Metadata metadata = getMetadata(counted.metricName(), t.unit(),t.description(),t.displayName(), MetricType.COUNTER, t.tags());
+
             registry.counter(counted.metricName());
         }
 
 
         MetricResolver.Of<Metered> metered = resolver.metered(bean, element);
         if (metered.isPresent()) {
-            registry.meter(metered.metricName());
+            Metered t = metered.metricAnnotation();
+            Metadata metadata = getMetadata(metered.metricName(), t.unit(),t.description(),t.displayName(), MetricType.METERED, t.tags());
+
+            registry.meter(metadata);
         }
 
         MetricResolver.Of<Timed> timed = resolver.timed(bean, element);
         if (timed.isPresent()) {
-            registry.timer(timed.metricName());
+            Timed t = timed.metricAnnotation();
+            Metadata metadata = getMetadata(timed.metricName(), t.unit(),t.description(),t.displayName(), MetricType.TIMER, t.tags());
+            registry.timer(metadata);
         }
     }
+
+    private Metadata getMetadata(String name, String unit, String description, String displayName, MetricType type, String... tags) {
+
+         Metadata metadata = new Metadata(name, type);
+         if (!unit.isEmpty()) {
+             metadata.setUnit(unit);
+         }
+         if (!description.isEmpty()) {
+             metadata.setDescription(description);
+         }
+         if (!displayName.isEmpty()) {
+             metadata.setDisplayName(displayName);
+         }
+         if (tags != null && tags.length > 0) {
+             for (String tag : tags) {
+                 metadata.addTags(tag);
+             }
+         }
+         return metadata;
+     }
 
     private static Object invokeMethod(Method method, Object object) {
         try {

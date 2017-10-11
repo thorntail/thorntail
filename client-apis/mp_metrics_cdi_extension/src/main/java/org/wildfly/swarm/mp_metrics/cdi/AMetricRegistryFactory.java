@@ -78,16 +78,7 @@ public class AMetricRegistryFactory {
                 } else {
                     name = fieldName;
                 }
-                Metadata metadata = new Metadata(name, MetricType.COUNTER);
-                if (!m.unit().isEmpty()) {
-                    metadata.setUnit(m.unit());
-                }
-                if (!m.description().isEmpty()) {
-                    metadata.setDescription(m.description());
-                }
-                if (!m.displayName().isEmpty()) {
-                    metadata.setDisplayName(m.displayName());
-                }
+                Metadata metadata = getMetadata(name,m,MetricType.COUNTER);
                 return getApplicationRegistry().counter(metadata);
             }
         }
@@ -105,10 +96,13 @@ public class AMetricRegistryFactory {
 
         String fieldName = ip.getMember().getName();
         String name = beanName + DOT + fieldName;
+        for (Annotation a : annotations) {
+            if (a.annotationType().equals(Metric.class)) {
+                Metadata metadata = getMetadata(name, (Metric) a, MetricType.HISTOGRAM);
 
-        // TODO annotation processing
-
-
+                return getApplicationRegistry().histogram(metadata);
+            }
+        }
         return getApplicationRegistry().histogram(name);
     }
 
@@ -120,28 +114,55 @@ public class AMetricRegistryFactory {
 
         String fieldName = ip.getMember().getName();
         String name = beanName + DOT + fieldName;
+        for (Annotation a : annotations) {
+            if (a.annotationType().equals(Metric.class)) {
+                Metadata metadata = getMetadata(name, (Metric) a, MetricType.METERED);
 
-        // TODO annotation processing
-
-
+                return getApplicationRegistry().meter(metadata);
+            }
+        }
         return getApplicationRegistry().meter(name);
-
     }
 
     @Produces
     public static Timer getTimer(InjectionPoint ip) {
+
 
         String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
         Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
 
         String fieldName = ip.getMember().getName();
         String name = beanName + DOT + fieldName;
+        for (Annotation a : annotations) {
+            if (a.annotationType().equals(Metric.class)) {
+                Metadata metadata = getMetadata(name, (Metric) a, MetricType.TIMER);
 
-        // TODO annotation processing
-
-
+                return getApplicationRegistry().timer(metadata);
+            }
+        }
         return getApplicationRegistry().timer(name);
 
+    }
+
+    private static Metadata getMetadata(String name, Metric a, MetricType type) {
+        Metric m = a;
+
+        Metadata metadata = new Metadata(name, type);
+        if (!m.unit().isEmpty()) {
+            metadata.setUnit(m.unit());
+        }
+        if (!m.description().isEmpty()) {
+            metadata.setDescription(m.description());
+        }
+        if (!m.displayName().isEmpty()) {
+            metadata.setDisplayName(m.displayName());
+        }
+        if (m.tags().length > 0) {
+            for (String tag : m.tags()) {
+                metadata.addTags(tag);
+            }
+        }
+        return metadata;
     }
 /*
   @Produces
