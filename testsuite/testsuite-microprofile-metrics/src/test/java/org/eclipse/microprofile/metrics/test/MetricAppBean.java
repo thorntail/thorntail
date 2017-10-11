@@ -49,7 +49,7 @@ public class MetricAppBean {
     private Counter greenCount;
 
     @Inject
-    @Metric(name = "purple", absolute = true)
+    @Metric(name = "purple", absolute = true, tags = "app=myShop")
     private Counter purpleCount;
 
     @Inject

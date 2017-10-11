@@ -124,9 +124,6 @@ public class MetricsHttpHandler implements HttpHandler {
             sb = exporter.exportOneScope(scope);
         }
 
-        if (requestPath.contains("app") && exchange.getRequestMethod().toString().equals("GET")) {
-            LOG.info("Sending:-----------\n" + sb.toString() + "\n-------------");
-        }
         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, exporter.getContentType());
         provideCorsHeaders(exchange);
         exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");

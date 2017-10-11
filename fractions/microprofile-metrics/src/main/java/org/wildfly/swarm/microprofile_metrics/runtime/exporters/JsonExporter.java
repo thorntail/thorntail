@@ -186,7 +186,7 @@ public class JsonExporter implements Exporter {
             if (registry.getNames().size() > 0) {
                 sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
                 getMetricsForAScope(sb, scope);
-                sb.append("\n");
+                sb.append(JsonExporter.LF);
                 scopes++;
                 if (scopes < totalNonEmptyScopes) {
                     sb.append(',');
@@ -213,7 +213,8 @@ public class JsonExporter implements Exporter {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         writeMetricsForMap(sb, outMap, metadataMap);
-        sb.append("\n");
+        sb.append("}");
+        sb.append(JsonExporter.LF);
 
         return sb;
     }

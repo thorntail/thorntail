@@ -30,6 +30,7 @@ import java.util.Map;
 public class JsonMetadataExporter implements Exporter {
 
     private static final String QUOTE_COMMA_LF = "\",\n";
+    private static final String LF = "\n";
 
     @Override
     public StringBuilder exportOneScope(MetricRegistry.Type scope) {
@@ -67,9 +68,9 @@ public class JsonMetadataExporter implements Exporter {
             }
             sb.append("  \"displayName\": \"").append(entry.getDisplayName()).append("\"\n");
             if (iter.hasNext()) {
-                sb.append("},\n");
+                sb.append("  },\n");
             } else {
-                sb.append("}\n");
+                sb.append("  }\n");
             }
         }
     }
@@ -104,7 +105,7 @@ public class JsonMetadataExporter implements Exporter {
             if (registry.getNames().size() > 0) {
                 sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
                 getDataForOneScope(scope, sb);
-                sb.append("\n");
+                sb.append(LF);
                 scopes++;
                 if (scopes < totalNonEmptyScopes) {
                     sb.append(',');
@@ -130,7 +131,8 @@ public class JsonMetadataExporter implements Exporter {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         writeMetadataForMap(sb, outMap);
-        sb.append("\n");
+        sb.append("}");
+        sb.append(LF);
 
         return sb;
     }

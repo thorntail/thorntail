@@ -539,6 +539,37 @@ public class MicroprofileMetricsTest {
 
     }
 
+    @Test
+    @RunAsClient
+    @InSequence(21)
+    public void testApplicationTagJson() {
+
+      String bla = given().header("Accept", APPLICATION_JSON)
+                      .when()
+                      .options("/metrics/application/purple").asString();
+        System.out.println(bla);
+
+        JsonPath jsonPath =  given().header("Accept", APPLICATION_JSON)
+                .when()
+                .options("/metrics/application/purple").jsonPath();
+        String tags = jsonPath.getString("purple.tags");
+        assert tags != null;
+        assert tags.contains("app=myShop");
+        assert tags.contains("tier=integration");
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(22)
+    public void testApplicationTagPrometheus() {
+
+        given().header("Accept", TEXT_PLAIN).when().options("/metrics/application/purple")
+                .then().statusCode(200)
+              .and()
+                .body(containsString("tier=\"integration\""))
+                .body(containsString("app=\"myShop\""));
+    }
+
 
 
     private Map<String, MiniMeta> getExpectedMetadataFromXmlFile(MetricRegistry.Type scope) {
