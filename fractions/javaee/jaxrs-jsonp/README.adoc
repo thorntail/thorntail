@@ -1,0 +1,4 @@
+# JAX-RS + JSON-P
+
+Provides support within JAX-RS application for JSON processing
+according to JSR-374.
