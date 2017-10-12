@@ -113,7 +113,7 @@ public class PrometheusExporter implements Exporter {
                     if (!md.getUnit().equals(MetricUnits.NONE)) {
                         suffix = "_" + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
                     }
-                    writeTypeLine(sb, scope, key, md, suffix);
+                    writeTypeLine(sb, scope, key, md, suffix, null);
                     createSimpleValueLine(sb, scope, key, md, metric);
                     break;
                 case METERED:
@@ -140,46 +140,49 @@ public class PrometheusExporter implements Exporter {
         String unit = md.getUnit();
         unit = PrometheusUnit.getBaseUnitAsPrometheusString(unit);
 
+        String theUnit = unit.equals("none") ? "" : USCORE + unit;
+
         writeMeterRateValues(sb, scope, timer.getMeter(), md);
         Snapshot snapshot = timer.getSnapshot();
-        writeSnapshotBasics(sb, scope, md, snapshot, unit);
+        writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
 
-        writeTypeAndValue(sb, scope, USCORE + unit + "_count", timer.getCount(), SUMMARY, md);
-        writeSnapshotQuantiles(sb, scope, md, snapshot, unit);
+        String suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
+        writeTypeLine(sb,scope,md.getName(),md, suffix,SUMMARY);
+        writeValueLine(sb,scope,suffix + "_count",timer.getCount(),md);
+
+        writeSnapshotQuantiles(sb, scope, md, snapshot, theUnit);
     }
 
     private void writeHistogramValues(StringBuilder sb, MetricRegistry.Type scope, HistogramImpl histogram, Metadata md) {
-
-        writeTypeAndValue(sb, scope, "_count", histogram.getCount(), COUNTER, md);
 
         Snapshot snapshot = histogram.getSnapshot();
         String unit = md.getUnit();
         unit = PrometheusUnit.getBaseUnitAsPrometheusString(unit);
 
-        writeSnapshotValues(sb, scope, md, snapshot, unit);
+        String theUnit = unit.equals("none") ? "" : USCORE + unit;
+
+        writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
+        writeTypeLine(sb,scope,md.getName(),md, theUnit,SUMMARY);
+        writeValueLine(sb,scope,theUnit + "_count",histogram.getCount(),md);
+        writeSnapshotQuantiles(sb, scope, md, snapshot, theUnit);
     }
 
-    private void writeSnapshotValues(StringBuilder sb, MetricRegistry.Type scope, Metadata md, Snapshot snapshot, String unit) {
-        writeSnapshotBasics(sb, scope, md, snapshot, unit);
-        String suffix = USCORE + unit;
-        writeTypeLine(sb, scope, md.getName(), md, suffix);
-        writeSnapshotQuantiles(sb, scope, md, snapshot, unit);
-    }
 
     private void writeSnapshotBasics(StringBuilder sb, MetricRegistry.Type scope, Metadata md, Snapshot snapshot, String unit) {
-        writeTypeAndValue(sb, scope, "_min_" + unit, snapshot.getMin(), GAUGE, md);
-        writeTypeAndValue(sb, scope, "_max_" + unit, snapshot.getMax(), GAUGE, md);
-        writeTypeAndValue(sb, scope, "_mean_" + unit, snapshot.getMean(), GAUGE, md);
-        writeTypeAndValue(sb, scope, "_stddev_" + unit, snapshot.getStdDev(), GAUGE, md);
+
+        writeTypeAndValue(sb, scope, "_min" + unit, snapshot.getMin(), GAUGE, md);
+        writeTypeAndValue(sb, scope, "_max" + unit, snapshot.getMax(), GAUGE, md);
+        writeTypeAndValue(sb, scope, "_mean" + unit, snapshot.getMean(), GAUGE, md);
+        writeTypeAndValue(sb, scope, "_stddev" + unit, snapshot.getStdDev(), GAUGE, md);
     }
 
     private void writeSnapshotQuantiles(StringBuilder sb, MetricRegistry.Type scope, Metadata md, Snapshot snapshot, String unit) {
-        writeValueLine(sb, scope, USCORE + unit, snapshot.getMedian(), md, new Tag(QUANTILE, "0.5"));
-        writeValueLine(sb, scope, USCORE + unit, snapshot.get75thPercentile(), md, new Tag(QUANTILE, "0.75"));
-        writeValueLine(sb, scope, USCORE + unit, snapshot.get95thPercentile(), md, new Tag(QUANTILE, "0.95"));
-        writeValueLine(sb, scope, USCORE + unit, snapshot.get98thPercentile(), md, new Tag(QUANTILE, "0.98"));
-        writeValueLine(sb, scope, USCORE + unit, snapshot.get99thPercentile(), md, new Tag(QUANTILE, "0.99"));
-        writeValueLine(sb, scope, USCORE + unit, snapshot.get999thPercentile(), md, new Tag(QUANTILE, "0.999"));
+        writeValueLine(sb, scope, unit, snapshot.getMedian(), md, new Tag(QUANTILE, "0.5"));
+        writeValueLine(sb, scope, unit, snapshot.get75thPercentile(), md, new Tag(QUANTILE, "0.75"));
+        writeValueLine(sb, scope, unit, snapshot.get95thPercentile(), md, new Tag(QUANTILE, "0.95"));
+        writeValueLine(sb, scope, unit, snapshot.get98thPercentile(), md, new Tag(QUANTILE, "0.98"));
+        writeValueLine(sb, scope, unit, snapshot.get99thPercentile(), md, new Tag(QUANTILE, "0.99"));
+        writeValueLine(sb, scope, unit, snapshot.get999thPercentile(), md, new Tag(QUANTILE, "0.999"));
     }
 
     private void writeMeterValues(StringBuilder sb, MetricRegistry.Type scope, Metered metric, Metadata md) {
@@ -196,7 +199,7 @@ public class PrometheusExporter implements Exporter {
 
     private void writeTypeAndValue(StringBuilder sb, MetricRegistry.Type scope, String suffix, double valueRaw, String type, Metadata md) {
         String key = md.getName();
-        writeTypeLine(sb, scope, key, md, suffix);
+        writeTypeLine(sb, scope, key, md, suffix, type);
         writeValueLine(sb, scope, suffix, valueRaw, md);
     }
 
@@ -243,7 +246,7 @@ public class PrometheusExporter implements Exporter {
         sb.append(scope.getName().toLowerCase()).append(":").append(key);
     }
 
-    private void writeTypeLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, String suffix) {
+    private void writeTypeLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, String suffix, String typeOverride) {
         sb.append("# TYPE ");
         sb.append(scope.getName().toLowerCase());
         sb.append(':').append(getPrometheusMetricName(md, key));
@@ -251,7 +254,9 @@ public class PrometheusExporter implements Exporter {
             sb.append(suffix);
         }
         sb.append(SPACE);
-        if (md.getTypeRaw().equals(MetricType.TIMER)) {
+        if (typeOverride != null) {
+            sb.append(typeOverride);
+        } else if (md.getTypeRaw().equals(MetricType.TIMER)) {
             sb.append(SUMMARY);
         } else if (md.getTypeRaw().equals(MetricType.METERED)) {
             sb.append(COUNTER);

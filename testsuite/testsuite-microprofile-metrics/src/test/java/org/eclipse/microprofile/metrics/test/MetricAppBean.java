@@ -21,8 +21,10 @@ package org.eclipse.microprofile.metrics.test;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -86,12 +88,16 @@ public class MetricAppBean {
 
     public void histogramMe() {
 
-        Histogram histogram = metrics.histogram("metricTest.test1.histogram");
+        Metadata metadata = new Metadata("metricTest.test1.histogram", MetricType.HISTOGRAM,MetricUnits.BYTES);
+        Histogram histogram = metrics.histogram(metadata);
 
         for (int i = 0; i < 1000; i++) {
             histogram.update(i);
         }
 
+        Metadata metadata2 = new Metadata("metricTest.test1.histogram2", MetricType.HISTOGRAM,MetricUnits.NONE);
+        Histogram histogram2 = metrics.histogram(metadata2);
+        histogram2.update(1);
     }
 
     public void meterMe() {
