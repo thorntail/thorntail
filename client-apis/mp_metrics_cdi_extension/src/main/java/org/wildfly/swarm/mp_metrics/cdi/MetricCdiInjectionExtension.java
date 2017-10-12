@@ -43,8 +43,6 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Inject;
 import javax.interceptor.InterceptorBinding;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,9 +57,12 @@ public class MetricCdiInjectionExtension implements Extension {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
 
-    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() { };
-    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() { };
-    private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() { };
+    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {
+    };
+    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {
+    };
+    private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {
+    };
 
     private final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
 
@@ -70,28 +71,16 @@ public class MetricCdiInjectionExtension implements Extension {
 
     public MetricCdiInjectionExtension() {
 
-        LOG.warn("+++ Constructor ");
-
-        try {
-            InitialContext context = new InitialContext();
-            Object o =   context.lookup("jboss/swarm/mp_metrics");
-            System.out.println("Got a " + o.getClass().getName() + " with CL " + o.getClass().getClassLoader().toString());
-            System.out.println("    Our CL : " + this.getClass().getClassLoader().toString());
-        } catch (NamingException e) {
-            e.printStackTrace();  // TODO: Customise this generated block
-        }
-
-
     }
 
     private void addInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
-        declareAsInterceptorBinding(Counted.class,manager,bbd);
-        declareAsInterceptorBinding(Gauge.class,manager,bbd);
-        declareAsInterceptorBinding(Timed.class,manager,bbd);
-        declareAsInterceptorBinding(Metered.class,manager,bbd);
+        declareAsInterceptorBinding(Counted.class, manager, bbd);
+        declareAsInterceptorBinding(Gauge.class, manager, bbd);
+        declareAsInterceptorBinding(Timed.class, manager, bbd);
+        declareAsInterceptorBinding(Metered.class, manager, bbd);
     }
 
-    private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class,  Gauge.class, Metered.class, Timed.class}) ProcessAnnotatedType<X> pat) {
+    private <X> void metricsAnnotations(@Observes @WithAnnotations({Counted.class, Gauge.class, Metered.class, Timed.class}) ProcessAnnotatedType<X> pat) {
         pat.setAnnotatedType(new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING));
     }
 
@@ -119,15 +108,14 @@ public class MetricCdiInjectionExtension implements Extension {
     }
 
 
-
     private static <T extends Annotation> void declareAsInterceptorBinding(Class<T> annotation, BeanManager manager, BeforeBeanDiscovery bbd) {
-          AnnotatedType<T> annotated = manager.createAnnotatedType(annotation);
-          Set<AnnotatedMethod<? super T>> methods = new HashSet<>();
-          for (AnnotatedMethod<? super T> method : annotated.getMethods()) {
-              methods.add(new AnnotatedMethodDecorator<>(method, NON_BINDING));
-          }
+        AnnotatedType<T> annotated = manager.createAnnotatedType(annotation);
+        Set<AnnotatedMethod<? super T>> methods = new HashSet<>();
+        for (AnnotatedMethod<? super T> method : annotated.getMethods()) {
+            methods.add(new AnnotatedMethodDecorator<>(method, NON_BINDING));
+        }
 
-          bbd.addInterceptorBinding(new AnnotatedTypeDecorator<>(annotated, INTERCEPTOR_BINDING, methods));
-      }
+        bbd.addInterceptorBinding(new AnnotatedTypeDecorator<>(annotated, INTERCEPTOR_BINDING, methods));
+    }
 }
 

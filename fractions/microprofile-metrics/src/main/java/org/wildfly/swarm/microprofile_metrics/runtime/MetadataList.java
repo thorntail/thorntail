@@ -22,45 +22,46 @@ import java.util.List;
 
 /**
  * Class holding the metadata for base, vendor and applications
+ *
  * @author hrupp
  */
 public class MetadataList {
 
-  private List<ExtendedMetadata> base;
-  private List<ExtendedMetadata> vendor;
+    private List<ExtendedMetadata> base;
+    private List<ExtendedMetadata> vendor;
 
-  public List<ExtendedMetadata> getBase() {
-    if (base == null) {
-      base = new ArrayList<>(1);
+    public List<ExtendedMetadata> getBase() {
+        if (base == null) {
+            base = new ArrayList<>(1);
+        }
+        return base;
     }
-    return base;
-  }
 
-  public void setBase(List<ExtendedMetadata> base) {
-    this.base = base;
-  }
-
-  public List<ExtendedMetadata> getVendor() {
-    if (vendor == null) {
-      vendor = new ArrayList<>(1);
+    public void setBase(List<ExtendedMetadata> base) {
+        this.base = base;
     }
-    return vendor;
-  }
 
-  public void setVendor(List<ExtendedMetadata> vendor) {
-    this.vendor = vendor;
-  }
-
-
-  public List<ExtendedMetadata> get(String domain) {
-    switch (domain) {
-      case "base":
-        return getBase();
-      case "vendor":
-        return getVendor();
-
-      default:
-        return Collections.emptyList();
+    public List<ExtendedMetadata> getVendor() {
+        if (vendor == null) {
+            vendor = new ArrayList<>(1);
+        }
+        return vendor;
     }
-  }
+
+    public void setVendor(List<ExtendedMetadata> vendor) {
+        this.vendor = vendor;
+    }
+
+
+    public List<ExtendedMetadata> get(String domain) {
+        switch (domain) {
+            case "base":
+                return getBase();
+            case "vendor":
+                return getVendor();
+
+            default:
+                return Collections.emptyList();
+        }
+    }
 }

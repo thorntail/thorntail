@@ -37,185 +37,190 @@ import java.util.Map;
  */
 public class JsonExporter implements Exporter {
 
-  private static final String COMMA_LF = ",\n";
-  private static final String LF = "\n";
+    private static final String COMMA_LF = ",\n";
+    private static final String LF = "\n";
 
-  @Override
-  public StringBuilder exportOneScope(MetricRegistry.Type scope) {
+    @Override
+    public StringBuilder exportOneScope(MetricRegistry.Type scope) {
 
-    StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-    getMetricsForAScope(sb,scope);
+        getMetricsForAScope(sb, scope);
 
-    return sb;
-  }
-
-  private void getMetricsForAScope(StringBuilder sb, MetricRegistry.Type scope) {
-
-    MetricRegistry registry = MetricRegistryFactory.get(scope);
-    Map<String,Metric> metricMap = registry.getMetrics();
-    Map<String,Metadata> metadataMap = registry.getMetadata();
-
-    sb.append("{\n");
-
-    writeMetricsForMap(sb, metricMap, metadataMap);
-
-    sb.append("}");
-  }
-
-  private void writeMetricsForMap(StringBuilder sb, Map<String, Metric> metricMap, Map<String,Metadata> metadataMap) {
-
-    for (Iterator<Map.Entry<String, Metric>> iterator = metricMap.entrySet().iterator(); iterator.hasNext(); ) {
-      Map.Entry<String, Metric> entry = iterator.next();
-      String key = entry.getKey();
-
-      Metric value = entry.getValue();
-      Metadata metadata = metadataMap.get(key);
-
-      switch (metadata.getTypeRaw()) {
-        case GAUGE:
-        case COUNTER:
-          Number val = getValueFromMetric(value, key);
-          sb.append("  ").append('"').append(key).append('"').append(" : ").append(val);
-          break;
-        case METERED:
-          MeterImpl meter = (MeterImpl) value;
-          writeStartLine(sb, key);
-          writeMeterValues(sb, meter);
-          writeEndLine(sb);
-          break;
-        case TIMER:
-          TimerImpl timer = (TimerImpl) value;
-          writeStartLine(sb, key);
-          writeTimerValues(sb, timer);
-          writeEndLine(sb);
-          break;
-        case HISTOGRAM:
-          HistogramImpl hist = (HistogramImpl) value;
-          writeStartLine(sb, key);
-          sb.append("    \"count\": ").append(hist.getCount()).append(COMMA_LF);
-          writeSnapshotValues(sb,hist.getSnapshot());
-          writeEndLine(sb);
-          break;
-        default:
-          System.err.println("JSE, Not yet supported: " + metadata);
-
-      }
-      if (iterator.hasNext()) {
-        sb.append(',');
-      }
-      sb.append(LF);
+        return sb;
     }
-  }
 
-  private void writeEndLine(StringBuilder sb) {
-    sb.append("  }");
-  }
+    private void getMetricsForAScope(StringBuilder sb, MetricRegistry.Type scope) {
 
-  private void writeStartLine(StringBuilder sb, String key) {
-    sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
-  }
+        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        Map<String, Metric> metricMap = registry.getMetrics();
+        Map<String, Metadata> metadataMap = registry.getMetadata();
 
-  private void writeMeterValues(StringBuilder sb, Metered meter) {
-    sb.append("    \"count\": ").append(meter.getCount()).append(COMMA_LF);
-    sb.append("    \"meanRate\": ").append(meter.getMeanRate()).append(COMMA_LF);
-    sb.append("    \"oneMinRate\": ").append(meter.getOneMinuteRate()).append(COMMA_LF);
-    sb.append("    \"fiveMinRate\": ").append(meter.getFiveMinuteRate()).append(COMMA_LF);
-    sb.append("    \"fifteenMinRate\": ").append(meter.getFifteenMinuteRate()).append(LF);
-  }
+        sb.append("{\n");
 
-  private void writeTimerValues(StringBuilder sb, TimerImpl timer) {
-    writeSnapshotValues(sb,timer.getSnapshot());
-    // Backup and write COMMA_LF
-    sb.setLength(sb.length() - 1);
-    sb.append(COMMA_LF);
-    writeMeterValues(sb, timer.getMeter());
-  }
+        writeMetricsForMap(sb, metricMap, metadataMap);
 
-  private void writeSnapshotValues(StringBuilder sb, Snapshot snapshot) {
-    sb.append("    \"p50\": ").append(snapshot.getMedian()).append(COMMA_LF);
-    sb.append("    \"p75\": ").append(snapshot.get75thPercentile()).append(COMMA_LF);
-    sb.append("    \"p95\": ").append(snapshot.get95thPercentile()).append(COMMA_LF);
-    sb.append("    \"p98\": ").append(snapshot.get98thPercentile()).append(COMMA_LF);
-    sb.append("    \"p99\": ").append(snapshot.get99thPercentile()).append(COMMA_LF);
-    sb.append("    \"p999\": ").append(snapshot.get999thPercentile()).append(COMMA_LF);
-    sb.append("    \"min\": ").append(snapshot.getMin()).append(COMMA_LF);
-    sb.append("    \"mean\": ").append(snapshot.getMean()).append(COMMA_LF);
-    sb.append("    \"max\": ").append(snapshot.getMax()).append(COMMA_LF);
-    // Can't be COMMA_LF has there may not be anything following as is the case for a Histogram
-    sb.append("    \"stddev\": ").append(snapshot.getStdDev()).append(LF);
-
-  }
-
-
-  private Number getValueFromMetric(Metric theMetric, String name) {
-    if (theMetric instanceof Gauge) {
-      Number value = (Number) ((Gauge) theMetric).getValue();
-      double v;
-      if (value != null) {
-        return value;
-      } else {
-        System.out.println("Value is null for " + name);
-        return -142.142; // TODO
-      }
-    } else if (theMetric instanceof Counter) {
-      return ((Counter) theMetric).getCount();
-    } else {
-      System.err.println("Not yet supported metric: " + theMetric.getClass().getName());
-      return -42.42;
+        sb.append("}");
     }
-  }
 
-  @Override
-  public StringBuilder exportAllScopes() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("{");
+    private void writeMetricsForMap(StringBuilder sb, Map<String, Metric> metricMap, Map<String, Metadata> metadataMap) {
 
-    MetricRegistry.Type[] values = MetricRegistry.Type.values();
-    int totalNonEmptyScopes = Helper.countNonEmptyScopes();
+        for (Iterator<Map.Entry<String, Metric>> iterator = metricMap.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, Metric> entry = iterator.next();
+            String key = entry.getKey();
 
-    int scopes = 0;
-    for (int i = 0; i < values.length; i++) {
-      MetricRegistry.Type scope = values[i];
-      MetricRegistry registry = MetricRegistryFactory.get(scope);
+            Metric value = entry.getValue();
+            Metadata metadata = metadataMap.get(key);
 
-      if (registry.getNames().size() > 0) {
-        sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
-        getMetricsForAScope(sb,scope);
-        sb.append("\n");
-        scopes++;
-        if (scopes < totalNonEmptyScopes) {
-          sb.append(',');
+            if (metadata == null) {
+                throw new IllegalArgumentException("MD is null for " + key);
+            }
+
+            switch (metadata.getTypeRaw()) {
+                case GAUGE:
+                case COUNTER:
+                    Number val = getValueFromMetric(value, key);
+                    sb.append("  ").append('"').append(key).append('"').append(" : ").append(val);
+                    break;
+                case METERED:
+                    MeterImpl meter = (MeterImpl) value;
+                    writeStartLine(sb, key);
+                    writeMeterValues(sb, meter);
+                    writeEndLine(sb);
+                    break;
+                case TIMER:
+                    TimerImpl timer = (TimerImpl) value;
+                    writeStartLine(sb, key);
+                    writeTimerValues(sb, timer);
+                    writeEndLine(sb);
+                    break;
+                case HISTOGRAM:
+                    HistogramImpl hist = (HistogramImpl) value;
+                    writeStartLine(sb, key);
+                    sb.append("    \"count\": ").append(hist.getCount()).append(COMMA_LF);
+                    writeSnapshotValues(sb, hist.getSnapshot());
+                    writeEndLine(sb);
+                    break;
+                default:
+                    System.err.println("JSE, Not yet supported: " + metadata);
+
+            }
+            if (iterator.hasNext()) {
+                sb.append(',');
+            }
+            sb.append(LF);
         }
-      }
     }
 
-    sb.append("}");
-    return sb;
-  }
+    private void writeEndLine(StringBuilder sb) {
+        sb.append("  }");
+    }
 
-  @Override
-  public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
-    MetricRegistry registry = MetricRegistryFactory.get(scope);
-    Map<String,Metric> metricMap = registry.getMetrics();
-    Map<String,Metadata> metadataMap = registry.getMetadata();
+    private void writeStartLine(StringBuilder sb, String key) {
+        sb.append("  ").append('"').append(key).append('"').append(" : ").append("{\n");
+    }
+
+    private void writeMeterValues(StringBuilder sb, Metered meter) {
+        sb.append("    \"count\": ").append(meter.getCount()).append(COMMA_LF);
+        sb.append("    \"meanRate\": ").append(meter.getMeanRate()).append(COMMA_LF);
+        sb.append("    \"oneMinRate\": ").append(meter.getOneMinuteRate()).append(COMMA_LF);
+        sb.append("    \"fiveMinRate\": ").append(meter.getFiveMinuteRate()).append(COMMA_LF);
+        sb.append("    \"fifteenMinRate\": ").append(meter.getFifteenMinuteRate()).append(LF);
+    }
+
+    private void writeTimerValues(StringBuilder sb, TimerImpl timer) {
+        writeSnapshotValues(sb, timer.getSnapshot());
+        // Backup and write COMMA_LF
+        sb.setLength(sb.length() - 1);
+        sb.append(COMMA_LF);
+        writeMeterValues(sb, timer.getMeter());
+    }
+
+    private void writeSnapshotValues(StringBuilder sb, Snapshot snapshot) {
+        sb.append("    \"p50\": ").append(snapshot.getMedian()).append(COMMA_LF);
+        sb.append("    \"p75\": ").append(snapshot.get75thPercentile()).append(COMMA_LF);
+        sb.append("    \"p95\": ").append(snapshot.get95thPercentile()).append(COMMA_LF);
+        sb.append("    \"p98\": ").append(snapshot.get98thPercentile()).append(COMMA_LF);
+        sb.append("    \"p99\": ").append(snapshot.get99thPercentile()).append(COMMA_LF);
+        sb.append("    \"p999\": ").append(snapshot.get999thPercentile()).append(COMMA_LF);
+        sb.append("    \"min\": ").append(snapshot.getMin()).append(COMMA_LF);
+        sb.append("    \"mean\": ").append(snapshot.getMean()).append(COMMA_LF);
+        sb.append("    \"max\": ").append(snapshot.getMax()).append(COMMA_LF);
+        // Can't be COMMA_LF has there may not be anything following as is the case for a Histogram
+        sb.append("    \"stddev\": ").append(snapshot.getStdDev()).append(LF);
+
+    }
 
 
-    Metric m = metricMap.get(metricName);
+    private Number getValueFromMetric(Metric theMetric, String name) {
+        if (theMetric instanceof Gauge) {
+            Number value = (Number) ((Gauge) theMetric).getValue();
+            double v;
+            if (value != null) {
+                return value;
+            } else {
+                System.out.println("Value is null for " + name);
+                return -142.142; // TODO
+            }
+        } else if (theMetric instanceof Counter) {
+            return ((Counter) theMetric).getCount();
+        } else {
+            System.err.println("Not yet supported metric: " + theMetric.getClass().getName());
+            return -42.42;
+        }
+    }
 
-    Map<String,Metric> outMap = new HashMap<>(1);
-    outMap.put(metricName,m);
+    @Override
+    public StringBuilder exportAllScopes() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("{");
-    writeMetricsForMap(sb,outMap, metadataMap);
-    sb.append("\n");
+        MetricRegistry.Type[] values = MetricRegistry.Type.values();
+        int totalNonEmptyScopes = Helper.countNonEmptyScopes();
 
-    return sb;
-  }
+        int scopes = 0;
+        for (int i = 0; i < values.length; i++) {
+            MetricRegistry.Type scope = values[i];
+            MetricRegistry registry = MetricRegistryFactory.get(scope);
 
-  @Override
-  public String getContentType() {
-    return "application/json";
-  }
+            if (registry.getNames().size() > 0) {
+                sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
+                getMetricsForAScope(sb, scope);
+                sb.append(JsonExporter.LF);
+                scopes++;
+                if (scopes < totalNonEmptyScopes) {
+                    sb.append(',');
+                }
+            }
+        }
+
+        sb.append("}");
+        return sb;
+    }
+
+    @Override
+    public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
+        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        Map<String, Metric> metricMap = registry.getMetrics();
+        Map<String, Metadata> metadataMap = registry.getMetadata();
+
+
+        Metric m = metricMap.get(metricName);
+
+        Map<String, Metric> outMap = new HashMap<>(1);
+        outMap.put(metricName, m);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        writeMetricsForMap(sb, outMap, metadataMap);
+        sb.append("}");
+        sb.append(JsonExporter.LF);
+
+        return sb;
+    }
+
+    @Override
+    public String getContentType() {
+        return "application/json";
+    }
 }

@@ -37,7 +37,7 @@ import java.lang.reflect.Member;
 @SuppressWarnings("unused")
 @Timed
 @Interceptor
-@Priority(Interceptor.Priority.LIBRARY_BEFORE  + 10)
+@Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
 /* package-private */ class TimedInterceptor {
 
     private final Bean<?> bean;
@@ -51,7 +51,6 @@ import java.lang.reflect.Member;
         this.bean = bean;
         this.registry = registry;
         this.resolver = new MetricResolver();
-        System.err.println("+++ timed interceptor");
     }
 
     @AroundConstruct

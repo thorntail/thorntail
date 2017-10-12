@@ -234,6 +234,7 @@ public class MicroprofileMetricsTest {
                       containsString("base:thread_max_count{tier=\"integration\"}"));
   }
 
+  // Depend on a vendor metric test being defined in mapping.yml - we may need to remove this
   @Test
   @RunAsClient
   public void testAllLabelsPrometheus() {
@@ -242,6 +243,7 @@ public class MicroprofileMetricsTest {
                       containsString("vendor:test{tier=\"integration\",domain=\"test\"}"));
   }
 
+  // Depend on a vendor metric test being defined in mapping.yml - we may need to remove this
   @Test
   @RunAsClient
   public void testAllLabelsJson() {
@@ -342,7 +344,7 @@ public class MicroprofileMetricsTest {
   @Test
   @RunAsClient
   @InSequence(14)
-  public void testBaseMetadataSingluarItemsPrometheus() {
+  public void testBaseMetadataSingularItemsPrometheus() {
       Header wantPrometheusFormat = new Header("Accept", TEXT_PLAIN);
 
       String data = given().header(wantPrometheusFormat).get("/metrics/base").asString();
@@ -402,7 +404,7 @@ public class MicroprofileMetricsTest {
   public void testApplicationMetadataOkJson() {
       Header wantJson = new Header("Accept", APPLICATION_JSON);
 
-      given().header(wantJson).options("/metrics/application").then().statusCode(200);
+      given().header(wantJson).options("/metrics/application").then().statusCode(204);
   }
 
 
@@ -535,6 +537,131 @@ public class MicroprofileMetricsTest {
         Map<String, MiniMeta> expectedMetadata = getExpectedMetadataFromXmlFile(MetricRegistry.Type.APPLICATION);
         checkMetadataPresent(elements, expectedMetadata);
 
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(21)
+    public void testApplicationTagJson() {
+
+      String bla = given().header("Accept", APPLICATION_JSON)
+                      .when()
+                      .options("/metrics/application/purple").asString();
+        System.out.println(bla);
+
+        JsonPath jsonPath =  given().header("Accept", APPLICATION_JSON)
+                .when()
+                .options("/metrics/application/purple").jsonPath();
+        String tags = jsonPath.getString("purple.tags");
+        assert tags != null;
+        assert tags.contains("app=myShop");
+        assert tags.contains("tier=integration");
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(22)
+    public void testApplicationTagPrometheus() {
+
+        given().header("Accept", TEXT_PLAIN).when().options("/metrics/application/purple")
+                .then().statusCode(200)
+              .and()
+                .body(containsString("tier=\"integration\""))
+                .body(containsString("app=\"myShop\""));
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(23)
+    public void testApplicationMeterUnitPrometheus() {
+
+        given().header("Accept", TEXT_PLAIN).when().options("/metrics/application/meterMeA")
+                .then().statusCode(200)
+              .and()
+                .body(containsString("meter_me_a_total"))
+                .body(containsString("meter_me_a_rate_per_second"))
+                .body(containsString("meter_me_a_one_min_rate_per_second"))
+                .body(containsString("meter_me_a_five_min_rate_per_second"))
+                .body(containsString("meter_me_a_fifteen_min_rate_per_second"));
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(24)
+    public void testApplicationTimerUnitPrometheus() {
+
+      String prefix = "org_eclipse_microprofile_metrics_test_metric_app_bean_time_me_a_";
+        given().header("Accept", TEXT_PLAIN).when().options("/metrics/application/org.eclipse.microprofile.metrics.test.MetricAppBean.timeMeA")
+                .then().statusCode(200)
+              .and()
+                .body(containsString("# TYPE application:" + prefix + "seconds summary"))
+                .body(containsString(prefix + "seconds_count"))
+                .body(containsString(prefix + "rate_per_second"))
+                .body(containsString(prefix + "one_min_rate_per_second"))
+                .body(containsString(prefix + "five_min_rate_per_second"))
+                .body(containsString(prefix + "fifteen_min_rate_per_second"))
+                .body(containsString(prefix + "mean_seconds"))
+                .body(containsString(prefix + "min_seconds"))
+                .body(containsString(prefix + "max_seconds"))
+                .body(containsString(prefix + "stddev_second"))
+                .body(containsString(prefix + "seconds{tier=\"integration\",quantile=\"0.5\"}"))
+                .body(containsString(prefix + "seconds{tier=\"integration\",quantile=\"0.75\"}"))
+                .body(containsString(prefix + "seconds{tier=\"integration\",quantile=\"0.95\"}"))
+                .body(containsString(prefix + "seconds{tier=\"integration\",quantile=\"0.98\"}"))
+                .body(containsString(prefix + "seconds{tier=\"integration\",quantile=\"0.99\"}"))
+                .body(containsString(prefix + "seconds{tier=\"integration\",quantile=\"0.999\"}"))
+
+                ;
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(25)
+    public void testApplicationHistogramUnitBytesPrometheus() {
+
+      String prefix = "metric_test_test1_histogram_";
+
+        given().header("Accept", TEXT_PLAIN).when().options("/metrics/application/metricTest.test1.histogram")
+                .then().statusCode(200)
+              .and()
+                .body(containsString(prefix + "bytes_count"))
+                .body(containsString("# TYPE application:" + prefix + "bytes summary"))
+                .body(containsString(prefix + "mean_bytes"))
+                .body(containsString(prefix + "min_bytes"))
+                .body(containsString(prefix + "max_bytes"))
+                .body(containsString(prefix + "stddev_bytes"))
+                .body(containsString(prefix + "bytes{tier=\"integration\",quantile=\"0.5\"}"))
+                .body(containsString(prefix + "bytes{tier=\"integration\",quantile=\"0.75\"}"))
+                .body(containsString(prefix + "bytes{tier=\"integration\",quantile=\"0.95\"}"))
+                .body(containsString(prefix + "bytes{tier=\"integration\",quantile=\"0.98\"}"))
+                .body(containsString(prefix + "bytes{tier=\"integration\",quantile=\"0.99\"}"))
+                .body(containsString(prefix + "bytes{tier=\"integration\",quantile=\"0.999\"}"))
+                ;
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(26)
+    public void testApplicationHistogramUnitNonePrometheus() {
+
+      String prefix = "metric_test_test1_histogram2";
+
+        given().header("Accept", TEXT_PLAIN).when().options("/metrics/application/metricTest.test1.histogram2")
+                .then().statusCode(200)
+              .and()
+                .body(containsString(prefix + "_count"))
+                .body(containsString("# TYPE application:" + prefix + " summary"))
+                .body(containsString(prefix + "_mean"))
+                .body(containsString(prefix + "_min"))
+                .body(containsString(prefix + "_max"))
+                .body(containsString(prefix + "_stddev"))
+                .body(containsString(prefix + "{tier=\"integration\",quantile=\"0.5\"}"))
+                .body(containsString(prefix + "{tier=\"integration\",quantile=\"0.75\"}"))
+                .body(containsString(prefix + "{tier=\"integration\",quantile=\"0.95\"}"))
+                .body(containsString(prefix + "{tier=\"integration\",quantile=\"0.98\"}"))
+                .body(containsString(prefix + "{tier=\"integration\",quantile=\"0.99\"}"))
+                .body(containsString(prefix + "{tier=\"integration\",quantile=\"0.999\"}"))
+                ;
     }
 
 

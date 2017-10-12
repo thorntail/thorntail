@@ -27,36 +27,37 @@ import org.wildfly.swarm.undertow.UndertowFraction;
 /**
  * Install the http handler for MicroProfile Metrics.
  * Could perhaps be turned into a real (JAX-RS) WebApp later(?)
+ *
  * @author Heiko W. Rupp
  */
 @Post
 @ApplicationScoped
 public class InUndertowInstaller implements Customizer {
 
-  @Inject
-  Instance<UndertowFraction> undertowFractionInstance;
+    @Inject
+    Instance<UndertowFraction> undertowFractionInstance;
 
-  public void customize() {
-    if (!undertowFractionInstance.isUnsatisfied()) {
+    public void customize() {
+        if (!undertowFractionInstance.isUnsatisfied()) {
             UndertowFraction undertow = undertowFractionInstance.get();
 
-      if (undertow.subresources().filterConfiguration() == null) {
-        undertow.filterConfiguration();
-      }
-      undertow.subresources().filterConfiguration()
-              .customFilter("wfs-mp-metrics", customFilter -> {
-                  customFilter.module("org.wildfly.swarm.microprofile_metrics:runtime");
-                  customFilter.className("org.wildfly.swarm.microprofile_metrics.runtime.MetricsHttpHandler");
-              });
+            if (undertow.subresources().filterConfiguration() == null) {
+                undertow.filterConfiguration();
+            }
+            undertow.subresources().filterConfiguration()
+                    .customFilter("wfs-mp-metrics", customFilter -> {
+                        customFilter.module("org.wildfly.swarm.microprofile_metrics:runtime");
+                        customFilter.className("org.wildfly.swarm.microprofile_metrics.runtime.MetricsHttpHandler");
+                    });
 
-      undertow.subresources().server("default-server")
-              .subresources().host("default-host")
-              .filterRef("wfs-mp-metrics", f -> {
-                  f.priority(101);
-              });
-    } else {
-               throw new RuntimeException("The monitor fraction requires the undertow fraction!");
-           }
-       }
+            undertow.subresources().server("default-server")
+                    .subresources().host("default-host")
+                    .filterRef("wfs-mp-metrics", f -> {
+                        f.priority(101);
+                    });
+        } else {
+            throw new RuntimeException("The monitor fraction requires the undertow fraction!");
+        }
+    }
 
 }

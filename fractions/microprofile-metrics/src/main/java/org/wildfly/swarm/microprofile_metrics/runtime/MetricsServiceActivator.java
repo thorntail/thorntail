@@ -44,34 +44,34 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class MetricsServiceActivator implements ServiceActivator {
 
-  private static final String SWARM_MP_METRICS = "swarm/mp_metrics";
-  @Inject
-  @Any
-  Instance<MicroprofileMetricsFraction> fractionInstance;
+    private static final String SWARM_MP_METRICS = "swarm/mp_metrics";
+    @Inject
+    @Any
+    Instance<MicroprofileMetricsFraction> fractionInstance;
 
-  @Override
-  public void activate(ServiceActivatorContext serviceActivatorContext) throws ServiceRegistryException {
+    @Override
+    public void activate(ServiceActivatorContext serviceActivatorContext) throws ServiceRegistryException {
 
-    ServiceTarget target = serviceActivatorContext.getServiceTarget();
+        ServiceTarget target = serviceActivatorContext.getServiceTarget();
 
-    MetricsService service = new MetricsService();
-    ServiceBuilder<MetricsService> metricsServiceBuilder = target.addService(MetricsService.SERVICE_NAME,service);
+        MetricsService service = new MetricsService();
+        ServiceBuilder<MetricsService> metricsServiceBuilder = target.addService(MetricsService.SERVICE_NAME, service);
 
-    RegistryFactory factory = new RegistryFactoryImpl();
+        RegistryFactory factory = new RegistryFactoryImpl();
 
-    ServiceBuilder<MetricsService> serviceBuilder = metricsServiceBuilder
-            .addDependency(ServerEnvironmentService.SERVICE_NAME, ServerEnvironment.class, service.getServerEnvironmentInjector())
-            .addDependency(Services.JBOSS_SERVER_CONTROLLER, ModelController.class, service.getModelControllerInjector());
+        ServiceBuilder<MetricsService> serviceBuilder = metricsServiceBuilder
+                .addDependency(ServerEnvironmentService.SERVICE_NAME, ServerEnvironment.class, service.getServerEnvironmentInjector())
+                .addDependency(Services.JBOSS_SERVER_CONTROLLER, ModelController.class, service.getModelControllerInjector());
 
-    serviceBuilder.setInitialMode(ServiceController.Mode.ACTIVE)
-             .install();
+        serviceBuilder.setInitialMode(ServiceController.Mode.ACTIVE)
+                .install();
 
-    BinderService binderService = new BinderService(SWARM_MP_METRICS, null, true);
+        BinderService binderService = new BinderService(SWARM_MP_METRICS, null, true);
 
-    target.addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, SWARM_MP_METRICS), binderService)
-            .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
-             .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(factory))
-             .setInitialMode(ServiceController.Mode.ACTIVE)
-             .install();
-  }
+        target.addService(ContextNames.buildServiceName(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, SWARM_MP_METRICS), binderService)
+                .addDependency(ContextNames.JBOSS_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector())
+                .addInjection(binderService.getManagedObjectInjector(), new ImmediateManagedReferenceFactory(factory))
+                .setInitialMode(ServiceController.Mode.ACTIVE)
+                .install();
+    }
 }

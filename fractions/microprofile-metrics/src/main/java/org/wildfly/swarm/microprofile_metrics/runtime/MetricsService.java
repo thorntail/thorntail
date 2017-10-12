@@ -39,104 +39,101 @@ import java.util.List;
  */
 public class MetricsService implements Service<MetricsService> {
 
-  private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile_metrics");
+    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.mp_metrics");
 
-  public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "mp-metrics");
+    public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "mp-metrics");
 
-  private final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
-  private final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
+    private final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
+    private final InjectedValue<ModelController> modelControllerValue = new InjectedValue<ModelController>();
 
 
-  @Override
-  public void start(StartContext context) throws StartException {
-    initBaseAndVendorConfiguration();
+    @Override
+    public void start(StartContext context) throws StartException {
+        initBaseAndVendorConfiguration();
 
-    LOG.info("MicroProfile-Metrics started");
-  }
-
-  /**
-   * Read a list of mappings that contains the base and vendor metrics
-   * along with their metadata.
-   */
-  private void initBaseAndVendorConfiguration() {
-    InputStream is  = getClass().getResourceAsStream("mapping.yml");
-    LOG.warn("IS is " + is);
-
-    if (is != null) {
-      ConfigReader cr = new ConfigReader();
-      MetadataList ml = cr.readConfig(is);
-
-      String globalTagsFromEnv = System.getenv("MP_METRICS_TAGS");
-      List<Tag> globalTags = convertToTags(globalTagsFromEnv);
-
-      // Turn the multi-entry query expressions into concrete entries.
-      JmxWorker.instance().expandMultiValueEntries(ml.getBase());
-      JmxWorker.instance().expandMultiValueEntries(ml.getVendor());
-
-      for (ExtendedMetadata em : ml.getBase()) {
-        em.processTags(globalTags);
-        Metric type = getType(em);
-        LOG.debug("+++ registering " + em);
-        MetricRegistryFactory.getBaseRegistry().register(em.getName(),type,em);
-      }
-      for (ExtendedMetadata em : ml.getVendor()) {
-        em.processTags(globalTags);
-        Metric type = getType(em);
-        MetricRegistryFactory.getVendorRegistry().register(em.getName(),type,em);
-      }
-    } else {
-      throw new IllegalStateException("Was not able to find the mapping file 'mapping.yml'");
+        LOG.info("MicroProfile-Metrics started");
     }
-  }
 
-  private Metric getType(ExtendedMetadata em) {
-    Metric out;
-    switch (em.getTypeRaw()) {
-      case GAUGE:
-        out = new MGaugeImpl(em.getMbean());
-        break;
-      case COUNTER:
-        out = new MCounterImpl(em.getMbean());
-        break;
-      default:
-        throw new IllegalStateException("Not yet supported: " + em);
+    /**
+     * Read a list of mappings that contains the base and vendor metrics
+     * along with their metadata.
+     */
+    private void initBaseAndVendorConfiguration() {
+        InputStream is = getClass().getResourceAsStream("mapping.yml");
+
+        if (is != null) {
+            ConfigReader cr = new ConfigReader();
+            MetadataList ml = cr.readConfig(is);
+
+            String globalTagsFromEnv = System.getenv("MP_METRICS_TAGS");
+            List<Tag> globalTags = convertToTags(globalTagsFromEnv);
+
+            // Turn the multi-entry query expressions into concrete entries.
+            JmxWorker.instance().expandMultiValueEntries(ml.getBase());
+            JmxWorker.instance().expandMultiValueEntries(ml.getVendor());
+
+            for (ExtendedMetadata em : ml.getBase()) {
+                em.processTags(globalTags);
+                Metric type = getType(em);
+                LOG.debug("+++ registering " + em);
+                MetricRegistryFactory.getBaseRegistry().register(em.getName(), type, em);
+            }
+            for (ExtendedMetadata em : ml.getVendor()) {
+                em.processTags(globalTags);
+                Metric type = getType(em);
+                MetricRegistryFactory.getVendorRegistry().register(em.getName(), type, em);
+            }
+        } else {
+            throw new IllegalStateException("Was not able to find the mapping file 'mapping.yml'");
+        }
     }
-    return out;
-  }
 
-  private List<Tag> convertToTags(String globalTagsString) {
-    List<Tag> tags = new ArrayList<>();
-    if  (globalTagsString != null) {
-      String[] singleTags = globalTagsString.split(",");
-      for (String singleTag : singleTags) {
-        tags.add(new Tag(singleTag.trim()));
-      }
+    private Metric getType(ExtendedMetadata em) {
+        Metric out;
+        switch (em.getTypeRaw()) {
+            case GAUGE:
+                out = new MGaugeImpl(em.getMbean());
+                break;
+            case COUNTER:
+                out = new MCounterImpl(em.getMbean());
+                break;
+            default:
+                throw new IllegalStateException("Not yet supported: " + em);
+        }
+        return out;
     }
-    return tags;
-  }
 
-  @Override
-  public void stop(StopContext context) {
-  }
+    private List<Tag> convertToTags(String globalTagsString) {
+        List<Tag> tags = new ArrayList<>();
+        if (globalTagsString != null) {
+            String[] singleTags = globalTagsString.split(",");
+            for (String singleTag : singleTags) {
+                tags.add(new Tag(singleTag.trim()));
+            }
+        }
+        return tags;
+    }
 
-  @Override
-  public MetricsService getValue() throws IllegalStateException, IllegalArgumentException {
-    return this;
-  }
+    @Override
+    public void stop(StopContext context) {
+    }
 
-  /**
-   * Register the metrics of the base scope with the system.
-   */
+    @Override
+    public MetricsService getValue() throws IllegalStateException, IllegalArgumentException {
+        return this;
+    }
+
+    /**
+     * Register the metrics of the base scope with the system.
+     */
 
 
+    public Injector<ServerEnvironment> getServerEnvironmentInjector() {
+        return this.serverEnvironmentValue;
+    }
 
-
-  public Injector<ServerEnvironment> getServerEnvironmentInjector() {
-      return this.serverEnvironmentValue;
-  }
-
-  public Injector<ModelController> getModelControllerInjector() {
-      return this.modelControllerValue;
-  }
+    public Injector<ModelController> getModelControllerInjector() {
+        return this.modelControllerValue;
+    }
 
 }

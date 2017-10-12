@@ -51,7 +51,6 @@ import java.lang.reflect.Member;
         this.bean = bean;
         this.registry = registry;
         this.resolver = new MetricResolver();
-        System.err.println("+++ metered interceptor");
     }
 
     @AroundConstruct

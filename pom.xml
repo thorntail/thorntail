@@ -22,9 +22,9 @@
   <packaging>pom</packaging>
 
   <scm>
-    <connection>scm:git:git@github.com:MicroProfileJWT/wildfly-swarm-mp1.2.git</connection>
-    <developerConnection>scm:git:git@github.com:MicroProfileJWT/wildfly-swarm-mp1.2.git</developerConnection>
-    <url>https://github.com/MicroProfileJWT/wildfly-swarm-mp1.2</url>
+    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
+    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
+    <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -691,18 +691,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>microprofile-config</artifactId>
-        <version>2017.10.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>microprofile-jwt</artifactId>
-        <version>2017.10.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>microprofile-metrics</artifactId>
         <version>2017.10.0-SNAPSHOT</version>
       </dependency>
@@ -970,8 +958,6 @@
 
     <module>fractions/keycloak</module>
     <module>fractions/microprofile</module>
-    <module>fractions/microprofile-config</module>
-    <module>fractions/microprofile-jwt</module>
     <module>fractions/microprofile-metrics</module>
     <module>fractions/monitor</module>
     <module>fractions/topology</module>
@@ -1103,6 +1089,7 @@
 
       <modules>
         <module>client-apis/jaxrs-client-api</module>
+        <module>client-apis/mp_metrics_cdi_extension</module>
 
         <module>swarmtool</module>
         <module>cli</module>

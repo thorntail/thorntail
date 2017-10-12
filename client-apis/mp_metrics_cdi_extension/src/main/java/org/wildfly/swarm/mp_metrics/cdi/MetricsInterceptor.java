@@ -17,6 +17,7 @@ package org.wildfly.swarm.mp_metrics.cdi;
 
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
@@ -45,8 +46,7 @@ import java.lang.reflect.Modifier;
     private final MetricResolver resolver;
 
     @Inject
-    private MetricsInterceptor(MetricRegistry registry) { //}, MetricResolver resolver) {
-        System.err.println("+++ Metrics Interceptor");
+    private MetricsInterceptor(MetricRegistry registry) {
         this.registry = registry;
 //        this.resolver = resolver;
         this.resolver = new MetricResolver();
@@ -78,16 +78,11 @@ import java.lang.reflect.Modifier;
         do {
             // TODO: discover annotations declared on implemented interfaces
             for (Method method : type.getDeclaredMethods()) {
-                System.err.println("+++ method : " + method.toGenericString());
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
                 if (gauge.isPresent()) {
-                    System.err.println("*** gauge found " + gauge.metricName());
-                    // we need to remove the existing one and re-register TODO don't register in 1st place?
-                    // First take the existing metadata and attach it to the new one.
-                    Metadata metadata = registry.getMetadata().get(gauge.metricName());
-                    registry.remove(gauge.metricName());
+                    Gauge g = gauge.metricAnnotation();
+                    Metadata metadata = getMetadata(gauge.metricName(), g.unit(), g.description(), g.displayName(), MetricType.GAUGE, g.tags());
                     registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()), metadata);
-
                 }
             }
             type = type.getSuperclass();
@@ -99,20 +94,48 @@ import java.lang.reflect.Modifier;
     private <E extends Member & AnnotatedElement> void registerMetrics(Class<?> bean, E element) {
         MetricResolver.Of<Counted> counted = resolver.counted(bean, element);
         if (counted.isPresent()) {
+            Counted t = counted.metricAnnotation();
+            Metadata metadata = getMetadata(counted.metricName(), t.unit(),t.description(),t.displayName(), MetricType.COUNTER, t.tags());
+
             registry.counter(counted.metricName());
         }
 
 
         MetricResolver.Of<Metered> metered = resolver.metered(bean, element);
         if (metered.isPresent()) {
-            registry.meter(metered.metricName());
+            Metered t = metered.metricAnnotation();
+            Metadata metadata = getMetadata(metered.metricName(), t.unit(),t.description(),t.displayName(), MetricType.METERED, t.tags());
+
+            registry.meter(metadata);
         }
 
         MetricResolver.Of<Timed> timed = resolver.timed(bean, element);
         if (timed.isPresent()) {
-            registry.timer(timed.metricName());
+            Timed t = timed.metricAnnotation();
+            Metadata metadata = getMetadata(timed.metricName(), t.unit(),t.description(),t.displayName(), MetricType.TIMER, t.tags());
+            registry.timer(metadata);
         }
     }
+
+    private Metadata getMetadata(String name, String unit, String description, String displayName, MetricType type, String... tags) {
+
+         Metadata metadata = new Metadata(name, type);
+         if (!unit.isEmpty()) {
+             metadata.setUnit(unit);
+         }
+         if (!description.isEmpty()) {
+             metadata.setDescription(description);
+         }
+         if (!displayName.isEmpty()) {
+             metadata.setDisplayName(displayName);
+         }
+         if (tags != null && tags.length > 0) {
+             for (String tag : tags) {
+                 metadata.addTags(tag);
+             }
+         }
+         return metadata;
+     }
 
     private static Object invokeMethod(Method method, Object object) {
         try {
@@ -122,23 +145,6 @@ import java.lang.reflect.Modifier;
         }
     }
 
-
-/*
-    private static final class CachingGauge extends com.codahale.metrics.CachedGauge<Object> {
-
-        private final com.codahale.metrics.Gauge<?> gauge;
-
-        private CachingGauge(com.codahale.metrics.Gauge<?> gauge, long timeout, TimeUnit timeoutUnit) {
-            super(timeout, timeoutUnit);
-            this.gauge = gauge;
-        }
-
-        @Override
-        protected Object loadValue() {
-            return gauge.getValue();
-        }
-    }
-*/
 
     private static final class ForwardingGauge implements org.eclipse.microprofile.metrics.Gauge<Object> {
 

@@ -23,87 +23,87 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 public class Tag {
-  String key;
-  String value;
+    String key;
+    String value;
 
-  public Tag() {
-  }
-
-  public Tag(String kvString) {
-    if (kvString == null || kvString.isEmpty() || !kvString.contains("=")) {
-      throw new IllegalArgumentException("Not a k=v pair: " + kvString);
-    }
-    String[] kv = kvString.split("=");
-    if (kv.length != 2) {
-      throw new IllegalArgumentException("Not a k=v pair: " + kvString);
-    }
-    key = kv[0].trim();
-    value = kv[1].trim();
-  }
-
-  public Tag(String key, String value) {
-    this.key = key.trim();
-    this.value = value.trim();
-  }
-
-  public Tag(Map<String, String> tag) {
-    this(tag.get("key"),tag.get("value"));
-  }
-
-  public String getKey() {
-    return key;
-  }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+    public Tag() {
     }
 
-    Tag tag = (Tag) o;
-
-    if (!key.equals(tag.key)) {
-      return false;
+    public Tag(String kvString) {
+        if (kvString == null || kvString.isEmpty() || !kvString.contains("=")) {
+            throw new IllegalArgumentException("Not a k=v pair: " + kvString);
+        }
+        String[] kv = kvString.split("=");
+        if (kv.length != 2) {
+            throw new IllegalArgumentException("Not a k=v pair: " + kvString);
+        }
+        key = kv[0].trim();
+        value = kv[1].trim();
     }
-    return value.equals(tag.value);
-  }
 
-  @Override
-  public int hashCode() {
-    int result = key.hashCode();
-    result = 31 * result + value.hashCode();
-    return result;
-  }
+    public Tag(String key, String value) {
+        this.key = key.trim();
+        this.value = value.trim();
+    }
 
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder("Tag{");
-    sb.append("key='").append(key).append('\'');
-    sb.append(", value='").append(value).append('\'');
-    sb.append('}');
-    return sb.toString();
-  }
+    public Tag(Map<String, String> tag) {
+        this(tag.get("key"), tag.get("value"));
+    }
 
-  public String toKVString() {
-    final StringBuilder sb = new StringBuilder(key);
-    sb.append('=');
-    sb.append(value);
+    public String getKey() {
+        return key;
+    }
 
-    return sb.toString();
-  }
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Tag tag = (Tag) o;
+
+        if (!key.equals(tag.key)) {
+            return false;
+        }
+        return value.equals(tag.value);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = key.hashCode();
+        result = 31 * result + value.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Tag{");
+        sb.append("key='").append(key).append('\'');
+        sb.append(", value='").append(value).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public String toKVString() {
+        final StringBuilder sb = new StringBuilder(key);
+        sb.append('=');
+        sb.append(value);
+
+        return sb.toString();
+    }
 }

@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile_metrics;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.Test;
 import org.wildfly.swarm.microprofile_metrics.runtime.Tag;
 
@@ -26,53 +27,52 @@ import org.wildfly.swarm.microprofile_metrics.runtime.Tag;
  */
 public class TagsTest {
 
-  @Test
-  public void testParseOne() {
-    Tag tag = new Tag("a=b");
-    assert tag.getKey().equals("a");
-    assert tag.getValue().equals("b");
-  }
-
-  @Test
-  public void testParseHole() {
-    Tag tag = new Tag("a = b");
-    assert tag.getKey().equals("a");
-    assert tag.getValue().equals("b");
-  }
-
-  @Test
-  public void testParseSeparate() {
-    Tag tag = new Tag("a","b");
-    assert tag.getKey().equals("a");
-    assert tag.getValue().equals("b");
-  }
-
-  @Test
-  public void testParseSeparateHole() {
-    Tag tag = new Tag(" a","b ");
-    assert tag.getKey().equals("a");
-    assert tag.getValue().equals("b");
-  }
-
-  @Test
-  public void testParseInvalid() {
-    try {
-      new Tag("a=");
-      assert false;
+    @Test
+    public void testParseOne() {
+        Tag tag = new Tag("a=b");
+        assert tag.getKey().equals("a");
+        assert tag.getValue().equals("b");
     }
-    catch (IllegalArgumentException iae) {
-      assert true;
+
+    @Test
+    public void testParseHole() {
+        Tag tag = new Tag("a = b");
+        assert tag.getKey().equals("a");
+        assert tag.getValue().equals("b");
     }
-  }
 
-  @Test
-  public void testFromMap() throws Exception {
-    Map<String,String> map = new HashMap<>(2);
-    map.put("key","myKey");
-    map.put("value","myValue");
-    Tag t = new Tag(map);
+    @Test
+    public void testParseSeparate() {
+        Tag tag = new Tag("a", "b");
+        assert tag.getKey().equals("a");
+        assert tag.getValue().equals("b");
+    }
 
-    assert t.getKey().equals("myKey");
-    assert t.getValue().equals("myValue");
-  }
+    @Test
+    public void testParseSeparateHole() {
+        Tag tag = new Tag(" a", "b ");
+        assert tag.getKey().equals("a");
+        assert tag.getValue().equals("b");
+    }
+
+    @Test
+    public void testParseInvalid() {
+        try {
+            new Tag("a=");
+            assert false;
+        } catch (IllegalArgumentException iae) {
+            assert true;
+        }
+    }
+
+    @Test
+    public void testFromMap() throws Exception {
+        Map<String, String> map = new HashMap<>(2);
+        map.put("key", "myKey");
+        map.put("value", "myValue");
+        Tag t = new Tag(map);
+
+        assert t.getKey().equals("myKey");
+        assert t.getValue().equals("myValue");
+    }
 }
