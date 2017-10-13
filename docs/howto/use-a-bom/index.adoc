@@ -7,6 +7,8 @@ BOMs (bill of materials) which you may use to avoid
 having to track and update Maven artifact versions
 in several places.
 
+ifndef::product[]
+
 ### Different types of BOMs
 
 WildFly Swarm is described as "just enough app-server",
@@ -46,6 +48,22 @@ behaviour, or may contain dangerous or annoying bugs.
 The `bom-stable` BOM (which is aliased to just `bom` also) contains
 those known-good fractions that are recommended for daily use.
 
+endif::[]
+
+ifdef::product[]
+
+### The `bom` artifact
+
+The artifact named `bom` defines all fractions available within
+the product.
+
+### The `bom-certified` artifact
+
+The artifact named `bom-certified` defines all _community_ fractions
+that have been certified against the product. Any fraction used from
+`bom-certified` is unsupported.
+
+endif::[]
 
 ### Include a `bom` artifact in your `pom.xml`
 
@@ -78,6 +96,7 @@ include::pom.xml[tag=bom-dependency,indent=4]
 </dependencyManagement>
 ----
 
+ifndef::product[] 
 If we also wanted to experiment with some unstable fractions
 in addition to the stable ones, we would uncomment the `<dependency>`
 for `bom-unstable`:
@@ -98,6 +117,8 @@ and matching the combination of fraction stability that you want
 with fine granularity.  If you want both stable and unstable, you
 would need to include `bom-stable` (or simply `bom`, which is the same
 as `bom-stable`) *and* `bom-unstable`.
+
+endif::[]
 
 
 ### Benefit from a BOM
