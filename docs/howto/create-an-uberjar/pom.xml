@@ -9,16 +9,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.wildfly.swarm.howto</groupId>
-  <artifactId>howto-datasources</artifactId>
+  <artifactId>howto-create-an-uberjar</artifactId>
   <version>2017.11.0-SNAPSHOT</version>
 
-  <name>WildFly Swarm HOWTO: Create a Datasource</name>
-  <description>WildFly Swarm HOWTO: Create a Datasource</description>
+  <name>WildFly Swarm HOWTO: Create an Uberjar</name>
+  <description>WildFly Swarm HOWTO: Create an Uberjar</description>
 
   <packaging>war</packaging>
 
   <properties>
-    <version.wildfly-swarm>2017.11.0-SNAPSHOT</version.wildfly-swarm>
     <version.maven-war-plugin>2.2</version.maven-war-plugin>
     <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
@@ -28,10 +27,6 @@
     <version.junit>4.11</version.junit>
 
     <version.jaxrs-api>1.0.0.Final</version.jaxrs-api>
-
-    <version.h2>1.4.187</version.h2>
-    <version.postgresql>9.4.1207</version.postgresql>
-    <version.mysql>5.1.38</version.mysql>
   </properties>
 
   <repositories>
@@ -88,10 +83,11 @@
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
+      <!-- tag::plugin[] -->
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${version.wildfly-swarm}</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <id>package</id>
@@ -99,6 +95,7 @@
               <goal>package</goal>
             </goals>
           </execution>
+          <!-- end::plugin[] -->
           <execution>
             <id>start</id>
             <phase>pre-integration-test</phase>
@@ -113,8 +110,10 @@
               <goal>stop</goal>
             </goals>
           </execution>
+          <!-- tag::plugin[] -->
         </executions>
       </plugin>
+      <!-- end::plugin[] -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -190,7 +189,7 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bom-all</artifactId>
-        <version>${version.wildfly-swarm}</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -212,24 +211,6 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- tag::dependencies[] -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>${version.h2}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>${version.postgresql}</version>
-    </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>${version.mysql}</version>
-    </dependency>
-    <!--end::dependencies[] -->
-
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
       <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>

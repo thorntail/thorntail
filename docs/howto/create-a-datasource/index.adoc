@@ -1,4 +1,4 @@
-## How to create a datasource
+= How to create a datasource
 
 When working with Java applications, a datasource has
 two components, both equally important:
@@ -16,9 +16,9 @@ creating a _datasource_ which provides an efficient way to share
 and manage a discrete connection (or pool of connections) to a
 particular database using the driver.
 
-### JDBC Drivers
+## JDBC Drivers
 
-#### Auto-detection
+### Auto-detection
 
 WildFly Swarm has the capability to detect, install and register
 a variety of JDBC drivers based on their inclusion as a dependency
@@ -41,11 +41,11 @@ scope) to your application:
 [source,xml]
 ----
 <dependencies>
-include::pom.xml[tag=dependencies,indent=2]
+include::{docdir}/pom.xml[tag=dependencies,indent=2]
 </dependencies>
 ----
 
-#### Explicit JDBC Driver Configuration
+### Explicit JDBC Driver Configuration
 
 In the event you need to provide customized driver configuration instead
 of relying on the auto-detection, you can use `project-defaults.yml` to define
@@ -63,10 +63,10 @@ to a datasource.
 swarm:
   datasources:
     jdbc-drivers:
-include::src/main/resources/project-defaults.yml[tag=driver,indent=6]
+include::{docdir}/src/main/resources/project-defaults.yml[tag=driver,indent=6]
 ----
 
-### Datasources
+## Datasources
 
 Once a driver has been configured, through either auto-detection or
 explicit configuration, you can use `project-defaults.yml` to configure
@@ -77,13 +77,13 @@ one or more datasources using that driver, under `swarm` -> `datasources` -> `da
 swarm:
   datasources:
     data-sources:
-include::src/main/resources/project-defaults.yml[tag=datasource,indent=6]
+include::{docdir}/src/main/resources/project-defaults.yml[tag=datasource,indent=6]
 ----
 
 ## Full `project-defaults.yml`
 
 [source,yaml]
 ----
-include::src/main/resources/project-defaults.yml[tag=all]
+include::{docdir}/src/main/resources/project-defaults.yml[tag=all]
 ----
 

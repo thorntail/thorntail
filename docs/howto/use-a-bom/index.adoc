@@ -1,4 +1,4 @@
-## How to use a BOM
+= How to use a BOM
 
 If you want to explicitly enumerate the WildFly Swarm
 fractions your application uses, instead of relying
@@ -9,7 +9,7 @@ in several places.
 
 ifndef::product[]
 
-### Different types of BOMs
+## Different types of BOMs
 
 WildFly Swarm is described as "just enough app-server",
 which means it's composed of lots of pieces.  Your application
@@ -20,30 +20,30 @@ while some are decidedly "unstable" or even "experimental".
 To help segregate the stable from the not-as-stable, different
 Maven BOMs may be used.  
 
-#### `bom-all`
+* `bom-all`
 
 The `bom-all` BOM includes everything, soup-to-nuts. Anything
 that is stable, unstable, experimental, or even deprecated is
 included.
 
-#### `bom-deprecated`
+* `bom-deprecated`
 
 The `bom-deprecated` BOM includes only those fractions that
 have been deprecated.
 
-#### `bom-experimental`
+* `bom-experimental`
 
 The `bom-experimental` BOM includes only those fractions that
 are considered experimental. They may disappear or radically change
 between releases.
 
-#### `bom-unstable`
+* `bom-unstable`
 
 The `bom-unstable` BOM includes fractions that are better than
 experimental, but may still be subject to large changes in their
 behaviour, or may contain dangerous or annoying bugs.
 
-#### `bom-stable` or `bom`
+* `bom-stable` or `bom`
 
 The `bom-stable` BOM (which is aliased to just `bom` also) contains
 those known-good fractions that are recommended for daily use.
@@ -52,12 +52,12 @@ endif::[]
 
 ifdef::product[]
 
-### The `bom` artifact
+* The `bom` artifact
 
 The artifact named `bom` defines all fractions available within
 the product.
 
-### The `bom-certified` artifact
+* The `bom-certified` artifact
 
 The artifact named `bom-certified` defines all _community_ fractions
 that have been certified against the product. Any fraction used from
@@ -65,7 +65,13 @@ that have been certified against the product. Any fraction used from
 
 endif::[]
 
-### Include a `bom` artifact in your `pom.xml`
+.Prerequisites
+
+* A _Maven_-based project with a `pom.xml`
+
+.Procedure
+
+. Include a `bom` artifact in your `pom.xml`
 
 We usually suggest tracking the current version of WildFly Swarm
 through a property in your `pom.xml`
@@ -73,7 +79,7 @@ through a property in your `pom.xml`
 [source,xml]
 ----
 <properties>
-include::pom.xml[tag=property,indent=2]
+include::{docdir}/pom.xml[tag=property,indent=2]
 </properties>
 ----
 
@@ -86,12 +92,11 @@ You must specify the `<type>pom</type>` and `<scope>import</scope>`.
 In the example below, we import the `bom` artifact to ensure that
 only stable fractions are available.
 
-
 [source,xml]
 ----
 <dependencyManagement>
   <dependencies>
-include::pom.xml[tag=bom-dependency,indent=4]
+include::{docdir}/pom.xml[tag=bom-dependency,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
@@ -105,8 +110,8 @@ for `bom-unstable`:
 ----
 <dependencyManagement>
   <dependencies>
-include::pom.xml[tag=bom-dependency,indent=4]
-include::pom.xml[tag=bom-unstable-dependency,indent=4]
+include::{docdir}/pom.xml[tag=bom-dependency,indent=4]
+include::{docdir}/pom.xml[tag=bom-unstable-dependency,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
@@ -120,17 +125,17 @@ as `bom-stable`) *and* `bom-unstable`.
 
 endif::[]
 
-
-### Benefit from a BOM
+[start=2]
+. Include WildFly Swarm dependencies
 
 Once you've used the `<dependencyManagement>` section to import
 one or more WildFly Swarm BOMs, your application still has *no* 
 dependencies on WildFly Swarm artifacts.  All that has been accomplished
 is:
 
-. Providing version-management for any WildFly Swarm artifacts you
+* Providing version-management for any WildFly Swarm artifacts you
 subsequently *choose* to use.
-. Providing support to your IDE for auto-completing known artifacts
+* Providing support to your IDE for auto-completing known artifacts
 while you edit your own `pom.xml`
 
 That being said, now you need to actually include some WildFly Swarm
@@ -146,7 +151,7 @@ as `undertow`.
 [source,xml]
 ----
 <dependencies>
-include::pom.xml[tag=fraction-dependencies,indent=2]
+include::{docdir}/pom.xml[tag=fraction-dependencies,indent=2]
 </dependencies>
 ----
 
@@ -154,7 +159,7 @@ Notice, you have not had to specify the usual `<version>` element
 for these `<dependency>` blocks, because the BOM you imported
 via `<dependencyManagement>` handles that portion for you.
 
-### Caveats
+## Caveats
 
 One short-coming of a Maven BOM import is that it does not
 handle `<pluginManagement>`-level configuration.  When you
@@ -170,9 +175,14 @@ the BOM import.
 ----
 <plugins>
   <plugin>
-include::pom.xml[tag=plugin,indent=4]
+include::{docdir}/pom.xml[tag=plugin,indent=4]
       ...
   </plugin>
 </plugins>
+----
+
+.Related Information
+
+* Create an Uberjar
 
 

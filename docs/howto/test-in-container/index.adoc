@@ -1,4 +1,4 @@
-## How to test in-container
+= How to test in-container
 
 Using *Arquillian*, we have the capability of injecting
 unit tests into a running application.  This allows us
@@ -10,7 +10,7 @@ has simply created an adapter and some useful annotations to
 make Arquillian-based testing work well with WildFly Swarm
 applications.
 
-### Dependencies
+## Dependencies
 
 To use the WildFly Swarm Arquillian integrations, you first
 include the WildFly BOM as described in <<../use-a-bom/index.adoc#,How to use a BOM>>,
@@ -21,7 +21,7 @@ a `<scope>` of `test`:
 ----
 <dependencyManagement>
   <dependencies>
-include::pom.xml[tag=bom,indent=4]
+include::{docdir}/pom.xml[tag=bom,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
@@ -29,11 +29,11 @@ include::pom.xml[tag=bom,indent=4]
 [source,xml]
 ----
 <dependencies>
-include::pom.xml[tag=arquillian,indent=2]
+include::{docdir}/pom.xml[tag=arquillian,indent=2]
 </dependencies>
 ----
 
-### Write your Application
+## Write your Application
 
 You construct your application like normal, including using
 any default `project-defaults.yml` you need to configure bits of
@@ -41,10 +41,10 @@ it.
 
 [source,yml]
 ----
-include::src/main/resources/project-defaults.yml[]
+include::{docdir}/src/main/resources/project-defaults.yml[]
 ----
 
-### Create a test
+## Create a test
 
 Creating an Arquillian test before WildFly Swarm generally involved
 programatically creating `Archive` due to the fact that applications
@@ -63,7 +63,7 @@ with the usual `@RunWith(Arquillian.class)` annotation:
 
 [source,java]
 ----
-include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=prolog,indent=0]
+include::{docdir}/src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=prolog,indent=0]
 ----
 
 Using the `@DefaultDeployment` annotation provided by WildFly Swarm's
@@ -74,7 +74,7 @@ The `@DefaultDeployment` annotation looks at the package of the test:
 
 [source,java]
 ----
-include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=package,indent=0]
+include::{docdir}/src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=package,indent=0]
 ----
 
 From that package, it uses heuristics to include all of your other application classes
@@ -97,7 +97,7 @@ into an instance member of our test-case:
 
 [source,java]
 ----
-include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=arquillian-resource,indent=0]
+include::{docdir}/src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=arquillian-resource,indent=0]
 ----
 
 Then our test method itself can use that `InitialContext` in order to ensure
@@ -106,23 +106,23 @@ available:
 
 [source,java]
 ----
-include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=test,indent=0]
+include::{docdir}/src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=test,indent=0]
 ----
 
 
-### Run your test
+## Run your test
 
 Since Arquillian is simply an integration with JUnit, you can run your test
 by using Maven or your IDE:
 
-#### Using Maven
+### Using Maven
 
 [source,shell]
 ----
 $ mvn install
 ----
 
-#### Using your IDE
+### Using your IDE
 
 In many IDEs, simply find your test-class, right-click and select `Run` to execute the
 test.
