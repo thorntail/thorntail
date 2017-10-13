@@ -75,32 +75,6 @@
     </resources>
     <plugins>
       <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
-        <version>1.5.6</version>
-        <configuration>
-          <sourceDirectory>.</sourceDirectory>
-          <backend>html</backend>
-          <resources>
-            <resource>
-              <directory>.</directory>
-              <excludes>
-                <exclude>**/*</exclude>
-              </excludes>
-            </resource>
-          </resources>
-        </configuration>
-        <executions>
-          <execution>
-            <id>output-html</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
         <version>${version.wildfly-swarm}</version>

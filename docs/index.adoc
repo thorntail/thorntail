@@ -1,0 +1,15 @@
+= WildFly Swarm Documentation: {version}
+
+## Concepts
+
+* link:concepts/packaging-types.html[Packaging Types]
+
+## HOWTO
+
+* Basics
+** link:howto/use-a-bom/index.html[Use a BOM]
+** link:howto/create-an-uberjar/index.html[Create an Uberjar]
+** link:howto/create-a-datasource/index.html[Create a Datasource]
+** link:howto/test-in-container/index.html[Test In-container]
+* Advanced
+** link:howto/create-a-fraction/index.html[Create a Fraction]

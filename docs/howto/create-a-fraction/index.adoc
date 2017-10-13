@@ -1,20 +1,20 @@
-## How to Create a Fraction
+= How to Create a Fraction
 
-### Introduction
+## Introduction
 
 The composable pieces of WildFly Swarm are called _fractions_. Each fraction
 starts with a single Maven-addressable artifact which may transitively bring
 in others.
 
-### The `pom.xml`
+## The `pom.xml`
 
 It is useful to set at least a pair of properties, specifying the version
 of the WildFly Swarm SPI and fraction-plugin being used:
 
-[source,xml]
+[source,xml,,subs=+attributes]
 ----
 <properties>
-  <version.swarm>2016.8</version.swarm.spi>
+  <version.swarm>{version}</version.swarm.spi>
   <version.swarm.fraction-plugin>34</version.swarm.fraction-plugin>
 </properties>
 ----
@@ -76,12 +76,12 @@ within the parent `pom.xml` so that it fires for every sub-module:
 </build>
 ----
 
-### What's in a Fraction
+## What's in a Fraction
 
 A "fraction" can include all or none of the following components. Ultimately
 a fraction contributes configuration or capabilities to a runtime system.
 
-#### Package Layout
+### Package Layout
 
 For a given fraction, a unique package root is required.  In the usual
 case of the core code, it matches the pattern of `org.wildfly.swarm._CAPABILITY_`,
@@ -100,7 +100,7 @@ exposed to users, nor a part of the back-end components to configure the
 server.  Instead, the `.deployment` package is a sidecar to hold additional
 classes that may be added to deployment archives.
 
-#### The `module.conf`
+### The `module.conf`
 
 Alongside your `pom.xm` you need at least an empty `module.conf` file to signal
 the plugin that your build is actually a fraction.
@@ -118,7 +118,7 @@ org.jboss.logging
 org.wildfly.swarm.undertow
 ----
 
-#### The `*Fraction.java`
+### The `*Fraction.java`
 
 If the fraction includes configuration capabilities, or otherwise alters
 the runtime system through deployments or adjustments to the server, it
@@ -159,7 +159,7 @@ public class CheeseFraction implements Fraction {
 }
 ----
 
-#### Runtime CDI Components
+### Runtime CDI Components
 
 Within the `runtime` sub-package of the fraction, a variety of CDI-enabled
 components may be used.  Within these classes, you can use typical CDI mechanisms
@@ -178,7 +178,7 @@ public class MyComponents implements Whatever {
 }
 ----
 
-##### `ArchivePreparer`
+#### `ArchivePreparer`
 
 If your fraction needs an opportunity to alter or otherwise prepare all deployed
 archives, you may implement the `org.wildfly.swarm.spi.api.ArchivePreparer` interface.
@@ -197,7 +197,7 @@ public class MyArchivePreparer implements ArchivePreparer {
 }
 ----
 
-##### `ArchiveMetadataProcessor`
+#### `ArchiveMetadataProcessor`
 
 If your fraction needs an opportunity to process the Jandex metadata of all deployed
 archives, you may implement the `org.wildfly.swarm.spi.api.ArchiveMetadataProcessor`
@@ -218,7 +218,7 @@ public class MyArchiveMetadataProcessor implements ArchiveMetadataProcessor {
 
 ----
 
-##### `Customizer`
+#### `Customizer`
 
 Most of the heavy-lifting of configuration may occur within implementations of
 `org.wildfly.swarm.spi.api.Customizer`.
@@ -249,7 +249,7 @@ public class MyCustomizer implements Customizer {
 }
 ----
 
-##### `Archive` producers
+#### `Archive` producers
 
 In some cases, a fraction implicitly produces a deployment archive by its simple
 presence in the dependency graph.  For example, including `org.wildfly.swarm:jolokia`
@@ -274,7 +274,7 @@ public MyArchiveProducers {
 }
 ----
 
-##### `@Configurable` and `Defaultable<>`
+#### `@Configurable` and `Defaultable<>`
 
 When creating a new `Fraction` implementation, each of its fields
 will automatically be configurable through the `project-*.yml` 
@@ -314,7 +314,7 @@ Generally speaking, it is easier to push all configurable bits to the
 related `*Fraction` implementation, and `@Inject` the fraction into
 the relevant CDI components.
 
-#### Auto-detection
+### Auto-detection
 
 An important point of WildFly Swarm is the capability of the plugin
 to autodetect that a fraction is required.  Currently this is only supported
@@ -350,7 +350,7 @@ public class BatchPackageDetector extends PackageFractionDetector {
 }
 ----
 
-#### Transitive dependencies
+### Transitive dependencies
 
 If your fraction depends upon the presence of a Servlet container being
 configured, you should add a dependency on the necessary fractions into
@@ -369,7 +369,7 @@ your `pom.xml`
 By doing this, a user must only include your fraction, and the Undertow
 fraction will be dragged along implicitly into their application.
 
-#### Logging
+### Logging
 
 Each fraction should use the `jboss-logging` framework along with
 the appropriate plugins to enable localization.

@@ -31,33 +31,6 @@
     </resources>
     <plugins>
       <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
-        <version>1.5.6</version>
-        <configuration>
-          <sourceDirectory>.</sourceDirectory>
-          <backend>html</backend>
-          <preserveDirectories>true</preserveDirectories>
-          <resources>
-            <resource>
-              <directory>.</directory>
-              <excludes>
-                <exclude>**/*</exclude>
-              </excludes>
-            </resource>
-          </resources>
-        </configuration>
-        <executions>
-          <execution>
-            <id>output-html</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
         <configuration>
