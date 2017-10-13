@@ -22,6 +22,11 @@
 
   <packaging>jar</packaging>
 
+  <properties>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
+    <swarm.fraction.tags>Service Discovery,Netflix OSS,Security</swarm.fraction.tags>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
