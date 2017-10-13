@@ -1,0 +1,4 @@
+# Remoting
+
+Primarily an internal fraction providing remote invocation
+support for higher-level fractions such as EJB.

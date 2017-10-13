@@ -1,7 +1,6 @@
 # Logging
 
-The logging fraction helps configure logging categories,
-levels and handlers.
+Provides facilities to configure logging categories, levels and handlers.
 
 When specifying log-levels through properties, since
 they include dots, they should be placed between
