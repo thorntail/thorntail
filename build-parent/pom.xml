@@ -73,7 +73,7 @@
 
     <version.teiid.feature-pack>9.2.0.Final</version.teiid.feature-pack>
 
-    <version.flyway>4.0.3</version.flyway>
+    <version.flyway>4.2.0</version.flyway>
 
     <version.gradle>2.4</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
