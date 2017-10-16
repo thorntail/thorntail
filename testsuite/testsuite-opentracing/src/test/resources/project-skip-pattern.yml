@@ -1,0 +1,4 @@
+swarm:
+  opentracing:
+    servlet:
+      skipPattern: /_opentracing/health

@@ -15,7 +15,18 @@
  */
 package org.wildfly.swarm.undertow;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.List;
+
+import org.jboss.shrinkwrap.descriptor.api.Descriptors;
+import org.jboss.shrinkwrap.descriptor.api.webapp31.WebAppDescriptor;
+import org.jboss.shrinkwrap.descriptor.api.webcommon31.SecurityConstraintType;
 import org.junit.Test;
+import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -102,5 +113,27 @@ public class WebXmlAssetTest {
 
         asset.setFormLoginConfig("myRealm", "/login", "/error");
         assertThat(asset.getLoginRealm("FORM")).isEqualTo("myRealm");
+    }
+
+    @Test
+    public void testSecurityConstraintPermitAll() throws IOException {
+        WebXmlAsset asset = new WebXmlAsset();
+
+        asset.protect().permitAll();
+        List<SecurityConstraint> constraints = asset.allConstraints();
+        assertThat(constraints).hasSize(1);
+        SecurityConstraint sc = constraints.get(0);
+        assertThat(sc.isPermitAll()).isEqualTo(true);
+
+        InputStreamReader reader = new InputStreamReader(asset.openStream());
+        BufferedReader buffered = new BufferedReader(reader);
+        StringBuilder tmp = new StringBuilder();
+        String line = buffered.readLine();
+        while (line != null) {
+            tmp.append(line);
+            line = buffered.readLine();
+        }
+        assertThat(tmp.toString()).contains("security-constraint");
+        assertThat(tmp.toString()).doesNotContain("auth-constraint");
     }
 }

@@ -1,0 +1,4 @@
+# Transactions
+
+Provides support for the Java Transaction API (JTA) according to 
+JSR-907.

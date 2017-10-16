@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -27,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,13 +42,21 @@ import java.util.zip.ZipEntry;
 
 import javax.enterprise.inject.Vetoed;
 
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.Index;
+import org.jboss.jandex.Indexer;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
+import org.jboss.modules.Resource;
+import org.jboss.modules.filter.PathFilters;
 import org.jboss.modules.log.StreamModuleLogger;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Domain;
+import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -76,6 +86,7 @@ import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
+import org.wildfly.swarm.spi.api.ConfigurationFilter;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 import org.wildfly.swarm.spi.api.SocketBinding;
@@ -606,8 +617,86 @@ public class Swarm {
 
             this.configView.load("defaults");
 
+            initializeConfigFilters();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void initializeConfigFilters() throws ModuleLoadException, IOException, ClassNotFoundException {
+        if (isFatJar()) {
+            initializeConfigFiltersFatJar();
+        } else {
+            initializeConfigFiltersClassPath();
+        }
+    }
+
+    private void initializeConfigFiltersFatJar() throws ModuleLoadException, IOException, ClassNotFoundException {
+        Indexer indexer = new Indexer();
+
+        Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
+        Iterator<Resource> iter = appModule.iterateResources(PathFilters.acceptAll());
+        while (iter.hasNext()) {
+            Resource each = iter.next();
+            if (each.getName().endsWith(".class")) {
+                indexer.index(each.openStream());
+            }
+        }
+
+        Index index = indexer.complete();
+        Set<ClassInfo> impls = index.getAllKnownImplementors(DotName.createSimple(ConfigurationFilter.class.getName()));
+
+        for (ClassInfo each : impls) {
+            String name = each.name().toString();
+            Class<? extends ConfigurationFilter> cls = (Class<? extends ConfigurationFilter>) appModule.getClassLoader().loadClass(name);
+            try {
+                ConfigurationFilter filter = cls.newInstance();
+                this.configView.withFilter(filter);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void initializeConfigFiltersClassPath() throws IOException, ClassNotFoundException {
+        String classpath = System.getProperty("java.class.path");
+        String[] locations = classpath.split(System.getProperty("path.separator"));
+
+        Indexer indexer = new Indexer();
+
+        for (String location : locations) {
+            File file = new File(location);
+            JavaArchive archive = null;
+            if (file.exists()) {
+                if (file.isDirectory()) {
+                    archive = ShrinkWrap.create(ExplodedImporter.class).importDirectory(file).as(JavaArchive.class);
+                } else {
+                    archive = ShrinkWrap.create(ZipImporter.class).importFrom(file).as(JavaArchive.class);
+                }
+
+                Map<ArchivePath, Node> content = archive.getContent();
+                for (ArchivePath path : content.keySet()) {
+                    if (path.get().endsWith(".class")) {
+                        Node node = content.get(path);
+                        indexer.index(node.getAsset().openStream());
+                    }
+                }
+            }
+        }
+
+        Index index = indexer.complete();
+        Set<ClassInfo> impls = index.getAllKnownImplementors(DotName.createSimple(ConfigurationFilter.class.getName()));
+
+        for (ClassInfo each : impls) {
+            String name = each.name().toString();
+            Class<? extends ConfigurationFilter> cls = (Class<? extends ConfigurationFilter>) Class.forName(name);
+            try {
+                ConfigurationFilter filter = cls.newInstance();
+                this.configView.withFilter(filter);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -637,7 +726,10 @@ public class Swarm {
             vme.printStackTrace();
             System.exit(1);
         } catch (final Throwable t) {
-            tryToStopAfterStartupError(t, swarm);
+            if (System.getProperty("swarm.inhibit.auto-stop") == null) {
+                t.printStackTrace();
+                tryToStopAfterStartupError(t, swarm);
+            }
             throw t;
         }
 

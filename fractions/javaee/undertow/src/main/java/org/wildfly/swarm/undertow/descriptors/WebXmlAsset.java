@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.descriptor.api.javaee7.ListenerType;
 import org.jboss.shrinkwrap.descriptor.api.javaee7.ParamValueType;
 import org.jboss.shrinkwrap.descriptor.api.webapp31.WebAppDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.webcommon31.LoginConfigType;
+import org.jboss.shrinkwrap.descriptor.api.webcommon31.SecurityConstraintType;
 import org.jboss.shrinkwrap.descriptor.api.webcommon31.ServletType;
 
 import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
@@ -133,6 +134,10 @@ public class WebXmlAsset implements NamedAsset {
         return constraint;
     }
 
+    public List<SecurityConstraint> allConstraints() {
+        return constraints;
+    }
+
     /**
      *
      * @param servletName
@@ -149,14 +154,16 @@ public class WebXmlAsset implements NamedAsset {
         Set<String> allRoles = new HashSet<>();
 
         for (SecurityConstraint each : this.constraints) {
-            this.descriptor.createSecurityConstraint()
+            SecurityConstraintType<WebAppDescriptor> sc = this.descriptor.createSecurityConstraint()
                     .createWebResourceCollection()
                     .urlPattern(each.urlPattern())
                     .httpMethod(each.methods().toArray(new String[each.methods().size()]))
-                    .up()
-                    .getOrCreateAuthConstraint()
-                    .roleName(each.roles().toArray(new String[each.roles().size()]))
                     .up();
+            if (!each.isPermitAll()) {
+                sc.getOrCreateAuthConstraint()
+                        .roleName(each.roles().toArray(new String[each.roles().size()]))
+                        .up();
+            }
 
             allRoles.addAll(each.roles());
         }

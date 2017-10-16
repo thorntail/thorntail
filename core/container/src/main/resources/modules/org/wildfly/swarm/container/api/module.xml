@@ -47,6 +47,7 @@
     <module name="org.jboss.weld.se"/>
     <module name="javax.enterprise.api"/>
     <module name="javax.inject.api"/>
+    <module name="org.jboss.jandex"/>
     <module name="javax.annotation.api" export="true"/>
 
     <!-- the following have been added to support xml parsing -->

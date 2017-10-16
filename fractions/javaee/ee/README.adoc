@@ -1,0 +1,8 @@
+# EE
+
+An internal fraction used to support other higher-level fractions. 
+
+The EE fraction does _not_ imply the totality of Java EE support. 
+
+If you require specific Java EE technologies, address them individually,
+for example `jaxrs`, `cdi`, `datasources`, or `ejb`.

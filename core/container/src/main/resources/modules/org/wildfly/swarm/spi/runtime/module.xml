@@ -6,6 +6,9 @@
   -->
 
 <module xmlns="urn:jboss:module:1.5" name="org.wildfly.swarm.spi" slot="runtime">
+  <properties>
+    <property name="jboss.api" value="private"/>
+  </properties>
   <resources>
     <artifact name="org.wildfly.swarm:spi:${project.version}">
       <filter>

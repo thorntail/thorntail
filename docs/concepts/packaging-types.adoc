@@ -1,0 +1,49 @@
+[#packaging_types]
+= Packaging Types (Uberjars & Hollow Jars)
+
+When using WildFly Swarm, you have two different ways to package your
+runtime and application, depending on how you intend to use and deploy
+it.
+
+## Uberjar
+
+An _uberjar_ is a single Java `.jar` file that includes everything that
+is required to execute your application.  This includes both the selected
+runtime components (the parts you may consider to be the _app server_)
+along with the application compoments (you `.war`).
+
+An uberjar is useful for many continuous-integration/continuous-deployment (CI/CD)
+pipeline styles, in which a single runnable binary artifact is produced 
+and moved through your organization's testing, validation and production
+environments.
+
+The uberjars produced by WildFly Swarm include the name of your application,
+along with the suffix of `-swarm.jar`.
+
+An uberjar can be executed as any executable JAR:
+
+    $ java -jar myapp-swarm.jar
+
+## Hollow Jar
+
+A _hollow jar_ is similar to the _uberjar_ above, but includes _only_
+the runtime components, and does _not_ include your application code.
+When using a hollow jar, you must provide the application `.war` file
+as an argument on the command-line when executing.
+
+A hollow jar works well for deployment processes that involve Linux
+containers such as Docker. When using containers, you may wish to place
+the runtime components on a lower container image which remains more
+consistent, while allowing quicker rebuilds of the higher layer which
+contains only your application code.
+
+The hollow jars produced by WildFly Swarm include the name of the
+application, along with the suffix of `-hollowswarm.jar`. You must
+retain your `.war` application separately in order to benefit from
+the hollow jar.
+
+To execute a hollow jar with your application, simply pass the path
+to your `.war` on the commandline:
+
+    $ java -jar myapp-hollowswarm.jar myapp.war
+

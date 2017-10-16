@@ -1,0 +1,4 @@
+# JAX-RS + JAXB
+
+Provides support within JAX-RS applications for the XML binding
+framework according to JSR-31 and JSR-222.

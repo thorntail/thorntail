@@ -1,0 +1,4 @@
+# Request Controller
+
+Provides support for the WildFly request-controller, allowing
+for graceful pause/resume/shutdown of the container.

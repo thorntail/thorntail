@@ -1,12 +1,11 @@
 # Datasources Fraction
 
-The Datasources fraction provides support for container-managed
-database connections.
+Provides support for container-managed database connections.
 
 ## Autodetectable drivers
 
-If a user application includes the appropriate vendor JDBC
-library in their normal dependencies, they will be detected
+If your application includes the appropriate vendor JDBC
+library in its normal dependencies, these drivers will be detected
 and installed by WildFly Swarm without any additional effort.
 
 The list of detectable drivers and their `driver-name` which
@@ -56,5 +55,4 @@ may be used when defining a datasource is as follows:
 |PrestoDB
 |`prestodb`
 |===
-
 

@@ -17,7 +17,9 @@ package org.wildfly.swarm.datasources.runtime.drivers;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.jboss.modules.DependencySpec;
 import org.jboss.modules.ModuleIdentifier;
+import org.jboss.modules.ModuleSpec.Builder;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
@@ -50,4 +52,11 @@ public class SQLServerDriverInfo extends DriverInfo {
         datasource.userName(DEFAULT_USER_NAME);
         datasource.password(DEFAULT_PASSWORD);
     }
+
+    @Override
+    protected void addModuleDependencies(Builder builder) {
+        // JDBC driver for SQL Server 6.0 - 6.2 is using javax.xml.bind.DatatypeConverter
+        builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("javax.xml.bind.api")));
+    }
+
 }

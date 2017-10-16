@@ -7,11 +7,19 @@
 
 * Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command (Maybe add something to CI job to do this?).
 
+* Update next development version in:
+	* testsuite/testsuite-cassandra/pom.xml
+	* testsuite/testsuite-mongodb/pom.xml
+	* testsuite/testsuite-neo4j/pom.xml
+	*  testsuite/testsuite-orientdb/pom.xml
+
 * Wait for release to be available in Maven Central before continuing with examples releases
 
 # JIRA Releasing
 
 * Go to https://issues.jboss.org/projects/SWARM?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased and select `...` under Actions for the row matching the release we are performing.
+
+* Select `Release` from the drop down.
 
 * Set the current date, which is the date of the release and then click `Release`.
 
@@ -45,7 +53,7 @@
 
 * Then build both regular and uberjar versions
 
-        mvn clean && mvn install 
+        mvn clean && mvn install
 
         mvn clean && mvn install -Puberjar
 

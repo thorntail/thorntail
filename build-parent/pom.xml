@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
-    <version>2017.9.0-SNAPSHOT</version>
+    <version>2017.11.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -22,7 +22,7 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>60</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>63</version.wildfly.swarm.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
@@ -35,7 +35,7 @@
     <version.cassandra.config-api>1.2.0</version.cassandra.config-api>
     <version.neo4j.config-api>1.2.0</version.neo4j.config-api>
     <version.orientdb.config-api>1.2.0</version.orientdb.config-api>
-    <version.wildfly.nosql.feature-pack>1.0.0.Alpha3</version.wildfly.nosql.feature-pack>
+    <version.wildfly.nosql.feature-pack>1.0.0.Alpha4</version.wildfly.nosql.feature-pack>
 
     <version.wildfly>10.1.0.Final</version.wildfly>
     <version.org.wildfly.core>2.2.1.Final</version.org.wildfly.core>
@@ -46,8 +46,8 @@
     <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
 
     <version.jolokia>1.3.4</version.jolokia>
-    <version.io.swagger>1.5.11</version.io.swagger>
-    <version.org.webjars.swagger-ui>2.1.4</version.org.webjars.swagger-ui>
+    <version.io.swagger>1.5.16</version.io.swagger>
+    <version.org.webjars.swagger-ui>3.2.2</version.org.webjars.swagger-ui>
     <version.swagger.jackson>2.8.4</version.swagger.jackson>
     <version.swagger.reflections>0.9.10</version.swagger.reflections>
     <version.swagger.slf4j>1.6.3</version.swagger.slf4j>

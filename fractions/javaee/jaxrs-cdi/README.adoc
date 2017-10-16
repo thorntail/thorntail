@@ -1,0 +1,6 @@
+# JAX-RS + CDI
+
+An internal fraction providing integration between JAX-RS
+and CDI.
+
+For more information, see the JAX-RS and CDI fraction documentation.

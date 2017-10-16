@@ -1,0 +1,7 @@
+# Connector
+
+Primarily an internal fraction used to provide support for 
+higher-level fractions such as JCA (JSR-322).
+
+If you require JCA support, please see the JCA fraction 
+documentation.

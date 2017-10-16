@@ -1,0 +1,421 @@
+= How to Create a Fraction
+
+## Introduction
+
+The composable pieces of WildFly Swarm are called _fractions_. Each fraction
+starts with a single Maven-addressable artifact which may transitively bring
+in others.
+
+## The `pom.xml`
+
+It is useful to set at least a pair of properties, specifying the version
+of the WildFly Swarm SPI and fraction-plugin being used:
+
+[source,xml,,subs=+attributes]
+----
+<properties>
+  <version.swarm>{version}</version.swarm.spi>
+  <version.swarm.fraction-plugin>34</version.swarm.fraction-plugin>
+</properties>
+----
+
+You can include all of the primary bits of WildFly Swarm using the
+`bom-all` artifact in a `<dependencyManagement>` import. Additionally,
+you'll need two more dependencies added in order to write CDI components
+to configure the server.
+
+[source,xml]
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>bom-all</artifactId>
+      <version>${version.swarm}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>javax.inject</groupId>
+    <artifactId>javax.inject</artifactId>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>javax.enterprise</groupId>
+    <artifactId>cdi-api</artifactId>
+    <scope>provided</scope>
+  </dependency>
+</dependencies>
+----
+
+Additionally, the `wildfly-swarm-fraction-plugin` should be configured
+within the parent `pom.xml` so that it fires for every sub-module:
+
+[source,xml]
+----
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+      <version>${version.swarm.fraction-plugin}</version>
+      <executions>
+        <execution>
+          <phase>process-classes</phase>
+          <goals>
+            <goal>process</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+----
+
+## What's in a Fraction
+
+A "fraction" can include all or none of the following components. Ultimately
+a fraction contributes configuration or capabilities to a runtime system.
+
+### Package Layout
+
+For a given fraction, a unique package root is required.  In the usual
+case of the core code, it matches the pattern of `org.wildfly.swarm._CAPABILITY_`,
+such as `org.wildfly.swarm.undertow` or `org.wildfly.swarm.naming`.
+
+Within the root may be two (or more) additional sub-packages, named
+'runtime' and 'deployment'.
+
+The `org.wildfly.swarm._CAPABILITY_.runtime` package holds classes that are
+considered "back-end" components, loaded via our internal CDI implementation
+in order to configure and setup the server.
+
+The `org.wildfly.swarm._CAPABILITY_.deployment` package holds other classes
+that should not be considered either part of the front-end API of the fraction
+exposed to users, nor a part of the back-end components to configure the
+server.  Instead, the `.deployment` package is a sidecar to hold additional
+classes that may be added to deployment archives.
+
+### The `module.conf`
+
+Alongside your `pom.xm` you need at least an empty `module.conf` file to signal
+the plugin that your build is actually a fraction.
+
+This file is used to enumerate the JBoss-Modules dependencies your fraction
+may have, and helps produce the resulting `module.xml` files for your fraction.
+
+In this file, one per line, you may list the module dependencies you may have.
+If your fraction relies on runtime linking to other fractions, they should
+typically be listed in this file.
+
+[source]
+----
+org.jboss.logging
+org.wildfly.swarm.undertow
+----
+
+### The `*Fraction.java`
+
+If the fraction includes configuration capabilities, or otherwise alters
+the runtime system through deployments or adjustments to the server, it
+may include an implementation of `org.wildfly.swarm.spi.api.Fraction`.
+
+Any opaque POJO configuration details that are required may be added in
+the implementation, and will be made available to the back-end runtime portion
+during server boot-up to control configuration.
+
+In the event that no particular configuration values are required, no
+`Fraction` implementation is required.  If provided, it should reside in the
+absolute root of the fraction java package, such as `org.wildfly.swarm.undertow.UndertowFraction`.
+
+[source,java]
+----
+package com.mycorp.cheese;
+
+import java.util.Set;
+import java.util.HashSet;
+import org.wildfly.swarm.spi.api.Fraction;
+
+public class CheeseFraction implements Fraction {
+  // arbitrary configuration parameters are allowed
+
+  public void cheese(String type) {
+    this.cheeses.add( type );
+  }
+
+  public void cheeses(Set<String> types) {
+    this.cheeses.addAll( types );
+  }
+
+  public Set<String> cheeses() {
+    return this.cheeses;
+  }
+
+  private Set<String> cheeses = new HashSet<>();
+}
+----
+
+### Runtime CDI Components
+
+Within the `runtime` sub-package of the fraction, a variety of CDI-enabled
+components may be used.  Within these classes, you can use typical CDI mechanisms
+such as `@Inject`, `@Produces`, and `Instance<>` in order to accomplish whatever
+is required for your fraction.  Typically these components would, at the minimum,
+inject their own fraction. They should each be marked as `@ApplicationScoped`.
+
+[source,java]
+----
+@ApplicationScoped
+public class MyComponents implements Whatever {
+
+  @Inject
+  private MyFraction myFraction;
+
+}
+----
+
+#### `ArchivePreparer`
+
+If your fraction needs an opportunity to alter or otherwise prepare all deployed
+archives, you may implement the `org.wildfly.swarm.spi.api.ArchivePreparer` interface.
+
+[source,java]
+----
+@ApplicationScoped
+public class MyArchivePreparer implements ArchivePreparer {
+
+  @Inject
+  private MyFraction myFraction;
+
+  public void prepareArchive(Archive<?> archive) {
+    archive.as( WARArchive.class ).setContextRoot( myFraction.getContextRoot() );
+  }
+}
+----
+
+#### `ArchiveMetadataProcessor`
+
+If your fraction needs an opportunity to process the Jandex metadata of all deployed
+archives, you may implement the `org.wildfly.swarm.spi.api.ArchiveMetadataProcessor`
+interface.
+
+[source,java]
+----
+@ApplicationScoped
+public class MyArchiveMetadataProcessor implements ArchiveMetadataProcessor {
+
+  @Inject
+  private MyFraction myFraction;
+
+  public void processArchive(Archive<?> archive, Index index) {
+    // ...
+  }
+}
+
+----
+
+#### `Customizer`
+
+Most of the heavy-lifting of configuration may occur within implementations of
+`org.wildfly.swarm.spi.api.Customizer`.
+
+If your fraction is always present with other fractions, cross-fraction manipulation
+may be achieved.
+
+Two different executions of `Customizers` occur.  All customizers annotated with
+`@Pre` are fired, followed by all annotated with `@Post`.
+
+[source,java]
+----
+@Post
+@ApplicationScoped
+public class MyCustomizer implements Customizer {
+
+  @Inject
+  private MyFraction myFraction;
+
+  @Inject
+  private UndertowFraction undertowFraction;
+
+  public void customize() {
+    if ( undertowHasSSL() ) {
+      doSomethingSpecialWithMyFraction()
+    }
+  }
+}
+----
+
+#### `Archive` producers
+
+In some cases, a fraction implicitly produces a deployment archive by its simple
+presence in the dependency graph.  For example, including `org.wildfly.swarm:jolokia`
+ensures that the Jolokia web-app is deployed.  This is accomplished by having a CDI
+component that `@Produces` a ShrinkWrap `Archive`.  No particular interface is required
+to be implemented.
+
+[source,java]
+----
+@ApplicationScoped
+public MyArchiveProducers {
+
+  @Inject
+  private MyFraction myFraction;
+
+  @Produces
+  Archive myManagementConsole() {
+    WARArchive archive = ...  // produces the Archive any way you like
+    archive.setContextRoot( myFraction.getContextRoot() );
+    return archive;
+  }
+}
+----
+
+#### `@Configurable` and `Defaultable<>`
+
+When creating a new `Fraction` implementation, each of its fields
+will automatically be configurable through the `project-*.yml` 
+mechanisms.  In the case that different names for the configurable
+items are desired, the `@Configuration` annotation may be used.
+
+Additionally, the `@AttributeDocumentation` annotation should be
+used on all fields in order to provide documentation, both
+in the reference-guide and through the `--config-help` commandline
+capabilities.
+
+[source,java]
+----
+@Configurable("swarm.myfraction.taco")
+@AttributeDefinite("Determines the type of taco to expose.")
+private String tacoType;
+----
+
+In the event that there should be a default value provided if the
+user provides none, the `Defaultable<T>` type is useful.  The class
+also provided type-safe static method for initializing the defaultable
+item.
+
+[source,java]
+----
+@Configurable("swarm.myfraction.taco")
+@AttributeDefinite("Determines the type of taco to expose.")
+private Defaultable<String> tacoType = Defaultable.string("soft");
+----
+
+Each of these may also be applied to fields within `ArchivePreparer`,
+`ArchiveMetadataProcessor`, and `Customizer` implementations.  By default,
+no fields from these items will be considered configurable unless explicitly
+marked as `@Configurable`.
+
+Generally speaking, it is easier to push all configurable bits to the
+related `*Fraction` implementation, and `@Inject` the fraction into
+the relevant CDI components.
+
+### Auto-detection
+
+An important point of WildFly Swarm is the capability of the plugin
+to autodetect that a fraction is required.  Currently this is only supported
+by fractions that are part of the core WildFly Swarm distribution. In
+the event that your fraction is merged into core, you will want to possibly
+also support auto-detection.
+
+This is accomplished by placing detection logic classes within the
+`.detect.*` subpackage of your fraction.
+
+This functionality is still evolving, and thus not terribly well documented
+yet.
+
+An example of detecting a fraction (in this case the Batch JBeret fraction)
+based on application usage of a given API:
+
+[source,java]
+----
+package org.wildfly.swarm.batch.jberet.detect;
+
+import org.wildfly.swarm.spi.meta.PackageFractionDetector;
+
+public class BatchPackageDetector extends PackageFractionDetector {
+
+    public BatchPackageDetector() {
+        anyPackageOf("javax.batch");
+    }
+
+    @Override
+    public String artifactId() {
+        return "batch-jberet";
+    }
+}
+----
+
+### Transitive dependencies
+
+If your fraction depends upon the presence of a Servlet container being
+configured, you should add a dependency on the necessary fractions into
+your `pom.xml`
+
+[source,xml]
+----
+<dependencies>
+  <dependency>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>undertow</artifactId>
+  </dependency>
+</dependencies>
+----
+
+By doing this, a user must only include your fraction, and the Undertow
+fraction will be dragged along implicitly into their application.
+
+### Logging
+
+Each fraction should use the `jboss-logging` framework along with
+the appropriate plugins to enable localization.
+
+Include the following `<dependency>` items within your `pom.xml`:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.jboss.logging</groupId>
+  <artifactId>jboss-logging-annotations</artifactId>
+  <scope>provided</scope>
+  <optional>true</optional>
+</dependency>
+<dependency>
+  <groupId>org.jboss.logging</groupId>
+  <artifactId>jboss-logging-processor</artifactId>
+  <scope>provided</scope>
+  <optional>true</optional>
+</dependency>
+----
+
+Each fraction that requires logging should then include a related
+`*Messages` classe akin to:
+
+[source,java]
+----
+@MessageLogger(projectCode = "WFSMYFRAC", length = 4)
+public interface MyFractionMessages extends BasicLogger {
+
+    MyFractionMessages MESSAGES = Logger.getMessageLogger(MyFractionMessages.class, "org.wildfly.swarm.myfraction");
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 1, value = "Error eating a taco: %s.")
+    void errorEatingTaco(String tacoDescriptor, @Cause Throwable t);
+
+}
+----
+
+Now, typesafe logging may occur such as 
+
+[source,java]
+----
+try {
+  ...
+} catch (TacoException t) {
+  MyFractionMessages.MESSAGES.errorEatingTaco("crunchy", t);
+}
+----

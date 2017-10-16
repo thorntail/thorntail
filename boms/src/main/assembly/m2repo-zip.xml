@@ -1,0 +1,24 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+
+  <id>m2repo</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <baseDirectory>wfs-${project.version}-maven-repository</baseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>./../m2repo/</directory>
+      <outputDirectory>/maven-repository</outputDirectory>
+      <includes>
+        <include>${m2repo.include.pattern}</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>./../../../src/main/resources/m2repo/</directory>
+      <outputDirectory>/</outputDirectory>
+      <filtered>true</filtered>
+    </fileSet>
+  </fileSets>
+
+</assembly>
