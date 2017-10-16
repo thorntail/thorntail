@@ -1,15 +1,22 @@
+:toc: left
 = WildFly Swarm Documentation: {version}
 
-## Concepts
+# Concepts
 
-* link:concepts/packaging-types.html[Packaging Types]
+include::concepts/packaging-types.adoc[leveloffset=+1]
 
-## HOWTO
+# HOWTO
 
-* Basics
-** link:howto/use-a-bom/index.html[Use a BOM]
-** link:howto/create-an-uberjar/index.html[Create an Uberjar]
-** link:howto/create-a-datasource/index.html[Create a Datasource]
-** link:howto/test-in-container/index.html[Test In-container]
-* Advanced
-** link:howto/create-a-fraction/index.html[Create a Fraction]
+## Basics
+
+include::howto/use-a-bom/index.adoc[leveloffset=+2]
+include::howto/create-an-uberjar/index.adoc[leveloffset=+2]
+include::howto/create-a-datasource/index.adoc[leveloffset=+2]
+include::howto/test-in-container/index.adoc[leveloffset=+2]
+
+ifndef::product[]
+
+## Advanced
+include::howto/create-a-fraction/index.adoc[leveloffset=+2]
+
+endif::product[]

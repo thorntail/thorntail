@@ -41,7 +41,7 @@ scope) to your application:
 [source,xml]
 ----
 <dependencies>
-include::{docdir}/pom.xml[tag=dependencies,indent=2]
+include::pom.xml[tag=dependencies,indent=2]
 </dependencies>
 ----
 
@@ -63,7 +63,7 @@ to a datasource.
 swarm:
   datasources:
     jdbc-drivers:
-include::{docdir}/src/main/resources/project-defaults.yml[tag=driver,indent=6]
+include::src/main/resources/project-defaults.yml[tag=driver,indent=6]
 ----
 
 ## Datasources
@@ -77,13 +77,13 @@ one or more datasources using that driver, under `swarm` -> `datasources` -> `da
 swarm:
   datasources:
     data-sources:
-include::{docdir}/src/main/resources/project-defaults.yml[tag=datasource,indent=6]
+include::src/main/resources/project-defaults.yml[tag=datasource,indent=6]
 ----
 
 ## Full `project-defaults.yml`
 
 [source,yaml]
 ----
-include::{docdir}/src/main/resources/project-defaults.yml[tag=all]
+include::src/main/resources/project-defaults.yml[tag=all]
 ----
 
