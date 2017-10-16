@@ -79,7 +79,7 @@ through a property in your `pom.xml`
 [source,xml]
 ----
 <properties>
-include::{docdir}/pom.xml[tag=property,indent=2]
+include::pom.xml[tag=property,indent=2]
 </properties>
 ----
 
@@ -96,7 +96,7 @@ only stable fractions are available.
 ----
 <dependencyManagement>
   <dependencies>
-include::{docdir}/pom.xml[tag=bom-dependency,indent=4]
+include::pom.xml[tag=bom-dependency,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
@@ -110,8 +110,8 @@ for `bom-unstable`:
 ----
 <dependencyManagement>
   <dependencies>
-include::{docdir}/pom.xml[tag=bom-dependency,indent=4]
-include::{docdir}/pom.xml[tag=bom-unstable-dependency,indent=4]
+include::pom.xml[tag=bom-dependency,indent=4]
+include::pom.xml[tag=bom-unstable-dependency,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
@@ -151,7 +151,7 @@ as `undertow`.
 [source,xml]
 ----
 <dependencies>
-include::{docdir}/pom.xml[tag=fraction-dependencies,indent=2]
+include::pom.xml[tag=fraction-dependencies,indent=2]
 </dependencies>
 ----
 
@@ -175,7 +175,7 @@ the BOM import.
 ----
 <plugins>
   <plugin>
-include::{docdir}/pom.xml[tag=plugin,indent=4]
+include::pom.xml[tag=plugin,indent=4]
       ...
   </plugin>
 </plugins>

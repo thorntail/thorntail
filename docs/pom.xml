@@ -42,12 +42,13 @@
         <version>1.5.5</version>
         <inherited>false</inherited>
         <configuration>
-          <relativeBaseDir>true</relativeBaseDir>
           <attributes>
             <version>${project.version}</version>
             <product>${swarm.product.build}</product>
           </attributes>
           <sourceDirectory>.</sourceDirectory>
+          <sourceDocumentName>index.adoc</sourceDocumentName>
+          <doctype>book</doctype>
           <backend>html</backend>
           <preserveDirectories>true</preserveDirectories>
           <resources>

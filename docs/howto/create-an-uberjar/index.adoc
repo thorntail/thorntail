@@ -16,7 +16,7 @@ with WildFly Swarm is as an _uberjar_.
 [source,xml]
 ----
 <plugins>
-include::{docdir}/pom.xml[tag=plugin,indent=2]
+include::pom.xml[tag=plugin,indent=2]
 </plugins>
 ----
 
