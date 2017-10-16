@@ -1,3 +1,4 @@
+[#create_a_datasource]
 = How to create a datasource
 
 When working with Java applications, a datasource has
@@ -35,9 +36,17 @@ The currently detectable drivers include:
 * Sybase
 * DB2
 
-Simply add the appropriate dependency (with the default `<scope>compile</scope>`
-scope) to your application:
+.Prerequisites
 
+* A _Maven_-based project
+* A database you wish to connect to
+* The Maven coordinates of the JDBC driver you wish to use
+
+.Procedure
+
+. Add the appropriate dependency (with the default `<scope>compile</scope>`
+scope) to your application:
++
 [source,xml]
 ----
 <dependencies>
@@ -45,19 +54,19 @@ include::pom.xml[tag=dependencies,indent=2]
 </dependencies>
 ----
 
-### Explicit JDBC Driver Configuration
-
+. Optionally configured the JDBC driver
++
 In the event you need to provide customized driver configuration instead
 of relying on the auto-detection, you can use `project-defaults.yml` to define
 the driver information.  This presumes you've followed the normal WildFly
 instructions for creating an appropriate `module.xml` to expose the 
 driver through _JBoss Modules_.  This is completely unnecessary if you
 rely upon the auto-detection mentioned above.
-
++
 Underneath the tree of `swarm` -> `datasources` -> `jdbc-drivers`, you
 can define the driver by key, which will be used later for connecting it
 to a datasource.  
-
++
 [source,yaml]
 ----
 swarm:
@@ -66,12 +75,12 @@ swarm:
 include::src/main/resources/project-defaults.yml[tag=driver,indent=6]
 ----
 
-## Datasources
-
+. Configure a Datasource
++
 Once a driver has been configured, through either auto-detection or
 explicit configuration, you can use `project-defaults.yml` to configure
 one or more datasources using that driver, under `swarm` -> `datasources` -> `data-sources`:
-
++
 [source,yaml]
 ----
 swarm:

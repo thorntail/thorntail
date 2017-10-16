@@ -1,3 +1,4 @@
+[#use-a-bom]
 = How to use a BOM
 
 If you want to explicitly enumerate the WildFly Swarm
@@ -72,26 +73,26 @@ endif::[]
 .Procedure
 
 . Include a `bom` artifact in your `pom.xml`
-
++
 We usually suggest tracking the current version of WildFly Swarm
 through a property in your `pom.xml`
-
++
 [source,xml]
 ----
 <properties>
 include::pom.xml[tag=property,indent=2]
 </properties>
 ----
-
++
 In all usage of BOMs with Maven, they are _imported_
 into your project through the `<dependencyManagement>`
 section.
-
++
 You must specify the `<type>pom</type>` and `<scope>import</scope>`.
-
++
 In the example below, we import the `bom` artifact to ensure that
 only stable fractions are available.
-
++
 [source,xml]
 ----
 <dependencyManagement>
@@ -100,12 +101,12 @@ include::pom.xml[tag=bom-dependency,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
-
++
 ifndef::product[] 
 If we also wanted to experiment with some unstable fractions
 in addition to the stable ones, we would uncomment the `<dependency>`
 for `bom-unstable`:
-
++
 [source,xml]
 ----
 <dependencyManagement>
@@ -115,46 +116,44 @@ include::pom.xml[tag=bom-unstable-dependency,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
-
++
 Remember, each flavor of `bom`, with the exception of `bom-all`
 contains only the type of fractions indicated.  This allows mixing
 and matching the combination of fraction stability that you want
 with fine granularity.  If you want both stable and unstable, you
 would need to include `bom-stable` (or simply `bom`, which is the same
 as `bom-stable`) *and* `bom-unstable`.
-
 endif::[]
 
-[start=2]
 . Include WildFly Swarm dependencies
-
++
 Once you've used the `<dependencyManagement>` section to import
 one or more WildFly Swarm BOMs, your application still has *no* 
 dependencies on WildFly Swarm artifacts.  All that has been accomplished
 is:
-
++
 * Providing version-management for any WildFly Swarm artifacts you
 subsequently *choose* to use.
 * Providing support to your IDE for auto-completing known artifacts
 while you edit your own `pom.xml`
-
++
 That being said, now you need to actually include some WildFly Swarm
 artifact dependencies, based upon the capabilities your application
 requires.
-
++
 This is done through normal Maven `<dependency>` elements.
-
++
 Here we include explicit dependencies on the `jaxrs` and `datasources`
 fractions, which will provide transitive inclusion of others, such
 as `undertow`.
-
++
 [source,xml]
 ----
 <dependencies>
 include::pom.xml[tag=fraction-dependencies,indent=2]
 </dependencies>
 ----
-
++
 Notice, you have not had to specify the usual `<version>` element
 for these `<dependency>` blocks, because the BOM you imported
 via `<dependencyManagement>` handles that portion for you.
@@ -183,6 +182,5 @@ include::pom.xml[tag=plugin,indent=4]
 
 .Related Information
 
-* Create an Uberjar
-
+* <<create_an_uberjar>>
 

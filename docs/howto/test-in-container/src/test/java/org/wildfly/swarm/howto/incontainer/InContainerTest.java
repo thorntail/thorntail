@@ -1,7 +1,9 @@
+// tag::classdef[]
 // tag::package[]
 package org.wildfly.swarm.howto.incontainer;
 // end::package[]
 
+// end::classdef[]
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -19,7 +21,9 @@ import static org.junit.Assert.assertNotNull;
 // tag::prolog[]
 @RunWith(Arquillian.class)
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
+// tag::classdef[]
 public class InContainerTest {
+// end::classdef[]
 // end::prolog[]
 
     // tag::arquillian-resource[]
@@ -34,4 +38,6 @@ public class InContainerTest {
         assertNotNull( ds );
     }
     // end::test[]
+// tag::classdef[]
 }
+// end::classdef[]

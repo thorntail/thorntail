@@ -5,6 +5,7 @@ When using WildFly Swarm, you have two different ways to package your
 runtime and application, depending on how you intend to use and deploy
 it.
 
+[#uberjar]
 ## Uberjar
 
 An _uberjar_ is a single Java `.jar` file that includes everything that
@@ -24,6 +25,7 @@ An uberjar can be executed as any executable JAR:
 
     $ java -jar myapp-swarm.jar
 
+[#hollow_jar]
 ## Hollow Jar
 
 A _hollow jar_ is similar to the _uberjar_ above, but includes _only_
