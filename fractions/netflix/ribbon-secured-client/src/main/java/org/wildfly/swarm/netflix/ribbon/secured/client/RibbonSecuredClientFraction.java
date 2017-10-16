@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
+ * Copyright 2017 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.netflix.ribbon.secured;
+package org.wildfly.swarm.netflix.ribbon.secured.client;
 
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
- * @author Bob McWhirter
+ * @author Martin Kouba
  */
-@DeploymentModule(name = "org.wildfly.swarm.netflix.ribbon.secured.client")
-public class RibbonSecuredFraction implements Fraction<RibbonSecuredFraction> {
+public class RibbonSecuredClientFraction implements Fraction<RibbonSecuredClientFraction> {
 }
