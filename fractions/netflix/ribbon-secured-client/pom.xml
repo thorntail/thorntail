@@ -18,7 +18,7 @@
   <artifactId>ribbon-secured-client</artifactId>
 
   <name> Ribbon Secured Client</name>
-  <description> Ribbon Secured Client</description>
+  <description>Ribbon Secured Client</description>
 
   <packaging>jar</packaging>
 
@@ -26,6 +26,15 @@
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Service Discovery,Netflix OSS,Security</swarm.fraction.tags>
   </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 
   <dependencies>
     <dependency>
