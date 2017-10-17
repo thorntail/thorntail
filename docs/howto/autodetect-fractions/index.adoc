@@ -1,0 +1,54 @@
+[#autodetecting-fractions]
+= Auto-detecting fractions
+
+Migrating existing legacy applications to benefit from WildFly Swarm is simple when using _fraction auto-detection_. 
+WildFly Swarm can detect which APIs are being used by your application and include the appropriate fractions during the build.
+
+For instance, your `pom.xml` may already specify the API `.jar` for a specification such as JAX-RS:
+
+[source,java]
+----
+<dependencies>
+include::pom.xml[tag=jaxrs,index=2]
+</dependencies>
+----
+
+Sensing this, WildFly Swarm will include the `jaxrs` fraction during a build, without any further effort on your part.
+
+.Prerequisites
+
+* An existing Maven-based application with a `pom.xml` file.
+
+.Procedure
+
+. Add the `wildfly-swarm-maven-plugin` to your `pom.xml` in a `<plugin>` block,
+  with an `<execution>` specifying the `package` goal.
+
+[source,xml]
+----
+<plugins>
+include::pom.xml[tag=plugin,indent=2]
+</plugins>
+----
+
+[start=2]
+. Perform a normal Maven build:
+
+[source]
+----
+$ mvn package
+----
+
+. Execute the resulting uberjar:
+
+[source]
+----
+$ java -jar ./target/myapp-swarm.jar
+----
+
+.Related Information
+
+* xref:fractions[]
+* xref:creating-an-uberjar[]
+* xref:creating-a-hollow-jar[]
+

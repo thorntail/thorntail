@@ -1,0 +1,46 @@
+[#using-explicit-fractions]
+= Using explicit fractions
+
+When building green-field applications, you may wish to explicitly select which fractions are involved in your application.
+Each fraction brings in the relevant APIs, to allow for compilation of your code, along with ensuring that your application relies upon the appropriate version of a given API.
+
+.Prerequisites
+
+* A Maven-based application with a `pom.xml` file.
+
+.Procedure
+
+. Add the BOM to your `pom.xml` (see xref:using-a-bom[])
+
+. Add the WildFly Swarm Maven plugin to your `pom.xml` (see xref:creating-an-uberjar[] )
+
+. Add one or more dependencies on WildFly Swarm fractions:
++
+[source,xml]
+----
+<dependencies>
+include::pom.xml[tag=jaxrs,indent=2]
+</dependencies>
+----
+
+. Perform a normal Maven build:
++
+[source]
+----
+$ mvn package
+----
+
+. Execute the resulting uberjar:
++
+[source]
+----
+$ java -jar ./target/myapp-swarm.jar
+----
+
+.Related Information
+
+* xref:fractions[]
+* xref:autodetecting-fractions[]
+* xref:creating-an-uberjar[]
+* xref:creating-a-hollow-jar[]
+

@@ -1,0 +1,32 @@
+[#fractions]
+= Fractions
+
+WildFly Swarm is defined by an unbounded set of capabilities. 
+Each chunk of functionality is called a _fraction_.
+Some fractions directly align with commonly-used APIs, such as _JAX-RS_ or _CDI_.
+Other fractions exist to provided higher-order capabilities, such as integration with RHSSO (KeyCloak). 
+
+The normal method for consuming WildFly Swarm is through Maven coordinates.
+Every fraction is addressable using Maven coordinates and can be added to your application's `pom.xml` to bring in functionality, which gets packaged with your application (see xref:creating-an-uberjar[]).
+
+For instance, the fraction for use JAX-RS has the following representation within a Maven `<dependency>` block:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>jaxrs</artifactId>
+</dependency>
+----
+
+While the RHSSO/KeyCloak fraction is addressed as:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>keycloak</artifactId>
+</dependency>
+----
+
+To enable easier consumption of WildFly Swarm fractions, a _bill of materials_ (BOM) is available. For more information, please see xref:using-a-bom[].

@@ -3,6 +3,7 @@
 
 # Concepts
 
+include::concepts/fractions.adoc[leveloffset=+1]
 include::concepts/packaging-types.adoc[leveloffset=+1]
 
 # HOWTO
@@ -12,6 +13,8 @@ include::concepts/packaging-types.adoc[leveloffset=+1]
 include::howto/use-a-bom/index.adoc[leveloffset=+2]
 include::howto/create-an-uberjar/index.adoc[leveloffset=+2]
 include::howto/create-a-hollow-jar/index.adoc[leveloffset=+2]
+include::howto/autodetect-fractions/index.adoc[leveloffset=+2]
+include::howto/explicit-fractions/index.adoc[leveloffset=+2]
 include::howto/create-a-datasource/index.adoc[leveloffset=+2]
 include::howto/test-in-container/index.adoc[leveloffset=+2]
 
