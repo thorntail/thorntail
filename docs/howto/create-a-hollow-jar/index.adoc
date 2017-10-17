@@ -1,0 +1,46 @@
+[#creating-a-hollow-jar]
+= Creating a hollow JAR
+
+The xref:hollow-jar[hollow JAR] is one method of packaging an application for
+execution with WildFly Swarm.
+
+.Prerequisites
+
+* A Maven-based application with a `pom.xml` file.
+
+.Procedure
+
+. Add the `wildfly-swarm-maven-plugin` to your `pom.xml` in a `<plugin>` block,
+  with an `<execution>` specifying the `package` goal.
+  In addition to that, put `true` in the `hollow` property of the
+  `<configuration>` element:
++
+[source,xml]
+----
+<plugins>
+include::pom.xml[tag=plugin,indent=2]
+</plugins>
+----
+
+. Perform a normal Maven build:
++
+[source]
+----
+$ mvn package
+----
+
+. Execute the hollow JAR:
++
+Execute the resulting `-hollowswarm.jar` file using the Java binary and pass
+the `.war` file with your application as the first argument:
++
+[source]
+----
+$ java -jar ./target/myapp-hollowswarm.jar ./target/myapp.war
+----
+
+.Related Information
+
+* xref:hollow-jar[]
+* xref:creating-an-uberjar[]
+

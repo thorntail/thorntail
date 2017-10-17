@@ -1,22 +1,20 @@
-= How to test in-container
+[#testing-in-a-container]
+= Testing in a container
 
-Using *Arquillian*, we have the capability of injecting
-unit tests into a running application.  This allows us
-to peel back the covers and peek inside to ensure that
-the correct things are occurring.
+Using Arquillian, you have the capability of injecting unit tests into a
+running application. This allows you to verify your application is behaving
+correctly. There is an adapter for WildFly Swarm that makes Arquillian-based
+testing work well with WildFly Swarm&ndash;based applications.
 
-Arquillian has existed for quite a while, and WildFly Swarm
-has simply created an adapter and some useful annotations to
-make Arquillian-based testing work well with WildFly Swarm
-applications.
+.Prerequisites
 
-## Dependencies
+* A Maven-based application with a `pom.xml` file.
 
-To use the WildFly Swarm Arquillian integrations, you first
-include the WildFly BOM as described in <<../use-a-bom/index.adoc#,How to use a BOM>>,
-and then reference the `org.wildfly.swarm:arquillian` artifact with
-a `<scope>` of `test`:
+.Procedure
 
+. Include the WildFly Swarm BOM as described in xref:using-a-bom[]. For
+example, `bom-all`:
++
 [source,xml]
 ----
 <dependencyManagement>
@@ -25,7 +23,9 @@ include::pom.xml[tag=bom,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
-
+. Reference the `org.wildfly.swarm:arquillian` artifact in your `pom.xml` file
+with the `<scope>` set to `test`:
++
 [source,xml]
 ----
 <dependencies>
@@ -33,97 +33,106 @@ include::pom.xml[tag=arquillian,indent=2]
 </dependencies>
 ----
 
-## Write your Application
-
-You construct your application like normal, including using
-any default `project-defaults.yml` you need to configure bits of
-it.
-
+. Create your Application.
++
+Write your application as you normally would; use any default
+`project-defaults.yml` files you need to configure it.
++
 [source,yml]
 ----
 include::src/main/resources/project-defaults.yml[]
 ----
 
-## Create a test
-
-Creating an Arquillian test before WildFly Swarm generally involved
+. Create a test class.
++
+NOTE: Creating an Arquillian test before WildFly Swarm existed usually involved
 programatically creating `Archive` due to the fact that applications
-were larger, and the desire was to test a single component in isolation.
+were larger, and the aim was to test a single component in isolation.
++
+[source,java]
+----
+include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=classdef,indent=0]
+----
 
-In a world of microservices, this tends to not be the case, and the entire
-"application" represents one small microservice component.
+. Create a deployment.
++
+--
+In the context of microservices, the entire application represents one small
+microservice component.
 
-The `@DefaultDeployment` annotation has been provided to automatically
+Use the `@DefaultDeployment` annotation to automatically
 create the deployment of the entire application. The `@DefaultDeployment`
-annotation defaults to creating a `.war`, which is not applicable in 
-this case, since Undertow is not involved.
+annotation defaults to creating a `.war` file, which is not applicable in
+this case because Undertow is not involved in this process.
 
-It it applied at the class level of your typical JUnit test, along
-with the usual `@RunWith(Arquillian.class)` annotation:
+Apply the `@DefaultDeployment` annotation at the class level of a JUnit test,
+along with the `@RunWith(Arquillian.class)` annotation:
 
 [source,java]
 ----
 include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=prolog,indent=0]
 ----
 
-Using the `@DefaultDeployment` annotation provided by WildFly Swarm's
-Arquillian integration means you should *not* use the usual Arquillian
-`@Deployment` annotation on a static method returning an `Archive`.
+Using the `@DefaultDeployment` annotation provided by Arquillian integration
+with WildFly Swarm means you should _not_ use the Arquillian `@Deployment`
+annotation on static methods that return an `Archive`.
 
-The `@DefaultDeployment` annotation looks at the package of the test:
+The `@DefaultDeployment` annotation inspects the package of the test:
 
 [source,java]
 ----
 include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=package,indent=0]
 ----
 
-From that package, it uses heuristics to include all of your other application classes
-residing in that package or deeper within the Java packaging hierarchy.
+From the package, it uses heuristics to include all of your other application
+classes in the same package or deeper in the Java packaging hierarchy.
 
-While this allows for creating tests that only create a "default deployment" for sub-packages
-of your application, it does also prevent you from placing tests in an unrelated
-package, such as:
+Even though using the `@DefaultDeployment` annotation allows you to write tests
+that only create a _default deployment_ for sub-packages of your application,
+it also prevents you from placing tests in an unrelated package, for example:
 
 [source,java]
 ----
 package org.mycorp.myapp.test;
 ----
+--
 
-Now, simply write your normal Arquillian-type of test, including using Arquillian
-facilities to gain access to internal running components.
+. Write your test code.
++
+--
+Write an Arquillian-type of test as you normally would, including using
+Arquillian facilities to gain access to internal running components.
 
-Here, we use Arquillian to inject the `InitialContext` of the running application
-into an instance member of our test-case:
+In the example below, Arquillian is used to inject the `InitialContext` of the
+running application into an instance member of the test case:
 
 [source,java]
 ----
 include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=arquillian-resource,indent=0]
 ----
 
-Then our test method itself can use that `InitialContext` in order to ensure
-the datasource we configured using `project-defaults.yml` is actually live and
-available:
+That means the test method itself can use that `InitialContext` to ensure the
+Datasource you configured using `project-defaults.yml` is live and available:
 
 [source,java]
 ----
 include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[tag=test,indent=0]
 ----
+--
 
-
-## Run your test
-
-Since Arquillian is simply an integration with JUnit, you can run your test
-by using Maven or your IDE:
-
-### Using Maven
-
+. Run the tests.
++
+Because Arquillian provides an integration with JUnit, you can execute your
+test classes using Maven or your IDE:
++
 [source,shell]
 ----
 $ mvn install
 ----
++
+NOTE: In many IDEs, execute a test class by right-clicking it and selecting `Run`.
 
-### Using your IDE
+.Related Information
 
-In many IDEs, simply find your test-class, right-click and select `Run` to execute the
-test.
+* xref:using-a-bom[]
 
