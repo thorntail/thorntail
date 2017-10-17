@@ -1,18 +1,19 @@
-[#create_a_hollow_jar]
-= Create a hollow jar
+[#creating-a-hollow-jar]
+= Creating a hollow JAR
 
-One method of packaging an application for execution
-with WildFly Swarm is as a <<hollow_jar>>.
+The xref:hollow-jar[hollow JAR] is one method of packaging an application for
+execution with WildFly Swarm.
 
 .Prerequisites
 
-* A _Maven_-based application with a `pom.xml`
+* A Maven-based application with a `pom.xml` file.
 
 .Procedure
 
-. Add the `wildfly-swarm-maven-plugin` to your `pom.xml` by adding a `<plugin>` block,
-  with an `<execution>` specifying the `package` goal.  Additionally in the `<configuration>`
-  for the plugin, specify the value of `true` for the property `hollow`:
+. Add the `wildfly-swarm-maven-plugin` to your `pom.xml` in a `<plugin>` block,
+  with an `<execution>` specifying the `package` goal.
+  In addition to that, put `true` in the `hollow` property of the
+  `<configuration>` element:
 +
 [source,xml]
 ----
@@ -23,16 +24,23 @@ include::pom.xml[tag=plugin,indent=2]
 
 . Perform a normal Maven build:
 +
-    $ mvn package
+[source]
+----
+$ mvn package
+----
 
-. Run your uberjar:
+. Execute the hollow JAR:
 +
-Execute the resulting `-hollowswarm.jar` using `java -jar` and pass your
-normal `.war` file as the first argument:
-+    
-    $ java -jar ./target/myapp-hollowswarm.jar ./target/myapp.war
+Execute the resulting `-hollowswarm.jar` file using the Java binary and pass
+the `.war` file with your application as the first argument:
++
+[source]
+----
+$ java -jar ./target/myapp-hollowswarm.jar ./target/myapp.war
+----
 
 .Related Information
 
-* <<hollow_jar>>
-* <<create_an_uberjar>> 
+* xref:hollow-jar[]
+* xref:creating-an-uberjar[]
+

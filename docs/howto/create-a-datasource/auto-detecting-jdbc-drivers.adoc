@@ -1,0 +1,36 @@
+[#auto-detecting-jdbc-drivers]
+= Auto-detecting JDBC drivers
+
+WildFly Swarm has the capability to detect, install, and register
+a variety of JDBC drivers based on their inclusion as a dependency
+to your application.
+
+The drivers that WildFly Swarm auto-detects include:
+
+* H2
+* MySQL
+* PostgreSQL
+* EnterpriseDB
+* SQLServer
+* Oracle
+* Sybase
+* DB2
+
+.Prerequisites
+
+* A Maven-based application.
+* A database to connect to.
+* The Maven coordinates of the JDBC driver you want to use.
+
+.Procedure
+
+. Add the appropriate dependency (with the default `<scope>compile</scope>`
+scope) to your application:
++
+[source,xml]
+----
+<dependencies>
+include::pom.xml[tag=dependencies,indent=2]
+</dependencies>
+----
+
