@@ -1,98 +1,73 @@
-[#use-a-bom]
-= How to use a BOM
+[#using-a-bom]
+= Using a BOM
 
-If you want to explicitly enumerate the WildFly Swarm
+To explicitly specify the WildFly Swarm
 fractions your application uses, instead of relying
-on auto-detection, the project includes a set of 
-BOMs (bill of materials) which you may use to avoid
+on auto-detection, WildFly Swarm includes a set of
+BOMs (bill of materials) which you can use instead of
 having to track and update Maven artifact versions
 in several places.
 
 ifndef::product[]
+== Different types of BOMs
 
-## Different types of BOMs
-
-WildFly Swarm is described as "just enough app-server",
-which means it's composed of lots of pieces.  Your application
+WildFly Swarm is described as _just enough app-server,_
+which means it comprises of multiple pieces.  Your application
 includes only the pieces it needs.
 
-Over time, some of these pieces have reached "stable" status,
-while some are decidedly "unstable" or even "experimental". 
-To help segregate the stable from the not-as-stable, different
-Maven BOMs may be used.  
+Over time, some of these pieces reach the _stable_ status,
+while some are classified as _unstable_ or _experimental._
+To help separate the stable pieces from the less stable ones,
+the following Maven BOMs can be used:
 
-* `bom-all`
+bom-all:: All fractions: stable, unstable, experimental, and
+even deprecated.
 
-The `bom-all` BOM includes everything, soup-to-nuts. Anything
-that is stable, unstable, experimental, or even deprecated is
-included.
+bom-deprecated:: Fractions that have been deprecated.
 
-* `bom-deprecated`
+bom-experimental:: Fractions that are considered experimental, which
+means they can disappear or radically change between releases.
 
-The `bom-deprecated` BOM includes only those fractions that
-have been deprecated.
+bom-unstable:: Fractions that do not change as often as the experimental ones.
+However, unstable fractions can still change their behavior or contain bugs,
+even dangerous ones.
 
-* `bom-experimental`
-
-The `bom-experimental` BOM includes only those fractions that
-are considered experimental. They may disappear or radically change
-between releases.
-
-* `bom-unstable`
-
-The `bom-unstable` BOM includes fractions that are better than
-experimental, but may still be subject to large changes in their
-behaviour, or may contain dangerous or annoying bugs.
-
-* `bom-stable` or `bom`
-
-The `bom-stable` BOM (which is aliased to just `bom` also) contains
-those known-good fractions that are recommended for daily use.
-
+bom-stable or bom:: Fractions recommended for daily use.
 endif::[]
 
 ifdef::product[]
+== Available BOMs
 
-* The `bom` artifact
+You can use the following Maven BOMs:
 
-The artifact named `bom` defines all fractions available within
-the product.
+bom:: All fractions available in the product.
 
-* The `bom-certified` artifact
-
-The artifact named `bom-certified` defines all _community_ fractions
-that have been certified against the product. Any fraction used from
-`bom-certified` is unsupported.
-
+bom-certified:: All _community_ fractions that have been certified against the
+product. Any fraction used from `bom-certified` is unsupported.
 endif::[]
 
 .Prerequisites
 
-* A _Maven_-based project with a `pom.xml`
+* Your application as a Maven-based project with a `pom.xml` file.
 
 .Procedure
 
-. Include a `bom` artifact in your `pom.xml`
+. Include a `bom` artifact in your `pom.xml`.
 +
-We usually suggest tracking the current version of WildFly Swarm
-through a property in your `pom.xml`
-+
+--
+Tracking the current version of WildFly Swarm through a property in your
+`pom.xml` is recommended.
+
 [source,xml]
 ----
 <properties>
 include::pom.xml[tag=property,indent=2]
 </properties>
 ----
-+
-In all usage of BOMs with Maven, they are _imported_
-into your project through the `<dependencyManagement>`
-section.
-+
-You must specify the `<type>pom</type>` and `<scope>import</scope>`.
-+
-In the example below, we import the `bom` artifact to ensure that
-only stable fractions are available.
-+
+
+Import BOMs in the `<dependencyManagement>` section. Specify the
+`<type>pom</type>` and `<scope>import</scope>`.
+
 [source,xml]
 ----
 <dependencyManagement>
@@ -101,12 +76,15 @@ include::pom.xml[tag=bom-dependency,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
-+
-ifndef::product[] 
-If we also wanted to experiment with some unstable fractions
-in addition to the stable ones, we would uncomment the `<dependency>`
-for `bom-unstable`:
-+
+
+In the example above, the `bom` artifact is imported to ensure that
+only stable fractions are available.
+
+
+ifndef::product[]
+If you want to experiment with some unstable fractions in addition to the
+stable ones, uncomment the `<dependency>` for `bom-unstable`:
+
 [source,xml]
 ----
 <dependencyManagement>
@@ -116,59 +94,57 @@ include::pom.xml[tag=bom-unstable-dependency,indent=4]
   </dependencies>
 </dependencyManagement>
 ----
-+
+
 Remember, each flavor of `bom`, with the exception of `bom-all`
 contains only the type of fractions indicated.  This allows mixing
 and matching the combination of fraction stability that you want
-with fine granularity.  If you want both stable and unstable, you
-would need to include `bom-stable` (or simply `bom`, which is the same
-as `bom-stable`) *and* `bom-unstable`.
+with fine granularity. If you want both stable and unstable, you
+would need to include both `bom-stable` (or `bom`) and `bom-unstable`.
 endif::[]
 
-. Include WildFly Swarm dependencies
-+
-Once you've used the `<dependencyManagement>` section to import
-one or more WildFly Swarm BOMs, your application still has *no* 
-dependencies on WildFly Swarm artifacts.  All that has been accomplished
-is:
-+
-* Providing version-management for any WildFly Swarm artifacts you
+By including the BOMs of your choice in the `<dependencyManagement>` section,
+you have:
+
+* Provided version-management for any WildFly Swarm artifacts you
 subsequently *choose* to use.
-* Providing support to your IDE for auto-completing known artifacts
-while you edit your own `pom.xml`
+* Provided support to your IDE for auto-completing known artifacts
+when you edit your the `pom.xml` file of your application.
+--
+
+. Include WildFly Swarm dependencies.
 +
-That being said, now you need to actually include some WildFly Swarm
-artifact dependencies, based upon the capabilities your application
-requires.
-+
-This is done through normal Maven `<dependency>` elements.
-+
-Here we include explicit dependencies on the `jaxrs` and `datasources`
-fractions, which will provide transitive inclusion of others, such
-as `undertow`.
-+
+--
+Even though you imported the WildFly Swarm BOMs in the `<dependencyManagement>`
+section, your application still has no dependencies on WildFly Swarm
+artifacts.
+
+To include WildFly Swarm artifact dependencies based on the capabilities your
+application, enter the relevant artifacts as `<dependency>` elements:
+
+NOTE: You do not have to specify the version of the artifacts because the BOM
+imported in `<dependencyManagement>` handles that.
+
 [source,xml]
 ----
 <dependencies>
 include::pom.xml[tag=fraction-dependencies,indent=2]
 </dependencies>
 ----
-+
-Notice, you have not had to specify the usual `<version>` element
-for these `<dependency>` blocks, because the BOM you imported
-via `<dependencyManagement>` handles that portion for you.
 
-## Caveats
+In the example above, we include explicit dependencies on the `jaxrs` and
+`datasources` fractions, which will provide transitive inclusion of others,
+for example `undertow`.
+--
 
-One short-coming of a Maven BOM import is that it does not
-handle `<pluginManagement>`-level configuration.  When you
-use the WildFly Swarm Maven Plugin, you still must specify
-the version of the plugin to use.
+== Caveats
 
-Therefore, since you've used a property within your `pom.xml`
-you can still easily ensure that your plugin usage matches
-the release of WildFly Swarm that you're targetting with
-the BOM import.
+One shortcoming of importing a Maven BOM import is that it does not
+handle the configuration on the level of `<pluginManagement>`. When you use the
+WildFly Swarm Maven Plugin, you must specify the version of the plugin to use.
+
+Thanks to the property you use in your `pom.xml` file, you can easily ensure
+that your plugin usage matches the release of WildFly Swarm that you are
+targeting with the BOM import.
 
 [source,xml]
 ----
@@ -182,5 +158,5 @@ include::pom.xml[tag=plugin,indent=4]
 
 .Related Information
 
-* <<create_an_uberjar>>
+* xref:creating-an-uberjar[]
 
