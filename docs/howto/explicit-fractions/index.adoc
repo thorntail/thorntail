@@ -40,7 +40,7 @@ $ java -jar ./target/myapp-swarm.jar
 .Related Information
 
 * xref:fractions[]
-* xref:autodetecting-fractions[]
+* xref:auto-detecting-fractions[]
 * xref:creating-an-uberjar[]
 * xref:creating-a-hollow-jar[]
 
