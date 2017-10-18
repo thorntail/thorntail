@@ -1,15 +1,19 @@
 [#fractions]
 = Fractions
 
-WildFly Swarm is defined by an unbounded set of capabilities. 
-Each chunk of functionality is called a _fraction_.
-Some fractions directly align with commonly-used APIs, such as _JAX-RS_ or _CDI_.
-Other fractions exist to provided higher-order capabilities, such as integration with RHSSO (KeyCloak). 
+WildFly Swarm is defined by an unbounded set of capabilities.
+Each piece of functionality is called a _fraction._
+Some fractions provide only access to APIs, such as JAX-RS or CDI; other fractions provide higher-level capabilities, such as integration with RHSSO (Keycloak).
 
-The normal method for consuming WildFly Swarm is through Maven coordinates.
-Every fraction is addressable using Maven coordinates and can be added to your application's `pom.xml` to bring in functionality, which gets packaged with your application (see xref:creating-an-uberjar[]).
+The typical method for consuming WildFly Swarm fractions is through Maven coordinates.
+Address a fraction by adding its Maven coordinates to the `pom.xml` file in your application. The functionality the fraction provides is then packaged with your application (see xref:creating-an-uberjar[]).
 
-For instance, the fraction for use JAX-RS has the following representation within a Maven `<dependency>` block:
+.Addressing Fractions in a POM file
+====
+
+Address the fractions in the `<dependency>` section of the `pom.xml` file.
+
+Example with the JAX-RS fraction:
 
 [source,xml]
 ----
@@ -19,7 +23,7 @@ For instance, the fraction for use JAX-RS has the following representation withi
 </dependency>
 ----
 
-While the RHSSO/KeyCloak fraction is addressed as:
+Example with the RHSSO/KeyCloak fraction:
 
 [source,xml]
 ----
@@ -28,5 +32,7 @@ While the RHSSO/KeyCloak fraction is addressed as:
   <artifactId>keycloak</artifactId>
 </dependency>
 ----
+====
 
-To enable easier consumption of WildFly Swarm fractions, a _bill of materials_ (BOM) is available. For more information, please see xref:using-a-bom[].
+To enable easier consumption of WildFly Swarm fractions, a bill of materials (BOM) is available. For more information, see xref:using-a-bom[].
+
