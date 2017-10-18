@@ -24,3 +24,6 @@ ifndef::product[]
 include::howto/create-a-fraction/index.adoc[leveloffset=+2]
 
 endif::product[]
+
+## Reference
+include::reference/index.adoc[leveloffset=+2]

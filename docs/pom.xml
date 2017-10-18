@@ -95,6 +95,7 @@
   </profiles>
 
   <modules>
+    <module>reference</module>
     <module>howto/use-a-bom</module>
     <module>howto/create-an-uberjar</module>
     <module>howto/create-a-hollow-jar</module>
