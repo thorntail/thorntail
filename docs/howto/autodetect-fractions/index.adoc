@@ -2,9 +2,9 @@
 = Auto-detecting fractions
 
 Migrating existing legacy applications to benefit from WildFly Swarm is simple when using fraction auto-detection.
-If you enable the WildFly Swarm Maven plugin in your application, WildFly Swarm detects which APIs you use, and include the appropriate fractions at build time.
+If you enable the WildFly Swarm Maven plugin in your application, WildFly Swarm detects which APIs you use, and includes the appropriate fractions at build time.
 
-For example, your `pom.xml` may already specify the API `.jar` file for a specification such as JAX-RS:
+For example, consider your `pom.xml` already specifies the API `.jar` file for a specification such as JAX-RS:
 
 [source,java]
 ----
@@ -13,7 +13,7 @@ include::pom.xml[tag=jaxrs,index=2]
 </dependencies>
 ----
 
-WildFly Swarm then includes the `jaxrs` fraction during a build automatically.
+WildFly Swarm then includes the `jaxrs` fraction during the build automatically.
 
 .Prerequisites
 

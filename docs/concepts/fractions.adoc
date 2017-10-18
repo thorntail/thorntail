@@ -23,7 +23,7 @@ Example with the JAX-RS fraction:
 </dependency>
 ----
 
-Example with the RHSSO/KeyCloak fraction:
+Example with the RHSSO/Keycloak fraction:
 
 [source,xml]
 ----
