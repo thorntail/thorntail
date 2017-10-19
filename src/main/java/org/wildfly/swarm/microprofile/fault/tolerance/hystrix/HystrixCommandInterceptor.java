@@ -38,6 +38,7 @@ import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.HystrixThreadPoolProperties;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
@@ -61,7 +62,6 @@ import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.TimeoutConf
 @HystrixCommandBinding
 @Priority(Interceptor.Priority.LIBRARY_AFTER + 1)
 public class HystrixCommandInterceptor {
-
 
     @AroundInvoke
     public Object interceptCommand(InvocationContext ic) throws Exception {
@@ -140,43 +140,44 @@ public class HystrixCommandInterceptor {
         HystrixCommandProperties.Setter propertiesSetter = HystrixCommandProperties.Setter();
 
         HystrixThreadPoolProperties.Setter threadPoolSetter = HystrixThreadPoolProperties.Setter();
-
-        Timeout timeout = getAnnotation(method, Timeout.class);
-        CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
-        Bulkhead bulkhead = getAnnotation(method,Bulkhead.class);
-
         propertiesSetter.withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE);
 
-        if (timeout != null) {
-            // TODO: In theory a user might specify a long value
-            TimeoutConfig config = new TimeoutConfig(timeout, method);
-            propertiesSetter.withExecutionTimeoutInMilliseconds((int) Duration.of(config.get(TimeoutConfig.VALUE), config.get(TimeoutConfig.UNIT)).toMillis());
-        } else {
-            propertiesSetter.withExecutionTimeoutEnabled(false);
-        }
-
-        if (circuitBreaker != null) {
-
-            CircuitBreakerConfig conf = new CircuitBreakerConfig(circuitBreaker, method);
-            propertiesSetter.withCircuitBreakerEnabled(true)
-                    .withCircuitBreakerRequestVolumeThreshold(conf.get(CircuitBreakerConfig.REQUEST_VOLUME_THRESHOLD))
-                    .withCircuitBreakerErrorThresholdPercentage(new Double((Double) conf.get(CircuitBreakerConfig.FAILURE_RATIO) * 100).intValue())
-                    .withCircuitBreakerSleepWindowInMilliseconds((int) Duration.of(conf.get(CircuitBreakerConfig.DELAY), conf.get(CircuitBreakerConfig.DELAY_UNIT)).toMillis());
-        } else {
-            propertiesSetter.withCircuitBreakerEnabled(false);
-        }
+            Timeout timeout = getAnnotation(method, Timeout.class);
+            CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
+            Bulkhead bulkhead = getAnnotation(method, Bulkhead.class);
 
 
-        if(bulkhead != null) {
-            BulkheadConfig conf = new BulkheadConfig(bulkhead,method);
-            propertiesSetter.withExecutionIsolationSemaphoreMaxConcurrentRequests(conf.get(BulkheadConfig.VALUE))
-            .withExecutionIsolationThreadInterruptOnFutureCancel(true);
+            if (nonFallBackEnable && timeout != null) {
+                // TODO: In theory a user might specify a long value
+                TimeoutConfig config = new TimeoutConfig(timeout, method);
+                propertiesSetter.withExecutionTimeoutInMilliseconds((int) Duration.of(config.get(TimeoutConfig.VALUE), config.get(TimeoutConfig.UNIT)).toMillis());
+            } else {
+                propertiesSetter.withExecutionTimeoutEnabled(false);
+            }
 
-            //threadPoolSetter.withCoreSize(conf.get(BulkheadConfig.VALUE));
-            //threadPoolSetter.withMaximumSize(conf.get(BulkheadConfig.VALUE));
+            if (nonFallBackEnable && circuitBreaker != null) {
+
+                CircuitBreakerConfig conf = new CircuitBreakerConfig(circuitBreaker, method);
+                propertiesSetter.withCircuitBreakerEnabled(true)
+                        .withCircuitBreakerRequestVolumeThreshold(conf.get(CircuitBreakerConfig.REQUEST_VOLUME_THRESHOLD))
+                        .withCircuitBreakerErrorThresholdPercentage(new Double((Double) conf.get(CircuitBreakerConfig.FAILURE_RATIO) * 100).intValue())
+                        .withCircuitBreakerSleepWindowInMilliseconds((int) Duration.of(conf.get(CircuitBreakerConfig.DELAY), conf.get(CircuitBreakerConfig.DELAY_UNIT)).toMillis());
+            } else {
+                propertiesSetter.withCircuitBreakerEnabled(false);
+            }
 
 
-        }
+            if (nonFallBackEnable && bulkhead != null) {
+                BulkheadConfig conf = new BulkheadConfig(bulkhead, method);
+                propertiesSetter.withExecutionIsolationSemaphoreMaxConcurrentRequests(conf.get(BulkheadConfig.VALUE))
+                        .withExecutionIsolationThreadInterruptOnFutureCancel(true);
+
+                //threadPoolSetter.withCoreSize(conf.get(BulkheadConfig.VALUE));
+                //threadPoolSetter.withMaximumSize(conf.get(BulkheadConfig.VALUE));
+
+
+            }
+
 
         return Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("DefaultCommandGroup"))
                 // Each method must have a unique command key
@@ -186,6 +187,10 @@ public class HystrixCommandInterceptor {
     }
 
     private final Map<Method, CommandMetadata> commandMetadataMap = new ConcurrentHashMap<>();
+
+    @Inject
+    @ConfigProperty(name = "MP_Fault_Tolerance_NonFallback_Enabled", defaultValue = "true")
+    private Boolean nonFallBackEnable;
 
     private ExecutionContextWithInvocationContext ctx;
 
@@ -200,7 +205,7 @@ public class HystrixCommandInterceptor {
             Fallback fallback = getAnnotation(method, Fallback.class);
 
             if (fallback != null) {
-                FallbackConfig fc = new FallbackConfig(fallback,method);
+                FallbackConfig fc = new FallbackConfig(fallback, method);
                 if (!fc.get(FallbackConfig.VALUE).equals(Fallback.DEFAULT.class)) {
                     unmanaged = initUnmanaged(method);
                 } else {
@@ -226,7 +231,7 @@ public class HystrixCommandInterceptor {
             }
 
             Retry retry = getAnnotation(method, Retry.class);
-            if (retry != null) {
+            if (nonFallBackEnable && retry != null) {
                 retryContext = new RetryContext(retry, method);
             } else {
                 retryContext = null;

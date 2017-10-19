@@ -23,6 +23,7 @@
     <packages>
       <package name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters"/>
       <package name="org.eclipse.microprofile.fault.tolerance.tck.illegalConfig" />
+      <package name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv" />
     </packages>
 
     <classes>
