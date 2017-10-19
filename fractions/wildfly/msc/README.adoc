@@ -1,4 +1,4 @@
-# MSC
+= MSC
 
 Primarily an internal fraction providing support for the 
 JBoss Modular Container (MSC). JBoss MSC provides the underpinning

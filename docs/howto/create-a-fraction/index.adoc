@@ -11,7 +11,7 @@ in others.
 It is useful to set at least a pair of properties, specifying the version
 of the WildFly Swarm SPI and fraction-plugin being used:
 
-[source,xml,,subs=+attributes]
+[source,xml,subs=+attributes]
 ----
 <properties>
   <version.swarm>{version}</version.swarm.spi>

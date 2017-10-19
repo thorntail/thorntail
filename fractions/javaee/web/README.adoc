@@ -1,4 +1,4 @@
-# Web
+= Web
 
 Provides a collection of fractions equivalent to the _Web Profile_:
 

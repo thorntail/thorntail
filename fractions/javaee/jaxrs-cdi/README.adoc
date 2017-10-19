@@ -1,4 +1,4 @@
-# JAX-RS + CDI
+= JAX-RS + CDI
 
 An internal fraction providing integration between JAX-RS
 and CDI.

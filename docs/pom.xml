@@ -37,20 +37,37 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/generated-docs</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <version>1.5.5</version>
         <inherited>false</inherited>
         <configuration>
           <attributes>
+            <docinfo>shared</docinfo>
             <version>${project.version}</version>
             <product>${swarm.product.build}</product>
           </attributes>
-          <sourceDirectory>.</sourceDirectory>
-          <sourceDocumentName>index.adoc</sourceDocumentName>
           <doctype>book</doctype>
-          <backend>html</backend>
-          <preserveDirectories>true</preserveDirectories>
+          <backend>html5</backend>
           <resources>
             <resource>
               <directory>.</directory>
@@ -67,6 +84,28 @@
             <goals>
               <goal>process-asciidoc</goal>
             </goals>
+            <configuration>
+              <sourceDirectory>.</sourceDirectory>
+              <sourceDocumentName>index.adoc</sourceDocumentName>
+              <outputDirectory>${project.build.directory}/generated-docs/${project.version}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>publish-scm</goal>
+            </goals>
+            <phase>deploy</phase>
+            <configuration>
+              <pubScmUrl>scm:git:git@github.com:wildfly-swarm/docs.wildfly-swarm.io.git</pubScmUrl>
+              <dryRun>false</dryRun>
+              <skipDeletedFiles>true</skipDeletedFiles>
+              <content>${project.build.directory}/generated-docs/</content>
+            </configuration>
           </execution>
         </executions>
       </plugin>

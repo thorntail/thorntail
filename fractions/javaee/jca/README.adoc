@@ -1,4 +1,4 @@
-# JCA
+= JCA
 
 Provides support for the Java Connector Architecture (JCA)
 according to JSR 322.

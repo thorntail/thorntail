@@ -1,0 +1,21 @@
+= `usage.txt`
+
+Each WildFly Swarm application may contain a text file at one of the following locations:
+
+* `/usage.txt`
+* `/META-INF/usage.txt`
+* `/WEB-INF/usage.txt`
+
+If found, once the application has fully started, then the file will be logged with variable substitution from the configuration properties.
+
+== Variable substitution
+
+Variables within the `usage.txt` file of the format `${swarm.thing}` will be replaced with their current value.  
+This may be useful for display the currently active port used by the application, for instance by having content such as:
+
+[source,text]
+----
+The application is now ready on ${swarm.http.port}!
+----
+
+

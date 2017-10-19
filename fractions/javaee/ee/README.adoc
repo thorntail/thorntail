@@ -1,4 +1,4 @@
-# EE
+= EE
 
 An internal fraction used to support other higher-level fractions. 
 

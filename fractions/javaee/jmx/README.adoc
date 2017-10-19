@@ -1,4 +1,4 @@
-# JMX
+= JMX
 
 Provides support for Java Management Extensions (JMX)
 according to JSR-3.

@@ -6,7 +6,7 @@ If you enable the WildFly Swarm Maven plugin in your application, WildFly Swarm 
 
 For example, consider your `pom.xml` already specifies the API `.jar` file for a specification such as JAX-RS:
 
-[source,java]
+[source,xml]
 ----
 <dependencies>
 include::pom.xml[tag=jaxrs,index=2]

@@ -1,4 +1,4 @@
-# Logging
+= Logging
 
 Provides facilities to configure logging categories, levels and handlers.
 
