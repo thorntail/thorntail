@@ -43,6 +43,7 @@ import org.jboss.as.domain.http.server.security.AuthenticationMechanismWrapper;
 import org.jboss.as.domain.http.server.security.RealmIdentityManager;
 import org.jboss.as.domain.management.AuthMechanism;
 import org.jboss.as.domain.management.SecurityRealm;
+import org.wildfly.swarm.monitor.api.Monitor;
 
 /**
  * Wraps the actual HTTP endpoint and add security to it.

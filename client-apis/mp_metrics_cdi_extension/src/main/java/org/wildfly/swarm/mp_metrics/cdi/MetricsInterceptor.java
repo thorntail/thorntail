@@ -50,12 +50,13 @@ import java.lang.reflect.Modifier;
         this.registry = registry;
 //        this.resolver = resolver;
         this.resolver = new MetricResolver();
+        System.err.printf("MetricsInterceptor.ctor, names=%s\n", registry.getNames());
     }
 
     @AroundConstruct
     private Object metrics(InvocationContext context) throws Exception {
         Class<?> bean = context.getConstructor().getDeclaringClass();
-
+System.err.printf("MetricsInterceptor, bean=%s\n", bean);
         // Registers the bean constructor metrics
         registerMetrics(bean, context.getConstructor());
 

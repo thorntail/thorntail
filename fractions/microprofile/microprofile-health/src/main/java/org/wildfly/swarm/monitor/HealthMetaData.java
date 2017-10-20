@@ -15,27 +15,29 @@
  */
 package org.wildfly.swarm.monitor;
 
-import java.util.Optional;
-
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-
 /**
  * @author Heiko Braun
+ * @since 21/03/16
  */
-@DeploymentModule(name = "javax.ws.rs.api")
-@DeploymentModule(name = "org.jboss.dmr")
-@DeploymentModule(name = "org.wildfly.swarm.monitor")
-public class MonitorFraction implements Fraction<MonitorFraction> {
+public class HealthMetaData {
+    private final boolean isSecure;
+    private final String webContext;
 
-    private Optional<String> securityRealm = Optional.empty();
-
-    public MonitorFraction securityRealm(String realmName) {
-        this.securityRealm = Optional.of(realmName);
-        return this;
+    public HealthMetaData(String webContext, boolean isSecure) {
+        this.webContext = webContext;
+        this.isSecure = isSecure;
     }
 
-    public Optional<String> securityRealm() {
-        return this.securityRealm;
+    public boolean isSecure() {
+        return isSecure;
+    }
+
+    public String getWebContext() {
+        return webContext;
+    }
+
+    public String toString() {
+        return "[HealthMetaData: webContext=" + this.webContext + "; isSecure=" + this.isSecure + "]";
+
     }
 }

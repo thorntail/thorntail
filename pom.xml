@@ -691,10 +691,32 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>microprofile-metrics</artifactId>
+        <artifactId>microprofile-config</artifactId>
         <version>2017.10.0-SNAPSHOT</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-health</artifactId>
+        <version>2017.10.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-jwt</artifactId>
+        <version>2017.10.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>mp_metrics_cdi_extension</artifactId>
+        <version>2017.10.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-metrics</artifactId>
+        <version>2017.10.0-SNAPSHOT</version>
+      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -957,8 +979,11 @@
     <module>fractions/wildfly/security</module>
 
     <module>fractions/keycloak</module>
-    <module>fractions/microprofile</module>
-    <module>fractions/microprofile-metrics</module>
+    <module>fractions/microprofile/microprofile</module>
+    <module>fractions/microprofile/microprofile-config</module>
+    <module>fractions/microprofile/microprofile-health</module>
+    <module>fractions/microprofile/microprofile-jwt</module>
+    <module>fractions/microprofile/microprofile-metrics</module>
     <module>fractions/monitor</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>

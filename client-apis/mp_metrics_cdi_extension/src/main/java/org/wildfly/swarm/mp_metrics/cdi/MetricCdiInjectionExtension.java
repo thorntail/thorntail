@@ -70,7 +70,7 @@ public class MetricCdiInjectionExtension implements Extension {
     MetricRegistry registry;
 
     public MetricCdiInjectionExtension() {
-
+        LOG.infof("ctor");
     }
 
     private void addInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
@@ -78,10 +78,14 @@ public class MetricCdiInjectionExtension implements Extension {
         declareAsInterceptorBinding(Gauge.class, manager, bbd);
         declareAsInterceptorBinding(Timed.class, manager, bbd);
         declareAsInterceptorBinding(Metered.class, manager, bbd);
+        LOG.info("BeforeBeanDiscovery, registered interceptor bindings");
     }
 
     private <X> void metricsAnnotations(@Observes @WithAnnotations({Counted.class, Gauge.class, Metered.class, Timed.class}) ProcessAnnotatedType<X> pat) {
-        pat.setAnnotatedType(new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING));
+        AnnotatedTypeDecorator newPAT = new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING);
+        LOG.infof("annotations: %s", newPAT.getAnnotations());
+        LOG.infof("methods: %s", newPAT.getMethods());
+        pat.setAnnotatedType(newPAT);
     }
 
     private void metricProducerField(@Observes ProcessProducerField<? extends Metric, ?> ppf) {

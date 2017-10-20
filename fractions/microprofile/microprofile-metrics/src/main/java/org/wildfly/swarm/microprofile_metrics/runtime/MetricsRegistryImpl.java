@@ -39,9 +39,12 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  * @author hrupp
  */
+@Vetoed
 public class MetricsRegistryImpl extends MetricRegistry {
 
     private Map<String, Metadata> metadataMap = new java.util.HashMap<>();

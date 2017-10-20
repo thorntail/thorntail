@@ -11,13 +11,13 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>build-parent</artifactId>
     <version>2017.10.0-SNAPSHOT</version>
-    <relativePath>../../build-parent/pom.xml</relativePath>
+    <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>monitor</artifactId>
+  <artifactId>microprofile-health</artifactId>
 
-  <name>Monitor</name>
+  <name>Microprofile-Health</name>
   <description>Health endpoints for your application</description>
 
   <packaging>jar</packaging>
@@ -25,6 +25,7 @@
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Management</swarm.fraction.tags>
+    <version.mp.health>1.0</version.mp.health>
   </properties>
 
   <build>
@@ -55,9 +56,21 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>microprofile-config</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>health-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.microprofile.health</groupId>
+      <artifactId>microprofile-health-api</artifactId>
+      <version>${version.mp.health}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>management</artifactId>

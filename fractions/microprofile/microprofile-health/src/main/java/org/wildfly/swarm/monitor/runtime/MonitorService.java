@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,6 +42,7 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.SwarmInfo;
 import org.wildfly.swarm.monitor.HealthMetaData;
+import org.wildfly.swarm.monitor.api.Monitor;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
@@ -166,8 +169,25 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     }
 
     @Override
+    public void registerHealthBean(Object healthCheck) {
+        LOG.info("Adding health bean: " + healthCheck.getClass().getName());
+        this.beans.add(healthCheck);
+    }
+
+    @Override
+    public void unregisterHealthBean(Object healthCheck) {
+        this.beans.remove(healthCheck);
+        LOG.info("Removed health bean: " + healthCheck.getClass().getName());
+    }
+
+    @Override
     public List<HealthMetaData> getHealthURIs() {
         return Collections.unmodifiableList(this.endpoints);
+    }
+
+    @Override
+    public Set<Object> getHealthDelegates() {
+        return this.beans;
     }
 
     @Override
@@ -220,4 +240,6 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     private ModelControllerClient controllerClient;
 
     private CopyOnWriteArrayList<HealthMetaData> endpoints = new CopyOnWriteArrayList<HealthMetaData>();
+
+    private CopyOnWriteArraySet<Object> beans = new CopyOnWriteArraySet<Object>();
 }

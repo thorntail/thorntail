@@ -15,10 +15,11 @@
  */
 package org.wildfly.swarm.monitor;
 
-import java.util.Optional;
-
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+
+import java.util.Optional;
 
 /**
  * @author Heiko Braun
@@ -26,6 +27,8 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 @DeploymentModule(name = "javax.ws.rs.api")
 @DeploymentModule(name = "org.jboss.dmr")
 @DeploymentModule(name = "org.wildfly.swarm.monitor")
+@DeploymentModule(name = "org.wildfly.swarm.monitor", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
+@DeploymentModule(name = "org.eclipse.microprofile.health", services = Module.ServiceHandling.IMPORT, export = true)
 public class MonitorFraction implements Fraction<MonitorFraction> {
 
     private Optional<String> securityRealm = Optional.empty();

@@ -19,6 +19,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.wildfly.swarm.health.HealthStatus;
 import org.wildfly.swarm.monitor.runtime.HealthAnnotationProcessor;
+import org.wildfly.swarm.monitor.runtime.HttpContexts;
+
+import javax.xml.ws.spi.http.HttpContext;
 
 /**
  * @author Heiko Braun
@@ -81,5 +84,18 @@ public class MonitorTest {
         Assert.assertEquals("/jboss-web/webcontext/app", sb.toString());
 
 
+    }
+
+    @Test
+    public void testJsonEncoding() {
+        org.eclipse.microprofile.health.HealthCheckResponse healthStatus = org.eclipse.microprofile.health.HealthCheckResponse
+                .named("test")
+                .withData("a", "b")
+                .withData("c", "d")
+                .up()
+                .build();
+
+        String s = HttpContexts.toJson(healthStatus);
+        System.out.println(s);
     }
 }

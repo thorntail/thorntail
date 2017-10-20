@@ -67,10 +67,13 @@ public class MicroprofileMetricsTest {
 
   @Deployment
   public static WebArchive createDeployment() {
+      //System.setProperty("swarm.debug.port", "8888");
+      //System.setProperty("swarm.logging", "DEBUG");
 //      JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addClass(MetricAppBean.class)
 //              .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
-      WebArchive jar = ShrinkWrap.create(WebArchive.class).addClass(MetricAppBean.class);
+      WebArchive jar = ShrinkWrap.create(WebArchive.class, "MicroprofileMetricsTest.war").addClass(MetricAppBean.class);
+
       System.out.println(jar.toString(true));
       return jar;
   }
