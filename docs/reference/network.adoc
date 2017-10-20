@@ -1,17 +1,20 @@
-= Network 
+= Network
 
-For network configuration, *interfaces*, *socket-bindings* and *outbound-socket-bindings* may be created or adjusted. 
-The networking configuration is under the `network` key underneath the core `swarm` key.
+For network configuration, create or adjust _interfaces,_ _socket-bindings,_ and _outbound-socket-bindings._
+The networking configuration is stored under the `network` -> `swarm` key.
 
 == Interfaces
 
-An interface represents a known ethernet interface. 
-By default the interface named `public` is bound to the IP address of `0.0.0.0` which represents all known interfaces of the underlying machine. 
-This includes publicly-routed interfaces and the localhost `127.0.0.1` interface.
+An interface represents a known ethernet interface.
+By default, the interface named `public` is bound to the `0.0.0.0` IP address, which represents all known interfaces of the underlying machine.
+This includes both publicly-routed interfaces, and the localhost (`127.0.0.1`) interface.
 
-Additionally, when the `management` fraction is included in an application, an interface named `management` is also provisioned, which is bound to only the localhost `127.0.0.1` address.
+In addition to that, when you include the `management` fraction in an application, an interface named `management` is also provisioned, and it is bound only to localhost.
 
-To configuration an additional interface, bound to `192.168.4.5` for instance:
+.Additional interface configuration
+====
+
+The following interface is called `backnet`, and is bound to the `192.168.4.5` address.
 
 [source,yaml]
 ----
@@ -21,21 +24,29 @@ swarm:
       backnet:
         bind: 192.168.4.5
 ----
+====
 
+If you want to change the bind address for the `public` or `management` interfaces, use special properties, which are defined for these two cases in particular:
 
-If you wish to change the bind address for the public or management interfaces, special, easier-to-use properties are defined for those two cases:
+* `swarm.bind.address`
+* `swarm.management.bind.address`
 
-By setting `swarm.bind.address` or `swarm.management.bind.address` (or their related YAML values), the underlying address used by each can be changed.
+Change the underlying addresses by changing the above properties or their related YAML values.
 
 == Sockets
 
-_Socket-bindings_ and _outbound-socket-bindings_ allow for externalized configuration of sockets (and ports) bound to a particular interface. 
-Regular socket-bindings are for inbound connections, while outbound-socket-bindings denote connections capable of being made to remote locations.
+_Socket bindings_ and _outbound socket bindings_ allow externalized configuration of sockets and ports bound to a particular interface.
+Use regular socket-bindings for inbound connections, while outbound-socket-bindings denote connections capable of changing to remote locations.
 
-### Socket-Binding Groups
+=== Socket-binding groups
 
-Groups of bindings occur within _socket-binding-groups_, with the default group being named `standard-sockets`. 
-An entire group's sockets can be bound to a given default interface, or all members of the group may be offset by a particular number of ports.
+Groups of bindings occur within _socket binding groups,_ where `standard-sockets` is the default group.
+You can bind the sockets of an entire group to a given default interface, or you can offset all members of the group by a particular number of ports.
+
+.Socket-binding group
+====
+
+The ports of the `standard-sockets` default group are offset by 10:
 
 [source,yaml]
 ----
@@ -46,8 +57,10 @@ swarm:
         port-offset: 10
         default-interface: public
 ----
+====
 
-.Socket- Bindings
+.Socket binding
+====
 
 Socket-bindings may be created or adjusted within a `socket-binding-group`:
 
@@ -60,10 +73,12 @@ swarm:
         http:
           port: 8081
 ----
+====
 
-.Outbound Socket-Bindings
+.Outbound socket binding
+====
 
-To create a named outbound socket-binding for connection to remote endpoints, `outbound-socket-bindings` may be defined within a `socket-binding-group`:
+To create a named outbound socket binding for connection to remote endpoints, define `outbound-socket-bindings` in a `socket-binding-group`:
 
 [source,yaml]
 ----
@@ -76,5 +91,5 @@ swarm:
                 remote-host: localhost
                 remote-port: 7687
 ----
-
+====
 

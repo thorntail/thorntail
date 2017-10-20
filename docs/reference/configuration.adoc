@@ -1,25 +1,34 @@
 = Configuration of a WildFly Swarm Application
 
-Every application built with WildFly Swarm has a vast variety of configurable options.  
-In all cases, reasonable defaults are already applied, and you only need concern yourself with those particular items you wish to explicitly change from their default values.
+Every application built with WildFly Swarm has a many configurable options.
+In all cases, reasonable defaults are already applied, therefore you do not have to change any options unless you explicitly want to.
 
-This _Reference_ serves as a complete index of all configurable items, separated by the fraction which introduces them.  
-Only items related to the fractions involved in your application are pertinent to your application.
+This reference is a complete list of all configurable items, grouped by the fraction that introduces them.
+Only the items related to the fractions that your application uses are relevant to you.
 
-== Using Properties
+[#configure-your-application-using-properties]
+== Configure your application using properties
 
-Within this document, the configuration items are presented using dotted notation, and are suitable for use as Java property names, provided to your application through explicit setting via the Maven plugin or through the command-line when executing your application.
+In this document, configuration items are presented using dotted notation, and are suitable for use as Java property names, which your application consumes through explicit setting in the Maven plugin configuration, or through the command line when executing your application.
 
-Any property that has _KEY_ listed in its name indicates that a user-supplied key or identifier should be used in that segment of the name.
+Any property that has the _KEY_ parameter in its name indicates that you must supply a key or identifier in that segment of the name.
 
-For instance, the configuration item documented as `swarm.undertow.servers.KEY.default-host` indicates that the configuration applies to a particular named server.  
-In actual usage, the property would be something such as `swarm.undertow.servers.default.default-host`, applying to the server known as `default`.
+.Using configuration items with the KEY parameter
+====
+The configuration item documented as `swarm.undertow.servers.KEY.default-host` indicates that the configuration applies to a particular named server.
 
-.Properties via Maven Plugin
+In practical usage, the property would be, for example, `swarm.undertow.servers.default.default-host`, for a server known as `default`.
+====
 
-If you wish to set explicit configuration values to be baked in as defaults through the Maven plugin, in your `pom.xml` you would add a `<properties>` section to the plugin's `<configuration>`.
+[discrete]
+=== Maven plugin properties
 
-For instance, the configuration item of `swarm.bind.address` is set through the plugin.
+If you want to set explicit configuration values as defaults through the Maven plugin, add a `<properties>` section to the `<configuration>` block of the plugin in the `pom.xml` file in your application.
+
+.Setting a configuration item through the Maven Plugin
+====
+
+An example Maven plugin configuration for the `swarm.bind.address` item:
 
 [source,xml,subs=+attributes]
 ----
@@ -39,32 +48,36 @@ For instance, the configuration item of `swarm.bind.address` is set through the 
   </plugins>
 </build>
 ----
+====
 
-NOTE: We generally recommend not using the Maven plugin to explicitly set properties to control configuration. 
-The YAML method, described further below, is the preferred method.
+NOTE: It is not recommended to use the Maven plugin to explicitly set properties to control the configuration.
+Instead, using the xref:configure-your-application-using-yaml[YAML method] is recommended.
 
-.Properties via the Command-Line
+[discrete]
+=== Setting properties using the Command Line
 
-While setting properties via the Maven plugin is not recommended, it is often useful to temporarily change a configuration item for a given launching of your application. 
-This may be to customize some environment-specific setting, or to experiment with some configuration items before committing them to YAML.
+Even hough setting properties using the Maven plugin is not recommended, it is useful for temporarily changing a configuration item for a single launch of your application.
+You can customize an environment-specific setting or experiment with configuration items before committing them to YAML.
 
-To use a property via the command-line, you simply pass them as you would any other Java process:
+To use a property on the command line, pass them as a command-line parameter to the Java binary:
 
 [source,shell]
 ----
 $ java -Dswarm.bind.address=127.0.0.1 -jar myapp-swarm.jar
 ----
 
-## Using YAML
+[#configure-your-application-using-yaml]
+== Configure your application using YAML
 
-YAML is the preferred method for long-term configuration of an application. 
-Additionally, the YAML strategy provides for grouping together of environment-specific configurations which can be selectively enabled when launching the application.
+YAML is the preferred method for long-term configuration of your application.
+In addition to that, the YAML strategy provides grouping of environment-specific configurations, which can be selectively enabled when launching the application.
 
-.General format
+[discrete]
+=== General YAML format
 
-In the configuration names within this document, a YAML structure can be derrived.  
+The configuration names correspond to the YAML configuration structure.
 
-For instance, the item described `swarm.undertow.servers.KEY.default-host` would translate to the following YAML, substituting the identifier of `default` for the `KEY` segment:
+For example, the item documented as `swarm.undertow.servers.KEY.default-host` translates to the following YAML, substituting the `KEY` segment with the `default` identifier:
 
 [source,yaml]
 ----
@@ -75,63 +88,60 @@ swarm:
         default-host: <myhost>
 ----
 
-.Default YAML Files
+[discrete]
+=== Default YAML Files
 
-If your application's original `.war` contains a file named `project-defaults.yml`, that file represents the defaults applied overtop the absolute defaults that WildFly Swarm provides to your application.
+If the original `.war` file with your application contains a file named `project-defaults.yml`, that file represents the defaults applied over the absolute defaults that WildFly Swarm provides to your application.
 
-Additionally, if specific configurations are selected, using the `-S <name>` commandline option, those associated files will be loaded, in order, prior to the `project-defaults.yml` file. 
-The names provided to the `-S <name>` argument relates to a file named `project-<name>.yml` within your classpath.
- 
-If you were to invoke your application with the following:
+Additionally, if you provide specific configuration files using the `-S <name>` command-line option, those files are loaded, in that order, before `project-defaults.yml`.
+A name provided in the `-S <name>` argument specifies the `project-<name>.yml` file on your classpath.
 
-[source,shell]
+.Specifying configuration files on the command line
+====
+
+Consider the following application execution:
+
+[source,bash]
 ----
 $ java -jar myapp-swarm.jar -Stesting -Scloud
 ----
 
-Then the relevant YAML files would be loaded in the following preference order, where the first one containing a given configuration item wins:
+In this example, the following YAML files are loaded in this order. The first file containing a given configuration item takes precedence over others:
 
 . `project-testing.yml`
 . `project-cloud.yml`
 . `project-defaults.yml`
+====
 
-.Non-default YAML Files
+[discrete]
+=== Non-default YAML Files
 
-In some events, you may wish to reference a YAML file of configuration values that it _outside_ of your application.  
-In that case, the `-s <path>` command-line option may be used.
+If you want to reference a YAML file that exists outside of your application, use the `-s <path>` command-line option.
 
-Files loaded by the `-s <path>` option take precedent over any default YAML file contained within your application.  
-Both `-s <path>` and `-S <name>` may be freely used concurrently, but be aware that all `-s <path>` options are considered to have higher precedent over `-S <name>` options.
+Both the `-s <path>` and `-S <name>` command-line options can be used at the same time, but files specified using the `-s <path>` option take precedence over YAML files contained in your application.
 
-For instance, if you were to invoke your application with the following:
+.Specifying configuration files inside and outside of the application
+====
 
-[source,shell]
+Consider the following application execution:
+
+[source,bash]
 ----
 $ java -jar myapp-swarm -s/home/app/openshift.yml -Scloud -Stesting
 ----
 
-Then the relevant YAML files would be loaded in the following order:
+In this example, the following YAML files are loaded in this order:
 
 . `/home/app/openshift.yml`
 . `project-cloud.yml`
 . `project-testing.yml`
 . `project-defaults.yml`
 
-The same preference would be applied even if the application was invoked using:
+The same order of preference is applied even when the application is invoked as follows:
 
-[source,shell]
+[source,bash]
 ----
 $ java -jar myapp-swarmm -Scloud -Stesting -s/home/app/openshift.yml
 ----
-
-
-
-
-
-
-
-
-
-
-
+====
 
