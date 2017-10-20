@@ -328,9 +328,15 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         Class<?> clazz = testClass;
 
-        while (clazz != null) {
+        while (clazz != null && clazz != Object.class) {
             types.add(clazz);
-            types.addAll(Arrays.<Class<?>>asList(clazz.getInterfaces()));
+            List<Class<?>> interfaces = Arrays.<Class<?>>asList(clazz.getInterfaces());
+            types.addAll(interfaces);
+            // Handle interfaces with inheritance
+            for (Class<?> iface : interfaces) {
+                List<Class<?>> superInterfaces = Arrays.<Class<?>>asList(iface.getInterfaces());
+                types.addAll(superInterfaces);
+            }
 
             clazz = clazz.getSuperclass();
         }
