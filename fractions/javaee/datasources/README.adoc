@@ -1,4 +1,4 @@
-= Datasources Fraction
+= Datasources
 
 Provides support for container-managed database connections.
 
