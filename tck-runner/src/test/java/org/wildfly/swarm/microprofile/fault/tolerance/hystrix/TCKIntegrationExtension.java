@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.microprofile.fault.tolerance.hystrix.extension;
+package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.core.spi.LoadableExtension;

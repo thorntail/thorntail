@@ -16,30 +16,46 @@
 
 package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
-import org.jboss.weld.junit4.WeldInitiator;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.testng.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+
+import org.testng.annotations.Test;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.extension.HystrixExtension;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
 /**
  * @author Antoine Sabot-Durand
  */
-public class CommandInterceptorTest {
+public class CommandInterceptorTest extends Arquillian {
 
-    @Rule
-    public WeldInitiator weld = WeldInitiator
-            .from(WeldInitiator.createWeld().addExtension(new HystrixExtension()).addPackages(true, DefaultCommand.class, getClass())).inject(this).build();
+
+    @Deployment
+    public static JavaArchive deploy() {
+        JavaArchive testJar = ShrinkWrap
+                .create(JavaArchive.class, "CommandInterceptorTest.jar")
+                .addPackages(true, "org.wildfly.swarm.microprofile.fault.tolerance.hystrix")
+                .addAsServiceProvider(Extension.class,HystrixExtension.class)
+                .addAsManifestResource(EmptyAsset.INSTANCE,"beans.xml");
+
+        return testJar;
+    }
+
 
     @Inject
     MyMicroservice service;
@@ -57,7 +73,7 @@ public class CommandInterceptorTest {
     }
 
     // TODO: should throw TimeoutException instead!
-    @Test(expected = HystrixRuntimeException.class)
+    @Test(expectedExceptions = RuntimeException.class)
     public void testTimeoutNoFallback() {
         service.sayHelloTimeoutNoFallback();
         fail();

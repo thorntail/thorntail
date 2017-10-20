@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.microprofile.fault.tolerance.hystrix.extension;
+package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
 import javax.enterprise.inject.spi.Extension;
 
@@ -23,6 +23,7 @@ import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.extension.HystrixExtension;
 
 public class TCKArchiveAppender implements ApplicationArchiveProcessor {
     private static final StringAsset BEANS_XML = new StringAsset("<beans version=\"1.1\" bean-discovery-mode=\"annotated\"/>");
