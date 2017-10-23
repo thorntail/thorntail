@@ -1,8 +1,8 @@
-# Datasources Fraction
+= Datasources
 
 Provides support for container-managed database connections.
 
-## Autodetectable drivers
+== Autodetectable drivers
 
 If your application includes the appropriate vendor JDBC
 library in its normal dependencies, these drivers will be detected

@@ -162,7 +162,7 @@ public class HystrixFraction implements Fraction<HystrixFraction> {
     @Configurable("swarm.hystrix.threadpool.default.maxQueueSize")
     private Defaultable<Integer> threadpoolMaxQueueSize = integer(-1);
 
-    @AttributeDocumentation("The queue size rejection threshold — an artificial maximum queue size at which rejections will occur even if maxQueueSize has not been reached")
+    @AttributeDocumentation("The queue size rejection threshold - an artificial maximum queue size at which rejections will occur even if maxQueueSize has not been reached")
     @Configurable("swarm.hystrix.threadpool.default.queueSizeRejectionThreshold")
     private Defaultable<Integer> threadpoolQueueSizeRejectionThreshold = integer(5);
 

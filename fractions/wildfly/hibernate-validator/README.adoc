@@ -1,3 +1,3 @@
-# Hibernate Validator
+= Hibernate Validator
 
 Provides support and integration for applications using Hibernate Validator.

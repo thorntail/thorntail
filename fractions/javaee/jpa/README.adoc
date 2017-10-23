@@ -1,4 +1,4 @@
-# JPA
+= JPA
 
 Provides support for the Java Persistence API according
 to JSR-220.
