@@ -163,7 +163,6 @@
         <executions>
           <execution>
             <goals>
-              <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
           </execution>
@@ -190,7 +189,7 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>bom-all</artifactId>
+        <artifactId>bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
