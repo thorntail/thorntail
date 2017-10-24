@@ -29,6 +29,7 @@ import org.wildfly.swarm.config.ejb3.TimerService;
 import org.wildfly.swarm.config.ejb3.service.FileDataStore;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -38,6 +39,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.ejb3")
 @MarshalDMR
+@Configurable("swarm.ejb3")
 public class EJBFraction extends EJB3<EJBFraction> implements Fraction<EJBFraction> {
 
     @PostConstruct
