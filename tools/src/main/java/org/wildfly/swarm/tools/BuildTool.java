@@ -26,17 +26,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -408,13 +404,6 @@ public class BuildTool {
         }
     }
 
-    private static final DateFormat ISO_DATE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
-
-    static {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        ISO_DATE.setTimeZone(tz);
-    }
-
     private void addJarManifest() {
         Manifest manifest = new Manifest();
         Attributes attrs = manifest.getMainAttributes();
@@ -435,8 +424,6 @@ public class BuildTool {
     private void addWildFlySwarmApplicationManifest() {
         WildFlySwarmManifest manifest = this.dependencyManager.getWildFlySwarmManifest();
 
-        String timestamp = ISO_DATE.format(new Date());
-        this.properties.put("swarm.uberjar.build.timestamp", timestamp);
         this.properties.put("swarm.uberjar.build.user", System.getProperty("user.name"));
         if (!this.hollow) {
             this.properties.put(BootstrapProperties.APP_ARTIFACT, this.projectAsset.getSimpleName());
