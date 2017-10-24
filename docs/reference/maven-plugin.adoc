@@ -1,0 +1,164 @@
+= Maven Plugin
+
+WildFly Swarm provides a Maven plugin to accomplish most of the work of building xref:uberjar[] packages.
+
+.General Usage
+
+The WildFly Swarm Maven plugin is used as any other Maven plugin, through editing your `pom.xml` and adding a `<plugin>` section.
+
+[source,xml]
+----
+<plugin>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-plugin</artifactId>
+  <version>${project.version}</version>
+  <executions>
+    ...
+    <configuration>
+      ...
+    <configuration/>
+  </executions>
+</plugin>
+----
+
+== Goals
+
+The WildFly Swarm Maven plugin provides a handful of goals.
+
+`package`::
+Creates the executable package (see xref:creating-an-uberjar[]).
+
+`run`::
+Executes your application within the Maven process, stopping it when the Maven build is interrupted (using _control-c_).
+
+`start` and `multistart`::
+Executes your application in a forked process. Generally only useful for running integration tests using a plugin such as the `maven-failsafe-plugin`.
+The `multistart` variant allows for starting multiple WildFly Swarm-built applications using Maven GAVs, in order to support complex testing scenarios.
+
+`stop`::
+Stops any previously started applications.
++
+NOTE: The `stop` goal can only stop applications that were started _within the same Maven execution_.
+
+== Configuration
+
+The plugin accepts the following options:
+
+[cols="d,a,3*d", options="header"]
+|===
+|Name|Property|Description|Default|Used by
+
+|`bundleDependencies`
+|`swarm.bundleDependencies`
+|If true, dependencies will be included in the -swarm.jar. Otherwise, they will be resolved from `$M2_REPO` or the network at runtime.
+|true
+|`package`
+
+|`debug`
+|_none_
+|A port to use for debugging. If set, the swarm process will suspend on start and open a debugger on this port.
+|
+|`run`, `start`
+
+|`environment`
+|_none_
+|A properties-style list of environment variables to use when running the application
+|
+|`multistart`, `run`, `start`
+
+|`environmentFile`
+|`swarm.environmentFile`
+|A `.properties` file of environment variables to use when running the application
+|
+|`multistart`, `run`, `start`
+
+|`fractionDetectMode`
+|`swarm.fractionDetectMode`
+|The mode for fraction detection. Options are:
++
+* `when_missing`: runs only when no WildFly Swarm dependencies are found
+* `force`: always run, and merge any detected fractions with the existing dependencies, with existing dependencies taking precedence
+* `never`: disable fraction detection
+|`when_missing`
+|`package`, `run`, `start`
+
+|`fractions`
+|_none_
+|A list of extra fractions to include when auto-detection is used, useful for fractions that can't be detected or user-provided fractions. Each fraction can be of the form `group:name:version`, `name:version`, or `name`. If no group is provided, `org.wildfly.swarm` is assumed. If no version is provided, the version is looked up from the WildFly Swarm BOM for the version of the plugin you are using.
+|
+|`package`, `run`, `start`
+
+|`hollow`
+|`swarm.hollow`
+|Boolean specifying if the resulting executable jar should be _hollow_ and not include the default deployment.
+|`false`
+|`multistart`, `run`, `start`
+
+|`jvmArguments`
+|`swarm.jvmArguments`
+|A list of <jvmArgument> elements specifying additional JVM arguments (such as `-Xmx32m`)
+|
+|`multistart`, `run`, `start`
+
+|`modules`
+|_none_
+|Paths to a directory containing additional module definitions
+|./modules
+|`package`, `run`, `start`
+
+|`processes`
+|_none_
+|Application configurations to start (see multistart section above)
+|
+|`multistart`
+
+|`properties`
+|_none_
+|(see properties section below)
+|
+|`package`, `run`, `start`
+
+|`propertiesFile`
+|`swarm.propertiesFile`
+|(see properties section below)
+|
+|`package`, `run`, `start`
+
+|`stderrFile`
+|`swarm.stderr`
+|A file path to use to store stderr output instead of sending it stderr of the launching process
+|
+|`run`, `start`
+
+|`stdoutFile`
+|`swarm.stdout`
+|A file path to use to store stdout output instead of sending it stdout of the launching process
+|
+|`run`, `start`
+
+|`useUberJar`
+|`swarm.useUberJar`
+|If true, the `-swarm.jar` from `${project.build.directory}` will be used. This jar will not be automatically created, so the `package` goal will need to have already been executed.
+|false
+|`run`, `start`
+|===
+
+=== Properties
+
+Many properties may be used to configure execution and affect the packaging
+or running of your application.
+
+If you add a `<properties>` or `<propertiesFile>` section to the `<configuration>`
+of the plugin, the properties will be used when running your application via
+`mvn wildfly-swarm:run`.  Additionally, those same properties will be added to
+your `_myapp_-swarm.jar` to affect subsequent executions of the uberjar.  Any
+properties loaded from `<propertiesFile>` will override same-named properties from `<properties>`.
+
+Any properties added to the uberjar can of course be overridden at
+runtime using the traditional `-Dname=value` mechanism of `java` or
+the YAML-based configuration facilities.
+
+Only properties specified outside of `<properties>` or `<propertiesFile>`
+that start with `jboss.`, `wildfly.`, `swarm.`, or `maven.`, or override a
+property specified in `<properties>` or `<propertiesFile>` are
+added to the uberjar at package time.
