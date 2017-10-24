@@ -25,6 +25,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 @DeploymentModules({
         @DeploymentModule(name = "com.netflix.ribbon"),
         @DeploymentModule(name = "com.netflix.hystrix"),
+        @DeploymentModule(name = "com.netflix.archaius"),
         @DeploymentModule(name = "io.reactivex.rxjava"),
         @DeploymentModule(name = "io.reactivex.rxnetty"),
         @DeploymentModule(name = "io.netty")
