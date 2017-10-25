@@ -69,4 +69,95 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>docker</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+          
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.22.1</version>
+            <configuration>
+                <skip>false</skip>
+                <verbose>true</verbose>
+                <useColor>false</useColor>
+              <images>
+                <image>
+                  <name>mongo</name>
+                  <run>
+                    <ports>
+                      <port>27017:27017</port>
+                    </ports>
+                    <wait>
+                        <time>120000</time>
+                        <!-- TODO: get MongoDB db.createUser to work for authentication testing
+                        <exec>
+                            <postStart>mongo mongotestdb "db.createUser({ user: 'devuser', pwd:  'changethis', roles: ['dbAdmin'] }); db.auth('devuser', 'changethis'); "</postStart>
+                        </exec>
+                        -->
+                        <tcp>
+                            <mode>mapped</mode>
+                            <ports>
+                                <port>27017</port>
+                            </ports>
+                        </tcp>
+                    </wait>
+<!--
+                    <cmd>
+                        <exec>
+                          <arg>sleep</arg>
+                          <arg>10000</arg>
+                        </exec>
+                        <exec>
+                          <arg>mongo</arg>
+                          <arg>mongotestdb</arg>
+                          <arg>-eval </arg>
+                          <arg>db.createUser({ user: 'devuser', pwd:  'changethis', roles: ['dbAdmin'] }); db.auth('devuser', 'changethis');</arg>
+                        </exec>
+                    </cmd>
+-->
+                    <log>
+                      <prefix>TC</prefix>
+                      <date>default</date>
+                      <color>cyan</color>
+                    </log>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+              <executions>
+                <execution>
+                  <id>pre-integration-test</id>
+                  <phase>pre-integration-test</phase>
+                  <goals>
+                    <goal>start</goal>
+                  </goals>
+                </execution>                        
+                <execution>
+                  <id>post-integration-test</id>
+                  <phase>post-integration-test</phase>
+                  <goals>
+                    <goal>stop</goal>
+                  </goals>
+                </execution>
+              </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>

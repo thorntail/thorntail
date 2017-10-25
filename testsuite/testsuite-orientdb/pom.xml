@@ -103,4 +103,74 @@
         </dependency>
 
     </dependencies>
+
+  <profiles>
+    <profile>
+      <id>docker</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+          
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.22.1</version>
+            <configuration>
+              <images>
+                <image>
+                  <name>orientdb</name>
+                  <run>
+                    <env>
+                        <ORIENTDB_ROOT_PASSWORD>admin</ORIENTDB_ROOT_PASSWORD>
+                    </env>
+                    <ports>
+                      <port>2424:2424</port>
+                    </ports>
+                    <wait>
+                        <time>120000</time>
+                        <tcp>
+                            <ports>
+                                <port>2424</port>
+                            </ports>
+                        </tcp>
+                        <exec>
+                            <postStart>console.sh create database remote:localhost/test root admin plocal</postStart>
+                        </exec>
+                   </wait>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+              <executions>
+                <execution>
+                  <id>pre-integration-test</id>
+                  <phase>pre-integration-test</phase>
+                  <goals>
+                    <goal>start</goal>
+                  </goals>
+                </execution>                        
+                <execution>
+                  <id>post-integration-test</id>
+                  <phase>post-integration-test</phase>
+                  <goals>
+                    <goal>stop</goal>
+                  </goals>
+                </execution>
+              </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>

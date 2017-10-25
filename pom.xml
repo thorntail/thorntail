@@ -1206,10 +1206,10 @@
     </profile>
 
     <profile>
-      <id>nosql</id>
+      <id>docker</id>
       <activation>
         <property>
-          <name>swarm.nosql</name>
+          <name>swarm.docker</name>
         </property>
       </activation>
       <modules>

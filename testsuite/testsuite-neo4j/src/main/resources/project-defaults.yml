@@ -21,9 +21,9 @@ swarm:
               flag:  required
               ConfiguredIdentity:
               module-options: 
-                principal:  devuser
+                principal:  neo4j
                 password:  changethis
-                username:  devuser
+                username:  neo4j
   network:
     socket-binding-groups:
       standard-sockets:
