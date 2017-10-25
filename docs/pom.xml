@@ -55,6 +55,22 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>jruby-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>jruby</goal>
+            </goals>
+            <configuration>
+              <file>src/main/rb/create-main-index.rb</file>
+              <execArgs>${project.version}</execArgs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <version>1.5.6</version>
@@ -77,6 +93,18 @@
           </resources>
         </configuration>
         <executions>
+          <execution>
+            <id>output-wayfinding-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>target</sourceDirectory>
+              <sourceDocumentName>index.adoc</sourceDocumentName>
+              <outputDirectory>${project.build.directory}/generated-docs/</outputDirectory>
+            </configuration>
+          </execution>
           <execution>
             <id>output-html</id>
             <phase>generate-resources</phase>
