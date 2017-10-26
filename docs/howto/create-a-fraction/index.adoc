@@ -102,7 +102,7 @@ classes that may be added to deployment archives.
 
 ### The `module.conf`
 
-Alongside your `pom.xm` you need at least an empty `module.conf` file to signal
+Alongside your `pom.xml` you need at least an empty `module.conf` file to signal
 the plugin that your build is actually a fraction.
 
 This file is used to enumerate the JBoss-Modules dependencies your fraction
@@ -393,7 +393,7 @@ Include the following `<dependency>` items within your `pom.xml`:
 ----
 
 Each fraction that requires logging should then include a related
-`*Messages` classe akin to:
+`*Messages` class akin to:
 
 [source,java]
 ----
