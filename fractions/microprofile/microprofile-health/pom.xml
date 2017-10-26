@@ -11,20 +11,21 @@
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>build-parent</artifactId>
     <version>2017.11.0-SNAPSHOT</version>
-    <relativePath>../../build-parent/pom.xml</relativePath>
+    <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
   <groupId>org.wildfly.swarm</groupId>
-  <artifactId>microprofile</artifactId>
+  <artifactId>microprofile-health</artifactId>
 
-  <name>MicroProfile</name>
-  <description>Implementation of MicroProfile.io</description>
+  <name>Microprofile-Health</name>
+  <description>Health endpoints for your application</description>
 
   <packaging>jar</packaging>
 
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>JavaEE,Web,MicroProfile</swarm.fraction.tags>
+    <swarm.fraction.tags>Management</swarm.fraction.tags>
+    <version.mp.health>1.0</version.mp.health>
   </properties>
 
   <build>
@@ -37,39 +38,79 @@
   </build>
 
   <dependencies>
-    <!-- Fraction Dependencies -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs</artifactId>
+      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>cdi</artifactId>
+      <artifactId>spi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs-jsonp</artifactId>
+      <artifactId>undertow</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs-jaxb</artifactId>
+      <artifactId>msc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>microprofile-config</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>health-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.microprofile.health</groupId>
+      <artifactId>microprofile-health-api</artifactId>
+      <version>${version.mp.health}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>management</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>naming</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-server</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-naming</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-servlet-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
       <exclusions>
@@ -91,6 +132,21 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-servlet-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
   </dependencies>
+
+
 
 </project>
