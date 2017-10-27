@@ -1,13 +1,14 @@
-![WildFly Swarm: Rightsize your JavaEE Applications](http://wildfly-swarm.io/images/swarm_logo_final.png)
-
 [![Build Status](https://ci.wildfly-swarm.io/buildStatus/icon?job=wildfly-swarm-linux)](https://ci.wildfly-swarm.io/job/wildfly-swarm-linux)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm)
 [![Join the chat at freenode:wildfly-swarm](https://img.shields.io/badge/irc-freenode%3A%20%23wildfly--swarm-blue.svg)](http://webchat.freenode.net/?channels=%23wildfly-swarm)
 
 We rely on the [Java profiler from EJ Technologies](http://www.ej-technologies.com/products/jprofiler/overview.html)
-
 ![Supported by JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)
+
+![WildFly Swarm: Rightsize your JavaEE Applications](http://wildfly-swarm.io/images/swarm_logo_final.png)
+
+> Issues are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/projects/SWARM/issues?filter=allopenissues) (JIRA). Bug reports and feature requests are greatly appreciated.
 
 # WildFly Swarm Core
 
@@ -75,10 +76,6 @@ If you're running short on time:
 ```bash
 mvn clean install -DskipTests
 ```
-
-# Issue Tracking
-
-Issues are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/projects/SWARM/issues?filter=allopenissues) (JIRA). Bug reports and feature requests are greatly appreciated.
 
 # Documentation
 
