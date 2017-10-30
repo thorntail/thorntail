@@ -35,22 +35,12 @@
       <class name="org.eclipse.microprofile.fault.tolerance.tck.ConfigTest"/>
 
 
-     <class name="org.eclipse.microprofile.fault.tolerance.tck.FallbackTest">
-       <!--issue with timeout and fallback-->
-       <methods>
-         <exclude name="testFallbackTimeout"/>
-       </methods>
-     </class>
+     <class name="org.eclipse.microprofile.fault.tolerance.tck.FallbackTest"/>
 
       <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerTest">
-        <!--5 tests out of 7 don't pass-->
+        <!--1 test out of 7 don't pass -->
         <methods>
-          <exclude name="testCircuitClosedThenOpen" />
-          <exclude name="testCircuitDefaultSuccessThreshold"/>
-          <exclude name="testCircuitHighSuccessThreshold" />
-          <exclude name="testClassLevelCircuitBase" />
-          <exclude name="testClassLevelCircuitOverride"/>
-          <exclude name="testClassLevelCircuitOverrideNoDelay"/>
+          <exclude name="testCircuitHighSuccessThreshold"/>
         </methods>
       </class>
 

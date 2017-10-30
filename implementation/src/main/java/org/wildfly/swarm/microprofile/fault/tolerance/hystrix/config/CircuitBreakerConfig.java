@@ -29,6 +29,8 @@ public class CircuitBreakerConfig extends GenericConfig<CircuitBreaker> {
 
     public static final String SUCCESS_THRESHOLD = "successThreshold";
 
+    public static final String SYNCHRONOUS_STATE_VALIDATION = "synchronousStateValidation";
+
     public CircuitBreakerConfig(CircuitBreaker cb, Method method) {
         super(cb, method);
     }
@@ -70,6 +72,7 @@ public class CircuitBreakerConfig extends GenericConfig<CircuitBreaker> {
         put(FAILURE_RATIO, Double.class);
         put(REQUEST_VOLUME_THRESHOLD, Integer.class);
         put(SUCCESS_THRESHOLD, Integer.class);
+        put(SYNCHRONOUS_STATE_VALIDATION, Boolean.class);
     }});
 
 
