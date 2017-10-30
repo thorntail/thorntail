@@ -41,7 +41,7 @@ public class ClassLoaderConfigLocator extends ConfigLocator {
         return new ClassLoaderConfigLocator(appModule.getClassLoader());
     }
 
-    private ClassLoaderConfigLocator(ClassLoader classLoader) {
+    public ClassLoaderConfigLocator(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
