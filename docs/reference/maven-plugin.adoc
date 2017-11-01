@@ -102,7 +102,7 @@ If no version is provided, the version is taken from the WildFly Swarm BOM for t
 |`swarm.hollow`
 |Specifies if the resulting executable JAR should be hollow, and therefore not include the default deployment.
 |`false`
-|`multistart`, `run`, `start`
+|`package`
 
 |`jvmArguments`
 |`swarm.jvmArguments`
