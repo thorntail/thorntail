@@ -31,12 +31,12 @@ $ mvn package
 
 . Execute the hollow JAR:
 +
-Execute the resulting `-hollowswarm.jar` file using the Java binary and pass
+Execute the resulting `-hollow-swarm.jar` file using the Java binary and pass
 the `.war` file with your application as the first argument:
 +
 [source]
 ----
-$ java -jar ./target/myapp-hollowswarm.jar ./target/myapp.war
+$ java -jar ./target/myapp-hollow-swarm.jar ./target/myapp.war
 ----
 
 .Related Information

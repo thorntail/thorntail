@@ -127,7 +127,7 @@ Consider the following application execution:
 
 [source,bash]
 ----
-$ java -jar myapp-swarm -s/home/app/openshift.yml -Scloud -Stesting
+$ java -jar myapp-swarm.jar -s/home/app/openshift.yml -Scloud -Stesting
 ----
 
 In this example, the following YAML files are loaded in this order:
@@ -141,7 +141,7 @@ The same order of preference is applied even when the application is invoked as 
 
 [source,bash]
 ----
-$ java -jar myapp-swarmm -Scloud -Stesting -s/home/app/openshift.yml
+$ java -jar myapp-swarm.jar -Scloud -Stesting -s/home/app/openshift.yml
 ----
 ====
 
