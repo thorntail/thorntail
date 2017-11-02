@@ -41,7 +41,7 @@ often--so that the higher layer which contains only your application code can
 be rebuilt more quickly.
 
 The names of the hollow JARs that WildFly Swarm produces include the name of
-your application, and the `-hollowswarm.jar` suffix. You must package the
+your application, and the `-hollow-swarm.jar` suffix. You must package the
 `.war` file of your application separately in order to benefit from the hollow
 JAR.
 
@@ -50,6 +50,6 @@ executing the hollow JAR:
 
 [source]
 ----
-$ java -jar myapp-hollowswarm.jar myapp.war
+$ java -jar myapp-hollow-swarm.jar myapp.war
 ----
 

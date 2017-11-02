@@ -1,8 +1,7 @@
 [#creating-a-hollow-jar]
 = Creating a hollow JAR
 
-The xref:hollow-jar[hollow JAR] is one method of packaging an application for
-execution with WildFly Swarm.
+The xref:hollow-jar[hollow JAR] is one method of packaging an application for execution with WildFly Swarm.
 
 .Prerequisites
 
@@ -10,17 +9,19 @@ execution with WildFly Swarm.
 
 .Procedure
 
-. Add the `wildfly-swarm-maven-plugin` to your `pom.xml` in a `<plugin>` block,
-  with an `<execution>` specifying the `package` goal.
-  In addition to that, put `true` in the `hollow` property of the
-  `<configuration>` element:
+. Add the `wildfly-swarm-plugin` to your `pom.xml` in a `<plugin>` block, with an `<execution>` specifying the `package` goal.
+In addition to that, put `true` in the `hollow` property of the `<configuration>` element:
 +
+--
 [source,xml]
 ----
 <plugins>
 include::pom.xml[tag=plugin,indent=2]
 </plugins>
 ----
+
+You can also execute the Maven binary with the system property `-Dswarm.hollow=true` instead. For more information, see the xref:maven-plugin-configuration[Maven plugin configuration reference].
+--
 
 . Perform a normal Maven build:
 +
@@ -31,8 +32,7 @@ $ mvn package
 
 . Execute the hollow JAR:
 +
-Execute the resulting `-hollow-swarm.jar` file using the Java binary and pass
-the `.war` file with your application as the first argument:
+Execute the resulting `-hollow-swarm.jar` file using the Java binary and pass the `.war` file with your application as the first argument:
 +
 [source]
 ----
