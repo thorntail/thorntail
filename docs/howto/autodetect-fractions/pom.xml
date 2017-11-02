@@ -17,6 +17,7 @@
   <packaging>war</packaging>
 
   <properties>
+    <version.wildfly-swarm>${project.version}</version.wildfly-swarm>
     <version.maven-war-plugin>2.2</version.maven-war-plugin>
     <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
@@ -24,7 +25,7 @@
     <version.arquillian-drone>2.0.1.Final</version.arquillian-drone>
     <version.arquillian-graphene>2.1.0.Alpha2</version.arquillian-graphene>
     <version.junit>4.11</version.junit>
-
+   
     <version.jaxrs-api>1.0.0.Final</version.jaxrs-api>
   </properties>
 
@@ -86,7 +87,7 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${project.version}</version>
+        <version>${version.wildfly-swarm}</version>
         <executions>
           <execution>
             <id>package</id>
