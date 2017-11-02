@@ -17,6 +17,7 @@
   <packaging>war</packaging>
 
   <properties>
+    <version.wildfly-swarm>${project.version}</version.wildfly-swarm>
     <version.maven-war-plugin>2.2</version.maven-war-plugin>
     <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
@@ -86,7 +87,7 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${project.version}</version>
+        <version>${version.wildfly-swarm}</version>
         <executions>
           <execution>
             <id>package</id>

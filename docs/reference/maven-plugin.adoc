@@ -11,7 +11,7 @@ The WildFly Swarm Maven plugin is used like any other Maven plugin, that is thro
 <plugin>
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-plugin</artifactId>
-  <version>${project.version}</version>
+  <version>${version.wildfly-swarm}</version>
   <executions>
     ...
     <configuration>
