@@ -9,7 +9,7 @@ The xref:hollow-jar[hollow JAR] is one method of packaging an application for ex
 
 .Procedure
 
-. Add the `wildfly-swarm-maven-plugin` to your `pom.xml` in a `<plugin>` block, with an `<execution>` specifying the `package` goal.
+. Add the `wildfly-swarm-plugin` to your `pom.xml` in a `<plugin>` block, with an `<execution>` specifying the `package` goal.
 In addition to that, put `true` in the `hollow` property of the `<configuration>` element:
 +
 --
