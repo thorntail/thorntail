@@ -18,7 +18,7 @@
   <artifactId>microprofile</artifactId>
 
   <name>MicroProfile</name>
-  <description>Implementation of MicroProfile.io</description>
+  <description>Implementation of Eclipse MicroProfile</description>
 
   <packaging>jar</packaging>
 
@@ -54,13 +54,13 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs-jaxb</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile</groupId>
-      <artifactId>microprofile</artifactId>
-      <version>1.2</version>
-      <type>pom</type>
-      <scope>provided</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.eclipse.microprofile</groupId>-->
+      <!--<artifactId>microprofile</artifactId>-->
+      <!--<version>1.2</version>-->
+      <!--<type>pom</type>-->
+      <!--<scope>provided</scope>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>org.wildfly.core</groupId>
