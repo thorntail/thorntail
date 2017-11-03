@@ -1,151 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.wildfly.swarm</groupId>
-    <artifactId>build-parent</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
-    <relativePath>../../build-parent/pom.xml</relativePath>
-  </parent>
-  <artifactId>teiid</artifactId>
-  <name>Teiid</name>
-  <description>A data virtualization system that allows applications to use data from multiple, heterogeneous data stores.</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <packaging>jar</packaging>
+	<parent>
+		<groupId>org.wildfly.swarm</groupId>
+		<artifactId>build-parent</artifactId>
+		<version>2017.12.0-SNAPSHOT</version>
+		<relativePath>../../build-parent/pom.xml</relativePath>
+	</parent>
 
-  <properties>
-    <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>Data</swarm.fraction.tags>
-  </properties>
+	<name>Teiid Fraction</name>
+	<description>Data Virtualization based on Teiid</description>
 
+	<artifactId>teiid-fraction</artifactId>
+	<packaging>pom</packaging>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
-    </dependency>
+	<modules>
+		<module>core</module>
+		<module>components</module>
+		<module>odata</module>
+	</modules>
 
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>infinispan</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jca</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>teiid-config-api</artifactId>
-    </dependency>
-
-
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-   <!--    -->
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-core-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-servlet-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.teiid</groupId>
-      <artifactId>teiid-wildfly-integration-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.teiid</groupId>
-      <artifactId>rest-service-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-        <groupId>org.jboss.teiid.connectors</groupId>
-        <artifactId>feature-pack-swagger</artifactId>
-        <type>zip</type>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>*</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.teiid</groupId>
-        <artifactId>teiid-client-feature-pack</artifactId>
-        <type>zip</type>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>*</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-
-  </dependencies>
-
+	<!-- Profiles -->
+	<profiles>
+		<profile>
+			<id>swarm.debug</id>
+			<activation>
+				<property>
+					<name>swarm.debug</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<systemPropertyVariables>
+									<swarm.debug.port>8787</swarm.debug.port>
+								</systemPropertyVariables>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 </project>
