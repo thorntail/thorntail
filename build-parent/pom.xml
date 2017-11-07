@@ -29,7 +29,7 @@
     <version.wildfly.config-api>1.1.0.Final</version.wildfly.config-api>
 
     <version.keycloak.config-api>1.1.0.Final</version.keycloak.config-api>
-    <version.teiid.config-api>1.0.3-SNAPSHOT</version.teiid.config-api>
+    <version.teiid.config-api>1.0.3</version.teiid.config-api>
     <version.keycloak>2.5.5.Final</version.keycloak>
     <version.mongo.config-api>1.2.0</version.mongo.config-api>
     <version.cassandra.config-api>1.2.0</version.cassandra.config-api>
