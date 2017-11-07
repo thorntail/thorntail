@@ -56,3 +56,66 @@ may be used when defining a datasource is as follows:
 |`prestodb`
 |===
 
+== Example datasource definitions
+
+=== MySQL
+
+An example of a MySQL datasource configuration with connection information, basic security, and validation options:
+
+[source,yaml,options="nowrap"]
+----
+swarm:
+  datasources:
+    data-sources:
+      MyDS:
+        driver-name: mysql
+        connection-url: jdbc:mysql://localhost:3306/jbossdb
+        user-name: admin
+        password: admin
+        valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker
+        validate-on-match: true
+        background-validation: false
+        exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter
+----
+
+=== PostgreSQL
+
+An example of a PostgreSQL datasource configuration with connection information, basic security, and validation options:
+
+[source,yaml,options="nowrap"]
+----
+swarm:
+  datasources:
+    data-sources:
+      MyDS:
+        driver-name: postgresql
+        connection-url: jdbc:postgresql://localhost:5432/postgresdb
+        user-name: admin
+        password: admin
+        valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker
+        validate-on-match: true
+        background-validation: false
+        exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+----
+
+=== Oracle
+
+An example of an Oracle datasource configuration with connection information, basic security, and validation options:
+
+[source,yaml,options="nowrap"]
+----
+swarm:
+  datasources:
+    data-sources:
+      MyDS:
+        driver-name: oracle
+        connection-url: jdbc:oracle:thin:@localhost:1521:XE
+        user-name: admin
+        password: admin
+        valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker
+        validate-on-match: true
+        background-validation: false
+        stale-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker
+        exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter
+----
+
