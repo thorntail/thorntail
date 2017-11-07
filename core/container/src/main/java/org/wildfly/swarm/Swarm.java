@@ -773,6 +773,10 @@ public class Swarm {
                 t.printStackTrace();
                 System.exit(1);
             }
+        } else {
+            // errors can be thrown before swarm.server is created
+            errorCause.printStackTrace();
+            System.exit(1);
         }
     }
 
