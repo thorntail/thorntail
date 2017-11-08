@@ -3,9 +3,7 @@ var exec = require('child_process').exec;
 var prevVersion = process.argv[2]
 var thisVersion = process.argv[3]
 var websiteRepo = process.argv[4] || 'wildfly-swarm-swarm.io'
-var userguideRepo = process.argv[5] || 'wildfly-swarm-users-guide'
 var examplesRepo = process.argv[6] || 'wildfly-swarm-examples'
-var howtoRepo = process.argv[7] || 'wildfly-swarm-howto'
 
 if ( ! prevVersion) {
   console.log( "Must specify previous version" );
@@ -25,8 +23,6 @@ var repos = {
   Core: '.',
   Examples: '../../' + examplesRepo,
   Website: '../../' + websiteRepo,
-  HowTo: '../../' + howtoRepo,
-  UserGuide: '../../' + userguideRepo,
 }
 
 Object.keys(repos).forEach( function(e) {
