@@ -25,13 +25,13 @@
     <version.mp.health>1.0</version.mp.health>
   </properties>
 
-  <!--<repositories>-->
-    <!--<repository>-->
-      <!--<id>repo.eclipse.org</id>-->
-      <!--<name>Eclipse MicroProfile Repository - Releases</name>-->
-      <!--<url>https://repo.eclipse.org/content/repositories/microprofile-releases/</url>-->
-    <!--</repository>-->
-  <!--</repositories>-->
+  <repositories>
+    <repository>
+      <id>repo.eclipse.org</id>
+      <name>Eclipse MicroProfile Repository - Releases</name>
+      <url>https://repo.eclipse.org/content/repositories/microprofile-releases/</url>
+    </repository>
+  </repositories>
 
   <build>
     <resources>
@@ -43,10 +43,10 @@
   </build>
 
   <dependencies>
-    <!--<dependency>-->
-      <!--<groupId>javax.enterprise</groupId>-->
-      <!--<artifactId>cdi-api</artifactId>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
@@ -54,12 +54,12 @@
       <scope>provided</scope>
     </dependency>
 
-    <!--<dependency>-->
-       <!--<groupId>org.eclipse.microprofile.health</groupId>-->
-       <!--<artifactId>microprofile-health-api</artifactId>-->
-       <!--<version>${version.mp.health}</version>-->
-      <!--<scope>provided</scope>-->
-     <!--</dependency>-->
+    <dependency>
+       <groupId>org.eclipse.microprofile.health</groupId>
+       <artifactId>microprofile-health-api</artifactId>
+       <version>${version.mp.health}</version>
+      <scope>provided</scope>
+     </dependency>
 
   </dependencies>
 </project>
