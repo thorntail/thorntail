@@ -1,5 +1,5 @@
 [#packaging_types]
-= Packaging Types (Uberjars & Hollow Jars)
+= Packaging Types
 
 When using WildFly Swarm, there are two different ways to package your
 runtime and application, depending on how you intend to use and deploy
@@ -28,6 +28,7 @@ An uberjar can be executed like any executable JAR:
 $ java -jar myapp-swarm.jar
 ----
 
+ifndef::product[]
 [#hollow-jar]
 == Hollow JAR
 
@@ -52,4 +53,5 @@ executing the hollow JAR:
 ----
 $ java -jar myapp-hollow-swarm.jar myapp.war
 ----
+endif::[]
 
