@@ -34,7 +34,9 @@ $ mvn package
 $ java -jar ./target/myapp-swarm.jar
 ----
 
+ifndef::product[]
 .Related Information
 
 * xref:creating-a-hollow-jar[]
+endif::[]
 
