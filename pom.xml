@@ -691,34 +691,34 @@
         <version>2017.12.0-SNAPSHOT</version>
       </dependency>
 
-      <!--<dependency>-->
-        <!--<groupId>org.wildfly.swarm</groupId>-->
-        <!--<artifactId>microprofile-config</artifactId>-->
-        <!--<version>2017.11.0-SNAPSHOT</version>-->
-      <!--</dependency>-->
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-config</artifactId>
+        <version>2017.11.0-SNAPSHOT</version>
+      </dependency>
 
-      <!--<dependency>-->
-        <!--<groupId>org.wildfly.swarm</groupId>-->
-        <!--<artifactId>microprofile-health</artifactId>-->
-        <!--<version>2017.11.0-SNAPSHOT</version>-->
-      <!--</dependency>-->
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-health</artifactId>
+        <version>2017.11.0-SNAPSHOT</version>
+      </dependency>
 
-      <!--<dependency>-->
-        <!--<groupId>org.wildfly.swarm</groupId>-->
-        <!--<artifactId>microprofile-jwt</artifactId>-->
-        <!--<version>2017.11.0-SNAPSHOT</version>-->
-      <!--</dependency>-->
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-jwt</artifactId>
+        <version>2017.11.0-SNAPSHOT</version>
+      </dependency>
 
-      <!--<dependency>-->
-        <!--<groupId>org.wildfly.swarm</groupId>-->
-        <!--<artifactId>mp_metrics_cdi_extension</artifactId>-->
-        <!--<version>2017.11.0-SNAPSHOT</version>-->
-      <!--</dependency>-->
-      <!--<dependency>-->
-        <!--<groupId>org.wildfly.swarm</groupId>-->
-        <!--<artifactId>microprofile-metrics</artifactId>-->
-        <!--<version>2017.11.0-SNAPSHOT</version>-->
-      <!--</dependency>-->
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>mp_metrics_cdi_extension</artifactId>
+        <version>2017.11.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-metrics</artifactId>
+        <version>2017.11.0-SNAPSHOT</version>
+      </dependency>
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
@@ -989,10 +989,10 @@
 
     <module>fractions/keycloak</module>
     <module>fractions/microprofile/microprofile</module>
-    <!--<module>fractions/microprofile/microprofile-config</module>-->
-    <!--<module>fractions/microprofile/microprofile-health</module>-->
-    <!--<module>fractions/microprofile/microprofile-jwt</module>-->
-    <!--<module>fractions/microprofile/microprofile-metrics</module>-->
+    <module>fractions/microprofile/microprofile-config</module>
+    <module>fractions/microprofile/microprofile-health</module>
+    <module>fractions/microprofile/microprofile-jwt</module>
+    <module>fractions/microprofile/microprofile-metrics</module>
     <module>fractions/monitor</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>
@@ -1088,7 +1088,7 @@
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
         <module>testsuite/testsuite-management</module>
-        <!--<module>testsuite/testsuite-microprofile-metrics</module>-->
+        <module>testsuite/testsuite-microprofile-metrics</module>
         <module>testsuite/testsuite-modules</module>
         <module>testsuite/testsuite-monitor</module>
         <module>testsuite/testsuite-msc</module>
