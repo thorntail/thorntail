@@ -80,6 +80,7 @@
             <docinfo>shared</docinfo>
             <version>${project.version}</version>
             <product>${swarm.product.build}</product>
+            <WildFly>WildFly</WildFly>
           </attributes>
           <doctype>book</doctype>
           <backend>html5</backend>
