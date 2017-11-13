@@ -44,10 +44,10 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenException;
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
+import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.BulkheadConfig;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.CircuitBreakerConfig;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.FallbackConfig;
-import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.GenericConfig;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.RetryConfig;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.RetryContext;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.TimeoutConfig;
@@ -67,6 +67,8 @@ import com.netflix.hystrix.exception.HystrixRuntimeException;
 @Priority(Interceptor.Priority.LIBRARY_AFTER + 1)
 public class HystrixCommandInterceptor {
 
+    private static Logger LOGGER = Logger.getLogger(HystrixCommandInterceptor.class);
+
     @AroundInvoke
     public Object interceptCommand(InvocationContext ic) throws Exception {
 
@@ -79,31 +81,34 @@ public class HystrixCommandInterceptor {
         CommandMetadata metadata = commandMetadataMap.computeIfAbsent(method, CommandMetadata::new);
         RetryContext retryContext = metadata.retryConfig != null ? new RetryContext(metadata.retryConfig) : null;
 
-        Supplier<Object> fallback = metadata.hasFallbackClass() ? () -> {
-            Unmanaged.UnmanagedInstance<FallbackHandler<?>> unmanagedInstance = metadata.unmanaged.newInstance();
-            FallbackHandler<?> handler = unmanagedInstance.produce().inject().postConstruct().get();
-            try {
-                return handler.handle(ctx);
-            } finally {
-                // The instance exists to service a single invocation only
-                unmanagedInstance.preDestroy().dispose();
-            }
-        } : () -> {
-            try {
-                return metadata.fallbackMethod.invoke(ctx.getTarget(), ctx.getParameters());
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new FaultToleranceException("Error during fallback method invocation", e);
-            }
-        };
+        Supplier<Object> fallback = null;
+        if (metadata.hasFallback()) {
+            fallback = metadata.unmanaged != null ? () -> {
+                Unmanaged.UnmanagedInstance<FallbackHandler<?>> unmanagedInstance = metadata.unmanaged.newInstance();
+                FallbackHandler<?> handler = unmanagedInstance.produce().inject().postConstruct().get();
+                try {
+                    return handler.handle(ctx);
+                } finally {
+                    // The instance exists to service a single invocation only
+                    unmanagedInstance.preDestroy().dispose();
+                }
+            } : () -> {
+                try {
+                    return metadata.fallbackMethod.invoke(ctx.getTarget(), ctx.getParameters());
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new FaultToleranceException("Error during fallback method invocation", e);
+                }
+            };
+        }
 
         Asynchronous async = getAnnotation(method, Asynchronous.class);
         SynchronousCircuitBreaker syncCircuitBreaker = null;
         while (shouldRunCommand) {
             shouldRunCommand = false;
             DefaultCommand command;
-            if (metadata.config instanceof CircuitBreakerConfig) {
+            if (metadata.hasCircuitBreaker()) {
                 HystrixCommandKey key = HystrixCommandKey.Factory.asKey(method.getDeclaringClass().getName() + method.toString());
-                syncCircuitBreaker = SynchronousCircuitBreaker.getCircuitBreaker(key, (CircuitBreakerConfig) metadata.config);
+                syncCircuitBreaker = SynchronousCircuitBreaker.getCircuitBreaker(key, metadata.circuitBreakerConfig);
                 command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext, syncCircuitBreaker);
             } else {
                 command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext);
@@ -174,9 +179,8 @@ public class HystrixCommandInterceptor {
         return null;
     }
 
-    private Setter initSetter(Method method, GenericConfig configValue[]) {
+    private Setter initSetter(Method method, TimeoutConfig timeoutConfig, CircuitBreakerConfig circuitBreakerConfig, BulkheadConfig bulkheadConfig) {
         HystrixCommandProperties.Setter propertiesSetter = HystrixCommandProperties.Setter();
-
         HystrixThreadPoolProperties.Setter threadPoolSetter = HystrixThreadPoolProperties.Setter();
 
         if (getAnnotation(method, Asynchronous.class) == null) {
@@ -185,37 +189,32 @@ public class HystrixCommandInterceptor {
             propertiesSetter.withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.THREAD);
         }
 
-        Timeout timeout = getAnnotation(method, Timeout.class);
-        CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
-        Bulkhead bulkhead = getAnnotation(method, Bulkhead.class);
-
-        if (nonFallBackEnable && timeout != null) {
-            // TODO: In theory a user might specify a long value
-            TimeoutConfig config = new TimeoutConfig(timeout, method);
-            configValue[0] = config;
-            propertiesSetter.withExecutionTimeoutInMilliseconds((int) Duration.of(config.get(TimeoutConfig.VALUE), config.get(TimeoutConfig.UNIT)).toMillis());
+        if (nonFallBackEnable && timeoutConfig != null) {
+            Long value = Duration.of(timeoutConfig.get(TimeoutConfig.VALUE), timeoutConfig.get(TimeoutConfig.UNIT)).toMillis();
+            if (value > Integer.MAX_VALUE) {
+                LOGGER.warnf("Max supported value for @Timeout.value() is %s", Integer.MAX_VALUE);
+                value = Long.valueOf(Integer.MAX_VALUE);
+            }
+            propertiesSetter.withExecutionTimeoutInMilliseconds(value.intValue());
         } else {
             propertiesSetter.withExecutionTimeoutEnabled(false);
         }
 
-        if (nonFallBackEnable && circuitBreaker != null) {
-
-            CircuitBreakerConfig config = new CircuitBreakerConfig(circuitBreaker, method);
-            configValue[0] = config;
-            propertiesSetter.withCircuitBreakerEnabled(true).withCircuitBreakerRequestVolumeThreshold(config.get(CircuitBreakerConfig.REQUEST_VOLUME_THRESHOLD))
-                    .withCircuitBreakerErrorThresholdPercentage(new Double((Double) config.get(CircuitBreakerConfig.FAILURE_RATIO) * 100).intValue())
-                    .withCircuitBreakerSleepWindowInMilliseconds(
-                            (int) Duration.of(config.get(CircuitBreakerConfig.DELAY), config.get(CircuitBreakerConfig.DELAY_UNIT)).toMillis());
+        if (nonFallBackEnable && circuitBreakerConfig != null) {
+            propertiesSetter.withCircuitBreakerEnabled(true)
+                    .withCircuitBreakerRequestVolumeThreshold(circuitBreakerConfig.get(CircuitBreakerConfig.REQUEST_VOLUME_THRESHOLD))
+                    .withCircuitBreakerErrorThresholdPercentage(
+                            new Double((Double) circuitBreakerConfig.get(CircuitBreakerConfig.FAILURE_RATIO) * 100).intValue())
+                    .withCircuitBreakerSleepWindowInMilliseconds((int) Duration
+                            .of(circuitBreakerConfig.get(CircuitBreakerConfig.DELAY), circuitBreakerConfig.get(CircuitBreakerConfig.DELAY_UNIT)).toMillis());
         } else {
             propertiesSetter.withCircuitBreakerEnabled(false);
         }
 
-        if (nonFallBackEnable && bulkhead != null) {
-            BulkheadConfig config = new BulkheadConfig(bulkhead, method);
-            configValue[0] = config;
-            propertiesSetter.withExecutionIsolationSemaphoreMaxConcurrentRequests(config.get(BulkheadConfig.VALUE))
+        if (nonFallBackEnable && bulkheadConfig != null) {
+            propertiesSetter.withExecutionIsolationSemaphoreMaxConcurrentRequests(bulkheadConfig.get(BulkheadConfig.VALUE))
                     .withExecutionIsolationThreadInterruptOnFutureCancel(true);
-
+            // TODO: review the following comments
             // threadPoolSetter.withCoreSize(conf.get(BulkheadConfig.VALUE));
             // threadPoolSetter.withMaximumSize(conf.get(BulkheadConfig.VALUE));
         }
@@ -259,16 +258,22 @@ public class HystrixCommandInterceptor {
     private class CommandMetadata {
 
         public CommandMetadata(Method method) {
-            GenericConfig configValue[] = new GenericConfig[1];
-            setter = initSetter(method, configValue);
-            config = configValue[0];
+
+            Timeout timeout = getAnnotation(method, Timeout.class);
+            TimeoutConfig timeoutConfig = timeout != null ? new TimeoutConfig(timeout, method) : null;
+            Bulkhead bulkhead = getAnnotation(method, Bulkhead.class);
+            BulkheadConfig bulkheadConfig = bulkhead != null ? new BulkheadConfig(bulkhead, method) : null;
+            CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
+            this.circuitBreakerConfig = circuitBreaker != null ? new CircuitBreakerConfig(circuitBreaker, method) : null;
+            // Initialize Hystrix command setter
+            this.setter = initSetter(method, timeoutConfig, circuitBreakerConfig, bulkheadConfig);
 
             Fallback fallback = getAnnotation(method, Fallback.class);
-
             if (fallback != null) {
                 FallbackConfig fc = new FallbackConfig(fallback, method);
                 if (!fc.get(FallbackConfig.VALUE).equals(Fallback.DEFAULT.class)) {
                     unmanaged = initUnmanaged(method);
+                    fallbackMethod = null;
                 } else {
                     unmanaged = null;
                     if (!"".equals(fc.get(FallbackConfig.FALLBACK_METHOD))) {
@@ -277,10 +282,13 @@ public class HystrixCommandInterceptor {
                         } catch (NoSuchMethodException e) {
                             throw new FaultToleranceException("Fallback method not found", e);
                         }
+                    } else {
+                        fallbackMethod = null;
                     }
                 }
             } else {
                 unmanaged = null;
+                fallbackMethod = null;
             }
 
             Retry retry = getAnnotation(method, Retry.class);
@@ -289,11 +297,14 @@ public class HystrixCommandInterceptor {
             } else {
                 retryConfig = null;
             }
-
         }
 
-        boolean hasFallbackClass() {
-            return unmanaged != null;
+        boolean hasFallback() {
+            return unmanaged != null || fallbackMethod != null;
+        }
+
+        boolean hasCircuitBreaker() {
+            return circuitBreakerConfig != null;
         }
 
         private final Setter setter;
@@ -302,9 +313,10 @@ public class HystrixCommandInterceptor {
 
         private final RetryConfig retryConfig;
 
-        private Method fallbackMethod = null;
+        private final Method fallbackMethod;
 
-        private GenericConfig config;
+        private final CircuitBreakerConfig circuitBreakerConfig;
+
     }
 
 }
