@@ -16,12 +16,14 @@
 
 package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
-import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
 
@@ -64,25 +66,25 @@ public class MyMicroservice {
     }
 
     @Asynchronous
-    public Object sayHelloAsync() {
+    public Future<String> sayHelloAsync() {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return HELLO;
+        return CompletableFuture.completedFuture(HELLO);
     }
 
     @Asynchronous
     @Timeout(200)
-    @Fallback(MyFallbackHandler.class)
-    public Object sayHelloAsyncTimeoutFallback() {
+    @Fallback(FutureStringFallbackHandler.class)
+    public Future<String> sayHelloAsyncTimeoutFallback() {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return HELLO;
+        return CompletableFuture.completedFuture(HELLO);
     }
 
     @CircuitBreaker(successThreshold = 2, requestVolumeThreshold = 4, failureRatio=0.75, delay = 50000)

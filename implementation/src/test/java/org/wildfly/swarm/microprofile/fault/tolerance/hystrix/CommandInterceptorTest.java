@@ -18,6 +18,10 @@ package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
 
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -31,15 +35,9 @@ import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.extension.HystrixExtension;
-
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 /**
  * @author Antoine Sabot-Durand
@@ -51,7 +49,7 @@ public class CommandInterceptorTest extends Arquillian {
     public static JavaArchive deploy() {
         JavaArchive testJar = ShrinkWrap
                 .create(JavaArchive.class, "CommandInterceptorTest.jar")
-                .addPackages(true, "org.wildfly.swarm.microprofile.fault.tolerance.hystrix")
+                .addPackages(false, "org.wildfly.swarm.microprofile.fault.tolerance.hystrix")
                 .addAsServiceProvider(Extension.class,HystrixExtension.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE,"beans.xml");
 

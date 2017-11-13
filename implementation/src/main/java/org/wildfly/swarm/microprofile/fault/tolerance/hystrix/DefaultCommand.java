@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.fault.tolerance.hystrix;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.RetryContext;
@@ -36,13 +37,15 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
      * @param toRun
      * @param fallback
      * @param retryContext
+     * @param isAsync
      */
-    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext) {
+    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext, boolean isAsync) {
         super(setter);
         this.toRun = toRun;
         this.fallback = fallback;
         this.retryContext = retryContext;
         this.hasCircuitBreaker = false;
+        this.isAsync = isAsync;
     }
 
     /**
@@ -52,13 +55,15 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
      * @param fallback
      * @param retryContext
      * @param circuitBreaker
+     * @param isAsync
      */
-    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext, HystrixCircuitBreaker circuitBreaker) {
+    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext, HystrixCircuitBreaker circuitBreaker, boolean isAsync) {
         super(setter, circuitBreaker);
         this.toRun = toRun;
         this.fallback = fallback;
         this.retryContext = retryContext;
         this.hasCircuitBreaker = true;
+        this.isAsync = isAsync;
     }
 
     @Override
@@ -113,7 +118,7 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
     private Object basicRun() {
         Object res;
         res = toRun.get();
-        return res;
+        return unwrap(res);
     }
 
     @Override
@@ -121,7 +126,24 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
         if (fallback == null) {
             return super.getFallback();
         }
-        return fallback.get();
+        return unwrap(fallback.get());
+    }
+
+    @SuppressWarnings("rawtypes")
+    private Object unwrap(Object res) {
+        if (!isAsync) {
+            return res;
+        }
+        // For an async invocation we have to unwrap the result
+        if (res instanceof Future) {
+            try {
+                return ((Future) res).get();
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to get the result of: " + res);
+            }
+        } else {
+            throw new IllegalStateException("A result of an @Asynchronous call must be Future: " + res);
+        }
     }
 
     private final Supplier<Object> fallback;
@@ -131,4 +153,6 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
     private final RetryContext retryContext;
 
     private final boolean hasCircuitBreaker;
+
+    private final boolean isAsync;
 }

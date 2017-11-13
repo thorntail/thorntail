@@ -17,6 +17,7 @@ package org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Map;
 import javax.enterprise.inject.spi.Annotated;
 
 import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.FallbackHandler;
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
 
 /**
@@ -59,10 +61,20 @@ public class FallbackConfig extends GenericConfig<Fallback> {
                 throw new FaultToleranceDefinitionException("Fallback method " + get(FALLBACK_METHOD) + " must have a return type assignable to " + method.getName());
             }
         }
-        if(!Fallback.DEFAULT.class.equals(get(VALUE))) {
-            Class fbhc = get(VALUE);
-            if(!method.getReturnType().isAssignableFrom((Class<?>) ((ParameterizedType)fbhc.getGenericInterfaces()[0]).getActualTypeArguments()[0])) {
-                throw new FaultToleranceDefinitionException("Fallback handler type is not assignable to " + method.getName());
+        if (!Fallback.DEFAULT.class.equals(get(VALUE))) {
+            Class<?> fbhc = get(VALUE);
+            Type fallbackType = null;
+            for (Type genericInterface : fbhc.getGenericInterfaces()) {
+                if (genericInterface instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
+                    if (parameterizedType.getRawType().equals(FallbackHandler.class)) {
+                        fallbackType = parameterizedType.getActualTypeArguments()[0];
+                        break;
+                    }
+                }
+            }
+            if (fallbackType == null || !method.getGenericReturnType().equals(fallbackType)) {
+                throw new FaultToleranceDefinitionException("Fallback handler type [" + fallbackType + "] is not the same as the method return type: " + method);
             }
         }
     }

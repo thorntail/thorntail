@@ -20,7 +20,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Annotated;
@@ -40,6 +42,7 @@ import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.HystrixCommandBinding;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.BulkheadConfig;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.CircuitBreakerConfig;
@@ -82,8 +85,20 @@ public class HystrixExtension implements Extension {
         validate(pat, m -> new FallbackConfig(m).validate(), Fallback.class);
     }
 
+    <T> void validateAsynchronous(@Observes @WithAnnotations(Asynchronous.class) ProcessAnnotatedType<T> pat) {
+        AnnotatedType<T> at = pat.getAnnotatedType();
+        Stream<AnnotatedMethod<? super T>> methods = at.getMethods().stream();
+        if (!at.isAnnotationPresent(Asynchronous.class)) {
+            methods = methods.filter(m -> m.isAnnotationPresent(Asynchronous.class));
+        }
+        methods.forEach(m -> {
+            if (!Future.class.equals(m.getJavaMember().getReturnType()))
+                throw new FaultToleranceDefinitionException("Invalid @Asynchronous on " + m + " : the return type must be java.util.concurrent.Future");
+        });
+    }
+
     private void validate(ProcessAnnotatedType<?> pat, Consumer<Annotated> validator, Class<? extends Annotation> annotationType) {
-        AnnotatedType<?> at =pat.getAnnotatedType();
+        AnnotatedType<?> at = pat.getAnnotatedType();
 
         if (at.isAnnotationPresent(annotationType)) {
             validator.accept(at);

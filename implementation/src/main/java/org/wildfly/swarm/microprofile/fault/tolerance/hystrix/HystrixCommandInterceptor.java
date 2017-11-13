@@ -109,9 +109,9 @@ public class HystrixCommandInterceptor {
             if (metadata.hasCircuitBreaker()) {
                 HystrixCommandKey key = HystrixCommandKey.Factory.asKey(method.getDeclaringClass().getName() + method.toString());
                 syncCircuitBreaker = SynchronousCircuitBreaker.getCircuitBreaker(key, metadata.circuitBreakerConfig);
-                command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext, syncCircuitBreaker);
+                command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext, syncCircuitBreaker, async != null);
             } else {
-                command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext);
+                command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext, async != null);
             }
 
             if (syncCircuitBreaker != null && syncCircuitBreaker.allowRequest() == false) {
@@ -157,7 +157,6 @@ public class HystrixCommandInterceptor {
                 }
             }
         }
-
         return res;
     }
 
