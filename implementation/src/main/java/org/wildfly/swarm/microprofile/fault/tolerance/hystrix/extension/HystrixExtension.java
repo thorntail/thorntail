@@ -44,12 +44,8 @@ import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.HystrixCommandBind
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.BulkheadConfig;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.CircuitBreakerConfig;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.FallbackConfig;
-import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.RetryContext;
+import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.RetryConfig;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.TimeoutConfig;
-
-/**
- * @author Antoine Sabot-Durand
- */
 
 /**
  * @author Antoine Sabot-Durand
@@ -66,14 +62,12 @@ public class HystrixExtension implements Extension {
         bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(Bulkhead.class)));
     }
 
-
-
     void validateTimeout(@Observes @WithAnnotations(Timeout.class) ProcessAnnotatedType<?> pat) {
         validate(pat, m -> new TimeoutConfig(m).validate(), Timeout.class);
     }
 
     void validateRetry(@Observes @WithAnnotations(Retry.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, m -> new RetryContext(m).validate(), Retry.class);
+        validate(pat, m -> new RetryConfig(m).validate(), Retry.class);
     }
 
     void validateCircuitBreaker(@Observes @WithAnnotations(CircuitBreaker.class) ProcessAnnotatedType<?> pat) {

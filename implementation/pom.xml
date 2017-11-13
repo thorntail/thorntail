@@ -55,14 +55,13 @@
       <groupId>com.netflix.hystrix</groupId>
       <artifactId>hystrix-core</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>io.reactivex</groupId>
-      <artifactId>rxjava</artifactId>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.hdrhistogram</groupId>
-      <artifactId>HdrHistogram</artifactId>
-    </dependency>
+
+    <!-- Test dependencies -->
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -79,16 +78,10 @@
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core-impl</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-      <version>3.3.1.Final</version>
-    </dependency>
 
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-microprofile-config-implementation</artifactId>
-      <version>${version.wildfly-microprofile-config}</version>
     </dependency>
 
     <dependency>

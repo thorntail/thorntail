@@ -20,8 +20,9 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-import com.netflix.hystrix.HystrixCircuitBreaker;
 import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.RetryContext;
+
+import com.netflix.hystrix.HystrixCircuitBreaker;
 
 
 /**
@@ -30,9 +31,11 @@ import org.wildfly.swarm.microprofile.fault.tolerance.hystrix.config.RetryContex
 public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Object> {
 
     /**
+     *
      * @param setter
      * @param toRun
      * @param fallback
+     * @param retryContext
      */
     protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext) {
         super(setter);
@@ -41,6 +44,15 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
         this.retryContext = retryContext;
         this.hasCircuitBreaker = false;
     }
+
+    /**
+     *
+     * @param setter
+     * @param toRun
+     * @param fallback
+     * @param retryContext
+     * @param circuitBreaker
+     */
     protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext, HystrixCircuitBreaker circuitBreaker) {
         super(setter, circuitBreaker);
         this.toRun = toRun;
@@ -82,10 +94,10 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
                             && (retryContext.getRetryOn().length == 0 || Arrays.stream(retryContext.getRetryOn()).anyMatch(ex -> ex.isAssignableFrom(e.getClass())))
                             && retryContext.shouldRetry()
                             && System.nanoTime() - retryContext.getStart() <= retryContext.getMaxDuration()) {
-                        Long jitterBase = retryContext.get(RetryContext.JITTER,Long.class);
+                        Long jitterBase = retryContext.getJitter();
                         if (retryContext.getDelay() > 0) {
                             long jitter = (long) (Math.random() * ((jitterBase * 2) + 1)) - jitterBase; // random number between -jitter and +jitter
-                            Thread.sleep(retryContext.getDelay() + Duration.of(jitter, retryContext.get(RetryContext.JITTER_DELAY_UNIT)).toMillis());
+                            Thread.sleep(retryContext.getDelay() + Duration.of(jitter, retryContext.getJitterDelayUnit()).toMillis());
                         }
                         continue;
                     } else {
@@ -111,7 +123,6 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
         }
         return fallback.get();
     }
-
 
     private final Supplier<Object> fallback;
 
