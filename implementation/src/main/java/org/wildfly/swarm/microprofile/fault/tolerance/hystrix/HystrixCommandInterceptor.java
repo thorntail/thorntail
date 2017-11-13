@@ -262,8 +262,14 @@ public class HystrixCommandInterceptor {
             TimeoutConfig timeoutConfig = timeout != null ? new TimeoutConfig(timeout, method) : null;
             Bulkhead bulkhead = getAnnotation(method, Bulkhead.class);
             BulkheadConfig bulkheadConfig = bulkhead != null ? new BulkheadConfig(bulkhead, method) : null;
+
             CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
-            this.circuitBreakerConfig = circuitBreaker != null ? new CircuitBreakerConfig(circuitBreaker, method) : null;
+            if (nonFallBackEnable && circuitBreaker != null) {
+                this.circuitBreakerConfig = new CircuitBreakerConfig(circuitBreaker, method);
+            } else {
+                this.circuitBreakerConfig = null;
+            }
+
             // Initialize Hystrix command setter
             this.setter = initSetter(method, timeoutConfig, circuitBreakerConfig, bulkheadConfig);
 
