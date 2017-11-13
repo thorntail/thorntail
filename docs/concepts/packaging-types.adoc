@@ -1,9 +1,9 @@
 [#packaging_types]
 = Packaging Types
 
-When using WildFly Swarm, there are two different ways to package your
+When using WildFly Swarm, there are the following ways to package your
 runtime and application, depending on how you intend to use and deploy
-it.
+it:
 
 [#uberjar]
 == Uberjar
