@@ -33,7 +33,6 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import com.netflix.hystrix.HystrixCircuitBreaker;
 import com.netflix.hystrix.HystrixCommand.Setter;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -174,7 +173,12 @@ public class HystrixCommandInterceptor {
         HystrixCommandProperties.Setter propertiesSetter = HystrixCommandProperties.Setter();
 
         HystrixThreadPoolProperties.Setter threadPoolSetter = HystrixThreadPoolProperties.Setter();
-        propertiesSetter.withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE);
+
+        if (getAnnotation(method, Asynchronous.class) == null) {
+            propertiesSetter.withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE);
+        } else {
+            propertiesSetter.withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.THREAD);
+        }
 
             Timeout timeout = getAnnotation(method, Timeout.class);
             CircuitBreaker circuitBreaker = getAnnotation(method, CircuitBreaker.class);
@@ -260,7 +264,7 @@ public class HystrixCommandInterceptor {
         public CommandMetadata(Method method) {
             GenericConfig configValue[] = new GenericConfig[1];
             setter = initSetter(method, configValue);
-            this.config = configValue[0];
+            config = configValue[0];
 
             Fallback fallback = getAnnotation(method, Fallback.class);
 
