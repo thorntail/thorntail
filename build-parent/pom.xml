@@ -29,7 +29,7 @@
     <version.wildfly.config-api>1.1.0.Final</version.wildfly.config-api>
 
     <version.keycloak.config-api>1.1.0.Final</version.keycloak.config-api>
-    <version.teiid.config-api>1.0.2</version.teiid.config-api>
+    <version.teiid.config-api>1.0.3.Final</version.teiid.config-api>
     <version.keycloak>2.5.5.Final</version.keycloak>
     <version.mongo.config-api>1.2.0</version.mongo.config-api>
     <version.cassandra.config-api>1.2.0</version.cassandra.config-api>
@@ -70,8 +70,6 @@
     <version.vertx>3.3.3</version.vertx>
 
     <version.org.kie>6.4.0.Final</version.org.kie>
-
-    <version.teiid.feature-pack>9.2.0.Final</version.teiid.feature-pack>
 
     <version.flyway>4.2.0</version.flyway>
 
@@ -566,60 +564,6 @@
             <artifactId>teiid-config-api</artifactId>
             <version>${version.teiid.config-api}</version>
           </dependency>
-          <!-- Teiid integration feature-pack-->
-          <dependency>
-            <groupId>org.jboss.teiid</groupId>
-            <artifactId>teiid-wildfly-integration-feature-pack</artifactId>
-            <version>${version.teiid.feature-pack}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.teiid</groupId>
-            <artifactId>rest-service-feature-pack</artifactId>
-            <version>${version.teiid.feature-pack}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.teiid.connectors</groupId>
-            <artifactId>feature-pack-swagger</artifactId>
-            <version>${version.teiid.feature-pack}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.teiid</groupId>
-            <artifactId>teiid-client-feature-pack</artifactId>
-            <version>${version.teiid.feature-pack}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <!--Teiid integration end-->
 
           <!-- For topology-consul -->
           <dependency>
