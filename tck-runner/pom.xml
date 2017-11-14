@@ -65,6 +65,11 @@
   <profiles>
     <profile>
       <id>tck</id>
+      <activation>
+        <property>
+          <name>!skipTck</name>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>
