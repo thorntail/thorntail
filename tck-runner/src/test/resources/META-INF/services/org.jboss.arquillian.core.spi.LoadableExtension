@@ -1,1 +1,1 @@
-org.wildfly.swarm.microprofile.fault.tolerance.hystrix.TCKIntegrationExtension
+org.wildfly.swarm.microprofile.faulttolerance.TCKIntegrationExtension

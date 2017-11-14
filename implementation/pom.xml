@@ -21,12 +21,12 @@
 
   <parent>
     <groupId>org.wildfly.swarm</groupId>
-    <artifactId>microprofile-fault-tolerance-hystrix-parent</artifactId>
+    <artifactId>microprofile-fault-tolerance-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>microprofile-fault-tolerance-hystrix-implementation</artifactId>
+  <artifactId>microprofile-fault-tolerance-impl</artifactId>
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
 

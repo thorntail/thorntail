@@ -3,18 +3,18 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>microprofile-fault-tolerance-hystrix-parent</artifactId>
+    <artifactId>microprofile-fault-tolerance-parent</artifactId>
     <groupId>org.wildfly.swarm</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>tck-runner</artifactId>
+  <artifactId>microprofile-fault-tolerance-tck-runner</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>microprofile-fault-tolerance-hystrix-implementation</artifactId>
+      <artifactId>microprofile-fault-tolerance-impl</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
