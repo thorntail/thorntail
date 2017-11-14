@@ -15,9 +15,9 @@ $ mvn clean install
 ----
 
 Module tck-runner let you run the implementation against the TCK.
-By default TCK isd not run, you have to use the `tck` maven profile to run it:
+TCK is run by default, you cam skip it to use the `skipTck` property to run it:
 
 [source, terminal]
 ----
-$ mvn clean install -Ptck
+$ mvn clean install -DskipTck
 ----
