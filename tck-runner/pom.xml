@@ -85,6 +85,10 @@
                 <suiteXmlFile>src/test/resources/tck-suite.xml</suiteXmlFile>
               </suiteXmlFiles>
               <redirectTestOutputToFile>true</redirectTestOutputToFile>
+              <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
+              <dependenciesToScan>
+                <dependency>org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-tck</dependency>
+              </dependenciesToScan>
             </configuration>
           </plugin>
         </plugins>
