@@ -21,14 +21,13 @@ import java.util.Arrays;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
-import com.netflix.hystrix.HystrixCircuitBreaker;
-import org.wildfly.swarm.microprofile.faulttolerance.config.RetryContext;
+import com.netflix.hystrix.HystrixCommand;
 
 
 /**
  * @author Antoine Sabot-Durand
  */
-public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Object> {
+public class DefaultCommand extends HystrixCommand<Object> {
 
     /**
      *
@@ -37,41 +36,24 @@ public class DefaultCommand extends com.netflix.hystrix.FixedHystrixCommand<Obje
      * @param fallback
      * @param retryContext
      * @param isAsync
+     * @param hasCircuitBreaker
      */
-    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext, boolean isAsync) {
+    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext, boolean isAsync, boolean hasCircuitBreaker) {
         super(setter);
         this.toRun = toRun;
         this.fallback = fallback;
         this.retryContext = retryContext;
-        hasCircuitBreaker = false;
-        this.isAsync = isAsync;
-    }
-
-    /**
-     *
-     * @param setter
-     * @param toRun
-     * @param fallback
-     * @param retryContext
-     * @param circuitBreaker
-     * @param isAsync
-     */
-    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext, HystrixCircuitBreaker circuitBreaker, boolean isAsync) {
-        super(setter, circuitBreaker);
-        this.toRun = toRun;
-        this.fallback = fallback;
-        this.retryContext = retryContext;
-        hasCircuitBreaker = true;
+        this.hasCircuitBreaker = hasCircuitBreaker;
         this.isAsync = isAsync;
     }
 
     @Override
     protected Object run() throws Exception {
         Object res;
-        if (!hasCircuitBreaker) {
-            res = runWithRetry();
-        } else {
+        if (hasCircuitBreaker) {
             res = basicRun();
+        } else {
+            res = runWithRetry();
         }
         return res;
     }

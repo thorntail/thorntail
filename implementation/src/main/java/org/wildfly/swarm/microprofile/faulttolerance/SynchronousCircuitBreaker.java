@@ -1,15 +1,12 @@
 package org.wildfly.swarm.microprofile.faulttolerance;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
-import com.netflix.hystrix.HystrixCircuitBreaker;
-import com.netflix.hystrix.HystrixCommandKey;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.faulttolerance.config.CircuitBreakerConfig;
+
+import com.netflix.hystrix.HystrixCircuitBreaker;
 
 /**
  * This is an implementation of the HystrixCircuitBreaker that is expected to be used synchronously by the
@@ -17,16 +14,11 @@ import org.wildfly.swarm.microprofile.faulttolerance.config.CircuitBreakerConfig
  * tests as monitoring circuit state in a background thread does not work with the TCK expectations.
  */
 public class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
-    private static Logger log = Logger.getLogger(SynchronousCircuitBreaker.class);
+
+    private static final Logger LOGGER = Logger.getLogger(SynchronousCircuitBreaker.class);
+
     enum Status {
         CLOSED, OPEN, HALF_OPEN;
-    }
-
-    static SynchronousCircuitBreaker getCircuitBreaker(HystrixCommandKey key, final CircuitBreakerConfig config) {
-        Function<HystrixCommandKey, SynchronousCircuitBreaker> newFunc = (key1) -> new SynchronousCircuitBreaker(config);
-        SynchronousCircuitBreaker circuitBreaker = circuitBreakerMap.computeIfAbsent(key, newFunc);
-        log.debugf("getCircuitBreaker, key=%s\n", key.name());
-        return circuitBreaker;
     }
 
     SynchronousCircuitBreaker(CircuitBreakerConfig config) {
@@ -35,7 +27,7 @@ public class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
     }
 
     /**
-     * Noop, the hysterix framework calls this more than once so we ignore it
+     * Noop, the hystrix framework calls this more than once so we ignore it
      * @See #incSuccessCount()
      */
     @Override
@@ -43,7 +35,7 @@ public class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
     }
 
     /**
-     * Noop, the hysterix framework calls this more than once so we ignore it
+     * Noop, the hystrix framework calls this more than once so we ignore it
      * @See #incFailureCount()
      */
     @Override
@@ -52,8 +44,7 @@ public class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
 
     @Override
     public boolean isOpen() {
-        log.debugf("isOpen, %s, failures=%d, total=%d", state.get(), failureCount, getTotalCount());
-
+        LOGGER.debugf("isOpen, %s, failures=%d, total=%d", state.get(), failureCount, getTotalCount());
         return state.get().getState() == Status.OPEN;
     }
 
@@ -64,7 +55,7 @@ public class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
     @Override
     public boolean allowRequest() {
         int execCount = getTotalCount();
-        log.debugf("allowRequest, execCount=%d\n", execCount);
+        LOGGER.debugf("allowRequest, execCount=%d\n", execCount);
         boolean allowRequest = state.get().allowsExecution(execCount);
         return allowRequest;
     }
@@ -72,22 +63,23 @@ public class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
     @Override
     public boolean attemptExecution() {
         boolean attemptExecution = state.get().allowsExecution(getTotalCount());
-        log.debugf("attemptExecution(%s), state=%s", attemptExecution, state.get().getState());
+        LOGGER.debugf("attemptExecution(%s), state=%s", attemptExecution, state.get().getState());
         return attemptExecution;
     }
 
     int incSuccessCount() {
         int count = successCount.incrementAndGet();
-        state.get().recordSuccess();
-        log.debugf("incSuccessCount(%d), state=%s", count, state.get().getState());
+        state.get().onSuccess();
+        LOGGER.debugf("incSuccessCount(%d), state=%s", count, state.get().getState());
         return count;
     }
     int incFailureCount() {
         int count = failureCount.incrementAndGet();
-        state.get().recordFailure();
-        log.debugf("incFailureCount(%d), state=%s", count, state.get().getState());
+        state.get().onFailure();
+        LOGGER.debugf("incFailureCount(%d), state=%s", count, state.get().getState());
         return count;
     }
+
     CircuitBreakerConfig getConfig() {
         return config;
     }
@@ -95,39 +87,38 @@ public class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
     void open() {
         Status prevState = state.get().getState();
         state.set(new OpenState(this));
-        log.debugf("Transition from: %s to: OPEN\n", prevState);
+        LOGGER.debugf("Transition from: %s to: OPEN\n", prevState);
         reset();
     }
+
     void halfOpen() {
         Status prevState = state.get().getState();
         state.set(new HalfOpenState(this));
-        log.debugf("Transition from: %s to: HALF_OPEN\n", prevState);
+        LOGGER.debugf("Transition from: %s to: HALF_OPEN\n", prevState);
         reset();
     }
+
     void close() {
         Status prevState = state.get() != null ? state.get().getState() : Status.CLOSED;
         state.set(new ClosedState(this));
-        log.debugf("Transition from: %s to: CLOSED\n", prevState);
+        LOGGER.debugf("Transition from: %s to: CLOSED\n", prevState);
         reset();
     }
 
     private int getTotalCount() {
         return successCount.get() + failureCount.get();
     }
+
     private void reset() {
-        circuitOpenedTime.set(-1);
         successCount.set(0);
         failureCount.set(0);
-        log.debugf("reset(%s)\n", state.get().getState());
+        LOGGER.debugf("reset(%s)\n", state.get().getState());
     }
 
     // The circuit state
     private final AtomicReference<State> state = new AtomicReference<>();
-    // The last time the circuit was opened, -1 for closed
-    private final AtomicLong circuitOpenedTime = new AtomicLong(-1);
     // The circuit configuration
     private final CircuitBreakerConfig config;
     private AtomicInteger successCount = new AtomicInteger(0);
     private AtomicInteger failureCount = new AtomicInteger(0);
-    private static ConcurrentHashMap<HystrixCommandKey, SynchronousCircuitBreaker> circuitBreakerMap = new ConcurrentHashMap<>();
 }

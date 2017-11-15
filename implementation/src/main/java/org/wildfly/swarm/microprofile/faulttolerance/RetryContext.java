@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.faulttolerance.config;
+package org.wildfly.swarm.microprofile.faulttolerance;
 
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.wildfly.swarm.microprofile.faulttolerance.config.RetryConfig;
 
 public class RetryContext {
 
     private final RetryConfig config;
 
-    private int maxExecNumber = 1;
+    private final AtomicInteger remainingAttempts;
 
     private final Long start;
 
     public RetryContext(RetryConfig config) {
         this.config = config;
         start = System.nanoTime();
-        maxExecNumber = config.getMaxExecNumber();
+        remainingAttempts = new AtomicInteger(config.getMaxExecNumber());
     }
 
     public RetryConfig getConfig() {
@@ -36,15 +39,11 @@ public class RetryContext {
     }
 
     public void doRetry() {
-        maxExecNumber--;
+        remainingAttempts.decrementAndGet();
     }
 
     public boolean shouldRetry() {
-        return maxExecNumber > 0;
-    }
-
-    public void incMaxNumberExec() {
-        maxExecNumber++;
+        return remainingAttempts.get() > 0;
     }
 
     public Long getStart() {
@@ -73,6 +72,11 @@ public class RetryContext {
 
     public ChronoUnit getJitterDelayUnit() {
         return config.getJitterDelayUnit();
+    }
+
+    @Override
+    public String toString() {
+        return "RetryContext [remainingAttempts=" + remainingAttempts + ", start=" + start + "]";
     }
 
 }

@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.faulttolerance;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -33,12 +34,6 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import com.netflix.hystrix.HystrixCommand.Setter;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
-import com.netflix.hystrix.HystrixCommandProperties;
-import com.netflix.hystrix.HystrixThreadPoolProperties;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
@@ -55,8 +50,15 @@ import org.wildfly.swarm.microprofile.faulttolerance.config.BulkheadConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.config.CircuitBreakerConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.config.FallbackConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.config.RetryConfig;
-import org.wildfly.swarm.microprofile.faulttolerance.config.RetryContext;
 import org.wildfly.swarm.microprofile.faulttolerance.config.TimeoutConfig;
+
+import com.netflix.hystrix.HystrixCircuitBreaker;
+import com.netflix.hystrix.HystrixCommand.Setter;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.HystrixThreadPoolProperties;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 
 /**
  * @author Antoine Sabot-Durand
@@ -67,6 +69,20 @@ import org.wildfly.swarm.microprofile.faulttolerance.config.TimeoutConfig;
 public class HystrixCommandInterceptor {
 
     private static Logger LOGGER = Logger.getLogger(HystrixCommandInterceptor.class);
+
+    @SuppressWarnings("unchecked")
+    public HystrixCommandInterceptor() {
+        this.commandMetadataMap = new ConcurrentHashMap<>();
+        // WORKAROUND: Hystrix does not allow to use custom HystrixCircuitBreaker impl
+        // See also https://github.com/Netflix/Hystrix/issues/9
+        try {
+            Field field = SecurityActions.getDeclaredField(com.netflix.hystrix.HystrixCircuitBreaker.Factory.class, "circuitBreakersByCommand");
+            SecurityActions.setAccessible(field);
+            this.circuitBreakers = (ConcurrentHashMap<String, HystrixCircuitBreaker>) field.get(null);
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not obtain reference to com.netflix.hystrix.HystrixCircuitBreaker.Factory.circuitBreakersByCommand");
+        }
+    }
 
     @AroundInvoke
     public Object interceptCommand(InvocationContext ic) throws Exception {
@@ -104,14 +120,11 @@ public class HystrixCommandInterceptor {
         SynchronousCircuitBreaker syncCircuitBreaker = null;
         while (shouldRunCommand) {
             shouldRunCommand = false;
-            DefaultCommand command;
+
             if (metadata.hasCircuitBreaker()) {
-                HystrixCommandKey key = HystrixCommandKey.Factory.asKey(method.getDeclaringClass().getName() + method.toString());
-                syncCircuitBreaker = SynchronousCircuitBreaker.getCircuitBreaker(key, metadata.circuitBreakerConfig);
-                command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext, syncCircuitBreaker, async != null);
-            } else {
-                command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext, async != null);
+                syncCircuitBreaker = getSynchronousCircuitBreaker(metadata.commandKey, metadata.circuitBreakerConfig);
             }
+            DefaultCommand command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext, async != null, metadata.hasCircuitBreaker());
 
             if (syncCircuitBreaker != null && syncCircuitBreaker.allowRequest() == false) {
                 throw new CircuitBreakerOpenException(method.getName());
@@ -159,6 +172,14 @@ public class HystrixCommandInterceptor {
         return res;
     }
 
+    private SynchronousCircuitBreaker getSynchronousCircuitBreaker(HystrixCommandKey commandKey, CircuitBreakerConfig config) {
+        HystrixCircuitBreaker circuitBreaker = circuitBreakers.computeIfAbsent(commandKey.name(), (key) -> new SynchronousCircuitBreaker(config));
+        if (circuitBreaker instanceof SynchronousCircuitBreaker) {
+            return (SynchronousCircuitBreaker) circuitBreaker;
+        }
+        throw new IllegalStateException("Cached circuit breaker does not extend SynchronousCircuitBreaker");
+    }
+
     private <T extends Annotation> T getAnnotation(Method method, Class<T> annotation) {
         if (method.isAnnotationPresent(annotation)) {
             return method.getAnnotation(annotation);
@@ -177,7 +198,7 @@ public class HystrixCommandInterceptor {
         return null;
     }
 
-    private Setter initSetter(Method method, TimeoutConfig timeoutConfig, CircuitBreakerConfig circuitBreakerConfig, BulkheadConfig bulkheadConfig) {
+    private Setter initSetter(HystrixCommandKey commandKey, Method method, TimeoutConfig timeoutConfig, CircuitBreakerConfig circuitBreakerConfig, BulkheadConfig bulkheadConfig) {
         HystrixCommandProperties.Setter propertiesSetter = HystrixCommandProperties.Setter();
         HystrixThreadPoolProperties.Setter threadPoolSetter = HystrixThreadPoolProperties.Setter();
 
@@ -219,7 +240,7 @@ public class HystrixCommandInterceptor {
 
         return Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("DefaultCommandGroup"))
                 // Each method must have a unique command key
-                .andCommandKey(HystrixCommandKey.Factory.asKey(method.getDeclaringClass().getName() + method.toString()))
+                .andCommandKey(commandKey)
                 .andCommandPropertiesDefaults(propertiesSetter).andThreadPoolPropertiesDefaults(threadPoolSetter);
     }
 
@@ -244,7 +265,9 @@ public class HystrixCommandInterceptor {
         return shouldRetry;
     }
 
-    private final Map<Method, CommandMetadata> commandMetadataMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, HystrixCircuitBreaker> circuitBreakers;
+
+    private final Map<Method, CommandMetadata> commandMetadataMap;
 
     @Inject
     @ConfigProperty(name = "MP_Fault_Tolerance_NonFallback_Enabled", defaultValue = "true")
@@ -270,7 +293,8 @@ public class HystrixCommandInterceptor {
             }
 
             // Initialize Hystrix command setter
-            setter = initSetter(method, timeoutConfig, circuitBreakerConfig, bulkheadConfig);
+            commandKey = HystrixCommandKey.Factory.asKey(method.getDeclaringClass().getName() + method.toString());
+            setter = initSetter(commandKey, method, timeoutConfig, circuitBreakerConfig, bulkheadConfig);
 
             Fallback fallback = getAnnotation(method, Fallback.class);
             if (fallback != null) {
@@ -312,6 +336,8 @@ public class HystrixCommandInterceptor {
         }
 
         private final Setter setter;
+
+        private final HystrixCommandKey commandKey;
 
         private final Unmanaged<FallbackHandler<?>> unmanaged;
 
