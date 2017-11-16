@@ -13,7 +13,7 @@ import com.netflix.hystrix.HystrixCircuitBreaker;
  * HystrixCommand implementation to track the state of the circuit. This is needed for the current TCK
  * tests as monitoring circuit state in a background thread does not work with the TCK expectations.
  */
-public class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
+class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
 
     private static final Logger LOGGER = Logger.getLogger(SynchronousCircuitBreaker.class);
 

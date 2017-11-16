@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.wildfly.swarm.microprofile.faulttolerance.config.RetryConfig;
 
-public class RetryContext {
+class RetryContext {
 
     private final RetryConfig config;
 
@@ -28,7 +28,7 @@ public class RetryContext {
 
     private final Long start;
 
-    public RetryContext(RetryConfig config) {
+    RetryContext(RetryConfig config) {
         this.config = config;
         start = System.nanoTime();
         remainingAttempts = new AtomicInteger(config.getMaxExecNumber());

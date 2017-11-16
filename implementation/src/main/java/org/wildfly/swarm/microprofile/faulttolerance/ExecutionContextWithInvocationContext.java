@@ -27,7 +27,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceExceptio
 /**
  * @author Antoine Sabot-Durand
  */
-public class ExecutionContextWithInvocationContext implements ExecutionContext {
+class ExecutionContextWithInvocationContext implements ExecutionContext {
 
     public ExecutionContextWithInvocationContext(InvocationContext ic) {
         this.ic = ic;
