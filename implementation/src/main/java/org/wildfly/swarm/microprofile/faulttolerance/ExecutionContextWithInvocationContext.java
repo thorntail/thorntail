@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import javax.interceptor.InvocationContext;
 
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
-import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 
 
 /**
@@ -47,12 +46,8 @@ class ExecutionContextWithInvocationContext implements ExecutionContext {
         return ic.getTarget();
     }
 
-    public Object proceed() {
-        try {
+    public Object proceed() throws Exception {
             return ic.proceed();
-        } catch (Exception e) {
-            throw new FaultToleranceException("Hystrix execution failed", e);
-        }
     }
 
     private InvocationContext ic;

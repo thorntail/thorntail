@@ -68,6 +68,19 @@ import com.netflix.hystrix.exception.HystrixRuntimeException;
 @Priority(Interceptor.Priority.LIBRARY_AFTER + 1)
 public class HystrixCommandInterceptor {
 
+    /**
+     * This config property key can be used to disable synchronous circuit breaker functionality. If disabled, {@link CircuitBreaker#successThreshold()} of
+     * value greated than 1 is not supported.
+     * <p>
+     * Moreover, circuit breaker does not necessarily transition from CLOSED to OPEN immediately when a fault tolerance operation completes. See also
+     * <a href="https://github.com/Netflix/Hystrix/wiki/Configuration#metrics.healthSnapshot.intervalInMilliseconds">Hystrix configuration</a>
+     * </p>
+     * <p>
+     * In general, application developers are encouraged to disable this feature on high-volume circuits and in production environments.
+     * </p>
+     */
+    public static final String SYNC_CIRCUIT_BREAKER_KEY = "org_wildfly_swarm_microprofile_faulttolerance_syncCircuitBreaker";
+
     private static Logger LOGGER = Logger.getLogger(HystrixCommandInterceptor.class);
 
     @SuppressWarnings("unchecked")
@@ -121,10 +134,10 @@ public class HystrixCommandInterceptor {
         while (shouldRunCommand) {
             shouldRunCommand = false;
 
-            if (metadata.hasCircuitBreaker()) {
+            if (metadata.hasCircuitBreaker() && syncCircuitBreakerEnabled) {
                 syncCircuitBreaker = getSynchronousCircuitBreaker(metadata.commandKey, metadata.circuitBreakerConfig);
             }
-            DefaultCommand command = new DefaultCommand(metadata.setter, ctx::proceed, fallback, retryContext, async != null, metadata.hasCircuitBreaker());
+            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, fallback, retryContext, async != null, metadata.hasCircuitBreaker());
 
             if (syncCircuitBreaker != null && syncCircuitBreaker.allowRequest() == false) {
                 throw new CircuitBreakerOpenException(method.getName());
@@ -146,7 +159,6 @@ public class HystrixCommandInterceptor {
                 switch (failureType) {
                     case TIMEOUT: {
                         if (retryContext != null && retryContext.shouldRetry()) {
-                            //retry.incMaxNumberExec();
                             shouldRunCommand = shouldRetry(retryContext, new TimeoutException(e));
                             if (shouldRunCommand) {
                                 continue;
@@ -165,7 +177,7 @@ public class HystrixCommandInterceptor {
                             continue;
                         }
                     default:
-                        throw e;
+                        throw (e.getCause() instanceof Exception) ? (Exception) e.getCause() : e;
                 }
             }
         }
@@ -198,7 +210,8 @@ public class HystrixCommandInterceptor {
         return null;
     }
 
-    private Setter initSetter(HystrixCommandKey commandKey, Method method, TimeoutConfig timeoutConfig, CircuitBreakerConfig circuitBreakerConfig, BulkheadConfig bulkheadConfig) {
+    private Setter initSetter(HystrixCommandKey commandKey, Method method, TimeoutConfig timeoutConfig, CircuitBreakerConfig circuitBreakerConfig,
+            BulkheadConfig bulkheadConfig) {
         HystrixCommandProperties.Setter propertiesSetter = HystrixCommandProperties.Setter();
         HystrixThreadPoolProperties.Setter threadPoolSetter = HystrixThreadPoolProperties.Setter();
 
@@ -240,8 +253,7 @@ public class HystrixCommandInterceptor {
 
         return Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("DefaultCommandGroup"))
                 // Each method must have a unique command key
-                .andCommandKey(commandKey)
-                .andCommandPropertiesDefaults(propertiesSetter).andThreadPoolPropertiesDefaults(threadPoolSetter);
+                .andCommandKey(commandKey).andCommandPropertiesDefaults(propertiesSetter).andThreadPoolPropertiesDefaults(threadPoolSetter);
     }
 
     private boolean shouldRetry(RetryContext retryContext, Exception e) throws Exception {
@@ -251,8 +263,7 @@ public class HystrixCommandInterceptor {
         // Check the exception type
         if (Arrays.stream(retryContext.getAbortOn()).noneMatch(ex -> ex.isAssignableFrom(e.getClass()))
                 && (retryContext.getRetryOn().length == 0 || Arrays.stream(retryContext.getRetryOn()).anyMatch(ex -> ex.isAssignableFrom(e.getClass())))
-                && retryContext.shouldRetry()
-                && System.nanoTime() - retryContext.getStart() <= retryContext.getMaxDuration()) {
+                && retryContext.shouldRetry() && System.nanoTime() - retryContext.getStart() <= retryContext.getMaxDuration()) {
             Long jitterBase = retryContext.getJitter();
             if (retryContext.getDelay() > 0) {
                 long jitter = (long) (Math.random() * ((jitterBase * 2) + 1)) - jitterBase; // random number between -jitter and +jitter
@@ -274,6 +285,10 @@ public class HystrixCommandInterceptor {
     private Boolean nonFallBackEnable;
 
     @Inject
+    @ConfigProperty(name = SYNC_CIRCUIT_BREAKER_KEY, defaultValue = "true")
+    private Boolean syncCircuitBreakerEnabled;
+
+    @Inject
     private BeanManager beanManager;
 
     private class CommandMetadata {
@@ -293,7 +308,7 @@ public class HystrixCommandInterceptor {
             }
 
             // Initialize Hystrix command setter
-            commandKey = HystrixCommandKey.Factory.asKey(method.getDeclaringClass().getName() + method.toString());
+            commandKey = HystrixCommandKey.Factory.asKey(method.toGenericString());
             setter = initSetter(commandKey, method, timeoutConfig, circuitBreakerConfig, bulkheadConfig);
 
             Fallback fallback = getAnnotation(method, Fallback.class);

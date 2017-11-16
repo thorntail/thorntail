@@ -32,15 +32,15 @@ public class DefaultCommand extends HystrixCommand<Object> {
     /**
      *
      * @param setter
-     * @param toRun
+     * @param ctx
      * @param fallback
      * @param retryContext
      * @param isAsync
      * @param hasCircuitBreaker
      */
-    protected DefaultCommand(Setter setter, Supplier<Object> toRun, Supplier<Object> fallback, RetryContext retryContext, boolean isAsync, boolean hasCircuitBreaker) {
+    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, RetryContext retryContext, boolean isAsync, boolean hasCircuitBreaker) {
         super(setter);
-        this.toRun = toRun;
+        this.ctx = ctx;
         this.fallback = fallback;
         this.retryContext = retryContext;
         this.hasCircuitBreaker = hasCircuitBreaker;
@@ -96,9 +96,9 @@ public class DefaultCommand extends HystrixCommand<Object> {
         return res;
     }
 
-    private Object basicRun() {
+    private Object basicRun() throws Exception {
         Object res;
-        res = toRun.get();
+        res = ctx.proceed();
         return unwrap(res);
     }
 
@@ -129,7 +129,7 @@ public class DefaultCommand extends HystrixCommand<Object> {
 
     private final Supplier<Object> fallback;
 
-    private final Supplier<Object> toRun;
+    private final ExecutionContextWithInvocationContext ctx;
 
     private final RetryContext retryContext;
 
