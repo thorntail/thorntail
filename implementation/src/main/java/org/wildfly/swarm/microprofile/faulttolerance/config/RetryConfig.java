@@ -66,20 +66,20 @@ public class RetryConfig extends GenericConfig<Retry> {
 
     @Override
     public void validate() {
-        if(get(MAX_RETRIES,Integer.class) < -1) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on "+ annotated.toString() +" : maxRetries shouldn't be lower than -1");
+        if (get(MAX_RETRIES, Integer.class) < -1) {
+            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : maxRetries shouldn't be lower than -1");
         }
-        if(get(DELAY, Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on "+ annotated.toString() +" : delay shouldn't be lower than 0");
+        if (get(DELAY, Long.class) < 0) {
+            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : delay shouldn't be lower than 0");
         }
-        if(get(MAX_DURATION, Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on "+ annotated.toString() +" : maxDuration shouldn't be lower than 0");
+        if (get(MAX_DURATION, Long.class) < 0) {
+            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : maxDuration shouldn't be lower than 0");
         }
-        if(get(MAX_DURATION, Long.class) <= get(DELAY, Long.class)) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on "+ annotated.toString() +" : maxDuration should be greater than delay");
+        if (get(MAX_DURATION, Long.class) <= get(DELAY, Long.class)) {
+            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : maxDuration should be greater than delay");
         }
-        if(get(JITTER,Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on "+ annotated.toString() +" : jitter shouldn't be lower than 0");
+        if (get(JITTER, Long.class) < 0) {
+            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : jitter shouldn't be lower than 0");
         }
     }
 
@@ -121,22 +121,26 @@ public class RetryConfig extends GenericConfig<Retry> {
         return keys2Type;
     }
 
-    private static Map<String, Class<?>> keys2Type = Collections.unmodifiableMap(new HashMap<String, Class<?>>() {{
-        put(MAX_RETRIES, Integer.class);
-        put(DELAY, Long.class);
-        put(DELAY_UNIT, ChronoUnit.class);
-        put(MAX_DURATION, Long.class);
-        put(DURATION_UNIT, ChronoUnit.class);
-        put(JITTER, Long.class);
-        put(JITTER_DELAY_UNIT, ChronoUnit.class);
-        put(RETRY_ON, Class[].class);
-        put(ABORT_ON, Class[].class);
-    }});
+    private static Map<String, Class<?>> keys2Type = initKeys();
 
     private final long maxDuration;
 
     private final long delay;
 
     private final int maxExecNumber;
+
+    private static Map<String, Class<?>> initKeys() {
+        Map<String, Class<?>> keys = new HashMap<>();
+        keys.put(MAX_RETRIES, Integer.class);
+        keys.put(DELAY, Long.class);
+        keys.put(DELAY_UNIT, ChronoUnit.class);
+        keys.put(MAX_DURATION, Long.class);
+        keys.put(DURATION_UNIT, ChronoUnit.class);
+        keys.put(JITTER, Long.class);
+        keys.put(JITTER_DELAY_UNIT, ChronoUnit.class);
+        keys.put(RETRY_ON, Class[].class);
+        keys.put(ABORT_ON, Class[].class);
+        return Collections.unmodifiableMap(keys);
+    }
 
 }

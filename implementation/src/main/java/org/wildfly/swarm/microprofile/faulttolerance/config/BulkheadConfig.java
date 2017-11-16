@@ -40,14 +40,12 @@ public class BulkheadConfig extends GenericConfig<Bulkhead> {
 
     @Override
     public void validate() {
-        if(get(VALUE, Integer.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Bulkhead on "+ annotated.toString() +" : value shouldn't be lower than 0");
+        if (get(VALUE, Integer.class) < 0) {
+            throw new FaultToleranceDefinitionException("Invalid Bulkhead on " + annotated.toString() + " : value shouldn't be lower than 0");
         }
-
-        if(get(WAITING_TASK_QUEUE, Integer.class) < 1) {
-            throw new FaultToleranceDefinitionException("Invalid Bulkhead on "+ annotated.toString() +" : waitingTaskQueue shouldn't be lower than 1");
+        if (get(WAITING_TASK_QUEUE, Integer.class) < 1) {
+            throw new FaultToleranceDefinitionException("Invalid Bulkhead on " + annotated.toString() + " : waitingTaskQueue shouldn't be lower than 1");
         }
-
     }
 
     @Override
@@ -60,16 +58,17 @@ public class BulkheadConfig extends GenericConfig<Bulkhead> {
         return keys2Type;
     }
 
-
     public static final String VALUE = "value";
 
     public static final String WAITING_TASK_QUEUE = "waitingTaskQueue";
 
-    private static Map<String, Class<?>> keys2Type = Collections.unmodifiableMap(new HashMap<String, Class<?>>() {
-        {
-            put(VALUE, Integer.class);
-            put(WAITING_TASK_QUEUE, Integer.class);
-        }
-    });
+    private static Map<String, Class<?>> keys2Type = initKeys();
+
+    private static Map<String, Class<?>> initKeys() {
+        Map<String, Class<?>> keys = new HashMap<>();
+        keys.put(VALUE, Integer.class);
+        keys.put(WAITING_TASK_QUEUE, Integer.class);
+        return Collections.unmodifiableMap(keys);
+    }
 
 }

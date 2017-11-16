@@ -45,11 +45,10 @@ public class TimeoutConfig extends GenericConfig<Timeout> {
 
     @Override
     public void validate() {
-        if(get(VALUE,Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Timeout on "+ annotated.toString() +" : value shouldn't be lower than 0");
+        if (get(VALUE, Long.class) < 0) {
+            throw new FaultToleranceDefinitionException("Invalid Timeout on " + annotated.toString() + " : value shouldn't be lower than 0");
         }
     }
-
 
     @Override
     protected String getConfigType() {
@@ -61,9 +60,12 @@ public class TimeoutConfig extends GenericConfig<Timeout> {
         return keys2Type;
     }
 
+    private static Map<String, Class<?>> keys2Type = initKeys();
 
-    private static Map<String, Class<?>> keys2Type = Collections.unmodifiableMap(new HashMap<String, Class<?>>() {{
-        put(VALUE, Long.class);
-        put(UNIT, ChronoUnit.class);
-    }});
+    private static Map<String, Class<?>> initKeys() {
+        Map<String, Class<?>> keys = new HashMap<>();
+        keys.put(VALUE, Long.class);
+        keys.put(UNIT, ChronoUnit.class);
+        return Collections.unmodifiableMap(keys);
+    }
 }

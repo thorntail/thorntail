@@ -25,12 +25,13 @@ import javax.enterprise.inject.spi.Annotated;
 
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
+import org.jboss.logging.Logger;
+import org.wildfly.swarm.microprofile.faulttolerance.HystrixCommandInterceptor;
 
 /**
  * @author Antoine Sabot-Durand
  */
 public class CircuitBreakerConfig extends GenericConfig<CircuitBreaker> {
-
 
     public static final String DELAY = "delay";
 
@@ -46,6 +47,8 @@ public class CircuitBreakerConfig extends GenericConfig<CircuitBreaker> {
 
     public static final String SYNCHRONOUS_STATE_VALIDATION = "synchronousStateValidation";
 
+    private static final Logger LOGGER =  Logger.getLogger(CircuitBreakerConfig.class);
+
     public CircuitBreakerConfig(CircuitBreaker cb, Method method) {
         super(cb, method);
     }
@@ -56,17 +59,22 @@ public class CircuitBreakerConfig extends GenericConfig<CircuitBreaker> {
 
     @Override
     public void validate() {
-        if(get(DELAY, Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on "+ annotated.toString() +" : delay shouldn't be lower than 0");
+        if (get(DELAY, Long.class) < 0) {
+            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + annotated.toString() + " : delay shouldn't be lower than 0");
         }
-        if(get(REQUEST_VOLUME_THRESHOLD, Integer.class) < 1) {
-            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on "+ annotated.toString() +" : requestVolumeThreshold shouldn't be lower than 1");
+        if (get(REQUEST_VOLUME_THRESHOLD, Integer.class) < 1) {
+            throw new FaultToleranceDefinitionException(
+                    "Invalid CircuitBreaker on " + annotated.toString() + " : requestVolumeThreshold shouldn't be lower than 1");
         }
-        if(get(FAILURE_RATIO, Double.class) < 0 || get(FAILURE_RATIO, Double.class) >1) {
-            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on "+ annotated.toString() +" : failureRation should be between 0 and 1");
+        if (get(FAILURE_RATIO, Double.class) < 0 || get(FAILURE_RATIO, Double.class) > 1) {
+            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + annotated.toString() + " : failureRation should be between 0 and 1");
         }
-        if(get(SUCCESS_THRESHOLD, Integer.class) < 1) {
-            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on "+ annotated.toString() +" : successThreshold shouldn't be lower than 1");
+        int successThreshold = get(SUCCESS_THRESHOLD, Integer.class);
+        if (successThreshold < 1) {
+            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + annotated.toString() + " : successThreshold shouldn't be lower than 1");
+        }
+        if (!getConfig().getOptionalValue(HystrixCommandInterceptor.SYNC_CIRCUIT_BREAKER_KEY, Boolean.class).orElse(true) && successThreshold > 1) {
+            LOGGER.warnf("Synchronous circuit breaker disabled - successThreshold of value greater than 1 is not supported: " + annotated);
         }
     }
 
@@ -80,15 +88,18 @@ public class CircuitBreakerConfig extends GenericConfig<CircuitBreaker> {
         return keys2Type;
     }
 
-    private static Map<String, Class<?>> keys2Type = Collections.unmodifiableMap(new HashMap<String, Class<?>>() {{
-        put(DELAY, Long.class);
-        put(DELAY_UNIT, ChronoUnit.class);
-        put(FAIL_ON, Class[].class);
-        put(FAILURE_RATIO, Double.class);
-        put(REQUEST_VOLUME_THRESHOLD, Integer.class);
-        put(SUCCESS_THRESHOLD, Integer.class);
-        put(SYNCHRONOUS_STATE_VALIDATION, Boolean.class);
-    }});
+    private static Map<String, Class<?>> keys2Type = initKeys();
 
+    private static Map<String, Class<?>> initKeys() {
+        Map<String, Class<?>> keys = new HashMap<>();
+        keys.put(DELAY, Long.class);
+        keys.put(DELAY_UNIT, ChronoUnit.class);
+        keys.put(FAIL_ON, Class[].class);
+        keys.put(FAILURE_RATIO, Double.class);
+        keys.put(REQUEST_VOLUME_THRESHOLD, Integer.class);
+        keys.put(SUCCESS_THRESHOLD, Integer.class);
+        keys.put(SYNCHRONOUS_STATE_VALIDATION, Boolean.class);
+        return Collections.unmodifiableMap(keys);
+    }
 
 }

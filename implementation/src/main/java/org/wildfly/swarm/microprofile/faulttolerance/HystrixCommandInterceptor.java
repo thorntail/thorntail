@@ -70,7 +70,7 @@ public class HystrixCommandInterceptor {
 
     /**
      * This config property key can be used to disable synchronous circuit breaker functionality. If disabled, {@link CircuitBreaker#successThreshold()} of
-     * value greated than 1 is not supported.
+     * value greater than 1 is not supported.
      * <p>
      * Moreover, circuit breaker does not necessarily transition from CLOSED to OPEN immediately when a fault tolerance operation completes. See also
      * <a href="https://github.com/Netflix/Hystrix/wiki/Configuration#metrics.healthSnapshot.intervalInMilliseconds">Hystrix configuration</a>
@@ -81,7 +81,7 @@ public class HystrixCommandInterceptor {
      */
     public static final String SYNC_CIRCUIT_BREAKER_KEY = "org_wildfly_swarm_microprofile_faulttolerance_syncCircuitBreaker";
 
-    private static Logger LOGGER = Logger.getLogger(HystrixCommandInterceptor.class);
+    private static final Logger LOGGER = Logger.getLogger(HystrixCommandInterceptor.class);
 
     @SuppressWarnings("unchecked")
     public HystrixCommandInterceptor() {

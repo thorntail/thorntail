@@ -23,7 +23,8 @@ public class ShakyServiceClient {
 
     static final long DELAY = 400;
 
-    @CircuitBreaker(requestVolumeThreshold = REQUEST_THRESHOLD, delay = DELAY)
+    // successThreshold is ignored
+    @CircuitBreaker(requestVolumeThreshold = REQUEST_THRESHOLD, delay = DELAY, successThreshold = 2)
     void ping() {
         throw new IllegalStateException("Service call failed!");
     }

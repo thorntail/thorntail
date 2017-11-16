@@ -32,7 +32,6 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefiniti
 /**
  * @author Antoine Sabot-Durand
  */
-
 public abstract class GenericConfig<X extends Annotation> {
 
     public GenericConfig(X annotation, Method method) {
@@ -50,8 +49,6 @@ public abstract class GenericConfig<X extends Annotation> {
         this.annotation =annotation;
         this.annotated = annotated;
     }
-
-
 
     public <U> U get(String key, Class<U> expectedType) {
 
@@ -116,7 +113,6 @@ public abstract class GenericConfig<X extends Annotation> {
     protected Config getConfig() {
         return ConfigProvider.getConfig();
     }
-
 
     protected abstract Map<String, Class<?>> getKeysToType();
 

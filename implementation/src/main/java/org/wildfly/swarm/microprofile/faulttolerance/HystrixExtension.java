@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.enterprise.event.Observes;
@@ -46,6 +46,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefiniti
 import org.wildfly.swarm.microprofile.faulttolerance.config.BulkheadConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.config.CircuitBreakerConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.config.FallbackConfig;
+import org.wildfly.swarm.microprofile.faulttolerance.config.GenericConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.config.RetryConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.config.TimeoutConfig;
 
@@ -65,23 +66,23 @@ public class HystrixExtension implements Extension {
     }
 
     void validateTimeout(@Observes @WithAnnotations(Timeout.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, m -> new TimeoutConfig(m).validate(), Timeout.class);
+        validate(pat, TimeoutConfig::new, Timeout.class);
     }
 
     void validateRetry(@Observes @WithAnnotations(Retry.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, m -> new RetryConfig(m).validate(), Retry.class);
+        validate(pat, RetryConfig::new, Retry.class);
     }
 
     void validateCircuitBreaker(@Observes @WithAnnotations(CircuitBreaker.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, m -> new CircuitBreakerConfig(m).validate(), CircuitBreaker.class);
+        validate(pat, CircuitBreakerConfig::new, CircuitBreaker.class);
     }
 
     void validateBulkhead(@Observes @WithAnnotations(Bulkhead.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, m -> new BulkheadConfig(m).validate(), Bulkhead.class);
+        validate(pat, BulkheadConfig::new, Bulkhead.class);
     }
 
     void validateFallback(@Observes @WithAnnotations(Fallback.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, m -> new FallbackConfig(m).validate(), Fallback.class);
+        validate(pat, FallbackConfig::new, Fallback.class);
     }
 
     <T> void validateAsynchronous(@Observes @WithAnnotations(Asynchronous.class) ProcessAnnotatedType<T> pat) {
@@ -96,16 +97,14 @@ public class HystrixExtension implements Extension {
         });
     }
 
-    private void validate(ProcessAnnotatedType<?> pat, Consumer<Annotated> validator, Class<? extends Annotation> annotationType) {
+    private void validate(ProcessAnnotatedType<?> pat, Function<Annotated, GenericConfig<?>> configProvider, Class<? extends Annotation> annotationType) {
         AnnotatedType<?> at = pat.getAnnotatedType();
 
         if (at.isAnnotationPresent(annotationType)) {
-            validator.accept(at);
+            configProvider.apply(at).validate();
         }
 
-        at.getMethods().stream()
-                .filter(m -> m.isAnnotationPresent(annotationType))
-                .forEach(validator);
+        at.getMethods().stream().filter(m -> m.isAnnotationPresent(annotationType)).forEach(m -> configProvider.apply(m).validate());
     }
 
     public static class HystrixInterceptorBindingAnnotatedType<T extends Annotation> implements AnnotatedType<T> {
@@ -140,6 +139,7 @@ public class HystrixExtension implements Extension {
             return delegate.getTypeClosure();
         }
 
+        @SuppressWarnings("unchecked")
         public <S extends Annotation> S getAnnotation(Class<S> annotationType) {
             if (HystrixCommandBinding.class.equals(annotationType)) {
                 return (S) HystrixCommandBinding.Literal.INSTANCE;
