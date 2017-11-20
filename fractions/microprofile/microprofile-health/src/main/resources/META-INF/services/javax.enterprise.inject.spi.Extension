@@ -1,1 +1,1 @@
-org.wildfly.swarm.monitor.deployment.HealthExtension
+org.wildfly.swarm.health.deployment.HealthExtension

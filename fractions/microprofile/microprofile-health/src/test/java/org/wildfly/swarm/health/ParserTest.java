@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor;
+package org.wildfly.swarm.health;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wildfly.swarm.health.HealthStatus;
-import org.wildfly.swarm.monitor.runtime.HealthAnnotationProcessor;
-import org.wildfly.swarm.monitor.runtime.HttpContexts;
-
-import javax.xml.ws.spi.http.HttpContext;
+import org.wildfly.swarm.health.runtime.HealthAnnotationProcessor;
+import org.wildfly.swarm.health.runtime.HttpContexts;
 
 /**
  * @author Heiko Braun
  */
-public class MonitorTest {
+public class ParserTest {
 
     // see https://issues.jboss.org/browse/SWARM-505
     @Test

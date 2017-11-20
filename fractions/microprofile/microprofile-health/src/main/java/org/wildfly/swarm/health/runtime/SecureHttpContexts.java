@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health.runtime;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +43,7 @@ import org.jboss.as.domain.http.server.security.AuthenticationMechanismWrapper;
 import org.jboss.as.domain.http.server.security.RealmIdentityManager;
 import org.jboss.as.domain.management.AuthMechanism;
 import org.jboss.as.domain.management.SecurityRealm;
-import org.wildfly.swarm.monitor.api.Monitor;
+import org.wildfly.swarm.health.api.Monitor;
 
 /**
  * Wraps the actual HTTP endpoint and add security to it.
@@ -57,6 +57,7 @@ public class SecureHttpContexts implements HttpHandler {
 
 
     public SecureHttpContexts(HttpHandler next) {
+
         this.next = next;
 
         try {
