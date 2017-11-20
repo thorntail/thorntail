@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.api;
+package org.wildfly.swarm.health.api;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import javax.naming.NamingException;
 
 import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.dmr.ModelNode;
-import org.wildfly.swarm.monitor.HealthMetaData;
+import org.wildfly.swarm.health.HealthMetaData;
 
 /**
  * The main API exposed by the monitoring service
@@ -34,7 +34,7 @@ import org.wildfly.swarm.monitor.HealthMetaData;
  */
 public interface Monitor {
 
-    String JNDI_NAME = "swarm/monitor";
+    String JNDI_NAME = "swarm/health";
 
     static Monitor lookup() throws NamingException {
         InitialContext context = new InitialContext();

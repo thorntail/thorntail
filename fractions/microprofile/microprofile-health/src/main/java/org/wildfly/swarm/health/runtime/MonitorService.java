@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health.runtime;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -41,8 +41,8 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.SwarmInfo;
-import org.wildfly.swarm.monitor.HealthMetaData;
-import org.wildfly.swarm.monitor.api.Monitor;
+import org.wildfly.swarm.health.api.Monitor;
+import org.wildfly.swarm.health.HealthMetaData;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
@@ -58,11 +58,11 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUC
 @Vetoed
 public class MonitorService implements Monitor, Service<MonitorService> {
 
-    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.monitor.health");
+    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.health");
 
     private static final String SELECT = "select";
 
-    public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "monitor");
+    public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "health");
 
     public MonitorService(Optional<String> securityRealm) {
         this.securityRealm = securityRealm;

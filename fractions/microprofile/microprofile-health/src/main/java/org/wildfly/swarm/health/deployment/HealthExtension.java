@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.deployment;
+package org.wildfly.swarm.health.deployment;
 
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.jboss.logging.Logger;
-import org.wildfly.swarm.monitor.api.Monitor;
+import org.wildfly.swarm.health.api.Monitor;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;

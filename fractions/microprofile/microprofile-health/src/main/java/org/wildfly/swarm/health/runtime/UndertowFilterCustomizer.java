@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -41,20 +41,20 @@ public class UndertowFilterCustomizer implements Customizer {
               undertow.filterConfiguration();
             }
             undertow.subresources().filterConfiguration()
-                    .customFilter("wfs-monitor", customFilter -> {
-                        customFilter.module("org.wildfly.swarm.monitor:runtime");
-                        customFilter.className("org.wildfly.swarm.monitor.runtime.SecureHttpContexts");
+                    .customFilter("wfs-health", customFilter -> {
+                        customFilter.module("org.wildfly.swarm.health:runtime");
+                        customFilter.className("org.wildfly.swarm.health.runtime.SecureHttpContexts");
                     });
 
             undertow.subresources().server("default-server")
                     .subresources().host("default-host")
-                    .filterRef("wfs-monitor", f -> {
+                    .filterRef("wfs-health", f -> {
                         f.priority(100);
                     });
 
 
         } else {
-            throw new RuntimeException("The monitor fraction requires the undertow fraction!");
+            throw new RuntimeException("The health fraction requires the undertow fraction!");
         }
     }
 }

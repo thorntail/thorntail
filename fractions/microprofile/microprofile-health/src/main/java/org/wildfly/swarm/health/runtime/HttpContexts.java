@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health.runtime;
 
 import io.undertow.client.ClientCallback;
 import io.undertow.client.ClientExchange;
@@ -31,8 +31,8 @@ import io.undertow.util.StringReadChannelListener;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.jboss.logging.Logger;
-import org.wildfly.swarm.monitor.HealthMetaData;
-import org.wildfly.swarm.monitor.api.Monitor;
+import org.wildfly.swarm.health.HealthMetaData;
+import org.wildfly.swarm.health.api.Monitor;
 import org.xnio.ChannelListeners;
 import org.xnio.IoUtils;
 import org.xnio.OptionMap;
@@ -60,6 +60,7 @@ import java.util.concurrent.CountDownLatch;
  */
 @Vetoed
 public class HttpContexts implements HttpHandler {
+
 
     public static final String LCURL = "{";
     public static final String RCURL = "}";
@@ -179,87 +180,6 @@ public class HttpContexts implements HttpHandler {
 
         exchange.endExchange();
     }
-
-   /* private void proxyRequests(HttpServerExchange exchange) {
-
-        if (monitor.getHealthURIs().isEmpty()) {
-            noHealthEndpoints(exchange);
-        } else {
-
-            try {
-                final List<InVMResponse> responses = new CopyOnWriteArrayList<>();
-                CountDownLatch latch = new CountDownLatch(monitor.getHealthURIs().size());
-                dispatched.set(latch);
-
-                for (HealthMetaData healthCheck : monitor.getHealthURIs()) {
-                    invokeHealthInVM(exchange, healthCheck, responses, latch);
-                }
-
-                latch.await(10, TimeUnit.SECONDS);
-
-                if (latch.getCount() > 0) {
-                    throw new Exception("Probe timed out");
-                }
-
-
-                boolean failed = false;
-                if (!responses.isEmpty()) {
-
-                    if (responses.size() != monitor.getHealthURIs().size()) {
-                        throw new RuntimeException("The number of responses does not match!");
-                    }
-
-                    StringBuffer sb = new StringBuffer("{");
-                    sb.append("\"checks\": [\n");
-
-                    int i = 0;
-                    for (InVMResponse resp : responses) {
-
-                        sb.append(resp.getPayload());
-
-                        if (!failed) {
-                            failed = resp.getStatus() != 200;
-                        }
-
-                        if (i < responses.size() - 1) {
-                            sb.append(",\n");
-                        }
-                        i++;
-                    }
-                    sb.append("],\n");
-
-                    String outcome = failed ? "DOWN" : "UP"; // we don't have policies yet, so keep it simple
-                    sb.append("\"outcome\": \"" + outcome + "\"\n");
-                    sb.append("}\n");
-
-                    // send a response
-                    if (failed) {
-                        exchange.setStatusCode(503);
-                    }
-
-                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-                    exchange.getResponseSender().send(sb.toString());
-
-                } else {
-                    new RuntimeException("Responses should not be empty").printStackTrace();
-                    exchange.setStatusCode(500);
-                }
-
-                exchange.endExchange();
-
-
-            } catch (Throwable t) {
-                LOG.error("Health check failed", t);
-
-                if (!exchange.isResponseStarted()) {
-                    exchange.setStatusCode(500);
-                }
-                exchange.endExchange();
-            }
-
-        }
-
-    }*/
 
     private void invokeHealthInVM(final HttpServerExchange exchange, HealthMetaData healthCheck, List<InVMResponse> responses, CountDownLatch latch) {
         try {
@@ -432,7 +352,7 @@ public class HttpContexts implements HttpHandler {
         return Arrays.asList(NODE, HEAP, HEALTH, THREADS);
     }
 
-    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.monitor.health");
+    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.health");
 
     public static final String NODE = "/node";
 

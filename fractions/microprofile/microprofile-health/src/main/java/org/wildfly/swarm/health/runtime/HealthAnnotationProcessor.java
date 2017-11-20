@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health.runtime;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -28,8 +28,8 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.monitor.HealthMetaData;
-import org.wildfly.swarm.monitor.api.Monitor;
+import org.wildfly.swarm.health.HealthMetaData;
+import org.wildfly.swarm.health.api.Monitor;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;

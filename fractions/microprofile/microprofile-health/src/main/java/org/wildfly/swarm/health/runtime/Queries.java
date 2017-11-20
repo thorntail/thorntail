@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health.runtime;
 
 import javax.enterprise.inject.Vetoed;
 
-import org.wildfly.swarm.monitor.HealthMetaData;
-import org.wildfly.swarm.monitor.api.Monitor;
+import org.wildfly.swarm.health.HealthMetaData;
+import org.wildfly.swarm.health.api.Monitor;
 
 /**
  * @author Heiko Braun

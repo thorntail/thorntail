@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor;
+package org.wildfly.swarm.health;
 
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.Module;
@@ -26,14 +26,14 @@ import java.util.Optional;
  */
 @DeploymentModule(name = "javax.ws.rs.api")
 @DeploymentModule(name = "org.jboss.dmr")
-@DeploymentModule(name = "org.wildfly.swarm.monitor")
-@DeploymentModule(name = "org.wildfly.swarm.monitor", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
+@DeploymentModule(name = "org.wildfly.swarm.health")
+@DeploymentModule(name = "org.wildfly.swarm.health", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 @DeploymentModule(name = "org.eclipse.microprofile.health", services = Module.ServiceHandling.IMPORT, export = true)
-public class MonitorFraction implements Fraction<MonitorFraction> {
+public class HealthFraction implements Fraction<HealthFraction> {
 
     private Optional<String> securityRealm = Optional.empty();
 
-    public MonitorFraction securityRealm(String realmName) {
+    public HealthFraction securityRealm(String realmName) {
         this.securityRealm = Optional.of(realmName);
         return this;
     }

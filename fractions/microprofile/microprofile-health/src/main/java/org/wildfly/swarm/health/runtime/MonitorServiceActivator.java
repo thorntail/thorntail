@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health.runtime;
 
 import java.util.Optional;
 
@@ -38,8 +38,8 @@ import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
-import org.wildfly.swarm.monitor.MonitorFraction;
-import org.wildfly.swarm.monitor.api.Monitor;
+import org.wildfly.swarm.health.api.Monitor;
+import org.wildfly.swarm.health.HealthFraction;
 
 /**
  * Installs a monitoring service so we get hold of the MSC services
@@ -53,14 +53,14 @@ public class MonitorServiceActivator implements ServiceActivator {
 
     @Inject
     @Any
-    Instance<MonitorFraction> monitorFractionInstance;
+    Instance<HealthFraction> healthFractionInstance;
 
     @Override
     public void activate(ServiceActivatorContext context) throws ServiceRegistryException {
         Optional<String> securityRealm = Optional.empty();
 
-        if (!monitorFractionInstance.isUnsatisfied()) {
-            securityRealm = monitorFractionInstance.get().securityRealm();
+        if (!healthFractionInstance.isUnsatisfied()) {
+            securityRealm = healthFractionInstance.get().securityRealm();
         }
 
         ServiceTarget target = context.getServiceTarget();

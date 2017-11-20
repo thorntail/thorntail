@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.monitor.runtime;
+package org.wildfly.swarm.health.runtime;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
@@ -32,9 +32,6 @@ public class InstallMonitorFilter implements DeploymentProcessor {
     public InstallMonitorFilter(Archive archive) {
         this.archive = archive;
     }
-
-    // TODO
-    private static final String MP_HEALTH_VERSION = "1.0-SNAPSHOT";
 
     @Override
     public void process() throws Exception {
