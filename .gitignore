@@ -9,6 +9,7 @@ target
 .classpath
 .settings
 .metadata
+.checkstyle
 # ignore m2e annotation processing files
 .factorypath
 # ignore IDEA files

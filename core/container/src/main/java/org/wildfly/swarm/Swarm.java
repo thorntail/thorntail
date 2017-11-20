@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -78,6 +79,7 @@ import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
+import org.wildfly.swarm.container.config.ClassLoaderConfigLocator;
 import org.wildfly.swarm.container.config.ConfigViewFactory;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
@@ -236,9 +238,20 @@ public class Swarm {
         installModuleMBeanServer();
         createShrinkWrapDomain();
 
-        this.configView = ConfigViewFactory.defaultFactory(properties, environment);
         this.commandLine = CommandLine.parse(args);
+        this.configView = ConfigViewFactory.defaultFactory(properties, environment);
+
+        if (ApplicationEnvironment.get().isHollow()) {
+            if (!this.commandLine.extraArguments().isEmpty()) {
+                URLClassLoader firstDeploymentCL = new URLClassLoader(new URL[]{
+                        new File(this.commandLine.extraArguments().get(0)).toURI().toURL()
+                });
+                this.configView.addLocator(new ClassLoaderConfigLocator(firstDeploymentCL));
+            }
+        }
+
         this.commandLine.apply(this);
+
         initializeConfigView(properties);
 
         this.isConstructing = false;
@@ -716,6 +729,7 @@ public class Swarm {
 
         swarm = new Swarm(args);
 
+
         try {
             swarm.start();
             if (System.getProperty("swarm.inhibit.default-deployment") == null) {
@@ -759,6 +773,10 @@ public class Swarm {
                 t.printStackTrace();
                 System.exit(1);
             }
+        } else {
+            // errors can be thrown before swarm.server is created
+            errorCause.printStackTrace();
+            System.exit(1);
         }
     }
 

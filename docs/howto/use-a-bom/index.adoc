@@ -58,10 +58,10 @@ endif::[]
 Tracking the current version of WildFly Swarm through a property in your
 `pom.xml` is recommended.
 
-[source,xml]
+[source,xml,subs="+attributes"]
 ----
 <properties>
-include::pom.xml[tag=property,indent=2]
+  <version.wildfly-swarm>{version}</version.wildfly-swarm>
 </properties>
 ----
 

@@ -80,6 +80,8 @@ public class MapConfigNodeFactory {
             load(child, (List<?>) value);
         } else if (value instanceof String) {
             child = new ConfigNode("" + value);
+        } else if (value instanceof Long) {
+            child = new ConfigNode("" + value);
         } else if (value instanceof Integer) {
             child = new ConfigNode("" + value);
         } else if (value instanceof Boolean) {

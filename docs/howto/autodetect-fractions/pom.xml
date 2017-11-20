@@ -9,7 +9,7 @@
 
   <groupId>org.wildfly.swarm.howto</groupId>
   <artifactId>howto-autodetect-fractions</artifactId>
-  <version>2017.11.0-SNAPSHOT</version>
+  <version>2017.12.0-SNAPSHOT</version>
 
   <name>WildFly Swarm HOWTO: Auto-detecting Fractions</name>
   <description>WildFly Swarm HOWTO: Auto-detecting Fractions</description>
@@ -17,6 +17,7 @@
   <packaging>war</packaging>
 
   <properties>
+    <version.wildfly-swarm>2017.12.0-SNAPSHOT</version.wildfly-swarm>
     <version.maven-war-plugin>2.2</version.maven-war-plugin>
     <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
@@ -24,7 +25,7 @@
     <version.arquillian-drone>2.0.1.Final</version.arquillian-drone>
     <version.arquillian-graphene>2.1.0.Alpha2</version.arquillian-graphene>
     <version.junit>4.11</version.junit>
-
+   
     <version.jaxrs-api>1.0.0.Final</version.jaxrs-api>
   </properties>
 
@@ -86,7 +87,7 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${project.version}</version>
+        <version>${version.wildfly-swarm}</version>
         <executions>
           <execution>
             <id>package</id>
@@ -188,7 +189,7 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bom</artifactId>
-        <version>${project.version}</version>
+        <version>${version.wildfly-swarm}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

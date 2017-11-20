@@ -1,3 +1,4 @@
+[#maven-plugin]
 = Maven Plugin
 
 WildFly Swarm provides a Maven plugin to accomplish most of the work of building xref:uberjar[uberjar] packages.
@@ -11,7 +12,7 @@ The WildFly Swarm Maven plugin is used like any other Maven plugin, that is thro
 <plugin>
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-plugin</artifactId>
-  <version>${project.version}</version>
+  <version>${version.wildfly-swarm}</version>
   <executions>
     ...
     <configuration>
@@ -41,6 +42,7 @@ Stops any previously started applications.
 +
 NOTE: The `stop` goal can only stop applications that were started _in the same Maven execution_.
 
+[#maven-plugin-configuration]
 == Configuration
 
 The plugin accepts the following options:
@@ -98,11 +100,13 @@ If no version is provided, the version is taken from the WildFly Swarm BOM for t
 |
 |`package`, `run`, `start`
 
+ifndef::product[]
 |`hollow`
 |`swarm.hollow`
 |Specifies if the resulting executable JAR should be hollow, and therefore not include the default deployment.
 |`false`
-|`multistart`, `run`, `start`
+|`package`
+endif::[]
 
 |`jvmArguments`
 |`swarm.jvmArguments`
