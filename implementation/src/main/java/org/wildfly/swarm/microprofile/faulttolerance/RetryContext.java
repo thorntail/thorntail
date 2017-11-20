@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.microprofile.faulttolerance;
 
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,12 +27,18 @@ class RetryContext {
 
     private final AtomicInteger remainingAttempts;
 
-    private final Long start;
+    private final long start;
+
+    private final long maxDuration;
+
+    private final long delay;
 
     RetryContext(RetryConfig config) {
         this.config = config;
-        start = System.nanoTime();
-        remainingAttempts = new AtomicInteger(config.getMaxExecNumber());
+        this.start = System.nanoTime();
+        this.remainingAttempts = new AtomicInteger(config.<Integer>get(RetryConfig.MAX_RETRIES) + 1);
+        this.maxDuration = Duration.of(config.get(RetryConfig.MAX_DURATION), config.get(RetryConfig.DURATION_UNIT)).toNanos();
+        this.delay = Duration.of(config.get(RetryConfig.DELAY), config.get(RetryConfig.DELAY_UNIT)).toMillis();
     }
 
     public RetryConfig getConfig() {
@@ -46,16 +53,16 @@ class RetryContext {
         return remainingAttempts.get() > 0;
     }
 
-    public Long getStart() {
+    public long getStart() {
         return start;
     }
 
     public long getMaxDuration() {
-        return config.getMaxDuration();
+        return maxDuration;
     }
 
     public long getDelay() {
-        return config.getDelay();
+        return delay;
     }
 
     public Class<?>[] getAbortOn() {

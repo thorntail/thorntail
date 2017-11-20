@@ -42,8 +42,8 @@ class OpenState extends State {
 
     @Override
     boolean allowsExecution(int execCount) {
-        long delay = circuit.getConfig().get(CircuitBreakerConfig.DELAY, Long.class);
-        ChronoUnit delayUnit = circuit.getConfig().get(CircuitBreakerConfig.DELAY_UNIT, ChronoUnit.class);
+        long delay = circuit.getConfig().get(CircuitBreakerConfig.DELAY);
+        ChronoUnit delayUnit = circuit.getConfig().get(CircuitBreakerConfig.DELAY_UNIT);
         Instant start = Instant.ofEpochMilli(startTime);
         Instant now = Instant.now();
         long elapsed = delayUnit.between(start, now);

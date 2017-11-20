@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
@@ -35,24 +35,24 @@ public class TimeoutConfig extends GenericConfig<Timeout> {
 
     public static final String UNIT = "unit";
 
-    public TimeoutConfig(Timeout annotation,Method method) {
-        super(annotation, method);
+    public TimeoutConfig(Method method) {
+        super(Timeout.class, method);
     }
 
-    public TimeoutConfig(Annotated annotated) {
-        super(annotated.getAnnotation(Timeout.class), annotated);
+    public TimeoutConfig(AnnotatedMethod<?> annotatedMethod) {
+        super(Timeout.class, annotatedMethod);
     }
 
     @Override
     public void validate() {
         if (get(VALUE, Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Timeout on " + annotated.toString() + " : value shouldn't be lower than 0");
+            throw new FaultToleranceDefinitionException("Invalid @Timeout on " + getMethodInfo() + " : value shouldn't be lower than 0");
         }
     }
 
     @Override
-    protected String getConfigType() {
-        return "Timeout";
+    protected Class<Timeout> getConfigType() {
+        return Timeout.class;
     }
 
     @Override

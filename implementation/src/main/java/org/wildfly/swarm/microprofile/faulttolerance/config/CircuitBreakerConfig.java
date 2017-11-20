@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
@@ -49,38 +49,38 @@ public class CircuitBreakerConfig extends GenericConfig<CircuitBreaker> {
 
     private static final Logger LOGGER =  Logger.getLogger(CircuitBreakerConfig.class);
 
-    public CircuitBreakerConfig(CircuitBreaker cb, Method method) {
-        super(cb, method);
+    public CircuitBreakerConfig(Method method) {
+        super(CircuitBreaker.class, method);
     }
 
-    public CircuitBreakerConfig(Annotated a) {
-        super(a.getAnnotation(CircuitBreaker.class),a);
+    public CircuitBreakerConfig(AnnotatedMethod<?> annotatedMethod) {
+        super(CircuitBreaker.class, annotatedMethod);
     }
 
     @Override
     public void validate() {
         if (get(DELAY, Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + annotated.toString() + " : delay shouldn't be lower than 0");
+            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + getMethodInfo() + " : delay shouldn't be lower than 0");
         }
         if (get(REQUEST_VOLUME_THRESHOLD, Integer.class) < 1) {
             throw new FaultToleranceDefinitionException(
-                    "Invalid CircuitBreaker on " + annotated.toString() + " : requestVolumeThreshold shouldn't be lower than 1");
+                    "Invalid CircuitBreaker on " + getMethodInfo() + " : requestVolumeThreshold shouldn't be lower than 1");
         }
         if (get(FAILURE_RATIO, Double.class) < 0 || get(FAILURE_RATIO, Double.class) > 1) {
-            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + annotated.toString() + " : failureRation should be between 0 and 1");
+            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + getMethodInfo() + " : failureRation should be between 0 and 1");
         }
         int successThreshold = get(SUCCESS_THRESHOLD, Integer.class);
         if (successThreshold < 1) {
-            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + annotated.toString() + " : successThreshold shouldn't be lower than 1");
+            throw new FaultToleranceDefinitionException("Invalid CircuitBreaker on " + getMethodInfo() + " : successThreshold shouldn't be lower than 1");
         }
         if (!getConfig().getOptionalValue(HystrixCommandInterceptor.SYNC_CIRCUIT_BREAKER_KEY, Boolean.class).orElse(true) && successThreshold > 1) {
-            LOGGER.warnf("Synchronous circuit breaker disabled - successThreshold of value greater than 1 is not supported: " + annotated);
+            LOGGER.warnf("Synchronous circuit breaker disabled - successThreshold of value greater than 1 is not supported: " + getMethodInfo());
         }
     }
 
     @Override
-    protected String getConfigType() {
-        return "CircuitBreaker";
+    protected Class<CircuitBreaker> getConfigType() {
+        return CircuitBreaker.class;
     }
 
     @Override

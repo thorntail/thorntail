@@ -26,7 +26,7 @@ class ClosedState extends RecordingState {
 
     ClosedState(SynchronousCircuitBreaker circuit) {
         super(circuit);
-        this.failureRatio = circuit.getConfig().get(CircuitBreakerConfig.FAILURE_RATIO, Double.class);
+        this.failureRatio = circuit.getConfig().get(CircuitBreakerConfig.FAILURE_RATIO);
     }
 
     @Override
@@ -43,7 +43,7 @@ class ClosedState extends RecordingState {
     protected void checkThreshold() {
         int requestCount = getRequestCount();
         double failureCheck = failureCount.get() / requestCount;
-        int requestVolumeThreshold = circuit.getConfig().get(CircuitBreakerConfig.REQUEST_VOLUME_THRESHOLD, Integer.class);
+        int requestVolumeThreshold = circuit.getConfig().get(CircuitBreakerConfig.REQUEST_VOLUME_THRESHOLD);
         if (requestCount >= requestVolumeThreshold && failureCheck >= failureRatio) {
             circuit.open();
         }

@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.faulttolerance.asynchronous.future;
+package org.wildfly.swarm.microprofile.faulttolerance.config.extension;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.Dependent;
 
-import org.eclipse.microprofile.faulttolerance.Asynchronous;
 
 @Dependent
-public class WrongReturnType {
+public class UnconfiguredService {
 
-    @Asynchronous
-    public int ping() {
-        return 1;
+    static final AtomicInteger COUNTER = new AtomicInteger(0);
+
+    // Custom extension should add something like @Retry(maxRetries = 2)
+    public void ping() {
+        COUNTER.incrementAndGet();
+        throw new IllegalStateException();
     }
 
 }

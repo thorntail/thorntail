@@ -16,14 +16,15 @@
 package org.wildfly.swarm.microprofile.faulttolerance.config;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.PrivilegedActionException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -34,85 +35,107 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefiniti
  */
 public abstract class GenericConfig<X extends Annotation> {
 
-    public GenericConfig(X annotation, Method method) {
-        this.method = method;
+    /**
+     * This config property key can be used to disable config parameters caching. If disabled, properties are resolved every time a config parameter is needed.
+     */
+    public static final String CONFIG_PARAMS_CACHE_KEY = "org_wildfly_swarm_microprofile_faulttolerance_configParamsCache";
+
+    public GenericConfig(Class<X> annotationType, Method method) {
+        this(method, null,
+                method.isAnnotationPresent(annotationType) ? method.getAnnotation(annotationType) : method.getDeclaringClass().getAnnotation(annotationType),
+                method.isAnnotationPresent(annotationType) ? ElementType.METHOD : ElementType.TYPE);
+    }
+
+    public GenericConfig(Class<X> annotationType, AnnotatedMethod<?> annotatedMethod) {
+        this(annotatedMethod.getJavaMember(), annotatedMethod,
+                annotatedMethod.isAnnotationPresent(annotationType) ? annotatedMethod.getAnnotation(annotationType)
+                        : annotatedMethod.getDeclaringType().getAnnotation(annotationType),
+                annotatedMethod.isAnnotationPresent(annotationType) ? ElementType.METHOD : ElementType.TYPE);
+    }
+
+    private GenericConfig(Method method, AnnotatedMethod<?> annotatedMethod, X annotation, ElementType annotationSource) {
+        this.method = annotatedMethod.getJavaMember();
+        this.annotatedMethod = annotatedMethod;
         this.annotation = annotation;
-        annotated =null;
+        this.annotationSource = annotationSource;
+        this.values = getConfig().getOptionalValue(CONFIG_PARAMS_CACHE_KEY, Boolean.class).orElse(true) ? new ConcurrentHashMap<>() : null;
     }
 
-    public GenericConfig(X annotation, Annotated annotated) {
-        if(annotated instanceof AnnotatedMethod) {
-            method = ((AnnotatedMethod<?>)annotated).getJavaMember();
-        } else {
-            method = ((AnnotatedType<?>)annotated).getJavaClass().getMethods()[0];
-        }
-        this.annotation =annotation;
-        this.annotated = annotated;
-    }
-
-    public <U> U get(String key, Class<U> expectedType) {
-
-        /*
-           Global config has the highest priority
-         */
-        Optional<U> opt = getConfig().getOptionalValue(getConfigType() + "/" + key, expectedType);
-        if (opt.isPresent()) {
-            return opt.get();
-        }
-
-        /*
-            Config on field or on field annotation is priority 2
-         */
-        if (method.isAnnotationPresent(annotation.annotationType())) {
-            opt = getConfig().getOptionalValue(getConfigKeyForMethod() + key, expectedType);
-            if (opt.isPresent()) {
-                return opt.get();
-            } else {
-                return getConfigFromAnnotation(key);
-            }
-        }
-
-        /*
-            lowest priority for config on class
-         */
-        opt = getConfig().getOptionalValue(getConfigKeyForClass() + key, expectedType);
-        if (opt.isPresent()) {
-            return opt.get();
-        } else {
-            return getConfigFromAnnotation(key);
-        }
-
-    }
-
+    @SuppressWarnings("unchecked")
     public <U> U get(String key) {
+        if (values != null) {
+            return (U) values.computeIfAbsent(key, k -> lookup(k, getKeysToType().get(key)));
+        }
         Class<U> expectedType = (Class<U>) getKeysToType().get(key);
-        return get(key, expectedType);
+        return lookup(key, expectedType);
     }
 
+    @SuppressWarnings("unchecked")
+    public <U> U get(String key, Class<U> expectedType) {
+        if (values != null) {
+            return (U) values.computeIfAbsent(key, k -> lookup(k, expectedType));
+        }
+        return lookup(key, expectedType);
+    }
+
+    /**
+     * Note that:
+     *
+     * <pre>
+     * If no annotation matches the specified parameter, the property will be ignored.
+     * </pre>
+     *
+     * @param key
+     * @param expectedType
+     * @return the configured value
+     */
+    private <U> U lookup(String key, Class<U> expectedType) {
+        Config config = getConfig();
+        Optional<U> value = null;
+        if (ElementType.METHOD.equals(annotationSource)) {
+            // <classname>/<methodname>/<annotation>/<parameter>
+            value = config.getOptionalValue(getConfigKeyForMethod() + key, expectedType);
+        } else {
+            // <classname>/<annotation>/<parameter>
+            value = config.getOptionalValue(getConfigKeyForClass() + key, expectedType);
+        }
+        if (!value.isPresent()) {
+            // <annotation>/<parameter>
+            value = config.getOptionalValue(getConfigType().getSimpleName() + "/" + key, expectedType);
+        }
+        // annotation values
+        return value.isPresent() ? value.get() : getConfigFromAnnotation(key);
+    }
 
     public abstract void validate();
 
+    @SuppressWarnings("unchecked")
     private <U> U getConfigFromAnnotation(String key) {
         try {
-            return (U) annotation.getClass().getMethod(key).invoke(annotation);
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new FaultToleranceDefinitionException("Member " + key + " on annotation " + annotation.getClass().toString() + " doesn't exist or is not accessible");
+            return (U) SecurityActions.getAnnotationMethod(annotation.getClass(), key).invoke(annotation);
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | IllegalArgumentException | PrivilegedActionException e) {
+            throw new FaultToleranceDefinitionException(
+                    "Member " + key + " on annotation " + annotation.getClass().toString() + " doesn't exist or is not accessible");
         }
     }
 
     protected String getConfigKeyForMethod() {
-        return method.getDeclaringClass().getName() + "/" + method.getName() + "/" + getConfigType() + "/";
+        return method.getDeclaringClass().getName() + "/" + method.getName() + "/" + getConfigType().getSimpleName() + "/";
     }
-
-    protected abstract String getConfigType();
 
     protected String getConfigKeyForClass() {
-        return method.getDeclaringClass().getName() + "/" + getConfigType() + "/";
+        return method.getDeclaringClass().getName() + "/" + getConfigType().getSimpleName() + "/";
     }
 
-    protected Config getConfig() {
+    protected String getMethodInfo() {
+        return annotatedMethod != null ? annotatedMethod.toString() : method.toGenericString();
+    }
+
+    protected static Config getConfig() {
         return ConfigProvider.getConfig();
     }
+
+    protected abstract Class<X> getConfigType();
 
     protected abstract Map<String, Class<?>> getKeysToType();
 
@@ -120,6 +143,11 @@ public abstract class GenericConfig<X extends Annotation> {
 
     protected final X annotation;
 
-    protected final Annotated annotated;
+    // Annotated method is optional
+    protected final AnnotatedMethod<?> annotatedMethod;
+
+    protected final ElementType annotationSource;
+
+    private final Map<String, Object> values;
 
 }

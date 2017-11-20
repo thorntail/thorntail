@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.faulttolerance.asynchronous.future;
+package org.wildfly.swarm.microprofile.faulttolerance;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.spi.Extension;
 
-import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
-@Dependent
-public class WrongReturnType {
+public class TestArchive {
 
-    @Asynchronous
-    public int ping() {
-        return 1;
+    public static JavaArchive createBase() {
+        return ShrinkWrap.create(JavaArchive.class)
+                .addClass(HystrixCommandInterceptor.class)
+                .addAsServiceProvider(Extension.class, HystrixExtension.class)
+                .addAsManifestResource(EmptyAsset.INSTANCE,
+                "beans.xml");
     }
 
 }

@@ -20,12 +20,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Future;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -33,8 +31,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.WithAnnotations;
+import javax.enterprise.inject.spi.ProcessManagedBean;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
@@ -42,18 +39,17 @@ import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
-import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
-import org.wildfly.swarm.microprofile.faulttolerance.config.BulkheadConfig;
-import org.wildfly.swarm.microprofile.faulttolerance.config.CircuitBreakerConfig;
-import org.wildfly.swarm.microprofile.faulttolerance.config.FallbackConfig;
-import org.wildfly.swarm.microprofile.faulttolerance.config.GenericConfig;
-import org.wildfly.swarm.microprofile.faulttolerance.config.RetryConfig;
-import org.wildfly.swarm.microprofile.faulttolerance.config.TimeoutConfig;
+import org.wildfly.swarm.microprofile.faulttolerance.config.FaultToleranceOperation;
 
 /**
  * @author Antoine Sabot-Durand
  */
 public class HystrixExtension implements Extension {
+
+    /**
+     * @see #collectFaultToleranceOperations(ProcessManagedBean)
+     */
+    private final ConcurrentMap<String, FaultToleranceOperation> faultToleranceOperations = new ConcurrentHashMap<>();
 
     void registerInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
 
@@ -65,46 +61,28 @@ public class HystrixExtension implements Extension {
         bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(Bulkhead.class)));
     }
 
-    void validateTimeout(@Observes @WithAnnotations(Timeout.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, TimeoutConfig::new, Timeout.class);
-    }
-
-    void validateRetry(@Observes @WithAnnotations(Retry.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, RetryConfig::new, Retry.class);
-    }
-
-    void validateCircuitBreaker(@Observes @WithAnnotations(CircuitBreaker.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, CircuitBreakerConfig::new, CircuitBreaker.class);
-    }
-
-    void validateBulkhead(@Observes @WithAnnotations(Bulkhead.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, BulkheadConfig::new, Bulkhead.class);
-    }
-
-    void validateFallback(@Observes @WithAnnotations(Fallback.class) ProcessAnnotatedType<?> pat) {
-        validate(pat, FallbackConfig::new, Fallback.class);
-    }
-
-    <T> void validateAsynchronous(@Observes @WithAnnotations(Asynchronous.class) ProcessAnnotatedType<T> pat) {
-        AnnotatedType<T> at = pat.getAnnotatedType();
-        Stream<AnnotatedMethod<? super T>> methods = at.getMethods().stream();
-        if (!at.isAnnotationPresent(Asynchronous.class)) {
-            methods = methods.filter(m -> m.isAnnotationPresent(Asynchronous.class));
+    /**
+     * Observe all enabled managed beans and identify/validate FT operations. This allows us to:
+     * <ul>
+     * <li>Skip validation of types which are not recognized as beans (e.g. are vetoed)</li>
+     * <li>Take the final values of AnnotatedTypes</li>
+     * <li>Support annotations added via portable extensions</li>
+     * </ul>
+     *
+     * @param event
+     */
+    void collectFaultToleranceOperations(@Observes ProcessManagedBean<?> event) {
+        AnnotatedType<?> annotatedType = event.getAnnotatedBeanClass();
+        for (AnnotatedMethod<?> annotatedMethod : annotatedType.getMethods()) {
+            FaultToleranceOperation operation = FaultToleranceOperation.of(annotatedMethod);
+            if (operation.isLegitimate() && operation.validate()) {
+                faultToleranceOperations.put(annotatedMethod.getJavaMember().toGenericString(), operation);
+            }
         }
-        methods.forEach(m -> {
-            if (!Future.class.equals(m.getJavaMember().getReturnType()))
-                throw new FaultToleranceDefinitionException("Invalid @Asynchronous on " + m + " : the return type must be java.util.concurrent.Future");
-        });
     }
 
-    private void validate(ProcessAnnotatedType<?> pat, Function<Annotated, GenericConfig<?>> configProvider, Class<? extends Annotation> annotationType) {
-        AnnotatedType<?> at = pat.getAnnotatedType();
-
-        if (at.isAnnotationPresent(annotationType)) {
-            configProvider.apply(at).validate();
-        }
-
-        at.getMethods().stream().filter(m -> m.isAnnotationPresent(annotationType)).forEach(m -> configProvider.apply(m).validate());
+    FaultToleranceOperation getFaultToleranceOperation(String methodKey) {
+        return faultToleranceOperations.get(methodKey);
     }
 
     public static class HystrixInterceptorBindingAnnotatedType<T extends Annotation> implements AnnotatedType<T> {
@@ -160,6 +138,4 @@ public class HystrixExtension implements Extension {
         private Set<Annotation> annotations;
     }
 
-
 }
-

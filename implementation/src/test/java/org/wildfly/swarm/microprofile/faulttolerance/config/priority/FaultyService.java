@@ -13,18 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.faulttolerance.asynchronous.future;
+package org.wildfly.swarm.microprofile.faulttolerance.config.priority;
 
 import javax.enterprise.context.Dependent;
 
-import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.Retry;
 
+/**
+ * Expected global configuration:
+ *
+ * <pre>
+ *  Retry/delay=10
+ * </pre>
+ */
 @Dependent
-public class WrongReturnType {
+@Retry(maxRetries = 1)
+public class FaultyService {
 
-    @Asynchronous
-    public int ping() {
-        return 1;
+    @Retry(maxRetries = 2)
+    public void foo() {
+    }
+
+    // This method should use class-level annotation
+    public void bar() {
     }
 
 }

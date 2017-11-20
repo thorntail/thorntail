@@ -23,19 +23,16 @@ import static org.testng.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.testng.annotations.Test;
 import org.wildfly.swarm.microprofile.faulttolerance.HystrixCommandInterceptor;
-import org.wildfly.swarm.microprofile.faulttolerance.HystrixExtension;
+import org.wildfly.swarm.microprofile.faulttolerance.TestArchive;
 
 import com.netflix.config.DynamicLongProperty;
 import com.netflix.config.DynamicPropertyFactory;
@@ -50,9 +47,8 @@ public class SyncCircuitBreakerDisabledTest extends Arquillian {
 
     @Deployment
     public static JavaArchive createTestArchive() throws NoSuchMethodException, SecurityException {
-        return ShrinkWrap.create(JavaArchive.class).addPackage(SyncCircuitBreakerDisabledTest.class.getPackage()).addClass(HystrixCommandInterceptor.class)
-                .addAsManifestResource(new StringAsset(HystrixCommandInterceptor.SYNC_CIRCUIT_BREAKER_KEY + "=false"), "microprofile-config.properties")
-                .addAsServiceProvider(Extension.class, HystrixExtension.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        return TestArchive.createBase().addPackage(SyncCircuitBreakerDisabledTest.class.getPackage())
+                .addAsManifestResource(new StringAsset(HystrixCommandInterceptor.SYNC_CIRCUIT_BREAKER_KEY + "=false"), "microprofile-config.properties");
     }
 
     @Inject

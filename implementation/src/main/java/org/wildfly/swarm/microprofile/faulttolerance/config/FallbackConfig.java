@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.FallbackHandler;
@@ -37,12 +37,12 @@ public class FallbackConfig extends GenericConfig<Fallback> {
 
     public static final String FALLBACK_METHOD = "fallbackMethod";
 
-    public FallbackConfig(Fallback annotation, Method method) {
-        super(annotation, method);
+    public FallbackConfig(Method method) {
+        super(Fallback.class, method);
     }
 
-    public FallbackConfig(Annotated annotated) {
-        super(annotated.getAnnotation(Fallback.class), annotated);
+    public FallbackConfig(AnnotatedMethod<?> annotatedMethod) {
+        super(Fallback.class, annotatedMethod);
     }
 
     @Override
@@ -83,8 +83,8 @@ public class FallbackConfig extends GenericConfig<Fallback> {
     }
 
     @Override
-    protected String getConfigType() {
-        return "Fallback";
+    protected Class<Fallback> getConfigType() {
+        return Fallback.class;
     }
 
     @Override

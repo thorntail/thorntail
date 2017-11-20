@@ -29,7 +29,7 @@ class HalfOpenState extends RecordingState {
 
     HalfOpenState(SynchronousCircuitBreaker circuit) {
         super(circuit);
-        this.successThreshold = circuit.getConfig().get(CircuitBreakerConfig.SUCCESS_THRESHOLD, Integer.class);
+        this.successThreshold = circuit.getConfig().get(CircuitBreakerConfig.SUCCESS_THRESHOLD);
     }
 
     @Override

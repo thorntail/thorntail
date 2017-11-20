@@ -16,13 +16,12 @@
 package org.wildfly.swarm.microprofile.faulttolerance.config;
 
 import java.lang.reflect.Method;
-import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
@@ -50,54 +49,36 @@ public class RetryConfig extends GenericConfig<Retry> {
 
     public static final String ABORT_ON = "abortOn";
 
-    public RetryConfig(Retry annotation, Method method) {
-        super(annotation, method);
-        maxExecNumber = (int) get(MAX_RETRIES) + 1;
-        maxDuration = Duration.of(get(MAX_DURATION), get(DURATION_UNIT)).toNanos();
-        delay = Duration.of(get(DELAY), get(DELAY_UNIT)).toMillis();
+    public RetryConfig(Method method) {
+        super(Retry.class, method);
     }
 
-    public RetryConfig(Annotated annotated) {
-        super(annotated.getAnnotation(Retry.class), annotated);
-        maxExecNumber = (int) get(MAX_RETRIES) + 1;
-        maxDuration = Duration.of(get(MAX_DURATION), get(DURATION_UNIT)).toNanos();
-        delay = Duration.of(get(DELAY), get(DELAY_UNIT)).toMillis();
+    public RetryConfig(AnnotatedMethod<?> annotatedMethod) {
+        super(Retry.class, annotatedMethod);
     }
 
     @Override
     public void validate() {
         if (get(MAX_RETRIES, Integer.class) < -1) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : maxRetries shouldn't be lower than -1");
+            throw new FaultToleranceDefinitionException("Invalid @Retry on " + getMethodInfo() + " : maxRetries shouldn't be lower than -1");
         }
         if (get(DELAY, Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : delay shouldn't be lower than 0");
+            throw new FaultToleranceDefinitionException("Invalid @Retry on " + getMethodInfo() + " : delay shouldn't be lower than 0");
         }
         if (get(MAX_DURATION, Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : maxDuration shouldn't be lower than 0");
+            throw new FaultToleranceDefinitionException("Invalid @Retry on " + getMethodInfo() + " : maxDuration shouldn't be lower than 0");
         }
         if (get(MAX_DURATION, Long.class) <= get(DELAY, Long.class)) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : maxDuration should be greater than delay");
+            throw new FaultToleranceDefinitionException("Invalid @Retry on " + getMethodInfo() + " : maxDuration should be greater than delay");
         }
         if (get(JITTER, Long.class) < 0) {
-            throw new FaultToleranceDefinitionException("Invalid Retry on " + annotated.toString() + " : jitter shouldn't be lower than 0");
+            throw new FaultToleranceDefinitionException("Invalid @Retry on " + getMethodInfo() + " : jitter shouldn't be lower than 0");
         }
     }
 
     @Override
-    protected String getConfigType() {
-        return "Retry";
-    }
-
-    public int getMaxExecNumber() {
-        return maxExecNumber;
-    }
-
-    public long getMaxDuration() {
-        return maxDuration;
-    }
-
-    public long getDelay() {
-        return delay;
+    protected Class<Retry> getConfigType() {
+        return Retry.class;
     }
 
     public Class<?>[] getAbortOn() {
@@ -122,12 +103,6 @@ public class RetryConfig extends GenericConfig<Retry> {
     }
 
     private static Map<String, Class<?>> keys2Type = initKeys();
-
-    private final long maxDuration;
-
-    private final long delay;
-
-    private final int maxExecNumber;
 
     private static Map<String, Class<?>> initKeys() {
         Map<String, Class<?>> keys = new HashMap<>();
