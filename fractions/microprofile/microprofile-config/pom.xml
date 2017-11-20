@@ -28,7 +28,7 @@
         <!-- The MicroProfile Config API version -->
         <mpconfig.api.version>1.1</mpconfig.api.version>
         <!-- The Wildfly Extras Version -->
-        <mpconfig.wildfly.version>1.1.1</mpconfig.wildfly.version>
+        <mpconfig.wildfly.version>1.1.2</mpconfig.wildfly.version>
     </properties>
 
     <build>
