@@ -38,4 +38,16 @@ final class SecurityActions {
         });
     }
 
+    static Method getDeclaredMethod(Class<?> clazz, String name, Class<?>[] parameterTypes) throws NoSuchMethodException, PrivilegedActionException {
+        if (System.getSecurityManager() == null) {
+            return clazz.getDeclaredMethod(name, parameterTypes);
+        }
+        return AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+            @Override
+            public Method run() throws NoSuchMethodException {
+                return clazz.getDeclaredMethod(name, parameterTypes);
+            }
+        });
+    }
+
 }

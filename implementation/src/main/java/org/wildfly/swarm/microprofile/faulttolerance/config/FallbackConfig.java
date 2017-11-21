@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.faulttolerance.config;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.security.PrivilegedActionException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,14 +52,14 @@ public class FallbackConfig extends GenericConfig<Fallback> {
             if (!Fallback.DEFAULT.class.equals(get(VALUE))) {
                 throw new FaultToleranceDefinitionException("Fallback configuration can't contain an handler class and method at the same time");
             }
-            Method fbm;
+            Method fallbackMethod;
             try {
-                fbm = method.getDeclaringClass().getMethod(get(FALLBACK_METHOD), method.getParameterTypes());
-            } catch (NoSuchMethodException e) {
+                fallbackMethod = SecurityActions.getDeclaredMethod(method.getDeclaringClass(), get(FALLBACK_METHOD), method.getParameterTypes());
+            } catch (NoSuchMethodException | PrivilegedActionException e) {
                 throw new FaultToleranceDefinitionException(
-                        "Fallback method " + get(FALLBACK_METHOD) + " with same parameters than " + method.getName() + " not found", e);
+                        "Fallback method " + get(FALLBACK_METHOD) + " with same parameters as " + method.getName() + " not found", e);
             }
-            if (!method.getReturnType().isAssignableFrom(fbm.getReturnType())) {
+            if (!isAssignableFrom(method.getGenericReturnType(), fallbackMethod.getGenericReturnType())) {
                 throw new FaultToleranceDefinitionException(
                         "Fallback method " + get(FALLBACK_METHOD) + " must have a return type assignable to " + method.getName());
             }
@@ -100,4 +101,54 @@ public class FallbackConfig extends GenericConfig<Fallback> {
         keys.put(FALLBACK_METHOD, String.class);
         return Collections.unmodifiableMap(keys);
     }
+
+    /**
+     * The assignability checks are incomplete and need revision.
+     *
+     * @param type1
+     * @param type2
+     * @return {@code true} if type1 is assignable from type2
+     */
+    private static boolean isAssignableFrom(Type type1, Type type2) {
+        if (type1 instanceof Class<?>) {
+            if (type2 instanceof Class<?>) {
+                return isAssignableFrom((Class<?>) type1, (Class<?>) type2);
+            }
+            if (type2 instanceof ParameterizedType) {
+                return isAssignableFrom((Class<?>) type1, (ParameterizedType) type2);
+            }
+            throw new IllegalArgumentException("Unsupported type " + type2);
+        }
+        if (type1 instanceof ParameterizedType) {
+            if (type2 instanceof ParameterizedType) {
+                return isAssignableFrom((ParameterizedType) type1, (ParameterizedType) type2);
+            }
+            throw new IllegalArgumentException("Unsupported type " + type2);
+        }
+        throw new IllegalArgumentException("Unsupported type " + type1);
+    }
+
+    private static boolean isAssignableFrom(Class<?> type1, Class<?> type2) {
+        return type1.isAssignableFrom(type2);
+    }
+
+    private static boolean isAssignableFrom(ParameterizedType type1, ParameterizedType type2) {
+        final Class<?> rawType1 = (Class<?>) type1.getRawType();
+        final Class<?> rawType2 = (Class<?>) type2.getRawType();
+        if (!rawType1.equals(rawType2)) {
+            return false;
+        }
+        final Type[] types1 = type1.getActualTypeArguments();
+        final Type[] types2 = type2.getActualTypeArguments();
+        if (types1.length != types2.length) {
+            return false;
+        }
+        for (int i = 0; i < type1.getActualTypeArguments().length; i++) {
+            if (!isAssignableFrom(types1[i], types2[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

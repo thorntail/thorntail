@@ -19,6 +19,7 @@ package org.wildfly.swarm.microprofile.faulttolerance;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.PrivilegedActionException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Map;
@@ -104,26 +105,6 @@ public class HystrixCommandInterceptor {
         CommandMetadata metadata = commandMetadataMap.computeIfAbsent(method, CommandMetadata::new);
         RetryContext retryContext =  nonFallBackEnable && metadata.operation.hasRetry() ? new RetryContext(metadata.operation.getRetry()) : null;
 
-        Supplier<Object> fallback = null;
-        if (metadata.hasFallback()) {
-            fallback = metadata.unmanaged != null ? () -> {
-                Unmanaged.UnmanagedInstance<FallbackHandler<?>> unmanagedInstance = metadata.unmanaged.newInstance();
-                FallbackHandler<?> handler = unmanagedInstance.produce().inject().postConstruct().get();
-                try {
-                    return handler.handle(ctx);
-                } finally {
-                    // The instance exists to service a single invocation only
-                    unmanagedInstance.preDestroy().dispose();
-                }
-            } : () -> {
-                try {
-                    return metadata.fallbackMethod.invoke(ctx.getTarget(), ctx.getParameters());
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new FaultToleranceException("Error during fallback method invocation", e);
-                }
-            };
-        }
-
         SynchronousCircuitBreaker syncCircuitBreaker = null;
         while (shouldRunCommand) {
             shouldRunCommand = false;
@@ -131,7 +112,8 @@ public class HystrixCommandInterceptor {
             if (nonFallBackEnable && syncCircuitBreakerEnabled && metadata.hasCircuitBreaker()) {
                 syncCircuitBreaker = getSynchronousCircuitBreaker(metadata.commandKey, metadata.operation.getCircuitBreaker());
             }
-            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, fallback, retryContext, metadata.operation.isAsync(), metadata.hasCircuitBreaker());
+            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, metadata.getFallback(ctx), retryContext, metadata.operation.isAsync(),
+                    metadata.hasCircuitBreaker());
 
             if (syncCircuitBreaker != null && syncCircuitBreaker.allowRequest() == false) {
                 throw new CircuitBreakerOpenException(method.getName());
@@ -301,12 +283,13 @@ public class HystrixCommandInterceptor {
                     fallbackMethod = null;
                 } else {
                     unmanaged = null;
-                    if (!"".equals(fallbackConfig.get(FallbackConfig.FALLBACK_METHOD))) {
+                    String fallbackMethodName = fallbackConfig.get(FallbackConfig.FALLBACK_METHOD);
+                    if (!"".equals(fallbackMethodName)) {
                         try {
-                            fallbackMethod = method.getDeclaringClass().getMethod(fallbackConfig.get(FallbackConfig.FALLBACK_METHOD),
-                                    method.getParameterTypes());
-                        } catch (NoSuchMethodException e) {
-                            throw new FaultToleranceException("Fallback method not found", e);
+                            fallbackMethod = SecurityActions.getDeclaredMethod(method.getDeclaringClass(), fallbackMethodName, method.getParameterTypes());
+                            SecurityActions.setAccessible(fallbackMethod);
+                        } catch (NoSuchMethodException | PrivilegedActionException e) {
+                            throw new FaultToleranceException("Could not obtain fallback method", e);
                         }
                     } else {
                         fallbackMethod = null;
@@ -324,6 +307,31 @@ public class HystrixCommandInterceptor {
 
         boolean hasCircuitBreaker() {
             return operation.hasCircuitBreaker();
+        }
+
+        Supplier<Object> getFallback(ExecutionContextWithInvocationContext ctx) {
+            if (!hasFallback()) {
+                return null;
+            } else if (unmanaged != null) {
+                return () -> {
+                    Unmanaged.UnmanagedInstance<FallbackHandler<?>> unmanagedInstance = unmanaged.newInstance();
+                    FallbackHandler<?> handler = unmanagedInstance.produce().inject().postConstruct().get();
+                    try {
+                        return handler.handle(ctx);
+                    } finally {
+                        // The instance exists to service a single invocation only
+                        unmanagedInstance.preDestroy().dispose();
+                    }
+                };
+            } else {
+                return () -> {
+                    try {
+                        return fallbackMethod.invoke(ctx.getTarget(), ctx.getParameters());
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new FaultToleranceException("Error during fallback method invocation", e);
+                    }
+                };
+            }
         }
 
         private final Setter setter;
