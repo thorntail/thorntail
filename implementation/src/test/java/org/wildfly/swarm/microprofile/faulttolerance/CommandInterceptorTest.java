@@ -17,6 +17,10 @@
 package org.wildfly.swarm.microprofile.faulttolerance;
 
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -32,10 +36,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 /**
  * @author Antoine Sabot-Durand
@@ -153,7 +153,7 @@ public class CommandInterceptorTest extends Arquillian {
                 else if (i == 5) {
                     // Pause to allow the circuit breaker to half-open
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(400);
                     }
                     catch (InterruptedException e) {
                         e.printStackTrace();
@@ -225,7 +225,7 @@ public class CommandInterceptorTest extends Arquillian {
                 else if (i == 5) {
                     // Pause to allow the circuit breaker to half-open
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(400);
                     }
                     catch (InterruptedException e) {
                         e.printStackTrace();
@@ -243,7 +243,7 @@ public class CommandInterceptorTest extends Arquillian {
         }
         int count = service.getSayHelloBreakerCount5();
 
-        assertEquals(count, 7, "The number of serviceA executions should be 7");
+         assertEquals(count, 7, "The number of serviceA executions should be 7");
     }
 
     /**

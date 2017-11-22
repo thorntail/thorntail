@@ -111,7 +111,7 @@ public class MyMicroservice {
         return sayHelloBreakerCount;
     }
 
-    @CircuitBreaker(successThreshold = 1, requestVolumeThreshold = 4, failureRatio=0.75, delay = 1000)
+    @CircuitBreaker(successThreshold = 1, requestVolumeThreshold = 4, failureRatio=0.75, delay = 200)
     public String sayHelloBreaker2() {
         sayHelloBreakerCount2 ++;
         // Only one execution succeeds
@@ -137,7 +137,7 @@ public class MyMicroservice {
         return sayHelloBreakerCount4;
     }
 
-    @CircuitBreaker(successThreshold = 3, requestVolumeThreshold = 4, failureRatio=0.75, delay = 1000)
+    @CircuitBreaker(successThreshold = 3, requestVolumeThreshold = 4, failureRatio=0.75, delay = 200)
     public String sayHelloBreakerHighThreshold() {
         sayHelloBreakerCount5 ++;
         System.err.printf("sayHelloBreakerHighThreshold, %d\n", sayHelloBreakerCount5);

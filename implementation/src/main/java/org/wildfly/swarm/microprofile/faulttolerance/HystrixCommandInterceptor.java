@@ -106,6 +106,7 @@ public class HystrixCommandInterceptor {
         RetryContext retryContext =  nonFallBackEnable && metadata.operation.hasRetry() ? new RetryContext(metadata.operation.getRetry()) : null;
 
         SynchronousCircuitBreaker syncCircuitBreaker = null;
+
         while (shouldRunCommand) {
             shouldRunCommand = false;
 
@@ -115,9 +116,6 @@ public class HystrixCommandInterceptor {
             DefaultCommand command = new DefaultCommand(metadata.setter, ctx, metadata.getFallback(ctx), retryContext, metadata.operation.isAsync(),
                     metadata.hasCircuitBreaker());
 
-            if (syncCircuitBreaker != null && syncCircuitBreaker.allowRequest() == false) {
-                throw new CircuitBreakerOpenException(method.getName());
-            }
             try {
                 if (metadata.operation.isAsync()) {
                     res = command.queue();
@@ -125,13 +123,14 @@ public class HystrixCommandInterceptor {
                     res = command.execute();
                 }
                 if (syncCircuitBreaker != null) {
-                    syncCircuitBreaker.incSuccessCount();
+                    syncCircuitBreaker.executionSucceeded();
                 }
             } catch (HystrixRuntimeException e) {
                 if (syncCircuitBreaker != null) {
-                    syncCircuitBreaker.incFailureCount();
+                    syncCircuitBreaker.executionFailed();
                 }
                 HystrixRuntimeException.FailureType failureType = e.getFailureType();
+                LOGGER.tracef("Hystrix runtime failure [%s] when invoking %s", failureType, method);
                 switch (failureType) {
                     case TIMEOUT: {
                         if (retryContext != null && retryContext.shouldRetry()) {

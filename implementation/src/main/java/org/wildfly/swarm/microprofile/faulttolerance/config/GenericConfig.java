@@ -127,7 +127,7 @@ public abstract class GenericConfig<X extends Annotation> {
         return method.getDeclaringClass().getName() + "/" + getConfigType().getSimpleName() + "/";
     }
 
-    protected String getMethodInfo() {
+    public String getMethodInfo() {
         return annotatedMethod != null ? annotatedMethod.toString() : method.toGenericString();
     }
 
