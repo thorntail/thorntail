@@ -16,8 +16,6 @@
 
 package org.wildfly.swarm.microprofile.faulttolerance;
 
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
@@ -76,15 +74,8 @@ public class DefaultCommand extends HystrixCommand<Object> {
                     res = basicRun();
                     notExecuted = false;
                 } catch (Exception e) {
-                    if (Arrays.stream(retryContext.getAbortOn()).noneMatch(ex -> ex.isAssignableFrom(e.getClass()))
-                            && (retryContext.getRetryOn().length == 0 || Arrays.stream(retryContext.getRetryOn()).anyMatch(ex -> ex.isAssignableFrom(e.getClass())))
-                            && retryContext.shouldRetry()
-                            && System.nanoTime() - retryContext.getStart() <= retryContext.getMaxDuration()) {
-                        Long jitterBase = retryContext.getJitter();
-                        if (retryContext.getDelay() > 0) {
-                            long jitter = (long) (Math.random() * ((jitterBase * 2) + 1)) - jitterBase; // random number between -jitter and +jitter
-                            Thread.sleep(retryContext.getDelay() + Duration.of(jitter, retryContext.getJitterDelayUnit()).toMillis());
-                        }
+                    if (retryContext.shouldRetryOn(e, System.nanoTime())) {
+                        retryContext.delayIfNeeded();
                         continue;
                     } else {
                         throw e;

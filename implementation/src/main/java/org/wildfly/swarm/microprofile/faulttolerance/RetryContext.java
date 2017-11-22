@@ -16,7 +16,8 @@
 package org.wildfly.swarm.microprofile.faulttolerance;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.wildfly.swarm.microprofile.faulttolerance.config.RetryConfig;
@@ -36,7 +37,7 @@ class RetryContext {
     RetryContext(RetryConfig config) {
         this.config = config;
         this.start = System.nanoTime();
-        this.remainingAttempts = new AtomicInteger(config.<Integer>get(RetryConfig.MAX_RETRIES) + 1);
+        this.remainingAttempts = new AtomicInteger(config.<Integer> get(RetryConfig.MAX_RETRIES) + 1);
         this.maxDuration = Duration.of(config.get(RetryConfig.MAX_DURATION), config.get(RetryConfig.DURATION_UNIT)).toNanos();
         this.delay = Duration.of(config.get(RetryConfig.DELAY), config.get(RetryConfig.DELAY_UNIT)).toMillis();
     }
@@ -53,32 +54,36 @@ class RetryContext {
         return remainingAttempts.get() > 0;
     }
 
-    public long getStart() {
-        return start;
+    boolean shouldRetryOn(Exception exception, long time) {
+        return
+        // There are some remaining attempts left
+        shouldRetry()
+                // The given exception should not abort execution
+                && (config.getAbortOn().length == 0 || Arrays.stream(config.getAbortOn()).noneMatch(ex -> ex.isAssignableFrom(exception.getClass())))
+                // We should retry on the given exception
+                && retryOn(exception)
+                // Once the duration is reached, no more retries should be performed
+                && (time - start <= maxDuration);
     }
 
-    public long getMaxDuration() {
-        return maxDuration;
+    private boolean retryOn(Exception exception) {
+        Class<?>[] retryOn = config.getRetryOn();
+        if (retryOn.length == 0) {
+            return false;
+        }
+        if (retryOn.length == 1 && retryOn[0].equals(Exception.class)) {
+            // By default, retry on any exception
+            return true;
+        }
+        return Arrays.stream(retryOn).anyMatch(ex -> ex.isAssignableFrom(exception.getClass()));
     }
 
-    public long getDelay() {
-        return delay;
-    }
-
-    public Class<?>[] getAbortOn() {
-        return config.getAbortOn();
-    }
-
-    public Class<?>[] getRetryOn() {
-        return config.getRetryOn();
-    }
-
-    public Long getJitter() {
-        return config.getJitter();
-    }
-
-    public ChronoUnit getJitterDelayUnit() {
-        return config.getJitterDelayUnit();
+    void delayIfNeeded() throws InterruptedException {
+        if (delay > 0) {
+            long jitterBase = config.getJitter();
+            long jitter = (long) (Math.random() * ((jitterBase * 2) + 1)) - jitterBase; // random number between -jitter and +jitter
+            TimeUnit.MILLISECONDS.sleep(delay + Duration.of(jitter, config.getJitterDelayUnit()).toMillis());
+        }
     }
 
     @Override

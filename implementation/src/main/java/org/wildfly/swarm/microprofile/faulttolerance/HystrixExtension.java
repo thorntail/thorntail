@@ -39,6 +39,7 @@ import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.faulttolerance.config.FaultToleranceOperation;
 
 /**
@@ -46,13 +47,15 @@ import org.wildfly.swarm.microprofile.faulttolerance.config.FaultToleranceOperat
  */
 public class HystrixExtension implements Extension {
 
+    private static final Logger LOGGER = Logger.getLogger(HystrixExtension.class);
+
     /**
      * @see #collectFaultToleranceOperations(ProcessManagedBean)
      */
     private final ConcurrentMap<String, FaultToleranceOperation> faultToleranceOperations = new ConcurrentHashMap<>();
 
     void registerInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-
+        LOGGER.info("MicroProfile: Fault Tolerance activated");
         bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(CircuitBreaker.class)));
         bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(Retry.class)));
         bbd.addInterceptorBinding(new HystrixInterceptorBindingAnnotatedType<>(bm.createAnnotatedType(Timeout.class)));
@@ -76,6 +79,7 @@ public class HystrixExtension implements Extension {
         for (AnnotatedMethod<?> annotatedMethod : annotatedType.getMethods()) {
             FaultToleranceOperation operation = FaultToleranceOperation.of(annotatedMethod);
             if (operation.isLegitimate() && operation.validate()) {
+                LOGGER.debugf("Found %s", operation);
                 faultToleranceOperations.put(annotatedMethod.getJavaMember().toGenericString(), operation);
             }
         }

@@ -135,7 +135,7 @@ public class CustomExtension implements Extension {
         @SuppressWarnings("unchecked")
         @Override
         public Class<? extends Throwable>[] retryOn() {
-            return new Class[] {};
+            return new Class[] {Exception.class};
         }
 
         @SuppressWarnings("unchecked")

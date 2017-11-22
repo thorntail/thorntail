@@ -21,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.PrivilegedActionException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -98,13 +97,13 @@ public class HystrixCommandInterceptor {
 
         Method method = ic.getMethod();
         ExecutionContextWithInvocationContext ctx = new ExecutionContextWithInvocationContext(ic);
-
         boolean shouldRunCommand = true;
         Object res = null;
 
+        LOGGER.debugf("FT operation intercepted: %s", method);
+
         CommandMetadata metadata = commandMetadataMap.computeIfAbsent(method, CommandMetadata::new);
         RetryContext retryContext =  nonFallBackEnable && metadata.operation.hasRetry() ? new RetryContext(metadata.operation.getRetry()) : null;
-
         SynchronousCircuitBreaker syncCircuitBreaker = null;
 
         while (shouldRunCommand) {
@@ -220,23 +219,15 @@ public class HystrixCommandInterceptor {
     }
 
     private boolean shouldRetry(RetryContext retryContext, Exception e) throws Exception {
-        boolean shouldRetry = false;
         // Decrement the retry count for this attempt
         retryContext.doRetry();
         // Check the exception type
-        if (Arrays.stream(retryContext.getAbortOn()).noneMatch(ex -> ex.isAssignableFrom(e.getClass()))
-                && (retryContext.getRetryOn().length == 0 || Arrays.stream(retryContext.getRetryOn()).anyMatch(ex -> ex.isAssignableFrom(e.getClass())))
-                && retryContext.shouldRetry() && System.nanoTime() - retryContext.getStart() <= retryContext.getMaxDuration()) {
-            Long jitterBase = retryContext.getJitter();
-            if (retryContext.getDelay() > 0) {
-                long jitter = (long) (Math.random() * ((jitterBase * 2) + 1)) - jitterBase; // random number between -jitter and +jitter
-                Thread.sleep(retryContext.getDelay() + Duration.of(jitter, retryContext.getJitterDelayUnit()).toMillis());
-            }
-            shouldRetry = true;
+        if (retryContext.shouldRetryOn(e, System.nanoTime())) {
+            retryContext.delayIfNeeded();
+            return true;
         } else {
             throw e;
         }
-        return shouldRetry;
     }
 
     private final ConcurrentHashMap<String, HystrixCircuitBreaker> circuitBreakers;
