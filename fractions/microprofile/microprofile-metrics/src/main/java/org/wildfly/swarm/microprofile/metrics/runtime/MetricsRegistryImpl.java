@@ -88,8 +88,33 @@ public class MetricsRegistryImpl extends MetricRegistry {
     @Override
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
 
-        if (metricMap.keySet().contains(name)) {
-            throw new IllegalArgumentException("A metric with name " + name + " already exists");
+        metadata.setName(name);
+
+        return register(metadata, metric);
+    }
+
+    @Override
+    public <T extends Metric> T register(Metadata metadata, T metric) throws IllegalArgumentException {
+
+        String name = metadata.getName();
+        if (name == null) {
+            throw new IllegalArgumentException("Metric name must not be null");
+        }
+
+        Metadata existingMetadata = metadataMap.get(name);
+        boolean reusableFlag = (existingMetadata == null || existingMetadata.isReusable());
+
+        //Gauges are not reusable
+        if (metadata.getTypeRaw().equals(MetricType.GAUGE)) {
+            reusableFlag = false;
+        }
+
+        if (metricMap.keySet().contains(metadata.getName()) && !reusableFlag) {
+            throw new IllegalArgumentException("A metric with name " + metadata.getName() + " already exists");
+        }
+
+        if (existingMetadata != null && !existingMetadata.getTypeRaw().equals(metadata.getTypeRaw())) {
+            throw new IllegalArgumentException("Passed metric type does not match existing type");
         }
 
         metricMap.put(name, metric);
@@ -131,6 +156,10 @@ public class MetricsRegistryImpl extends MetricRegistry {
     private <T extends Metric> T get(Metadata metadata, MetricType type) {
         String name = metadata.getName();
         LOGGER.debugf("Get metric [name: %s, type: %s]", name, type);
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name must not be null or empty");
+        }
+
         if (!metadataMap.containsKey(name)) {
             Metric m;
             switch (type) {
@@ -154,8 +183,12 @@ public class MetricsRegistryImpl extends MetricRegistry {
                     throw new IllegalStateException("Must not happen");
             }
             LOGGER.infof("Register metric [name: %s, type: %s]", name, type);
-            register(name, m, metadata);
+            register(metadata, m);
+        } else if (!metadataMap.get(name).getTypeRaw().equals(metadata.getTypeRaw())) {
+            throw new IllegalArgumentException("Type of existing previously registered metric " + name + " does not " +
+                                                "match passed type");
         }
+
         return (T) metricMap.get(name);
     }
 
