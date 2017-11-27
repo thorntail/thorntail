@@ -17,8 +17,8 @@ package org.wildfly.swarm.health;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wildfly.swarm.health.runtime.HealthAnnotationProcessor;
-import org.wildfly.swarm.health.runtime.HttpContexts;
+import org.wildfly.swarm.microprofile.health.runtime.HealthAnnotationProcessor;
+import org.wildfly.swarm.microprofile.health.runtime.HttpContexts;
 
 /**
  * @author Heiko Braun

@@ -18,7 +18,7 @@ package org.wildfly.swarm.microprofile_metrics;
 
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.junit.Test;
-import org.wildfly.swarm.microprofile_metrics.runtime.exporters.PrometheusUnit;
+import org.wildfly.swarm.microprofile.metrics.runtime.exporters.PrometheusUnit;
 
 /**
  * @author hrupp
