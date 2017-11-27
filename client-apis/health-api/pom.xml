@@ -25,14 +25,6 @@
     <version.mp.health>1.0</version.mp.health>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>repo.eclipse.org</id>
-      <name>Eclipse MicroProfile Repository - Releases</name>
-      <url>https://repo.eclipse.org/content/repositories/microprofile-releases/</url>
-    </repository>
-  </repositories>
-
   <build>
     <resources>
       <resource>
