@@ -65,7 +65,7 @@
             </goals>
             <configuration>
               <file>src/main/rb/create-main-index.rb</file>
-              <execArgs>${project.version}</execArgs>
+              <args>${project.version}</args>
             </configuration>
           </execution>
         </executions>
