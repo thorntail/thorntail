@@ -1,1 +1,1 @@
-org.wildfly.swarm.mpjwtauth.deployment.auth.JWTAuthMethodExtension
+org.wildfly.swarm.microprofile.jwtauth.deployment.auth.JWTAuthMethodExtension

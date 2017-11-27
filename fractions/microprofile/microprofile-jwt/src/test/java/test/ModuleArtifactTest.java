@@ -59,9 +59,9 @@ public class ModuleArtifactTest {
         URL modules = getClass().getResource("/modules");
         String path = modules.getPath();
         System.setProperty("module.path", path);
-        ModuleIdentifier id = ModuleIdentifier.create("org.wildfly.swarm.mpjwtauth", "runtime");
+        ModuleIdentifier id = ModuleIdentifier.create("org.wildfly.swarm.microprofile.jwtauth", "runtime");
         Module mpjwtauthModule = Module.getBootModuleLoader().loadModule(id);
-        Class<?> extClass = mpjwtauthModule.getClassLoader().loadClass("org.wildfly.swarm.mpjwtauth.deployment.auth.JWTAuthMethodExtension");
+        Class<?> extClass = mpjwtauthModule.getClassLoader().loadClass("org.wildfly.swarm.microprofile.jwtauth.deployment.auth.JWTAuthMethodExtension");
         System.out.printf("Loaded JWTAuthMethodExtension: %s\n", extClass);
         extClass.newInstance();
     }
