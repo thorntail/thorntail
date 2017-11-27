@@ -62,7 +62,7 @@
             <configuration>
               <excludeTransitive>true</excludeTransitive>
               <includeGroupIds>org.wildfly.swarm</includeGroupIds>
-                <includeArtifactIds>mp_metrics_cdi_extension</includeArtifactIds>
+                <includeArtifactIds>metrics-api</includeArtifactIds>
               <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class</excludes>
               <outputDirectory>${project.build.directory}/classes</outputDirectory>
             </configuration>
@@ -138,7 +138,7 @@
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>mp_metrics_cdi_extension</artifactId>
+      <artifactId>metrics-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 

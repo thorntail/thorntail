@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.wildfly.swarm.microprofile_metrics.runtime.Tag;
+import org.wildfly.swarm.microprofile.metrics.runtime.Tag;
 
 /**
  * @author hrupp
