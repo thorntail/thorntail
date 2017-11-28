@@ -33,8 +33,10 @@
     </packages>
     -->
   </test>
+
   <!-- The required base JAX-RS and CDI based tests that all MP-JWT implementations
   must pass.
+  -->
   <test name="microprofile-jwt-auth 1.0 TCK">
     <groups>
       <define name="base-groups">
@@ -67,7 +69,6 @@
       <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.InvalidTokenTest" />
     </classes>
   </test>
-  -->
 
   <test name="microprofile-health-check 1.0 TCK">
     <packages>

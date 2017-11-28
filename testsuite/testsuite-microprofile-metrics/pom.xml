@@ -32,7 +32,8 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>mp_metrics_cdi_extension</artifactId>
+      <artifactId>metrics-api</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
