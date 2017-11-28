@@ -1,0 +1,11 @@
+# Anyone from Core team should approve a PR
+* @wildfly-swarm/core
+
+# Project architects
+/core/ @wildfly-swarm/architects
+
+# QE team for testsuites
+/testsuite/ @wildfly-swarm/qe
+
+# Docs team
+/docs/ @wildfly-swarm/documentation
