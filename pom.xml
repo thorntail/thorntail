@@ -722,6 +722,17 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>mp_fault_tolerance_cdi_extension</artifactId>
+        <version>2017.12.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-fault-tolerance</artifactId>
+        <version>2017.12.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>mod_cluster</artifactId>
         <version>2017.12.0-SNAPSHOT</version>
       </dependency>
@@ -955,6 +966,7 @@
 
     <module>client-apis/health-api</module>
     <module>client-apis/metrics-api</module>
+    <module>client-apis/mp_fault_tolerance_cdi_extension</module>
 
     <module>fractions/javaee/bean-validation</module>
     <module>fractions/javaee/cdi</module>
@@ -993,6 +1005,7 @@
     <module>fractions/microprofile/microprofile-health</module>
     <module>fractions/microprofile/microprofile-jwt</module>
     <module>fractions/microprofile/microprofile-metrics</module>
+    <module>fractions/microprofile/microprofile-fault-tolerance</module>
     <module>fractions/monitor</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>
@@ -1125,6 +1138,7 @@
       <modules>
         <module>client-apis/jaxrs-client-api</module>
         <module>client-apis/metrics-api</module>
+        <module>client-apis/mp_fault_tolerance_cdi_extension</module>
 
         <module>swarmtool</module>
         <module>cli</module>

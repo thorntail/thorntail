@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2017 Red Hat, Inc, and individual contributors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>build-parent</artifactId>
+    <version>2017.12.0-SNAPSHOT</version>
+    <relativePath>../../build-parent/pom.xml</relativePath>
+  </parent>
+
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>mp_fault_tolerance_cdi_extension</artifactId>
+
+  <name>Microprofile Fault Tolerance CDI Extension</name>
+  <description>Fault tolerance export for Microprofile</description>
+
+  <packaging>jar</packaging>
+
+  <properties>
+    <!-- The MicroProfile Config API version -->
+    <mpconfig.api.version>1.1</mpconfig.api.version>
+    <!-- The Wildfly Extras Version -->
+    <mpconfig.wildfly.version>1.1.2</mpconfig.wildfly.version>
+    <mpft-api.version>1.0</mpft-api.version>
+    <hystrix.version>1.5.12</hystrix.version>
+    <javax-annotation-api.version>1.3</javax-annotation-api.version>
+    <version.arquillian-weld-embedded>2.0.0.Beta5</version.arquillian-weld-embedded>
+    <version.weld>2.3.5.Final</version.weld>
+    <version.wildfly-microprofile-config>1.1.1</version.wildfly-microprofile-config>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-core-impl</artifactId>
+        <version>${version.weld}</version>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.config</groupId>
+      <artifactId>microprofile-config-api</artifactId>
+      <version>${mpconfig.api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.netflix.hystrix</groupId>
+      <artifactId>hystrix-core</artifactId>
+      <version>${hystrix.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+      <artifactId>microprofile-fault-tolerance-api</artifactId>
+      <version>${mpft-api.version}</version>
+    </dependency>
+
+
+    <!--<dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>${javax-annotation-api.version}</version>
+      <scope>provided</scope>
+    </dependency>-->
+
+
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core-impl</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-weld-embedded</artifactId>
+      <version>${version.arquillian-weld-embedded}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-microprofile-config-implementation</artifactId>
+      <version>${version.wildfly-microprofile-config}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+</project>

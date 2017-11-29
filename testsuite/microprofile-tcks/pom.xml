@@ -44,6 +44,8 @@
         <version.mpjwt.auth>1.0</version.mpjwt.auth>
         <!-- The MicroProfile Heath Check API version -->
         <version.mphealth>1.0</version.mphealth>
+        <!-- The MicroProfile Fault Tolerance API version -->
+        <version.mpfaulttolerance>1.0</version.mpfaulttolerance>
         <version.testng>6.10</version.testng>
     </properties>
     <build>
@@ -161,6 +163,20 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- This is the MP-FT API and TCK -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+            <artifactId>microprofile-fault-tolerance-api</artifactId>
+            <version>${version.mpfaulttolerance}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+            <artifactId>microprofile-fault-tolerance-tck</artifactId>
+            <version>${version.mpfaulttolerance}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
@@ -184,6 +200,11 @@
             <scope>test</scope>
         </dependency>
         -->
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-fault-tolerance</artifactId>
+        <scope>test</scope>
+      </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>cdi</artifactId>
