@@ -1315,5 +1315,23 @@
         <module>release</module>
       </modules>
     </profile>
+
+    <!-- If activated, run TCKs for all MicroProfile specs -->
+    <profile>
+      <id>microprofile-tck</id>
+      <activation>
+        <property>
+          <name>swarm.microprofile.tck</name>
+        </property>
+      </activation>
+      <modules>
+        <module>testsuite/microprofile-tcks</module>
+        <module>testsuite/microprofile-tcks/health</module>
+        <module>testsuite/microprofile-tcks/config</module>
+        <module>testsuite/microprofile-tcks/jwt-auth</module>
+        <module>testsuite/microprofile-tcks/metrics</module>
+      </modules>
+    </profile>
+
   </profiles>
 </project>

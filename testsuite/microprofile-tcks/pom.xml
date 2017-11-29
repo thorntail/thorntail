@@ -24,224 +24,74 @@
               xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.wildfly.swarm.testsuite</groupId>
-        <artifactId>testsuite-parent</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
+   <parent>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>build-parent</artifactId>
+      <version>2017.12.0-SNAPSHOT</version>
+      <relativePath>../../build-parent/pom.xml</relativePath>
+   </parent>
 
-    <artifactId>wildlfy-swarm-microprofile-tcks</artifactId>
-    <name>WildFly-Swarm: MicroProfile TCKs</name>
+    <groupId>org.wildfly.swarm.testsuite</groupId>
+    <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
+    <name>MicroProfile TCK: Parent</name>
+    <packaging>pom</packaging>
 
     <properties>
-        <!-- The MicroProfile Config API version -->
-        <mpconfig.api.version>1.1</mpconfig.api.version>
-        <!-- The Wildfly Extras Version -->
-        <version.mpconfig.wildfly>1.1.1</version.mpconfig.wildfly>
-        <version.org.apache.openwebbeans>1.7.3</version.org.apache.openwebbeans>
-        <!-- The MicroProfile JWT Auth API version -->
-        <version.mpjwt.auth>1.0</version.mpjwt.auth>
-        <!-- The MicroProfile Heath Check API version -->
-        <version.mphealth>1.0</version.mphealth>
-        <!-- The MicroProfile Fault Tolerance API version -->
-        <version.mpfaulttolerance>1.0</version.mpfaulttolerance>
-        <version.testng>6.10</version.testng>
+        <!-- Do not upgrade until https://issues.jboss.org/browse/ARQ-2144 is fixed -->
+        <version.testng>6.9.9</version.testng>
+        <!-- Overriding 2.19 due to https://issues.apache.org/jira/browse/SUREFIRE-1252 -->
+        <version.maven-surefire>2.20.1</version.maven-surefire>
+        <!-- commons-logging (needed by httpclient) is for some reason exluded -->
+        <version.commons-logging>1.2</version.commons-logging>
     </properties>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.20</version>
-                <configuration>
-                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>tck-suite.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                    <forkCount>0</forkCount>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-bom</artifactId>
-                <version>3.1.4.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>bom-all</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+    <modules>
+        <!-- DO NOT ADD MODULES HERE. THIS ACTS AS A PARENT POM ONLY.
+         ANY MODULES SHOULD BE ADDED, AS APPROPRIATE, TO THE ROOT
+         pom.xml OF THIS PROJECT. -->
+    </modules>
 
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>1.1.13.Final</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    <dependencies>
-        <dependency>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <!-- Workaround for SUREFIRE-1252 - see properties section -->
+            <version>${version.maven-surefire}</version>
+            <configuration>
+               <redirectTestOutputToFile>false</redirectTestOutputToFile>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>bom-all</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+
+         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${version.testng}</version>
-        </dependency>
+            <scope>test</scope>
+         </dependency>
 
-        <!-- Arquillian extension SPI -->
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-test-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <scope>provided</scope>
-            <version>7.0</version>
-        </dependency>
+         <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${version.commons-logging}</version>
+            <scope>test</scope>
+         </dependency>
 
-        <!-- MicroProfile Config -->
-        <dependency>
-            <groupId>org.eclipse.microprofile.config</groupId>
-            <artifactId>microprofile-config-tck</artifactId>
-            <version>${mpconfig.api.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- This is the MP-JWT TCK base extension and utility classes -->
-        <dependency>
-            <groupId>org.eclipse.microprofile.jwt</groupId>
-            <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>${version.mpjwt.auth}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.microprofile.jwt</groupId>
-            <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>${version.mpjwt.auth}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <!-- The JAX-RS client implemention -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>3.1.4.Final</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-json-p-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- This is the MP-HC API and TCK -->
-        <dependency>
-            <groupId>org.eclipse.microprofile.health</groupId>
-            <artifactId>microprofile-health-tck</artifactId>
-            <version>${version.mphealth}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.microprofile.health</groupId>
-            <artifactId>microprofile-health-api</artifactId>
-            <version>${version.mphealth}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- This is the MP-FT API and TCK -->
-        <dependency>
-            <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
-            <artifactId>microprofile-fault-tolerance-api</artifactId>
-            <version>${version.mpfaulttolerance}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
-            <artifactId>microprofile-fault-tolerance-tck</artifactId>
-            <version>${version.mpfaulttolerance}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- -->
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>microprofile-jwt</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>microprofile-config</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>microprofile-health</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>microprofile-metrics</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>microprofile-fault-tolerance</artifactId>
-        <scope>test</scope>
-      </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>cdi</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs-cdi</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs-jsonp</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>ejb</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>security</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>undertow</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>arquillian</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+      </dependencies>
+   </dependencyManagement>
 
 </project>
 
