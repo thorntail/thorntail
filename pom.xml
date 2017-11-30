@@ -1124,7 +1124,6 @@
 
       <modules>
         <module>client-apis/jaxrs-client-api</module>
-        <module>client-apis/metrics-api</module>
 
         <module>swarmtool</module>
         <module>cli</module>
