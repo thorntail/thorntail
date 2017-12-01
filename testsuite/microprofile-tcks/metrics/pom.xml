@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2010, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>org.wildfly.swarm.testsuite</groupId>
+      <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
+      <version>2017.12.0-SNAPSHOT</version>
+      <relativePath>../</relativePath>
+   </parent>
+
+   <artifactId>wildlfy-swarm-microprofile-tck-metrics</artifactId>
+   <name>MicroProfile TCK: Metrics</name>
+
+   <properties>
+      <!-- The version should be located in build-parent -->
+      <version.mp-metrics>1.0</version.mp-metrics>
+      <mp.test.engine>junit</mp.test.engine>
+   </properties>
+
+   <dependencies>
+
+      <dependency>
+         <groupId>org.eclipse.microprofile.metrics</groupId>
+         <artifactId>microprofile-metrics-api</artifactId>
+         <version>${version.mp-metrics}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.eclipse.microprofile.metrics</groupId>
+         <artifactId>microprofile-metrics-rest-tck</artifactId>
+         <version>${version.mp-metrics}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.eclipse.microprofile.metrics</groupId>
+         <artifactId>microprofile-metrics-api-tck</artifactId>
+         <version>${version.mp-metrics}</version>
+         <!-- https://github.com/eclipse/microprofile-metrics/issues/185 -->
+         <exclusions>
+            <exclusion>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-wlp-managed-8.5</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>microprofile-metrics</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>arquillian</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+      </dependency>
+
+      <!-- This is needed for tests with @ShouldThrowException - the real
+         exception is org.jboss.weld.exceptions.DeploymentException -->
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core-impl</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <dependenciesToScan>
+                  <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-rest-tck</dependency>
+                  <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-api-tck</dependency>
+               </dependenciesToScan>
+               <environmentVariables>
+                  <MP_METRICS_TAGS>tier=integration</MP_METRICS_TAGS>
+               </environmentVariables>
+               <excludes>
+                  <!-- https://github.com/eclipse/microprofile-metrics/issues/187 -->
+                  <exclude>MetricProducerMethodBeanTest.java</exclude>
+                  <!-- https://github.com/eclipse/microprofile-metrics/issues/188 -->
+                  <exclude>MetricProducerFieldBeanTest.java</exclude>
+                  <!-- https://github.com/eclipse/microprofile-metrics/commit/9fc777c7ac2e0ed72aa517b0bad2d604496827da -->
+                  <exclude>HistogramTest.java</exclude>
+               </excludes>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
+

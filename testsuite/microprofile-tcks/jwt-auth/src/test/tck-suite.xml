@@ -22,21 +22,6 @@
 -->
 <suite name="MicroProfile 1.2 TCKs" verbose="1" preserve-order="true" configfailurepolicy="continue" >
 
-  <test name="microprofile-config 1.0 TCK">
-    <!--
-    <classes>
-      <class name="org.eclipse.microprofile.config.tck.ConverterTest" />
-    </classes>
-    <packages>
-      <package name="org.eclipse.microprofile.config.tck.*">
-      </package>
-    </packages>
-    -->
-  </test>
-
-  <!-- The required base JAX-RS and CDI based tests that all MP-JWT implementations
-  must pass.
-  -->
   <test name="microprofile-jwt-auth 1.0 TCK">
     <groups>
       <define name="base-groups">
@@ -69,23 +54,5 @@
       <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.InvalidTokenTest" />
     </classes>
   </test>
-
-  <test name="microprofile-health-check 1.0 TCK">
-    <packages>
-      <package name="org.eclipse.microprofile.health.tck.*">
-      </package>
-    </packages>
-  </test>
-
-  <test name="microprofile-fault-tolerance 1.0 TCK">
-    <packages>
-      <package name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters"/>
-      <package name="org.eclipse.microprofile.fault.tolerance.tck.illegalConfig" />
-      <package name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv" />
-      <package name="org.eclipse.microprofile.fault.tolerance.tck"/>
-      <package name="org.eclipse.microprofile.fault.tolerance.bulkhead"/>
-    </packages>
-  </test>
-
 
 </suite>
