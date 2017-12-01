@@ -690,7 +690,7 @@ public class Swarm {
 
                 Map<ArchivePath, Node> content = archive.getContent();
                 for (ArchivePath path : content.keySet()) {
-                    if (path.get().endsWith(".class") && !path.get().equals("module-info.class")) {
+                    if (path.get().endsWith(".class") && !path.get().endsWith("module-info.class")) {
                         Node node = content.get(path);
                         indexer.index(node.getAsset().openStream());
                     }
