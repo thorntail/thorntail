@@ -17,7 +17,20 @@
  */
 package org.wildfly.swarm.microprofile.metrics.cdi;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
@@ -26,176 +39,96 @@ import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Named;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import org.wildfly.swarm.microprofile.metrics.api.RegistryFactory;
 
 /**
  * @author hrupp
  */
 @ApplicationScoped
-@Named("My Factory")
 public class AMetricRegistryFactory {
 
-    private static final Map<MetricRegistry.Type, MetricRegistry> registries = new HashMap<>();
-    private static final String DOT = ".";
+    @Inject
+    private MetricName metricName;
 
-    private AMetricRegistryFactory() { /* Singleton */ }
+    private ConcurrentMap<MetricRegistry.Type, MetricRegistry> registries;
+
+    @PostConstruct
+    void init() {
+        registries = new ConcurrentHashMap<>();
+    }
 
     @Default
     @Produces
     @RegistryType(type = MetricRegistry.Type.APPLICATION)
-    public static MetricRegistry getApplicationRegistry() {
+    public MetricRegistry getApplicationRegistry() {
         return get(MetricRegistry.Type.APPLICATION);
     }
 
+    @Produces
+    private <T> Gauge<T> gauge(InjectionPoint ip) {
+        // A forwarding Gauge must be returned as the Gauge creation happens when the declaring bean gets instantiated and the corresponding Gauge can be injected before which leads to producing a null value
+        return new Gauge<T>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public T getValue() {
+                // TODO: better error report when the gauge doesn't exist
+                return ((Gauge<T>) getApplicationRegistry().getGauges().get(metricName.of(ip))).getValue();
+            }
+        };
+    }
 
     @Produces
-    public static Counter getCounter(InjectionPoint ip) {
-        String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
-        Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
+    public Counter getCounter(InjectionPoint ip) {
+        return getApplicationRegistry().counter(getMetadata(ip, MetricType.COUNTER));
+    }
 
-        String fieldName = ip.getMember().getName();
-        String name = beanName + DOT + fieldName;
+    @Produces
+    public Histogram getHistogram(InjectionPoint ip) {
+        return getApplicationRegistry().histogram(getMetadata(ip, MetricType.HISTOGRAM));
+    }
 
-        for (Annotation a : annotations) {
-            if (a.annotationType().equals(Metric.class)) {
-                Metric m = (Metric) a;
-                if (!m.name().isEmpty()) {
-                    fieldName = m.name();
+    @Produces
+    public Meter getMeter(InjectionPoint ip) {
+        return getApplicationRegistry().meter(getMetadata(ip, MetricType.METERED));
+    }
+
+    @Produces
+    public Timer getTimer(InjectionPoint ip) {
+        return getApplicationRegistry().timer(getMetadata(ip, MetricType.TIMER));
+    }
+
+    public MetricRegistry get(MetricRegistry.Type type) {
+        return registries.computeIfAbsent(type, key -> {
+            try {
+                InitialContext context = new InitialContext();
+                Object o = context.lookup("jboss/swarm/metrics");
+                RegistryFactory factory = (RegistryFactory) o;
+                return factory.get(type);
+            } catch (NamingException e) {
+                throw new IllegalStateException("RegistryFactory not found");
+            }
+        });
+    }
+
+    private Metadata getMetadata(InjectionPoint ip, MetricType type) {
+        Metadata metadata = new Metadata(metricName.of(ip), type);
+        Metric metric = ip.getAnnotated().getAnnotation(Metric.class);
+        if (metric != null) {
+            if (!metric.unit().isEmpty()) {
+                metadata.setUnit(metric.unit());
+            }
+            if (!metric.description().isEmpty()) {
+                metadata.setDescription(metric.description());
+            }
+            if (!metric.displayName().isEmpty()) {
+                metadata.setDisplayName(metric.displayName());
+            }
+            if (metric.tags().length > 0) {
+                for (String tag : metric.tags()) {
+                    metadata.addTags(tag);
                 }
-                if (!m.absolute()) {
-                    name = beanName + DOT + fieldName;
-                } else {
-                    name = fieldName;
-                }
-                Metadata metadata = getMetadata(name,m,MetricType.COUNTER);
-                return getApplicationRegistry().counter(metadata);
-            }
-        }
-
-        return getApplicationRegistry().counter(name);
-    }
-
-
-    @Produces
-    public static Histogram getHistogram(InjectionPoint ip) {
-
-
-        String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
-        Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
-
-        String fieldName = ip.getMember().getName();
-        String name = beanName + DOT + fieldName;
-        for (Annotation a : annotations) {
-            if (a.annotationType().equals(Metric.class)) {
-                Metadata metadata = getMetadata(name, (Metric) a, MetricType.HISTOGRAM);
-
-                return getApplicationRegistry().histogram(metadata);
-            }
-        }
-        return getApplicationRegistry().histogram(name);
-    }
-
-    @Produces
-    public static Meter getMeter(InjectionPoint ip) {
-
-        String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
-        Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
-
-        String fieldName = ip.getMember().getName();
-        String name = beanName + DOT + fieldName;
-        for (Annotation a : annotations) {
-            if (a.annotationType().equals(Metric.class)) {
-                Metadata metadata = getMetadata(name, (Metric) a, MetricType.METERED);
-
-                return getApplicationRegistry().meter(metadata);
-            }
-        }
-        return getApplicationRegistry().meter(name);
-    }
-
-    @Produces
-    public static Timer getTimer(InjectionPoint ip) {
-
-
-        String beanName = ip.getBean() != null ? ip.getBean().getBeanClass().getName() : ip.getMember().getDeclaringClass().getName();
-        Set<Annotation> annotations = ip.getAnnotated().getAnnotations();
-
-        String fieldName = ip.getMember().getName();
-        String name = beanName + DOT + fieldName;
-        for (Annotation a : annotations) {
-            if (a.annotationType().equals(Metric.class)) {
-                Metadata metadata = getMetadata(name, (Metric) a, MetricType.TIMER);
-
-                return getApplicationRegistry().timer(metadata);
-            }
-        }
-        return getApplicationRegistry().timer(name);
-
-    }
-
-    private static Metadata getMetadata(String name, Metric a, MetricType type) {
-        Metric m = a;
-
-        Metadata metadata = new Metadata(name, type);
-        if (!m.unit().isEmpty()) {
-            metadata.setUnit(m.unit());
-        }
-        if (!m.description().isEmpty()) {
-            metadata.setDescription(m.description());
-        }
-        if (!m.displayName().isEmpty()) {
-            metadata.setDisplayName(m.displayName());
-        }
-        if (m.tags().length > 0) {
-            for (String tag : m.tags()) {
-                metadata.addTags(tag);
             }
         }
         return metadata;
-    }
-/*
-  @Produces
-  @RegistryType(type = MetricRegistry.Type.BASE)
-  public static MetricRegistry getBaseRegistry() {
-    return get(MetricRegistry.Type.BASE);
-  }
-
-  @Produces
-  @RegistryType(type = MetricRegistry.Type.VENDOR)
-  public static MetricRegistry getVendorRegistry() {
-    return get(MetricRegistry.Type.VENDOR);
-  }
-*/
-
-    public static MetricRegistry get(MetricRegistry.Type type) {
-
-        synchronized (registries) {
-            if (registries.get(type) == null) {
-
-                try {
-                    InitialContext context = new InitialContext();
-                    Object o = context.lookup("jboss/swarm/metrics");
-
-                    RegistryFactory factory = (RegistryFactory) o;
-                    MetricRegistry result = factory.get(type);
-                    registries.put(type, result);
-                } catch (NamingException e) {
-                    e.printStackTrace();  // TODO: Customise this generated block
-                }
-            }
-        }
-
-        return registries.get(type);
     }
 }

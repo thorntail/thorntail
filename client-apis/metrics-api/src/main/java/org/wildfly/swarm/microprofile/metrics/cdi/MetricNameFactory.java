@@ -16,13 +16,15 @@
 package org.wildfly.swarm.microprofile.metrics.cdi;
 
 
-import javax.enterprise.inject.spi.BeanManager;
 import java.util.Collections;
+
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.BeanManager;
 
 //@Dependent
 /* package-private */ class MetricNameFactory {
 
-    //    @Produces
+    @Produces
     // TODO: should be declared @ApplicationScoped when WELD-2083 is fixed
     private MetricName metricName(BeanManager manager) {
         return new SeMetricName(Collections.emptySet()); // TODO

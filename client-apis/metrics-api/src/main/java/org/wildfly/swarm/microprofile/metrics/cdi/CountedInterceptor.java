@@ -15,10 +15,8 @@
  */
 package org.wildfly.swarm.microprofile.metrics.cdi;
 
-
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.annotation.Counted;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Intercepted;
@@ -29,9 +27,11 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.AroundTimeout;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
+
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.jboss.logging.Logger;
 
 @SuppressWarnings("unused")
 @Counted
@@ -39,19 +39,19 @@ import java.lang.reflect.Member;
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
 /* package-private */ class CountedInterceptor {
 
+    private static final Logger LOGGER = Logger.getLogger(CountedInterceptor.class);
+
     private final Bean<?> bean;
 
     private final MetricRegistry registry;
 
-//    @Inject
-//    private MetricResolver resolver;
+    private final MetricResolver resolver;
 
     @Inject
-    private CountedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry) { //}, MetricResolver resolver) {
+    private CountedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry) {
         this.bean = bean;
         this.registry = registry;
-//        this.resolver = resolver;
-//        this.resolver = null;
+        this.resolver = new MetricResolver();
     }
 
     @AroundConstruct
@@ -70,42 +70,21 @@ import java.lang.reflect.Member;
     }
 
     private <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
-//        MetricResolver.Of<Counted> counted = resolver.counted(bean.getBeanClass(), element);
-//        Counter counter = (Counter) registry.getMetrics().get(counted.metricName());
-
-        String beanName = bean.getBeanClass().getName();
-        Annotation[] annotations = element.getAnnotations();
-        String fieldName = element.getName();
-        String name = beanName + "." + fieldName;
-
-        for (Annotation a : annotations) {
-            if (a.annotationType().equals(Counted.class)) {
-                Counted m = (Counted) a;
-                if (!m.name().isEmpty()) {
-                    fieldName = m.name();
-                }
-                if (!m.absolute()) {
-                    name = beanName + "." + fieldName;
-                } else {
-                    name = fieldName;
-                }
-                break;
-            }
-        }
-
-
-        Counter counter = (Counter) registry.counter(name);
+        MetricResolver.Of<Counted> counted = resolver.counted(bean.getBeanClass(), element);
+        String name = counted.metricName();
+        Counter counter = (Counter) registry.getCounters().get(name);
         if (counter == null) {
             throw new IllegalStateException("No counter with name [" + name + "] found in registry [" + registry + "]");
         }
-
+        LOGGER.debugf("Increment counter [metricName: %s]", name);
         counter.inc();
         try {
             return context.proceed();
         } finally {
-//            if (!counted.metricAnnotation().monotonic()) {
-//                counter.dec();  // TODO
-//            }
+            if (!counted.metricAnnotation().monotonic()) {
+                LOGGER.debugf("Decrement counter [metricName: %s]", name);
+                counter.dec();
+            }
         }
     }
 }

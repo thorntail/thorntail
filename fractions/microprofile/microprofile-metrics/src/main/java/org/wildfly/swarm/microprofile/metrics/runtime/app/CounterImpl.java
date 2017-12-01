@@ -31,6 +31,8 @@
  */
 package org.wildfly.swarm.microprofile.metrics.runtime.app;
 
+import java.util.concurrent.atomic.LongAdder;
+
 import org.eclipse.microprofile.metrics.Counter;
 
 /**
@@ -38,30 +40,34 @@ import org.eclipse.microprofile.metrics.Counter;
  */
 public class CounterImpl implements Counter {
 
-    private long count = 0;
+    private final LongAdder count;
+
+    public CounterImpl() {
+        count = new LongAdder();
+    }
 
     @Override
     public void inc() {
-        count++;
+        count.increment();
     }
 
     @Override
     public void inc(long n) {
-        count += n;
+        count.add(n);
     }
 
     @Override
     public void dec() {
-        count--;
+        count.decrement();
     }
 
     @Override
     public void dec(long n) {
-        count -= n;
+        count.add(-n);
     }
 
     @Override
     public long getCount() {
-        return count;
+        return count.sum();
     }
 }

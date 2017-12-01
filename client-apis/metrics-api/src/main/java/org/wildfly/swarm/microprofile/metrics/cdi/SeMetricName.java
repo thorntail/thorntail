@@ -16,19 +16,20 @@
 
 package org.wildfly.swarm.microprofile.metrics.cdi;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Metric;
+import static org.wildfly.swarm.microprofile.metrics.cdi.MetricsParameter.useAbsoluteName;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Set;
 
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Set;
 
-import static org.wildfly.swarm.microprofile.metrics.cdi.MetricsParameter.useAbsoluteName;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.Metric;
 
 @Vetoed
 /* package-private */ class SeMetricName implements MetricName {

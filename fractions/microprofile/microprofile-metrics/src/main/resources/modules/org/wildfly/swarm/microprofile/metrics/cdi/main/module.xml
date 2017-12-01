@@ -20,5 +20,12 @@
   <resources>
     <artifact name="org.wildfly.swarm:metrics-api:${project.version}"/>
   </resources>
-
+  <dependencies>
+    <module name="javax.enterprise.api"/>
+    <module name="javax.annotation.api"/>
+    <module name="javax.api"/>
+    <module name="org.eclipse.microprofile.metrics"/>
+    <module name="org.wildfly.swarm.microprofile.metrics" slot="api"/>
+    <module name="org.jboss.logging"/>
+  </dependencies>
 </module>

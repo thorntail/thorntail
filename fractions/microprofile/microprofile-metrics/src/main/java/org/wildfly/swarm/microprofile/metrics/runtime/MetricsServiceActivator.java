@@ -31,7 +31,7 @@ import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceRegistryException;
 import org.jboss.msc.service.ServiceTarget;
 import org.wildfly.swarm.microprofile.metrics.MicroprofileMetricsFraction;
-import org.wildfly.swarm.microprofile.metrics.cdi.RegistryFactory;
+import org.wildfly.swarm.microprofile.metrics.api.RegistryFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;

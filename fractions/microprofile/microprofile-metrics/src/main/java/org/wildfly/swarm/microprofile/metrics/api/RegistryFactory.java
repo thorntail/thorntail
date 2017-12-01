@@ -15,7 +15,7 @@
  *  limitations under the License.
  *
  */
-package org.wildfly.swarm.microprofile.metrics.cdi;
+package org.wildfly.swarm.microprofile.metrics.api;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
 
