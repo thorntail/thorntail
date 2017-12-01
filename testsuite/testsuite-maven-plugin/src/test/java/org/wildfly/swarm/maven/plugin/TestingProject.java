@@ -84,7 +84,7 @@ public final class TestingProject {
         String pomXmlContent = new String(Files.readAllBytes(pomXml), StandardCharsets.UTF_8)
                 .replace("<!--PLACEHOLDER:swarm-version-->", swarmVersion)
                 .replace("<!--PLACEHOLDER:packaging-->", packaging.packagingType())
-                .replace("<!--PLACEHOLDER:dependencies-->", dependenciesSnippet())
+                .replace("<!--PLACEHOLDER:dependencies-->", dependenciesSnippet(swarmVersion))
                 .replace("<!--PLACEHOLDER:configuration-->", swarmPluginConfigurationSnippet());
         Files.write(pomXml, pomXmlContent.getBytes(StandardCharsets.UTF_8));
 
@@ -143,13 +143,14 @@ public final class TestingProject {
         }
     }
 
-    private String dependenciesSnippet() {
+    private String dependenciesSnippet(String swarmVersion) {
         StringBuilder result = new StringBuilder();
 
         if (packaging.hasCustomMain()) {
             result.append("<dependency>\n" +
                           "  <groupId>org.wildfly.swarm</groupId>\n" +
                           "  <artifactId>container</artifactId>\n" +
+                          "  <version>" + swarmVersion + "</version>\n" +
                           "</dependency>\n");
         }
 
