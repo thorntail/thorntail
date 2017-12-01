@@ -36,7 +36,6 @@ import org.jboss.as.controller.ModelController;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.persistence.ExtensibleConfigurationPersister;
 import org.jboss.as.server.Bootstrap;
-import org.jboss.as.server.SelfContainedContainer;
 import org.jboss.as.server.ServerEnvironment;
 import org.jboss.as.server.Services;
 import org.jboss.dmr.ModelNode;
@@ -61,6 +60,7 @@ import org.wildfly.swarm.container.runtime.wildfly.UUIDFactory;
 import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapConfiguration;
 import org.wildfly.swarm.container.runtime.xmlconfig.BootstrapPersister;
 import org.wildfly.swarm.internal.SwarmMessages;
+import org.wildfly.swarm.internal.wildfly.SelfContainedContainer;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.UserSpaceExtensionFactory;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
@@ -203,12 +203,20 @@ public class RuntimeServer implements Server {
             ServiceContainer serviceContainer = null;
             try (AutoCloseable startWildflyItself = Performance.time("Starting WildFly itself")) {
                 //serviceContainer = this.container.start(bootstrapOperations, this.contentProvider, activators);
-                serviceContainer = this.container.start(bootstrapOperations, null, activators);
+                serviceContainer = this.container.start(bootstrapOperations, activators);
                 this.containerStarted = true;
             }
             try (AutoCloseable checkFailedServices = Performance.time("Checking for failed services")) {
                 for (ServiceName serviceName : serviceContainer.getServiceNames()) {
                     ServiceController<?> serviceController = serviceContainer.getService(serviceName);
+                    /*
+                    if (serviceController.getImmediateUnavailableDependencies().size() > 0) {
+                        System.err.println("Service missing dependencies: " + serviceController.getName());
+                        for (ServiceName name : serviceController.getImmediateUnavailableDependencies()) {
+                            System.err.println("  - " + name);
+                        }
+                    }
+                    */
                     StartException exception = serviceController.getStartException();
                     if (exception != null) {
                         throw exception;
@@ -216,10 +224,18 @@ public class RuntimeServer implements Server {
                 }
             }
 
+            /*
+            for (ServiceName serviceName : serviceContainer.getServiceNames()) {
+                System.err.println(" === " + serviceName);
+            }
+            */
+
             ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
             Executor executor = Executors.newSingleThreadExecutor();
 
             try (AutoCloseable creatingControllerClient = Performance.time("Creating controller client")) {
+                // Can't use controller.getClientFactory() due to non-public nature of that method.
+                //noinspection deprecation
                 this.client = controller.createClient(executor);
             }
 

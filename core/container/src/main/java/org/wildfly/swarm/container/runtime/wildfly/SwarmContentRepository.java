@@ -69,7 +69,6 @@ import org.jboss.vfs.VirtualFile;
  * A content-repository capable of providing a static bit of content.
  *
  * @author Bob McWhirter
- * @see org.jboss.as.selfcontained.ContentProvider
  */
 @ApplicationScoped
 public class SwarmContentRepository implements ContentRepository, Service<ContentRepository> {

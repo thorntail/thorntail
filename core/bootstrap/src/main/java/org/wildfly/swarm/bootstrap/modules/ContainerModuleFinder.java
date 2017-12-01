@@ -16,7 +16,6 @@
 package org.wildfly.swarm.bootstrap.modules;
 
 import org.jboss.modules.DependencySpec;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -46,7 +45,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.wildfly.swarm.spi"), false));
+                        "org.wildfly.swarm.spi", false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -57,7 +56,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.wildfly.swarm.container", RUNTIME_SLOT), false));
+                        "org.wildfly.swarm.container:runtime", false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -68,7 +67,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.wildfly.swarm.bootstrap"), false));
+                        "org.wildfly.swarm.bootstrap", false));
 
 
         builder.addDependency(
@@ -80,7 +79,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.jboss.jandex"), false));
+                        "org.jboss.jandex", false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -91,7 +90,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.jboss.weld.se"), false));
+                        "org.jboss.weld.se", false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -102,7 +101,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("javax.enterprise.api"), false));
+                        "javax.enterprise.api", false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -113,7 +112,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.apache.xalan"), true));
+                        "org.apache.xalan", true));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -124,7 +123,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.apache.xerces"), false));
+                        "org.apache.xerces", false));
 
         builder.addDependency(
                 DependencySpec.createModuleDependencySpec(
@@ -135,7 +134,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                         ClassFilters.acceptAll(),
                         ClassFilters.acceptAll(),
                         null,
-                        ModuleIdentifier.create("org.codehaus.woodstox"), false));
+                        "org.codehaus.woodstox", false));
 
 
         ApplicationEnvironment environment = ApplicationEnvironment.get();
@@ -151,7 +150,7 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
                                     ClassFilters.acceptAll(),
                                     ClassFilters.acceptAll(),
                                     null,
-                                    ModuleIdentifier.create(module, RUNTIME_SLOT), false));
+                                    module + ":" + RUNTIME_SLOT, false));
                 });
     }
 

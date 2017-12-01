@@ -16,7 +16,6 @@
 package org.wildfly.swarm.bootstrap.modules;
 
 import org.jboss.modules.ModuleFinder;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -27,21 +26,16 @@ import org.jboss.modules.ModuleSpec;
 public abstract class AbstractSingleModuleFinder implements ModuleFinder {
 
     public AbstractSingleModuleFinder(String moduleName) {
-        this(moduleName, "main");
-    }
-
-    public AbstractSingleModuleFinder(String moduleName, String moduleSlot) {
         this.moduleName = moduleName;
-        this.moduleSlot = moduleSlot;
     }
 
     public String toString() {
-        return getClass().getSimpleName() + "(" + this.moduleName + ":" + this.moduleSlot + ")";
+        return getClass().getSimpleName() + "(" + this.moduleName + ")";
     }
 
     @Override
-    public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
-        if (!identifier.getName().equals(this.moduleName) || !identifier.getSlot().equals(this.moduleSlot)) {
+    public ModuleSpec findModule(String identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
+        if (!this.moduleName.equals(identifier)) {
             return null;
         }
 
@@ -53,6 +47,4 @@ public abstract class AbstractSingleModuleFinder implements ModuleFinder {
     public abstract void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException;
 
     private final String moduleName;
-
-    private final String moduleSlot;
 }

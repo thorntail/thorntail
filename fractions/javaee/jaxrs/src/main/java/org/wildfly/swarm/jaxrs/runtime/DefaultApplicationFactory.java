@@ -23,8 +23,8 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
-import org.objectweb.asm.commons.RemappingClassAdapter;
 
 /**
  * @author Bob McWhirter
@@ -78,7 +78,7 @@ public class DefaultApplicationFactory implements Opcodes {
             }
         };
 
-        RemappingClassAdapter adapter = new RemappingClassAdapter(writer, remapper);
+        ClassRemapper adapter = new ClassRemapper(writer, remapper);
         reader.accept(adapter, 0);
 
         AnnotationVisitor ann = writer.visitAnnotation("Ljavax/ws/rs/ApplicationPath;", true);

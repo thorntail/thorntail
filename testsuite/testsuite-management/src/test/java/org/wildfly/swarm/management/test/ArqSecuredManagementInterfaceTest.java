@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.management.test;
 
+import java.security.Security;
+
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.controller.PathAddress;
@@ -25,6 +27,8 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.security.WildFlyElytronProvider;
+import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
 import org.wildfly.swarm.management.AuthCallbackHandler;
 
@@ -41,8 +45,10 @@ public class ArqSecuredManagementInterfaceTest {
     @RunAsClient
     public void testClient() throws Exception {
 
+        Security.addProvider(new WildFlyElytronProvider());
+
         ModelControllerClient client = ModelControllerClient.Factory.create(
-                "localhost", 9990, new AuthCallbackHandler("bob", "tacos!")
+                "localhost", 9990, new AuthCallbackHandler("ManagementRealm", "bob", "tacos!")
         );
 
         ModelNode response = client.execute(Operations.createOperation("whoami"));

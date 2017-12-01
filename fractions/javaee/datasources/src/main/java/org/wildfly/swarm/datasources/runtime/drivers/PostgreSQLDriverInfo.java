@@ -17,7 +17,6 @@ package org.wildfly.swarm.datasources.runtime.drivers;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
@@ -36,7 +35,7 @@ public class PostgreSQLDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "postgres";
 
     public PostgreSQLDriverInfo() {
-        super("postgresql", ModuleIdentifier.create("org.postgresql"), "org.postgresql.Driver",
+        super("postgresql", "org.postgresql", "org.postgresql.Driver",
                 "org.postgis.DriverWrapper");
     }
 

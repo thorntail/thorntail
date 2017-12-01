@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 
@@ -66,7 +65,7 @@ public class MainInvoker {
         if (stopMethod != null) {
             stopMethod.invoke(mainClass, (Object[]) null);
         } else {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+            Module module = Module.getBootModuleLoader().loadModule("swarm.container");
             Class<?> swarmClass = module.getClassLoader().loadClass("org.wildfly.swarm.Swarm");
             Field instanceField = swarmClass.getField("INSTANCE");
             Object swarmInstance = instanceField.get(null);
@@ -78,7 +77,7 @@ public class MainInvoker {
     }
 
     protected void emitReady() throws Exception {
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+        Module module = Module.getBootModuleLoader().loadModule("swarm.container");
         Class<?> messagesClass = module.getClassLoader().loadClass("org.wildfly.swarm.internal.SwarmMessages");
         Field field = messagesClass.getDeclaredField("MESSAGES");
 
@@ -110,7 +109,7 @@ public class MainInvoker {
     public static Class<?> getMainClass(String mainClassName) throws IOException, URISyntaxException, ModuleLoadException, ClassNotFoundException {
         Class<?> mainClass = null;
         try {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            Module module = Module.getBootModuleLoader().loadModule("swarm.application");
             ClassLoader cl = module.getClassLoader();
             mainClass = cl.loadClass(mainClassName);
         } catch (ClassNotFoundException | ModuleLoadException e) {

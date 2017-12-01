@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.modules.ModuleFinder;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -30,15 +29,15 @@ import org.jboss.modules.ModuleSpec;
  */
 public class DynamicModuleFinder implements ModuleFinder {
 
-    private static Map<ModuleIdentifier, ModuleFinder> FINDERS = new HashMap<>();
+    private static Map<String, FunctionalModuleFinder> FINDERS = new HashMap<>();
 
-    public static void register(ModuleIdentifier identifier, ModuleFinder finder) {
+    public static void register(String identifier, FunctionalModuleFinder finder) {
         FINDERS.put(identifier, finder);
     }
 
     @Override
-    public ModuleSpec findModule(ModuleIdentifier moduleIdentifier, ModuleLoader moduleLoader) throws ModuleLoadException {
-        ModuleFinder delegate = FINDERS.get(moduleIdentifier);
+    public ModuleSpec findModule(String moduleIdentifier, ModuleLoader moduleLoader) throws ModuleLoadException {
+        FunctionalModuleFinder delegate = FINDERS.get(moduleIdentifier);
         if (delegate == null) {
             return null;
         }

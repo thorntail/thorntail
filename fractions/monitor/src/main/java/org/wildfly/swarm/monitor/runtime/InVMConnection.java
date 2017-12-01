@@ -80,8 +80,8 @@ final class InVMConnection extends ServerConnection {
         bufferSink.flushTo(sb);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
+    @SuppressWarnings("deprecation")
     public Pool<ByteBuffer> getBufferPool() {
         if (poolAdaptor == null) {
             poolAdaptor = new XnioBufferPoolAdaptor(getByteBufferPool());

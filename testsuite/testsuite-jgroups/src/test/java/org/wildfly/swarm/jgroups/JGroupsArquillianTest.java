@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.jgroups;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -52,7 +54,7 @@ public class JGroupsArquillianTest {
 
     @Test
     public void testActivation() throws InterruptedException {
-        ServiceController<?> dispatcher = registry.getService(ServiceName.parse("jboss.clustering.dispatcher.default"));
+        ServiceController<?> dispatcher = registry.getService(ServiceName.parse("org.wildfly.clustering.default-command-dispatcher-factory"));
         assertNotNull( dispatcher );
     }
 }
