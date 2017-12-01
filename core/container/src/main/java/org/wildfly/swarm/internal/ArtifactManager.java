@@ -47,6 +47,9 @@ public class ArtifactManager implements ArtifactLookup {
 
     private static final String COLON = ":";
 
+    private static final String JAR = "jar";
+    private static final String TEST_JAR = "test-jar";
+
     public ArtifactManager() {
     }
 
@@ -122,7 +125,7 @@ public class ArtifactManager implements ArtifactLookup {
 
         String groupId = parts[0];
         String artifactId = parts[1];
-        String packaging = "jar";
+        String packaging = JAR;
         String version = null;
         String classifier = "";
 
@@ -131,12 +134,13 @@ public class ArtifactManager implements ArtifactLookup {
         }
 
         if (parts.length == 4) {
-            packaging = parts[2];
+            // the type "test-jar" is packaged as a .jar file more info: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html
+            packaging = TEST_JAR.equals(parts[2]) ? JAR : TEST_JAR;
             version = parts[3];
         }
 
         if (parts.length == 5) {
-            packaging = parts[2];
+            packaging = TEST_JAR.equals(parts[2]) ? JAR : TEST_JAR;
             classifier = parts[3];
             version = parts[4];
         }
