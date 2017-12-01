@@ -77,5 +77,15 @@
     </packages>
   </test>
 
+  <test name="microprofile-fault-tolerance 1.0 TCK">
+    <packages>
+      <package name="org.eclipse.microprofile.fault.tolerance.tck.invalidParameters"/>
+      <package name="org.eclipse.microprofile.fault.tolerance.tck.illegalConfig" />
+      <package name="org.eclipse.microprofile.fault.tolerance.tck.disableEnv" />
+      <package name="org.eclipse.microprofile.fault.tolerance.tck"/>
+      <package name="org.eclipse.microprofile.fault.tolerance.bulkhead"/>
+    </packages>
+  </test>
+
 
 </suite>

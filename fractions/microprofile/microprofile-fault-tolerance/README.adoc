@@ -1,0 +1,16 @@
+= Microprofile Fault Tolerance Fraction
+:icons: font
+
+This fraction implements the https://github.com/eclipse/microprofile-fault-tolerance[Eclipse Microprofile Fault tolerance API^].
+
+To use this in your project you need the following in your pom.xml
+
+[source,xml]
+----
+   <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>microprofile-fault-tolerance</artifactId>
+    </dependency>
+----
+
+There is no need to include the MicroProfile Fault Tolerance API dependency, as it comes with the fraction.
