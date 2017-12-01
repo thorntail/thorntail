@@ -1294,11 +1294,9 @@
           <name>!swarm.docs.skip</name>
         </property>
       </activation>
-<!--
       <modules>
         <module>docs</module>
       </modules>
--->
     </profile>
 
     <profile>

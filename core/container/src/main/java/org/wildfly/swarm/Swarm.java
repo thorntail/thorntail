@@ -748,7 +748,6 @@ public class Swarm {
             vme.printStackTrace();
             System.exit(1);
         } catch (final Throwable t) {
-            t.printStackTrace();
             if (System.getProperty("swarm.inhibit.auto-stop") == null) {
                 t.printStackTrace();
                 tryToStopAfterStartupError(t, swarm);
