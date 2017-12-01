@@ -135,12 +135,12 @@ public class ArtifactManager implements ArtifactLookup {
 
         if (parts.length == 4) {
             // the type "test-jar" is packaged as a .jar file more info: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html
-            packaging = TEST_JAR.equals(parts[2]) ? JAR : TEST_JAR;
+            packaging = TEST_JAR.equals(parts[2]) ? JAR : parts[2];
             version = parts[3];
         }
 
         if (parts.length == 5) {
-            packaging = TEST_JAR.equals(parts[2]) ? JAR : TEST_JAR;
+            packaging = TEST_JAR.equals(parts[2]) ? JAR : parts[2];
             classifier = parts[3];
             version = parts[4];
         }
