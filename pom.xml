@@ -1041,29 +1041,6 @@
     </profile>
 
     <profile>
-      <id>boms-unsupported</id>
-      <activation>
-        <property>
-          <name>!swarm.product.build</name>
-        </property>
-      </activation>
-      <properties>
-        <testCategory.excluded>category.ProductOnly</testCategory.excluded>
-      </properties>
-      <modules>
-        <module>boms</module>
-        <module>boms/bom</module>
-        <module>boms/bom-deprecated</module>
-        <module>boms/bom-experimental</module>
-        <module>boms/bom-unstable</module>
-        <module>boms/bom-stable</module>
-        <module>boms/bom-frozen</module>
-        <module>boms/bom-locked</module>
-        <module>boms/bom-all</module>
-      </modules>
-    </profile>
-
-    <profile>
       <id>core-testsuite</id>
       <activation>
         <property>
@@ -1211,6 +1188,16 @@
         <module>standalone-servers/management-console</module>
         <module>standalone-servers/microprofile</module>
         <module>standalone-servers/swagger-ui</module>
+
+        <module>boms</module>
+        <module>boms/bom</module>
+        <module>boms/bom-deprecated</module>
+        <module>boms/bom-experimental</module>
+        <module>boms/bom-unstable</module>
+        <module>boms/bom-stable</module>
+        <module>boms/bom-frozen</module>
+        <module>boms/bom-locked</module>
+        <module>boms/bom-all</module>
 
         <module>testsuite/testsuite-asciidoctorj</module>
         <module>testsuite/testsuite-batch-jberet</module>
