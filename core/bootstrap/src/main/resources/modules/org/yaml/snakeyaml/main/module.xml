@@ -16,6 +16,7 @@
         <path name="org/yaml/snakeyaml/constructor"/>
         <path name="org/yaml/snakeyaml/representer"/>
         <path name="org/yaml/snakeyaml/resolver"/>
+        <path name="org/yaml/snakeyaml/parser"/>
       </paths>
     </system>
   </dependencies>

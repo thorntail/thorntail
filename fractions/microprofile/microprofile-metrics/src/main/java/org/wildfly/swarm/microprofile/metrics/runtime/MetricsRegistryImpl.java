@@ -16,6 +16,15 @@
  */
 package org.wildfly.swarm.microprofile.metrics.runtime;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.enterprise.inject.Vetoed;
+
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -26,26 +35,20 @@ import org.eclipse.microprofile.metrics.MetricFilter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
+import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.CounterImpl;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.ExponentiallyDecayingReservoir;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.HistogramImpl;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.MeterImpl;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.TimerImpl;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.enterprise.inject.Vetoed;
-
 /**
  * @author hrupp
  */
 @Vetoed
 public class MetricsRegistryImpl extends MetricRegistry {
+
+    private static final Logger LOGGER = Logger.getLogger(MetricsRegistryImpl.class);
 
     private Map<String, Metadata> metadataMap = new java.util.HashMap<>();
     private Map<String, Metric> metricMap = new ConcurrentHashMap<>();
@@ -58,17 +61,20 @@ public class MetricsRegistryImpl extends MetricRegistry {
         }
 
         MetricType type;
-        if (metric.getClass().getName().contains("Lambda")) {
-            String tname = metric.getClass().getGenericInterfaces()[0].getTypeName(); // TODO [0] is brittle
+        Class<?> metricCls = metric.getClass();
+        if (metricCls.getName().contains("Lambda")) {
+            String tname = metricCls.getGenericInterfaces()[0].getTypeName(); // TODO [0] is brittle
             tname = tname.substring(tname.lastIndexOf('.') + 1);
             tname = tname.toLowerCase();
             type = MetricType.from(tname);
+        } else if (metricCls.isAnonymousClass()) {
+            type = MetricType.from(metricCls.getInterfaces().length == 0 ? metricCls.getSuperclass().getInterfaces()[0] : metricCls.getInterfaces()[0]);
         } else {
-            if (!metric.getClass().isInterface()) {
+            if (!metricCls.isInterface()) {
                 // [0] is ok, as all our Impl classes implement exactly the one matching interface
-                type = MetricType.from(metric.getClass().getInterfaces()[0]);
+                type = MetricType.from(metricCls.getInterfaces()[0]);
             } else {
-                type = MetricType.from(metric.getClass());
+                type = MetricType.from(metricCls);
             }
         }
 
@@ -124,6 +130,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     private <T extends Metric> T get(Metadata metadata, MetricType type) {
         String name = metadata.getName();
+        LOGGER.debugf("Get metric [name: %s, type: %s]", name, type);
         if (!metadataMap.containsKey(name)) {
             Metric m;
             switch (type) {
@@ -146,6 +153,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
                 default:
                     throw new IllegalStateException("Must not happen");
             }
+            LOGGER.infof("Register metric [name: %s, type: %s]", name, type);
             register(name, m, metadata);
         }
         return (T) metricMap.get(name);
@@ -164,6 +172,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
     @Override
     public boolean remove(String metricName) {
         if (metricMap.containsKey(metricName)) {
+            LOGGER.infof("Remove metric [name: %s]", metricName);
             metricMap.remove(metricName);
             metadataMap.remove(metricName);
             return true;

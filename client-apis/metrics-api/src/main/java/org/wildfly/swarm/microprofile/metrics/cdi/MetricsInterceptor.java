@@ -16,6 +16,18 @@
 
 package org.wildfly.swarm.microprofile.metrics.cdi;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import javax.annotation.Priority;
+import javax.inject.Inject;
+import javax.interceptor.AroundConstruct;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
@@ -23,17 +35,7 @@ import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
-
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import org.jboss.logging.Logger;
 
 @SuppressWarnings("unused")
 @Interceptor
@@ -42,6 +44,8 @@ import java.lang.reflect.Modifier;
 // See http://docs.oracle.com/javaee/7/tutorial/doc/interceptors.htm
 /* package-private */ class MetricsInterceptor {
 
+    private static final Logger LOGGER = Logger.getLogger(MetricsInterceptor.class);
+
     private final MetricRegistry registry;
 
     private final MetricResolver resolver;
@@ -49,15 +53,14 @@ import java.lang.reflect.Modifier;
     @Inject
     private MetricsInterceptor(MetricRegistry registry) {
         this.registry = registry;
-//        this.resolver = resolver;
         this.resolver = new MetricResolver();
-        System.err.printf("MetricsInterceptor.ctor, names=%s\n", registry.getNames());
+        // LOGGER.infof("MetricsInterceptor.ctor, names=%s\n", registry.getNames());
     }
 
     @AroundConstruct
     private Object metrics(InvocationContext context) throws Exception {
         Class<?> bean = context.getConstructor().getDeclaringClass();
-System.err.printf("MetricsInterceptor, bean=%s\n", bean);
+        LOGGER.infof("MetricsInterceptor, bean=%s\n", bean);
         // Registers the bean constructor metrics
         registerMetrics(bean, context.getConstructor());
 

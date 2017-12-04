@@ -17,7 +17,7 @@
 package org.wildfly.swarm.microprofile.metrics.runtime;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.wildfly.swarm.microprofile.metrics.cdi.RegistryFactory;
+import org.wildfly.swarm.microprofile.metrics.api.RegistryFactory;
 
 /**
  * @author hrupp

@@ -35,42 +35,6 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack-yaml</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <excludeTransitive>true</excludeTransitive>
-              <includeGroupIds>org.yaml</includeGroupIds>
-              <includeScope>compile</includeScope>
-              <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class</excludes>
-              <outputDirectory>${project.build.directory}/classes</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>unpack-cdi-extension</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <excludeTransitive>true</excludeTransitive>
-              <includeGroupIds>org.wildfly.swarm</includeGroupIds>
-                <includeArtifactIds>metrics-api</includeArtifactIds>
-              <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class</excludes>
-              <outputDirectory>${project.build.directory}/classes</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
   </build>
 
   <dependencies>
@@ -90,11 +54,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>cdi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-weld</artifactId>
-      <version>10.1.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -134,12 +93,6 @@
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
       <version>1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>metrics-api</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <dependency>
