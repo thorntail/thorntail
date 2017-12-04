@@ -1325,6 +1325,7 @@
         <module>testsuite/microprofile-tcks/config</module>
         <module>testsuite/microprofile-tcks/jwt-auth</module>
         <module>testsuite/microprofile-tcks/metrics</module>
+        <module>testsuite/microprofile-tcks/fault-tolerance</module>
       </modules>
     </profile>
 
