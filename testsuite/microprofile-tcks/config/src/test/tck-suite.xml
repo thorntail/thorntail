@@ -26,15 +26,6 @@
       <packages>
          <package name="org.eclipse.microprofile.config.tck.*" />
       </packages>
-
-      <classes>
-        <!-- https://github.com/wildfly-extras/wildfly-microprofile-config/issues/26 -->
-        <class name="org.eclipse.microprofile.config.tck.ConverterTest">
-            <methods>
-                <exclude name=".*"/>
-            </methods>
-        </class>
-      </classes>
    </test>
 
 </suite>
