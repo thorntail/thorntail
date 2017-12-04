@@ -20,7 +20,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-accumulo</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -33,12 +33,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>translator-accumulo</artifactId>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>connector-accumulo</artifactId>
       <version>${version.teiid}</version>
     </dependency>

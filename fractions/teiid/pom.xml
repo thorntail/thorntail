@@ -16,13 +16,13 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.teiid>9.3.2</version.teiid>
+    <version.teiid>10.0.0.Final</version.teiid>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.jboss.teiid</groupId>
+        <groupId>org.teiid</groupId>
         <artifactId>teiid-wildfly-integration-feature-pack</artifactId>
         <version>${version.teiid}</version>
         <type>zip</type>
@@ -35,7 +35,7 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.jboss.teiid</groupId>
+        <groupId>org.teiid</groupId>
         <artifactId>rest-service-feature-pack</artifactId>
         <version>${version.teiid}</version>
         <type>zip</type>
@@ -48,7 +48,7 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.jboss.teiid.connectors</groupId>
+        <groupId>org.teiid.connectors</groupId>
         <artifactId>feature-pack-swagger</artifactId>
         <version>${version.teiid}</version>
         <type>zip</type>
@@ -61,7 +61,7 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.jboss.teiid</groupId>
+        <groupId>org.teiid</groupId>
         <artifactId>teiid-client-feature-pack</artifactId>
         <version>${version.teiid}</version>
         <type>zip</type>
@@ -74,7 +74,7 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.jboss.teiid</groupId>
+        <groupId>org.teiid</groupId>
         <artifactId>olingo-feature-pack</artifactId>
         <version>${version.teiid}</version>
         <type>zip</type>

@@ -16,15 +16,15 @@
 package org.wildfly.swarm.teiid.runtime;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.ModuleNotFoundException;
 import org.wildfly.swarm.resource.adapters.ResourceAdapterFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
@@ -40,33 +40,36 @@ public class ResourceAdapterCustomizer implements Customizer {
     public void customize() throws Exception {
         // TODO: once WF swarm moves WF 11, we will come with better way like translators for discovery
         HashMap<String, String> ras = new HashMap<>();
+
+        ras.put(RAPRE + "accumulo", "accumulo");
+        ras.put(RAPRE + "cassandra", "cassandra");
+        ras.put(RAPRE + "couchbase", "couchbase");
         ras.put(RAPRE + "file", "file");
         ras.put(RAPRE + "ftp", "ftp");
         ras.put(RAPRE + "google", "google");
+        ras.put(RAPRE + "infinispan.hotrod", "infinispan");
         ras.put(RAPRE + "ldap", "ldap");
+        ras.put(RAPRE + "mongodb", "mongodb");
         ras.put(RAPRE + "salesforce", "salesforce");
         ras.put(RAPRE + "salesforce-34", "salesforce-34");
-        ras.put(RAPRE + "webservice", "webservice");
-        ras.put(RAPRE + "mongodb", "mongodb");
-        ras.put(RAPRE + "cassandra", "cassandra");
+        ras.put(RAPRE + "salesforce-41", "salesforce-41");
         ras.put(RAPRE + "simpledb", "simpledb");
-        ras.put(RAPRE + "accumulo", "accumulo");
         ras.put(RAPRE + "solr", "solr");
-        ras.put(RAPRE + "swagger", "swagger");
+        ras.put(RAPRE + "webservice", "webservice");
 
-        Iterator<ModuleIdentifier> it = Module.getBootModuleLoader()
-                .iterateModules(ModuleIdentifier.create("org.jboss.teiid.resource-adapter"), false);
-        while (it.hasNext()) {
-            ModuleIdentifier id = it.next();
-            loadResourceAdapter(id, ras);
+        for (Map.Entry<String, String> entry : ras.entrySet()) {
+            loadResourceAdapter(entry.getKey(), entry.getValue());
         }
     }
 
-    private void loadResourceAdapter(ModuleIdentifier id, HashMap<String, String> ras) throws ModuleLoadException {
-        final Module module = Module.getBootModuleLoader().loadModule(id);
-        if (module != null) {
-            String name = ras.get(id.getName());
-            fraction.get().resourceAdapter(name, ra -> ra.module(id.getName()));
+    private void loadResourceAdapter(String moduleName, String raName) throws ModuleLoadException {
+        try {
+            final Module module = Module.getBootModuleLoader().loadModule(moduleName);
+            if (module != null) {
+                fraction.get().resourceAdapter(raName, ra -> ra.module(moduleName));
+            }
+        } catch (ModuleNotFoundException e) {
+            //ignore and do not load
         }
     }
 }
