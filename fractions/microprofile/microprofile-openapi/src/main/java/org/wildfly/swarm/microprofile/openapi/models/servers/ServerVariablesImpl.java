@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.models.servers;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
@@ -25,7 +26,7 @@ import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 /**
  * An implementation of the {@link ServerVariables} OpenAPI model interface.
  */
-public class ServerVariablesImpl extends HashMap<String, ServerVariable> implements ServerVariables {
+public class ServerVariablesImpl extends LinkedHashMap<String, ServerVariable> implements ServerVariables {
 
     private static final long serialVersionUID = -7724841358483233927L;
 
