@@ -30,12 +30,6 @@ class Queries {
     protected Queries() {
     }
 
-    /*public final static boolean isHealthEndpoint(Monitor monitor, String relativePath) {
-        return query(monitor, metaData -> {
-            return relativePath.equals(HttpContexts.HEALTH+metaData.getWebContext());
-        });
-    }*/
-
     public static final boolean isSecuredHealthEndpoint(Monitor monitor, String relativePath) {
         return query(monitor, metaData -> {
             return relativePath.equals(HttpContexts.HEALTH + metaData.getWebContext()) && metaData.isSecure();

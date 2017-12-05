@@ -99,8 +99,6 @@ public class HttpContexts implements HttpHandler {
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
 
-        //System.out.println(exchange.getRequestPath() +" on "+Thread.currentThread());
-
         if (dispatched.get() != null && dispatched.get().getCount() == 1) {
             next.handleRequest(exchange);
             dispatched.set(null);

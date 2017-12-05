@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.wildfly.swarm.microprofile.config.fraction;
+package org.wildfly.swarm.microprofile.config.fraction.detect;
 
 import org.wildfly.swarm.spi.meta.PackageFractionDetector;
 
