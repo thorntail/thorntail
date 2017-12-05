@@ -2,6 +2,7 @@
   <resources>
     <artifact name="com.netflix.hystrix:hystrix-core:${version.hystrix}"/>
     <artifact name="com.netflix.hystrix:hystrix-metrics-event-stream:${version.hystrix}"/>
+    <artifact name="org.hdrhistogram:HdrHistogram:${version.hdrHistogram}"/>
   </resources>
 
   <dependencies>
