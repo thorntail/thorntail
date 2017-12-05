@@ -30,7 +30,7 @@ public class EncodingImpl extends ExtensibleImpl implements Encoding {
 
     private String contentType;
     private Map<String, Header> headers;
-    private String style;
+    private Style style;
     private Boolean explode;
     private Boolean allowReserved;
 
@@ -85,10 +85,10 @@ public class EncodingImpl extends ExtensibleImpl implements Encoding {
     }
 
     /**
-     * @see org.eclipse.microprofile.openapi.models.media.Encoding#style(java.lang.String)
+     * @see org.eclipse.microprofile.openapi.models.media.Encoding#style(org.eclipse.microprofile.openapi.models.media.Encoding.Style)
      */
     @Override
-    public Encoding style(String style) {
+    public Encoding style(Style style) {
         this.style = style;
         return this;
     }
@@ -97,15 +97,15 @@ public class EncodingImpl extends ExtensibleImpl implements Encoding {
      * @see org.eclipse.microprofile.openapi.models.media.Encoding#getStyle()
      */
     @Override
-    public String getStyle() {
+    public Style getStyle() {
         return this.style;
     }
 
     /**
-     * @see org.eclipse.microprofile.openapi.models.media.Encoding#setStyle(java.lang.String)
+     * @see org.eclipse.microprofile.openapi.models.media.Encoding#setStyle(org.eclipse.microprofile.openapi.models.media.Encoding.Style)
      */
     @Override
-    public void setStyle(String style) {
+    public void setStyle(Style style) {
         this.style = style;
     }
 
