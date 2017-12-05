@@ -67,6 +67,11 @@ public class MetricsHttpHandler implements HttpHandler {
         // request is for us, so let's handle it
 
         Exporter exporter = obtainExporter(exchange);
+        if (exporter == null) {
+            exchange.setStatusCode(406);
+            exchange.setReasonPhrase("No exporter found for method " + exchange.getRequestMethod() + " and media type");
+            return;
+        }
 
         String scopePath = requestPath.substring(8);
         if (scopePath.startsWith("/")) {
@@ -151,27 +156,42 @@ public class MetricsHttpHandler implements HttpHandler {
     }
 
 
+    /**
+     * Determine which exporter we want.
+     * @param exchange The http exchange coming in
+     * @return An exporter instance or null in case no matching exporter existed.
+     */
     private Exporter obtainExporter(HttpServerExchange exchange) {
         HeaderValues acceptHeaders = exchange.getRequestHeaders().get(Headers.ACCEPT);
         Exporter exporter;
 
+        String method = exchange.getRequestMethod().toString();
+
         if (acceptHeaders == null) {
-            exporter = new PrometheusExporter();
+            if (method.equals("GET")) {
+                exporter = new PrometheusExporter();
+            } else {
+                return null;
+            }
         } else {
             // Header can look like "application/json, text/plain, */*"
             if (acceptHeaders.getFirst() != null && acceptHeaders.getFirst().startsWith("application/json")) {
 
-                String method = exchange.getRequestMethod().toString();
+
                 if (method.equals("GET")) {
                     exporter = new JsonExporter();
                 } else if (method.equals("OPTIONS")) {
                     exporter = new JsonMetadataExporter();
                 } else {
-                    throw new IllegalStateException("Unsupported method");
+                    return null;
                 }
             } else {
-                // This is the fallback
-                exporter = new PrometheusExporter();
+                // This is the fallback, but only for GET, as Prometheus does not support OPTIONS
+                if (method.equals("GET")) {
+                    exporter = new PrometheusExporter();
+                } else {
+                    return null;
+                }
             }
         }
         return exporter;
