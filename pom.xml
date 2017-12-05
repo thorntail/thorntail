@@ -1109,7 +1109,6 @@
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
         <module>testsuite/testsuite-management</module>
-        <module>testsuite/testsuite-microprofile-metrics</module>
         <module>testsuite/testsuite-modules</module>
         <module>testsuite/testsuite-monitor</module>
         <module>testsuite/testsuite-msc</module>
