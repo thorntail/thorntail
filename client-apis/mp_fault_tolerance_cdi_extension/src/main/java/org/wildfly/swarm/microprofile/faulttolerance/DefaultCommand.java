@@ -16,7 +16,6 @@
 
 package org.wildfly.swarm.microprofile.faulttolerance;
 
-import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import com.netflix.hystrix.HystrixCommand;
@@ -33,16 +32,14 @@ public class DefaultCommand extends HystrixCommand<Object> {
      * @param ctx
      * @param fallback
      * @param retryContext
-     * @param isAsync
      * @param hasCircuitBreaker
      */
-    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, RetryContext retryContext, boolean isAsync, boolean hasCircuitBreaker) {
+    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, RetryContext retryContext, boolean hasCircuitBreaker) {
         super(setter);
         this.ctx = ctx;
         this.fallback = fallback;
         this.retryContext = retryContext;
         this.hasCircuitBreaker = hasCircuitBreaker;
-        this.isAsync = isAsync;
     }
 
     @Override
@@ -88,9 +85,7 @@ public class DefaultCommand extends HystrixCommand<Object> {
     }
 
     private Object basicRun() throws Exception {
-        Object res;
-        res = ctx.proceed();
-        return unwrap(res);
+        return ctx.proceed();
     }
 
     @Override
@@ -98,24 +93,7 @@ public class DefaultCommand extends HystrixCommand<Object> {
         if (fallback == null) {
             return super.getFallback();
         }
-        return unwrap(fallback.get());
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Object unwrap(Object res) {
-        if (!isAsync) {
-            return res;
-        }
-        // For an async invocation we have to unwrap the result
-        if (res instanceof Future) {
-            try {
-                return ((Future) res).get();
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to get the result of: " + res);
-            }
-        } else {
-            throw new IllegalStateException("A result of an @Asynchronous call must be Future: " + res);
-        }
+        return fallback.get();
     }
 
     private final Supplier<Object> fallback;
@@ -126,5 +104,4 @@ public class DefaultCommand extends HystrixCommand<Object> {
 
     private final boolean hasCircuitBreaker;
 
-    private final boolean isAsync;
 }

@@ -54,7 +54,7 @@ public abstract class GenericConfig<X extends Annotation> {
     }
 
     private GenericConfig(Method method, AnnotatedMethod<?> annotatedMethod, X annotation, ElementType annotationSource) {
-        this.method = annotatedMethod.getJavaMember();
+        this.method = method;
         this.annotatedMethod = annotatedMethod;
         this.annotation = annotation;
         this.annotationSource = annotationSource;

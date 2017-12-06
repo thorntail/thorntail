@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wildfly.swarm.microprofile.faulttolerance.tck;
 
-package org.wildfly.swarm.microprofile.faulttolerance;
-
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
+import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
+import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
- * @author Antoine Sabot-Durand
+ *
+ * @author Martin Kouba
  */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance.cdi", metaInf = MetaInfDisposition.IMPORT)
-public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
+public class FaultToleranceExtension implements LoadableExtension {
 
-    public MicroProfileFaultToleranceFraction() {
+    @Override
+    public void register(ExtensionBuilder builder) {
+        builder.service(ApplicationArchiveProcessor.class, FaultToleranceApplicationArchiveProcessor.class);
     }
+
 }

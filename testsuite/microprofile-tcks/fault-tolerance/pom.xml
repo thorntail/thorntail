@@ -77,6 +77,14 @@
          </exclusions>
       </dependency>
 
+      <!-- This is needed for tests with @ShouldThrowException - the real
+         exception is org.jboss.weld.exceptions.DeploymentException -->
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core-impl</artifactId>
+         <scope>test</scope>
+      </dependency>
+
    </dependencies>
 
    <build>
@@ -94,6 +102,12 @@
                <dependenciesToScan>
                   <dependency>org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-tck</dependency>
                </dependenciesToScan>
+               <systemProperties>
+                  <property>
+                     <name>java.util.logging.config.file</name>
+                     <value>${project.build.testOutputDirectory}/logging.properties</value>
+                  </property>
+               </systemProperties>
             </configuration>
          </plugin>
       </plugins>
