@@ -35,6 +35,6 @@ public class MicroProfileConfigPackageDetector extends PackageFractionDetector {
 
     @Override
     public String artifactId() {
-        return "eclipse-microprofile-config";
+        return "microprofile-config";
     }
 }
