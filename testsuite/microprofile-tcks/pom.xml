@@ -90,6 +90,56 @@
             <scope>test</scope>
          </dependency>
 
+         <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-tck</artifactId>
+            <version>${version.microprofile-config}</version>
+            <scope>test</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+            <artifactId>microprofile-fault-tolerance-tck</artifactId>
+            <version>${version.microprofile-fault-tolerance}</version>
+            <scope>test</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.eclipse.microprofile.health</groupId>
+            <artifactId>microprofile-health-tck</artifactId>
+            <version>${version.microprofile-health}</version>
+            <scope>test</scope>
+         </dependency>
+
+
+         <dependency>
+            <groupId>org.eclipse.microprofile.metrics</groupId>
+            <artifactId>microprofile-metrics-rest-tck</artifactId>
+            <version>${version.microprofile-metrics}</version>
+            <scope>test</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.eclipse.microprofile.metrics</groupId>
+            <artifactId>microprofile-metrics-api-tck</artifactId>
+            <version>${version.microprofile-metrics}</version>
+            <scope>test</scope>
+            <!-- https://github.com/eclipse/microprofile-metrics/issues/185 -->
+            <exclusions>
+               <exclusion>
+                  <groupId>org.jboss.arquillian.container</groupId>
+                  <artifactId>arquillian-wlp-managed-8.5</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-tck</artifactId>
+            <version>${version.microprofile-jwt-auth}</version>
+            <scope>test</scope>
+         </dependency>
+
       </dependencies>
    </dependencyManagement>
 

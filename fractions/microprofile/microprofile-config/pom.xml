@@ -25,10 +25,6 @@
         <swarm.fraction.internal>false</swarm.fraction.internal>
         <swarm.fraction.stability>experimental</swarm.fraction.stability>
         <swarm.fraction.tags>EclipseMicroProfile,MicroServices,Config</swarm.fraction.tags>
-        <!-- The MicroProfile Config API version -->
-        <mpconfig.api.version>1.1</mpconfig.api.version>
-        <!-- The Wildfly Extras Version -->
-        <mpconfig.wildfly.version>1.1.5</mpconfig.wildfly.version>
     </properties>
 
     <build>
@@ -80,12 +76,10 @@
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>${mpconfig.wildfly.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-microprofile-config-implementation</artifactId>
-            <version>${mpconfig.wildfly.version}</version>
         </dependency>
         <!-- CDI fraction is required to be able to inject Config -->
         <dependency>
@@ -96,12 +90,11 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>${mpconfig.api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-microprofile-config-feature-pack</artifactId>
-            <version>${mpconfig.wildfly.version}</version>
+            <version>${version.wildfly-microprofile-config}</version>
             <type>zip</type>
             <scope>provided</scope>
             <exclusions>

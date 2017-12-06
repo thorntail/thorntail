@@ -26,9 +26,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>MicroProfile,JWT,Security,Web</swarm.fraction.tags>
-    <arquillian.version>1.1.13.Final</arquillian.version>
-    <!-- The MicroProfile JWT Auth API version -->
-    <mpjwt.auth.version>1.0</mpjwt.auth.version>
   </properties>
 
   <build>
@@ -40,23 +37,10 @@
     </resources>
   </build>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss.arquillian</groupId>
-        <artifactId>arquillian-bom</artifactId>
-        <version>${arquillian.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-api</artifactId>
-      <version>${mpjwt.auth.version}</version>
     </dependency>
     <dependency>
       <groupId>org.bitbucket.b_c</groupId>

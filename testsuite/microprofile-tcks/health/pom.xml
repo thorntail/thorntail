@@ -34,18 +34,11 @@
    <artifactId>wildlfy-swarm-microprofile-tck-health</artifactId>
    <name>MicroProfile TCK: Health</name>
 
-   <properties>
-      <!-- The version should be located in build-parent -->
-      <version.mp-health>1.0</version.mp-health>
-   </properties>
-
    <dependencies>
 
       <dependency>
          <groupId>org.eclipse.microprofile.health</groupId>
          <artifactId>microprofile-health-tck</artifactId>
-         <version>${version.mp-health}</version>
-         <scope>test</scope>
       </dependency>
 
       <dependency>

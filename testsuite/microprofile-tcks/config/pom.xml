@@ -33,18 +33,11 @@
    <artifactId>wildlfy-swarm-microprofile-tck-config</artifactId>
    <name>MicroProfile TCK: Config</name>
 
-   <properties>
-      <!-- The version should be located in build-parent -->
-      <version.mp-config>1.1</version.mp-config>
-   </properties>
-
    <dependencies>
 
       <dependency>
          <groupId>org.eclipse.microprofile.config</groupId>
          <artifactId>microprofile-config-tck</artifactId>
-         <version>${version.mp-config}</version>
-         <scope>test</scope>
       </dependency>
 
       <dependency>

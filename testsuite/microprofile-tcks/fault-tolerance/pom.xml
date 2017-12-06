@@ -33,18 +33,11 @@
    <artifactId>wildlfy-swarm-microprofile-tck-fault-tolerance</artifactId>
    <name>MicroProfile TCK: Fault Tolerance</name>
 
-   <properties>
-      <!-- The version should be located in build-parent -->
-      <version.mp-ft>1.0</version.mp-ft>
-   </properties>
-
    <dependencies>
 
       <dependency>
          <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
          <artifactId>microprofile-fault-tolerance-tck</artifactId>
-         <version>${version.mp-ft}</version>
-         <scope>test</scope>
       </dependency>
 
       <dependency>
