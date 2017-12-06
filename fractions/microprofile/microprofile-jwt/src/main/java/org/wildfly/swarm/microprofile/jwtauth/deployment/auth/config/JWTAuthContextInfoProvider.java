@@ -48,7 +48,6 @@ public class JWTAuthContextInfoProvider {
 
     @PostConstruct
     void init() {
-        System.out.printf("JWTAuthContextInfoProvider.init\n");
     }
 
     @Produces
