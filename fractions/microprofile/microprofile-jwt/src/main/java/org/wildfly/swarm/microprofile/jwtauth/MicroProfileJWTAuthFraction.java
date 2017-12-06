@@ -32,8 +32,6 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 @Configurable("swarm.microprofile.jwtauth")
 @DeploymentModule(name = "org.eclipse.microprofile.jwt")
 @DeploymentModule(name = "org.glassfish.javax.json")
-@DeploymentModule(name = "org.jboss.weld.core")
-@DeploymentModule(name = "org.jboss.weld.spi")
 @DeploymentModule(name = "org.eclipse.microprofile.config.api", export = true)
 @DeploymentModule(name = "org.wildfly.extension.microprofile.config", export = true)
 @DeploymentModule(name = "org.wildfly.swarm.microprofile.jwtauth", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
