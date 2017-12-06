@@ -28,7 +28,7 @@ public class MPJWTAuthWebXmlDetector extends WebXmlFractionDetector {
 
     @Override
     public String artifactId() {
-        return "org/wildfly/swarm/microprofile/jwtauth";
+        return "microprofile-jwt";
     }
 
     /**

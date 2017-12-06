@@ -23,7 +23,7 @@ import org.wildfly.swarm.spi.meta.PackageFractionDetector;
 public class MPJwtPackageDetector extends PackageFractionDetector {
 
     public MPJwtPackageDetector() {
-        anyPackageOf("org.eclipse.microprofile.annotation");
+        anyPackageOf("org.eclipse.microprofile.auth", "org.eclipse.microprofile.jwt");
     }
 
     @Override
