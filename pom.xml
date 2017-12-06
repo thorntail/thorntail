@@ -1041,74 +1041,6 @@
     </profile>
 
     <profile>
-      <id>core-testsuite</id>
-      <activation>
-        <property>
-          <name>!swarm.product.build</name>
-        </property>
-      </activation>
-
-      <modules>
-        <module>testsuite</module>
-        <module>testsuite/testsuite-ajp</module>
-        <module>testsuite/testsuite-arquillian-without-cdi</module>
-        <module>testsuite/testsuite-buildtool</module>
-        <module>testsuite/testsuite-cdi</module>
-        <module>testsuite/testsuite-cdi-bean-validation</module>
-        <module>testsuite/testsuite-cdi-ejb</module>
-        <module>testsuite/testsuite-cdi-jpa-jta</module>
-        <module>testsuite/testsuite-connector</module>
-        <module>testsuite/testsuite-container</module>
-        <module>testsuite/testsuite-datasources</module>
-        <module>testsuite/testsuite-datasources-config</module>
-        <module>testsuite/testsuite-datasources-defaultds</module>
-        <module>testsuite/testsuite-default-deployment</module>
-        <module>testsuite/testsuite-ee</module>
-        <module>testsuite/testsuite-ejb</module>
-        <module>testsuite/testsuite-https</module>
-        <module>testsuite/testsuite-hystrix</module>
-        <module>testsuite/testsuite-io</module>
-        <module>testsuite/testsuite-jaxrs</module>
-        <module>testsuite/testsuite-jaxrs-cdi</module>
-        <module>testsuite/testsuite-jaxrs-client</module>
-        <module>testsuite/testsuite-jaxrs-ejb</module>
-        <module>testsuite/testsuite-jca</module>
-        <module>testsuite/testsuite-jmx</module>
-        <module>testsuite/testsuite-jmx-remote-remoting</module>
-        <module>testsuite/testsuite-jmx-remote-management</module>
-        <module>testsuite/testsuite-jmx-remote-undertow</module>
-        <module>testsuite/testsuite-jpa</module>
-        <module>testsuite/testsuite-jpa-mysql</module>
-        <module>testsuite/testsuite-jpa-postgresql</module>
-        <module>testsuite/testsuite-jsf</module>
-        <module>testsuite/testsuite-jsp</module>
-        <module>testsuite/testsuite-keycloak</module>
-        <module>testsuite/testsuite-local-dependencies</module>
-        <module>testsuite/testsuite-logging</module>
-        <module>testsuite/testsuite-management</module>
-        <module>testsuite/testsuite-modules</module>
-        <module>testsuite/testsuite-monitor</module>
-        <module>testsuite/testsuite-msc</module>
-        <module>testsuite/testsuite-naming</module>
-        <module>testsuite/testsuite-project-stages</module>
-        <module>testsuite/testsuite-remoting</module>
-        <module>testsuite/testsuite-request-controller</module>
-        <module>testsuite/testsuite-ribbon</module>
-        <module>testsuite/testsuite-ribbon-secured</module>
-        <module>testsuite/testsuite-security</module>
-        <module>testsuite/testsuite-servlet-cdi</module>
-        <module>testsuite/testsuite-servlet-ejb</module>
-        <module>testsuite/testsuite-servlet-jpa-jta</module>
-        <module>testsuite/testsuite-topology</module>
-        <module>testsuite/testsuite-topology-api</module>
-        <module>testsuite/testsuite-topology-openshift</module>
-        <module>testsuite/testsuite-transactions</module>
-        <module>testsuite/testsuite-undertow</module>
-        <module>testsuite/testsuite-undertow-context</module>
-      </modules>
-    </profile>
-
-    <profile>
       <id>unsupported</id>
       <activation>
         <property>
@@ -1197,7 +1129,90 @@
         <module>boms/bom-frozen</module>
         <module>boms/bom-locked</module>
         <module>boms/bom-all</module>
+      </modules>
+    </profile>
 
+    <profile>
+      <id>core-testsuite</id>
+      <activation>
+        <property>
+          <name>!swarm.product.build</name>
+        </property>
+      </activation>
+
+      <modules>
+        <module>testsuite</module>
+        <module>testsuite/testsuite-ajp</module>
+        <module>testsuite/testsuite-arquillian-without-cdi</module>
+        <module>testsuite/testsuite-buildtool</module>
+        <module>testsuite/testsuite-cdi</module>
+        <module>testsuite/testsuite-cdi-bean-validation</module>
+        <module>testsuite/testsuite-cdi-ejb</module>
+        <module>testsuite/testsuite-cdi-jpa-jta</module>
+        <module>testsuite/testsuite-connector</module>
+        <module>testsuite/testsuite-container</module>
+        <module>testsuite/testsuite-datasources</module>
+        <module>testsuite/testsuite-datasources-config</module>
+        <module>testsuite/testsuite-datasources-defaultds</module>
+        <module>testsuite/testsuite-default-deployment</module>
+        <module>testsuite/testsuite-ee</module>
+        <module>testsuite/testsuite-ejb</module>
+        <module>testsuite/testsuite-https</module>
+        <module>testsuite/testsuite-hystrix</module>
+        <module>testsuite/testsuite-io</module>
+        <module>testsuite/testsuite-jaxrs</module>
+        <module>testsuite/testsuite-jaxrs-cdi</module>
+        <module>testsuite/testsuite-jaxrs-client</module>
+        <module>testsuite/testsuite-jaxrs-ejb</module>
+        <module>testsuite/testsuite-jca</module>
+        <module>testsuite/testsuite-jmx</module>
+        <module>testsuite/testsuite-jmx-remote-remoting</module>
+        <module>testsuite/testsuite-jmx-remote-management</module>
+        <module>testsuite/testsuite-jmx-remote-undertow</module>
+        <module>testsuite/testsuite-jpa</module>
+        <module>testsuite/testsuite-jpa-mysql</module>
+        <module>testsuite/testsuite-jpa-postgresql</module>
+        <module>testsuite/testsuite-jsf</module>
+        <module>testsuite/testsuite-jsp</module>
+        <module>testsuite/testsuite-keycloak</module>
+        <module>testsuite/testsuite-local-dependencies</module>
+        <module>testsuite/testsuite-logging</module>
+        <module>testsuite/testsuite-management</module>
+        <module>testsuite/testsuite-modules</module>
+        <module>testsuite/testsuite-monitor</module>
+        <module>testsuite/testsuite-msc</module>
+        <module>testsuite/testsuite-naming</module>
+        <module>testsuite/testsuite-project-stages</module>
+        <module>testsuite/testsuite-remoting</module>
+        <module>testsuite/testsuite-request-controller</module>
+        <module>testsuite/testsuite-ribbon</module>
+        <module>testsuite/testsuite-ribbon-secured</module>
+        <module>testsuite/testsuite-security</module>
+        <module>testsuite/testsuite-servlet-cdi</module>
+        <module>testsuite/testsuite-servlet-ejb</module>
+        <module>testsuite/testsuite-servlet-jpa-jta</module>
+        <module>testsuite/testsuite-topology</module>
+        <module>testsuite/testsuite-topology-api</module>
+        <module>testsuite/testsuite-topology-openshift</module>
+        <module>testsuite/testsuite-transactions</module>
+        <module>testsuite/testsuite-undertow</module>
+        <module>testsuite/testsuite-undertow-context</module>
+      </modules>
+    </profile>
+
+
+    <profile>
+      <id>unsupported-testsuite</id>
+      <activation>
+        <property>
+          <name>!swarm.product.build</name>
+        </property>
+      </activation>
+      <properties>
+        <testCategory.excluded>category.ProductOnly</testCategory.excluded>
+      </properties>
+
+      <modules>
         <module>testsuite/testsuite-asciidoctorj</module>
         <module>testsuite/testsuite-batch-jberet</module>
         <module>testsuite/testsuite-camel-cdi</module>
