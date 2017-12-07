@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wildfly.swarm.microprofile.faulttolerance.deployment;
 
-package org.wildfly.swarm.microprofile.faulttolerance;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
+import org.wildfly.swarm.microprofile.faulttolerance.deployment.HystrixExtension;
+import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.FaultToleranceOperation;
 
-/**
- * @author Antoine Sabot-Durand
- */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance", export = true, slot = "deployment", metaInf = MetaInfDisposition.IMPORT)
-public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
+@Dependent
+public class FaultToleranceOperations {
 
-    public MicroProfileFaultToleranceFraction() {
+    @Inject
+    HystrixExtension extension;
+
+    public FaultToleranceOperation get(String methodKey) {
+        return extension.getFaultToleranceOperation(methodKey);
     }
+
 }

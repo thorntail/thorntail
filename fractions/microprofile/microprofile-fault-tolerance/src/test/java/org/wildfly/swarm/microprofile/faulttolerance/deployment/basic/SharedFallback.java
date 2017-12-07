@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.microprofile.faulttolerance;
+package org.wildfly.swarm.microprofile.faulttolerance.deployment.basic;
 
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
- * @author Antoine Sabot-Durand
+ * @author Martin Kouba
  */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance", export = true, slot = "deployment", metaInf = MetaInfDisposition.IMPORT)
-public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
+@ApplicationScoped
+public class SharedFallback {
 
-    public MicroProfileFaultToleranceFraction() {
+    boolean ping() {
+        return true;
     }
+
 }
