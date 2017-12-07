@@ -34,11 +34,6 @@
   <packaging>jar</packaging>
 
   <properties>
-    <!-- The MicroProfile Config API version -->
-    <mpconfig.api.version>1.1</mpconfig.api.version>
-    <!-- The Wildfly Extras Version -->
-    <mpconfig.wildfly.version>1.1.2</mpconfig.wildfly.version>
-    <mpft-api.version>1.0</mpft-api.version>
     <hystrix.version>1.5.12</hystrix.version>
     <version.arquillian-weld-embedded>2.0.0.Beta5</version.arquillian-weld-embedded>
     <version.wildfly-microprofile-config>1.1.1</version.wildfly-microprofile-config>
@@ -72,7 +67,6 @@
     <dependency>
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-api</artifactId>
-      <version>${mpconfig.api.version}</version>
     </dependency>
     <dependency>
       <groupId>com.netflix.hystrix</groupId>
@@ -82,35 +76,27 @@
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <version>${mpft-api.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-weld</artifactId>
       <scope>provided</scope>
     </dependency>
-
-
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>
       <artifactId>arquillian-weld-embedded</artifactId>
       <version>${version.arquillian-weld-embedded}</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-microprofile-config-implementation</artifactId>
-      <version>${version.wildfly-microprofile-config}</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 </project>

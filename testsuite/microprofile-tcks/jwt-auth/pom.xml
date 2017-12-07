@@ -35,8 +35,6 @@
    <name>MicroProfile TCK: JWT</name>
 
    <properties>
-      <!-- The version should be located in build-parent -->
-      <version.mp-jwt>1.0</version.mp-jwt>
       <!-- TCK needs a JAX-RS Client -->
       <!-- Override 3.0.19 due to some odd dependency problems -->
       <version.resteasy>3.1.4.Final</version.resteasy>
@@ -47,14 +45,12 @@
       <dependency>
          <groupId>org.eclipse.microprofile.jwt</groupId>
          <artifactId>microprofile-jwt-auth-tck</artifactId>
-         <version>${version.mp-jwt}</version>
-         <scope>test</scope>
       </dependency>
 
       <dependency>
          <groupId>org.eclipse.microprofile.jwt</groupId>
          <artifactId>microprofile-jwt-auth-tck</artifactId>
-         <version>${version.mp-jwt}</version>
+         <version>${version.microprofile-jwt-auth}</version>
          <type>test-jar</type>
          <scope>test</scope>
       </dependency>

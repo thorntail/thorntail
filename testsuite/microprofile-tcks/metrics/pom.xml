@@ -34,37 +34,21 @@
    <artifactId>wildlfy-swarm-microprofile-tck-metrics</artifactId>
    <name>MicroProfile TCK: Metrics</name>
 
-   <properties>
-      <!-- The version should be located in build-parent -->
-      <version.mp-metrics>1.0.1</version.mp-metrics>
-      <mp.test.engine>junit</mp.test.engine>
-   </properties>
-
    <dependencies>
 
       <dependency>
          <groupId>org.eclipse.microprofile.metrics</groupId>
          <artifactId>microprofile-metrics-api</artifactId>
-         <version>${version.mp-metrics}</version>
       </dependency>
 
       <dependency>
          <groupId>org.eclipse.microprofile.metrics</groupId>
          <artifactId>microprofile-metrics-rest-tck</artifactId>
-         <version>${version.mp-metrics}</version>
       </dependency>
 
       <dependency>
          <groupId>org.eclipse.microprofile.metrics</groupId>
          <artifactId>microprofile-metrics-api-tck</artifactId>
-         <version>${version.mp-metrics}</version>
-         <!-- https://github.com/eclipse/microprofile-metrics/issues/185 -->
-         <exclusions>
-            <exclusion>
-               <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-wlp-managed-8.5</artifactId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
       <dependency>

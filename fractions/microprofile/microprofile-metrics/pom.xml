@@ -25,7 +25,6 @@
   <properties>
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>Microprofile, Metrics, Monitoring</swarm.fraction.tags>
-    <version.microprofile.metrics.api>1.0</version.microprofile.metrics.api>
   </properties>
 
   <build>
@@ -92,7 +91,6 @@
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
