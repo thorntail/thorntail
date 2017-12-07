@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  */
-package org.wildfly.swarm.microprofile.metrics.cdi;
+package org.wildfly.swarm.microprofile.metrics.deployment;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -26,7 +26,6 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -57,7 +56,6 @@ import org.jboss.logging.Logger;
 /**
  * @author hrupp
  */
-@Vetoed
 public class MetricCdiInjectionExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
@@ -81,12 +79,23 @@ public class MetricCdiInjectionExtension implements Extension {
         LOGGER.infof("MetricCdiInjectionExtension");
     }
 
+
     private void addInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
+        LOGGER.info("MicroProfile: Metrics activated");
+
         declareAsInterceptorBinding(Counted.class, manager, bbd);
         declareAsInterceptorBinding(Gauge.class, manager, bbd);
         declareAsInterceptorBinding(Timed.class, manager, bbd);
         declareAsInterceptorBinding(Metered.class, manager, bbd);
-        LOGGER.info("BeforeBeanDiscovery, registered interceptor bindings");
+
+        // It seems that fraction deployment module cannot be picked up as a CDI bean archive - see also SWARM-1725
+        bbd.addAnnotatedType(manager.createAnnotatedType(AMetricRegistryFactory.class));
+        bbd.addAnnotatedType(manager.createAnnotatedType(MetricNameFactory.class));
+
+        bbd.addAnnotatedType(manager.createAnnotatedType(MeteredInterceptor.class));
+        bbd.addAnnotatedType(manager.createAnnotatedType(CountedInterceptor.class));
+        bbd.addAnnotatedType(manager.createAnnotatedType(TimedInterceptor.class));
+        bbd.addAnnotatedType(manager.createAnnotatedType(MetricsInterceptor.class));
     }
 
     private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class }) ProcessAnnotatedType<X> pat) {

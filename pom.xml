@@ -717,11 +717,6 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>metrics-api</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
         <artifactId>microprofile-metrics</artifactId>
         <version>2017.12.0-SNAPSHOT</version>
       </dependency>
@@ -971,7 +966,6 @@
     <module>plugins/maven</module>
 
     <module>client-apis/health-api</module>
-    <module>client-apis/metrics-api</module>
 
     <module>fractions/javaee/bean-validation</module>
     <module>fractions/javaee/cdi</module>

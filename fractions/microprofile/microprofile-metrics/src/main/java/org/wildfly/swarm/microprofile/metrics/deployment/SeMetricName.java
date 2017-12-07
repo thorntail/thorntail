@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.microprofile.metrics.cdi;
-
-import static org.wildfly.swarm.microprofile.metrics.cdi.MetricsParameter.useAbsoluteName;
+package org.wildfly.swarm.microprofile.metrics.deployment;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,9 +55,9 @@ import org.eclipse.microprofile.metrics.annotation.Metric;
         if (member.isAnnotationPresent(Metric.class)) {
             Metric metric = member.getAnnotation(Metric.class);
             String name = (metric.name().isEmpty()) ? member.getJavaMember().getName() : of(metric.name());
-            return metric.absolute() | parameters.contains(useAbsoluteName) ? name : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), name);
+            return metric.absolute() | parameters.contains(MetricsParameter.useAbsoluteName) ? name : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), name);
         } else {
-            return parameters.contains(useAbsoluteName) ? member.getJavaMember().getName() : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), member.getJavaMember().getName());
+            return parameters.contains(MetricsParameter.useAbsoluteName) ? member.getJavaMember().getName() : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), member.getJavaMember().getName());
         }
     }
 
@@ -72,9 +70,9 @@ import org.eclipse.microprofile.metrics.annotation.Metric;
         if (parameter.isAnnotationPresent(Metric.class)) {
             Metric metric = parameter.getAnnotation(Metric.class);
             String name = (metric.name().isEmpty()) ? getParameterName(parameter) : of(metric.name());
-            return metric.absolute() | parameters.contains(useAbsoluteName) ? name : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), name);
+            return metric.absolute() | parameters.contains(MetricsParameter.useAbsoluteName) ? name : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), name);
         } else {
-            return parameters.contains(useAbsoluteName) ? getParameterName(parameter) : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), getParameterName(parameter));
+            return parameters.contains(MetricsParameter.useAbsoluteName) ? getParameterName(parameter) : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), getParameterName(parameter));
         }
     }
 

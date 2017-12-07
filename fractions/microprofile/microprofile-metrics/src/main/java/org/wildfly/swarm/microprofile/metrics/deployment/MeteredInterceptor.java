@@ -15,12 +15,12 @@
  *   limitations under the License.
  *
  */
-package org.wildfly.swarm.microprofile.metrics.cdi;
+package org.wildfly.swarm.microprofile.metrics.deployment;
 
 
+import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.Timer;
-import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.eclipse.microprofile.metrics.annotation.Metered;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Intercepted;
@@ -35,10 +35,10 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 
 @SuppressWarnings("unused")
-@Timed
+@Metered
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-/* package-private */ class TimedInterceptor {
+/* packaged-private */ class MeteredInterceptor {
 
     private final Bean<?> bean;
 
@@ -47,39 +47,35 @@ import java.lang.reflect.Member;
     private final MetricResolver resolver;
 
     @Inject
-    private TimedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry) {
+    private MeteredInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry) {
         this.bean = bean;
         this.registry = registry;
         this.resolver = new MetricResolver();
     }
 
     @AroundConstruct
-    private Object timedConstructor(InvocationContext context) throws Exception {
-        return timedCallable(context, context.getConstructor());
+    private Object meteredConstructor(InvocationContext context) throws Exception {
+        return meteredCallable(context, context.getConstructor());
     }
 
     @AroundInvoke
-    private Object timedMethod(InvocationContext context) throws Exception {
-        return timedCallable(context, context.getMethod());
+    private Object meteredMethod(InvocationContext context) throws Exception {
+        return meteredCallable(context, context.getMethod());
     }
 
     @AroundTimeout
-    private Object timedTimeout(InvocationContext context) throws Exception {
-        return timedCallable(context, context.getMethod());
+    private Object meteredTimeout(InvocationContext context) throws Exception {
+        return meteredCallable(context, context.getMethod());
     }
 
-    private <E extends Member & AnnotatedElement> Object timedCallable(InvocationContext context, E element) throws Exception {
-        String name = resolver.timed(bean.getBeanClass(), element).metricName();
-        Timer timer = (Timer) registry.getMetrics().get(name);
-        if (timer == null) {
-            throw new IllegalStateException("No timer with name [" + name + "] found in registry [" + registry + "]");
+    private <E extends Member & AnnotatedElement> Object meteredCallable(InvocationContext context, E element) throws Exception {
+        String name = resolver.metered(bean.getBeanClass(), element).metricName();
+        Meter meter = (Meter) registry.getMetrics().get(name);
+        if (meter == null) {
+            throw new IllegalStateException("No meter with name [" + name + "] found in registry [" + registry + "]");
         }
 
-        Timer.Context time = timer.time();
-        try {
-            return context.proceed();
-        } finally {
-            time.stop();
-        }
+        meter.mark();
+        return context.proceed();
     }
 }
