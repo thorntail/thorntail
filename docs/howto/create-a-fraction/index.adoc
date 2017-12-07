@@ -289,7 +289,7 @@ capabilities.
 [source,java]
 ----
 @Configurable("swarm.myfraction.taco")
-@AttributeDefinite("Determines the type of taco to expose.")
+@AttributeDocumentation("Determines the type of taco to expose.")
 private String tacoType;
 ----
 
@@ -301,7 +301,7 @@ item.
 [source,java]
 ----
 @Configurable("swarm.myfraction.taco")
-@AttributeDefinite("Determines the type of taco to expose.")
+@AttributeDocumentation("Determines the type of taco to expose.")
 private Defaultable<String> tacoType = Defaultable.string("soft");
 ----
 
