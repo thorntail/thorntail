@@ -20,7 +20,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-file</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -33,17 +33,17 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>translator-file</artifactId>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>file-api</artifactId>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>connector-ftp</artifactId>
       <version>${version.teiid}</version>
     </dependency>

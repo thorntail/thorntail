@@ -20,7 +20,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-misc</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -33,7 +33,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>translator-olap</artifactId>
       <version>${version.teiid}</version>
     </dependency>

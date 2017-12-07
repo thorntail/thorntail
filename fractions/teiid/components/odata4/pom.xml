@@ -21,7 +21,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-jdbc</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -34,7 +34,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-odata</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -47,7 +47,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-ws</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -60,12 +60,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>translator-odata4</artifactId>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>connector-ws</artifactId>
       <version>${version.teiid}</version>
     </dependency>

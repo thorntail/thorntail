@@ -23,7 +23,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.teiid.translator.ExecutionFactory;
 import org.teiid.translator.Translator;
@@ -43,11 +42,15 @@ public class TranslatorCustomizer implements Customizer {
     public void customize() throws Exception {
         HashMap<String, String> ras = new HashMap<>();
         ras.put(PRE + "accumulo", "accumulo");
+        ras.put(PRE + "amazon.s3", "amazon-s3");
         ras.put(PRE + "cassandra", "cassandra");
+        ras.put(PRE + "couchbase", "couchbase");
         ras.put(PRE + "excel", "excel");
         ras.put(PRE + "file", "file");
         ras.put(PRE + "ftp", "ftp");
         ras.put(PRE + "google", "google");
+        ras.put(PRE + "hive", "hive");
+        ras.put(PRE + "infinispan-hotrod", "infinispan-hotrod");
         ras.put(PRE + "jdbc", "jdbc");
         ras.put(PRE + "ldap", "ldap");
         ras.put(PRE + "loopback", "loopback");
@@ -55,24 +58,26 @@ public class TranslatorCustomizer implements Customizer {
         ras.put(PRE + "odata", "odata");
         ras.put(PRE + "odata4", "odata4");
         ras.put(PRE + "olap", "olap");
+        ras.put(PRE + "pheonix", "pheonix");
+        ras.put(PRE + "prestodb", "prestodb");
         ras.put(PRE + "salesforce", "salesforce");
         ras.put(PRE + "salesforce-34", "salesforce-34");
+        ras.put(PRE + "salesforce-41", "salesforce-41");
         ras.put(PRE + "simpledb", "simpledb");
         ras.put(PRE + "solr", "solr");
         ras.put(PRE + "swagger", "swagger");
         ras.put(PRE + "ws", "ws");
 
         for (Map.Entry<String, String> e : ras.entrySet()) {
-            ModuleIdentifier id = ModuleIdentifier.create(e.getKey(), "main");
-            loadTranslators(id);
+            loadTranslators(e.getKey());
         }
     }
 
     @SuppressWarnings("rawtypes")
-    private void loadTranslators(ModuleIdentifier id) {
+    private void loadTranslators(String moduleName) {
         ClassLoader translatorLoader = this.getClass().getClassLoader();
         try {
-            final Module module = Module.getBootModuleLoader().loadModule(id);
+            final Module module = Module.getBootModuleLoader().loadModule(moduleName);
             if (module != null) {
                 translatorLoader = module.getClassLoader();
                 final ServiceLoader<ExecutionFactory> serviceLoader = ServiceLoader.load(ExecutionFactory.class,
@@ -80,8 +85,7 @@ public class TranslatorCustomizer implements Customizer {
                 if (serviceLoader != null) {
                     for (ExecutionFactory ef : serviceLoader) {
                         Translator t = ef.getClass().getAnnotation(Translator.class);
-                        fraction.translator(t.name(), x -> x.module("org.jboss.teiid.translator.jdbc"));
-                        //TeiidMessages.MESSAGES.autoDetectedTranslator(t.name());
+                        fraction.translator(t.name(), x -> x.module(moduleName));
                     }
                 }
             }
