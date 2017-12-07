@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.microprofile.faulttolerance;
+package org.wildfly.swarm.microprofile.faulttolerance.deployment.basic;
 
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
+import org.eclipse.microprofile.faulttolerance.ExecutionContext;
+import org.eclipse.microprofile.faulttolerance.FallbackHandler;
 
-/**
- * @author Antoine Sabot-Durand
- */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance", export = true, slot = "deployment", metaInf = MetaInfDisposition.IMPORT)
-public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
-
-    public MicroProfileFaultToleranceFraction() {
+public class StringFallbackHandler implements FallbackHandler<String> {
+    @Override
+    public String handle(ExecutionContext context) {
+        return "fallback for " + context.getMethod().getName();
     }
 }
+

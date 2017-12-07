@@ -972,7 +972,6 @@
 
     <module>client-apis/health-api</module>
     <module>client-apis/metrics-api</module>
-    <module>client-apis/mp_fault_tolerance_cdi_extension</module>
 
     <module>fractions/javaee/bean-validation</module>
     <module>fractions/javaee/cdi</module>

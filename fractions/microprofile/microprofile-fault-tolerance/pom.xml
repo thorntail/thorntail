@@ -35,6 +35,7 @@
     <swarm.fraction.internal>false</swarm.fraction.internal>
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>EclipseMicroProfile,MicroServices,FaultTolerance</swarm.fraction.tags>
+    <version.arquillian-weld-embedded>2.0.0.Beta5</version.arquillian-weld-embedded>
   </properties>
 
   <build>
@@ -75,9 +76,29 @@
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>mp_fault_tolerance_cdi_extension</artifactId>
-    </dependency>
+
+   <!-- Test dependencies -->
+   <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-weld-embedded</artifactId>
+      <version>${version.arquillian-weld-embedded}</version>
+      <scope>test</scope>
+   </dependency>
+   <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+   </dependency>
+   <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-weld</artifactId>
+      <scope>test</scope>
+   </dependency>
+   <dependency>
+     <groupId>org.slf4j</groupId>
+     <artifactId>slf4j-simple</artifactId>
+   </dependency>
+
   </dependencies>
+
 </project>

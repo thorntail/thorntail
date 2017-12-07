@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wildfly.swarm.microprofile.faulttolerance.deployment.sync;
 
-package org.wildfly.swarm.microprofile.faulttolerance;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
+public class ShakyServiceClient {
 
-/**
- * @author Antoine Sabot-Durand
- */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance", export = true, slot = "deployment", metaInf = MetaInfDisposition.IMPORT)
-public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
+    static final int REQUEST_THRESHOLD = 2;
 
-    public MicroProfileFaultToleranceFraction() {
+    static final long DELAY = 400;
+
+    // successThreshold is ignored
+    @CircuitBreaker(requestVolumeThreshold = REQUEST_THRESHOLD, delay = DELAY, successThreshold = 2)
+    void ping() {
+        throw new IllegalStateException("Service call failed!");
     }
+
 }

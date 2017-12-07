@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wildfly.swarm.microprofile.faulttolerance.deployment;
 
-package org.wildfly.swarm.microprofile.faulttolerance;
+import javax.enterprise.inject.spi.Extension;
 
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
-/**
- * @author Antoine Sabot-Durand
- */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance", export = true, slot = "deployment", metaInf = MetaInfDisposition.IMPORT)
-public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
+public class TestArchive {
 
-    public MicroProfileFaultToleranceFraction() {
+    public static JavaArchive createBase(String name) {
+        return ShrinkWrap.create(JavaArchive.class,name)
+                .addAsServiceProvider(Extension.class, HystrixExtension.class)
+                .addAsManifestResource(EmptyAsset.INSTANCE,
+                "beans.xml");
     }
+
 }

@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wildfly.swarm.microprofile.faulttolerance.deployment.config.extension;
 
-package org.wildfly.swarm.microprofile.faulttolerance;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
+import javax.enterprise.context.Dependent;
 
-/**
- * @author Antoine Sabot-Durand
- */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance", export = true, slot = "deployment", metaInf = MetaInfDisposition.IMPORT)
-public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
 
-    public MicroProfileFaultToleranceFraction() {
+@Dependent
+public class UnconfiguredService {
+
+    static final AtomicInteger COUNTER = new AtomicInteger(0);
+
+    // Custom extension should add something like @Retry(maxRetries = 2)
+    public void ping() {
+        COUNTER.incrementAndGet();
+        throw new IllegalStateException();
     }
+
 }

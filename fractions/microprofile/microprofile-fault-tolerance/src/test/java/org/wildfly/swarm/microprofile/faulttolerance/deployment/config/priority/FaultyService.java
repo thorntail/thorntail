@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wildfly.swarm.microprofile.faulttolerance.deployment.config.priority;
 
-package org.wildfly.swarm.microprofile.faulttolerance;
+import javax.enterprise.context.Dependent;
 
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
+import org.eclipse.microprofile.faulttolerance.Retry;
 
 /**
- * @author Antoine Sabot-Durand
+ * Expected global configuration:
+ *
+ * <pre>
+ *  Retry/delay=10
+ * </pre>
  */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance", export = true, slot = "deployment", metaInf = MetaInfDisposition.IMPORT)
-public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
+@Dependent
+@Retry(maxRetries = 1)
+public class FaultyService {
 
-    public MicroProfileFaultToleranceFraction() {
+    @Retry(maxRetries = 2)
+    public void foo() {
     }
+
+    // This method should use class-level annotation
+    public void bar() {
+    }
+
 }
