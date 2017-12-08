@@ -188,6 +188,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
             throw new IllegalArgumentException("Type of existing previously registered metric " + name + " does not " +
                                                 "match passed type");
         }
+
         return (T) metricMap.get(name);
     }
 
