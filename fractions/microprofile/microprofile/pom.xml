@@ -23,7 +23,7 @@
 
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>JavaEE,Web,MicroProfile</swarm.fraction.tags>
+    <swarm.fraction.tags>JavaEE,Web,Eclipse MicroProfile</swarm.fraction.tags>
   </properties>
 
   <build>

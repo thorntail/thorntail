@@ -23,8 +23,8 @@
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.stability>experimental</swarm.fraction.stability>
-    <swarm.fraction.tags>Microprofile, Metrics, Monitoring</swarm.fraction.tags>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
+    <swarm.fraction.tags>Eclipse Microprofile,Metrics,Monitoring</swarm.fraction.tags>
   </properties>
 
   <build>
