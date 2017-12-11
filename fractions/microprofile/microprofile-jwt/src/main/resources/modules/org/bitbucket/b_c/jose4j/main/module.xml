@@ -13,12 +13,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<module xmlns="urn:jboss:module:1.5" name="org.eclipse.microprofile.jwt">
+<module xmlns="urn:jboss:module:1.5" name="org.bitbucket.b_c.jose4j">
    <resources>
-      <artifact name="org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:${version.microprofile-jwt-auth}" />
+      <artifact name="org.bitbucket.b_c:jose4j:${version.jose4j}" />
    </resources>
    <dependencies>
-      <module name="javax.enterprise.api" />
-      <module name="javax.json.api" export="true" />
+      <!-- Needed for javax.security.auth -->
+      <module name="javax.api" />
+      <module name="org.slf4j" />
    </dependencies>
 </module>

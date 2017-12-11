@@ -24,10 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
-import io.undertow.servlet.ServletExtension;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationValue;
@@ -37,9 +35,7 @@ import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.microprofile.jwtauth.MicroProfileJWTAuthFraction;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
@@ -86,13 +82,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
 
     @Override
     public void process() throws Exception {
-        // This is really a work around addAsServiceProvider not supporting multiple addAsServiceProvider calls (https://github.com/shrinkwrap/shrinkwrap/issues/112)
-        JavaArchive jwtAuthJar = ShrinkWrap.create(JavaArchive.class, "jwt-auth-wfswarm.jar")
-                .addAsServiceProvider(ServletExtension.class.getName(), "org.wildfly.swarm.microprofile.jwtauth.deployment.auth.JWTAuthMethodExtension")
-                .addAsServiceProvider("JWTCallerPrincipalFactory", "org.wildfly.swarm.microprofile.jwtauth.deployment.principal.DefaultJWTCallerPrincipalFactory")
-                .addAsServiceProvider(Extension.class.getName(), "org.wildfly.swarm.microprofile.jwtauth.deployment.auth.cdi.MPJWTExtension");
         WARArchive war = archive.as(WARArchive.class);
-        war.addAsLibraries(jwtAuthJar);
         // Check for LoginConfig annotation
         Collection<AnnotationInstance> lcAnnotations = index.getAnnotations(LOGIN_CONFIG);
         for (AnnotationInstance lc : lcAnnotations) {
@@ -149,7 +139,6 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             war.addAsManifestResource(new StringAsset(fraction.getPublicKey()), "MP-JWT-SIGNER");
         }
         if (log.isTraceEnabled()) {
-            log.trace("jar: " + jwtAuthJar.toString(true));
             log.trace("war: " + war.toString(true));
         }
     }
