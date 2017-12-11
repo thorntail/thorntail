@@ -1000,12 +1000,12 @@
     <module>fractions/wildfly/security</module>
 
     <module>fractions/keycloak</module>
-    <module>fractions/microprofile/microprofile</module>
     <module>fractions/microprofile/microprofile-config</module>
     <module>fractions/microprofile/microprofile-health</module>
     <module>fractions/microprofile/microprofile-jwt</module>
     <module>fractions/microprofile/microprofile-metrics</module>
     <module>fractions/microprofile/microprofile-fault-tolerance</module>
+    <module>fractions/microprofile/microprofile</module>
     <module>fractions/monitor</module>
     <module>fractions/topology</module>
     <module>fractions/topology-openshift</module>
