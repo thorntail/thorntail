@@ -32,7 +32,7 @@ import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 /**
  * An implementation of the {@link Content} OpenAPI model interface.
  */
-public class SchemaImpl<T> extends ExtensibleImpl implements Schema {
+public class SchemaImpl extends ExtensibleImpl implements Schema {
 
     private String $ref;
     private String format;
@@ -58,7 +58,8 @@ public class SchemaImpl<T> extends ExtensibleImpl implements Schema {
     private Schema items;
     private List<Schema> allOf;
     private Map<String, Schema> properties;
-    private Schema additionalProperties;
+    private Schema additionalPropertiesSchema;
+    private Boolean additionalPropertiesBoolean;
     private Boolean readOnly;
     private XML xml;
     private ExternalDocumentation externalDocs;
@@ -661,8 +662,12 @@ public class SchemaImpl<T> extends ExtensibleImpl implements Schema {
      * @see org.eclipse.microprofile.openapi.models.media.Schema#getAdditionalProperties()
      */
     @Override
-    public Schema getAdditionalProperties() {
-        return this.additionalProperties;
+    public Object getAdditionalProperties() {
+        if (this.additionalPropertiesSchema != null) {
+            return this.additionalPropertiesSchema;
+        } else {
+            return this.additionalPropertiesBoolean;
+        }
     }
 
     /**
@@ -670,7 +675,17 @@ public class SchemaImpl<T> extends ExtensibleImpl implements Schema {
      */
     @Override
     public void setAdditionalProperties(Schema additionalProperties) {
-        this.additionalProperties = additionalProperties;
+        this.additionalPropertiesBoolean = null;
+        this.additionalPropertiesSchema = additionalProperties;
+    }
+
+    /**
+     * @see org.eclipse.microprofile.openapi.models.media.Schema#setAdditionalProperties(java.lang.Boolean)
+     */
+    @Override
+    public void setAdditionalProperties(Boolean additionalProperties) {
+        this.additionalPropertiesSchema = null;
+        this.additionalPropertiesBoolean = additionalProperties;
     }
 
     /**
@@ -678,8 +693,19 @@ public class SchemaImpl<T> extends ExtensibleImpl implements Schema {
      */
     @Override
     public Schema additionalProperties(Schema additionalProperties) {
-        this.additionalProperties = additionalProperties;
+        this.additionalPropertiesBoolean = null;
+        this.additionalPropertiesSchema = additionalProperties;
         return this;
+    }
+
+    /**
+     * @see org.eclipse.microprofile.openapi.models.media.Schema#additionalProperties(java.lang.Boolean)
+     */
+    @Override
+    public Schema additionalProperties(Boolean additionalProperties) {
+        this.additionalPropertiesSchema = null;
+        this.additionalPropertiesBoolean = additionalProperties;
+        return null;
     }
 
     /**

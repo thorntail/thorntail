@@ -1,0 +1,30 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "responses": {
+      "PetResponse": {
+        "description": "a pet to be returned",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Pet"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "description": "Unexpected error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorModel"
+            }
+          }
+        }
+      },
+      "RefResponse": {
+        "$ref": "#/other/Ref"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "links": {
+      "Link1": {
+        "operationRef": "#paths~12.0~1repositories~1{$response.body#/username}",
+        "operationId": "getRepositoriesByOwner",
+        "parameters": {
+          "username": "$response.body#/username"
+        },
+        "description": "The link1 description.",
+        "server": {
+          "url": "https://development.gigantic-server.com/v1",
+          "description": "Development server"
+        }
+      },
+      "Link2": {
+        "operationId": "mergePullRequest",
+        "parameters": {
+          "username": "$response.body#/author/username",
+          "slug": "$response.body#/repository/slug",
+          "pid": "$response.body#/id"
+        }
+      },
+      "RefLink": {
+        "$ref": "#/other/Ref"
+      }
+    }
+  }
+}
