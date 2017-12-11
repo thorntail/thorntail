@@ -17,23 +17,19 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth;
 
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
+
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
-import static org.wildfly.swarm.spi.api.Defaultable.integer;
-import static org.wildfly.swarm.spi.api.Defaultable.string;
-
 /**
  * A fraction that adds support for the MicroProfile 1.0 JWT RBAC authentication and authorization spec.
  */
 @Configurable("swarm.microprofile.jwtauth")
-@DeploymentModule(name = "org.eclipse.microprofile.jwt")
-@DeploymentModule(name = "org.glassfish.javax.json")
-@DeploymentModule(name = "org.eclipse.microprofile.config.api", export = true)
-@DeploymentModule(name = "org.wildfly.extension.microprofile.config", export = true)
 @DeploymentModule(name = "org.wildfly.swarm.microprofile.jwtauth", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuthFraction> {
 

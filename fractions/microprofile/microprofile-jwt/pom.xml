@@ -24,6 +24,7 @@
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Eclipse MicroProfile,JWT,Security,Web</swarm.fraction.tags>
+    <version.jose4j>0.6.0</version.jose4j>
   </properties>
 
   <build>
@@ -43,7 +44,7 @@
     <dependency>
       <groupId>org.bitbucket.b_c</groupId>
       <artifactId>jose4j</artifactId>
-      <version>0.6.0</version>
+      <version>${version.jose4j}</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -83,11 +84,6 @@
       <version>7.0</version>
       <scope>provided</scope>
     </dependency>
-    <!--<dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-undertow</artifactId>
-      <scope>provided</scope>
-    </dependency>-->
     <dependency>
       <groupId>org.picketbox</groupId>
       <artifactId>picketbox</artifactId>
