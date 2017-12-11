@@ -44,7 +44,7 @@ public class OperationImpl extends ExtensibleImpl implements Operation {
     private RequestBody requestBody;
     private APIResponses responses;
     private Map<String, Callback> callbacks;
-    private boolean deprecated;
+    private Boolean deprecated;
     private List<SecurityRequirement> security;
     private List<Server> servers;
 

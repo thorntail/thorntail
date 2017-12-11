@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.microprofile.openapi.parser;
+package org.wildfly.swarm.microprofile.openapi.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,8 +27,10 @@ import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.wildfly.swarm.microprofile.openapi.io.OpenApiParser;
+import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
+import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
-import org.wildfly.swarm.microprofile.openapi.parser.OpenApiSerializer.Format;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -105,7 +107,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testParseSimplest() throws IOException, ParseException, JSONException {
@@ -113,7 +115,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testParseSimplestYaml() throws IOException, ParseException, JSONException {
@@ -121,7 +123,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testParseInfo() throws IOException, ParseException, JSONException {
@@ -129,7 +131,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testParseInfoYaml() throws IOException, ParseException, JSONException {
@@ -137,7 +139,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testExternalDocs() throws IOException, ParseException, JSONException {
@@ -145,7 +147,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testExtensions() throws IOException, ParseException, JSONException {
@@ -153,7 +155,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testSecurity() throws IOException, ParseException, JSONException {
@@ -161,7 +163,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testServers() throws IOException, ParseException, JSONException {
@@ -169,7 +171,7 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testServersYaml() throws IOException, ParseException, JSONException {
@@ -177,11 +179,93 @@ public class OpenApiParserAndSerializerTest {
     }
 
     /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.parser.OpenApiParser#parse(java.net.URL)}.
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
      */
     @Test
     public void testTags() throws IOException, ParseException, JSONException {
         doTest("tags.json", Format.JSON);
     }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_Callbacks() throws IOException, ParseException, JSONException {
+        doTest("components-callbacks.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_Empty() throws IOException, ParseException, JSONException {
+        doTest("components-empty.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_Examples() throws IOException, ParseException, JSONException {
+        doTest("components-examples.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_Headers() throws IOException, ParseException, JSONException {
+        doTest("components-headers.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_Links() throws IOException, ParseException, JSONException {
+        doTest("components-links.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_Parameters() throws IOException, ParseException, JSONException {
+        doTest("components-parameters.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_RequestBodies() throws IOException, ParseException, JSONException {
+        doTest("components-requestBodies.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_Responses() throws IOException, ParseException, JSONException {
+        doTest("components-responses.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_Schemas() throws IOException, ParseException, JSONException {
+        doTest("components-schemas.json", Format.JSON);
+    }
+
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testComponents_SecuritySchemes() throws IOException, ParseException, JSONException {
+        doTest("components-securitySchemes.json", Format.JSON);
+    }
+
+
 
 }
