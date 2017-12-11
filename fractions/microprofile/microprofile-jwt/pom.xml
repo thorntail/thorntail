@@ -22,8 +22,8 @@
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.stability>experimental</swarm.fraction.stability>
-    <swarm.fraction.tags>MicroProfile,JWT,Security,Web</swarm.fraction.tags>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
+    <swarm.fraction.tags>Eclipse MicroProfile,JWT,Security,Web</swarm.fraction.tags>
   </properties>
 
   <build>
