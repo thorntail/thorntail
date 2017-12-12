@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.models.security;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.security.Scopes;
@@ -24,7 +25,7 @@ import org.eclipse.microprofile.openapi.models.security.Scopes;
 /**
  * An implementation of the {@link Scopes} OpenAPI model interface.
  */
-public class ScopesImpl extends HashMap<String, String> implements Scopes {
+public class ScopesImpl extends LinkedHashMap<String, String> implements Scopes {
 
     private static final long serialVersionUID = -6449984041086619713L;
 

@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.models;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.PathItem;
@@ -25,7 +26,7 @@ import org.eclipse.microprofile.openapi.models.Paths;
 /**
  * An implementation of the {@link Paths} OpenAPI model interface.
  */
-public class PathsImpl extends HashMap<String, PathItem> implements Paths {
+public class PathsImpl extends LinkedHashMap<String, PathItem> implements Paths {
 
     private static final long serialVersionUID = 8872198998600578356L;
 

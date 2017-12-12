@@ -1,0 +1,54 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "get": {
+        "responses": {
+          "200": {
+            "links": {
+              "link1": {
+                "operationRef": "#paths~12.0~1repositories~1{$response.body#/username}",
+                "operationId": "getRepositoriesByOwner",
+                "parameters": {
+                  "username": "$response.body#/username"
+                },
+                "requestBody": {
+                  "description": "The request body.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    },
+                    "application/xml": {
+                      "schema": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  },
+                  "required": true
+                },
+                "description": "The link1 description.",
+                "server": {
+                  "url": "https://development.gigantic-server.com/v1",
+                  "description": "Development server"
+                }
+              },
+              "link2": {
+                "$ref": "#/components/links/UserRepositories"
+              },
+              "link3": {
+                "operationId": "mergePullRequest",
+                "parameters": {
+                  "username": "$response.body#/author/username",
+                  "slug": "$response.body#/repository/slug",
+                  "pid": "$response.body#/id"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.models.callbacks;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.PathItem;
@@ -25,7 +26,7 @@ import org.eclipse.microprofile.openapi.models.callbacks.Callback;
 /**
  * An implementation of the {@link Callback} OpenAPI model interface.
  */
-public class CallbackImpl extends HashMap<String, PathItem> implements Callback  {
+public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Callback  {
 
     private static final long serialVersionUID = -8299593311575193028L;
 

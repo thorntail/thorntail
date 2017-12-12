@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * Utilities methods for reading information from a Json Tree.
  * @author eric.wittmann@gmail.com
  */
-public class JsonUtil {
+public final class JsonUtil {
 
     private static final JsonNodeFactory factory = JsonNodeFactory.instance;
 
@@ -36,6 +36,12 @@ public class JsonUtil {
     }
     public static ArrayNode arrayNode() {
         return factory.arrayNode();
+    }
+
+    /**
+     * Constructor.
+     */
+    private JsonUtil() {
     }
 
     /**

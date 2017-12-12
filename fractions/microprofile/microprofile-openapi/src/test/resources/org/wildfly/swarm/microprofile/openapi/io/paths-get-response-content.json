@@ -1,0 +1,57 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "examples": {
+                  "list": {
+                    "summary": "List of names",
+                    "value" : ["Bob","Diane","Mary","Bill"]
+                  },
+                  "empty":{
+                    "summary": "Empty List",
+                    "value": []
+                  }
+                }
+              },
+              "application/xml": {
+                "examples": {
+                  "list": {
+                    "summary": "List of names",
+                    "value": "<Users><User name='Bob'/><User name='Diane'/><User name='Mary'/><User name='Bill'/></Users>"
+                  },
+                  "empty": {
+                    "summary":"Empty",
+                    "value": "<Users/>"
+                  }
+                }
+              },
+              "text/plain": {
+                "examples": {
+                  "list": {
+                    "summary": "List of names",
+                    "value": "Bob,Diane,Mary,Bill"
+                  },
+                  "empty": {
+                    "summary": "Empty",
+                    "value" : ""
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "servers": [
+        {
+          "url": "https://development.gigantic-server.com/v1",
+          "description": "Development server"
+        },
+        {
+          "url": "https://staging.gigantic-server.com/v1",
+          "description": "Staging server"
+        },
+        {
+          "url": "https://api.gigantic-server.com/v1",
+          "description": "Production server"
+        }
+      ]
+    }
+  }
+}

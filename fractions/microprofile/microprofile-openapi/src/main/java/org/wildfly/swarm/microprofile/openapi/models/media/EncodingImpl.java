@@ -19,12 +19,11 @@ package org.wildfly.swarm.microprofile.openapi.models.media;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.headers.Header;
-import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 
 /**
- * An implementation of the {@link Discriminator} OpenAPI model interface.
+ * An implementation of the {@link Encoding} OpenAPI model interface.
  */
 public class EncodingImpl extends ExtensibleImpl implements Encoding {
 

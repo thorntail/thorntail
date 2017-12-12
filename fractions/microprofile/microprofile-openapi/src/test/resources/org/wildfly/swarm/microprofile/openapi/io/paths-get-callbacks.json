@@ -1,0 +1,35 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "get": {
+        "callbacks": {
+          "myRefCallback": {
+            "$ref": "#/components/callbacks/SomeCallback"
+          },
+          "myWebhook": {
+            "$request.body#/url": {
+              "post": {
+                "requestBody": {
+                  "description": "Callback payload",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/SomePayload"
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "webhook successfully processed and no retries will be performed"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

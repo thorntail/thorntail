@@ -1,0 +1,30 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "schemas": {
+      "MyResponseType": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/Dog"
+          },
+          {
+            "$ref": "#/components/schemas/Lizard"
+          },
+          {
+            "$ref": "https://gigantic-server.com/schemas/Monster/schema.json"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "pet_type",
+          "mapping": {
+            "dog": "#/components/schemas/Dog",
+            "monster": "https://gigantic-server.com/schemas/Monster/schema.json"
+          }
+        }
+      }
+    }
+  }
+}

@@ -29,7 +29,6 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 /**
  * An implementation of the {@link PathItem} OpenAPI model interface.
  */
-@SuppressWarnings("rawtypes")
 public class PathItemImpl extends ExtensibleImpl implements PathItem {
 
     private String $ref;

@@ -1,0 +1,33 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "summary": "Foo Resource",
+      "description": "CRUD for Foos.",
+      "get": {
+        "summary": "Foo - GET"
+      },
+      "put": {
+        "summary": "Foo - PUT"
+      },
+      "post": {
+        "summary": "Foo - POST"
+      },
+      "delete": {
+        "summary": "Foo - DELETE"
+      },
+      "options": {
+        "summary": "Foo - OPTIONS"
+      },
+      "head": {
+        "summary": "Foo - HEAD"
+      },
+      "patch": {
+        "summary": "Foo - PATCH"
+      },
+      "trace": {
+        "summary": "Foo - TRACE"
+      }
+    }
+  }
+}
