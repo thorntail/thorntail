@@ -9,7 +9,7 @@
 
   <groupId>org.wildfly.swarm.howto</groupId>
   <artifactId>howto-fractions</artifactId>
-  <version>2018.1.0-SNAPSHOT</version>
+  <version>2012.12.0</version>
 
   <name>WildFly Swarm HOWTO: Create a Fraction</name>
   <description>WildFly Swarm HOWTO: Create a Fraction</description>
