@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.media;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
@@ -24,7 +24,7 @@ import org.eclipse.microprofile.openapi.models.media.MediaType;
 /**
  * An implementation of the {@link Content} OpenAPI model interface.
  */
-public class ContentImpl extends HashMap<String, MediaType> implements Content {
+public class ContentImpl extends LinkedHashMap<String, MediaType> implements Content {
 
     private static final long serialVersionUID = -8680275279421417582L;
 

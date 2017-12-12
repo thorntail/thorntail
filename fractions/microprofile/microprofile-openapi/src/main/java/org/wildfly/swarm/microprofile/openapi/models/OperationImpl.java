@@ -32,7 +32,6 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 /**
  * An implementation of the {@link ExternalDocumentation} OpenAPI model interface.
  */
-@SuppressWarnings("rawtypes")
 public class OperationImpl extends ExtensibleImpl implements Operation {
 
     private List<String> tags;

@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.responses;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
@@ -24,7 +24,7 @@ import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 /**
  * An implementation of the {@link APIResponses} OpenAPI model interface.
  */
-public class APIResponsesImpl extends HashMap<String, APIResponse> implements APIResponses {
+public class APIResponsesImpl extends LinkedHashMap<String, APIResponse> implements APIResponses {
 
     private static final long serialVersionUID = 7767651877116575739L;
 

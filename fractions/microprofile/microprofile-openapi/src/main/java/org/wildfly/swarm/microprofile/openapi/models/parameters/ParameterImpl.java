@@ -28,11 +28,11 @@ import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 /**
  * An implementation of the {@link Parameter} OpenAPI model interface.
  */
-@SuppressWarnings({"unchecked"})
-public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleImpl implements Parameter<T> {
+public class ParameterImpl extends ExtensibleImpl implements Parameter {
 
     private String $ref;
     private String name;
+    private In in;
     private String description;
     private Boolean required;
     private Schema schema;
@@ -65,9 +65,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.Reference#ref(java.lang.String)
      */
     @Override
-    public T ref(String ref) {
+    public Parameter ref(String ref) {
         this.$ref = ref;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -90,9 +90,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#name(java.lang.String)
      */
     @Override
-    public T name(String name) {
+    public Parameter name(String name) {
         this.name = name;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -115,9 +115,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#description(java.lang.String)
      */
     @Override
-    public T description(String description) {
+    public Parameter description(String description) {
         this.description = description;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -140,9 +140,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#required(java.lang.Boolean)
      */
     @Override
-    public T required(Boolean required) {
+    public Parameter required(Boolean required) {
         this.required = required;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -165,9 +165,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#deprecated(java.lang.Boolean)
      */
     @Override
-    public T deprecated(Boolean deprecated) {
+    public Parameter deprecated(Boolean deprecated) {
         this.deprecated = deprecated;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -190,9 +190,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#allowEmptyValue(java.lang.Boolean)
      */
     @Override
-    public T allowEmptyValue(Boolean allowEmptyValue) {
+    public Parameter allowEmptyValue(Boolean allowEmptyValue) {
         // TODO Auto-generated method stub
-        return (T) this;
+        return this;
     }
 
     /**
@@ -215,9 +215,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#style(Style)
      */
     @Override
-    public T style(Style style) {
+    public Parameter style(Style style) {
         this.style = style;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -240,9 +240,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#explode(java.lang.Boolean)
      */
     @Override
-    public T explode(Boolean explode) {
+    public Parameter explode(Boolean explode) {
         this.explode = explode;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -265,9 +265,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#allowReserved(java.lang.Boolean)
      */
     @Override
-    public T allowReserved(Boolean allowReserved) {
+    public Parameter allowReserved(Boolean allowReserved) {
         this.allowReserved = allowReserved;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -290,9 +290,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#schema(org.eclipse.microprofile.openapi.models.media.Schema)
      */
     @Override
-    public T schema(Schema schema) {
+    public Parameter schema(Schema schema) {
         this.schema = schema;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -315,21 +315,21 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#examples(java.util.Map)
      */
     @Override
-    public T examples(Map<String, Example> examples) {
+    public Parameter examples(Map<String, Example> examples) {
         this.examples = examples;
-        return (T) this;
+        return this;
     }
 
     /**
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#addExample(java.lang.String, org.eclipse.microprofile.openapi.models.examples.Example)
      */
     @Override
-    public T addExample(String key, Example example) {
+    public Parameter addExample(String key, Example example) {
         if (this.examples == null) {
             this.examples = new HashMap<>();
         }
         this.examples.put(key, example);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -352,9 +352,9 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#example(java.lang.Object)
      */
     @Override
-    public T example(Object example) {
+    public Parameter example(Object example) {
         this.example = example;
-        return (T) this;
+        return this;
     }
 
     /**
@@ -377,9 +377,34 @@ public abstract class ParameterImpl<T extends Parameter<T>> extends ExtensibleIm
      * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#content(org.eclipse.microprofile.openapi.models.media.Content)
      */
     @Override
-    public T content(Content content) {
+    public Parameter content(Content content) {
         this.content = content;
-        return (T) this;
+        return this;
+    }
+
+    /**
+     * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#getIn()
+     */
+    @Override
+    public In getIn() {
+        return in;
+    }
+
+    /**
+     * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#setIn(org.eclipse.microprofile.openapi.models.parameters.Parameter.In)
+     */
+    @Override
+    public void setIn(In in) {
+        this.in = in;
+    }
+
+    /**
+     * @see org.eclipse.microprofile.openapi.models.parameters.Parameter#in(org.eclipse.microprofile.openapi.models.parameters.Parameter.In)
+     */
+    @Override
+    public Parameter in(In in) {
+        this.in = in;
+        return this;
     }
 
 }

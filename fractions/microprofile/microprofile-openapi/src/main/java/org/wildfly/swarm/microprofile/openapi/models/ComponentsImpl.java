@@ -33,7 +33,6 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 /**
  * An implementation of the {@link Components} OpenAPI model interface.
  */
-@SuppressWarnings("rawtypes")
 public class ComponentsImpl extends ExtensibleImpl implements Components {
 
     private Map<String, Schema> schemas;
