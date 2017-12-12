@@ -9,7 +9,7 @@
 
   <groupId>org.wildfly.swarm.howto</groupId>
   <artifactId>howto-use-a-bom</artifactId>
-  <version>2017.12.0</version>
+  <version>2018.1.0-SNAPSHOT</version>
 
   <name>WildFly Swarm HOWTO: Use a BOM</name>
   <description>WildFly Swarm HOWTO: Use a BOM</description>
@@ -18,7 +18,7 @@
 
   <properties>
     <!-- tag::property[] -->
-    <version.wildfly-swarm>2017.12.0</version.wildfly-swarm>
+    <version.wildfly-swarm>2018.1.0-SNAPSHOT</version.wildfly-swarm>
     <!-- end::property[] -->
     <version.maven-war-plugin>2.2</version.maven-war-plugin>
     <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
