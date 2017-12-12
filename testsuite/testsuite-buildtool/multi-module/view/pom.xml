@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.wildfly.swarm.testsuite</groupId>
     <artifactId>multi-module-test</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
+    <version>2012.12.0</version>
     <relativePath>../</relativePath>
   </parent>
 
