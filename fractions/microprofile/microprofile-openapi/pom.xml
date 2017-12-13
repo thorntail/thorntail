@@ -16,8 +16,8 @@
 
   <artifactId>microprofile-openapi</artifactId>
 
-  <name>MicroProfile JWT RBAC Auth Fraction</name>
-  <description>An implementation of the MP-JWT authentication and authorization</description>
+  <name>MicroProfile OpenAPI Fraction</name>
+  <description>An implementation of the MP-OpenAPI specification first introduced in MP 1.3</description>
 
   <packaging>jar</packaging>
 
