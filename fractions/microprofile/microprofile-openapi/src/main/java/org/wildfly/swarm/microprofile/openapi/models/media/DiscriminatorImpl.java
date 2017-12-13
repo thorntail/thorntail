@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.media;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
@@ -60,7 +60,7 @@ public class DiscriminatorImpl implements Discriminator {
     @Override
     public Discriminator addMapping(String name, String value) {
         if (this.mapping == null) {
-            this.mapping = new HashMap<>();
+            this.mapping = new LinkedHashMap<>();
         }
         this.mapping.put(name, value);
         return this;

@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.responses;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.headers.Header;
@@ -117,7 +117,7 @@ public class APIResponseImpl extends ExtensibleImpl implements APIResponse {
     @Override
     public APIResponse addHeader(String name, Header header) {
         if (this.headers == null) {
-            this.headers = new HashMap<>();
+            this.headers = new LinkedHashMap<>();
         }
         this.headers.put(name, header);
         return this;
@@ -179,7 +179,7 @@ public class APIResponseImpl extends ExtensibleImpl implements APIResponse {
     @Override
     public APIResponse addLink(String name, Link link) {
         if (this.links == null) {
-            this.links = new HashMap<>();
+            this.links = new LinkedHashMap<>();
         }
         this.links.put(name, link);
         return this;

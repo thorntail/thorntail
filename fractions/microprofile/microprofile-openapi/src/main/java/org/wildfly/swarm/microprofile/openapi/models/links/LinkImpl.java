@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.links;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.links.Link;
@@ -192,7 +192,7 @@ public class LinkImpl extends ExtensibleImpl implements Link {
     @Override
     public Link addParameter(String name, Object parameter) {
         if (this.parameters == null) {
-            this.parameters = new HashMap<>();
+            this.parameters = new LinkedHashMap<>();
         }
         this.parameters.put(name, parameter);
         return this;

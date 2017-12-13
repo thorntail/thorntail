@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.headers;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.examples.Example;
@@ -273,7 +273,7 @@ public class HeaderImpl extends ExtensibleImpl implements Header {
     @Override
     public Header addExample(String key, Example example) {
         if (this.examples == null) {
-            this.examples = new HashMap<>();
+            this.examples = new LinkedHashMap<>();
         }
         this.examples.put(key, example);
         return this;

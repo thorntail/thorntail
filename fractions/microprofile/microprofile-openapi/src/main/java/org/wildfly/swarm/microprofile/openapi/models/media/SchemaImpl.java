@@ -18,7 +18,7 @@ package org.wildfly.swarm.microprofile.openapi.models.media;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -652,7 +652,7 @@ public class SchemaImpl extends ExtensibleImpl implements Schema {
     @Override
     public Schema addProperty(String key, Schema propertySchema) {
         if (this.properties == null) {
-            this.properties = new HashMap<>();
+            this.properties = new LinkedHashMap<>();
         }
         this.properties.put(key, propertySchema);
         return this;
