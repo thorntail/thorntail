@@ -16,7 +16,6 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.callbacks;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -47,7 +46,7 @@ public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Cal
     @Override
     public void addExtension(String name, Object value) {
         if (extensions == null) {
-            this.extensions = new HashMap<>();
+            this.extensions = new LinkedHashMap<>();
         }
         this.extensions.put(name, value);
     }

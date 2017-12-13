@@ -16,7 +16,6 @@
 
 package org.wildfly.swarm.microprofile.openapi.models;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -46,7 +45,7 @@ public class PathsImpl extends LinkedHashMap<String, PathItem> implements Paths 
     @Override
     public void addExtension(String name, Object value) {
         if (extensions == null) {
-            this.extensions = new HashMap<>();
+            this.extensions = new LinkedHashMap<>();
         }
         this.extensions.put(name, value);
     }

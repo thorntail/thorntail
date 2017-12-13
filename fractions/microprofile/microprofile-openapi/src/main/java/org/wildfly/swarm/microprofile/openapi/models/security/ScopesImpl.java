@@ -16,7 +16,6 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.security;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ public class ScopesImpl extends LinkedHashMap<String, String> implements Scopes 
     @Override
     public void addExtension(String name, Object value) {
         if (extensions == null) {
-            this.extensions = new HashMap<>();
+            this.extensions = new LinkedHashMap<>();
         }
         this.extensions.put(name, value);
     }

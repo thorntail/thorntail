@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.Components;
@@ -76,7 +76,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addSchema(String key, Schema schema) {
         if (this.schemas == null) {
-            this.schemas = new HashMap<>();
+            this.schemas = new LinkedHashMap<>();
         }
         this.schemas.put(key, schema);
         return this;
@@ -113,7 +113,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addResponse(String key, APIResponse response) {
         if (this.responses == null) {
-            this.responses = new HashMap<>();
+            this.responses = new LinkedHashMap<>();
         }
         this.responses.put(key, response);
         return this;
@@ -150,7 +150,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addParameter(String key, Parameter parameter) {
         if (this.parameters == null) {
-            this.parameters = new HashMap<>();
+            this.parameters = new LinkedHashMap<>();
         }
         this.parameters.put(key, parameter);
         return this;
@@ -187,7 +187,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addExample(String key, Example example) {
         if (this.examples == null) {
-            this.examples = new HashMap<>();
+            this.examples = new LinkedHashMap<>();
         }
         this.examples.put(key, example);
         return this;
@@ -224,7 +224,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addRequestBody(String key, RequestBody requestBody) {
         if (this.requestBodies == null) {
-            this.requestBodies = new HashMap<>();
+            this.requestBodies = new LinkedHashMap<>();
         }
         this.requestBodies.put(key, requestBody);
         return this;
@@ -261,7 +261,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addHeader(String key, Header header) {
         if (this.headers == null) {
-            this.headers = new HashMap<>();
+            this.headers = new LinkedHashMap<>();
         }
         this.headers.put(key, header);
         return this;
@@ -298,7 +298,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addSecurityScheme(String key, SecurityScheme securityScheme) {
         if (this.securitySchemes == null) {
-            this.securitySchemes = new HashMap<>();
+            this.securitySchemes = new LinkedHashMap<>();
         }
         this.securitySchemes.put(key, securityScheme);
         return this;
@@ -335,7 +335,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addLink(String key, Link link) {
         if (this.links == null) {
-            this.links = new HashMap<>();
+            this.links = new LinkedHashMap<>();
         }
         this.links.put(key, link);
         return this;
@@ -372,7 +372,7 @@ public class ComponentsImpl extends ExtensibleImpl implements Components {
     @Override
     public Components addCallback(String key, Callback callback) {
         if (this.callbacks == null) {
-            this.callbacks = new HashMap<>();
+            this.callbacks = new LinkedHashMap<>();
         }
         this.callbacks.put(key, callback);
         return this;

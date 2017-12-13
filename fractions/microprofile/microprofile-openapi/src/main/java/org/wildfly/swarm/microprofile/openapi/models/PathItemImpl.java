@@ -17,7 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.models;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -342,7 +342,7 @@ public class PathItemImpl extends ExtensibleImpl implements PathItem {
      */
     @Override
     public Map<HttpMethod, Operation> readOperationsMap() {
-        Map<HttpMethod, Operation> ops = new HashMap<>();
+        Map<HttpMethod, Operation> ops = new LinkedHashMap<>();
         addOperationToMap(HttpMethod.GET, this.get, ops);
         addOperationToMap(HttpMethod.PUT, this.put, ops);
         addOperationToMap(HttpMethod.POST, this.post, ops);

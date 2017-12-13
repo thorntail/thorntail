@@ -489,4 +489,12 @@ public class OpenApiParserAndSerializerTest {
         doTest("_everything.json", Format.JSON);
     }
 
+    /**
+     * Test method for {@link org.wildfly.swarm.microprofile.openapi.io.OpenApiParser#parse(java.net.URL)}.
+     */
+    @Test
+    public void testEverythingYaml() throws IOException, ParseException, JSONException {
+        doTest("_everything.yaml", Format.YAML);
+    }
+
 }

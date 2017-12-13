@@ -23,7 +23,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -111,12 +110,12 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  */
 public class OpenApiParser {
 
-    private static final Map<String, Style> ENCODING_STYLE_LOOKUP = new HashMap<>();
-    private static final Map<String, org.eclipse.microprofile.openapi.models.parameters.Parameter.Style> PARAMETER_STYLE_LOOKUP = new HashMap<>();
-    private static final Map<String, org.eclipse.microprofile.openapi.models.headers.Header.Style> HEADER_STYLE_LOOKUP = new HashMap<>();
-    private static final Map<String, Type> SECURITY_SCHEME_TYPE_LOOKUP = new HashMap<>();
-    private static final Map<String, In> SECURITY_SCHEME_IN_LOOKUP = new HashMap<>();
-    private static final Map<String, org.eclipse.microprofile.openapi.models.parameters.Parameter.In> PARAMETER_IN_LOOKUP = new HashMap<>();
+    private static final Map<String, Style> ENCODING_STYLE_LOOKUP = new LinkedHashMap<>();
+    private static final Map<String, org.eclipse.microprofile.openapi.models.parameters.Parameter.Style> PARAMETER_STYLE_LOOKUP = new LinkedHashMap<>();
+    private static final Map<String, org.eclipse.microprofile.openapi.models.headers.Header.Style> HEADER_STYLE_LOOKUP = new LinkedHashMap<>();
+    private static final Map<String, Type> SECURITY_SCHEME_TYPE_LOOKUP = new LinkedHashMap<>();
+    private static final Map<String, In> SECURITY_SCHEME_IN_LOOKUP = new LinkedHashMap<>();
+    private static final Map<String, org.eclipse.microprofile.openapi.models.parameters.Parameter.In> PARAMETER_IN_LOOKUP = new LinkedHashMap<>();
 
     static {
         Style[] encodingStyleValues = Style.values();

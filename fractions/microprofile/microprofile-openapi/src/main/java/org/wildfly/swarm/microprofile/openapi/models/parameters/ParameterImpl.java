@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.parameters;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.examples.Example;
@@ -326,7 +326,7 @@ public class ParameterImpl extends ExtensibleImpl implements Parameter {
     @Override
     public Parameter addExample(String key, Example example) {
         if (this.examples == null) {
-            this.examples = new HashMap<>();
+            this.examples = new LinkedHashMap<>();
         }
         this.examples.put(key, example);
         return this;

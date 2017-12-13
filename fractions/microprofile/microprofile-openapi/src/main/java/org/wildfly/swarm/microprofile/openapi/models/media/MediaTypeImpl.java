@@ -16,7 +16,7 @@
 
 package org.wildfly.swarm.microprofile.openapi.models.media;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.examples.Example;
@@ -92,7 +92,7 @@ public class MediaTypeImpl extends ExtensibleImpl implements MediaType {
     @Override
     public MediaType addExample(String key, Example example) {
         if (this.examples == null) {
-            this.examples = new HashMap<>();
+            this.examples = new LinkedHashMap<>();
         }
         this.examples.put(key, example);
         return this;
@@ -154,7 +154,7 @@ public class MediaTypeImpl extends ExtensibleImpl implements MediaType {
     @Override
     public MediaType addEncoding(String key, Encoding encodingItem) {
         if (this.encoding == null) {
-            this.encoding = new HashMap<>();
+            this.encoding = new LinkedHashMap<>();
         }
         this.encoding.put(key, encodingItem);
         return this;
