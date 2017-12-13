@@ -81,8 +81,8 @@ The script relies on the following repositories as peers to the core repository:
 If they have different names, simply pass the appropriate name as an argument
 to `fetch-contributors` after versions in the above order
 
-    node fetch-contributors 2017.1.1 2017.2.0
-    node fetch-contributors 2017.1.1 2017.2.0 site users-guide examples howto
+    node fetch-contributors.js 2017.1.1 2017.2.0
+    node fetch-contributors.js 2017.1.1 2017.2.0 site examples
 
 # Gather JIRA issues
 
@@ -93,7 +93,7 @@ run the local fetch-notes.js with node.js, passing the version
 # Update website
 
 * Prepend the new version to VERSIONS array in `versions.js`
-* In `build.js` add redirects to the above tagged documentation
+* In `build.js` add redirects to generated docs site and update `/docs/HEAD` to point to new SNAPSHOT
 * Update `src/documentation.adoc`, moving the previous release to the
   previous release section, and changing the current release pointers.
 
