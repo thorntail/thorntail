@@ -87,6 +87,7 @@
                            <licensesTemplate>${project.parent.build.directory}/licenses-project-template.xml</licensesTemplate>
                            <downloadSources>true</downloadSources>
                            <downloadPoms>true</downloadPoms>
+                           <analyzeRuntimeDependencies>true</analyzeRuntimeDependencies>
                            <!-- Use custom settings to point to the local maven repo cache -->
                            <userSettings>${project.parent.build.directory}/custom-settings.xml</userSettings>
                            <excludes>
