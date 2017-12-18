@@ -163,14 +163,7 @@
 
   <modules>
     <module>reference</module>
-    <module>howto/use-a-bom</module>
-    <module>howto/create-an-uberjar</module>
-    <module>howto/create-a-hollow-jar</module>
-    <module>howto/autodetect-fractions</module>
-    <module>howto/explicit-fractions</module>
-    <module>howto/create-a-datasource</module>
-    <module>howto/create-a-fraction</module>
-    <module>howto/test-in-container</module>
+    <module>howto</module>
   </modules>
 
 </project>
