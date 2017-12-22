@@ -2,7 +2,6 @@ package org.wildfly.swarm.jpa;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
@@ -22,8 +21,7 @@ public class JPATest {
         archive.addAsResource("META-INF/persistence.xml");
         FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer();
 
-        final File out = Files.createTempFile(archive.getName(), ".war").toFile();
-        out.deleteOnExit();
+        File out = Files.createTempFile(archive.getName(), ".war").toFile();
         archive.as(ZipExporter.class).exportTo(out, true);
 
         analyzer.source(out);
@@ -31,6 +29,8 @@ public class JPATest {
                        .stream()
                        .filter(fd -> fd.getArtifactId().equals("jpa"))
                        .count()).isEqualTo(1);
+
+        out.delete();
     }
 
     @Test
@@ -47,5 +47,7 @@ public class JPATest {
                        .stream()
                        .filter(fd -> fd.getArtifactId().equals("jpa"))
                        .count()).isEqualTo(1);
+
+        TempFileManager.deleteRecursively(dirFile);
     }
 }

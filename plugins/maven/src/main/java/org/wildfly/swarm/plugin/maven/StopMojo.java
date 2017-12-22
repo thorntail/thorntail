@@ -16,8 +16,11 @@
 package org.wildfly.swarm.plugin.maven;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -59,8 +62,35 @@ public class StopMojo extends AbstractSwarmMojo {
         if (tmp != null && tmp.exists()) {
             tmp.delete();
         }
+
+        Path tmpDir = new File(System.getProperty("java.io.tmpdir")).toPath();
+
+        if (tmpDir.toFile().exists()) {
+            File[] filesTmp = tmpDir.toFile().listFiles();
+            for (File tmpFile : filesTmp) {
+                Matcher matcher = tempFilePattern.matcher(tmpFile.getName().toString());
+                if (matcher.matches()) {
+                    deleteRecursively(tmpFile);
+                }
+            }
+        }
     }
 
+    public boolean deleteRecursively(File f) {
+        if (!f.exists()) {
+            return false;
+        }
+        if (f.isDirectory()) {
+            File[] children = f.listFiles();
+            for (int i = 0; i < children.length; ++i) {
+                if (!deleteRecursively(children[i])) {
+                    return false;
+                }
+            }
+        }
+
+        return f.delete();
+    }
 
     protected void stop(SwarmProcess process) throws MojoFailureException {
         if (process != null) {
@@ -71,5 +101,7 @@ public class StopMojo extends AbstractSwarmMojo {
             }
         }
     }
+
+    private static final Pattern tempFilePattern = Pattern.compile("wfswarm\\S+[0-9]{5,}.\\S{5,}");
 }
 
