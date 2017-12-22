@@ -35,6 +35,7 @@ import org.jboss.modules.maven.ArtifactCoordinates;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapUtil;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 /**
@@ -122,7 +123,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
             name = name.substring(0, dotLoc);
         }
 
-        File tmp = File.createTempFile(name, ext);
+        File tmp = TempFileManager.INSTANCE.newTempFile(name, ext);
 
         try (InputStream artifactIn = getClass().getClassLoader().getResourceAsStream(path)) {
             Files.copy(artifactIn, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -171,7 +172,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                             LOG.error("Unable to find artifact for " + coords);
                             return;
                         }
-                        JarFile jar = new JarFile(artifact);
+                        JarFile jar = JarFileManager.INSTANCE.addJarFile(artifact);
 
                         builder.addResourceRoot(
                                 ResourceLoaderSpec.createResourceLoaderSpec(

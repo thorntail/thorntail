@@ -16,6 +16,7 @@
 package org.wildfly.swarm.bootstrap.modules;
 
 import org.jboss.modules.maven.ArtifactCoordinates;
+import org.junit.After;
 import org.junit.Test;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
@@ -37,6 +38,10 @@ import static org.mockito.Mockito.*;
  */
 public class GradleResolverTest {
 
+    @After
+    public void tearDown() {
+        TempFileManager.INSTANCE.close();
+    }
 
     @Test
     public void downloadFromRemoteRepository() throws IOException {

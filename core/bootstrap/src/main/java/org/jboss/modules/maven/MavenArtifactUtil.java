@@ -30,6 +30,8 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
@@ -40,6 +42,7 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaders;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
 import org.xml.sax.InputSource;
 
 /**
@@ -58,6 +61,8 @@ public final class MavenArtifactUtil {
     private static final XPath xpath = XPathFactory.newInstance().newXPath();
 
     private static XPathExpression snapshotVersionXpath;
+
+    private static final Pattern tempFilePattern = Pattern.compile("wfswarm\\S+[0-9]{5,}.\\S{5,}");
 
     static {
         try {
@@ -265,7 +270,13 @@ public final class MavenArtifactUtil {
     public static ResourceLoader createMavenArtifactLoader(final MavenResolver mavenResolver, final String name) throws IOException {
         File fp = mavenResolver.resolveJarArtifact(ArtifactCoordinates.fromString(name));
         if (fp == null) return null;
-        JarFile jarFile = new JarFile(fp, true);
+        Matcher matcher = tempFilePattern.matcher(fp.getName());
+        JarFile jarFile = null;
+        if (matcher.matches()) {
+            jarFile = JarFileManager.INSTANCE.addJarFile(fp);
+        } else {
+            jarFile = new JarFile(fp, true);
+        }
         return ResourceLoaders.createJarResourceLoader(name, jarFile);
     }
 
