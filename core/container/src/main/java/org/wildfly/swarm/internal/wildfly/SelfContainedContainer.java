@@ -51,6 +51,7 @@ import org.jboss.stdio.NullInputStream;
 import org.jboss.stdio.SimpleStdioContextSelector;
 import org.jboss.stdio.StdioContext;
 import org.wildfly.security.manager.WildFlySecurityManager;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 //import org.jboss.as.selfcontained.ContentProvider;
 //import org.jboss.as.selfcontained.ContentProviderServiceActivator;
@@ -163,7 +164,7 @@ public final class SelfContainedContainer {
         executor.submit(new Runnable() {
             @Override
             public void run() {
-                deleteRecursively(tmpDir);
+                TempFileManager.deleteRecursively(tmpDir);
             }
         });
         executor.shutdown();
@@ -178,11 +179,11 @@ public final class SelfContainedContainer {
 
     private File createTmpDir() {
         try {
-            File tmpDir = File.createTempFile("wildfly-self-contained", ".d");
+            File tmpDir = TempFileManager.INSTANCE.newTempDirectory("wildfly-self-contained", ".d");
             if (tmpDir.exists()) {
                 for (int i = 0; i < 10; ++i) {
                     if (tmpDir.exists()) {
-                        if (deleteRecursively(tmpDir)) {
+                        if (TempFileManager.deleteRecursively(tmpDir)) {
                             break;
                         }
                         try {
@@ -197,8 +198,6 @@ public final class SelfContainedContainer {
                     throw new RuntimeException("Unable to create directory");
                 }
             }
-            tmpDir.mkdirs();
-            tmpDir.deleteOnExit();
             return tmpDir;
 
         } catch (IOException e) {
@@ -206,22 +205,4 @@ public final class SelfContainedContainer {
         }
     }
 
-    private static boolean deleteRecursively(File f) {
-        if (!f.exists()) {
-            return false;
-        }
-        if (f.isDirectory()) {
-            File[] children = f.listFiles();
-            for (int i = 0; i < children.length; ++i) {
-                if (!deleteRecursively(children[i])) {
-                    return false;
-                }
-            }
-        }
-
-        return f.delete();
-    }
-
-
 }
-
