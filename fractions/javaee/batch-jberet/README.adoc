@@ -1,4 +1,4 @@
-# Batch (JBeret)
+= Batch (JBeret)
 
 The Batch fraction provides support for scheduled job execution,
 through JSR-352.

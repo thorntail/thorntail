@@ -11,7 +11,7 @@ in others.
 It is useful to set at least a pair of properties, specifying the version
 of the WildFly Swarm SPI and fraction-plugin being used:
 
-[source,xml,,subs=+attributes]
+[source,xml,subs=+attributes]
 ----
 <properties>
   <version.swarm>{version}</version.swarm.spi>
@@ -102,7 +102,7 @@ classes that may be added to deployment archives.
 
 ### The `module.conf`
 
-Alongside your `pom.xm` you need at least an empty `module.conf` file to signal
+Alongside your `pom.xml` you need at least an empty `module.conf` file to signal
 the plugin that your build is actually a fraction.
 
 This file is used to enumerate the JBoss-Modules dependencies your fraction
@@ -289,7 +289,7 @@ capabilities.
 [source,java]
 ----
 @Configurable("swarm.myfraction.taco")
-@AttributeDefinite("Determines the type of taco to expose.")
+@AttributeDocumentation("Determines the type of taco to expose.")
 private String tacoType;
 ----
 
@@ -301,7 +301,7 @@ item.
 [source,java]
 ----
 @Configurable("swarm.myfraction.taco")
-@AttributeDefinite("Determines the type of taco to expose.")
+@AttributeDocumentation("Determines the type of taco to expose.")
 private Defaultable<String> tacoType = Defaultable.string("soft");
 ----
 
@@ -393,7 +393,7 @@ Include the following `<dependency>` items within your `pom.xml`:
 ----
 
 Each fraction that requires logging should then include a related
-`*Messages` classe akin to:
+`*Messages` class akin to:
 
 [source,java]
 ----

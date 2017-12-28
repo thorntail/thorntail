@@ -17,7 +17,6 @@ package org.wildfly.swarm.datasources.runtime.drivers;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
@@ -37,7 +36,9 @@ public class TeiidDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "password1!";
 
     protected TeiidDriverInfo() {
-        super("teiid", ModuleIdentifier.create("org.teiid.jdbc"), "org.teiid.jdbc.TeiidDriver", "org.teiid.core.types.JDBCSQLTypeInfo");
+        super("teiid", "org.teiid.jdbc",
+              "org.teiid.jdbc.TeiidDriver",
+              "org.teiid.core.types.JDBCSQLTypeInfo");
     }
 
     @Override

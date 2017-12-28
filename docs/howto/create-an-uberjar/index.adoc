@@ -1,34 +1,42 @@
-[#create_an_uberjar]
-= Create an Uberjar
+[#creating-an-uberjar]
+= Creating an Uberjar
 
 One method of packaging an application for execution
 with WildFly Swarm is as an _uberjar_. 
 
 .Prerequisites
 
-* A _Maven_-based application with a `pom.xml`
+* A Maven-based application with a `pom.xml` file.
 
 .Procedure
 
-. Add the `wildfly-swarm-maven-plugin` to your `pom.xml` by adding a `<plugin>` block,
+. Add the `wildfly-swarm-plugin` to your `pom.xml` in a `<plugin>` block,
   with an `<execution>` specifying the `package` goal.
-
++
 [source,xml]
 ----
 <plugins>
-include::{docdir}/pom.xml[tag=plugin,indent=2]
+include::pom.xml[tag=plugin,indent=2]
 </plugins>
 ----
 
-[start=2]
 . Perform a normal Maven build:
++
+[source]
+----
+$ mvn package
+----
 
-    $ mvn package
+. Execute the resulting uberjar:
++
+[source]
+----
+$ java -jar ./target/myapp-swarm.jar
+----
 
-. Run your uberjar:
-    
-    $ java -jar ./target/myapp-swarm.jar
-
+ifndef::product[]
 .Related Information
 
-* Create a hollow jar
+* xref:creating-a-hollow-jar[]
+endif::[]
+

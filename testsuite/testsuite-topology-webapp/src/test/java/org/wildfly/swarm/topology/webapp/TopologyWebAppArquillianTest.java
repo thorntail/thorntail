@@ -66,7 +66,7 @@ public class TopologyWebAppArquillianTest {
         assertNotNull("TopologyProxyService is not available in service registry", proxyService);
 
         ServiceController<?> proxyHandler = registry
-                .getService(ServiceName.parse("jboss.undertow.handler.myService-proxy-handler"));
+                .getService(ServiceName.parse("org.wildfly.extension.undertow.handler.myService-proxy-handler"));
         assertNotNull("`myService` Undertow handler is not available in service registry", proxyHandler);
     }
 }

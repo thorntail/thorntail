@@ -1,4 +1,4 @@
-# JAX-RS + Validator
+= JAX-RS + Validator
 
 Provides integration and support between JAX-RS applications and
 Hibernate Validator.

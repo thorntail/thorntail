@@ -17,8 +17,10 @@ package org.wildfly.swarm.infinispan.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.jboss.msc.service.ServiceActivator;
 import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.JGroups;
 import org.wildfly.swarm.config.JPA;
@@ -79,6 +81,7 @@ public class InfinispanCustomizer implements Customizer {
                 cc -> cc.defaultCache(DEFAULT)
                         .alias("singleton")
                         .alias("cluster")
+                        .module("org.wildfly.clustering.server")
                         .jgroupsTransport(t -> t.lockTimeout(60000L))
                         .replicatedCache(DEFAULT,
                                 c -> c.mode(Mode.SYNC)
@@ -132,6 +135,7 @@ public class InfinispanCustomizer implements Customizer {
     private void localCustomization() {
         this.fraction.cacheContainer("server",
                 cc -> cc.defaultCache(DEFAULT)
+                        .module("org.wildfly.clustering.server")
                         .localCache(DEFAULT, c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH)))
                         .remoteCommandThreadPool());
 
@@ -181,5 +185,29 @@ public class InfinispanCustomizer implements Customizer {
                             .localCache("timestamps"));
         }
 
+    }
+
+    @Produces
+    @ApplicationScoped
+    public ServiceActivator defaultActivator() {
+        return new CacheActivator("server");
+    }
+
+    @Produces
+    @ApplicationScoped
+    public ServiceActivator undertowActivator() {
+        return new CacheActivator("undertow");
+    }
+
+    @Produces
+    @ApplicationScoped
+    public ServiceActivator ejbActivator() {
+        return new CacheActivator("ejb");
+    }
+
+    @Produces
+    @ApplicationScoped
+    public ServiceActivator jpaActivator() {
+        return new CacheActivator("jpa");
     }
 }

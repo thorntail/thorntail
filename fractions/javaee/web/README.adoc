@@ -1,6 +1,6 @@
-# Web
+= Web
 
-Provides the _Web Profile_ collection of fractions:
+Provides a collection of fractions equivalent to the _Web Profile_:
 
 * Bean Validation
 * CDI

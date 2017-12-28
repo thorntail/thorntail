@@ -21,6 +21,6 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 /**
  * @author Bob McWhirter
  */
-@DeploymentModule(name = "org.wildfly.swarm.netflix.ribbon.secured", slot = "client")
+@DeploymentModule(name = "org.wildfly.swarm.netflix.ribbon.secured.client")
 public class RibbonSecuredFraction implements Fraction<RibbonSecuredFraction> {
 }

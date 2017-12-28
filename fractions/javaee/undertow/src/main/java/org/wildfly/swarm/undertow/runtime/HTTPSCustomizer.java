@@ -61,15 +61,6 @@ public class HTTPSCustomizer implements Customizer {
                     undertow.removeHttpListenersFromDefaultServer();
                 }
 
-                for (Server server : undertow.subresources().servers()) {
-                    if (server.subresources().httpsListeners().isEmpty()) {
-                        server.httpsListener("default-https", (listener) -> {
-                            listener.securityRealm("SSLRealm")
-                                    .socketBinding("https");
-                        });
-                    }
-                }
-
                 management.securityRealm("SSLRealm", (realm) -> {
                     realm.sslServerIdentity((identity) -> {
                         identity.keystorePath(certInfo.keystorePath())
@@ -82,6 +73,15 @@ public class HTTPSCustomizer implements Customizer {
                         handleSelfSignedCertificateHost(identity);
                     });
                 });
+
+                for (Server server : undertow.subresources().servers()) {
+                    if (server.subresources().httpsListeners().isEmpty()) {
+                        server.httpsListener("default-https", (listener) -> {
+                            listener.securityRealm("SSLRealm");
+                            listener.socketBinding("https");
+                        });
+                    }
+                }
             }
         }
     }

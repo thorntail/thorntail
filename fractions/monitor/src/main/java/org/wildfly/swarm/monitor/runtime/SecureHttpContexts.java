@@ -85,6 +85,7 @@ public class SecureHttpContexts implements HttpHandler {
      * Wraps the target handler and makes it inheritSecurity.
      * Includes a predicate for relevant web contexts.
      */
+    @SuppressWarnings("deprecation")
     private HttpHandler secureHandler(final HttpHandler toWrap, SecurityRealm securityRealm) {
         HttpHandler handler = toWrap;
 

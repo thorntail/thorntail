@@ -38,7 +38,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.maven.ArtifactCoordinates;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
@@ -116,8 +115,7 @@ public class ApplicationEnvironment {
         final Yaml yaml = new Yaml();
 
         try (final FileInputStream fileStream = new FileInputStream(cpInfoProp)) {
-            @SuppressWarnings("unchecked")
-            final Map<String, Collection<String>> data = yaml.loadAs(fileStream, Map.class);
+            @SuppressWarnings("unchecked") final Map<String, Collection<String>> data = yaml.loadAs(fileStream, Map.class);
 
             for (final Entry<String, Collection<String>> entry : data.entrySet()) {
                 final MavenArtifactDescriptor parent = MavenArtifactDescriptor.fromMavenGav(entry.getKey());
@@ -210,7 +208,7 @@ public class ApplicationEnvironment {
         this.bootstrapModules
                 .forEach(moduleName -> {
                     try {
-                        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(moduleName));
+                        Module module = Module.getBootModuleLoader().loadModule(moduleName);
                         ClassLoader cl = module.getClassLoader();
 
                         Enumeration<URL> results = cl.getResources(FractionManifest.CLASSPATH_LOCATION);
@@ -407,7 +405,10 @@ public class ApplicationEnvironment {
     public ClassLoader getBootstrapClassLoader() throws ModuleLoadException {
         if (this.mode == Mode.UBERJAR) {
             try {
-                return Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.bootstrap")).getClassLoader();
+                //ClassLoader cl = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.bootstrap").getClassLoader();
+                Module module = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.bootstrap");
+                ClassLoader cl = module.getClassLoader();
+                return cl;
             } catch (ModuleLoadException e) {
                 // ignore
             }

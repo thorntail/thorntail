@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.management;
 
+import java.security.Security;
 import java.util.Properties;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,6 +32,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.security.WildFlyElytronProvider;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
@@ -73,8 +75,10 @@ public class ArqSecuredManagementInterfaceWithPrecomputedPropertiesTest {
     @RunAsClient
     public void testClient() throws Exception {
 
+        Security.addProvider(new WildFlyElytronProvider());
+
         ModelControllerClient client = ModelControllerClient.Factory.create(
-                "localhost", 9990, new AuthCallbackHandler("bob", "tacos!")
+                "localhost", 9990, new AuthCallbackHandler("ManagementRealm", "bob", "tacos!")
         );
 
         ModelNode response = client.execute(Operations.createOperation("whoami"));

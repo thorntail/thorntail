@@ -21,7 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.internal.SwarmConfigMessages;
 
@@ -39,7 +38,7 @@ public class StandaloneXMLConfigProducer {
     @XMLConfig
     public URL fromSwarmApplicationModule() {
         try {
-            Module app = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            Module app = Module.getBootModuleLoader().loadModule("swarm.application");
             ClassLoader cl = app.getClassLoader();
             URL result = cl.getResource(STANDALONE_XML_FILE);
             if (result != null) {

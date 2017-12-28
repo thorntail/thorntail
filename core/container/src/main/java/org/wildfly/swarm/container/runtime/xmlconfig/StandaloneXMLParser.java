@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.enterprise.inject.Vetoed;
 import javax.xml.namespace.QName;
@@ -89,6 +90,12 @@ public class StandaloneXMLParser {
     public StandaloneXMLParser addDelegate(QName elementName, XMLElementReader<List<ModelNode>> parser) {
         this.recognizedNames.add(elementName);
         xmlMapper.registerRootElement(elementName, parser);
+        return this;
+    }
+
+    public StandaloneXMLParser addDelegate(QName elementName, Supplier<XMLElementReader<List<ModelNode>>> supplier) {
+        this.recognizedNames.add(elementName);
+        xmlMapper.registerRootElement(elementName, supplier.get());
         return this;
     }
 

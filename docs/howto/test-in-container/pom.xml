@@ -4,132 +4,57 @@
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.wildfly.swarm.howto</groupId>
   <artifactId>howto-test-in-container</artifactId>
-  <version>2017.11.0-SNAPSHOT</version>
+
+  <parent>
+    <groupId>org.wildfly.swarm.howto</groupId>
+    <artifactId>howto-parent</artifactId>
+    <version>2018.1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
   <name>WildFly Swarm HOWTO: Test in Container</name>
   <description>WildFly Swarm HOWTO: Test in Container</description>
-
   <packaging>war</packaging>
 
-  <properties>
-    <version.wildfly-swarm>2017.11.0-SNAPSHOT</version.wildfly-swarm>
-    <version.maven-war-plugin>3.0.0</version.maven-war-plugin>
-    <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
-    <version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
-    <version.arquillian>1.1.12.Final</version.arquillian>
-    <version.junit>4.12</version.junit>
-
-    <version.h2>1.4.187</version.h2>
-  </properties>
-
-  <repositories>
-    <repository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${version.wildfly-swarm}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>package</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>${version.maven-war-plugin}</version>
-        <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <profiles>
+    <!-- Arquillian fraction is not productized -->
+    <profile>
+      <id>boms-product</id>
+      <activation>
+        <property>
+          <name>swarm.product.build</name>
+        </property>
+      </activation>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>bom-certified</artifactId>
+            <version>${version.wildfly-swarm}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+    </profile>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>
       <!-- tag::bom[] -->
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>bom-all</artifactId>
+        <artifactId>bom</artifactId>
         <version>${version.wildfly-swarm}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <!-- end::bom[] -->
-
-      <dependency>
-        <groupId>org.jboss.arquillian</groupId>
-        <artifactId>arquillian-bom</artifactId>
-        <version>${version.arquillian}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -162,14 +87,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${version.junit}</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
     </dependency>
 
   </dependencies>

@@ -89,7 +89,7 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
     public ManagementFraction httpInterfaceManagementInterface(HTTPInterfaceManagementInterfaceConsumer consumer) {
         return super.httpInterfaceManagementInterface((iface) -> {
             iface.consoleEnabled(false);
-            iface.httpUpgradeEnabled(true);
+            iface.httpUpgrade("enabled", "true");
             iface.socketBinding("management-http");
             consumer.accept(iface);
         });

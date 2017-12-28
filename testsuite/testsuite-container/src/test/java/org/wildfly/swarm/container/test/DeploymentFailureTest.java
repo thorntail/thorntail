@@ -23,7 +23,7 @@ public class DeploymentFailureTest {
       } catch (DeploymentException e) {
           // expected and correct
           assertThat(e.getArchive()).isSameAs(a);
-          assertThat(e.getMessage()).contains("org.jboss.modules.ModuleNotFoundException: com.i.do.no.exist:main");
+          assertThat(e.getMessage()).contains("org.jboss.modules.ModuleNotFoundException: com.i.do.no.exist");
       } finally {
           swarm.stop();
       }

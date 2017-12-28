@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.jboss.logging.Logger;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
@@ -110,7 +109,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
     @Override
     public Server bootstrap() throws Exception {
         try (AutoCloseable bootstrap = Performance.time("Bootstrap")) {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container"));
+            Module module = Module.getBootModuleLoader().loadModule("swarm.container");
             return ClassLoading.withTCCL(new ExtensionPreventionClassLoaderWrapper(module.getClassLoader()), () -> {
                 //Thread.currentThread().setContextClassLoader(new ExtensionPreventionClassLoaderWrapper(module.getClassLoader()));
 

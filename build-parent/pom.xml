@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
-    <version>2017.11.0-SNAPSHOT</version>
+    <version>2018.1.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -22,28 +22,28 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>63</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>78</version.wildfly.swarm.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.1.0.Final</version.wildfly.config-api>
+    <version.wildfly.config-api>1.2.0</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.1.0.Final</version.keycloak.config-api>
-    <version.teiid.config-api>1.0.2</version.teiid.config-api>
-    <version.keycloak>2.5.5.Final</version.keycloak>
-    <version.mongo.config-api>1.2.0</version.mongo.config-api>
-    <version.cassandra.config-api>1.2.0</version.cassandra.config-api>
-    <version.neo4j.config-api>1.2.0</version.neo4j.config-api>
-    <version.orientdb.config-api>1.2.0</version.orientdb.config-api>
-    <version.wildfly.nosql.feature-pack>1.0.0.Alpha4</version.wildfly.nosql.feature-pack>
+    <version.keycloak.config-api>1.2.0.Final</version.keycloak.config-api>
+    <version.teiid.config-api>1.1.0.Final</version.teiid.config-api>
+    <version.keycloak>3.4.0.Final</version.keycloak>
+    <version.mongo.config-api>1.2.4</version.mongo.config-api>
+    <version.cassandra.config-api>1.2.4</version.cassandra.config-api>
+    <version.neo4j.config-api>1.2.4</version.neo4j.config-api>
+    <version.orientdb.config-api>1.2.4</version.orientdb.config-api>
+    <version.wildfly.nosql.feature-pack>1.0.0.Alpha6</version.wildfly.nosql.feature-pack>
 
-    <version.wildfly>10.1.0.Final</version.wildfly>
-    <version.org.wildfly.core>2.2.1.Final</version.org.wildfly.core>
+    <version.wildfly>11.0.0.Final</version.wildfly>
+    <version.org.wildfly.core>3.0.8.Final</version.org.wildfly.core>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
     <!-- Weld SE version must be aligned with the version used in WildFly -->
-    <version.weld-se>2.3.5.Final</version.weld-se>
+    <version.weld-se>2.4.3.Final</version.weld-se>
 
-    <version.org.objectweb.asm>5.0.4</version.org.objectweb.asm>
+    <version.org.objectweb.asm>6.0</version.org.objectweb.asm>
 
     <version.jolokia>1.3.4</version.jolokia>
     <version.io.swagger>1.5.16</version.io.swagger>
@@ -71,9 +71,7 @@
 
     <version.org.kie>6.4.0.Final</version.org.kie>
 
-    <version.teiid.feature-pack>9.2.0.Final</version.teiid.feature-pack>
-
-    <version.flyway>4.0.3</version.flyway>
+    <version.flyway>4.2.0</version.flyway>
 
     <version.gradle>2.4</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
@@ -96,6 +94,17 @@
     <version.jaeger.gson>2.8.0</version.jaeger.gson>
 
     <version.maven.aether>3.2.5</version.maven.aether>
+
+    <!-- MicroProfile APIs -->
+    <!-- NOTE: we cannot use MP BOM as it does not define dependencyManagement -->
+    <version.microprofile-config>1.1</version.microprofile-config>
+    <version.microprofile-health>1.0</version.microprofile-health>
+    <version.microprofile-fault-tolerance>1.0</version.microprofile-fault-tolerance>
+    <version.microprofile-jwt-auth>1.0</version.microprofile-jwt-auth>
+    <version.microprofile-metrics>1.0.1</version.microprofile-metrics>
+    <!-- MP Config implementation -->
+    <version.wildfly-microprofile-config>1.1.5</version.wildfly-microprofile-config>
+
   </properties>
 
   <build>
@@ -134,6 +143,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jandex</artifactId>
+        <version>2.0.4.Final</version>
+      </dependency>
+
 
       <!--
         org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
@@ -252,7 +268,13 @@
       <!-- Needed by fraction-metadata -->
       <dependency>
         <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-all</artifactId>
+        <artifactId>asm</artifactId>
+        <version>${version.org.objectweb.asm}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-commons</artifactId>
         <version>${version.org.objectweb.asm}</version>
       </dependency>
 
@@ -566,60 +588,6 @@
             <artifactId>teiid-config-api</artifactId>
             <version>${version.teiid.config-api}</version>
           </dependency>
-          <!-- Teiid integration feature-pack-->
-          <dependency>
-            <groupId>org.jboss.teiid</groupId>
-            <artifactId>teiid-wildfly-integration-feature-pack</artifactId>
-            <version>${version.teiid.feature-pack}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.teiid</groupId>
-            <artifactId>rest-service-feature-pack</artifactId>
-            <version>${version.teiid.feature-pack}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.teiid.connectors</groupId>
-            <artifactId>feature-pack-swagger</artifactId>
-            <version>${version.teiid.feature-pack}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.teiid</groupId>
-            <artifactId>teiid-client-feature-pack</artifactId>
-            <version>${version.teiid.feature-pack}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <!--Teiid integration end-->
 
           <!-- For topology-consul -->
           <dependency>
@@ -627,6 +595,50 @@
             <artifactId>consul-client</artifactId>
             <version>${version.com.orbitz.consul}</version>
           </dependency>
+
+          <!-- MicroProfile -->
+          <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>${version.microprofile-config}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-microprofile-config-implementation</artifactId>
+            <version>${version.wildfly-microprofile-config}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>${version.wildfly-microprofile-config}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+            <artifactId>microprofile-fault-tolerance-api</artifactId>
+            <version>${version.microprofile-fault-tolerance}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.eclipse.microprofile.health</groupId>
+            <artifactId>microprofile-health-api</artifactId>
+            <version>${version.microprofile-health}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.eclipse.microprofile.metrics</groupId>
+            <artifactId>microprofile-metrics-api</artifactId>
+            <version>${version.microprofile-metrics}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-api</artifactId>
+            <version>${version.microprofile-jwt-auth}</version>
+         </dependency>
+
         </dependencies>
       </dependencyManagement>
 

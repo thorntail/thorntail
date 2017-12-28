@@ -17,7 +17,6 @@ package org.wildfly.swarm.datasources.runtime.drivers;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
@@ -37,7 +36,7 @@ public class MariaDBDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "root";
 
     protected MariaDBDriverInfo() {
-        super("mariadb", ModuleIdentifier.create("org.mariadb.jdbc"), "org.mariadb.jdbc.Driver");
+        super("mariadb", "org.mariadb.jdbc", "org.mariadb.jdbc.Driver");
     }
 
     @Override

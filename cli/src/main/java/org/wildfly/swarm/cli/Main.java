@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 
 /**
  * @author Bob McWhirter
@@ -23,7 +22,7 @@ public class Main {
                     StandardCopyOption.REPLACE_EXISTING);
             System.setProperty("jboss.cli.config", tmpFile.toAbsolutePath().toString());
         }
-        Module cli = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.jboss.as.cli"));
+        Module cli = Module.getBootModuleLoader().loadModule("org.jboss.as.cli");
         try {
             cli.run(args);
         } finally {

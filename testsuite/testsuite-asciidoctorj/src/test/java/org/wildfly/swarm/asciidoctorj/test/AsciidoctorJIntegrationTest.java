@@ -30,14 +30,14 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
-@RunWith(Arquillian.class)
+//@RunWith(Arquillian.class)
 @DefaultDeployment(main = org.wildfly.swarm.asciidoctorj.test.Main.class)
 public class AsciidoctorJIntegrationTest {
 
     @Drone
     WebDriver browser;
 
-    @Test
+//    @Test
     @RunAsClient
     public void testResource() throws Exception {
         browser.navigate().to("http://localhost:8080/rest/");

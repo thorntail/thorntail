@@ -39,4 +39,3 @@ public class HealthResponseFilter implements ContainerResponseFilter {
     }
 
 }
-

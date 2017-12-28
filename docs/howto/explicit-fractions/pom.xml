@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.wildfly.swarm.howto</groupId>
+  <artifactId>howto-explicit-fractions</artifactId>
+
+  <parent>
+    <groupId>org.wildfly.swarm.howto</groupId>
+    <artifactId>howto-parent</artifactId>
+    <version>2018.1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <name>WildFly Swarm HOWTO: Use Explicit Fractions</name>
+  <description>WildFly Swarm HOWTO: Use Explicit Fractions</description>
+  <packaging>war</packaging>
+
+  <build>
+    <plugins>
+      <!-- tag::plugin[] -->
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-plugin</artifactId>
+        <version>${version.wildfly-swarm}</version>
+        <executions>
+          <execution>
+            <id>package</id>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+          <!-- end::plugin[] -->
+          <execution>
+            <id>start</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stop</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+          <!-- tag::plugin[] -->
+        </executions>
+      </plugin>
+      <!-- end::plugin[] -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${version.build-helper-maven-plugin}</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/it/java</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-resource</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-test-resource</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>src/it/resources</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${version.maven-failsafe-plugin}</version>
+        <configuration>
+          <includes>
+            <include>**/*IT.java</include>
+          </includes>
+          <systemPropertyVariables>
+            <phantomjs.binary.version>2.1.1</phantomjs.binary.version>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>bom</artifactId>
+        <version>${version.wildfly-swarm}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- tag::jaxrs[] -->
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
+    <!-- end::jaxrs[] -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.graphene</groupId>
+      <artifactId>graphene-webdriver</artifactId>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+
+</project>

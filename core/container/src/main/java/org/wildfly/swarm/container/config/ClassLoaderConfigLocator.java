@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.Swarm;
 
@@ -37,11 +36,11 @@ public class ClassLoaderConfigLocator extends ConfigLocator {
     }
 
     public static ClassLoaderConfigLocator forApplication() throws ModuleLoadException {
-        Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(Swarm.APPLICATION_MODULE_NAME));
+        Module appModule = Module.getBootModuleLoader().loadModule(Swarm.APPLICATION_MODULE_NAME);
         return new ClassLoaderConfigLocator(appModule.getClassLoader());
     }
 
-    private ClassLoaderConfigLocator(ClassLoader classLoader) {
+    public ClassLoaderConfigLocator(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 

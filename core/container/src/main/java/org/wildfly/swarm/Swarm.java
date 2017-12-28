@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -47,7 +48,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.Resource;
@@ -78,6 +78,7 @@ import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
+import org.wildfly.swarm.container.config.ClassLoaderConfigLocator;
 import org.wildfly.swarm.container.config.ConfigViewFactory;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.internal.ServerBootstrap;
@@ -216,7 +217,7 @@ public class Swarm {
 
         // Need to setup Logging here so that Weld doesn't default to JUL.
         try {
-            Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
+            Module loggingModule = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.logging:runtime");
 
             ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
             try {
@@ -236,9 +237,20 @@ public class Swarm {
         installModuleMBeanServer();
         createShrinkWrapDomain();
 
-        this.configView = ConfigViewFactory.defaultFactory(properties, environment);
         this.commandLine = CommandLine.parse(args);
+        this.configView = ConfigViewFactory.defaultFactory(properties, environment);
+
+        if (ApplicationEnvironment.get().isHollow()) {
+            if (!this.commandLine.extraArguments().isEmpty()) {
+                URLClassLoader firstDeploymentCL = new URLClassLoader(new URL[]{
+                        new File(this.commandLine.extraArguments().get(0)).toURI().toURL()
+                });
+                this.configView.addLocator(new ClassLoaderConfigLocator(firstDeploymentCL));
+            }
+        }
+
         this.commandLine.apply(this);
+
         initializeConfigView(properties);
 
         this.isConstructing = false;
@@ -369,7 +381,7 @@ public class Swarm {
 
         try (AutoCloseable handle = Performance.time("Swarm.start()")) {
 
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
+            Module module = Module.getBootModuleLoader().loadModule(CONTAINER_MODULE_NAME);
             Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
             ServerBootstrap bootstrap = (ServerBootstrap) bootstrapClass.newInstance();
@@ -419,7 +431,7 @@ public class Swarm {
         this.server.stop();
         this.server = null;
 
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
+        Module module = Module.getBootModuleLoader().loadModule(CONTAINER_MODULE_NAME);
         Class<?> shutdownClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.WeldShutdownImpl");
 
         WeldShutdown shutdown = (WeldShutdown) shutdownClass.newInstance();
@@ -496,7 +508,7 @@ public class Swarm {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             if (isFatJar()) {
-                Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
+                Module appModule = Module.getBootModuleLoader().loadModule(APPLICATION_MODULE_NAME);
                 Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
             }
             Domain domain = ShrinkWrap.getDefaultDomain();
@@ -635,12 +647,18 @@ public class Swarm {
     private void initializeConfigFiltersFatJar() throws ModuleLoadException, IOException, ClassNotFoundException {
         Indexer indexer = new Indexer();
 
-        Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
+        Module appModule = Module.getBootModuleLoader().loadModule(APPLICATION_MODULE_NAME);
         Iterator<Resource> iter = appModule.iterateResources(PathFilters.acceptAll());
         while (iter.hasNext()) {
             Resource each = iter.next();
             if (each.getName().endsWith(".class")) {
-                indexer.index(each.openStream());
+                if (!each.getName().equals("module-info.class")) {
+                    try {
+                        indexer.index(each.openStream());
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
             }
         }
 
@@ -677,9 +695,13 @@ public class Swarm {
 
                 Map<ArchivePath, Node> content = archive.getContent();
                 for (ArchivePath path : content.keySet()) {
-                    if (path.get().endsWith(".class")) {
+                    if (path.get().endsWith(".class") && !path.get().endsWith("module-info.class")) {
                         Node node = content.get(path);
-                        indexer.index(node.getAsset().openStream());
+                        try {
+                            indexer.index(node.getAsset().openStream());
+                        } catch (IOException e) {
+                            // ignore
+                        }
                     }
                 }
             }
@@ -759,6 +781,10 @@ public class Swarm {
                 t.printStackTrace();
                 System.exit(1);
             }
+        } else {
+            // errors can be thrown before swarm.server is created
+            errorCause.printStackTrace();
+            System.exit(1);
         }
     }
 

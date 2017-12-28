@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 import javax.xml.namespace.QName;
 
@@ -107,6 +108,11 @@ public class BootstrapPersister implements ExtensibleConfigurationPersister {
     }
 
     @Override
+    public void registerSubsystemWriter(String name, Supplier<XMLElementWriter<SubsystemMarshallingContext>> supplier) {
+        delegate.registerSubsystemWriter(name, supplier);
+    }
+
+    @Override
     public void unregisterSubsystemWriter(String name) {
         delegate.unregisterSubsystemWriter(name);
     }
@@ -117,6 +123,7 @@ public class BootstrapPersister implements ExtensibleConfigurationPersister {
         ExtensionRegistry extensionRegistry = new ExtensionRegistry(
                 ProcessType.SELF_CONTAINED,
                 new RunningModeControl(RunningMode.NORMAL),
+                null,
                 null,
                 null,
                 RuntimeHostControllerInfoAccessor.SERVER

@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.dmr.ModelNode;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.camel.core.CamelFraction;
 import org.wildfly.swarm.spi.runtime.CustomMarshaller;
@@ -55,7 +54,7 @@ public class CamelMarshaller implements CustomMarshaller {
     }
 
     protected String read(String path) throws ModuleLoadException, IOException {
-        Module app = getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+        Module app = getBootModuleLoader().loadModule("swarm.application");
 
         StringBuilder str = new StringBuilder();
 

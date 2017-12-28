@@ -7,12 +7,6 @@
 
 * Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command (Maybe add something to CI job to do this?).
 
-* Update next development version in:
-	* testsuite/testsuite-cassandra/pom.xml
-	* testsuite/testsuite-mongodb/pom.xml
-	* testsuite/testsuite-neo4j/pom.xml
-	*  testsuite/testsuite-orientdb/pom.xml
-
 * Wait for release to be available in Maven Central before continuing with examples releases
 
 # JIRA Releasing
@@ -77,110 +71,18 @@
 
         git push origin master --tags
 
-
-# Tag HowTos
-
-* Checkout/rebase latest from https://github.com/wildfly-swarm/wildfly-swarm-howto
-
-* Update to just released version, replacing for correct value of `2017.2.0-SNAPSHOT` and `2017.2.0`:
-
-        ./release.sh 2017.2.0-SNAPSHOT 2017.2.0
-
-* Edit `book.json` to released version
-
-* Verify a build still works
-
-        mvn clean install
-
-* If successful, commit the version change.
-
-        git commit -a -m 'Prepare for 2017.2.0 release'
-
-* And tag it
-
-        git tag 2017.2.0
-
-* Push changes to doc so GitBooks can build the tagged version
-
-        git push origin master --tags
-        
-* Wait for the gitbooks build to finish:
-   https://www.gitbook.com/@wildfly-swarm
-
-* Then prepare for the next development version:
-
-        ./release.sh 2017.2.0 2017.3.0-SNAPSHOT
-
-* Edit `book.json` to next SNAPSHOT version
-
-* And commit, and push it all
-
-        git commit -a -m 'Prepare for next development version'
-
-        git push origin master
-
-
-# Update the Reference Guide
-
-In the reference-guide repository (https://github.com/wildfly-swarm/wildfly-swarm-reference-guide)
-run the following:
-
-    rm fractions/*
-    node update.js
-
-And commit the results if any changes have occurred.  It's okay if git tells
-you that nothing has changed.
-
-# Tag the documentation
-
-For each of:
-
-* https://github.com/wildfly-swarm/wildfly-swarm-reference-guide
-* https://github.com/wildfly-swarm/wildfly-swarm-users-guide
-
-Do the following:
-
-* Edit the `book.json` to ensure all versions are correct,
-including Keycloak, WildFly and WildFly Swarm itself.
-    * Reference Guide also requires version to be updated in `update.js`
-
-* Commit the version change
-
-        git commit -a -m 'Prepare for 2017.2.0 release'
-
-* And tag it
-
-        git tag 2017.2.0
-
-* Push changes to doc so GitBooks can build the tagged version
-
-        git push origin master --tags
-
-* Wait for the tagged build to completely build and publish
-on GitBooks:
-   https://www.gitbook.com/@wildfly-swarm
-
-* Once we have a linkable build, re-edit the `book.json` to the next `-SNAPSHOT` version of
-WildFly Swarm, commit and push again.
-
-        git commit -a -m 'Prepare for next development version'
-
-        git push origin master --tags
-
 # Gather contributors:
 
 The script relies on the following repositories as peers to the core repository:
 
 * `wildfly-swarm.io`
-* `wildfly-swarm-users-guide`
 * `wildfly-swarm-examples`
-* `wildfly-swarm-howto`
 
 If they have different names, simply pass the appropriate name as an argument
 to `fetch-contributors` after versions in the above order
 
-    node fetch-contributors 2017.1.1 2017.2.0
-    node fetch-contributors 2017.1.1 2017.2.0 site users-guide examples howto
+    node fetch-contributors.js 2017.1.1 2017.2.0
+    node fetch-contributors.js 2017.1.1 2017.2.0 site examples
 
 # Gather JIRA issues
 
@@ -191,7 +93,7 @@ run the local fetch-notes.js with node.js, passing the version
 # Update website
 
 * Prepend the new version to VERSIONS array in `versions.js`
-* In `build.js` add redirects to the above tagged documentation
+* In `build.js` add redirects to generated docs site and update `/docs/HEAD` to point to new SNAPSHOT
 * Update `src/documentation.adoc`, moving the previous release to the
   previous release section, and changing the current release pointers.
 

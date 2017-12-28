@@ -23,7 +23,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.Resource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -49,7 +48,7 @@ public class ManagementConsoleDeploymentProducer {
     public Archive managementConsoleWar() throws Exception {
         // Load the management-ui webjars.
         WARArchive war = ShrinkWrap.create(WARArchive.class, "management-console-ui.war");
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.jboss.as.console"));
+        Module module = Module.getBootModuleLoader().loadModule("org.jboss.as.console");
         Iterator<Resource> resources = module.globResources("*");
         while (resources.hasNext()) {
             Resource each = resources.next();

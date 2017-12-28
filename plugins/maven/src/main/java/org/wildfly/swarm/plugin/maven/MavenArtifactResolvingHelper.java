@@ -37,6 +37,7 @@ import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.util.graph.transformer.NearestVersionSelector;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeDeriver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeSelector;
@@ -157,7 +158,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
             RepositorySystemSession tempSession
                     = new RepositorySystemSessionWrapper(this.session,
-                                                         new ConflictResolver(new NewestVersionSelector(),
+                                                         new ConflictResolver(new NearestVersionSelector(),
                                                                               new JavaScopeSelector(),
                                                                               new SimpleOptionalitySelector(),
                                                                               new JavaScopeDeriver()

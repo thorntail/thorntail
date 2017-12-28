@@ -213,6 +213,7 @@ public class StartMojo extends AbstractSwarmMojo {
                         true);
     }
 
+    @SuppressWarnings("deprecation")
     protected SwarmExecutor executor(final Path appPath, final String name,
                                      final boolean scanDependencies) throws MojoFailureException {
         final SwarmExecutor executor = new SwarmExecutor()

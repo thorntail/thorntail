@@ -4,46 +4,21 @@
   ~
   ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
   -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.wildfly.swarm.howto</groupId>
   <artifactId>howto-fractions</artifactId>
-  <version>2017.11.0-SNAPSHOT</version>
+
+  <parent>
+    <groupId>org.wildfly.swarm.howto</groupId>
+    <artifactId>howto-parent</artifactId>
+    <version>2018.1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
   <name>WildFly Swarm HOWTO: Create a Fraction</name>
   <description>WildFly Swarm HOWTO: Create a Fraction</description>
-
   <packaging>pom</packaging>
 
-  <properties>
-    <version.wildfly-swarm>2017.11.0-SNAPSHOT</version.wildfly-swarm>
-    <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
-  </properties>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

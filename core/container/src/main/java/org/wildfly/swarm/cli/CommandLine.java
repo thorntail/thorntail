@@ -34,7 +34,6 @@ import javax.enterprise.inject.Vetoed;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleClassLoader;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.SwarmInfo;
@@ -229,7 +228,7 @@ public class CommandLine {
     }
 
     public void displayConfigHelp(PrintStream out, String fraction) throws IOException, ModuleLoadException {
-        ModuleClassLoader cl = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application")).getClassLoader();
+        ModuleClassLoader cl = Module.getBootModuleLoader().loadModule("swarm.application").getClassLoader();
         Enumeration<URL> docs = cl.getResources("META-INF/configuration-meta.properties");
 
         Properties props = new Properties();
@@ -255,7 +254,7 @@ public class CommandLine {
     }
 
     public void dumpYaml(PrintStream out, String fraction) throws IOException, ModuleLoadException {
-        ModuleClassLoader cl = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application")).getClassLoader();
+        ModuleClassLoader cl = Module.getBootModuleLoader().loadModule("swarm.application").getClassLoader();
         Enumeration<URL> docs = cl.getResources("META-INF/configuration-meta.properties");
 
         Properties props = new Properties();
@@ -482,7 +481,7 @@ public class CommandLine {
 
         URL yml = null;
         try {
-            Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+            Module appModule = Module.getBootModuleLoader().loadModule("swarm.application");
             yml = appModule.getClassLoader().getResource(path);
             if (yml != null) {
                 return yml;
