@@ -1,5 +1,9 @@
 #!/bin/bash
 
+## chkconfig
+# chkconfig: 345 90 90
+# description: Runs a Wildfly Swarm app
+
 [[ -n "$DEBUG" ]] && set -x
 
 # Initialize variables that cannot be provided by a .conf file
@@ -115,7 +119,7 @@ command="$javaexe -Dsun.misc.URLClassPath.disableJarChecking=true $JAVA_OPTS -ja
 
 
 #check if start-stop-daemon has support for --no-close (to support older systems)
-noClose=$(if [[ $(start-stop-daemon --help | grep \\-\\-no-close; echo $?) == 0 ]]; then echo --no-close; fi)
+noClose=$(if [[ $(type start-stop-daemon > /dev/null 2>&1 && start-stop-daemon --help | grep \\-\\-no-close; echo $?) == 0 ]]; then echo --no-close; fi)
 
 # Action functions
 start() {
