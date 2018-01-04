@@ -53,6 +53,7 @@
         <plugin>
           <groupId>org.wildfly.swarm</groupId>
           <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+          <version>${version.wildfly.swarm.fraction.plugin}</version>
           <executions>
             <execution>
               <id>generate-bom</id>
