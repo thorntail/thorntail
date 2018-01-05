@@ -19,11 +19,12 @@ package org.wildfly.swarm.microprofile.openapi.models.parameters;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link RequestBody} OpenAPI model interface.
  */
-public class RequestBodyImpl extends ExtensibleImpl implements RequestBody {
+public class RequestBodyImpl extends ExtensibleImpl implements RequestBody, ModelImpl {
 
     private String $ref;
     private String description;

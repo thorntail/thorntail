@@ -18,11 +18,12 @@ package org.wildfly.swarm.microprofile.openapi.models.examples;
 
 import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Example} OpenAPI model interface.
  */
-public class ExampleImpl extends ExtensibleImpl implements Example {
+public class ExampleImpl extends ExtensibleImpl implements Example, ModelImpl {
 
     private String $ref;
     private String summary;

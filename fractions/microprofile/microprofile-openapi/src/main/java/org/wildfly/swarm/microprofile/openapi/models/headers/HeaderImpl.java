@@ -24,11 +24,12 @@ import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Header} OpenAPI model interface.
  */
-public class HeaderImpl extends ExtensibleImpl implements Header {
+public class HeaderImpl extends ExtensibleImpl implements Header, ModelImpl {
 
     private String $ref;
     private String description;

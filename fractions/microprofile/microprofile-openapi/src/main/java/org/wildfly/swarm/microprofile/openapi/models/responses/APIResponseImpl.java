@@ -24,11 +24,12 @@ import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link APIResponse} OpenAPI model interface.
  */
-public class APIResponseImpl extends ExtensibleImpl implements APIResponse {
+public class APIResponseImpl extends ExtensibleImpl implements APIResponse, ModelImpl {
 
     private String $ref;
     private String description;

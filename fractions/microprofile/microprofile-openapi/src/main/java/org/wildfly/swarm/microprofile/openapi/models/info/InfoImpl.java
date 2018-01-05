@@ -20,11 +20,12 @@ import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Info} OpenAPI model interface.
  */
-public class InfoImpl extends ExtensibleImpl implements Info {
+public class InfoImpl extends ExtensibleImpl implements Info, ModelImpl {
 
     private String title;
     private String description;

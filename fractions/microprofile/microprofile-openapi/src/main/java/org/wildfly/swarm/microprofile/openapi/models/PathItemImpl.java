@@ -29,7 +29,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 /**
  * An implementation of the {@link PathItem} OpenAPI model interface.
  */
-public class PathItemImpl extends ExtensibleImpl implements PathItem {
+public class PathItemImpl extends ExtensibleImpl implements PathItem, ModelImpl {
 
     private String $ref;
     private String summary;

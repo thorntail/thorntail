@@ -18,11 +18,12 @@ package org.wildfly.swarm.microprofile.openapi.models.info;
 
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link License} OpenAPI model interface.
  */
-public class LicenseImpl extends ExtensibleImpl implements License {
+public class LicenseImpl extends ExtensibleImpl implements License, ModelImpl {
 
     private String name;
     private String url;

@@ -21,11 +21,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link SecurityRequirement} OpenAPI model interface.
  */
-public class SecurityRequirementImpl extends LinkedHashMap<String, List<String>> implements SecurityRequirement {
+public class SecurityRequirementImpl extends LinkedHashMap<String, List<String>> implements SecurityRequirement, ModelImpl {
 
     private static final long serialVersionUID = -2336114397712664136L;
 

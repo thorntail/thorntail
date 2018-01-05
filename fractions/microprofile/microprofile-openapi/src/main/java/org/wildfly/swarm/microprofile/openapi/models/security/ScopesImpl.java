@@ -20,11 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.security.Scopes;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Scopes} OpenAPI model interface.
  */
-public class ScopesImpl extends LinkedHashMap<String, String> implements Scopes {
+public class ScopesImpl extends LinkedHashMap<String, String> implements Scopes, ModelImpl {
 
     private static final long serialVersionUID = -6449984041086619713L;
 

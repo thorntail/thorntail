@@ -18,11 +18,12 @@ package org.wildfly.swarm.microprofile.openapi.models.media;
 
 import org.eclipse.microprofile.openapi.models.media.XML;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link XML} OpenAPI model interface.
  */
-public class XMLImpl extends ExtensibleImpl implements XML {
+public class XMLImpl extends ExtensibleImpl implements XML, ModelImpl {
 
     private String name;
     private String namespace;

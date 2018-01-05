@@ -28,7 +28,7 @@
     <swarm.fraction.tags>MicroProfile,OpenAPI,JaxRs,Web</swarm.fraction.tags>
     <arquillian.version>1.1.13.Final</arquillian.version>
     <!-- The MicroProfile OpenAPI Spec version -->
-    <mp.openapi.version>1.0-SNAPSHOT</mp.openapi.version>
+    <mp.openapi.version>1.0</mp.openapi.version>
     
     <!-- Dependencies -->
     <version.com.fasterxml.jackson.dataformat>2.9.2</version.com.fasterxml.jackson.dataformat>
@@ -85,6 +85,15 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.2</version>
     </dependency>
 
     <!-- Provided APIs -->

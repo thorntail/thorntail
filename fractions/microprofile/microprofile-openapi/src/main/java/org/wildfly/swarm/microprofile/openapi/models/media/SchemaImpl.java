@@ -28,11 +28,12 @@ import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.XML;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Content} OpenAPI model interface.
  */
-public class SchemaImpl extends ExtensibleImpl implements Schema {
+public class SchemaImpl extends ExtensibleImpl implements Schema, ModelImpl {
 
     private String $ref;
     private String format;

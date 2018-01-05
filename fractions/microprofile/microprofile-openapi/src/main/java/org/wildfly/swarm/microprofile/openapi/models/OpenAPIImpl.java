@@ -32,7 +32,7 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
 /**
  * An implementation of the {@link OpenAPI} OpenAPI model interface.
  */
-public class OpenAPIImpl extends ExtensibleImpl implements OpenAPI {
+public class OpenAPIImpl extends ExtensibleImpl implements OpenAPI, ModelImpl {
 
     private String openapi;
     private Info info;

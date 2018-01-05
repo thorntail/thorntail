@@ -21,7 +21,7 @@ import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 /**
  * An implementation of the {@link ExternalDocumentation} OpenAPI model interface.
  */
-public class ExternalDocumentationImpl extends ExtensibleImpl implements ExternalDocumentation {
+public class ExternalDocumentationImpl extends ExtensibleImpl implements ExternalDocumentation, ModelImpl {
 
     private String description;
     private String url;

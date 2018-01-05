@@ -1,0 +1,21 @@
+{
+  "openapi" : "3.0.0",
+  "tags" : [
+    {
+      "name": "tag1",
+      "description": "Tag 1 operation"
+    },
+    {
+      "name": "tag2",
+      "description": "Tag 2 operation",
+      "externalDocs": {
+        "description": "Find more info here",
+        "url": "https://example.com"
+      }
+    },
+    {
+      "name": "tag3",
+      "description": "Tag 3 operation"
+    }
+  ]
+}

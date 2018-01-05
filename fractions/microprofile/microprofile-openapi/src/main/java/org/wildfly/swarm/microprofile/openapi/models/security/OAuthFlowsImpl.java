@@ -19,11 +19,12 @@ package org.wildfly.swarm.microprofile.openapi.models.security;
 import org.eclipse.microprofile.openapi.models.security.OAuthFlow;
 import org.eclipse.microprofile.openapi.models.security.OAuthFlows;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link OAuthFlows} OpenAPI model interface.
  */
-public class OAuthFlowsImpl extends ExtensibleImpl implements OAuthFlows {
+public class OAuthFlowsImpl extends ExtensibleImpl implements OAuthFlows, ModelImpl {
 
     private OAuthFlow implicit;
     private OAuthFlow password;
