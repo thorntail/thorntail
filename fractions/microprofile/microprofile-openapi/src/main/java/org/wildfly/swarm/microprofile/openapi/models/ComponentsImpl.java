@@ -33,7 +33,7 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 /**
  * An implementation of the {@link Components} OpenAPI model interface.
  */
-public class ComponentsImpl extends ExtensibleImpl implements Components {
+public class ComponentsImpl extends ExtensibleImpl implements Components, ModelImpl {
 
     private Map<String, Schema> schemas;
     private Map<String, APIResponse> responses;

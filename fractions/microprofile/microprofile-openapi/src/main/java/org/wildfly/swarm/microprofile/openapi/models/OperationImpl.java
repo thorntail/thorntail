@@ -32,7 +32,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 /**
  * An implementation of the {@link ExternalDocumentation} OpenAPI model interface.
  */
-public class OperationImpl extends ExtensibleImpl implements Operation {
+public class OperationImpl extends ExtensibleImpl implements Operation, ModelImpl {
 
     private List<String> tags;
     private String summary;

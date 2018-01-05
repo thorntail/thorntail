@@ -19,11 +19,12 @@ package org.wildfly.swarm.microprofile.openapi.models.security;
 import org.eclipse.microprofile.openapi.models.security.OAuthFlows;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link SecurityScheme} OpenAPI model interface.
  */
-public class SecuritySchemeImpl extends ExtensibleImpl implements SecurityScheme {
+public class SecuritySchemeImpl extends ExtensibleImpl implements SecurityScheme, ModelImpl {
 
     private String $ref;
     private Type type;

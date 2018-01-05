@@ -24,11 +24,12 @@ import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Parameter} OpenAPI model interface.
  */
-public class ParameterImpl extends ExtensibleImpl implements Parameter {
+public class ParameterImpl extends ExtensibleImpl implements Parameter, ModelImpl {
 
     private String $ref;
     private String name;

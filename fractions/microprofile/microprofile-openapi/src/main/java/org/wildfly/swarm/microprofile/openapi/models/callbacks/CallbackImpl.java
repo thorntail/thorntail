@@ -21,11 +21,12 @@ import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.callbacks.Callback;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Callback} OpenAPI model interface.
  */
-public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Callback  {
+public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Callback, ModelImpl  {
 
     private static final long serialVersionUID = -8299593311575193028L;
 

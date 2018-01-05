@@ -22,11 +22,12 @@ import java.util.Map;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Link} OpenAPI model interface.
  */
-public class LinkImpl extends ExtensibleImpl implements Link {
+public class LinkImpl extends ExtensibleImpl implements Link, ModelImpl {
 
     private String $ref;
     private String operationRef;

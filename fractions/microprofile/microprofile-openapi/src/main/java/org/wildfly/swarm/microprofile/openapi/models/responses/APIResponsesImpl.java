@@ -20,11 +20,12 @@ import java.util.LinkedHashMap;
 
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link APIResponses} OpenAPI model interface.
  */
-public class APIResponsesImpl extends LinkedHashMap<String, APIResponse> implements APIResponses {
+public class APIResponsesImpl extends LinkedHashMap<String, APIResponse> implements APIResponses, ModelImpl {
 
     private static final long serialVersionUID = 7767651877116575739L;
 

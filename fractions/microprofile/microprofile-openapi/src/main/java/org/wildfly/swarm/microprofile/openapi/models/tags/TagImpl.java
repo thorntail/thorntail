@@ -19,11 +19,12 @@ package org.wildfly.swarm.microprofile.openapi.models.tags;
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Tag} OpenAPI model interface.
  */
-public class TagImpl extends ExtensibleImpl implements Tag {
+public class TagImpl extends ExtensibleImpl implements Tag, ModelImpl {
 
     private String name;
     private String description;

@@ -26,7 +26,7 @@ import org.eclipse.microprofile.openapi.models.Extensible;
  * OpenAPI models.
  * @author eric.wittmann@gmail.com
  */
-public abstract class ExtensibleImpl implements Extensible {
+public abstract class ExtensibleImpl implements Extensible, ModelImpl {
 
     private Map<String, Object> extensions;
 

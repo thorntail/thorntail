@@ -21,11 +21,12 @@ import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link ServerVariable} OpenAPI model interface.
  */
-public class ServerVariableImpl extends ExtensibleImpl implements ServerVariable {
+public class ServerVariableImpl extends ExtensibleImpl implements ServerVariable, ModelImpl {
 
     private List<String> enumeration;
     private String defaultValue;

@@ -19,11 +19,12 @@ package org.wildfly.swarm.microprofile.openapi.models.servers;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Server} OpenAPI model interface.
  */
-public class ServerImpl extends ExtensibleImpl implements Server {
+public class ServerImpl extends ExtensibleImpl implements Server, ModelImpl {
 
     private String url;
     private String description;

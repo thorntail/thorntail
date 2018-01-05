@@ -21,11 +21,12 @@ import java.util.Map;
 import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Encoding} OpenAPI model interface.
  */
-public class EncodingImpl extends ExtensibleImpl implements Encoding {
+public class EncodingImpl extends ExtensibleImpl implements Encoding, ModelImpl {
 
     private String contentType;
     private Map<String, Header> headers;

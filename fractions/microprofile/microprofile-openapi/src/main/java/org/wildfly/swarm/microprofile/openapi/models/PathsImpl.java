@@ -25,7 +25,7 @@ import org.eclipse.microprofile.openapi.models.Paths;
 /**
  * An implementation of the {@link Paths} OpenAPI model interface.
  */
-public class PathsImpl extends LinkedHashMap<String, PathItem> implements Paths {
+public class PathsImpl extends LinkedHashMap<String, PathItem> implements Paths, ModelImpl {
 
     private static final long serialVersionUID = 8872198998600578356L;
 

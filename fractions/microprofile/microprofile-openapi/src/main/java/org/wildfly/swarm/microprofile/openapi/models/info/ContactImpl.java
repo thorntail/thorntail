@@ -18,11 +18,12 @@ package org.wildfly.swarm.microprofile.openapi.models.info;
 
 import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Contact} OpenAPI model interface.
  */
-public class ContactImpl extends ExtensibleImpl implements Contact {
+public class ContactImpl extends ExtensibleImpl implements Contact, ModelImpl {
 
     private String name;
     private String url;

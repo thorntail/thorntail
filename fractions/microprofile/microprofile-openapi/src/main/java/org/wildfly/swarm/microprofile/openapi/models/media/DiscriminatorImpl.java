@@ -20,11 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Discriminator} OpenAPI model interface.
  */
-public class DiscriminatorImpl implements Discriminator {
+public class DiscriminatorImpl implements Discriminator, ModelImpl {
 
     private String propertyName;
     private Map<String, String> mapping;

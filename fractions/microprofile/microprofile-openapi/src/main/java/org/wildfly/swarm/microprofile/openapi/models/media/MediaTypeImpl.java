@@ -25,11 +25,12 @@ import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
+import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
  * An implementation of the {@link Discriminator} MediaType model interface.
  */
-public class MediaTypeImpl extends ExtensibleImpl implements MediaType {
+public class MediaTypeImpl extends ExtensibleImpl implements MediaType, ModelImpl {
 
     private Schema schema;
     private Object example;
