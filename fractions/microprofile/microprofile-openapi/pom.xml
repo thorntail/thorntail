@@ -56,11 +56,7 @@
   </dependencyManagement>
 
   <dependencies>
-    <dependency>
-      <groupId>org.eclipse.microprofile.openapi</groupId>
-      <artifactId>microprofile-openapi-api</artifactId>
-      <version>${mp.openapi.version}</version>
-    </dependency>
+    <!-- Project Dependencies -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>microprofile</artifactId>
@@ -69,6 +65,15 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>microprofile-config</artifactId>
     </dependency>
+
+    <!-- OpenAPI Spec -->
+    <dependency>
+      <groupId>org.eclipse.microprofile.openapi</groupId>
+      <artifactId>microprofile-openapi-api</artifactId>
+      <version>${mp.openapi.version}</version>
+    </dependency>
+    
+    <!-- Third Party Libs -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>

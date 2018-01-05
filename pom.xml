@@ -747,6 +747,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-openapi</artifactId>
+        <version>2018.4.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>mp_fault_tolerance_cdi_extension</artifactId>
         <version>2017.12.0-SNAPSHOT</version>
       </dependency>
@@ -1283,6 +1289,7 @@
         <module>testsuite/testsuite-management-console</module>
         <module>testsuite/testsuite-messaging</module>
         <module>testsuite/testsuite-messaging-remote</module>
+        <module>testsuite/testsuite-microprofile-openapi</module>
         <module>testsuite/testsuite-mod_cluster</module>
         <module>testsuite/testsuite-opentracing</module>
         <module>testsuite/testsuite-resource-adapters</module>
