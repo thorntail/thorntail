@@ -19,40 +19,18 @@ package org.wildfly.swarm.microprofile.openapi;
 import java.net.URI;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.jaxrs.JAXRSArchive;
-import org.wildfly.swarm.jaxrs.JAXRSFraction;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class OpenApiTest {
 
     private static String getUrlContent(String url) throws Exception {
         return IOUtils.toString(new URI(url), "UTF-8");
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Deployment(testable = false)
-    public static Archive createDeployment() throws Exception {
-        return ShrinkWrap.create(JAXRSArchive.class, "app.war")
-                .addClass(Activator.class)
-                .addClass(FooResource.class)
-                .addAllDependencies()
-                .setContextRoot("/");
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .fraction(new JAXRSFraction())
-                .withProfile("application-path");
     }
 
     @Test
