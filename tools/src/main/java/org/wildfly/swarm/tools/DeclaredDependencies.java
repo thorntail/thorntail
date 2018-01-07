@@ -50,6 +50,20 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
         return allTransient;
     }
 
+    public Collection<ArtifactSpec> getRuntimeExplicitAndTransientDependencies() {
+        Collection<ArtifactSpec> allDeps = new HashSet<>();
+
+        getDirectDeps()
+                .stream()
+                .filter(spec -> !spec.scope.equals("test"))
+                .forEach(spec -> {
+                    allDeps.add(spec);
+                    allDeps.addAll(getTransientDependencies(spec));
+                });
+
+        return allDeps;
+    }
+
     public Collection<ArtifactSpec> getTransientDependencies(ArtifactSpec artifact) {
         return getTransientDeps(artifact);
     }

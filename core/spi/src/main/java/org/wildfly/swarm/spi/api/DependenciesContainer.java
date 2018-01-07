@@ -15,11 +15,8 @@
  */
 package org.wildfly.swarm.spi.api;
 
-import java.util.List;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.container.LibraryContainer;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
  * Archive mix-in capable of supporting {@code addAllDependencies}
@@ -51,25 +48,6 @@ public interface DependenciesContainer<T extends Archive<T>> extends LibraryCont
         // flag to instruct the container to add the missing deps upon deploy time
         addMarker(ALL_DEPENDENCIES_MARKER);
         return (T) this;
-    }
-
-
-    @SuppressWarnings("unchecked")
-    // [hb] TODO: is this actually needed anymore? looks brittle to add swarm deps tp the deployment ...
-    default T addAllDependencies(boolean includingWildFlySwarm) throws Exception {
-        if (!includingWildFlySwarm) {
-            return addAllDependencies();
-        }
-
-        if (!hasMarker(ALL_DEPENDENCIES_MARKER)) {
-            List<JavaArchive> artifacts = ArtifactLookup.get().allArtifacts();
-            addAsLibraries(artifacts);
-            addMarker(ALL_DEPENDENCIES_MARKER);
-        }
-
-        return (T) this;
-
-
     }
 
     /**
