@@ -36,6 +36,7 @@ public class OpenApiTest {
     @Test
     public void testOpenApi() throws Exception {
         String content = getUrlContent("http://localhost:8080/api/foo/hello");
+        System.out.println("+++++++ Received: " + content);
         Assert.assertEquals("Hello from foo.", content);
     }
 
