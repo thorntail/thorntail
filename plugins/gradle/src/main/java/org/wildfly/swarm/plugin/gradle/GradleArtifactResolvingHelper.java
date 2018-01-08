@@ -93,14 +93,6 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
         final Configuration config = this.project.getConfigurations().detachedConfiguration().setTransitive(transitive);
         final DependencySet dependencySet = config.getDependencies();
 
-        if (transitive) {
-            // if transitive, then dependency-manage everything,
-            // if non-transitive, we want exactly what we've asked for, and don't force
-            // to the project's dependencies.
-            config.getResolutionStrategy().setForcedModules(
-                    this.project.getConfigurations().getByName("compile").getResolutionStrategy().getForcedModules());
-        }
-
         deps.forEach(spec -> {
             if (projects.containsKey(spec.groupId() + ":" + spec.artifactId() + ":" + spec.version())) {
                 dependencySet.add(new DefaultProjectDependency((ProjectInternal) projects.get(spec.groupId() + ":" + spec.artifactId() + ":" + spec.version()), new DefaultProjectAccessListener(), false));
