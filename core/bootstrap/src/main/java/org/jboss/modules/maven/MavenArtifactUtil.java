@@ -40,6 +40,9 @@ import org.jboss.modules.Module;
 import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaders;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
+import org.wildfly.swarm.bootstrap.modules.ArtifactResolution;
+import org.wildfly.swarm.bootstrap.modules.InMemoryJarResourceLoader;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.xml.sax.InputSource;
 
 /**
@@ -263,10 +266,22 @@ public final class MavenArtifactUtil {
      * @throws IOException if the artifact could not be resolved
      */
     public static ResourceLoader createMavenArtifactLoader(final MavenResolver mavenResolver, final String name) throws IOException {
+        ArtifactCoordinates coords = ArtifactCoordinates.fromString(name);
+        ArtifactResolution resolution = MavenResolvers.get().resolveJarArtifact(coords);
+        if ( resolution == null ) {
+            return null;
+        }
+        if ( resolution.isFile() || coords.getGroupId().equals("org.wildfly.swarm")) {
+            return ResourceLoaders.createJarResourceLoader(name, new JarFile(resolution.getFile(), true));
+        }
+
+        return new InMemoryJarResourceLoader(coords, resolution.openStream());
+        /*
         File fp = mavenResolver.resolveJarArtifact(ArtifactCoordinates.fromString(name));
         if (fp == null) return null;
         JarFile jarFile = new JarFile(fp, true);
         return ResourceLoaders.createJarResourceLoader(name, jarFile);
+        */
     }
 
     static <T> T doIo(PrivilegedExceptionAction<T> action) throws IOException {

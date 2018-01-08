@@ -15,10 +15,10 @@
  */
 package org.wildfly.swarm.internal;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Optional;
 
 /**
  * Created by hbraun on 22.08.17.

@@ -63,7 +63,7 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
                 in = url.openStream();
                 moduleSpec = ModuleXmlParser.parseModuleXml(
                         (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
-                        MavenResolvers.get(),
+                        MavenResolvers.getForJBossModules(),
                         "/",
                         in,
                         path.toString(),

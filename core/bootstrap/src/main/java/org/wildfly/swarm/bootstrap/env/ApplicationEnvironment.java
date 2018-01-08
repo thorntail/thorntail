@@ -1,12 +1,12 @@
 /**
  * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.bootstrap.env;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,10 +35,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.maven.ArtifactCoordinates;
+import org.wildfly.swarm.bootstrap.modules.ArtifactResolution;
 import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
@@ -48,11 +49,11 @@ import org.yaml.snakeyaml.Yaml;
 
 /**
  * Entry-point to runtime environment.
- *
+ * <p>
  * <p>This class uses the <code>fraction-manifest.yaml</code> from each fraction,
  * along with the container-wide <code>wildfly-swarm-manifest.yaml</code> if executing
  * in an uberjar mode in order to determine information such as:</p>
- *
+ * <p>
  * <ul>
  * <li>uberjar vs non-uberjar execution mode</li>
  * <li>removable dependencies</li>
@@ -226,7 +227,8 @@ public class ApplicationEnvironment {
 
         bootstrapArtifactsAsCoordinates().forEach((coords) -> {
             try {
-                File artifactFile = MavenResolvers.get().resolveJarArtifact(coords);
+                /*
+                File artifactFile = MavenResolvers.getForJBossModules().resolveJarArtifact(coords);
                 if (artifactFile == null) {
                     throw new RuntimeException("Unable to resolve artifact from coordinates: " + coords);
                 }
@@ -236,6 +238,35 @@ public class ApplicationEnvironment {
                         FractionManifest manifest = new FractionManifest(zip.getInputStream(manifestEntry));
                         if (!modulesManifests.contains(manifest.getGroupId() + manifest.getArtifactId())) {
                             this.manifests.add(manifest);
+                        }
+                    }
+                }
+                */
+
+                ArtifactResolution resolution = MavenResolvers.get().resolveJarArtifact(coords);
+                if (resolution == null) {
+                    throw new RuntimeException("Unable to resolve artifact from coordinates: " + coords);
+                }
+                if (resolution.isFile()) {
+                    try (ZipFile zip = new ZipFile(resolution.getFile())) {
+                        ZipEntry manifestEntry = zip.getEntry(FractionManifest.CLASSPATH_LOCATION);
+                        if (manifestEntry != null) {
+                            FractionManifest manifest = new FractionManifest(zip.getInputStream(manifestEntry));
+                            if (!modulesManifests.contains(manifest.getGroupId() + manifest.getArtifactId())) {
+                                this.manifests.add(manifest);
+                            }
+                        }
+                    }
+                } else {
+                    try (ZipInputStream zip = new ZipInputStream(resolution.openStream())) {
+                        ZipEntry each = null;
+                        while ((each = zip.getNextEntry()) != null) {
+                            if (each.getName().equals(FractionManifest.CLASSPATH_LOCATION)) {
+                                FractionManifest manifest = new FractionManifest(zip);
+                                if (!modulesManifests.contains(manifest.getGroupId() + manifest.getArtifactId())) {
+                                    this.manifests.add(manifest);
+                                }
+                            }
                         }
                     }
                 }
@@ -311,7 +342,7 @@ public class ApplicationEnvironment {
 
     /**
      * List of <i>application-level</i> dependencies.
-     *
+     * <p>
      * <p>Only applicable for uberjar executions.</p>
      *
      * @return The list of Maven GAVs for application dependencies.
@@ -336,9 +367,9 @@ public class ApplicationEnvironment {
 
     /**
      * [hb] TODO: these javadocs are wrong and describe a previous implementation of this method
-     *
+     * <p>
      * Resolve the application's dependencies.
-     *
+     * <p>
      * <p>Using combinations of {@link #getDependencies()}} and {@link #getRemovableDependencies()},
      * depending on execution mode, resolves application dependencies, taking
      * into account any exclusions.</p>

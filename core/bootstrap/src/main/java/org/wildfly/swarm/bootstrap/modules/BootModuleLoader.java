@@ -27,6 +27,7 @@ public class BootModuleLoader extends ModuleLoader {
 
     public BootModuleLoader() throws IOException {
         super(new ModuleFinder[]{
+                new UberjarURLModuleFinder(),
                 new BootstrapClasspathModuleFinder(),
                 new BootstrapModuleFinder(),
                 new ClasspathModuleFinder(),
@@ -34,5 +35,6 @@ public class BootModuleLoader extends ModuleLoader {
                 new ApplicationModuleFinder(),
                 new DynamicModuleFinder(),
         });
+
     }
 }

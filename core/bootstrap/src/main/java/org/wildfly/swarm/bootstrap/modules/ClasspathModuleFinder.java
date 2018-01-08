@@ -88,7 +88,7 @@ public class ClasspathModuleFinder implements ModuleFinder {
                 try {
                     moduleSpec = ModuleXmlParser.parseModuleXml(
                             (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
-                            MavenResolvers.get(),
+                            MavenResolvers.getForJBossModules(),
                             (explodedJar == null ? "/" : explodedJar.toAbsolutePath().toString()),
                             in,
                             path.toString(),
