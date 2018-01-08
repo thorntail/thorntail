@@ -91,7 +91,7 @@ public class PackageTask extends DefaultTask {
 
         this.tool = new BuildTool(resolvingHelper)
                 .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
-                    getPackaging(), getProjectArtifactFile())
+                                 getPackaging(), getProjectArtifactFile())
                 .mainClass(getMainClassName())
                 .bundleDependencies(getBundleDependencies())
                 .executable(getExecutable())
@@ -101,9 +101,9 @@ public class PackageTask extends DefaultTask {
                 .properties(PropertiesUtil.filteredSystemProperties(propertiesFromExtension, false))
                 .fractionDetectionMode(getSwarmExtension().getFractionDetectMode())
                 .additionalModules(moduleDirs.stream()
-                        .filter(File::exists)
-                        .map(File::getAbsolutePath)
-                        .collect(Collectors.toList()))
+                                           .filter(File::exists)
+                                           .map(File::getAbsolutePath)
+                                           .collect(Collectors.toList()))
                 .logger(new SimpleLogger() {
                     @Override
                     public void debug(String msg) {
@@ -145,7 +145,7 @@ public class PackageTask extends DefaultTask {
                 .forEach(e -> addDependency(declaredDependencies, explicitDependencies, e));*/
 
         ResolvedConfiguration resolvedConfiguration = project.getConfigurations()
-                .getByName("compile")
+                .getByName("default")
                 .getResolvedConfiguration();
 
         Set<ResolvedDependency> directDeps = resolvedConfiguration
@@ -203,9 +203,9 @@ public class PackageTask extends DefaultTask {
         if (mainClassName != null && !mainClassName.equals("")) {
             getLogger().warn(
                     "\n------\n" +
-                    "Custom main() usage is intended to be deprecated in a future release and is no longer supported, \n" +
-                    "please refer to http://reference.wildfly-swarm.io for YAML configuration that replaces it." +
-                    "\n------"
+                            "Custom main() usage is intended to be deprecated in a future release and is no longer supported, \n" +
+                            "please refer to http://reference.wildfly-swarm.io for YAML configuration that replaces it." +
+                            "\n------"
             );
         }
 
