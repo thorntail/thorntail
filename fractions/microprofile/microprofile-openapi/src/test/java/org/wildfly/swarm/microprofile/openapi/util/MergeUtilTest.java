@@ -40,7 +40,7 @@ public class MergeUtilTest {
      * @throws IOException
      */
     private static String loadResource(URL testResource) throws IOException {
-        return IOUtils.toString(testResource);
+        return IOUtils.toString(testResource, "UTF-8");
     }
 
     /**
@@ -76,7 +76,6 @@ public class MergeUtilTest {
         OpenAPIImpl actualModel = MergeUtil.merge(resource1Model, resource2Model);
 
         String actual = OpenApiSerializer.serialize(actualModel, Format.JSON);
-        System.out.println(actual);
 
         assertJsonEquals(expectedContent, actual);
     }

@@ -43,7 +43,7 @@ public class OpenApiParserAndSerializerTest {
      * @throws IOException
      */
     private static String loadResource(URL testResource) throws IOException {
-        return IOUtils.toString(testResource);
+        return IOUtils.toString(testResource, "UTF-8");
     }
 
     /**

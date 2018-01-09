@@ -44,6 +44,10 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>microprofile-config</artifactId>
     </dependency>
 
@@ -149,6 +153,11 @@
       <version>1.5.0</version>
       <scope>test</scope>
     </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.jboss</groupId> -->
+<!--       <artifactId>jandex</artifactId> -->
+<!--       <version>2.0.1.Final</version> -->
+<!--     </dependency> -->
 
   </dependencies>
 </project>

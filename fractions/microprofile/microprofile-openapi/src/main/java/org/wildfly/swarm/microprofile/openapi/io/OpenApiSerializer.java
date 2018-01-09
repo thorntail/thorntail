@@ -55,7 +55,6 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
-import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -80,7 +79,7 @@ public class OpenApiSerializer {
      * @param oai
      * @param format
      */
-    public static final String serialize(OpenAPIImpl oai, Format format) throws IOException {
+    public static final String serialize(OpenAPI oai, Format format) throws IOException {
         try {
             OpenApiSerializer serializer = new OpenApiSerializer(oai);
             JsonNode tree = serializer.serialize();
@@ -100,13 +99,13 @@ public class OpenApiSerializer {
         }
     }
 
-    private final OpenAPIImpl oai;
+    private final OpenAPI oai;
 
     /**
      * Constructor.
      * @param oai
      */
-    public OpenApiSerializer(OpenAPIImpl oai) {
+    public OpenApiSerializer(OpenAPI oai) {
         this.oai = oai;
     }
 

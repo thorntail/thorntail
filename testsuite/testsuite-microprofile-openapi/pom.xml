@@ -19,12 +19,13 @@
   <name>Test Suite: Microprofile OpenAPI</name>
   <description>Test Suite: Microprofile OpenAPI</description>
 
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
