@@ -109,12 +109,23 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
     private OpenAPIImpl modelFromStaticFile() {
         Format format = Format.YAML;
 
+        // Check for the file in both META-INF and WEB-INF/classes/META-INF
         Node node = archive.get("/META-INF/openapi.yaml");
+        if (node == null) {
+            node = archive.get("/WEB-INF/classes/META-INF/openapi.yml");
+        }
         if (node == null) {
             node = archive.get("/META-INF/openapi.yml");
         }
         if (node == null) {
+            node = archive.get("/WEB-INF/classes/META-INF/openapi.yml");
+        }
+        if (node == null) {
             node = archive.get("/META-INF/openapi.json");
+            format = Format.JSON;
+        }
+        if (node == null) {
+            node = archive.get("/WEB-INF/classes/META-INF/openapi.json");
             format = Format.JSON;
         }
 
