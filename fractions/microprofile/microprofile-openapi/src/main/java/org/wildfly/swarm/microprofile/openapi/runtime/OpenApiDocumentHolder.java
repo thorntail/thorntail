@@ -27,4 +27,10 @@ public class OpenApiDocumentHolder {
 
     public static OpenAPI document = new OpenAPIImpl();
 
+    /**
+     * Constructor.
+     */
+    private OpenApiDocumentHolder() {
+    }
+
 }
