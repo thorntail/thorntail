@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
@@ -66,6 +67,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
+import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.microprofile.openapi.models.ComponentsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ExternalDocumentationImpl;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
@@ -168,22 +170,35 @@ public class OpenApiParser {
             String ext = fname.substring(lidx + 1);
             boolean isJson = ext.equalsIgnoreCase("json");
             boolean isYaml = ext.equalsIgnoreCase("yaml") || ext.equalsIgnoreCase("yml");
-
-            ObjectMapper mapper;
-            if (isJson) {
-                mapper = new ObjectMapper();
-            } else if (isYaml) {
-                mapper = new ObjectMapper(new YAMLFactory());
-            } else {
+            if (!isJson && !isYaml) {
                 throw new IOException("Invalid file extension for URL (expected json, yaml, or yml): " + url.toURI().toString());
             }
-            JsonNode tree = mapper.readTree(url);
 
-            OpenApiParser parser = new OpenApiParser(tree);
-            return parser.parse();
+            try (InputStream stream = url.openStream()) {
+                return parse(stream, isJson ? Format.JSON : Format.YAML);
+            }
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
+    }
+
+    /**
+     * Parses the resource found at the given stream.  The format of the stream must
+     * be specified.
+     * @param stream
+     * @param format
+     */
+    public static final OpenAPIImpl parse(InputStream stream, Format format) throws IOException {
+        ObjectMapper mapper;
+        if (format == Format.JSON) {
+            mapper = new ObjectMapper();
+        } else {
+            mapper = new ObjectMapper(new YAMLFactory());
+        }
+        JsonNode tree = mapper.readTree(stream);
+
+        OpenApiParser parser = new OpenApiParser(tree);
+        return parser.parse();
     }
 
     private final JsonNode tree;
