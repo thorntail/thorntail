@@ -66,6 +66,8 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
      */
     @Override
     public void process() throws Exception {
+        System.out.println("Initializing OpenAPI support: scanning deployment.");
+
         // Phase 1:  Call OASModelReader
         OpenAPIImpl model = modelFromReader();
 
@@ -91,6 +93,7 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         if (readerClassName == null) {
             return null;
         }
+        System.out.println("Creating OpenAPI model from OASReader.");
         try {
             Class c = Class.forName(readerClassName);
             OASModelReader reader = (OASModelReader) c.newInstance();
@@ -133,6 +136,8 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
             return null;
         }
 
+        System.out.println("Creating OpenAPI model from static file: " + node.toString());
+
         try (InputStream stream = node.getAsset().openStream()) {
             return OpenApiParser.parse(stream, format);
         } catch (IOException e) {
@@ -149,6 +154,8 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         if (this.config.scanDisable()) {
             return null;
         }
+
+        System.out.println("Scanning for OpenAPI annotations.");
 
         OpenApiAnnotationScanner scanner = new OpenApiAnnotationScanner(config, archive, index);
         return scanner.scan();
@@ -168,6 +175,8 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         if (filterClassName == null) {
             return model;
         }
+
+        System.out.println("Filtering OpenAPI model.");
 
         try {
             Class c = Class.forName(filterClassName);
