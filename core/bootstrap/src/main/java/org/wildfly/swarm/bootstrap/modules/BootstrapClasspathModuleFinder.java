@@ -47,7 +47,8 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
         }
 
         try (AutoCloseable handle = Performance.accumulate("module: BootstrapClassPath")) {
-            final String path = "modules/" + identifier.replace('.', MODULE_SEPARATOR).replace(':', MODULE_SEPARATOR) + "/module.xml";
+            final String[] nameAndSlot = identifier.split("\\:", 2);
+            final String path = "modules/" + nameAndSlot[0].replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + nameAndSlot[1] + "/module.xml";
 
             ClassLoader cl = BootstrapClasspathModuleFinder.class.getClassLoader();
             URL url = cl.getResource(path);
