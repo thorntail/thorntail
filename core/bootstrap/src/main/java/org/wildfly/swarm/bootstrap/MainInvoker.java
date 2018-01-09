@@ -89,6 +89,7 @@ public class MainInvoker {
 
     public static void main(String... args) throws Exception {
         System.setProperty(BOOT_MODULE_PROPERTY, BootModuleLoader.class.getName());
+
         List<String> argList = Arrays.asList(args);
 
         if (argList.isEmpty()) {

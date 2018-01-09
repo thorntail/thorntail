@@ -1,12 +1,12 @@
 /**
  * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,12 +15,8 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
@@ -31,7 +27,6 @@ import org.jboss.modules.ResourceLoader;
 import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
 import org.jboss.modules.filter.PathFilter;
-import org.jboss.modules.filter.PathFilters;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.performance.Performance;
@@ -62,17 +57,29 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
             env.bootstrapArtifactsAsCoordinates()
                     .forEach((coords) -> {
                         try {
-                            File artifact = MavenResolvers.get().resolveJarArtifact(coords);
+                            ArtifactResolution artifact = MavenResolvers.get().resolveJarArtifact(coords);
                             if (artifact == null) {
                                 throw new RuntimeException("Unable to resolve artifact from coordinates: " + coords);
                             }
-                            JarFile jar = new JarFile(artifact);
-                            ResourceLoader originaloader = ResourceLoaders.createJarResourceLoader(artifact.getName(), jar);
 
-                            PathFilter filter = getModuleFilter(jar);
+                            ResourceLoader originalLoader = null;
+                            if (artifact.isFile()) {
+                                JarFile jar = new JarFile(artifact.getFile());
+                                originalLoader = ResourceLoaders.createJarResourceLoader(artifact.getName(), jar);
+                            } else {
+                                originalLoader = new InMemoryJarResourceLoader(artifact.getName(), artifact.openStream());
+                            }
+
+                            PathFilter filter = new PathFilter() {
+                                @Override
+                                public boolean accept(String path) {
+                                    return path.endsWith("module.xml");
+                                }
+                            };
+
                             builder.addResourceRoot(
                                     ResourceLoaderSpec.createResourceLoaderSpec(
-                                            ResourceLoaders.createFilteredResourceLoader(filter, originaloader)
+                                            ResourceLoaders.createFilteredResourceLoader(filter, originalLoader)
                                     )
                             );
                         } catch (IOException e) {
@@ -96,23 +103,6 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
             throw new RuntimeException(e);
         }
 
-    }
-
-    private PathFilter getModuleFilter(JarFile jar) {
-        Set<String> paths = new HashSet<>();
-
-        Enumeration<JarEntry> jarEntries = jar.entries();
-
-        while (jarEntries.hasMoreElements()) {
-            JarEntry jarEntry = jarEntries.nextElement();
-            if (!jarEntry.isDirectory()) {
-                String name = jarEntry.getName();
-                if (name.endsWith("/module.xml")) {
-                    paths.add(name);
-                }
-            }
-        }
-        return PathFilters.in(paths);
     }
 
     private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.bootstrap");

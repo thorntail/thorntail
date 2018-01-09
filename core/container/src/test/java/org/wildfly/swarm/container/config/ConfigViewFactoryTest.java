@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.container.config;
 
-import org.junit.Test;
-
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 

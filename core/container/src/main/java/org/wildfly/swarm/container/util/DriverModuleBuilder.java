@@ -41,10 +41,15 @@ import org.wildfly.swarm.bootstrap.modules.DynamicModuleFinder;
 public abstract class DriverModuleBuilder {
 
     private static final String FILE_PREFIX = "file:";
+
     private static final String JAR_FILE_PREFIX = "jar:file:";
+
     private final String name;
+
     private final String detectableClassName;
+
     private final String[] optionalClassNames;
+
     private final String[] driverModuleDependencies;
 
     private boolean installed;

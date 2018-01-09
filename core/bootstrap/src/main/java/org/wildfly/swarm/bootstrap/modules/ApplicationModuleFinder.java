@@ -166,17 +166,23 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                         coords = new ArtifactCoordinates(parts[0], parts[1], parts[4], parts[3]);
                     }
                     try {
-                        File artifact = MavenResolvers.get().resolveJarArtifact(coords);
+                        ArtifactResolution artifact = MavenResolvers.get().resolveJarArtifact(coords);
                         if (artifact == null) {
                             LOG.error("Unable to find artifact for " + coords);
                             return;
                         }
-                        JarFile jar = new JarFile(artifact);
+
+                        ResourceLoader loader = null;
+
+                        if (artifact.isFile()) {
+                            JarFile jar = new JarFile(artifact.getFile());
+                            loader = ResourceLoaders.createJarResourceLoader(artifact.getName(), jar);
+                        } else {
+                            loader = new InMemoryJarResourceLoader(artifact.getName(), artifact.openStream());
+                        }
 
                         builder.addResourceRoot(
-                                ResourceLoaderSpec.createResourceLoaderSpec(
-                                        ResourceLoaders.createJarResourceLoader(artifact.getName(), jar)
-                                )
+                                ResourceLoaderSpec.createResourceLoaderSpec(loader)
                         );
                     } catch (IOException e) {
                         throw new RuntimeException(e);

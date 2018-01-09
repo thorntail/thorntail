@@ -15,25 +15,26 @@
  */
 package org.wildfly.swarm.bootstrap;
 
-import static java.nio.file.StandardWatchEventKinds.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
+import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.nio.file.WatchEvent.Kind;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import __redirected.__JAXPRedirected;
 import org.jboss.modules.Module;
+import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 
 /**
  * @author Bob McWhirter
@@ -134,6 +135,11 @@ public class Main {
 
     public void setupBootModuleLoader() {
         System.setProperty("boot.module.loader", BootModuleLoader.class.getName());
+        try {
+            Module.registerURLStreamHandlerFactoryModule(Module.getBootModuleLoader().loadModule("org.wildfly.swarm.bootstrap.uberjar"));
+        } catch (ModuleLoadException e) {
+            e.printStackTrace();
+        }
     }
 
     private final String[] args;

@@ -166,7 +166,7 @@ public class ArtifactManager implements ArtifactLookup {
                 version,
                 classifier == null ? "" : classifier);
 
-        return MavenResolvers.get().resolveArtifact(coords, packaging);
+        return MavenResolvers.get().resolveArtifact(coords, packaging).getFile();
     }
 
 
