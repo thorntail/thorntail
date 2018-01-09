@@ -2,3 +2,4 @@ target
 *.iml
 .idea
 .java-version
+*.DS_Store
