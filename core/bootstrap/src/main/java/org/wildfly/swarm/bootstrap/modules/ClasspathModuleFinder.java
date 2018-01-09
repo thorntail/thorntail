@@ -47,7 +47,8 @@ public class ClasspathModuleFinder implements ModuleFinder {
             identifier = identifier + ":main";
         }
         try (AutoCloseable handle = Performance.accumulate("module: Classpath")) {
-            final String path = "modules/" + identifier.replace('.', MODULE_SEPARATOR).replace(':', MODULE_SEPARATOR) + "/module.xml";
+            final String[] nameAndSlot = identifier.split("\\:", 2);
+            final String path = "modules/" + nameAndSlot[0].replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + nameAndSlot[1] + "/module.xml";
 
 
             if (LOG.isTraceEnabled()) {
