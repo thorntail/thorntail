@@ -6,16 +6,17 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.Servlet;
 
-import io.undertow.Undertow;
 import org.jboss.unimbus.spi.UNimbusConfiguration;
+import org.jboss.unimbus.undertow.UndertowServer;
 
 /**
  * @author Ken Finnigan
  */
 @ApplicationScoped
 public class MyAppUNimbusConfig implements UNimbusConfiguration {
-//    @Inject
-//    Undertow undertow;
+
+    @Inject
+    UndertowServer undertow;
 
     @Inject
     @Any
@@ -23,6 +24,6 @@ public class MyAppUNimbusConfig implements UNimbusConfiguration {
 
     @Override
     public void run() {
-//        undertow.start();
+        undertow.start();
     }
 }

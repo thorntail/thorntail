@@ -1,4 +1,0 @@
-To run `MyApplication` we need to add the below to VM arguments in IDE:
-
-  --add-opens java.base/java.lang=org.jboss.unimbus.weld
-

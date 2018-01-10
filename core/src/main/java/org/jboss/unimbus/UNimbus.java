@@ -15,9 +15,10 @@
  */
 package org.jboss.unimbus;
 
+import javax.enterprise.inject.se.SeContainer;
+import javax.enterprise.inject.se.SeContainerInitializer;
+
 import org.jboss.unimbus.spi.UNimbusConfiguration;
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
 
 /**
  * @author Ken Finnigan
@@ -28,10 +29,8 @@ public class UNimbus {
     }
 
     public static void run(Class<? extends UNimbusConfiguration> uNimbusConfig) {
-        Weld weld = new Weld();
-        weld.property("org.jboss.weld.se.shutdownHook", false);
-        WeldContainer weldContainer = weld.initialize();
-        UNimbusConfiguration config = weldContainer.select(uNimbusConfig).get();
+        SeContainer container = SeContainerInitializer.newInstance().initialize();
+        UNimbusConfiguration config = container.select(uNimbusConfig).get();
         config.run();
     }
 }
