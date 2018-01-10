@@ -59,6 +59,6 @@ public class UndertowServer {
     }
 
     private ServletInfo mapServletMetaData(Servlet servlet) {
-        return Servlets.servlet(servlet.getClass());
+        return Servlets.servlet(servlet.getClass().getName(), servlet.getClass()).addMapping("/" + servlet.getClass().getSimpleName().toLowerCase());
     }
 }
