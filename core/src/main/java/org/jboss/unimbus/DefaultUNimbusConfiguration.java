@@ -15,11 +15,14 @@
  */
 package org.jboss.unimbus;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.unimbus.spi.UNimbusConfiguration;
 
 /**
  * @author Ken Finnigan
  */
+@ApplicationScoped
 public class DefaultUNimbusConfiguration implements UNimbusConfiguration {
     @Override
     public void run() {
