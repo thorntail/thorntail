@@ -32,7 +32,7 @@ import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
 @SuppressWarnings("rawtypes")
 public class OpenApiAnnotationScanner {
 
-    private static final String OPEN_API_VERSION = "3.0.1";
+    private static final String OPEN_API_VERSION = "3.0.0";
 
     private final OpenApiConfig config;
     private final Archive archive;

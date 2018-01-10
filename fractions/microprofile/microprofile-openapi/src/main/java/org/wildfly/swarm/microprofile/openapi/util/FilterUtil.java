@@ -70,6 +70,10 @@ public class FilterUtil {
             });
         }
 
+        // TODO filter operations of path items
+        // TODO filter servers
+        // TODO filter tags
+
         filter.filterOpenAPI(model);
         return model;
     }

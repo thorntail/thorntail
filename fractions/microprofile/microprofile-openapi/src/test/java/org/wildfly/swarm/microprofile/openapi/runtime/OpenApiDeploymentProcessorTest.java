@@ -118,7 +118,7 @@ public class OpenApiDeploymentProcessorTest {
         archive.addClass(TestApplication.class);
         archive.addClass(HelloResource.class);
         if (staticResource != null) {
-            archive.add(new UrlAsset(getClass().getResource(staticResource)), "META-INF/openapi.json");
+            archive.addAsManifestResource(new UrlAsset(getClass().getResource(staticResource)), "openapi.json");
         }
         return archive;
     }
@@ -132,6 +132,8 @@ public class OpenApiDeploymentProcessorTest {
         if (archive == null) {
             return null;
         }
+
+        // TODO re-use wf-swarm's implementation of this
 
         Indexer indexer = new Indexer();
         Map<ArchivePath, Node> c = archive.getContent();
