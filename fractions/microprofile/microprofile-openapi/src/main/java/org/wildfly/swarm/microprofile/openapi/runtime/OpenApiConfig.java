@@ -30,20 +30,6 @@ import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
  * Reference:  https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#31-list-of-configurable-items
  *
  * @author eric.wittmann@gmail.com
- *
- *
- *
-    mp.openapi.model.reader
-    mp.openapi.filter
-    mp.openapi.scan.disable
-    mp.openapi.scan.packages
-    mp.openapi.scan.classes
-    mp.openapi.scan.exclude.packages
-    mp.openapi.scan.exclude.classes
-    mp.openapi.servers
-    mp.openapi.servers.path.
-    mp.openapi.servers.operation.
- *
  */
 @DeploymentScoped
 public class OpenApiConfig {

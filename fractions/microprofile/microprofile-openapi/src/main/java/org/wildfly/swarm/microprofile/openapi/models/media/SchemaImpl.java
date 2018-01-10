@@ -706,7 +706,7 @@ public class SchemaImpl extends ExtensibleImpl implements Schema, ModelImpl {
     public Schema additionalProperties(Boolean additionalProperties) {
         this.additionalPropertiesSchema = null;
         this.additionalPropertiesBoolean = additionalProperties;
-        return null;
+        return this;
     }
 
     /**

@@ -184,7 +184,7 @@ public class LinkImpl extends ExtensibleImpl implements Link, ModelImpl {
     @Override
     public Link parameters(Map<String, Object> parameters) {
         this.parameters = parameters;
-        return null;
+        return this;
     }
 
     /**
