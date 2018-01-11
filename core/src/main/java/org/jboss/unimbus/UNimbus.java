@@ -29,7 +29,8 @@ public class UNimbus {
     }
 
     public static void run(Class<? extends UNimbusConfiguration> uNimbusConfig) {
-        SeContainer container = SeContainerInitializer.newInstance().initialize();
+        SeContainerInitializer initializer = SeContainerInitializer.newInstance();
+        SeContainer container = initializer.initialize();
         UNimbusConfiguration config = container.select(uNimbusConfig).get();
         config.run();
     }

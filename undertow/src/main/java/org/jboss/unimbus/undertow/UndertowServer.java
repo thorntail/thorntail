@@ -16,6 +16,7 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletInfo;
+import org.jboss.unimbus.config.Value;
 
 /**
  * @author Ken Finnigan
@@ -23,13 +24,16 @@ import io.undertow.servlet.api.ServletInfo;
 @ApplicationScoped
 public class UndertowServer {
 
+    @Value("server.port")
+    private int serverPort;
+
     private Undertow.Builder undertowBuilder = Undertow.builder();
 
     private Collection<Servlet> servlets;
 
     @PostConstruct
     private void setup() {
-        undertowBuilder.addHttpListener(8080, "localhost");
+        undertowBuilder.addHttpListener(this.serverPort, "localhost");
     }
 
     public void addServlets(Collection<Servlet> servlets) {
