@@ -20,4 +20,12 @@ public class MySQLDriverProducer {
     Driver driver() throws SQLException {
         return new com.mysql.jdbc.Driver();
     }
+
+    @Produces
+    @ApplicationScoped
+    @Named("jdbc.driver-info.mysql")
+    DriverInfo driverInfo() {
+        return new DriverInfo(com.mysql.jdbc.Driver.class.getName());
+    }
+
 }

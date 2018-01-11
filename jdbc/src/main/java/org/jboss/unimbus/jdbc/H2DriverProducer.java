@@ -19,4 +19,12 @@ public class H2DriverProducer {
     Driver driver() throws SQLException {
         return new org.h2.Driver();
     }
+
+    @Produces
+    @ApplicationScoped
+    @Named("jdbc.driver-info.h2")
+    DriverInfo driverInfo() {
+        return new DriverInfo(org.h2.Driver.class.getName());
+    }
+
 }

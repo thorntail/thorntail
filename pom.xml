@@ -26,6 +26,7 @@
     <module>jdbc</module>
     <module>jndi</module>
     <module>jpa</module>
+    <module>jta</module>
     <module>undertow</module>
 
     <module>examples</module>

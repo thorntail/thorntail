@@ -1,20 +1,33 @@
 package org.jboss.unimbus.jpa;
 
+import java.util.Collections;
+import java.util.HashMap;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
+import org.hibernate.jpa.boot.spi.PersistenceUnitDescriptor;
 
 @ApplicationScoped
 public class EntityManagerFactoryProducer {
 
     @Produces
     @ApplicationScoped
-    EntityManagerFactory entityManagerFactory() {
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("primary");
-        return factory;
+    EntityManagerFactory entityManager() {
+
+        EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilderImpl(
+                this.persistenceUnitDescriptor,
+                Collections.emptyMap()
+        );
+
+        return builder.build();
     }
+
+    @Inject
+    private PersistenceUnitDescriptor persistenceUnitDescriptor;
+
 }

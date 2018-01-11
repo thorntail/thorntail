@@ -27,8 +27,6 @@
 
   <modules>
     <module>servlet</module>
-<!--
     <module>poc</module>
--->
   </modules>
 </project>
