@@ -18,6 +18,7 @@ package org.jboss.unimbus;
 import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.se.SeContainerInitializer;
 
+import org.jboss.unimbus.condition.ConditionExtension;
 import org.jboss.unimbus.spi.UNimbusConfiguration;
 
 /**
@@ -30,7 +31,10 @@ public class UNimbus {
 
     public static void run(Class<? extends UNimbusConfiguration> uNimbusConfig) {
         SeContainerInitializer initializer = SeContainerInitializer.newInstance();
+        initializer.addExtensions(new ConditionExtension());
         SeContainer container = initializer.initialize();
+        Initializers initializers = container.select(Initializers.class).get();
+        System.err.println( "initizliers: " + initializers);
         UNimbusConfiguration config = container.select(uNimbusConfig).get();
         config.run();
     }

@@ -22,7 +22,12 @@
     <module>spi</module>
     <!--<module>weld-se</module>-->
     <module>core</module>
+    <module>datasources</module>
+    <module>jdbc</module>
+    <module>jndi</module>
+    <module>jpa</module>
     <module>undertow</module>
+
     <module>examples</module>
   </modules>
 
