@@ -137,7 +137,6 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                     weld.addExtension(new DeploymentScopedExtension(deploymentContext));
                     weld.addExtension(new ImplicitArchiveExtension());
 
-
                     for (Class<?> each : this.userComponents) {
                         weld.addBeanClass(each);
                     }

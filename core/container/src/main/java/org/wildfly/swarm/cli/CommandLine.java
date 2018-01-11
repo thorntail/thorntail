@@ -44,7 +44,6 @@ import org.wildfly.swarm.spi.api.SwarmProperties;
  *
  * @author Bob McWhirter
  */
-@SuppressWarnings("CdiManagedBeanInconsistencyInspection")
 @Vetoed
 public class CommandLine {
 

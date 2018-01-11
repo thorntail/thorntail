@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.bootstrap.env;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
-
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 

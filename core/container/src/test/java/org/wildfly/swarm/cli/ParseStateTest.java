@@ -18,6 +18,7 @@ package org.wildfly.swarm.cli;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 
 /**
  * @author Bob McWhirter

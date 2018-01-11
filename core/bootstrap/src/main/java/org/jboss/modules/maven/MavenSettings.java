@@ -15,6 +15,14 @@
  */
 package org.jboss.modules.maven;
 
+import static org.jboss.modules.maven.MavenArtifactUtil.doIo;
+import static org.jboss.modules.xml.ModuleXmlParser.endOfDocument;
+import static org.jboss.modules.xml.ModuleXmlParser.unexpectedContent;
+import static org.jboss.modules.xml.XmlPullParser.END_DOCUMENT;
+import static org.jboss.modules.xml.XmlPullParser.END_TAG;
+import static org.jboss.modules.xml.XmlPullParser.FEATURE_PROCESS_NAMESPACES;
+import static org.jboss.modules.xml.XmlPullParser.START_TAG;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,14 +38,6 @@ import java.util.Map;
 import org.jboss.modules.xml.MXParser;
 import org.jboss.modules.xml.XmlPullParser;
 import org.jboss.modules.xml.XmlPullParserException;
-
-import static org.jboss.modules.maven.MavenArtifactUtil.doIo;
-import static org.jboss.modules.xml.ModuleXmlParser.endOfDocument;
-import static org.jboss.modules.xml.ModuleXmlParser.unexpectedContent;
-import static org.jboss.modules.xml.XmlPullParser.END_DOCUMENT;
-import static org.jboss.modules.xml.XmlPullParser.END_TAG;
-import static org.jboss.modules.xml.XmlPullParser.FEATURE_PROCESS_NAMESPACES;
-import static org.jboss.modules.xml.XmlPullParser.START_TAG;
 
 /**
  * @author Tomaz Cerar (c) 2014 Red Hat Inc.

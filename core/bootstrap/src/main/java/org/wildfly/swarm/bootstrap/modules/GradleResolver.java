@@ -1,12 +1,12 @@
 /**
  * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,12 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
+import org.jboss.modules.Module;
+import org.jboss.modules.maven.ArtifactCoordinates;
+import org.jboss.modules.maven.MavenArtifactUtil;
+import org.jboss.modules.maven.MavenResolver;
+
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -28,12 +34,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import javax.xml.xpath.XPathExpressionException;
-
-import org.jboss.modules.Module;
-import org.jboss.modules.maven.ArtifactCoordinates;
-import org.jboss.modules.maven.MavenArtifactUtil;
-
 /**
  * This resolver try to find the requested artifact in the local gradle cache. If the artifact is missing, it try
  * to download it from a remote repository. Default is the https://repo1.maven.org/maven2/ repository. With the
@@ -41,7 +41,7 @@ import org.jboss.modules.maven.MavenArtifactUtil;
  *
  * @author Michael Fraefel
  */
-public class GradleResolver implements ArtifactResolver {
+public class GradleResolver implements MavenResolver {
     private final String gradleCachePath;
     private final List<String> remoteRepositories = new LinkedList<>();
 
@@ -62,7 +62,7 @@ public class GradleResolver implements ArtifactResolver {
     }
 
     @Override
-    public ArtifactResolution resolveArtifact(ArtifactCoordinates artifactCoordinates, String packaging) throws IOException {
+    public File resolveArtifact(ArtifactCoordinates artifactCoordinates, String packaging) throws IOException {
         //Search the matching artifact in a gradle cache.
         String filter = toGradleArtifactFileName(artifactCoordinates, packaging);
         Path artifactDirectory = Paths.get(gradleCachePath, artifactCoordinates.getGroupId(), artifactCoordinates.getArtifactId(), artifactCoordinates.getVersion());
@@ -80,14 +80,12 @@ public class GradleResolver implements ArtifactResolver {
                 }
             }
             if (latestArtifactFile != null) {
-                return new ArtifactResolution.FileArtifactResolution(artifactCoordinates, packaging, latestArtifactFile);
+                return latestArtifactFile;
             }
         }
 
         //Artifact not found in the locale gradle cache. Try to resolve it from the remote respository
-        return new ArtifactResolution.FileArtifactResolution(
-                artifactCoordinates, packaging,
-                downloadFromRemoteRepository(artifactCoordinates, packaging, artifactDirectory));
+        return downloadFromRemoteRepository(artifactCoordinates, packaging, artifactDirectory);
     }
 
     /**

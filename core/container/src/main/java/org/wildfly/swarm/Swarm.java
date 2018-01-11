@@ -534,8 +534,6 @@ public class Swarm {
             } catch (URISyntaxException e) {
                 throw new IOException(e);
             }
-        } else if (location.getProtocol().equals("uberjar")) {
-            return true;
         } else if (location.toExternalForm().startsWith("jar:file:")) {
             return true;
         }

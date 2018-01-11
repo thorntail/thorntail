@@ -30,8 +30,8 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.ProcessProducer;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.wildfly.swarm.container.runtime.ImplicitDeployment;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
+import org.wildfly.swarm.container.runtime.ImplicitDeployment;
 
 /**
  * @author Ken Finnigan

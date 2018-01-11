@@ -52,7 +52,7 @@ public class MavenDependencyResolution implements DependencyResolution {
                     }
 
                     try {
-                        final File artifact = MavenResolvers.getForJBossModules().resolveJarArtifact(coords);
+                        final File artifact = MavenResolvers.get().resolveJarArtifact(coords);
                         if (artifact == null) {
                             LOGGER.error("Unable to resolve artifact: " + coords);
                         } else {

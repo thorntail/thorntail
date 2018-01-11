@@ -15,23 +15,20 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
+import org.jboss.modules.maven.ArtifactCoordinates;
+import org.junit.Test;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.jboss.modules.maven.ArtifactCoordinates;
-import org.junit.Test;
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 /**
  * Test {@link GradleResolver}
@@ -176,7 +173,7 @@ public class GradleResolverTest {
 
         //WHEN
         GradleResolver resolver = new GradleResolver(gradleCachePath.toString());
-        File resolvedArtifactFile = resolver.resolveArtifact(artifactCoordinates, packaging).getFile();
+        File resolvedArtifactFile = resolver.resolveArtifact(artifactCoordinates, packaging);
 
         //THEN
         assertEquals(artifactFile, resolvedArtifactFile);
@@ -202,7 +199,7 @@ public class GradleResolverTest {
 
         //WHEN
         GradleResolver resolver = new GradleResolver(gradleCachePath.toString());
-        File resolvedArtifactFile = resolver.resolveArtifact(artifactCoordinates, packaging).getFile();
+        File resolvedArtifactFile = resolver.resolveArtifact(artifactCoordinates, packaging);
 
         //THEN
         assertEquals(artifactFileLatest, resolvedArtifactFile);
@@ -225,7 +222,7 @@ public class GradleResolverTest {
 
         //WHEN
         GradleResolver resolver = new GradleResolver(gradleCachePath.toString());
-        File resolvedArtifactFile = resolver.resolveArtifact(artifactCoordinates, packaging).getFile();
+        File resolvedArtifactFile = resolver.resolveArtifact(artifactCoordinates, packaging);
 
         //THEN
         assertNull(resolvedArtifactFile);

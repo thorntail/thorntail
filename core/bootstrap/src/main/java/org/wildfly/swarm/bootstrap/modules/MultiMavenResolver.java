@@ -15,32 +15,35 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.modules.maven.ArtifactCoordinates;
+import org.jboss.modules.maven.MavenResolver;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 
 /**
  * @author Bob McWhirter
  */
-public class MultiMavenResolver implements ArtifactResolver {
+public class MultiMavenResolver implements MavenResolver {
 
 
     public MultiMavenResolver() {
 
     }
 
-    public void addResolver(ArtifactResolver resolver) {
+    public void addResolver(MavenResolver resolver) {
         this.resolvers.add(resolver);
     }
 
-    public ArtifactResolution resolveArtifact(ArtifactCoordinates coordinates, String packaging) throws IOException {
+    @Override
+    public File resolveArtifact(ArtifactCoordinates coordinates, String packaging) throws IOException {
 
         try (AutoCloseable handle = Performance.accumulate("artifact-resolver")) {
-            for (ArtifactResolver resolver : this.resolvers) {
-                ArtifactResolution result = resolver.resolveArtifact(coordinates, packaging);
+            for (MavenResolver resolver : this.resolvers) {
+                File result = resolver.resolveArtifact(coordinates, packaging);
                 if (result != null) {
                     return result;
                 }
@@ -52,5 +55,5 @@ public class MultiMavenResolver implements ArtifactResolver {
         }
     }
 
-    private List<ArtifactResolver> resolvers = new ArrayList<>();
+    private List<MavenResolver> resolvers = new ArrayList<>();
 }
