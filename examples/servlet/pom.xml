@@ -13,6 +13,27 @@
   <artifactId>example-servlet</artifactId>
   <name>Example Servlet</name>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.chrisdchristo</groupId>
+        <artifactId>capsule-maven-plugin</artifactId>
+        <version>1.5.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <configuration>
+              <appClass>org.jboss.unimbus.example.MyApplication</appClass>
+              <type>fat</type>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
