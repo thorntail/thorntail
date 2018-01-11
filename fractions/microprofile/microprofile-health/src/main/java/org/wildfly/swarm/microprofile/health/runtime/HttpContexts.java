@@ -15,14 +15,12 @@
  */
 package org.wildfly.swarm.microprofile.health.runtime;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
@@ -36,10 +34,6 @@ import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.health.api.Monitor;
-import org.xnio.OptionMap;
-import org.xnio.Options;
-import org.xnio.Xnio;
-import org.xnio.XnioWorker;
 
 /**
  * The actual monitoring HTTP endpoints. These are wrapped by {@link SecureHttpContexts}.
@@ -49,31 +43,12 @@ import org.xnio.XnioWorker;
 @Vetoed
 public class HttpContexts implements HttpHandler {
 
-
     public static final String LCURL = "{";
     public static final String RCURL = "}";
-
-    protected ThreadLocal<CountDownLatch> dispatched = new ThreadLocal<>();
-
-    private AttachmentKey<List> RESPONSES = AttachmentKey.create(List.class);
 
     static AttachmentKey<String> TOKEN = AttachmentKey.create(String.class);
 
     public HttpContexts(HttpHandler next) {
-
-        try {
-            this.worker = Xnio.getInstance().createWorker(
-                    OptionMap.builder()
-                            .set(Options.WORKER_IO_THREADS, 5)
-                            .set(Options.WORKER_TASK_CORE_THREADS, 5)
-                            .set(Options.WORKER_TASK_MAX_THREADS, 10)
-                            .set(Options.TCP_NODELAY, true)
-                            .getMap()
-            );
-
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to create worker pool");
-        }
         this.next = next;
 
         try {
@@ -81,18 +56,10 @@ public class HttpContexts implements HttpHandler {
         } catch (NamingException e) {
             throw new RuntimeException("Failed to lookup monitor", e);
         }
-
     }
 
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-
-        if (dispatched.get() != null && dispatched.get().getCount() == 1) {
-            next.handleRequest(exchange);
-            dispatched.set(null);
-            return;
-        }
-
         if (NODE.equals(exchange.getRequestPath())) {
             nodeInfo(exchange);
             return;
@@ -126,7 +93,7 @@ public class HttpContexts implements HttpHandler {
             responses.add(status);
         }
 
-        StringBuffer sb = new StringBuffer(LCURL);
+        StringBuilder sb = new StringBuilder(LCURL);
         sb.append("\"checks\": [\n");
 
         int i = 0;
@@ -171,7 +138,6 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");
     }
 
-    private static final AttachmentKey<String> RESPONSE_BODY = AttachmentKey.create(String.class);
     private void noHealthEndpoints(HttpServerExchange exchange) {
         exchange.setStatusCode(200);
         responseHeaders(exchange);
@@ -250,32 +216,8 @@ public class HttpContexts implements HttpHandler {
 
     private final HttpHandler next;
 
-    private XnioWorker worker;
-
-    private static final String ID = "id";
-
-    private static final String RESULT = "result";
-
     private static final String DATA = "data";
 
     public static final String QUOTE = "\"";
 
-    class InVMResponse {
-        private int status;
-
-        private String payload;
-
-        public InVMResponse(int status, String payload) {
-            this.status = status;
-            this.payload = payload;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public String getPayload() {
-            return payload;
-        }
-    }
 }
