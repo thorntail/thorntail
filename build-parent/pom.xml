@@ -97,13 +97,13 @@
 
     <!-- MicroProfile APIs -->
     <!-- NOTE: we cannot use MP BOM as it does not define dependencyManagement -->
-    <version.microprofile-config>1.1</version.microprofile-config>
+    <version.microprofile-config>1.2</version.microprofile-config>
     <version.microprofile-health>1.0</version.microprofile-health>
     <version.microprofile-fault-tolerance>1.0</version.microprofile-fault-tolerance>
     <version.microprofile-jwt-auth>1.0</version.microprofile-jwt-auth>
     <version.microprofile-metrics>1.0.1</version.microprofile-metrics>
     <!-- MP Config implementation -->
-    <version.wildfly-microprofile-config>1.1.5</version.wildfly-microprofile-config>
+    <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
 
   </properties>
 

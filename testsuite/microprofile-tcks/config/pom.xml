@@ -94,6 +94,13 @@
                <dependenciesToScan>
                   <dependency>org.eclipse.microprofile.config:microprofile-config-tck</dependency>
                </dependenciesToScan>
+
+               <properties>
+                  <property>
+                     <name>listener</name>
+                     <value>org.wildfly.swarm.microprofile.config.tck.TestNGAnnotationTransformer</value>
+                  </property>
+               </properties>
             </configuration>
          </plugin>
       </plugins>
