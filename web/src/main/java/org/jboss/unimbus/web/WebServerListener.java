@@ -2,31 +2,33 @@ package org.jboss.unimbus.web;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.unimbus.Initializer;
+import org.jboss.unimbus.events.BeforeStart;
+import org.jboss.unimbus.events.Start;
 import org.jboss.unimbus.servlet.spi.WebServer;
 
 /**
  * @author Ken Finnigan
  */
 @ApplicationScoped
-public class WebServerInitializer implements Initializer {
+public class WebServerListener {
 
     @Any
     @Inject
     private Instance<WebServer> webServerInstances;
 
-    @Override
-    public void postInitialize() {
+    public void checkForWebServers(@Observes @BeforeStart Boolean event) {
         if (webServerInstances.isAmbiguous()) {
             //TODO: Change to actual logging
             System.out.println("Multiple web server implementations found on the classpath, please choose one!");
-            return;
         }
+    }
 
+    public void start(@Observes @Start Boolean event) {
         if (webServerInstances.isResolvable()) {
             webServerInstances.get().start();
         }

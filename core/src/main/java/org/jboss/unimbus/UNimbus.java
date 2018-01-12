@@ -20,6 +20,7 @@ import javax.enterprise.inject.se.SeContainerInitializer;
 
 import org.jboss.unimbus.condition.ConditionExtension;
 import org.jboss.unimbus.config.ConfigExtension;
+import org.jboss.unimbus.events.EventEmitter;
 import org.jboss.unimbus.spi.UNimbusConfiguration;
 
 /**
@@ -36,14 +37,15 @@ public class UNimbus {
         containerInitializer.addExtensions(new ConfigExtension());
         SeContainer container = containerInitializer.initialize();
 
-        InitializerHandler initializerHandler = container.select(InitializerHandler.class).get();
-        initializerHandler.pre();
+        EventEmitter emitter = container.select(EventEmitter.class).get();
+        emitter.fireBeforeStart();
 
         if (uNimbusConfig != null) {
             UNimbusConfiguration config = container.select(uNimbusConfig).get();
             config.run();
         }
 
-        initializerHandler.post();
+        emitter.fireStart();
+        emitter.fireAfterStart();
     }
 }
