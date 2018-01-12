@@ -13,10 +13,27 @@
 
   <properties>
     <version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
+    <version.fest-assert>1.4</version.fest-assert>
+    <version.junit>4.12</version.junit>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.java>8</version.java>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert</artifactId>
+      <version>${version.fest-assert}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <modules>
     <module>core</module>

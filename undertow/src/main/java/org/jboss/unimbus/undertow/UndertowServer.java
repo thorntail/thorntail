@@ -18,8 +18,7 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletInfo;
-import org.jboss.unimbus.config.Value;
-import org.jboss.unimbus.servlet.spi.WebServer;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * @author Ken Finnigan
@@ -27,7 +26,8 @@ import org.jboss.unimbus.servlet.spi.WebServer;
 @ApplicationScoped
 public class UndertowServer implements WebServer {
 
-    @Value("server.port")
+    @Inject
+    @ConfigProperty(name="web.server.port")
     private int serverPort;
 
     private Undertow.Builder undertowBuilder = Undertow.builder();

@@ -13,14 +13,16 @@
   <name>Core</name>
 
   <properties>
+    <version.cdi>2.0</version.cdi>
     <version.weld>3.0.2.Final</version.weld>
+    <version.mp-config>1.2</version.mp-config>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
-      <version>2.0</version>
+      <version>${version.cdi}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -41,5 +43,10 @@
       <!--<artifactId>slf4j-simple</artifactId>-->
       <!--<version>1.7.2</version>-->
     <!--</dependency>-->
+    <dependency>
+      <groupId>org.eclipse.microprofile.config</groupId>
+      <artifactId>microprofile-config-api</artifactId>
+      <version>${version.mp-config}</version>
+    </dependency>
   </dependencies>
 </project>
