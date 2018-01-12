@@ -10,7 +10,7 @@ import org.jboss.unimbus.Initializer;
 public class DataSourceInitializer implements Initializer {
 
     @Override
-    public void initialize() {
+    public void preInitialize() {
         System.err.println( "DS initilaizer: " + ds);
     }
 

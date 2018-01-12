@@ -1,5 +1,9 @@
 package org.jboss.unimbus;
 
 public interface Initializer {
-    void initialize();
+    default void preInitialize() {
+    }
+
+    default void postInitialize() {
+    }
 }

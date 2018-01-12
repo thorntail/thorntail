@@ -27,17 +27,23 @@ import org.jboss.unimbus.spi.UNimbusConfiguration;
  */
 public class UNimbus {
     public static void run() {
-        UNimbus.run(DefaultUNimbusConfiguration.class);
+        UNimbus.run(null);
     }
 
     public static void run(Class<? extends UNimbusConfiguration> uNimbusConfig) {
-        SeContainerInitializer initializer = SeContainerInitializer.newInstance();
-        initializer.addExtensions(new ConditionExtension());
-        initializer.addExtensions(new ConfigExtension());
-        SeContainer container = initializer.initialize();
-        Initializers initializers = container.select(Initializers.class).get();
-        System.err.println( "initizliers: " + initializers);
-        UNimbusConfiguration config = container.select(uNimbusConfig).get();
-        config.run();
+        SeContainerInitializer containerInitializer = SeContainerInitializer.newInstance();
+        containerInitializer.addExtensions(new ConditionExtension());
+        containerInitializer.addExtensions(new ConfigExtension());
+        SeContainer container = containerInitializer.initialize();
+
+        InitializerHandler initializerHandler = container.select(InitializerHandler.class).get();
+        initializerHandler.pre();
+
+        if (uNimbusConfig != null) {
+            UNimbusConfiguration config = container.select(uNimbusConfig).get();
+            config.run();
+        }
+
+        initializerHandler.post();
     }
 }

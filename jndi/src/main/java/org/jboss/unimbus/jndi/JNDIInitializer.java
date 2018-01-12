@@ -16,7 +16,7 @@ public class JNDIInitializer implements Initializer {
     }
 
     @Override
-    public void initialize() {
+    public void preInitialize() {
         System.err.println( "**** initialized: " + context);
     }
 
