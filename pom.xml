@@ -20,7 +20,6 @@
 
   <modules>
     <module>spi</module>
-    <!--<module>weld-se</module>-->
     <module>core</module>
     <module>datasources</module>
     <module>jdbc</module>
@@ -56,4 +55,18 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <version>3.0.6</version>
+    </dependency>
+  </dependencies>
 </project>
