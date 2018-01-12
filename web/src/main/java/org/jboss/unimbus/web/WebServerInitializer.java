@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import org.jboss.unimbus.Initializer;
 import org.jboss.unimbus.servlet.spi.WebServer;
-import org.jboss.unimbus.spi.ServerFactory;
 
 /**
  * @author Ken Finnigan
