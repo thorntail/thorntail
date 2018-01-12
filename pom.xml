@@ -19,7 +19,6 @@
   </properties>
 
   <modules>
-    <module>spi</module>
     <module>core</module>
     <module>datasources</module>
     <module>jdbc</module>
