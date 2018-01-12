@@ -33,5 +33,10 @@
       <artifactId>undertow-servlet</artifactId>
       <version>${version.undertow}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>servlet-spi</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

@@ -33,6 +33,11 @@
       <version>${version.fest-assert}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <version>3.0.6</version>
+    </dependency>
   </dependencies>
 
   <modules>
@@ -75,17 +80,4 @@
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert</artifactId>
-      <version>1.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <version>3.0.6</version>
-    </dependency>
-  </dependencies>
 </project>

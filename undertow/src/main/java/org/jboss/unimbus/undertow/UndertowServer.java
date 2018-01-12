@@ -19,6 +19,7 @@ import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletInfo;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.unimbus.servlet.spi.WebServer;
 
 /**
  * @author Ken Finnigan
@@ -40,10 +41,12 @@ public class UndertowServer implements WebServer {
 
     @PostConstruct
     private void setup() {
-        undertowBuilder.addHttpListener(8080, "localhost");
+        System.err.println( "SETTING PORT: " + this.serverPort);
+        undertowBuilder.addHttpListener(this.serverPort, "localhost");
     }
 
     public void start() {
+        System.err.println( "STARTING" );
         DeploymentInfo depInfo = Servlets.deployment()
                 .setClassLoader(UndertowServer.class.getClassLoader())
                 .setContextPath("/")
