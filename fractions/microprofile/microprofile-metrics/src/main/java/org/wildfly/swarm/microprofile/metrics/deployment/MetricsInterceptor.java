@@ -87,7 +87,7 @@ import org.jboss.logging.Logger;
                 if (gauge.isPresent()) {
                     Gauge g = gauge.metricAnnotation();
                     Metadata metadata = getMetadata(gauge.metricName(), g.unit(), g.description(), g.displayName(), MetricType.GAUGE, g.tags());
-                    registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()), metadata);
+                    registry.register(metadata, new ForwardingGauge(method, context.getTarget()));
                 }
             }
             type = type.getSuperclass();

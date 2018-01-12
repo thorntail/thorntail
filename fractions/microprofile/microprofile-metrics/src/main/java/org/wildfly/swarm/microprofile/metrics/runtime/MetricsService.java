@@ -16,6 +16,12 @@
  */
 package org.wildfly.swarm.microprofile.metrics.runtime;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Metric;
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.server.ServerEnvironment;
@@ -29,10 +35,6 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.microprofile.metrics.runtime.mbean.MGaugeImpl;
 import org.wildfly.swarm.microprofile.metrics.runtime.mbean.MCounterImpl;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Heiko W. Rupp
@@ -65,8 +67,10 @@ public class MetricsService implements Service<MetricsService> {
             ConfigReader cr = new ConfigReader();
             MetadataList ml = cr.readConfig(is);
 
-            String globalTagsFromEnv = System.getenv("MP_METRICS_TAGS");
-            List<Tag> globalTags = convertToTags(globalTagsFromEnv);
+            Config config = ConfigProvider.getConfig();
+
+            Optional<String> globalTagsFromConfig = config.getOptionalValue("mp.metrics.tags", String.class);
+            List<Tag> globalTags = convertToTags(globalTagsFromConfig);
 
             // Turn the multi-entry query expressions into concrete entries.
             JmxWorker.instance().expandMultiValueEntries(ml.getBase());
@@ -75,13 +79,12 @@ public class MetricsService implements Service<MetricsService> {
             for (ExtendedMetadata em : ml.getBase()) {
                 em.processTags(globalTags);
                 Metric type = getType(em);
-                LOG.debug("+++ registering " + em);
-                MetricRegistryFactory.getBaseRegistry().register(em.getName(), type, em);
+                MetricRegistryFactory.getBaseRegistry().register(em, type);
             }
             for (ExtendedMetadata em : ml.getVendor()) {
                 em.processTags(globalTags);
                 Metric type = getType(em);
-                MetricRegistryFactory.getVendorRegistry().register(em.getName(), type, em);
+                MetricRegistryFactory.getVendorRegistry().register(em, type);
             }
         } else {
             throw new IllegalStateException("Was not able to find the mapping file 'mapping.yml'");
@@ -103,9 +106,14 @@ public class MetricsService implements Service<MetricsService> {
         return out;
     }
 
-    private List<Tag> convertToTags(String globalTagsString) {
+    private List<Tag> convertToTags(Optional<String> globalTags) {
         List<Tag> tags = new ArrayList<>();
-        if (globalTagsString != null) {
+
+        if (!globalTags.isPresent()) {
+            return tags;
+        }
+        String globalTagsString = globalTags.get();
+        if (!globalTagsString.equals("")) {
             String[] singleTags = globalTagsString.split(",");
             for (String singleTag : singleTags) {
                 tags.add(new Tag(singleTag.trim()));
