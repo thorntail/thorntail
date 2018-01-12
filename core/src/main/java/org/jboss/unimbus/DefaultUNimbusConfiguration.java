@@ -15,8 +15,13 @@
  */
 package org.jboss.unimbus;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
+import org.jboss.unimbus.spi.ServerFactory;
 import org.jboss.unimbus.spi.UNimbusConfiguration;
 
 /**
@@ -24,7 +29,20 @@ import org.jboss.unimbus.spi.UNimbusConfiguration;
  */
 @ApplicationScoped
 public class DefaultUNimbusConfiguration implements UNimbusConfiguration {
+
+    @Any
+    @Inject
+    private Instance<ServerFactory> factories;
+
     @Override
     public void run() {
+        factories.stream()
+                .forEach(ServerFactory::configure);
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        factories.stream()
+                .forEach(ServerFactory::tearDown);
     }
 }

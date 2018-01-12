@@ -1,10 +1,12 @@
 package org.jboss.unimbus.undertow;
 
-import java.util.Collection;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -17,30 +19,31 @@ import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletInfo;
 import org.jboss.unimbus.config.Value;
+import org.jboss.unimbus.servlet.spi.WebServer;
 
 /**
  * @author Ken Finnigan
  */
 @ApplicationScoped
-public class UndertowServer {
+public class UndertowServer implements WebServer {
 
     @Value("server.port")
     private int serverPort;
 
     private Undertow.Builder undertowBuilder = Undertow.builder();
 
-    private Collection<Servlet> servlets;
+    @Any
+    @Inject
+    private Instance<Servlet> servlets;
+
+    private Undertow undertow;
 
     @PostConstruct
     private void setup() {
-        undertowBuilder.addHttpListener(this.serverPort, "localhost");
+        undertowBuilder.addHttpListener(8080, "localhost");
     }
 
-    public void addServlets(Collection<Servlet> servlets) {
-        this.servlets = servlets;
-    }
-
-    public void start() throws ServletException {
+    public void start() {
         DeploymentInfo depInfo = Servlets.deployment()
                 .setClassLoader(UndertowServer.class.getClassLoader())
                 .setContextPath("/")
@@ -52,14 +55,28 @@ public class UndertowServer {
         DeploymentManager manager = Servlets.defaultContainer().addDeployment(depInfo);
         manager.deploy();
 
-        HttpHandler handler = manager.start();
+        HttpHandler handler = null;
+        try {
+            handler = manager.start();
+        } catch (ServletException e) {
+            //TODO Proper logging
+            e.printStackTrace();
+        }
         PathHandler pathHandler = Handlers.path(Handlers.redirect("/"))
                 .addPrefixPath("/", handler);
 
-        undertowBuilder
+        undertow = undertowBuilder
                 .setHandler(pathHandler)
-                .build()
-                .start();
+                .build();
+
+        undertow.start();
+    }
+
+    @Override
+    public void stop() {
+        if (undertow != null) {
+            undertow.stop();
+        }
     }
 
     private ServletInfo mapServletMetaData(Servlet servlet) {

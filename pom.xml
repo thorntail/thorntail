@@ -25,7 +25,10 @@
     <module>jndi</module>
     <module>jpa</module>
     <module>jta</module>
+
+    <module>servlet-spi</module>
     <module>undertow</module>
+    <module>web</module>
 
     <module>examples</module>
   </modules>

@@ -22,6 +22,6 @@ import org.jboss.unimbus.UNimbus;
  */
 public class MyApplication {
     public static void main(String... args) {
-        UNimbus.run(MyAppUNimbusConfig.class);
+        UNimbus.run();
     }
 }

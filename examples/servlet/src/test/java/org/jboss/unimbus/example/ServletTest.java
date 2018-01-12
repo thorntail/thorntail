@@ -3,7 +3,6 @@ package org.jboss.unimbus.example;
 import io.restassured.RestAssured;
 import org.jboss.unimbus.UNimbus;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.when;
@@ -13,13 +12,12 @@ public class ServletTest {
 
     @BeforeClass
     public static void setup() {
-        RestAssured.baseURI = "localhost:8080";
+        RestAssured.baseURI = "http://localhost:8080";
     }
 
-    @Ignore
     @Test
     public void test() {
-        UNimbus.run(MyAppUNimbusConfig.class);
+        UNimbus.run();
 
         when()
                 .get("myservlet")
