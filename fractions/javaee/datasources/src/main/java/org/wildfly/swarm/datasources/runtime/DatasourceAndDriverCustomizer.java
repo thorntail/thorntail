@@ -152,7 +152,7 @@ public class DatasourceAndDriverCustomizer implements Customizer {
     @Dependent
     @DefaultDatasource
     public String getDatasourceName() {
-        return this.defaultDatasourceName;
+        return this.datasourceConnectionUrl;
     }
 
 }
