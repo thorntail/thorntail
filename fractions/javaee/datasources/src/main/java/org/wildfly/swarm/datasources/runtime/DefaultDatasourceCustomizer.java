@@ -32,16 +32,16 @@ public class DefaultDatasourceCustomizer implements Customizer {
 
     @Inject
     @DefaultDatasource
-    String defaultDatasource;
+    String defaultDatasourceJndiName;
 
     @Inject
     Instance<EE> eeInstance;
 
     @Override
     public void customize() {
-        if (!eeInstance.isUnsatisfied() && defaultDatasource != null) {
+        if (!eeInstance.isUnsatisfied() && defaultDatasourceJndiName != null) {
             eeInstance.get().subresources().defaultBindingsService()
-                    .datasource("java:jboss/datasources/" + defaultDatasource);
+                    .datasource(defaultDatasourceJndiName);
         }
     }
 }
