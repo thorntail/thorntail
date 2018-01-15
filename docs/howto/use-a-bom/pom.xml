@@ -13,7 +13,7 @@
    <parent>
     <groupId>org.wildfly.swarm.howto</groupId>
     <artifactId>howto-parent</artifactId>
-    <version>2018.2.0-SNAPSHOT</version>
+    <version>2018.1.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -23,6 +23,7 @@
 
   <properties>
     <!-- tag::property[] -->
+    <version.wildfly-swarm>2018.1.0-SNAPSHOT</version.wildfly-swarm>
     <!-- end::property[] -->
   </properties>
 
@@ -32,7 +33,7 @@
         <!-- tag::plugin[] -->
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${project.version}</version>
+        <version>${version.wildfly-swarm}</version>
         <!-- end::plugin[] -->
         <executions>
           <execution>
@@ -119,7 +120,7 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bom</artifactId>
-        <version>${project.version}</version>
+        <version>${version.wildfly-swarm}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -130,7 +131,7 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bom-unstable</artifactId>
-        <version>${project.version}</version>
+        <version>${version.wildfly-swarm}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
