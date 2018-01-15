@@ -12,12 +12,6 @@
   <artifactId>core</artifactId>
   <name>Core</name>
 
-  <properties>
-    <version.cdi>2.0</version.cdi>
-    <version.weld>3.0.2.Final</version.weld>
-    <version.mp-config>1.2</version.mp-config>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>javax.enterprise</groupId>
@@ -34,7 +28,6 @@
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>servlet-spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

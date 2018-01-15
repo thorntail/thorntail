@@ -12,24 +12,11 @@
   <artifactId>jta</artifactId>
   <name>JTA</name>
 
-  <properties>
-    <version.arjuna>5.7.1.Final</version.arjuna>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
-
-<!--
-    <dependency>
-      <groupId>org.jboss.narayana.arjunacore</groupId>
-      <artifactId>arjuna</artifactId>
-      <version>${version.arjuna}</version>
-    </dependency>
--->
 
     <dependency>
       <groupId>org.jboss.narayana.jta</groupId>

@@ -12,16 +12,10 @@
   <artifactId>jdbc</artifactId>
   <name>JDBC</name>
 
-  <properties>
-    <version.h2>1.4.187</version.h2>
-    <version.mysql>5.1.39</version.mysql>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

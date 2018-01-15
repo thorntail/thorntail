@@ -12,15 +12,87 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
+    <version.cdi>2.0</version.cdi>
+    <version.weld>3.0.2.Final</version.weld>
+
+    <version.resteasy>3.1.4.Final</version.resteasy>
+
+    <version.undertow>1.4.21.Final</version.undertow>
+
+    <version.hibernate>5.2.12.Final</version.hibernate>
+    <version.c3p0>0.9.5.2</version.c3p0>
+    <version.h2>1.4.187</version.h2>
+    <version.mysql>5.1.39</version.mysql>
+    <version.arjuna>5.7.1.Final</version.arjuna>
+
+    <version.mp-config>1.2</version.mp-config>
+
     <version.fest-assert>1.4</version.fest-assert>
     <version.junit>4.12</version.junit>
+    <version.rest-assured>3.0.6</version.rest-assured>
 
-    <version.weld>3.0.2.Final</version.weld>
+    <version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.java>8</version.java>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>core</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>servlet-spi</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>datasources</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>jaxrs</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>jdbc</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>jndi</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>jpa</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>jta</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>undertow</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>web</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -38,7 +110,8 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <version>3.0.6</version>
+      <version>${version.rest-assured}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

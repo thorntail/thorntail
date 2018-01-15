@@ -12,20 +12,14 @@
   <artifactId>undertow</artifactId>
   <name>Undertow</name>
 
-  <properties>
-    <version.undertow>1.4.21.Final</version.undertow>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>servlet-spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -38,11 +32,6 @@
       <groupId>io.undertow</groupId>
       <artifactId>undertow-servlet</artifactId>
       <version>${version.undertow}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>servlet-spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
