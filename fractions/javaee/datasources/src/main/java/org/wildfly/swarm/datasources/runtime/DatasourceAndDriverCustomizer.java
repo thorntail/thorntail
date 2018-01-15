@@ -51,6 +51,7 @@ public class DatasourceAndDriverCustomizer implements Customizer {
     DatasourcesFraction fraction;
 
     private String defaultDatasourceName;
+    private String defaultDatasourceJndiName;
 
     @AttributeDocumentation("Name of the default datasource")
     @Configurable("swarm.ds.name")
@@ -89,6 +90,7 @@ public class DatasourceAndDriverCustomizer implements Customizer {
             this.defaultDatasourceName = createDefaultDatasource();
         } else {
             this.defaultDatasourceName = datasources.get(0).getKey();
+            this.defaultDatasourceJndiName = datasources.get(0).jndiName();
         }
     }
 
@@ -148,11 +150,24 @@ public class DatasourceAndDriverCustomizer implements Customizer {
         }
     }
 
-    @Produces
-    @Dependent
-    @DefaultDatasource
     public String getDatasourceName() {
         return this.defaultDatasourceName;
     }
 
+    @Produces
+    @Dependent
+    @DefaultDatasource
+    public String getDatasourceJndiName() {
+        if (this.defaultDatasourceJndiName == null && this.defaultDatasourceName != null) {
+            for (DataSource ds : this.fraction.subresources().dataSources()) {
+                if (this.defaultDatasourceName.equals(ds.getKey())) {
+                    if (ds.jndiName() != null) {
+                        return ds.jndiName();
+                    }
+                    return "java:jboss/datasources/" + this.defaultDatasourceName;
+                }
+            }
+        }
+        return this.defaultDatasourceJndiName;
+    }
 }
