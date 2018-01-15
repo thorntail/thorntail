@@ -23,10 +23,6 @@ import org.jboss.unimbus.events.Initialize;
 public class ServletDeploymentInfoInitializer {
 
     void deployments(@Observes @Initialize Boolean event) {
-        for (Servlet servlet : this.servlets) {
-            System.err.println( "servlet: " + servlet);
-        }
-
         List<Servlet> list = this.servlets.stream().collect(Collectors.toList());
         if ( list.isEmpty() ) {
             return;
@@ -36,10 +32,10 @@ public class ServletDeploymentInfoInitializer {
                 .setClassLoader(UndertowServer.class.getClassLoader())
                 .setContextPath("/")
                 .setDeploymentName("somename")
-                .addServlets(this.servlets.stream()
+                .addServlets(list.stream()
                                      .map(this::mapServletMetaData)
                                      .collect(Collectors.toSet()));
-        deploymentInfos.add(depInfo);
+        this.deploymentInfos.add(depInfo);
     }
 
     private ServletInfo mapServletMetaData(Servlet servlet) {

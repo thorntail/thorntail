@@ -26,8 +26,6 @@ public class DeploymentMounter {
                 e.printStackTrace();
             }
         }
-
-        System.err.println( "MOUNTED ON: " + this.root);
     }
 
     @Inject

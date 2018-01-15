@@ -26,11 +26,8 @@ import static io.undertow.servlet.Servlets.servlet;
 public class JAXRSDeploymentInfoInitializer {
 
     public void deployments(@Observes @Initialize Boolean event) {
-        System.err.println("*** Initializing JAXRS");
         for (Application application : this.applications) {
-            System.err.println("APP: " + application);
             DeploymentInfo deploymentInfo = createDeployment(application);
-            System.err.println("DI: " + deploymentInfo);
             this.deploymentInfos.add(deploymentInfo);
         }
     }
@@ -51,7 +48,6 @@ public class JAXRSDeploymentInfoInitializer {
         DeploymentInfo di = createUndertowDeployment(deployment);
         di.setClassLoader(application.getClass().getClassLoader());
         di.setContextPath(contextPath);
-        System.err.println("CONTEXT: " + contextPath);
         di.setDeploymentName("Resteasy" + contextPath);
         return di;
     }

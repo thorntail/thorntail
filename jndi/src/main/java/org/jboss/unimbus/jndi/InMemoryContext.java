@@ -29,14 +29,7 @@ public class InMemoryContext implements Context {
 
     @Override
     public Object lookup(Name name) throws NamingException {
-        //System.err.println( "lookup: " + name );
-        ////Enumeration<String> parts = name.getAll();
-        //while ( parts.hasMoreElements() ) {
-            //System.err.println( "part: " + parts.nextElement());
-        //}
-        //return null;
         Object result = this.bindings.get(name);
-        System.err.println( "lookup: " + name + " >> " + result);
         return result;
     }
 
@@ -47,7 +40,6 @@ public class InMemoryContext implements Context {
 
     @Override
     public void bind(Name name, Object obj) throws NamingException {
-        System.err.println( "BIND: " + name + " >> " + obj);
         this.bindings.put(name, obj);
     }
 

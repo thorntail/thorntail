@@ -18,7 +18,6 @@ public class ConditionExtension implements Extension {
 
             for (IfClassPresent each : annos) {
                 String className = each.value();
-                //System.err.println( "each: " + each.value());
                 try {
                     type.getJavaClass().getClassLoader().loadClass(className);
                 } catch (Throwable t) {

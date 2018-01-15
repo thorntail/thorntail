@@ -22,7 +22,6 @@ public class UndertowProducer {
     void init() {
         Undertow.Builder builder = Undertow.builder();
         builder.addHttpListener(this.serverPort, "localhost");
-        System.err.println( "Using root: " + this.root);
         builder.setHandler(this.root);
         this.undertow = builder.build();
     }
@@ -33,7 +32,7 @@ public class UndertowProducer {
     }
 
     void start(@Observes @Start Boolean event) {
-        System.err.println( "Starting undertow" );
+        System.err.println( "Starting undertow on " + this.serverPort );
         this.undertow.start();
     }
 
