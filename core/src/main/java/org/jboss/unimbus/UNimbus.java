@@ -15,6 +15,9 @@
  */
 package org.jboss.unimbus;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.se.SeContainerInitializer;
 
@@ -32,12 +35,18 @@ public class UNimbus {
     }
 
     public static void run(Class<? extends UNimbusConfiguration> uNimbusConfig) {
+        Logger parent = Logger.getLogger("");
+        parent.setLevel(Level.FINEST);
+
         SeContainerInitializer containerInitializer = SeContainerInitializer.newInstance();
-        containerInitializer.addExtensions(new ConditionExtension());
-        containerInitializer.addExtensions(new ConfigExtension());
+        //containerInitializer.addExtensions(new ConditionExtension());
+        //containerInitializer.addExtensions(new ConfigExtension());
         SeContainer container = containerInitializer.initialize();
 
         EventEmitter emitter = container.select(EventEmitter.class).get();
+        emitter.firePreInitialize();
+        emitter.fireInitialize();
+        emitter.firePostInitialize();
         emitter.fireBeforeStart();
 
         if (uNimbusConfig != null) {

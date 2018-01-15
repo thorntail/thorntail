@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import javax.servlet.ServletException;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
@@ -24,18 +26,18 @@ import org.jboss.unimbus.servlet.spi.WebServer;
 /**
  * @author Ken Finnigan
  */
-@ApplicationScoped
+//@ApplicationScoped
+    @Vetoed
 public class UndertowServer implements WebServer {
 
     @Inject
     @ConfigProperty(name="web.server.port")
     private int serverPort;
 
-    private Undertow.Builder undertowBuilder = Undertow.builder();
-
-    @Any
     @Inject
-    private Instance<Servlet> servlets;
+    private HttpHandler root;
+
+    private Undertow.Builder undertowBuilder = Undertow.builder();
 
     private Undertow undertow;
 
@@ -46,32 +48,16 @@ public class UndertowServer implements WebServer {
     }
 
     public void start() {
-        System.err.println( "STARTING" );
-        DeploymentInfo depInfo = Servlets.deployment()
-                .setClassLoader(UndertowServer.class.getClassLoader())
-                .setContextPath("/")
-                .setDeploymentName("somename")
-                .addServlets(servlets.stream()
-                                     .map(this::mapServletMetaData)
-                                     .collect(Collectors.toSet()));
-
-        DeploymentManager manager = Servlets.defaultContainer().addDeployment(depInfo);
-        manager.deploy();
-
-        HttpHandler handler = null;
-        try {
-            handler = manager.start();
-        } catch (ServletException e) {
-            //TODO Proper logging
-            e.printStackTrace();
-        }
-        PathHandler pathHandler = Handlers.path(Handlers.redirect("/"))
-                .addPrefixPath("/", handler);
-
+        System.err.println( "STARTING " + this.root );
         undertow = undertowBuilder
-                .setHandler(pathHandler)
+                .setHandler(new HttpHandler() {
+                    @Override
+                    public void handleRequest(HttpServerExchange exchange) throws Exception {
+                        System.err.println( "exchange: " + exchange );
+                        root.handleRequest(exchange);
+                    }
+                })
                 .build();
-
         undertow.start();
     }
 
@@ -82,7 +68,7 @@ public class UndertowServer implements WebServer {
         }
     }
 
-    private ServletInfo mapServletMetaData(Servlet servlet) {
-        return Servlets.servlet(servlet.getClass().getName(), servlet.getClass()).addMapping("/" + servlet.getClass().getSimpleName().toLowerCase());
+    public Undertow getUndertow() {
+        return this.undertow;
     }
 }

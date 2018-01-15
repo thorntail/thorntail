@@ -25,6 +25,9 @@ public class WebServerListener {
         if (webServerInstances.isAmbiguous()) {
             //TODO: Change to actual logging
             System.out.println("Multiple web server implementations found on the classpath, please choose one!");
+            for (WebServer each : webServerInstances) {
+                System.err.println( " --> " + each );
+            }
         }
     }
 

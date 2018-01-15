@@ -27,6 +27,6 @@
 
   <modules>
     <module>servlet</module>
-    <module>poc</module>
+    <module>proof</module>
   </modules>
 </project>

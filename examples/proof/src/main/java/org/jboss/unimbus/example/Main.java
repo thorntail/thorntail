@@ -20,8 +20,8 @@ import org.jboss.unimbus.UNimbus;
 /**
  * @author Ken Finnigan
  */
-public class MyApplication {
+public class Main {
     public static void main(String... args) {
-        UNimbus.run(MyAppUNimbusConfig.class);
+        UNimbus.run();
     }
 }

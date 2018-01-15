@@ -10,7 +10,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>example-poc</artifactId>
+  <artifactId>example-proof</artifactId>
   <name>Example Proof of Concept</name>
 
   <properties>
@@ -30,7 +30,7 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <appClass>org.jboss.unimbus.example.MyApplication</appClass>
+              <appClass>org.jboss.unimbus.example.Main</appClass>
               <type>fat</type>
             </configuration>
           </execution>
@@ -42,7 +42,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>undertow</artifactId>
+      <artifactId>jaxrs</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
 <!--

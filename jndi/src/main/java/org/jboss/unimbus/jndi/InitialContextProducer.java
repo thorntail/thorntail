@@ -11,9 +11,13 @@ import javax.naming.spi.NamingManager;
 public class InitialContextProducer {
 
     @PostConstruct
-    void init() throws NamingException {
-        NamingManager.setInitialContextFactoryBuilder( new InMemoryInitialContextFactoryBuilder() );
-        this.context = new InitialContext();
+    void init() {
+        try {
+            NamingManager.setInitialContextFactoryBuilder(new InMemoryInitialContextFactoryBuilder());
+            this.context = new InitialContext();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Produces
