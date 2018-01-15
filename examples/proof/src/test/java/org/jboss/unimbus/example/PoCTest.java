@@ -24,6 +24,6 @@ public class PoCTest {
                 .get("/")
                 .then()
                 .statusCode(200)
-                .body(containsString("Hello!"));
+                .body(containsString("Hello! 8080"));
     }
 }

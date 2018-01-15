@@ -29,6 +29,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet-core</artifactId>
+      <version>${version.weld}</version>
+    </dependency>
+
+    <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-servlet</artifactId>
       <version>${version.undertow}</version>

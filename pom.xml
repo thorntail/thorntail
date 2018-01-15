@@ -16,6 +16,8 @@
     <version.fest-assert>1.4</version.fest-assert>
     <version.junit>4.12</version.junit>
 
+    <version.weld>3.0.2.Final</version.weld>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.java>8</version.java>
   </properties>
