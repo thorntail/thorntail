@@ -27,6 +27,7 @@
 
   <modules>
     <module>servlet</module>
+    <module>jaxrs</module>
     <module>proof</module>
   </modules>
 </project>
