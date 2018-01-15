@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
 
@@ -37,4 +38,16 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface Post {
+
+    /**
+     * Supports inline instantiation of the annotation.
+     */
+    public static final class Literal extends AnnotationLiteral<Post> implements Post {
+
+        public static final Literal INSTANCE = new Literal();
+
+        private static final long serialVersionUID = 1L;
+
+    }
+
 }

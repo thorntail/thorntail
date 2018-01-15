@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
 /** Qualifier attached to a {@link org.wildfly.swarm.spi.api.Customizer} to assist in ordering.
@@ -36,4 +37,16 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface Pre {
+
+    /**
+     * Supports inline instantiation of the annotation.
+     */
+    public static final class Literal extends AnnotationLiteral<Pre> implements Pre {
+
+        public static final Literal INSTANCE = new Literal();
+
+        private static final long serialVersionUID = 1L;
+
+    }
+
 }
