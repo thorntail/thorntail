@@ -14,7 +14,7 @@ import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.spi.ResteasyDeployment;
-import org.jboss.unimbus.events.Initialize;
+import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.undertow.UndertowDeploymentInfos;
 
 import static io.undertow.servlet.Servlets.servlet;
@@ -26,7 +26,7 @@ import static io.undertow.servlet.Servlets.servlet;
 @ApplicationScoped
 public class JAXRSDeploymentInfoInitializer {
 
-    public void deployments(@Observes @Initialize Boolean event) {
+    public void deployments(@Observes LifecycleEvent.Scan event) {
         for (Application application : this.applications) {
             DeploymentInfo deploymentInfo = createDeployment(application);
             this.deploymentInfos.add(deploymentInfo);

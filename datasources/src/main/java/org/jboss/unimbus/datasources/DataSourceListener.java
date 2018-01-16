@@ -5,12 +5,12 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import org.jboss.unimbus.events.BeforeStart;
+import org.jboss.unimbus.events.LifecycleEvent;
 
 @ApplicationScoped
 public class DataSourceListener {
 
-    public void preInitialize(@Observes @BeforeStart Boolean event) {
+    public void initialize(@Observes LifecycleEvent.Initialize event) {
         System.err.println("DS initilaizer: " + ds);
     }
 

@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentManager;
-import org.jboss.unimbus.events.BeforeStart;
+import org.jboss.unimbus.events.LifecycleEvent;
 
 /**
  * Created by bob on 1/15/18.
@@ -17,7 +17,7 @@ import org.jboss.unimbus.events.BeforeStart;
 @ApplicationScoped
 public class DeploymentMounter {
 
-    void mount(@Observes @BeforeStart Boolean event) {
+    void mount(@Observes LifecycleEvent.Deploy event) {
         for (DeploymentManager manager : managers) {
             manager.deploy();
             try {

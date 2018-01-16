@@ -2,8 +2,6 @@ package org.jboss.unimbus.events;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Any;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 /**
@@ -11,31 +9,32 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class EventEmitter {
-    @Any
-    @Inject
-    Event<Boolean> event;
 
-    public void firePreInitialize() {
-        event.select(new AnnotationLiteral<PreInitialize>() {}).fire(Boolean.TRUE);
+    @Inject
+    Event<LifecycleEvent> event;
+
+    public void fireScan() {
+        event.fire( new LifecycleEvent.Scan() );
     }
 
     public void fireInitialize() {
-        event.select(new AnnotationLiteral<Initialize>() {}).fire(Boolean.TRUE);
+        event.fire( new LifecycleEvent.Initialize() );
     }
 
-    public void firePostInitialize() {
-        event.select(new AnnotationLiteral<PostInitialize>() {}).fire(Boolean.TRUE);
+    public void fireDeploy() {
+        event.fire( new LifecycleEvent.Deploy() );
     }
 
     public void fireBeforeStart() {
-        event.select(new AnnotationLiteral<BeforeStart>() {}).fire(Boolean.TRUE);
+        event.fire( new LifecycleEvent.BeforeStart());
     }
 
     public void fireStart() {
-        event.select(new AnnotationLiteral<Start>() {}).fire(Boolean.TRUE);
+        event.fire( new LifecycleEvent.Start());
     }
 
     public void fireAfterStart() {
-        event.select(new AnnotationLiteral<AfterStart>() {}).fire(Boolean.TRUE);
+        event.fire( new LifecycleEvent.AfterStart());
     }
+
 }

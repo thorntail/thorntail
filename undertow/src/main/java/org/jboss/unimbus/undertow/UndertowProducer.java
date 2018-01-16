@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.events.Start;
+import org.jboss.unimbus.events.LifecycleEvent;
 
 /**
  * Created by bob on 1/15/18.
@@ -31,7 +31,8 @@ public class UndertowProducer {
         return this.undertow;
     }
 
-    void start(@Observes @Start Boolean event) {
+    void start(@Observes LifecycleEvent.Start event) {
+        System.err.println( "got START event" );
         System.err.println( "Starting undertow on " + this.serverPort );
         this.undertow.start();
     }

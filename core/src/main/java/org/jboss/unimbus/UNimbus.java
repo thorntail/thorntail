@@ -39,14 +39,12 @@ public class UNimbus {
         parent.setLevel(Level.FINEST);
 
         SeContainerInitializer containerInitializer = SeContainerInitializer.newInstance();
-        //containerInitializer.addExtensions(new ConditionExtension());
-        //containerInitializer.addExtensions(new ConfigExtension());
         SeContainer container = containerInitializer.initialize();
 
         EventEmitter emitter = container.select(EventEmitter.class).get();
-        emitter.firePreInitialize();
+        emitter.fireScan();
         emitter.fireInitialize();
-        emitter.firePostInitialize();
+        emitter.fireDeploy();
         emitter.fireBeforeStart();
 
         if (uNimbusConfig != null) {

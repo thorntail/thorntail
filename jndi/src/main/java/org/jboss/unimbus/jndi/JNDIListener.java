@@ -5,13 +5,12 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 
-import org.jboss.unimbus.events.BeforeStart;
-import org.jboss.unimbus.events.Initialize;
+import org.jboss.unimbus.events.LifecycleEvent;
 
 @ApplicationScoped
 public class JNDIListener {
 
-    public void preInitialize(@Observes @Initialize Boolean event) {
+    public void initialize(@Observes LifecycleEvent.Initialize event) {
         System.err.println("**** initialized: " + context);
     }
 

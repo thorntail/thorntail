@@ -13,8 +13,7 @@ import javax.servlet.Servlet;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ServletInfo;
-import org.jboss.unimbus.events.BeforeStart;
-import org.jboss.unimbus.events.Initialize;
+import org.jboss.unimbus.events.LifecycleEvent;
 
 /**
  * Created by bob on 1/15/18.
@@ -22,16 +21,16 @@ import org.jboss.unimbus.events.Initialize;
 @ApplicationScoped
 public class ServletDeploymentInfoInitializer {
 
-    void deployments(@Observes @Initialize Boolean event) {
+    void deployments(@Observes LifecycleEvent.Scan event) {
         List<Servlet> list = this.servlets.stream().collect(Collectors.toList());
         if ( list.isEmpty() ) {
             return;
         }
 
         DeploymentInfo depInfo = Servlets.deployment()
-                .setClassLoader(UndertowServer.class.getClassLoader())
+                .setClassLoader(getClass().getClassLoader())
                 .setContextPath("/")
-                .setDeploymentName("somename")
+                .setDeploymentName("Servlet")
                 .addServlets(list.stream()
                                      .map(this::mapServletMetaData)
                                      .collect(Collectors.toSet()));
