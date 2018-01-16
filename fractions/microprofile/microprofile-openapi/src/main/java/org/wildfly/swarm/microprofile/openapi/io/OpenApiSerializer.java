@@ -306,8 +306,10 @@ public class OpenApiSerializer {
             for (String fieldName : securityRequirement.keySet()) {
                 List<String> values = securityRequirement.get(fieldName);
                 ArrayNode valuesNode = srNode.putArray(fieldName);
-                for (String value : values) {
-                    valuesNode.add(value);
+                if (values != null) {
+                    for (String value : values) {
+                        valuesNode.add(value);
+                    }
                 }
             }
         }

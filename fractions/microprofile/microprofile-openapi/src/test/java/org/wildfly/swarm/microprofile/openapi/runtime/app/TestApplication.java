@@ -16,13 +16,13 @@
 
 package org.wildfly.swarm.microprofile.openapi.runtime.app;
 
-import javax.ws.rs.Path;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-@Path("/")
+@ApplicationPath("/")
 public class TestApplication extends Application {
 
 }

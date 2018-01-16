@@ -20,6 +20,7 @@ import static io.restassured.RestAssured.given;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.InetSocketAddress;
 
 import org.eclipse.microprofile.openapi.tck.AppTestBase;
@@ -46,12 +47,14 @@ import io.restassured.response.ValidatableResponse;
 public abstract class BaseTckTest {
 
     protected static final String APPLICATION_JSON = "application/json";
+    protected static final String TEXT_PLAIN = "text/plain";
 
     private static HttpServer server;
 
     @BeforeClass
     public static final void setUp() throws Exception {
         // Set up a little HTTP server so that Rest assured has something to pull /openapi from
+        System.out.println("Starting TCK test server on port 8080.");
         server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/openapi", new MyHandler());
         server.setExecutor(null);
@@ -66,7 +69,17 @@ public abstract class BaseTckTest {
     static class MyHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
-            String response = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
+            String response = null;
+            try {
+                response = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                t.getResponseHeaders().add("Content-Type", TEXT_PLAIN);
+                OutputStream os = t.getResponseBody();
+                e.printStackTrace(new PrintStream(os));
+                os.close();
+                return;
+            }
 
             t.getResponseHeaders().add("Content-Type", APPLICATION_JSON);
             t.sendResponseHeaders(200, response.length());
