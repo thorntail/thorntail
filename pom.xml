@@ -52,6 +52,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
+        <artifactId>health</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
         <artifactId>jaxrs</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
@@ -107,6 +112,7 @@
   <modules>
     <module>core</module>
     <module>datasources</module>
+    <module>health</module>
     <module>jaxrs</module>
     <module>jdbc</module>
     <module>jndi</module>

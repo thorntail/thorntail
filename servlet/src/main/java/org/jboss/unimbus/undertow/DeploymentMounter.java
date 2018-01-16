@@ -7,6 +7,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 
+import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentManager;
 import org.jboss.unimbus.events.LifecycleEvent;
@@ -21,7 +22,8 @@ public class DeploymentMounter {
         for (DeploymentManager manager : managers) {
             manager.deploy();
             try {
-                root.addPrefixPath( "/", manager.start() );
+                HttpHandler handler = manager.start();
+                root.addPrefixPath( "/", handler );
             } catch (ServletException e) {
                 e.printStackTrace();
             }
