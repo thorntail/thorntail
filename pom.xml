@@ -47,12 +47,6 @@
 
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
-        <artifactId>servlet-spi</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.unimbus</groupId>
         <artifactId>datasources</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
@@ -83,12 +77,7 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
-        <artifactId>undertow</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>web</artifactId>
+        <artifactId>servlet</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
@@ -124,9 +113,7 @@
     <module>jpa</module>
     <module>jta</module>
 
-    <module>servlet-spi</module>
-    <module>undertow</module>
-    <module>web</module>
+    <module>servlet</module>
 
     <module>examples</module>
   </modules>

@@ -37,7 +37,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>web</artifactId>
+      <artifactId>servlet</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>

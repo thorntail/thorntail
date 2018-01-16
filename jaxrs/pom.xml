@@ -20,7 +20,7 @@
 
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>web</artifactId>
+      <artifactId>servlet</artifactId>
     </dependency>
 
     <dependency>
