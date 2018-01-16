@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
+    <version>2018.2.0-SNAPSHOT</version>
     <relativePath>../../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -21,17 +21,6 @@
   <description>Health API</description>
 
   <packaging>jar</packaging>
-  <properties>
-    <version.mp.health>1.0</version.mp.health>
-  </properties>
-
-  <repositories>
-    <repository>
-      <id>repo.eclipse.org</id>
-      <name>Eclipse MicroProfile Repository - Releases</name>
-      <url>https://repo.eclipse.org/content/repositories/microprofile-releases/</url>
-    </repository>
-  </repositories>
 
   <build>
     <resources>
@@ -43,10 +32,6 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
@@ -57,7 +42,6 @@
     <dependency>
        <groupId>org.eclipse.microprofile.health</groupId>
        <artifactId>microprofile-health-api</artifactId>
-       <version>${version.mp.health}</version>
       <scope>provided</scope>
      </dependency>
 

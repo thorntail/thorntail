@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.jboss.modules.ModuleFinder;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -41,10 +40,15 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
     }
 
     @Override
-    public ModuleSpec findModule(ModuleIdentifier identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
+    public ModuleSpec findModule(String identifier, ModuleLoader delegateLoader) throws ModuleLoadException {
+        String simpleIdentifier = identifier;
+        if (!identifier.contains(":")) {
+            identifier = identifier + ":main";
+        }
 
         try (AutoCloseable handle = Performance.accumulate("module: BootstrapClassPath")) {
-            final String path = "modules/" + identifier.getName().replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + identifier.getSlot() + "/module.xml";
+            final String[] nameAndSlot = identifier.split("\\:", 2);
+            final String path = "modules/" + nameAndSlot[0].replace('.', MODULE_SEPARATOR) + MODULE_SEPARATOR + nameAndSlot[1] + "/module.xml";
 
             ClassLoader cl = BootstrapClasspathModuleFinder.class.getClassLoader();
             URL url = cl.getResource(path);
@@ -65,7 +69,7 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
                         in,
                         path.toString(),
                         delegateLoader,
-                        identifier);
+                        simpleIdentifier);
 
             } catch (IOException e) {
                 throw new ModuleLoadException(e);

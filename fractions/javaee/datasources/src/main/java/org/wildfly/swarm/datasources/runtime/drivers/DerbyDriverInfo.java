@@ -17,7 +17,6 @@ package org.wildfly.swarm.datasources.runtime.drivers;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
@@ -37,7 +36,7 @@ public class DerbyDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "sa";
 
     protected DerbyDriverInfo() {
-        super("derby", ModuleIdentifier.create("org.apache.derby.jdbc"), "org.apache.derby.jdbc.ClientDriver");
+        super("derby", "org.apache.derby.jdbc", "org.apache.derby.jdbc.ClientDriver");
     }
 
     @Override

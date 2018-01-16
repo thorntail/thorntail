@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>teiid-components</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
+    <version>2018.2.0-SNAPSHOT</version>
   </parent>
 
   <name>Teiid Google Translator</name>
@@ -20,7 +20,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-google</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -33,17 +33,17 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>translator-google</artifactId>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>google-api</artifactId>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>connector-google</artifactId>
       <version>${version.teiid}</version>
     </dependency>

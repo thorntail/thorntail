@@ -32,7 +32,7 @@ class KeycloakThreadSetupHandler implements ThreadSetupHandler {
             @Override
             public T call(HttpServerExchange exchange, C context) throws Exception {
                 if (exchange == null) {
-                    return null;
+                    return action.call(exchange, context);
                 }
                 KeycloakSecurityContext c = exchange.getAttachment(OIDCUndertowHttpFacade.KEYCLOAK_SECURITY_CONTEXT_KEY);
                 KeycloakSecurityContextAssociation.associate(c);

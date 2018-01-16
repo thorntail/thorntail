@@ -13,7 +13,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -41,7 +40,7 @@ public class SwaggerWebAppDeploymentProducer {
     public Archive swaggerWebApp() throws ModuleLoadException, IOException {
 
         // Load the swagger-ui webjars.
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.webjars.swagger-ui"));
+        Module module = Module.getBootModuleLoader().loadModule("org.webjars.swagger-ui");
         URL resource = module.getExportedResource("swagger-ui.jar");
         JARArchive webJar = ShrinkWrap.create(JARArchive.class);
         webJar.as(ZipImporter.class).importFrom(resource.openStream());

@@ -38,10 +38,13 @@ package org.wildfly.swarm.container.runtime.wildfly;
  */
 
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestOutputStream;
@@ -53,6 +56,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.as.repository.ContentReference;
 import org.jboss.as.repository.ContentRepository;
@@ -62,6 +66,8 @@ import org.jboss.msc.service.ServiceTarget;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 
@@ -69,12 +75,10 @@ import org.jboss.vfs.VirtualFile;
  * A content-repository capable of providing a static bit of content.
  *
  * @author Bob McWhirter
- * @see org.jboss.as.selfcontained.ContentProvider
  */
 @ApplicationScoped
 public class SwarmContentRepository implements ContentRepository, Service<ContentRepository> {
 
-    private Map<String, Path> index = new HashMap<>();
 
     /**
      * Install the service.
@@ -104,7 +108,28 @@ public class SwarmContentRepository implements ContentRepository, Service<Conten
                 sha1Bytes = messageDigest.digest();
             }
             String key = toKey(sha1Bytes);
-            this.index.put(key, tmp);
+            this.index.put(key, tmp.toUri());
+            return sha1Bytes;
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public byte[] addContent(Archive<?> archive) throws IOException, URISyntaxException {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+            byte[] sha1Bytes;
+            messageDigest.reset();
+            BufferedInputStream bis = new BufferedInputStream(archive.as(ZipExporter.class).exportAsInputStream());
+            byte[] bytes = new byte[8192];
+            int read;
+            while ((read = bis.read(bytes)) > -1) {
+                messageDigest.update(bytes, 0, read);
+            }
+            sha1Bytes = messageDigest.digest();
+            String key = toKey(sha1Bytes);
+            this.fs.addArchive(archive.getName(), archive);
+            this.index.put(key, this.fsMount.getChild(archive.getName()).toURI());
             return sha1Bytes;
         } catch (NoSuchAlgorithmException e) {
             throw new IOException(e);
@@ -118,7 +143,7 @@ public class SwarmContentRepository implements ContentRepository, Service<Conten
     @Override
     public VirtualFile getContent(byte[] sha1Bytes) {
         String key = toKey(sha1Bytes);
-        VirtualFile result = VFS.getChild(this.index.get(key).toUri());
+        VirtualFile result = VFS.getChild(this.index.get(key));
         return result;
     }
 
@@ -150,16 +175,9 @@ public class SwarmContentRepository implements ContentRepository, Service<Conten
 
     public void removeAllContent() throws IOException {
         IOException exception = null;
-        for (Path path: this.index.values()) {
-            try {
-                Files.delete(path);
-            } catch (IOException e) {
-                exception = e;
-            }
-        }
-
-        if (exception != null) {
-            throw exception;
+        for (URI uri : this.index.values()) {
+            VirtualFile file = VFS.getChild(uri);
+            file.delete();
         }
     }
 
@@ -173,15 +191,36 @@ public class SwarmContentRepository implements ContentRepository, Service<Conten
 
     @Override
     public void start(StartContext startContext) throws StartException {
+        this.fsMount = VFS.getChild("wildfly-swarm-deployments");
+        try {
+            this.fsCloseable = VFS.mount(this.fsMount, this.fs);
+        } catch (IOException e) {
+            throw new StartException(e);
+        }
     }
 
     @Override
     public void stop(StopContext stopContext) {
+        try {
+            this.fsCloseable.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public ContentRepository getValue() throws IllegalStateException, IllegalArgumentException {
         return this;
     }
+
+    private Map<String, URI> index = new HashMap<>();
+
+    private VirtualFile fsMount;
+
+
+    @Inject
+    private ShrinkWrapFileSystem fs;
+
+    private Closeable fsCloseable;
 
 }

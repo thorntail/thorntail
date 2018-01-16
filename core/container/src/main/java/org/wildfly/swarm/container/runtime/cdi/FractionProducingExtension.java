@@ -36,7 +36,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexReader;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.weld.literal.AnyLiteral;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
@@ -112,12 +111,12 @@ public class FractionProducingExtension implements Extension {
 
         List<String> moduleNames = ApplicationEnvironment.get().bootstrapModules();
 
-        ClassLoader cl = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.container")).getClassLoader();
+        ClassLoader cl = Module.getBootModuleLoader().loadModule("swarm.container").getClassLoader();
 
         Set<Class<? extends Fraction>> fractionClasses = new HashSet<>();
 
         for (String moduleName : moduleNames) {
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(moduleName));
+            Module module = Module.getBootModuleLoader().loadModule(moduleName);
 
             InputStream indexStream = module.getClassLoader().getResourceAsStream("META-INF/jandex.idx");
             if (indexStream != null) {

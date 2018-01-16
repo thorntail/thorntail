@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>teiid-components</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
+    <version>2018.2.0-SNAPSHOT</version>
   </parent>
 
   <name>Teiid MongoDB Translator</name>
@@ -20,7 +20,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-mongodb</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -33,7 +33,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-jdbc</artifactId>
       <scope>provided</scope>
       <type>zip</type>
@@ -46,17 +46,17 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>translator-mongodb</artifactId>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>mongodb-api</artifactId>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>connector-mongodb</artifactId>
       <version>${version.teiid}</version>
     </dependency>

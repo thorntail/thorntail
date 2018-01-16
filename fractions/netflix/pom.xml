@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
+    <version>2018.2.0-SNAPSHOT</version>
     <relativePath>../../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -26,7 +26,7 @@
     <version.netflix.commons>0.1.1</version.netflix.commons>
     <version.archaius>0.6.6</version.archaius>
     <version.ribbon>2.1.0</version.ribbon>
-    <version.hystrix>1.4.21</version.hystrix>
+    <version.hystrix>1.5.12</version.hystrix>
     <version.rxjava>1.2.5</version.rxjava>
     <version.rxnetty>0.4.9</version.rxnetty>
     <version.netty>4.0.26.Final</version.netty>
@@ -42,47 +42,47 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>archaius</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-guava</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>hystrix</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured-client</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-rxjava</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-rxnetty</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>servo</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <version>2018.2.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>

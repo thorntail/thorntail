@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
+    <version>2018.2.0-SNAPSHOT</version>
     <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -72,7 +72,7 @@
     <!-- MOVE TO A MODULE? -->
     <dependency>
       <groupId>org.ow2.asm</groupId>
-      <artifactId>asm-all</artifactId>
+      <artifactId>asm</artifactId>
     </dependency>
 
     <dependency>

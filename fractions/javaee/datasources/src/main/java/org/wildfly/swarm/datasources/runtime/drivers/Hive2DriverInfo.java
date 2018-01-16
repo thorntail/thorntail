@@ -15,7 +15,6 @@
  */
 package org.wildfly.swarm.datasources.runtime.drivers;
 
-import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
 
@@ -33,7 +32,7 @@ public class Hive2DriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "sa";
 
     protected Hive2DriverInfo() {
-        super("hive2", ModuleIdentifier.create("org.apache.hive.jdbc"), "org.apache.hive.jdbc.HiveDriver");
+        super("hive2", "org.apache.hive.jdbc", "org.apache.hive.jdbc.HiveDriver");
     }
 
     @Override

@@ -17,10 +17,9 @@ package org.wildfly.swarm.neo4j.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.modules.ModuleIdentifier;
-import org.wildfly.swarm.neo4j.Neo4jFraction;
-import org.wildfly.swarm.container.util.Messages;
 import org.wildfly.swarm.container.util.DriverModuleBuilder;
+import org.wildfly.swarm.container.util.Messages;
+import org.wildfly.swarm.neo4j.Neo4jFraction;
 
 /**
  * Auto-detection for Neo4j NoSQL driver (based on org.wildfly.swarm.datasources.runtime.DriverInfo, thanks Bob!).
@@ -42,9 +41,9 @@ public class Neo4jDriverInfo extends DriverModuleBuilder {
                         "org.neo4j.driver.v1.AuthTokens",
                         "org.neo4j.driver.v1.AuthToken"
                 },
-                new ModuleIdentifier[]{
-                        ModuleIdentifier.create("javax.api"),
-                        ModuleIdentifier.create("org.picketbox"),
+                new String[]{
+                        "javax.api",
+                        "org.picketbox",
                 });
     }
 

@@ -1,0 +1,3 @@
+org.eclipse.microprofile.config.tck.ConverterTest
+org.eclipse.microprofile.config.tck.ClassConverterTest
+org.eclipse.microprofile.config.tck.ImplicitConverterTest

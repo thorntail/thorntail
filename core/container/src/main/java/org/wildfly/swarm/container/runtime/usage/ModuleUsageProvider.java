@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 
 /**
  * Created by bob on 8/30/17.
@@ -39,7 +38,7 @@ public class ModuleUsageProvider implements UsageProvider {
 
     @Override
     public String getRawUsageText() throws Exception {
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("swarm.application"));
+        Module module = Module.getBootModuleLoader().loadModule("swarm.application");
         ClassLoader cl = module.getClassLoader();
 
         InputStream in = cl.getResourceAsStream(META_INF_USAGE_TXT);

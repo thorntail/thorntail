@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>teiid-parent</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
+    <version>2018.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>teiid</artifactId>
   <name>Teiid Fraction</name>
@@ -74,19 +74,19 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid</groupId>
+      <groupId>org.teiid</groupId>
       <artifactId>teiid-api</artifactId>
       <scope>provided</scope>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid</groupId>
+      <groupId>org.teiid</groupId>
       <artifactId>teiid-common-core</artifactId>
       <scope>provided</scope>
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid</groupId>
+      <groupId>org.teiid</groupId>
       <artifactId>teiid-admin</artifactId>
       <scope>provided</scope>
       <version>${version.teiid}</version>
@@ -131,7 +131,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid</groupId>
+      <groupId>org.teiid</groupId>
       <artifactId>teiid-wildfly-integration-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
@@ -144,7 +144,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.teiid</groupId>
+      <groupId>org.teiid</groupId>
       <artifactId>teiid-client-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
@@ -157,7 +157,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.teiid</groupId>
+      <groupId>org.teiid</groupId>
       <artifactId>rest-service-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
@@ -169,7 +169,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jboss.teiid.connectors</groupId>
+      <groupId>org.teiid.connectors</groupId>
       <artifactId>feature-pack-swagger</artifactId>
       <type>zip</type>
       <scope>provided</scope>

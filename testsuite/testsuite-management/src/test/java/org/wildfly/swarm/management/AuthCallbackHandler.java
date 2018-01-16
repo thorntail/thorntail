@@ -16,6 +16,8 @@
 package org.wildfly.swarm.management;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -24,12 +26,24 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.RealmCallback;
 
+import org.wildfly.security.auth.callback.CredentialCallback;
+import org.wildfly.security.credential.Credential;
+import org.wildfly.security.credential.PasswordCredential;
+import org.wildfly.security.password.Password;
+import org.wildfly.security.password.PasswordFactory;
+import org.wildfly.security.password.spec.DigestPasswordAlgorithmSpec;
+import org.wildfly.security.password.spec.EncryptablePasswordSpec;
+
+import static org.wildfly.security.password.interfaces.DigestPassword.ALGORITHM_DIGEST_MD5;
+
+
 /**
  * @author Bob McWhirter
  */
 public class AuthCallbackHandler implements CallbackHandler {
 
-    public AuthCallbackHandler(String userName, String password) {
+    public AuthCallbackHandler(String realm, String userName, String password) {
+        this.realm = realm;
         this.userName = userName;
         this.password = password;
 
@@ -41,18 +55,34 @@ public class AuthCallbackHandler implements CallbackHandler {
             if (current instanceof NameCallback) {
                 NameCallback ncb = (NameCallback) current;
                 ncb.setName(this.userName);
-            } else if (current instanceof PasswordCallback) {
-                PasswordCallback pcb = (PasswordCallback) current;
-                pcb.setPassword(this.password.toCharArray());
             } else if (current instanceof RealmCallback) {
                 RealmCallback rcb = (RealmCallback) current;
                 rcb.setText(rcb.getDefaultText());
+            } else if (current instanceof CredentialCallback) {
+                CredentialCallback ccb = (CredentialCallback) current;
+                try {
+                    DigestPasswordAlgorithmSpec algoSpec = new DigestPasswordAlgorithmSpec(this.userName, this.realm);
+                    EncryptablePasswordSpec passwordSpec = new EncryptablePasswordSpec(this.password.toCharArray(), algoSpec);
+                    Password passwd = PasswordFactory.getInstance(ALGORITHM_DIGEST_MD5).generatePassword(passwordSpec);
+
+                    Credential creds = new PasswordCredential(passwd);
+                    ccb.setCredential(creds);
+                } catch (InvalidKeySpecException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+            } else if ( current instanceof PasswordCallback) {
+                PasswordCallback pcb = (PasswordCallback) current;
+                pcb.setPassword( this.password.toCharArray() );
             } else {
                 throw new UnsupportedCallbackException(current);
             }
         }
 
     }
+
+    private final String realm;
 
     private final String userName;
 

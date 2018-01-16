@@ -15,23 +15,14 @@
  */
 package org.wildfly.swarm.topology.webapp.test;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistry;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.topology.jgroups.JGroupsTopologyFraction;
-import org.wildfly.swarm.topology.webapp.TopologyWebAppFraction;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -64,7 +55,7 @@ public class TopologyWebAppArquillianTest {
         assertNotNull("TopologyProxyService is not available in service registry", proxyService);
 
         ServiceController<?> proxyHandler = registry
-                .getService(ServiceName.parse("jboss.undertow.handler.myService-proxy-handler"));
+                .getService(ServiceName.parse("org.wildfly.extension.undertow.handler.myService-proxy-handler"));
         assertNotNull("`myService` Undertow handler is not available in service registry", proxyHandler);
     }
 }

@@ -52,7 +52,7 @@ public class TopologyProxyService implements Service<TopologyProxyService>, Topo
     }
 
     public ServiceName mscServiceNameForServiceProxy(String serviceName) {
-        return ServiceName.of("jboss", "undertow", "handler",
+        return ServiceName.of("org", "wildfly", "extension", "undertow", "handler",
                               TopologyWebAppFraction.proxyHandlerName(serviceName));
     }
 

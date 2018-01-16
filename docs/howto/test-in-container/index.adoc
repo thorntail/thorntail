@@ -12,8 +12,7 @@ testing work well with WildFly Swarm&ndash;based applications.
 
 .Procedure
 
-. Include the WildFly Swarm BOM as described in xref:using-a-bom[]. For
-example, `bom-all`:
+. Include the WildFly Swarm BOM as described in xref:using-a-bom[]:
 +
 [source,xml]
 ----

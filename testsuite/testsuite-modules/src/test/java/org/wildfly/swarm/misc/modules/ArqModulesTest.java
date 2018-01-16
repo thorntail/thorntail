@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.junit.Test;
 
@@ -41,7 +40,7 @@ public class ArqModulesTest {
 
     @Test
     public void testModuleDirectoryResources() throws ModuleLoadException, IOException {
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("com.mycorp.mymodule"));
+        Module module = Module.getBootModuleLoader().loadModule("com.mycorp.mymodule");
 
         assertNotNull(module);
 
@@ -63,7 +62,7 @@ public class ArqModulesTest {
 
     @Test
     public void testRootJarResources() throws ModuleLoadException, IOException {
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("com.mycorp.mymodule"));
+        Module module = Module.getBootModuleLoader().loadModule("com.mycorp.mymodule");
 
         assertNotNull(module);
 
@@ -86,7 +85,7 @@ public class ArqModulesTest {
 
     @Test
     public void testRootJarSubdirResources() throws ModuleLoadException, IOException {
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("com.mycorp.mymodule"));
+        Module module = Module.getBootModuleLoader().loadModule("com.mycorp.mymodule");
 
         assertNotNull(module);
 

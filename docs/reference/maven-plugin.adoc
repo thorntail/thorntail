@@ -26,68 +26,115 @@ The WildFly Swarm Maven plugin is used like any other Maven plugin, that is thro
 
 The WildFly Swarm Maven plugin provides several goals:
 
-`package`::
+package::
 Creates the executable package (see xref:creating-an-uberjar[]).
 
-`run`::
+run::
 Executes your application in the Maven process. The application is stopped if the Maven build is interrupted, for example when you press Ctrl + C.
 
 [#maven-plugin-multistart-goal]
-`start` and `multistart`::
+start and multistart::
 Executes your application in a forked process. Generally, it is only useful for running integration tests using a plugin, such as the `maven-failsafe-plugin`.
 The `multistart` variant allows starting multiple WildFly Swarm&ndash;built applications using Maven GAVs to support complex testing scenarios.
 
-`stop`::
+stop::
 Stops any previously started applications.
 +
 NOTE: The `stop` goal can only stop applications that were started _in the same Maven execution_.
 
 [#maven-plugin-configuration]
-== Configuration
+== Configuration Options
 
 The plugin accepts the following options:
 
-[cols="d,a,3*a", options="header"]
+bundleDependencies::
+If true, dependencies will be included in the `-swarm.jar` file.
+Otherwise, they will be resolved from `$M2_REPO` or the network at runtime.
++
+[cols="1,2a"]
 |===
-|Name|Property|Description|Default|Used by
-
-|`bundleDependencies`
+|Property
 |`swarm.bundleDependencies`
-|If true, dependencies will be included in the `-swarm.jar` file. Otherwise, they will be resolved from `$M2_REPO` or the network at runtime.
+
+|Default
 |true
+
+|Used by
 |`package`
+|===
 
-|`debug`
+debug::
+The port to use for debugging.
+If set, the swarm process will suspend on start and open a debugger on this port.
++
+[cols="1,2a"]
+|===
+|Property
 |_none_
-|The port to use for debugging. If set, the swarm process will suspend on start and open a debugger on this port.
+
+|Default
 |
+
+|Used by
 |`run`, `start`
+|===
 
-|`environment`
+environment::
+A properties-style list of environment variables to use when executing the application.
++
+[cols="1,2a"]
+|===
+|Property
 |_none_
-|A properties-style list of environment variables to use when executing the application.
-|
-|`multistart`, `run`, `start`
 
-|`environmentFile`
+|Default
+|
+
+|Used by
+|`multistart`, `run`, `start`
+|===
+
+environmentFile::
+A `.properties` file with environment variables to use when executing the application.
++
+[cols="1,2a"]
+|===
+|Property
 |`swarm.environmentFile`
-|A `.properties` file with environment variables to use when executing the application.
-|
-|`multistart`, `run`, `start`
 
-|`fractionDetectMode`
-|`swarm.fractionDetectMode`
-|The mode of fraction detection. The available options are:
+|Default
+|
+
+|Used by
+|`multistart`, `run`, `start`
+|===
+
+fractionDetectMode::
++
+--
+The mode of fraction detection. The available options are:
 
 * `when_missing`: Runs only when no WildFly Swarm dependencies are found.
 * `force`: Always run, and merge any detected fractions with the existing dependencies. Existing dependencies take precedence.
 * `never`: Disable fraction detection.
-|`when_missing`
-|`package`, `run`, `start`
 
-|`fractions`
-|_none_
-|A list of extra fractions to include when auto-detection is used. It is useful for fractions that cannot be detected or user-provided fractions.
+[cols="1,2a"]
+|===
+|Property
+|`swarm.fractionDetectMode`
+
+|Default
+|`when_missing`
+
+|Used by
+|`package`, `run`, `start`
+|===
+--
+
+fractions::
++
+--
+A list of extra fractions to include when auto-detection is used. It is useful for fractions that cannot be detected or user-provided fractions.
 
 The format of specifying a fraction can be:
 * `group:name:version`
@@ -97,68 +144,160 @@ The format of specifying a fraction can be:
 If no group is provided, `org.wildfly.swarm` is assumed.
 
 If no version is provided, the version is taken from the WildFly Swarm BOM for the version of the plugin you are using.
+
+[cols="1,2a"]
+|===
+|Property
+|_none_
+
+|Default
 |
+
+|Used by
 |`package`, `run`, `start`
+|===
+--
 
 ifndef::product[]
-|`hollow`
+hollow::
+Specifies if the resulting executable JAR should be hollow, and therefore not include the default deployment.
++
+[cols="1,2a"]
+|===
+|Property
 |`swarm.hollow`
-|Specifies if the resulting executable JAR should be hollow, and therefore not include the default deployment.
+
+|Default
 |`false`
+
+|Used by
 |`package`
+|===
 endif::[]
 
-|`jvmArguments`
+jvmArguments::
+A list of `<jvmArgument>` elements specifying additional JVM arguments (such as `-Xmx32m`).
++
+[cols="1,2a"]
+|===
+|Property
 |`swarm.jvmArguments`
-|A list of `<jvmArgument>` elements specifying additional JVM arguments (such as `-Xmx32m`).
+
+|Default
 |
+
+|Used by
 |`multistart`, `run`, `start`
+|===
 
-|`modules`
+modules::
+Paths to a directory containing additional module definitions.
++
+[cols="1,2a"]
+|===
+|Property
 |_none_
-|Paths to a directory containing additional module definitions.
+
+|Default
 |./modules
-|`package`, `run`, `start`
 
-|`processes`
+|Used by
+|`package`, `run`, `start`
+|===
+
+processes::
+Application configurations to start (see xref:maven-plugin-multistart-goal[multistart]).
++
+[cols="1,2a"]
+|===
+|Property
 |_none_
-|Application configurations to start (see xref:maven-plugin-multistart-goal[multistart]).
+
+|Default
 |
+
+|Used by
 |`multistart`
+|===
 
-|`properties`
+properties::
+See xref:maven-plugin-properties[].
++
+[cols="1,2a"]
+|===
+|Property
 |_none_
-|See xref:maven-plugin-properties[].
-|
-|`package`, `run`, `start`
 
-|`propertiesFile`
+|Default
+|
+
+|Used by
+|`package`, `run`, `start`
+|===
+
+propertiesFile::
+See xref:maven-plugin-properties[].
++
+[cols="1,2a"]
+|===
+|Property
 |`swarm.propertiesFile`
-|See xref:maven-plugin-properties[].
+
+|Default
 |
+
+|Used by
 |`package`, `run`, `start`
+|===
 
-|`stderrFile`
+stderrFile::
+A file path where to store the `stderr` output instead of sending it to the `stderr` output of the launching process.
++
+[cols="1,2a"]
+|===
+|Property
 |`swarm.stderr`
-|A file path where to store the `stderr` output instead of sending it to the `stderr` output of the launching process.
-|
-|`run`, `start`
 
-|`stdoutFile`
+|Default
+|
+
+|Used by
+|`run`, `start`
+|===
+
+stdoutFile::
+A file path where to store the `stdout` output instead of sending it to the `stdout` output of the launching process.
++
+[cols="1,2a"]
+|===
+|Property
 |`swarm.stdout`
-|A file path where to store the `stdout` output instead of sending it to the `stdout` output of the launching process.
-|
-|`run`, `start`
 
-|`useUberJar`
+|Default
+|
+
+|Used by
+|`run`, `start`
+|===
+
+useUberJar::
+If true, the `-swarm.jar` file specified at `${project.build.directory}` is used.
+This JAR is not created automatically, so make sure you execute the `package` goal first.
++
+[cols="1,2a"]
+|===
+|Property
 |`swarm.useUberJar`
-|If true, the `-swarm.jar` file specified at `${project.build.directory}` is used. This JAR is not created automatically, so make sure you execute the `package` goal first.
+
+|Default
 |false
+
+|Used by
 |`run`, `start`
 |===
 
 [#maven-plugin-properties]
-=== Properties
+== Configuration Properties
 
 Properties can be used to configure execution and affect the packaging
 or running of your application.

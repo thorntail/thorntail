@@ -17,8 +17,8 @@
 package org.wildfly.swarm.mongodb.test;
 
 import javax.inject.Inject;
+import javax.enterprise.context.Dependent;
 import javax.inject.Named;
-import javax.annotation.Resource;
 import javax.ejb.Stateful;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -38,11 +38,20 @@ import org.bson.Document;
 public class StatefulTestBean {
 
     //@Resource(lookup = "java:jboss/mongodb/test")
-    @Inject @Named("mongodbtestprofile")
+    //@Inject @Named("mongodbtestprofile")
     MongoDatabase database;
 
-    @Resource(lookup = "java:jboss/mongodb/test")
-    MongoDatabase databaseJNDI;
+    // recreate https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/wildfly-nosql/8IIuxR30xAc/RxAEWs4fAAAJ
+    // ensure that @Inject without a @Named, doesn't cause a deployment failure
+    @Inject
+    public StatefulTestBean(MongoDatabase mongoDatabase) {
+        this.database = mongoDatabase;
+        // System.out.println("xxx parameter " + mongoDatabase + " ctor called");
+    }
+
+    public StatefulTestBean() {
+        // System.out.println("xxx no parameter ctor called");
+    }
 
     public String addUserComment() {
         MongoCollection collection = null;
@@ -96,4 +105,14 @@ public class StatefulTestBean {
             }
         }
     }
+
+    @Dependent @Named
+    static class CauseFailure {
+        private String ignore="ignore";
+
+        public String getIgnore() {
+            return ignore;
+        }
+    }
+
 }

@@ -56,6 +56,7 @@ public class KeycloakCacheCustomizer implements Customizer {
                         });
                     })
                     .localCache("sessions")
+                    .localCache("authenticationSessions")
                     .localCache("offlineSessions")
                     .localCache("loginFailures")
                     .localCache("work")
@@ -73,6 +74,16 @@ public class KeycloakCacheCustomizer implements Customizer {
                         });
                         localCache.expirationComponent((expire) -> {
                             expire.maxIdle(3600000L);
+                        });
+                    })
+                    .localCache("actionTokens", (localCache) -> {
+                        localCache.evictionComponent((evict) -> {
+                            evict.strategy(EvictionComponent.Strategy.NONE);
+                            evict.maxEntries((long) -1);
+                        });
+                        localCache.expirationComponent((expire) -> {
+                            expire.maxIdle((long) -1);
+                            expire.interval((long) 300000);
                         });
                     })
             );

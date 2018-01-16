@@ -18,16 +18,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-bom</artifactId>
-        <version>${version.shrinkwrap}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-        <artifactId>shrinkwrap-descriptors-bom</artifactId>
-        <version>${version.shrinkwrap-descriptors}</version>
+        <groupId>BOM_GROUPID</groupId>
+        <artifactId>BOM_ARTIFACT</artifactId>
+        <version>SWARM_VERSION</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

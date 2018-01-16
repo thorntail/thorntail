@@ -23,7 +23,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
@@ -51,7 +50,7 @@ public class KeycloakThemesCustomizer implements Customizer {
             return;
         }
 
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.keycloak.keycloak-themes"));
+        Module module = Module.getBootModuleLoader().loadModule("org.keycloak.keycloak-themes");
         URL resource = module.getExportedResource("keycloak-themes.jar");
 
         JARArchive themesArtifact = ShrinkWrap.create(JARArchive.class);

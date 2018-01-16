@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2017.12.0-SNAPSHOT</version>
+    <version>2018.2.0-SNAPSHOT</version>
     <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -23,9 +23,8 @@
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.stability>experimental</swarm.fraction.stability>
-    <swarm.fraction.tags>Microprofile, Metrics, Monitoring</swarm.fraction.tags>
-    <version.microprofile.metrics.api>1.0</version.microprofile.metrics.api>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
+    <swarm.fraction.tags>Eclipse Microprofile,Metrics,Monitoring</swarm.fraction.tags>
   </properties>
 
   <build>
@@ -35,42 +34,6 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack-yaml</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <excludeTransitive>true</excludeTransitive>
-              <includeGroupIds>org.yaml</includeGroupIds>
-              <includeScope>compile</includeScope>
-              <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class</excludes>
-              <outputDirectory>${project.build.directory}/classes</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>unpack-cdi-extension</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <excludeTransitive>true</excludeTransitive>
-              <includeGroupIds>org.wildfly.swarm</includeGroupIds>
-                <includeArtifactIds>mp_metrics_cdi_extension</includeArtifactIds>
-              <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class</excludes>
-              <outputDirectory>${project.build.directory}/classes</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
   </build>
 
   <dependencies>
@@ -90,11 +53,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>cdi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-weld</artifactId>
-      <version>10.1.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -133,13 +91,11 @@
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
-      <artifactId>mp_metrics_cdi_extension</artifactId>
-      <version>${project.version}</version>
+      <artifactId>microprofile-config</artifactId>
     </dependency>
 
     <dependency>

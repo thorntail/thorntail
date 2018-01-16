@@ -48,7 +48,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 import org.jboss.modules.Module;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.Resource;
@@ -218,7 +217,7 @@ public class Swarm {
 
         // Need to setup Logging here so that Weld doesn't default to JUL.
         try {
-            Module loggingModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create("org.wildfly.swarm.logging", "runtime"));
+            Module loggingModule = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.logging:runtime");
 
             ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
             try {
@@ -382,7 +381,7 @@ public class Swarm {
 
         try (AutoCloseable handle = Performance.time("Swarm.start()")) {
 
-            Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
+            Module module = Module.getBootModuleLoader().loadModule(CONTAINER_MODULE_NAME);
             Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
 
             ServerBootstrap bootstrap = (ServerBootstrap) bootstrapClass.newInstance();
@@ -432,7 +431,7 @@ public class Swarm {
         this.server.stop();
         this.server = null;
 
-        Module module = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(CONTAINER_MODULE_NAME));
+        Module module = Module.getBootModuleLoader().loadModule(CONTAINER_MODULE_NAME);
         Class<?> shutdownClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.WeldShutdownImpl");
 
         WeldShutdown shutdown = (WeldShutdown) shutdownClass.newInstance();
@@ -509,7 +508,7 @@ public class Swarm {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             if (isFatJar()) {
-                Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
+                Module appModule = Module.getBootModuleLoader().loadModule(APPLICATION_MODULE_NAME);
                 Thread.currentThread().setContextClassLoader(appModule.getClassLoader());
             }
             Domain domain = ShrinkWrap.getDefaultDomain();
@@ -648,12 +647,18 @@ public class Swarm {
     private void initializeConfigFiltersFatJar() throws ModuleLoadException, IOException, ClassNotFoundException {
         Indexer indexer = new Indexer();
 
-        Module appModule = Module.getBootModuleLoader().loadModule(ModuleIdentifier.create(APPLICATION_MODULE_NAME));
+        Module appModule = Module.getBootModuleLoader().loadModule(APPLICATION_MODULE_NAME);
         Iterator<Resource> iter = appModule.iterateResources(PathFilters.acceptAll());
         while (iter.hasNext()) {
             Resource each = iter.next();
             if (each.getName().endsWith(".class")) {
-                indexer.index(each.openStream());
+                if (!each.getName().equals("module-info.class")) {
+                    try {
+                        indexer.index(each.openStream());
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
             }
         }
 
@@ -690,9 +695,13 @@ public class Swarm {
 
                 Map<ArchivePath, Node> content = archive.getContent();
                 for (ArchivePath path : content.keySet()) {
-                    if (path.get().endsWith(".class")) {
+                    if (path.get().endsWith(".class") && !path.get().endsWith("module-info.class")) {
                         Node node = content.get(path);
-                        indexer.index(node.getAsset().openStream());
+                        try {
+                            indexer.index(node.getAsset().openStream());
+                        } catch (IOException e) {
+                            // ignore
+                        }
                     }
                 }
             }
@@ -728,7 +737,6 @@ public class Swarm {
         }
 
         swarm = new Swarm(args);
-
 
         try {
             swarm.start();

@@ -59,9 +59,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
                     });
                     s.protocol("PING");
                     s.protocol("MERGE3");
-                    s.protocol("FD_SOCK", (p) -> {
-                        p.socketBinding("jgroups-udp-fd");
-                    });
+                    s.protocol("FD_SOCK");
                     s.protocol("FD_ALL");
                     s.protocol("VERIFY_SUSPECT");
                     s.protocol("pbcast.NAKACK2");

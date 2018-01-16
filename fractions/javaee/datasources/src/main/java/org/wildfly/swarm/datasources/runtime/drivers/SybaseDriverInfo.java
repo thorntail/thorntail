@@ -17,7 +17,6 @@ package org.wildfly.swarm.datasources.runtime.drivers;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.modules.ModuleIdentifier;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.config.datasources.JDBCDriver;
 import org.wildfly.swarm.datasources.runtime.DriverInfo;
@@ -36,7 +35,7 @@ public class SybaseDriverInfo extends DriverInfo {
     public static final String DEFAULT_PASSWORD = "admin";
 
     public SybaseDriverInfo() {
-        super("sybase", ModuleIdentifier.create("com.sybase"), "com.sybase.jdbc4.jdbc.SybDriver");
+        super("sybase", "com.sybase", "com.sybase.jdbc4.jdbc.SybDriver");
     }
 
     @Override

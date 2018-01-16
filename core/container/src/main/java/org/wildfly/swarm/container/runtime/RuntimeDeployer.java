@@ -261,7 +261,7 @@ public class RuntimeDeployer implements Deployer {
                 }
             }
 
-            byte[] hash = this.contentRepository.addContent(deployment.as(ZipExporter.class).exportAsInputStream());
+            byte[] hash = this.contentRepository.addContent(deployment);
 
             final ModelNode deploymentAdd = new ModelNode();
 

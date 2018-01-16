@@ -51,6 +51,9 @@ public class ClassAndPackageScanner implements Scanner<String> {
 
     @Override
     public void scan(PathSource pathSource, Collection<FractionDetector<String>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+        if (pathSource.getSource().getFileName().toString().equals("module-info.class")) {
+            return;
+        }
         try (InputStream input = pathSource.getInputStream()) {
             new ClassReader(input).accept(new PackageCollector(detectors), 0);
         }

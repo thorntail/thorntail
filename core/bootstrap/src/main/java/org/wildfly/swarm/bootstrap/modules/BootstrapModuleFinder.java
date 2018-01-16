@@ -24,7 +24,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
-import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -52,7 +51,6 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
 
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
-
         try (AutoCloseable handle = Performance.accumulate("module: Bootstrap")) {
 
             if (LOG.isTraceEnabled()) {
@@ -83,9 +81,9 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
                     });
 
             builder.addDependency(DependencySpec.createLocalDependencySpec());
-            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.modules")));
-            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.jboss.shrinkwrap")));
-            builder.addDependency(DependencySpec.createModuleDependencySpec(ModuleIdentifier.create("org.yaml.snakeyaml")));
+            builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.modules"));
+            builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.shrinkwrap"));
+            builder.addDependency(DependencySpec.createModuleDependencySpec("org.yaml.snakeyaml"));
 
             HashSet<String> paths = new HashSet<>();
             paths.add("org/wildfly/swarm/bootstrap/env");

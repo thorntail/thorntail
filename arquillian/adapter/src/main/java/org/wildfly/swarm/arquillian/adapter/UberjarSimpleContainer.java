@@ -312,7 +312,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     private <C extends LibraryContainer<?> & ManifestContainer<?>> void munge(C container, DeclaredDependencies declaredDependencies) {
 
-        for (ArtifactSpec artifact : declaredDependencies.getExplicitDependencies()) { // [hb] TODO: this should actually be transient deps
+        for (ArtifactSpec artifact : declaredDependencies.getRuntimeExplicitAndTransientDependencies()) {
             assert artifact.file != null : "artifact.file cannot be null at this point: " + artifact;
             container.addAsLibrary(artifact.file);
         }
