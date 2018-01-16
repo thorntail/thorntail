@@ -24,7 +24,6 @@ public class LoggingInitializer {
     private static final String PREFIX = "logging.level.";
 
     void initialize(@Observes LifecycleEvent.Initialize event) {
-        System.err.println( "INIT LOGGING");
         Logging logging = this.logging.get();
         logging.initialize();
 

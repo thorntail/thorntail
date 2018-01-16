@@ -27,7 +27,6 @@ public class DeploymentManagersProducer {
             each.addListener(new ListenerInfo(
                     Listener.class
             ));
-            System.err.println("adding ---> " + each.getDeploymentName());
             managers.add(container.addDeployment(each));
         }
         return managers;
