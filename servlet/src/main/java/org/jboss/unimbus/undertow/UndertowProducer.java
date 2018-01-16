@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 import org.jboss.unimbus.events.LifecycleEvent;
 
 /**
@@ -17,11 +18,10 @@ import org.jboss.unimbus.events.LifecycleEvent;
 @ApplicationScoped
 public class UndertowProducer {
 
-
     @PostConstruct
     void init() {
         Undertow.Builder builder = Undertow.builder();
-        builder.addHttpListener(this.serverPort, "localhost");
+        builder.addHttpListener(this.serverPort, this.serverHost);
         builder.setHandler(this.root);
         this.undertow = builder.build();
     }
@@ -32,14 +32,17 @@ public class UndertowProducer {
     }
 
     void start(@Observes LifecycleEvent.Start event) {
-        System.err.println( "got START event" );
-        System.err.println( "Starting undertow on " + this.serverPort );
+        System.err.println( "Starting undertow on http://" + this.serverHost + ":" + this.serverPort );
         this.undertow.start();
     }
 
     @Inject
     @ConfigProperty(name="web.server.port")
     private int serverPort;
+
+    @Inject
+    @ConfigProperty(name="web.server.host")
+    private String serverHost;
 
     @Inject
     private HttpHandler root;

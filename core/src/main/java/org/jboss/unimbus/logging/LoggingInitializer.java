@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
@@ -16,12 +17,14 @@ import org.jboss.unimbus.events.LifecycleEvent;
 /**
  * Created by bob on 1/16/18.
  */
+@Priority(Integer.MAX_VALUE)
 @ApplicationScoped
 public class LoggingInitializer {
 
     private static final String PREFIX = "logging.level.";
 
     void initialize(@Observes LifecycleEvent.Initialize event) {
+        System.err.println( "INIT LOGGING");
         Logging logging = this.logging.get();
         logging.initialize();
 

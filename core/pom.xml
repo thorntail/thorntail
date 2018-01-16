@@ -22,7 +22,9 @@
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-shaded</artifactId>
       <version>${version.weld}</version>
+<!--
       <scope>runtime</scope>
+-->
     </dependency>
 
     <dependency>

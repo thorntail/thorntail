@@ -1,10 +1,15 @@
 package org.jboss.unimbus.jndi;
 
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
 import javax.naming.Binding;
 import javax.naming.CompositeName;
 import javax.naming.Context;
@@ -16,21 +21,37 @@ import javax.naming.NamingException;
 
 public class InMemoryContext implements Context {
 
-
-    public InMemoryContext(Hashtable<?, ?> environment) {
-        this.parent = null;
-        this.environment = environment;
-    }
-
-    public InMemoryContext(InMemoryContext parent) {
-        this.parent = parent;
-        this.environment = null;
+    public InMemoryContext(BeanManager beanManager) {
+        this.beanManager = beanManager;
     }
 
     @Override
     public Object lookup(Name name) throws NamingException {
         Object result = this.bindings.get(name);
-        return result;
+        if (result != null) {
+            return result;
+        }
+        return lookupBinding(name);
+    }
+
+    private Object lookupBinding(Name name) throws NamingException {
+        if (name.toString().equals("java:app/BeanManager")) {
+            return this.beanManager;
+        }
+        Set<Bean<?>> beans = this.beanManager.getBeans(new TypeLiteral<Binder<?>>() {}.getType() );
+        for (Bean<?> bean : beans) {
+            CreationalContext context = this.beanManager.createCreationalContext(bean);
+            Binder<?> binder = (Binder<?>) bean.create(context);
+            if ( binder.getName().equals(name.toString())) {
+                Object result = binder.get();
+                if ( result != null ) {
+                    bind(name, result);
+                    return result;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -160,10 +181,7 @@ public class InMemoryContext implements Context {
 
     @Override
     public Hashtable<?, ?> getEnvironment() throws NamingException {
-        if (this.parent != null) {
-            return this.parent.getEnvironment();
-        }
-        return this.environment;
+        return new Hashtable<>();
     }
 
     @Override
@@ -176,9 +194,8 @@ public class InMemoryContext implements Context {
         return null;
     }
 
-    private final InMemoryContext parent;
 
-    private final Hashtable<?, ?> environment;
+    private final BeanManager beanManager;
 
     private final Map<Name, Object> bindings = new HashMap<>();
 }
