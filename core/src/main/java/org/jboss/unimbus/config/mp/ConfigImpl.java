@@ -83,17 +83,15 @@ class ConfigImpl implements Config {
         }
 
         List<Converter<?>> candidates = this.converters.get(propertyType);
-        if (candidates == null) {
-            return Optional.empty();
-        }
-
-        Optional<T> result = candidates.stream()
-                .map(e -> e.convert(value))
-                .filter(Objects::nonNull)
-                .map(propertyType::cast)
-                .findFirst();
-        if (result.isPresent()) {
-            return result;
+        if (candidates != null && ! candidates.isEmpty()) {
+            Optional<T> result = candidates.stream()
+                    .map(e -> e.convert(value))
+                    .filter(Objects::nonNull)
+                    .map(propertyType::cast)
+                    .findFirst();
+            if (result.isPresent()) {
+                return result;
+            }
         }
 
         return this.fallbackConverters.stream()
@@ -104,22 +102,22 @@ class ConfigImpl implements Config {
     }
 
     Class<?> boxedType(Class<?> type) {
-        if ( type == short.class ) {
+        if (type == short.class) {
             return Short.class;
         }
-        if ( type == int.class ) {
+        if (type == int.class) {
             return Integer.class;
         }
-        if ( type == long.class ) {
+        if (type == long.class) {
             return Long.class;
         }
-        if ( type == float.class ) {
+        if (type == float.class) {
             return Float.class;
         }
-        if ( type == double.class ) {
+        if (type == double.class) {
             return Double.class;
         }
-        if ( type == boolean.class ) {
+        if (type == boolean.class) {
             return Boolean.class;
         }
 

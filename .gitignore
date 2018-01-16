@@ -3,3 +3,4 @@ target
 .idea
 .java-version
 *.DS_Store
+log
